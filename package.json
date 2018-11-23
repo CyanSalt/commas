@@ -1,0 +1,35 @@
+{
+  "name": "commas",
+  "version": "0.0.1",
+  "productName": "Commas",
+  "author": "CyanSalt",
+  "description": "A command line GUI runner.",
+  "main": "window.js",
+  "scripts": {
+    "build": "webpack --mode=production && node makefile.js",
+    "dev": "webpack --mode=development && electron .",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CyanSalt/commas.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.5.0"
+  },
+  "devDependencies": {
+    "css-loader": "^1.0.0",
+    "electron": "^3.0.3",
+    "electron-packager": "^12.2.0",
+    "json5": "^2.1.0",
+    "mini-css-extract-plugin": "^0.4.3",
+    "png2icons": "^1.0.1",
+    "vue": "^2.5.17",
+    "vue-loader": "^15.4.2",
+    "vue-style-loader": "^4.1.2",
+    "vue-template-compiler": "^2.5.17",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2"
+  }
+}
