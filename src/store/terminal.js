@@ -42,7 +42,9 @@ export default {
       })
       // Bind xterm element
       const element = state.get([this, 'element'])
-      if (element) xterm.open(element)
+      if (element) {
+        requestIdleCallback(() => xterm.open(element))
+      }
       state.set([this, 'pty'], pty)
       state.set([this, 'xterm'], xterm)
     },

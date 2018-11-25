@@ -19,7 +19,7 @@ export default {
 
 <style>
 .terminal-teletype {
-  flex: none;
+  flex: auto;
   display: flex;
   padding: 2px 4px;
   background: var(--theme-background);
