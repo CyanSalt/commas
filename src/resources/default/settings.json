@@ -1,2 +1,9 @@
 {
+  "terminal.shell.shell": null,
+  "terminal.shell.env": {},
+  "terminal.shell.args": ["-l"],
+  "terminal.shell.cols": 80,
+  "terminal.shell.rows": 25,
+  "terminal.style.fontSize": 14,
+  "terminal.style.fontFamily": "Fira Code"
 }

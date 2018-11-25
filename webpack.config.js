@@ -22,6 +22,8 @@ module.exports = {
   },
   externals: {
     'original-fs': 'require("original-fs")',
+    'node-pty': 'require("node-pty")',
+    'xterm': 'require("xterm")',
   },
   resolve: {
     extensions: ['.js', '.vue'],

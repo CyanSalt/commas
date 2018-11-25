@@ -1,6 +1,9 @@
+import pathWrapper from './path-wrapper'
+
 export default {
   $maye: {
     use(Maye, options) {
+      Maye.use(pathWrapper)
       this.$apply(Maye, options)
     }
   },
@@ -17,13 +20,21 @@ export default {
         if (typeof descriptor === 'function') {
           descriptor = {get: descriptor}
         }
+        const receiver = new Maye.path.Wrapper(prefix)
+        if (descriptor.get) {
+          descriptor.get = descriptor.get.bind(receiver)
+        }
+        if (descriptor.set) {
+          descriptor.set = descriptor.set.bind(receiver)
+        }
         Maye.accessor.define([...prefix, key], descriptor)
       }
     }
     if (options.actions) {
       for (const key of Object.keys(options.actions)) {
         const action = options.actions[key]
-        Maye.action.define([...prefix, key], action.bind(options.actions))
+        const receiver = new Maye.path.Wrapper(prefix)
+        Maye.action.define([...prefix, key], action.bind(receiver))
       }
     }
     if (options.watchers) {

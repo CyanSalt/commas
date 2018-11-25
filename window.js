@@ -7,12 +7,12 @@ const frames = []
 function createWindow() {
   const options = {
     title: app.getName(),
-    width: 952,
-    height: 600,
-    minWidth: 472,
+    width: 648,
+    height: 425 + 4 + 22,
+    resizable: false,
     // frame: false,
+    // transparent: true,
     acceptFirstMouse: true,
-    backgroundColor: '#fff',
     affinity: 'default',
     webPreferences: {
       experimentalFeatures: true,

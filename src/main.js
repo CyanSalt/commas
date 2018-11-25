@@ -4,13 +4,16 @@ import FileStorage from './plugins/storage'
 import Root from './components/root'
 import Maye from 'maye'
 import declaration from 'maye/plugins/declaration'
-import stringPath from 'maye/plugins/string-path'
+import pathString from 'maye/plugins/path-string'
+import vueMaye from 'maye/plugins/vue'
 import store from './store'
+
+Maye.use(declaration, store)
+Maye.use(pathString)
+Maye.use(vueMaye, Vue)
 
 Vue.use(I18N)
 Vue.use(FileStorage)
-
-Maye.use(declaration, store)
-Maye.use(stringPath)
+Vue.use(vueMaye)
 
 new Vue(Root)

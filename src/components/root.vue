@@ -1,14 +1,17 @@
 <template>
   <div id="main">
+    <terminal-teletype></terminal-teletype>
   </div>
 </template>
 
 <script>
 import Maye from 'maye'
+import Terminalteletype from './terminal-teletype'
 
 export default {
   el: '#main',
   components: {
+    'terminal-teletype': Terminalteletype,
   },
   beforeCreate() {
     // custom stylesheet
@@ -20,10 +23,16 @@ export default {
     }
   },
   created() {
+    const {action} = this.$maye
+    action.dispatch('settings.load').then(() => {
+      action.dispatch('theme.load')
+      action.dispatch('theme.inject', this.$el)
+      action.dispatch('terminal.load')
+    })
     // custom script
     const initScript = this.$storage.require('custom.js')
     initScript && initScript(Maye, this)
-  }
+  },
 }
 </script>
 
@@ -31,6 +40,5 @@ export default {
 #main {
   display: flex;
   height: 100vh;
-  background: white;
 }
 </style>
