@@ -9,11 +9,11 @@ import 'xterm/lib/xterm.css'
 export default {
   name: 'terminal-teletype',
   methods: {
-    mount: VueMaye.action('terminal.mount'),
+    specify: VueMaye.action('terminal.specify'),
     resize: VueMaye.action('terminal.resize'),
   },
   mounted() {
-    this.mount(this.$refs.term)
+    this.specify(this.$refs.term)
   },
 }
 </script>

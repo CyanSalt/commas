@@ -11,7 +11,7 @@ export default {
     resizer: null,
   },
   actions: {
-    async load({state, accessor}) {
+    async load({state, accessor, action}) {
       const settings = await state.get('settings.user')
       const shell = settings['terminal.shell.path'] || (
         process.platform === 'win32' ? process.env.COMSPEC : process.env.SHELL)
@@ -21,16 +21,12 @@ export default {
       // Initialize node-pty process
       const pty = spawn(shell, settings['terminal.shell.args'], {
         name: 'xterm-color',
-        cols: settings['terminal.shell.cols'],
-        rows: settings['terminal.shell.rows'],
         cwd: process.cwd(),
         env,
       })
       const {theme, allowTransparency} = accessor.get('theme.xterm')
       // Initialize xterm.js and attach it to the DOM
       const xterm = new Terminal({
-        cols: settings['terminal.shell.cols'],
-        rows: settings['terminal.shell.rows'],
         fontSize: settings['terminal.style.fontSize'],
         fontFamily: settings['terminal.style.fontFamily'],
         allowTransparency,
@@ -46,34 +42,35 @@ export default {
       xterm.on('resize', ({cols, rows}) => {
         pty.resize(cols, rows)
       })
-      // Bind xterm element
-      const element = state.get([this, 'element'])
-      if (element) {
-        requestIdleCallback(() => xterm.open(element))
-      }
       state.set([this, 'pty'], pty)
       state.set([this, 'xterm'], xterm)
+      action.dispatch([this, 'mount'])
     },
-    mount({state, action}, element) {
-      state.set([this, 'element'], element)
+    mount({state, action}) {
       const xterm = state.get([this, 'xterm'])
-      if (xterm) xterm.open(element)
+      const element = state.get([this, 'element'])
+      if (!xterm || !element) return
+      requestIdleCallback(() => {
+        xterm.open(element)
+        xterm.fit()
+      })
       window.addEventListener('resize', () => {
         action.dispatch([this, 'resize'])
       }, false)
     },
+    specify({state, action}, element) {
+      state.set([this, 'element'], element)
+      action.dispatch([this, 'mount'])
+    },
     resize({state}) {
+      if (state.get([this, 'resizer'])) return
       const xterm = state.get([this, 'xterm'])
-      let resizer = state.get([this, 'resizer'])
-      if (resizer) {
-        cancelAnimationFrame(resizer)
-        state.set([this, 'resizer'], null)
-      }
-      resizer = requestAnimationFrame(() => {
+      const resizer = requestAnimationFrame(() => {
         if (xterm) xterm.fit()
         state.set([this, 'resizer'], null)
       })
       state.set([this, 'resizer'], resizer)
     },
+
   }
 }
