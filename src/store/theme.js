@@ -25,7 +25,7 @@ export default {
     },
   },
   actions: {
-    load({state}) {
+    load({state, action}) {
       const theme = defaultTheme
       const settings = state.get('settings.user')
       const specified = settings['terminal.theme.name']
@@ -34,11 +34,16 @@ export default {
         if (file) Object.assign(theme, file)
       }
       state.set([this, 'user'], theme)
+      action.dispatch([this, 'inject'])
       return defaultTheme
     },
-    inject({state}, element) {
+    inject({state}) {
       const theme = state.get([this, 'user'])
-      element.style.setProperty('--theme-background', theme.background)
+      const element = document.createElement('style')
+      const properties = Object.keys(theme)
+        .map(key => `--theme-${key.toLowerCase()}: ${theme[key]}`).join('; ')
+      element.appendChild(document.createTextNode(`#main { ${properties} }`))
+      document.head.appendChild(element)
     },
   }
 }

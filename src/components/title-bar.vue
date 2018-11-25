@@ -1,0 +1,102 @@
+<template>
+  <div :class="['title-bar', platform]" v-if="!fullscreen">
+    <div class="left"></div>
+    <div class="middle"></div>
+    <div class="right">
+      <template v-if="platform !== 'darwin'">
+        <div class="minimize button" @click="minimize">
+          <span class="feather-icon icon-minus"></span>
+        </div>
+        <div class="maximize button" @click="maximize">
+          <span :class="['feather-icon', maximized ?
+            'icon-minimize-2' : 'icon-maximize-2']"></span>
+        </div>
+        <div class="close button" @click="close">
+          <span class="feather-icon icon-x"></span>
+        </div>
+      </template>
+    </div>
+  </div>
+</template>
+
+<script>
+import {remote, ipcRenderer} from 'electron'
+
+export default {
+  name: 'title-bar',
+  data() {
+    const frame = remote.getCurrentWindow()
+    return {
+      frame,
+      maximized: frame.isMaximized(),
+      fullscreen: frame.isFullScreen(),
+      platform: process.platform,
+    }
+  },
+  methods: {
+    minimize() {
+      this.frame.minimize()
+    },
+    maximize() {
+      if (this.frame.isMaximized()) {
+        this.frame.unmaximize()
+      } else {
+        this.frame.maximize()
+      }
+    },
+    close() {
+      this.frame.close()
+    },
+  },
+  created() {
+    ipcRenderer.on('maximize', () => {
+      this.maximized = true
+    })
+    ipcRenderer.on('unmaximize', () => {
+      this.maximized = false
+    })
+    ipcRenderer.on('enter-full-screen', () => {
+      this.fullscreen = true
+    })
+    ipcRenderer.on('leave-full-screen', () => {
+      this.fullscreen = false
+    })
+  },
+}
+</script>
+
+<style>
+.title-bar {
+  flex: none;
+  height: 36px;
+  display: flex;
+  justify-content: space-between;
+  color: var(--theme-foreground);
+  -webkit-app-region: drag;
+}
+.title-bar .left,
+.title-bar .right {
+  flex: none;
+  display: flex;
+  width: 108px;
+}
+.title-bar .right {
+  -webkit-app-region: no-drag;
+}
+.title-bar .button {
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+  cursor: pointer;
+}
+.title-bar .button.minimize:hover {
+  color: var(--theme-green);
+}
+.title-bar .button.maximize:hover {
+  color: var(--theme-blue);
+}
+.title-bar .button.close:hover {
+  color: var(--theme-brightred);
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="terminal-teletype" ref="term"></div>
+  <div class="terminal-teletype" ref="term" @resize="resize"></div>
 </template>
 
 <script>
@@ -10,6 +10,7 @@ export default {
   name: 'terminal-teletype',
   methods: {
     mount: VueMaye.action('terminal.mount'),
+    resize: VueMaye.action('terminal.resize'),
   },
   mounted() {
     this.mount(this.$refs.term)
@@ -21,7 +22,6 @@ export default {
 .terminal-teletype {
   flex: auto;
   display: flex;
-  padding: 2px 4px;
-  background: var(--theme-background);
+  padding: 4px 8px;
 }
 </style>

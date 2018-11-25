@@ -7,10 +7,10 @@ const frames = []
 function createWindow() {
   const options = {
     title: app.getName(),
-    width: 648,
-    height: 425 + 4 + 22,
-    resizable: false,
-    // frame: false,
+    width: (8 * 80) + (2 * 8),
+    height: (17 * 25) + (2 * 4) + 36,
+    frame: false,
+    titleBarStyle: 'hiddenInset',
     // transparent: true,
     acceptFirstMouse: true,
     affinity: 'default',
@@ -106,6 +106,12 @@ function transferEvents(frame) {
   })
   frame.on('unmaximize', () => {
     frame.webContents.send('unmaximize')
+  })
+  frame.on('enter-full-screen', () => {
+    frame.webContents.send('enter-full-screen')
+  })
+  frame.on('leave-full-screen', () => {
+    frame.webContents.send('leave-full-screen')
   })
 }
 

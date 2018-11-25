@@ -1,11 +1,14 @@
 import {spawn} from 'node-pty'
 import {Terminal} from 'xterm'
+import * as fit from 'xterm/lib/addons/fit/fit'
+Terminal.applyAddon(fit)
 
 export default {
   states: {
     pty: null,
     xterm: null,
     element: null,
+    resizer: null,
   },
   actions: {
     async load({state, accessor}) {
@@ -40,6 +43,9 @@ export default {
       pty.on('data', data => {
         xterm.write(data)
       })
+      xterm.on('resize', ({cols, rows}) => {
+        pty.resize(cols, rows)
+      })
       // Bind xterm element
       const element = state.get([this, 'element'])
       if (element) {
@@ -48,10 +54,26 @@ export default {
       state.set([this, 'pty'], pty)
       state.set([this, 'xterm'], xterm)
     },
-    mount({state}, element) {
+    mount({state, action}, element) {
       state.set([this, 'element'], element)
       const xterm = state.get([this, 'xterm'])
       if (xterm) xterm.open(element)
+      window.addEventListener('resize', () => {
+        action.dispatch([this, 'resize'])
+      }, false)
+    },
+    resize({state}) {
+      const xterm = state.get([this, 'xterm'])
+      let resizer = state.get([this, 'resizer'])
+      if (resizer) {
+        cancelAnimationFrame(resizer)
+        state.set([this, 'resizer'], null)
+      }
+      resizer = requestAnimationFrame(() => {
+        if (xterm) xterm.fit()
+        state.set([this, 'resizer'], null)
+      })
+      state.set([this, 'resizer'], resizer)
     },
   }
 }
