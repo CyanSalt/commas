@@ -1,4 +1,11 @@
 import defaultTheme from '../assets/themes/oceanic-next.json'
+import tomorrowTheme from '../assets/themes/tomorrow.json'
+import {FileStorage} from '../plugins/storage'
+
+const themes = {
+  'oceanic-next': defaultTheme,
+  'tomorrow': tomorrowTheme,
+}
 
 export default {
   states: {
@@ -21,9 +28,10 @@ export default {
     load({state}) {
       const theme = defaultTheme
       const settings = state.get('settings.user')
-      const specified = settings['terminal.style.theme']
-      if (typeof specified === 'object') {
-        Object.assign(theme, specified)
+      const specified = settings['terminal.theme.name']
+      if (specified && specified !== 'oceanic-next') {
+        const file = themes[specified] || FileStorage.require(`themes/${specified}.json`)
+        if (file) Object.assign(theme, file)
       }
       state.set([this, 'user'], theme)
       return defaultTheme

@@ -1,4 +1,5 @@
 {
+  "terminal.theme.name": "oceanic-next",
   "terminal.shell.shell": null,
   "terminal.shell.env": {},
   "terminal.shell.args": ["-l"],
