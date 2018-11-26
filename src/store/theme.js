@@ -33,6 +33,10 @@ export default {
         const file = themes[specified] || FileStorage.require(`themes/${specified}.json`)
         if (file) Object.assign(theme, file)
       }
+      const customization = settings['terminal.theme.customization']
+      if (customization) {
+        Object.assign(theme, customization)
+      }
       state.set([this, 'user'], theme)
       action.dispatch([this, 'inject'])
       return defaultTheme

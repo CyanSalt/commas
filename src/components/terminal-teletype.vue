@@ -23,5 +23,9 @@ export default {
   flex: auto;
   display: flex;
   padding: 4px 8px;
+  position: relative;
+}
+.terminal-teletype .xterm {
+  position: static;
 }
 </style>

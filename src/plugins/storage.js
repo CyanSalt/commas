@@ -1,6 +1,7 @@
 import {readFile, readFileSync, writeFile, mkdir, access} from 'fs'
 import {dirname, resolve} from 'path'
 import {promisify} from 'util'
+import {remote} from 'electron'
 import * as JSON from 'json5'
 
 const promises = {
@@ -10,8 +11,8 @@ const promises = {
   writeFile: promisify(writeFile),
 }
 
-const PATH = dirname(process.env.NODE_ENV === 'production' ?
-  process.execPath : __dirname)
+const PATH = process.env.NODE_ENV === 'production' ?
+  remote.app.getPath('userData') : resolve(__dirname, '..', 'userdata')
 
 export const FileStorage = {
   async load(basename) {
@@ -33,7 +34,7 @@ export const FileStorage = {
     try {
       await promises.mkdir(dirname(filename))
     } catch (e) {}
-    return promises.writeFile(filename, this.stringify(data))
+    return promises.writeFile(filename, JSON.stringify(data, null, 2))
   },
   async read(basename) {
     try {
@@ -57,11 +58,8 @@ export const FileStorage = {
       return null
     }
   },
-  stringify(data) {
-    return JSON.stringify(data, null, 2)
-  },
   filename(basename) {
-    return resolve(PATH, 'storage', basename)
+    return resolve(PATH, basename)
   },
 }
 

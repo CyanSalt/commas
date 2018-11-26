@@ -1,14 +1,5 @@
-@font-face {
-  font-style: normal;
-  font-family: 'Primary UI';
-  src: local('Noto Sans CJK SC'), local('PingFang SC'),
-    url('../../fonts/NotoSansCJKsc-Regular.otf')
-}
-
 body {
   margin: 0;
-  font-family: 'Primary UI';
-  color: #353d46;
   font-size: 14px;
   user-select: none;
   cursor: default;

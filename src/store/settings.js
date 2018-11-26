@@ -1,4 +1,4 @@
-import defaultSettings from '../resources/default/settings.json'
+import defaultSettings from '../assets/settings.json'
 import {FileStorage} from '../plugins/storage'
 
 export default {

@@ -19,17 +19,17 @@
     "node": ">=8.5.0"
   },
   "devDependencies": {
-    "css-loader": "^1.0.0",
-    "electron": "^3.0.3",
+    "css-loader": "^1.0.1",
+    "electron": "^3.0.10",
     "electron-packager": "^12.2.0",
     "json5": "^2.1.0",
-    "mini-css-extract-plugin": "^0.4.3",
+    "mini-css-extract-plugin": "^0.4.5",
     "png2icons": "^1.0.1",
     "vue": "^2.5.17",
     "vue-loader": "^15.4.2",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.5.17",
-    "webpack": "^4.20.2",
+    "webpack": "^4.26.1",
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {

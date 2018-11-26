@@ -1,8 +1,9 @@
 {
   "terminal.theme.name": "oceanic-next",
+  "terminal.theme.customization": {},
   "terminal.shell.shell": null,
   "terminal.shell.env": {},
-  "terminal.shell.args": ["-l"],
+  "terminal.shell.args": ["--login"],
   "terminal.style.fontSize": 14,
   "terminal.style.fontFamily": "Fira Code",
   "terminal.style.fontLigatures": true

@@ -6,12 +6,13 @@ const frames = []
 
 function createWindow() {
   const options = {
+    show: false,
     title: app.getName(),
     width: (8 * 80) + (2 * 8),
     height: (17 * 25) + (2 * 4) + 36,
     frame: false,
     titleBarStyle: 'hiddenInset',
-    // transparent: true,
+    transparent: true,
     acceptFirstMouse: true,
     affinity: 'default',
     webPreferences: {
@@ -23,6 +24,10 @@ function createWindow() {
   if (process.platform !== 'darwin') {
     createWindowMenu(frame)
   }
+  // gracefully show window
+  frame.once('ready-to-show', () => {
+    frame.show()
+  })
   // these handler must be binded in main process
   transferEvents(frame)
   // reference to avoid GC

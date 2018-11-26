@@ -28,14 +28,13 @@ const options = {
   name: app.name,
   out: 'dist/',
   overwrite: true,
-  // asar: true,
+  asar: true,
   icon: iconPath,
   ignore: [
     '^/node_modules/@.*$',
-    '^/(?!src|package\\.json|window\\.js)',
-    '^/src/(?!assets|build)/',
+    '^/(?!src|node_modules|package\\.json|window\\.js)',
+    '^/src/(components|plugins|store|vendors)($|/)',
     '^/src/assets/.*\\.(ico|icns)$',
-    '^/src/.*$',
   ],
   appVersion: app.executableVersion,
   win32metadata: {
@@ -44,29 +43,12 @@ const options = {
   }
 }
 
-function copy(source, target) {
-  const basename = path.basename(source)
-  if (fs.lstatSync(source).isDirectory()) {
-    target = path.join(target, basename)
-    try {
-      fs.mkdirSync(target)
-    } catch (e) {}
-    const entries = fs.readdirSync(source)
-    for (const entry of entries) {
-      copy(path.join(source, entry), target)
-    }
-  } else {
-    fs.copyFileSync(source, path.join(target, basename))
-  }
-}
-
 packager(options).then(appPaths => {
   appPaths.forEach(dir => {
-    copy('src/resources', dir)
     if (dir.includes('win32')) {
       try {
         const manifest = `${app.name}.VisualElementsManifest.xml`
-        fs.renameSync(`${dir}/resources/visual/${manifest}`,
+        fs.copyFileSync(`src/assets/${manifest}`,
           `${dir}/${manifest}`)
       } catch (e) {}
     }
