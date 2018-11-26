@@ -1,8 +1,8 @@
 <template>
   <div :class="['title-bar', platform]" v-if="!fullscreen">
     <div class="left"></div>
-    <div class="middle"></div>
-    <div class="right">
+    <div class="title-text">{{ title }}</div>
+    <div class="controls">
       <template v-if="platform !== 'darwin'">
         <div class="minimize button" @click="minimize">
           <span class="feather-icon icon-minus"></span>
@@ -21,6 +21,7 @@
 
 <script>
 import {remote, ipcRenderer} from 'electron'
+import VueMaye from 'maye/plugins/vue'
 
 export default {
   name: 'title-bar',
@@ -32,6 +33,9 @@ export default {
       fullscreen: frame.isFullScreen(),
       platform: process.platform,
     }
+  },
+  computed: {
+    title: VueMaye.state('terminal.title'),
   },
   methods: {
     minimize() {
@@ -69,24 +73,24 @@ export default {
 .title-bar {
   flex: none;
   height: 36px;
+  line-height: 36px;
   display: flex;
   justify-content: space-between;
   color: var(--theme-foreground);
   -webkit-app-region: drag;
 }
 .title-bar .left,
-.title-bar .right {
+.title-bar .controls {
   flex: none;
   display: flex;
   width: 108px;
 }
-.title-bar .right {
+.title-bar .controls {
   -webkit-app-region: no-drag;
 }
 .title-bar .button {
   width: 36px;
   height: 36px;
-  line-height: 36px;
   text-align: center;
   cursor: pointer;
 }

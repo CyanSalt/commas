@@ -2,9 +2,16 @@ import {spawn} from 'node-pty'
 import {Terminal} from 'xterm'
 import * as fit from 'xterm/lib/addons/fit/fit'
 import * as ligatures from 'xterm-addon-ligatures'
+import {remote} from 'electron'
 
 Terminal.applyAddon(fit)
 Terminal.applyAddon(ligatures)
+
+const variables = {
+  LANG: remote.app.getLocale().replace('-', '_') + '.UTF-8',
+  TERM_PROGRAM: remote.app.getName(),
+  TERM_PROGRAM_VERSION: remote.app.getVersion(),
+}
 
 export default {
   states: {
@@ -12,19 +19,25 @@ export default {
     xterm: null,
     element: null,
     resizer: null,
+    title: '',
   },
   actions: {
     load({state, accessor, action}) {
       const settings = state.get('settings.user')
       const shell = settings['terminal.shell.path'] || (
         process.platform === 'win32' ? process.env.COMSPEC : process.env.SHELL)
+      const env = {
+        ...process.env,
+        ...settings['terminal.shell.env'],
+        ...variables,
+      }
       // Fix NVM `npm_config_prefix` error
-      const env = {...process.env, ...settings['terminal.shell.env']}
-      delete env.npm_config_prefix
+      if (env.npm_config_prefix) delete env.npm_config_prefix
       // Initialize node-pty process
       const pty = spawn(shell, settings['terminal.shell.args'], {
-        name: 'xterm-color',
-        cwd: process.cwd(),
+        name: 'xterm-256color',
+        encoding: 'utf8',
+        cwd: env.HOME,
         env,
       })
       const {theme, allowTransparency} = accessor.get('theme.xterm')
@@ -60,6 +73,10 @@ export default {
         if (settings['terminal.style.fontLigatures']) {
           xterm.enableLigatures()
         }
+        xterm.on('title', title => {
+          state.set([this, 'title'], title)
+          document.title = title
+        })
       })
       window.addEventListener('resize', () => {
         action.dispatch([this, 'resize'])

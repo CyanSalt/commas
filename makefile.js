@@ -25,7 +25,8 @@ try {
 
 const options = {
   dir: '.',
-  name: app.name,
+  name: process.platform === 'win32' ?
+    app.name : app.productName,
   out: 'dist/',
   overwrite: true,
   asar: true,
@@ -36,7 +37,7 @@ const options = {
     '^/src/(components|plugins|store|vendors)($|/)',
     '^/src/assets/.*\\.(ico|icns)$',
   ],
-  appVersion: app.executableVersion,
+  appVersion: app.version,
   win32metadata: {
     FileDescription: app.productName,
     OriginalFilename: `${app.name}.exe`,

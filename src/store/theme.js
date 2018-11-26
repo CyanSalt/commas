@@ -43,10 +43,18 @@ export default {
     },
     inject({state}) {
       const theme = state.get([this, 'user'])
+      const settings = state.get('settings.user')
       const element = document.createElement('style')
-      const properties = Object.keys(theme)
-        .map(key => `--theme-${key.toLowerCase()}: ${theme[key]}`).join('; ')
-      element.appendChild(document.createTextNode(`#main { ${properties} }`))
+      const properties = {}
+      Object.keys(theme).forEach(key => {
+        properties[`--theme-${key.toLowerCase()}`] = theme[key]
+      })
+      // TODO: use custom.css instead of styles in settings.json
+      properties['font-size'] = settings['terminal.style.fontSize']
+      properties['font-family'] = settings['terminal.style.fontFamily']
+      const declarations = Object.keys(properties)
+        .map(key => `${key}: ${properties[key]};`).join(' ')
+      element.appendChild(document.createTextNode(`#main { ${declarations} }`))
       document.head.appendChild(element)
     },
   }
