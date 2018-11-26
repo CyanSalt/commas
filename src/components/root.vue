@@ -1,12 +1,11 @@
 <template>
-  <div id="main">
+  <div id="main" @dragover.prevent="dragging" @drop.prevent="drop">
     <title-bar></title-bar>
     <terminal-teletype></terminal-teletype>
   </div>
 </template>
 
 <script>
-import Maye from 'maye'
 import TitleBar from './title-bar'
 import Terminalteletype from './terminal-teletype'
 
@@ -15,6 +14,18 @@ export default {
   components: {
     'title-bar': TitleBar,
     'terminal-teletype': Terminalteletype,
+  },
+  methods: {
+    dragging(e) {
+      e.dataTransfer.dropEffect = 'copy'
+    },
+    drop(e) {
+      const files = e.dataTransfer.files
+      if (!files || !files.length) return
+      const {action} = this.$maye
+      const paths = Array.from(e.dataTransfer.files).map(({path}) => path)
+      action.dispatch('terminal.input', paths.join(' '))
+    }
   },
   beforeCreate() {
     // custom stylesheet
@@ -33,7 +44,7 @@ export default {
     })
     // custom script
     const initScript = this.$storage.require('custom.js')
-    initScript && initScript(Maye, this)
+    initScript && initScript(this.$maye, this)
   },
 }
 </script>

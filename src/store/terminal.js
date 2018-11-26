@@ -78,5 +78,9 @@ export default {
       })
       state.set([this, 'resizer'], resizer)
     },
+    input({state}, data) {
+      const pty = state.get([this, 'pty'])
+      pty.write(data)
+    },
   }
 }
