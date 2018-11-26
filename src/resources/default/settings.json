@@ -4,5 +4,6 @@
   "terminal.shell.env": {},
   "terminal.shell.args": ["-l"],
   "terminal.style.fontSize": 14,
-  "terminal.style.fontFamily": "Fira Code"
+  "terminal.style.fontFamily": "Fira Code",
+  "terminal.style.fontLigatures": true
 }

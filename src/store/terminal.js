@@ -1,7 +1,10 @@
 import {spawn} from 'node-pty'
 import {Terminal} from 'xterm'
 import * as fit from 'xterm/lib/addons/fit/fit'
+import * as ligatures from 'xterm-addon-ligatures'
+
 Terminal.applyAddon(fit)
+Terminal.applyAddon(ligatures)
 
 export default {
   states: {
@@ -11,8 +14,8 @@ export default {
     resizer: null,
   },
   actions: {
-    async load({state, accessor, action}) {
-      const settings = await state.get('settings.user')
+    load({state, accessor, action}) {
+      const settings = state.get('settings.user')
       const shell = settings['terminal.shell.path'] || (
         process.platform === 'win32' ? process.env.COMSPEC : process.env.SHELL)
       // Fix NVM `npm_config_prefix` error
@@ -49,10 +52,14 @@ export default {
     mount({state, action}) {
       const xterm = state.get([this, 'xterm'])
       const element = state.get([this, 'element'])
+      const settings = state.get('settings.user')
       if (!xterm || !element) return
       requestIdleCallback(() => {
         xterm.open(element)
         xterm.fit()
+        if (settings['terminal.style.fontLigatures']) {
+          xterm.enableLigatures()
+        }
       })
       window.addEventListener('resize', () => {
         action.dispatch([this, 'resize'])
@@ -71,6 +78,5 @@ export default {
       })
       state.set([this, 'resizer'], resizer)
     },
-
   }
 }
