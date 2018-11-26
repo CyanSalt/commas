@@ -21,9 +21,8 @@ module.exports = {
     filename: 'bundle.js'
   },
   externals: {
-    'original-fs': 'require("original-fs")',
-    'node-pty': 'require("node-pty")',
-    'xterm': 'require("xterm")',
+    'original-fs': 'commonjs2 original-fs',
+    'node-pty': 'commonjs2 node-pty',
   },
   resolve: {
     extensions: ['.js', '.vue'],
