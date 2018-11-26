@@ -58,6 +58,10 @@ export default {
       xterm.on('resize', ({cols, rows}) => {
         pty.resize(cols, rows)
       })
+      xterm.on('title', title => {
+        state.set([this, 'title'], title)
+        document.title = title
+      })
       state.set([this, 'pty'], pty)
       state.set([this, 'xterm'], xterm)
       action.dispatch([this, 'mount'])
@@ -73,10 +77,7 @@ export default {
         if (settings['terminal.style.fontLigatures']) {
           xterm.enableLigatures()
         }
-        xterm.on('title', title => {
-          state.set([this, 'title'], title)
-          document.title = title
-        })
+        xterm.focus()
       })
       window.addEventListener('resize', () => {
         action.dispatch([this, 'resize'])
