@@ -85,6 +85,13 @@ export default {
   display: flex;
   width: 108px;
 }
+.title-bar .title-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  direction: rtl;
+  unicode-bidi: plaintext;
+}
 .title-bar .controls {
   -webkit-app-region: no-drag;
 }
