@@ -34,8 +34,18 @@ module.exports = {
       'node_modules',
     ]
   },
+  resolveLoader: {
+    modules: [
+      path.resolve(__dirname, 'src/vendors'),
+      'node_modules',
+    ]
+  },
   module: {
     rules: [
+      {
+        test: /\.json$/,
+        loader: 'graceful-json5-loader',
+      },
       {
         test: /\.vue$/,
         loader: 'vue-loader',

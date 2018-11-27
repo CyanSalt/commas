@@ -1,10 +1,15 @@
+import {readFileSync} from 'fs'
+import {resolve} from 'path'
 import defaultTheme from '../assets/themes/oceanic-next.json'
-import tomorrowTheme from '../assets/themes/tomorrow.json'
 import {FileStorage} from '../plugins/storage'
 
-const themes = {
-  'oceanic-next': defaultTheme,
-  'tomorrow': tomorrowTheme,
+function load(file) {
+  const path = resolve(__dirname, `assets/themes/${file}.json`)
+  try {
+    return JSON.parse(readFileSync(path))
+  } catch (e) {
+    return null
+  }
 }
 
 export default {
@@ -30,7 +35,7 @@ export default {
       const settings = state.get('settings.user')
       const specified = settings['terminal.theme.name']
       if (specified && specified !== 'oceanic-next') {
-        const file = themes[specified] || FileStorage.require(`themes/${specified}.json`)
+        const file = load(specified) || FileStorage.require(`themes/${specified}.json`)
         if (file) Object.assign(theme, file)
       }
       const customization = settings['terminal.theme.customization']

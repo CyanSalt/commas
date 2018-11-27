@@ -1,10 +1,25 @@
 {
-  "terminal.theme.name": "oceanic-next",
-  "terminal.theme.customization": {},
-  "terminal.shell.shell": null,
+  // Path of shell, $SHELL or %COMSPEC% by default
+  "terminal.shell.path": null,
+
+  // Extra environment variables
   "terminal.shell.env": {},
+
+  // Arguments of shell command line
   "terminal.shell.args": ["--login"],
+
+  // Font size for window in pixels
   "terminal.style.fontSize": 14,
-  "terminal.style.fontFamily": "Fira Code",
-  "terminal.style.fontLigatures": true
+
+  // Font family names for window
+  "terminal.style.fontFamily": "Fira Code, Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace",
+
+  // Enable font ligatures (if specified font family supports, like Fira Code or Iosevka)
+  "terminal.style.fontLigatures": true,
+
+  // File name of internal theme or files in `themes/` folder
+  "terminal.theme.name": "oceanic-next",
+
+  // Overwrite colors in the theme file
+  "terminal.theme.customization": {},
 }
