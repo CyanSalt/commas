@@ -35,7 +35,7 @@ export default {
     }
   },
   computed: {
-    title: VueMaye.state('terminal.title'),
+    title: VueMaye.accessor('terminal.title'),
   },
   methods: {
     minimize() {
@@ -77,7 +77,6 @@ export default {
   display: flex;
   justify-content: space-between;
   text-align: center;
-  color: var(--theme-foreground);
   -webkit-app-region: drag;
 }
 .title-bar .left,

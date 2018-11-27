@@ -1,31 +1,26 @@
 <template>
-  <div id="main" @dragover.prevent="dragging" @drop.prevent="drop">
+  <div id="main">
     <title-bar></title-bar>
-    <terminal-teletype></terminal-teletype>
+    <keep-alive v-if="current">
+      <terminal-teletype :key="current.id"
+        :tab="current"></terminal-teletype>
+    </keep-alive>
   </div>
 </template>
 
 <script>
+import VueMaye from 'maye/plugins/vue'
 import TitleBar from './title-bar'
-import Terminalteletype from './terminal-teletype'
+import TerminalTeletype from './terminal-teletype'
 
 export default {
   el: '#main',
   components: {
     'title-bar': TitleBar,
-    'terminal-teletype': Terminalteletype,
+    'terminal-teletype': TerminalTeletype,
   },
-  methods: {
-    dragging(e) {
-      e.dataTransfer.dropEffect = 'copy'
-    },
-    drop(e) {
-      const files = e.dataTransfer.files
-      if (!files || !files.length) return
-      const {action} = this.$maye
-      const paths = Array.from(e.dataTransfer.files).map(({path}) => path)
-      action.dispatch('terminal.input', paths.join(' '))
-    }
+  computed: {
+    current: VueMaye.state('terminal.current'),
   },
   beforeCreate() {
     // custom stylesheet
@@ -40,8 +35,11 @@ export default {
     const {action} = this.$maye
     action.dispatch('settings.load').then(() => {
       action.dispatch('theme.load')
-      action.dispatch('terminal.load')
+      action.dispatch('terminal.spawn')
     })
+    window.addEventListener('resize', () => {
+      action.dispatch('terminal.resize')
+    }, false)
     // custom script
     const initScript = this.$storage.require('custom.js')
     initScript && initScript(this.$maye, this)
@@ -54,6 +52,7 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  color: var(--theme-foreground);
   background: var(--theme-background);
 }
 </style>

@@ -2,7 +2,7 @@ export default {
   $maye: {
     use(Maye, Vue) {
       this.state = this.state.bind(this)
-      this.acccessor = this.acccessor.bind(this)
+      this.accessor = this.accessor.bind(this)
       this.action = this.action.bind(this)
       this.$maye.vue = new Vue({data: {hooks: {}}})
     }
@@ -33,7 +33,7 @@ export default {
       set: value => $maye.ref.state.set(path, value),
     }
   },
-  acccessor(path) {
+  accessor(path) {
     const {$maye} = this
     return {
       get: () => {

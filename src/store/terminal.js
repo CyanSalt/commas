@@ -15,15 +15,26 @@ const variables = {
 
 export default {
   states: {
-    pty: null,
-    xterm: null,
     element: null,
     resizer: null,
-    title: '',
+    tabs: [],
+    current: null,
+  },
+  accessors: {
+    title({state}) {
+      const current = state.get([this, 'current'])
+      if (!current) return ''
+      return current.title
+    },
   },
   actions: {
-    load({state, accessor, action}) {
+    // eslint-disable-next-line max-lines-per-function
+    spawn({state, accessor}) {
       const settings = state.get('settings.user')
+      const tab = {
+        id: Symbol('terminal'),
+        title: '',
+      }
       const shell = settings['terminal.shell.path'] || (
         process.platform === 'win32' ? process.env.COMSPEC : process.env.SHELL)
       const env = {
@@ -56,52 +67,48 @@ export default {
         xterm.write(data)
       })
       pty.on('exit', () => {
+        // TODO: support multiple tabs
         remote.getCurrentWindow().close()
       })
       xterm.on('resize', ({cols, rows}) => {
         pty.resize(cols, rows)
       })
       xterm.on('title', title => {
-        state.set([this, 'title'], title)
+        state.update([this, 'tabs'], () => {tab.title = title})
         document.title = title
       })
-      state.set([this, 'pty'], pty)
-      state.set([this, 'xterm'], xterm)
-      action.dispatch([this, 'mount'])
+      Object.assign(tab, {pty, xterm})
+      state.update([this, 'tabs'], tabs => {tabs.push(tab)})
+      state.set([this, 'current'], tab)
     },
-    mount({state, action}) {
-      const xterm = state.get([this, 'xterm'])
-      const element = state.get([this, 'element'])
+    mount({state}, {tab, element}) {
       const settings = state.get('settings.user')
-      if (!xterm || !element) return
+      const {xterm} = tab
       requestIdleCallback(() => {
-        xterm.open(element)
-        xterm.fit()
-        if (settings['terminal.style.fontLigatures']) {
-          xterm.enableLigatures()
+        if (xterm.element) {
+          element.appendChild(xterm.element)
+        } else {
+          xterm.open(element)
+          if (settings['terminal.style.fontLigatures']) {
+            xterm.enableLigatures()
+          }
         }
+        xterm.fit()
         xterm.focus()
       })
-      window.addEventListener('resize', () => {
-        action.dispatch([this, 'resize'])
-      }, false)
-    },
-    specify({state, action}, element) {
-      state.set([this, 'element'], element)
-      action.dispatch([this, 'mount'])
     },
     resize({state}) {
       if (state.get([this, 'resizer'])) return
-      const xterm = state.get([this, 'xterm'])
+      const current = state.get([this, 'tabs'])
+      if (!current) return
       const resizer = requestAnimationFrame(() => {
-        if (xterm) xterm.fit()
+        if (current.xterm) current.xterm.fit()
         state.set([this, 'resizer'], null)
       })
       state.set([this, 'resizer'], resizer)
     },
-    input({state}, data) {
-      const pty = state.get([this, 'pty'])
-      pty.write(data)
+    input(Maye, {tab, data}) {
+      tab.pty.write(data)
     },
   }
 }
