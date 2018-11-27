@@ -41,7 +41,12 @@ const options = {
   win32metadata: {
     FileDescription: app.productName,
     OriginalFilename: `${app.name}.exe`,
-  }
+  },
+  extendInfo: {
+    NSHumanReadableCopyright: [
+      'Copyright ©', new Date().getFullYear(), app.author,
+    ].join(' '),
+  },
 }
 
 packager(options).then(appPaths => {

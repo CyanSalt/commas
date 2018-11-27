@@ -1,5 +1,5 @@
 <template>
-  <div :class="['title-bar', platform]" v-if="!fullscreen">
+  <div class="title-bar" v-if="!fullscreen">
     <div class="left"></div>
     <div class="title-text">{{ title }}</div>
     <div class="controls">
@@ -76,6 +76,7 @@ export default {
   line-height: 36px;
   display: flex;
   justify-content: space-between;
+  text-align: center;
   color: var(--theme-foreground);
   -webkit-app-region: drag;
 }
@@ -86,6 +87,7 @@ export default {
   width: 108px;
 }
 .title-bar .title-text {
+  flex: auto;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -98,7 +100,6 @@ export default {
 .title-bar .button {
   width: 36px;
   height: 36px;
-  text-align: center;
   cursor: pointer;
 }
 .title-bar .button.minimize:hover {

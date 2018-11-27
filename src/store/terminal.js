@@ -55,6 +55,9 @@ export default {
       pty.on('data', data => {
         xterm.write(data)
       })
+      pty.on('exit', () => {
+        remote.getCurrentWindow().close()
+      })
       xterm.on('resize', ({cols, rows}) => {
         pty.resize(cols, rows)
       })
