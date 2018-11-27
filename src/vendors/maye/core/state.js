@@ -5,7 +5,9 @@ export default {
   $store: Object.create(null),
   get(path) {
     const Maye = this.$maye.ref
-    const key = Maye.path.locate(path)
+    path = Maye.path.resolve(path)
+    Maye.watcher.$collect({path, by: 'state'})
+    const key = Maye.path.join(path)
     return this.$store[key]
   },
   update(path, mutation, returns) {

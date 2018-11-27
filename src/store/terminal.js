@@ -15,14 +15,19 @@ const variables = {
 
 export default {
   states: {
-    element: null,
     resizer: null,
     tabs: [],
-    current: null,
+    active: -1,
   },
   accessors: {
-    title({state}) {
-      const current = state.get([this, 'current'])
+    current({state}) {
+      const active = state.get([this, 'active'])
+      if (active === -1) return null
+      const tabs = state.get([this, 'tabs'])
+      return tabs[active]
+    },
+    title({accessor}) {
+      const current = accessor.get([this, 'current'])
       if (!current) return ''
       return current.title
     },
@@ -78,8 +83,10 @@ export default {
         document.title = title
       })
       Object.assign(tab, {pty, xterm})
-      state.update([this, 'tabs'], tabs => {tabs.push(tab)})
-      state.set([this, 'current'], tab)
+      state.update([this, 'tabs'], tabs => {
+        const length = tabs.push(tab)
+        state.set([this, 'active'], length - 1)
+      })
     },
     mount({state}, {tab, element}) {
       const settings = state.get('settings.user')
@@ -97,11 +104,11 @@ export default {
         xterm.focus()
       })
     },
-    resize({state}) {
+    resize({state, accessor}) {
       if (state.get([this, 'resizer'])) return
-      const current = state.get([this, 'tabs'])
-      if (!current) return
       const resizer = requestAnimationFrame(() => {
+        const current = accessor.get([this, 'current'])
+        if (!current) return
         if (current.xterm) current.xterm.fit()
         state.set([this, 'resizer'], null)
       })

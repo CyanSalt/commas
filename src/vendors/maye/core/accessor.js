@@ -5,16 +5,51 @@ export default {
   $store: Object.create(null),
   $get(descriptor) {
     const Maye = this.$maye.ref
-    return (0, descriptor.get)(Maye)
+    const deps = []
+    const collect = ({path}) => {deps.push(path)}
+    Maye.watcher.$inspect(collect)
+    const value = (0, descriptor.get)(Maye)
+    Maye.watcher.$release(collect)
+    this.$memoize(descriptor, {value, deps})
+    return value
   },
   $set(descriptor, value) {
     const Maye = this.$maye.ref
     return (0, descriptor.set)(Maye, value)
   },
+  $memoize(descriptor, {value, deps}) {
+    const Maye = this.$maye.ref
+    if (!descriptor.$cache) {
+      descriptor.$cache = {}
+    } else {
+      descriptor.$cache.deps.forEach(({path, watcher}) => {
+        Maye.watcher.remove(path, watcher)
+      })
+    }
+    descriptor.$cache.deps = deps.map(path => {
+      const watcher = () => {
+        const old = descriptor.$cache.value
+        const newValue = this.$get(descriptor)
+        Maye.watcher.$mutate(descriptor.$path, {
+          path: descriptor.$path,
+          old, value: newValue,
+          by: 'accessor',
+        })
+      }
+      Maye.watcher.add(path, watcher)
+      return {path, watcher}
+    })
+    descriptor.$cache.value = value
+  },
   get(path) {
     const Maye = this.$maye.ref
-    const key = Maye.path.locate(path)
+    path = Maye.path.resolve(path)
+    Maye.watcher.$collect({path, by: 'accessor'})
+    const key = Maye.path.join(path)
     const descriptor = this.$store[key]
+    if (descriptor.$cache) {
+      return descriptor.$cache.value
+    }
     if (descriptor && descriptor.get) {
       return this.$get(descriptor)
     }
@@ -22,20 +57,17 @@ export default {
   },
   set(path, value) {
     const Maye = this.$maye.ref
-    path = Maye.path.resolve(path)
-    const key = Maye.path.join(path)
+    const key = Maye.path.locate(path)
     const descriptor = this.$store[key]
     if (descriptor && descriptor.set) {
       this.$set(descriptor, value)
-      const old = this.$get(descriptor)
-      if (descriptor.mutate) {
-        Maye.watcher.$mutate(path, {path, old, value, by: 'accessor'})
-      }
     }
   },
   define(path, descriptor) {
     const Maye = this.$maye.ref
-    const key = Maye.path.locate(path)
+    path = Maye.path.resolve(path)
+    descriptor.$path = path
+    const key = Maye.path.join(path)
     if (!this.$store[key]) {
       this.$store[key] = descriptor
     }

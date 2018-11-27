@@ -55,7 +55,7 @@ export default {
         properties[`--theme-${key.toLowerCase()}`] = theme[key]
       })
       // TODO: use custom.css instead of styles in settings.json
-      properties['font-size'] = settings['terminal.style.fontSize']
+      properties['font-size'] = settings['terminal.style.fontSize'] + 'px'
       properties['font-family'] = settings['terminal.style.fontFamily']
       const declarations = Object.keys(properties)
         .map(key => `${key}: ${properties[key]};`).join(' ')

@@ -3,6 +3,21 @@ export default {
     name: 'watcher',
   },
   $store: Object.create(null),
+  $inspectors: [],
+  $inspect(inspector) {
+    if (typeof inspector !== 'function') return
+    this.$inspectors.push(inspector)
+  },
+  $release(inspector) {
+    const index = this.$inspectors.indexOf(inspector)
+    if (index !== -1) {
+      this.$inspectors.splice(index, 1)
+    }
+  },
+  $collect(context) {
+    const Maye = this.$maye.ref
+    Maye.watcher.$inspectors.forEach(inspector => inspector(context))
+  },
   $mutate(path, context) {
     const Maye = this.$maye.ref
     const key = Maye.path.locate(path)

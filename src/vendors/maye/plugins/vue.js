@@ -19,9 +19,9 @@ export default {
       $maye.ref.watcher.add(path, () => {
         $maye.vue.hooks[key] = !$maye.vue.hooks[key]
       })
-      // eslint-disable-next-line no-unused-expressions
-      $maye.vue.hooks[key]
     }
+    // eslint-disable-next-line no-unused-expressions
+    $maye.vue.hooks[key]
   },
   state(path) {
     const {$maye} = this

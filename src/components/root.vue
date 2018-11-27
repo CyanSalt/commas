@@ -20,7 +20,7 @@ export default {
     'terminal-teletype': TerminalTeletype,
   },
   computed: {
-    current: VueMaye.state('terminal.current'),
+    current: VueMaye.accessor('terminal.current'),
   },
   beforeCreate() {
     // custom stylesheet
