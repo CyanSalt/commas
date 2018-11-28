@@ -73,12 +73,15 @@ export default {
         }
       })
       pty.on('exit', () => {
+        const active = state.get([this, 'active'])
         state.update([this, 'tabs'], tabs => {
           const index = tabs.indexOf(tab)
           if (index !== -1) {
             tabs.splice(index, 1)
             if (!tabs.length) {
               remote.getCurrentWindow().close()
+            } else if (active === index) {
+              state.set([this, 'active'], Math.min(index, tabs.length - 1))
             }
           }
         })
@@ -126,6 +129,9 @@ export default {
     },
     input(Maye, {tab, data}) {
       tab.pty.write(data)
+    },
+    activite({state}, index) {
+      state.set([this, 'active'], index)
     },
   }
 }

@@ -23,7 +23,8 @@ export default {
     const key = Maye.path.locate(path)
     const watchers = this.$store[key]
     if (watchers) {
-      watchers.forEach(watcher => watcher(Maye, context))
+      // a watcher may remove itself and change the index of watchers
+      [...watchers].forEach(watcher => watcher(Maye, context))
     }
     if (path.length > 1) {
       this.$mutate(path.slice(0, -1), context)

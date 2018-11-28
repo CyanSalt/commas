@@ -1,22 +1,27 @@
 <template>
   <div id="main">
     <title-bar></title-bar>
-    <keep-alive v-if="current">
-      <terminal-teletype :key="current.id"
-        :tab="current"></terminal-teletype>
-    </keep-alive>
+    <div class="content">
+      <tab-list></tab-list>
+      <keep-alive v-if="current">
+        <terminal-teletype :key="current.id"
+          :tab="current"></terminal-teletype>
+      </keep-alive>
+    </div>
   </div>
 </template>
 
 <script>
 import VueMaye from 'maye/plugins/vue'
 import TitleBar from './title-bar'
+import TabList from './tab-list'
 import TerminalTeletype from './terminal-teletype'
 
 export default {
   el: '#main',
   components: {
     'title-bar': TitleBar,
+    'tab-list': TabList,
     'terminal-teletype': TerminalTeletype,
   },
   computed: {
@@ -52,7 +57,12 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  line-height: 1.2;
   color: var(--theme-foreground);
   background: var(--theme-background);
+}
+#main .content {
+  flex: auto;
+  display: flex;
 }
 </style>
