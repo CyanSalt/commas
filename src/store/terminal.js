@@ -26,20 +26,11 @@ export default {
       const tabs = state.get([this, 'tabs'])
       return tabs[active]
     },
-    title({accessor}) {
-      const current = accessor.get([this, 'current'])
-      if (!current) return ''
-      return current.title
-    },
   },
   actions: {
     // eslint-disable-next-line max-lines-per-function
     spawn({state, accessor}) {
       const settings = state.get('settings.user')
-      const tab = {
-        id: Symbol('terminal'),
-        title: '',
-      }
       const shell = settings['terminal.shell.path'] || (
         process.platform === 'win32' ? process.env.COMSPEC : process.env.SHELL)
       const env = {
@@ -56,6 +47,11 @@ export default {
         cwd: env.HOME,
         env,
       })
+      const tab = {
+        pty, title: '',
+        id: pty.pid,
+        process: pty.process,
+      }
       const {theme, allowTransparency} = accessor.get('theme.xterm')
       // Initialize xterm.js and attach it to the DOM
       const xterm = new Terminal({
@@ -70,19 +66,33 @@ export default {
       })
       pty.on('data', data => {
         xterm.write(data)
+        // TODO: performance review
+        const process = pty.process
+        if (tab.process !== process) {
+          state.update([this, 'tabs'], () => {tab.process = pty.process})
+        }
       })
       pty.on('exit', () => {
-        // TODO: support multiple tabs
-        remote.getCurrentWindow().close()
+        state.update([this, 'tabs'], tabs => {
+          const index = tabs.indexOf(tab)
+          if (index !== -1) {
+            tabs.splice(index, 1)
+            if (!tabs.length) {
+              remote.getCurrentWindow().close()
+            }
+          }
+        })
       })
       xterm.on('resize', ({cols, rows}) => {
         pty.resize(cols, rows)
       })
       xterm.on('title', title => {
         state.update([this, 'tabs'], () => {tab.title = title})
-        document.title = title
+        if (tab === state.get([this, 'current'])) {
+          document.title = title
+        }
       })
-      Object.assign(tab, {pty, xterm})
+      tab.xterm = xterm
       state.update([this, 'tabs'], tabs => {
         const length = tabs.push(tab)
         state.set([this, 'active'], length - 1)

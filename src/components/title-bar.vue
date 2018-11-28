@@ -35,7 +35,11 @@ export default {
     }
   },
   computed: {
-    title: VueMaye.accessor('terminal.title'),
+    current: VueMaye.accessor('terminal.current'),
+    title() {
+      if (!this.current) return ''
+      return this.current.title || this.current.process
+    }
   },
   methods: {
     minimize() {
