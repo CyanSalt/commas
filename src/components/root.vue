@@ -16,6 +16,7 @@ import VueMaye from 'maye/plugins/vue'
 import TitleBar from './title-bar'
 import TabList from './tab-list'
 import TerminalTeletype from './terminal-teletype'
+import {ipcRenderer} from 'electron'
 
 export default {
   el: '#main',
@@ -45,6 +46,9 @@ export default {
     window.addEventListener('resize', () => {
       action.dispatch('terminal.resize')
     }, false)
+    ipcRenderer.on('command', (event, command) => {
+      action.dispatch('command.exec', command)
+    })
     // custom script
     const initScript = this.$storage.require('custom.js')
     initScript && initScript(this.$maye, this)

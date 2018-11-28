@@ -11,7 +11,7 @@ const promises = {
   writeFile: promisify(writeFile),
 }
 
-const PATH = process.env.NODE_ENV === 'production' ?
+const PATH = remote.app.isPackaged ?
   remote.app.getPath('userData') : resolve(__dirname, '..', 'userdata')
 
 export const FileStorage = {

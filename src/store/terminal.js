@@ -74,6 +74,7 @@ export default {
       })
       pty.on('exit', () => {
         const active = state.get([this, 'active'])
+        xterm.destroy()
         state.update([this, 'tabs'], tabs => {
           const index = tabs.indexOf(tab)
           if (index !== -1) {
@@ -91,7 +92,7 @@ export default {
       })
       xterm.on('title', title => {
         state.update([this, 'tabs'], () => {tab.title = title})
-        if (tab === state.get([this, 'current'])) {
+        if (tab === accessor.get([this, 'current'])) {
           document.title = title
         }
       })
@@ -132,6 +133,12 @@ export default {
     },
     activite({state}, index) {
       state.set([this, 'active'], index)
+    },
+    close({state}, index) {
+      const tabs = state.get([this, 'tabs'])
+      if (tabs[index]) {
+        tabs[index].pty.kill()
+      }
     },
   }
 }

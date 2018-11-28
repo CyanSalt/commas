@@ -1,10 +1,12 @@
 const {app, BrowserWindow, Menu, ipcMain, dialog} = require('electron')
 const {resolve} = require('path')
 const {format} = require('url')
+const {readFileSync} = require('fs')
+const JSON5 = require('json5')
 
 const frames = []
 
-function createWindow() {
+function createWindow(args) {
   const options = {
     show: false,
     title: app.getName(),
@@ -19,6 +21,7 @@ function createWindow() {
     webPreferences: {
       experimentalFeatures: true,
     },
+    ...args,
   }
   const frame = new BrowserWindow(options)
   loadHTMLFile(frame, 'src/index.html')
@@ -53,6 +56,87 @@ function collectWindow(frame) {
   })
 }
 
+// eslint-disable-next-line max-lines-per-function
+function getSharedWindowMenu() {
+  return [
+    {
+      label: 'New Tab',
+      accelerator: 'CmdOrCtrl+T',
+      click() {
+        let frame = BrowserWindow.getFocusedWindow()
+        if (!frame) frame = frames[frames.length - 1]
+        frame && frame.webContents.send('command', 'open-tab')
+      }
+    },
+    {
+      label: 'New Window',
+      accelerator: 'CmdOrCtrl+N',
+      click() {
+        let frame = BrowserWindow.getFocusedWindow()
+        if (!frame) frame = frames[frames.length - 1]
+        frame && frame.webContents.send('command', 'open-window')
+      }
+    },
+    {type: 'separator'},
+    {
+      label: 'Select Previous Tab',
+      accelerator: 'CmdOrCtrl+Shift+[',
+      click() {
+        let frame = BrowserWindow.getFocusedWindow()
+        if (!frame) frame = frames[frames.length - 1]
+        frame && frame.webContents.send('command', 'previous-tab')
+      }
+    },
+    {
+      label: 'Select Next Tab',
+      accelerator: 'CmdOrCtrl+Shift+]',
+      click() {
+        let frame = BrowserWindow.getFocusedWindow()
+        if (!frame) frame = frames[frames.length - 1]
+        frame && frame.webContents.send('command', 'next-tab')
+      }
+    },
+    {type: 'separator'},
+    {
+      label: 'Close Tab',
+      accelerator: 'CmdOrCtrl+W',
+      click() {
+        let frame = BrowserWindow.getFocusedWindow()
+        if (!frame) frame = frames[frames.length - 1]
+        frame && frame.webContents.send('command', 'close-tab')
+      }
+    },
+    {
+      label: 'Close Window',
+      accelerator: 'CmdOrCtrl+Shift+W',
+      click() {
+        let frame = BrowserWindow.getFocusedWindow()
+        if (!frame) frame = frames[frames.length - 1]
+        frame && frame.webContents.send('command', 'close-window')
+      }
+    },
+  ]
+}
+
+function getUserCustomMenu() {
+  const userdata = app.isPackaged ?
+    app.getPath('userData') : resolve(__dirname, 'userdata')
+  const path = resolve(userdata, 'keybindings.json')
+  try {
+    const keybindings = JSON5.parse(readFileSync(path))
+    return keybindings.map(item => {
+      item.click = () => {
+        let frame = BrowserWindow.getFocusedWindow()
+        if (!frame) frame = frames[frames.length - 1]
+        frame && frame.webContents.send('command', item.command)
+      }
+      return item
+    })
+  } catch (e) {
+    return []
+  }
+}
+
 function createApplicationMenu() {
   const menu = Menu.buildFromTemplate([
     {
@@ -70,14 +154,15 @@ function createApplicationMenu() {
       ],
     },
     {
-      label: 'Edit',
-      submenu: [
-        {role: 'copy'},
-        {role: 'paste'},
-        {role: 'selectall'},
-      ],
+      label: 'Shell',
+      submenu: getSharedWindowMenu(),
     },
+    {role: 'editMenu'},
     {role: 'windowMenu'},
+    {
+      label: 'User',
+      submenu: getUserCustomMenu(),
+    },
     {
       role: 'help',
       submenu: [{role: 'toggledevtools'}],
@@ -89,14 +174,15 @@ function createApplicationMenu() {
 function createWindowMenu(frame) {
   const menu = Menu.buildFromTemplate([
     {
-      label: 'Edit',
-      submenu: [
-        {role: 'copy'},
-        {role: 'paste'},
-        {role: 'selectall'},
-      ],
+      label: 'Shell',
+      submenu: getSharedWindowMenu(),
     },
+    {role: 'editMenu'},
     {role: 'windowMenu'},
+    {
+      label: 'User',
+      submenu: getUserCustomMenu(),
+    },
     {
       label: 'Help',
       submenu: [{role: 'toggledevtools'}],
@@ -104,6 +190,21 @@ function createWindowMenu(frame) {
   ])
   frame.setMenu(menu)
   frame.setMenuBarVisibility(false)
+}
+
+function createDockMenu() {
+  const menu = Menu.buildFromTemplate([
+    {
+      label: 'New Window',
+      accelerator: 'CmdOrCtrl+N',
+      click() {
+        let frame = BrowserWindow.getFocusedWindow()
+        if (!frame) frame = frames[frames.length - 1]
+        frame && frame.webContents.send('command', 'open-window')
+      }
+    }
+  ])
+  app.dock.setMenu(menu)
 }
 
 function transferEvents(frame) {
@@ -122,9 +223,6 @@ function transferEvents(frame) {
 }
 
 function transferInvoking() {
-  ipcMain.on('contextmenu', (event, args) => {
-    Menu.buildFromTemplate(buildRendererMenu(event.sender, args)).popup({})
-  })
   ipcMain.on('confirm', (event, args) => {
     const {sender} = event
     const window = frames.find(frame => frame.webContents === sender)
@@ -132,33 +230,18 @@ function transferInvoking() {
       sender.send('confirm', response)
     })
   })
-}
-
-function buildRendererMenu(contents, args) {
-  if (Array.isArray(args)) {
-    return args.map(item => buildRendererMenu(contents, item))
-  }
-  if (typeof args !== 'object') {
-    return args
-  }
-  if (args.submenu) {
-    args.submenu = buildRendererMenu(contents, args.submenu)
-  }
-  if (args.command) {
-    args.click = () => {
-      // Note: the second argument might be null on macOS
-      contents.send('contextmenu', {
-        command: args.command,
-        data: args.data,
-      })
-    }
-  }
-  return args
+  ipcMain.on('open-window', event => {
+    const {sender} = event
+    const parent = frames.find(frame => frame.webContents === sender)
+    const rect = parent.getBounds()
+    createWindow({x: rect.x + 30, y: rect.y + 30})
+  })
 }
 
 app.on('ready', () => {
   if (process.platform === 'darwin') {
     createApplicationMenu()
+    createDockMenu()
   }
   transferInvoking()
   createWindow()
