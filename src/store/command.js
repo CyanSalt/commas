@@ -1,4 +1,23 @@
 import {ipcRenderer, remote} from 'electron'
+import {FileStorage} from '../plugins/storage'
+import {access, copyFile} from 'fs'
+import {resolve} from 'path'
+import {promisify} from 'util'
+
+const promises = {
+  access: promisify(access),
+  copyFile: promisify(copyFile),
+}
+
+async function openStorageFile(filename, example) {
+  const path = FileStorage.filename(filename)
+  try {
+    await promises.access(path)
+  } catch (e) {
+    await promises.copyFile(resolve(__dirname, 'assets', example), path)
+  }
+  remote.shell.openItem(path)
+}
 
 const commands = {
   'open-tab'({action}) {
@@ -26,6 +45,9 @@ const commands = {
     if (active < tabs.length - 1) {
       state.set('terminal.active', active + 1)
     }
+  },
+  'open-settings'() {
+    openStorageFile('settings.json', 'settings.json')
   },
 }
 

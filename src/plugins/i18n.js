@@ -19,15 +19,20 @@ function load(file) {
   }
 }
 
+export function getTranslationFile(locale) {
+  const translation = translations
+    .find(({locales}) => locales.includes(locale))
+  return translation ? translation.file : null
+}
+
 export default {
   install(Vue, options) {
     let locale = remote.app.getLocale()
     const custom = FileStorage.loadSync('translation.json') || {}
     if (custom['@use']) locale = custom['@use']
     // Load translation data
-    const translation = translations
-      .find(({locales}) => locales.includes(locale))
-    const dictionary = (translation && load(translation.file)) || {}
+    const file = getTranslationFile(locale)
+    const dictionary = (file && load(file)) || {}
     // Merge user defined translation data
     for (const [key, value] of Object.entries(custom)) {
       if (value) dictionary[key] = value

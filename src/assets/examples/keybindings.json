@@ -1,0 +1,11 @@
+[
+  // Place your key bindings here.
+  // They will be also added to the application menu on macOS.
+  // The `command` could be registered in your custom script.
+
+  // {
+  //   "label": "Open New Tab",
+  //   "accelerator": "CmdOrCtrl+Shift+T",
+  //   "command": "open-tab"
+  // }
+]

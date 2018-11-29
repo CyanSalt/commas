@@ -56,6 +56,12 @@ function collectWindow(frame) {
   })
 }
 
+function execCommand(command) {
+  let frame = BrowserWindow.getFocusedWindow()
+  if (!frame) frame = frames[frames.length - 1]
+  frame && frame.webContents.send('command', command)
+}
+
 // eslint-disable-next-line max-lines-per-function
 function getSharedWindowMenu() {
   return [
@@ -63,18 +69,14 @@ function getSharedWindowMenu() {
       label: 'New Tab',
       accelerator: 'CmdOrCtrl+T',
       click() {
-        let frame = BrowserWindow.getFocusedWindow()
-        if (!frame) frame = frames[frames.length - 1]
-        frame && frame.webContents.send('command', 'open-tab')
+        execCommand('open-tab')
       }
     },
     {
       label: 'New Window',
       accelerator: 'CmdOrCtrl+N',
       click() {
-        let frame = BrowserWindow.getFocusedWindow()
-        if (!frame) frame = frames[frames.length - 1]
-        frame && frame.webContents.send('command', 'open-window')
+        execCommand('open-window')
       }
     },
     {type: 'separator'},
@@ -82,18 +84,14 @@ function getSharedWindowMenu() {
       label: 'Select Previous Tab',
       accelerator: 'CmdOrCtrl+Shift+[',
       click() {
-        let frame = BrowserWindow.getFocusedWindow()
-        if (!frame) frame = frames[frames.length - 1]
-        frame && frame.webContents.send('command', 'previous-tab')
+        execCommand('previous-tab')
       }
     },
     {
       label: 'Select Next Tab',
       accelerator: 'CmdOrCtrl+Shift+]',
       click() {
-        let frame = BrowserWindow.getFocusedWindow()
-        if (!frame) frame = frames[frames.length - 1]
-        frame && frame.webContents.send('command', 'next-tab')
+        execCommand('next-tab')
       }
     },
     {type: 'separator'},
@@ -101,18 +99,14 @@ function getSharedWindowMenu() {
       label: 'Close Tab',
       accelerator: 'CmdOrCtrl+W',
       click() {
-        let frame = BrowserWindow.getFocusedWindow()
-        if (!frame) frame = frames[frames.length - 1]
-        frame && frame.webContents.send('command', 'close-tab')
+        execCommand('close-tab')
       }
     },
     {
       label: 'Close Window',
       accelerator: 'CmdOrCtrl+Shift+W',
       click() {
-        let frame = BrowserWindow.getFocusedWindow()
-        if (!frame) frame = frames[frames.length - 1]
-        frame && frame.webContents.send('command', 'close-window')
+        execCommand('close-window')
       }
     },
   ]
@@ -126,9 +120,7 @@ function getUserCustomMenu() {
     const keybindings = JSON5.parse(readFileSync(path))
     return keybindings.map(item => {
       item.click = () => {
-        let frame = BrowserWindow.getFocusedWindow()
-        if (!frame) frame = frames[frames.length - 1]
-        frame && frame.webContents.send('command', item.command)
+        execCommand(item.command)
       }
       return item
     })
@@ -143,6 +135,14 @@ function createApplicationMenu() {
       label: app.getName(),
       submenu: [
         {role: 'about'},
+        {type: 'separator'},
+        {
+          label: 'Preferences...',
+          accelerator: 'Command+,',
+          click() {
+            execCommand('open-settings')
+          }
+        },
         {type: 'separator'},
         {role: 'services', submenu: []},
         {type: 'separator'},
@@ -165,7 +165,9 @@ function createApplicationMenu() {
     },
     {
       role: 'help',
-      submenu: [{role: 'toggledevtools'}],
+      submenu: [
+        {role: 'toggledevtools'},
+      ],
     },
   ])
   Menu.setApplicationMenu(menu)
@@ -185,7 +187,9 @@ function createWindowMenu(frame) {
     },
     {
       label: 'Help',
-      submenu: [{role: 'toggledevtools'}],
+      submenu: [
+        {role: 'toggledevtools'},
+      ],
     },
   ])
   frame.setMenu(menu)
@@ -198,9 +202,7 @@ function createDockMenu() {
       label: 'New Window',
       accelerator: 'CmdOrCtrl+N',
       click() {
-        let frame = BrowserWindow.getFocusedWindow()
-        if (!frame) frame = frames[frames.length - 1]
-        frame && frame.webContents.send('command', 'open-window')
+        execCommand('open-window')
       }
     }
   ])
