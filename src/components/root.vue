@@ -45,7 +45,10 @@ export default {
     })
     window.addEventListener('resize', () => {
       action.dispatch('terminal.resize')
-    }, false)
+    })
+    window.addEventListener('beforeunload', event => {
+      action.dispatch('shell.closing', {event, i18n: this.i18n})
+    })
     ipcRenderer.on('command', (event, command) => {
       action.dispatch('command.exec', command)
     })
