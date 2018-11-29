@@ -104,6 +104,7 @@ export default {
   width: 36px;
   height: 36px;
   cursor: pointer;
+  transition: color 0.2s;
 }
 .title-bar .button.minimize:hover {
   color: var(--theme-green);

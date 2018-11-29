@@ -3,7 +3,14 @@
     <div class="list">
       <div :class="['tab', {active: active === index}]"
         v-for="(tab, index) in tabs" :key="tab.id" @click="activite(index)">
-        <div class="tab-name">{{ tab.process }}</div>
+        <div class="tab-overview">
+          <div class="tab-name">{{ tab.process }}</div>
+          <div class="operations">
+            <div class="close" @click="close(index)">
+              <span class="feather-icon icon-x"></span>
+            </div>
+          </div>
+        </div>
         <div class="tab-title">{{ tab.title || tab.id }}</div>
         <div class="divider"></div>
       </div>
@@ -27,6 +34,7 @@ export default {
   methods: {
     spawn: VueMaye.action('terminal.spawn'),
     activite: VueMaye.action('terminal.activite'),
+    close: VueMaye.action('terminal.close'),
   },
 }
 </script>
@@ -51,29 +59,43 @@ export default {
 }
 .tab-list .tab {
   width: 144px;
-  opacity: 0.5;
-}
-.tab-list .tab.active {
-  opacity: 1;
 }
 .tab-list .tab-name,
 .tab-list .tab-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  opacity: 0.5;
 }
-.tab-list .tab-name {
+.tab-list .tab.active .tab-name,
+.tab-list .tab.active .tab-title {
+  opacity: 1;
+}
+.tab-list .tab-overview {
+  display: flex;
+  justify-content: space-between;
   font-size: 18px;
   height: 32px;
   line-height: 32px;
+}
+.tab-list .operations {
+  flex: none;
+  display: none;
+}
+.tab-list .tab:hover .operations {
+  display: flex;
+}
+.tab-list .close {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.tab-list .close:hover {
+  color: var(--theme-brightred);
 }
 .tab-list .divider {
   height: 1px;
   margin: 8px 0;
   border-bottom: 2px solid;
-  opacity: 0.1;
-}
-.tab-list .tab.active .divider {
   opacity: 0.05;
 }
 .tab-list .new-tab {
@@ -81,6 +103,11 @@ export default {
   line-height: 42px;
   font-size: 28px;
   text-align: center;
+  cursor: pointer;
   opacity: 0.5;
+  transition: opacity 0.2s;
+}
+.tab-list .new-tab:hover {
+  opacity: 1;
 }
 </style>
