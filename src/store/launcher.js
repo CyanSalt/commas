@@ -29,7 +29,7 @@ export default {
         command = `cd ${launcher.directory} && ${command}`
       }
       if (launcher.remote) {
-        command = `ssh ${launcher.remote} '${command}'`
+        command = `ssh -t ${launcher.remote} '${command}'`
       }
       launcher.tab.pty.write(`${command}\n`)
     },
