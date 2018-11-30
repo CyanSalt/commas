@@ -26,10 +26,11 @@ export default {
       action.dispatch([this, 'activite'], launcher)
       let command = launcher.command
       if (launcher.directory) {
-        command = `cd ${launcher.directory} && ${command}`
+        command = `cd ${launcher.directory} && (${command})`
       }
       if (launcher.remote) {
-        command = `ssh -t ${launcher.remote} '${command}'`
+        command = `"${command.replace(/"/g, '"\\""')}"`
+        command = `ssh -t ${launcher.remote} ${command}`
       }
       launcher.tab.pty.write(`${command}\n`)
     },

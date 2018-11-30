@@ -15,17 +15,18 @@
           <span class="feather-icon icon-chevron-down" v-else></span>
         </div>
       </div>
-      <div class="launchers" v-show="!collapsed">
+      <div class="launchers">
         <tab-item :tab="launcher.tab" :title="launcher.name"
           @click.native="open(launcher)"
-          v-for="(launcher, index) in launchers" :key="index">
+          v-for="(launcher, index) in launchers" :key="index"
+          v-show="!collapsed || launcher.tab">
             <template slot="operations">
               <div class="launch" @click="launch(launcher)">
                 <span class="feather-icon icon-play"></span>
               </div>
             </template>
           </tab-item>
-        <div class="edit-launcher anchor" @click="edit">
+        <div class="edit-launcher anchor" @click="edit" v-show="!collapsed">
           <span class="feather-icon icon-plus"></span>
         </div>
       </div>
@@ -81,6 +82,7 @@ export default {
 .tab-list .list {
   flex: auto;
   padding: 4px 16px;
+  overflow-y: auto;
 }
 .tab-list .sash {
   flex: none;
@@ -119,6 +121,7 @@ export default {
   text-align: center;
   font-size: 18px;
   line-height: 26px;
+  margin-bottom: 8px;
 }
 .tab-list .anchor {
   cursor: pointer;
