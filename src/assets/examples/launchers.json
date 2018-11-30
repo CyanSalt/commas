@@ -1,0 +1,10 @@
+[
+  // Place your launchers here.
+
+  // {
+  //   "name": "Run remote task",
+  //   "remote": "admin@192.168.10.1", // SSH remote address, optional
+  //   "directory": "~/workspace/tasks/",
+  //   "command": "./example_task --with-args"
+  // }
+]

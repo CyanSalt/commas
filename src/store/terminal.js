@@ -85,6 +85,11 @@ export default {
               state.set([this, 'active'], Math.min(index, tabs.length - 1))
             }
           }
+          if (tab.launcher) {
+            state.update('launcher.all', () => {
+              tab.launcher.tab = null
+            })
+          }
         })
       })
       xterm.on('resize', ({cols, rows}) => {
@@ -101,6 +106,7 @@ export default {
         const length = tabs.push(tab)
         state.set([this, 'active'], length - 1)
       })
+      return tab
     },
     mount({state}, {tab, element}) {
       const settings = state.get('settings.user')
@@ -131,14 +137,15 @@ export default {
     input(Maye, {tab, data}) {
       tab.pty.write(data)
     },
-    activite({state}, index) {
-      state.set([this, 'active'], index)
-    },
-    close({state}, index) {
+    activite({state}, tab) {
       const tabs = state.get([this, 'tabs'])
-      if (tabs[index]) {
-        tabs[index].pty.kill()
+      const index = tabs.indexOf(tab)
+      if (index !== -1) {
+        state.set([this, 'active'], index)
       }
+    },
+    close(Maye, tab) {
+      tab.pty.kill()
     },
   }
 }

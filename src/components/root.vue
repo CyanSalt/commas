@@ -43,6 +43,7 @@ export default {
       action.dispatch('theme.load')
       action.dispatch('terminal.spawn')
     })
+    action.dispatch('launcher.load')
     window.addEventListener('resize', () => {
       action.dispatch('terminal.resize')
     })

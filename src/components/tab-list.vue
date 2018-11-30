@@ -1,21 +1,33 @@
 <template>
   <div class="tab-list">
     <div class="list">
-      <div :class="['tab', {active: active === index}]"
-        v-for="(tab, index) in tabs" :key="tab.id" @click="activite(index)">
-        <div class="tab-overview">
-          <div class="tab-name">{{ tab.process }}</div>
-          <div class="operations">
-            <div class="close" @click="close(index)">
-              <span class="feather-icon icon-x"></span>
-            </div>
-          </div>
+      <div class="processes">
+        <tab-item :tab="tab" @click.native="activite(tab)"
+          v-for="(tab, index) in running" :key="tab.id"></tab-item>
+        <div class="new-tab anchor" @click="spawn">
+          <span class="feather-icon icon-plus"></span>
         </div>
-        <div class="tab-title">{{ tab.title || tab.id }}</div>
-        <div class="divider"></div>
       </div>
-      <div class="new-tab" @click="spawn">
-        <span class="feather-icon icon-plus"></span>
+      <div class="launcher-folder anchor" @click="expandOrCollapse">
+        <div class="group-name">{{ i18n('Launchers#!5') }}</div>
+        <div class="indicator">
+          <span class="feather-icon icon-chevron-up" v-if="collapsed"></span>
+          <span class="feather-icon icon-chevron-down" v-else></span>
+        </div>
+      </div>
+      <div class="launchers" v-show="!collapsed">
+        <tab-item :tab="launcher.tab" :title="launcher.name"
+          @click.native="open(launcher)"
+          v-for="(launcher, index) in launchers" :key="index">
+            <template slot="operations">
+              <div class="launch" @click="launch(launcher)">
+                <span class="feather-icon icon-play"></span>
+              </div>
+            </template>
+          </tab-item>
+        <div class="edit-launcher anchor" @click="edit">
+          <span class="feather-icon icon-plus"></span>
+        </div>
       </div>
     </div>
     <div class="sash"></div>
@@ -24,17 +36,37 @@
 
 <script>
 import VueMaye from 'maye/plugins/vue'
+import TabItem from './tab-item'
 
 export default {
   name: 'tab-list',
+  components: {
+    'tab-item': TabItem,
+  },
+  data() {
+    return {
+      collapsed: true,
+    }
+  },
   computed: {
     tabs: VueMaye.state('terminal.tabs'),
-    active: VueMaye.state('terminal.active'),
+    launchers: VueMaye.state('launcher.all'),
+    running({state}) {
+      return this.tabs.filter(tab => !tab.launcher)
+    },
   },
   methods: {
     spawn: VueMaye.action('terminal.spawn'),
     activite: VueMaye.action('terminal.activite'),
-    close: VueMaye.action('terminal.close'),
+    open: VueMaye.action('launcher.activite'),
+    launch: VueMaye.action('launcher.launch'),
+    expandOrCollapse() {
+      this.collapsed = !this.collapsed
+    },
+    edit() {
+      const {action} = this.$maye
+      action.dispatch('command.exec', 'open-launchers')
+    },
   },
 }
 </script>
@@ -57,57 +89,46 @@ export default {
   border-right: 2px solid;
   opacity: 0.05;
 }
-.tab-list .tab {
-  width: 144px;
+.tab-list .invisible {
+  visibility: hidden;
 }
-.tab-list .tab-name,
-.tab-list .tab-title {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  opacity: 0.5;
-}
-.tab-list .tab.active .tab-name,
-.tab-list .tab.active .tab-title {
-  opacity: 1;
-}
-.tab-list .tab-overview {
-  display: flex;
-  justify-content: space-between;
-  font-size: 18px;
-  height: 32px;
-  line-height: 32px;
-}
-.tab-list .operations {
-  flex: none;
-  display: none;
-}
-.tab-list .tab:hover .operations {
-  display: flex;
-}
-.tab-list .close {
-  cursor: pointer;
-  transition: color 0.2s;
-}
-.tab-list .close:hover {
-  color: var(--theme-brightred);
-}
-.tab-list .divider {
-  height: 1px;
-  margin: 8px 0;
-  border-bottom: 2px solid;
-  opacity: 0.05;
+.tab-list .only-end {
+  margin-top: 0;
 }
 .tab-list .new-tab {
   height: 42px;
   line-height: 42px;
   font-size: 28px;
   text-align: center;
+}
+.tab-list .launcher-folder {
+  display: flex;
+  margin-top: 17px;
+}
+.tab-list .group-name {
+  flex: auto;
+  color: var(--theme-brightcyan);
+}
+.tab-list .indicator {
+  flex: none;
+}
+.tab-list .launchers {
+  margin-top: 8px;
+}
+.tab-list .edit-launcher {
+  text-align: center;
+  font-size: 18px;
+  line-height: 26px;
+}
+.tab-list .anchor {
   cursor: pointer;
   opacity: 0.5;
   transition: opacity 0.2s;
 }
-.tab-list .new-tab:hover {
+.tab-list .anchor:hover {
   opacity: 1;
+}
+.tab-list .launch:hover {
+  color: var(--theme-green);
 }
 </style>

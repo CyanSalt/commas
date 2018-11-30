@@ -30,12 +30,13 @@ export default {
     },
   },
   actions: {
-    load({state, action}) {
+    async load({state, action}) {
       const theme = defaultTheme
       const settings = state.get('settings.user')
       const specified = settings['terminal.theme.name']
       if (specified && specified !== 'oceanic-next') {
-        const file = load(specified) || FileStorage.require(`themes/${specified}.json`)
+        const file = load(specified) ||
+          await FileStorage.load(`themes/${specified}.json`)
         if (file) Object.assign(theme, file)
       }
       const customization = settings['terminal.theme.customization']
@@ -44,7 +45,6 @@ export default {
       }
       state.set([this, 'user'], theme)
       action.dispatch([this, 'inject'])
-      return defaultTheme
     },
     inject({state}) {
       const theme = state.get([this, 'user'])

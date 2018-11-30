@@ -49,6 +49,9 @@ const commands = {
   'open-settings'() {
     openStorageFile('settings.json', 'settings.json')
   },
+  'open-launchers'() {
+    openStorageFile('launchers.json', 'examples/launchers.json')
+  },
 }
 
 export default {
