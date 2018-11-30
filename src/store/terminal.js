@@ -52,12 +52,14 @@ export default {
         id: pty.pid,
         process: pty.process,
       }
-      const {theme, allowTransparency} = accessor.get('theme.xterm')
+      // Apply transparency background color and selection
+      let theme = state.get('theme.user')
+      theme = {...theme, background: 'transparent'}
       // Initialize xterm.js and attach it to the DOM
       const xterm = new Terminal({
         fontSize: settings['terminal.style.fontSize'],
         fontFamily: settings['terminal.style.fontFamily'],
-        allowTransparency,
+        allowTransparency: true,
         theme,
       })
       // Setup communication between xterm.js and node-pty

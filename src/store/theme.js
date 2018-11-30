@@ -17,18 +17,6 @@ export default {
     default: defaultTheme,
     user: {},
   },
-  accessors: {
-    xterm({state}) {
-      // Apply transparency background color
-      let theme = state.get([this, 'user'])
-      let allowTransparency = false
-      if (theme.background.match(/^(?:#[0-9A-Fa-f]{8}$)|rgba/)) {
-        allowTransparency = true
-        theme = {...theme, background: 'transparent'}
-      }
-      return {allowTransparency, theme}
-    },
-  },
   actions: {
     async load({state, action}) {
       const theme = defaultTheme
