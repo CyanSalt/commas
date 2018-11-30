@@ -29,12 +29,8 @@ export const FileStorage = {
       return null
     }
   },
-  async save(basename, data) {
-    const filename = this.filename(basename)
-    try {
-      await promises.mkdir(dirname(filename))
-    } catch (e) {}
-    return promises.writeFile(filename, JSON.stringify(data, null, 2))
+  save(basename, data) {
+    return this.write(basename, JSON.stringify(data, null, 2))
   },
   async read(basename) {
     try {
@@ -42,6 +38,13 @@ export const FileStorage = {
     } catch (e) {
       return null
     }
+  },
+  async write(basename, content) {
+    const filename = this.filename(basename)
+    try {
+      await promises.mkdir(dirname(filename))
+    } catch (e) {}
+    return promises.writeFile(filename, content)
   },
   readSync(basename) {
     try {

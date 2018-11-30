@@ -2,7 +2,7 @@ const {app, BrowserWindow, Menu, ipcMain, dialog} = require('electron')
 const {resolve} = require('path')
 const {format} = require('url')
 const {readFileSync} = require('fs')
-const JSON5 = require('json5')
+const {parse} = require('json5')
 
 const frames = []
 
@@ -117,7 +117,7 @@ function getUserCustomMenu() {
     app.getPath('userData') : resolve(__dirname, 'userdata')
   const path = resolve(userdata, 'keybindings.json')
   try {
-    const keybindings = JSON5.parse(readFileSync(path))
+    const keybindings = parse(readFileSync(path))
     return keybindings.map(item => {
       item.click = () => {
         execCommand(item.command)

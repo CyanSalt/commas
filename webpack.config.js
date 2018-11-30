@@ -2,6 +2,14 @@ const path = require('path')
 const webpack = require('webpack')
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const app = require('./package')
+
+function externalizeAllDenpendencies(dependencies) {
+  return Object.keys(dependencies).reduce((externals, dependency) => {
+    externals[dependency] = `commonjs2 ${dependency}`
+    return externals
+  }, {})
+}
 
 module.exports = {
   target: 'electron-renderer',
@@ -22,7 +30,7 @@ module.exports = {
   },
   externals: {
     'original-fs': 'commonjs2 original-fs',
-    'node-pty': 'commonjs2 node-pty',
+    ...externalizeAllDenpendencies(app.dependencies),
   },
   resolve: {
     extensions: ['.js', '.vue'],
