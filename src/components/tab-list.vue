@@ -8,7 +8,7 @@
           <span class="feather-icon icon-plus"></span>
         </div>
       </div>
-      <div class="launcher-folder anchor" @click="expandOrCollapse">
+      <div class="launcher-folder" @click="expandOrCollapse">
         <div class="group-name">{{ i18n('Launchers#!5') }}</div>
         <div class="indicator">
           <span class="feather-icon icon-chevron-up" v-if="collapsed"></span>
@@ -109,13 +109,19 @@ export default {
   position: sticky;
   top: 0;
   z-index: 1;
+  cursor: pointer;
 }
 .tab-list .group-name {
   flex: auto;
-  color: var(--theme-brightcyan);
+  color: var(--theme-brightmagenta);
 }
 .tab-list .indicator {
   flex: none;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+.tab-list .launcher-folder:hover .indicator {
+  opacity: 1;
 }
 .tab-list .launchers {
   margin-top: 8px;

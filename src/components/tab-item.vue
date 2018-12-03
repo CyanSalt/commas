@@ -1,5 +1,5 @@
 <template>
-  <div :class="['tab', {active: tabs[active] === tab}]">
+  <div :class="['tab', {active}]">
     <div class="tab-overview">
       <div class="tab-name">{{ name }}</div>
       <div class="operations">
@@ -31,7 +31,10 @@ export default {
   },
   computed: {
     tabs: VueMaye.state('terminal.tabs'),
-    active: VueMaye.state('terminal.active'),
+    focus: VueMaye.state('terminal.active'),
+    active() {
+      return this.tabs[this.focus] === this.tab
+    },
     name() {
       if (!this.tab) return '-'
       VueMaye.watch('terminal.tabs')
@@ -95,5 +98,9 @@ export default {
   margin: 7px 0;
   border-bottom: 2px solid;
   opacity: 0.05;
+}
+.tab-list .tab.active .divider {
+  color: var(--theme-brightcyan);
+  opacity: 1;
 }
 </style>

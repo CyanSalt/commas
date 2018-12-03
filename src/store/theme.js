@@ -49,6 +49,7 @@ export default {
         .map(key => `${key}: ${properties[key]};`).join(' ')
       element.appendChild(document.createTextNode(`#main { ${declarations} }`))
       document.head.appendChild(element)
+      document.body.classList.add(theme.type)
     },
   }
 }
