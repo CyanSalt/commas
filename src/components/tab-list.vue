@@ -106,6 +106,9 @@ export default {
 .tab-list .launcher-folder {
   display: flex;
   margin-top: 17px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 .tab-list .group-name {
   flex: auto;
