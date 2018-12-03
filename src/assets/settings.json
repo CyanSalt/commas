@@ -15,7 +15,7 @@
   "terminal.style.fontFamily": "Fira Code, Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace",
 
   // Enable font ligatures (if specified font family supports, like Fira Code or Iosevka)
-  "terminal.style.fontLigatures": true,
+  "terminal.style.fontLigatures": false,
 
   // File name of internal theme or files in `themes/` folder
   "terminal.theme.name": "oceanic-next",

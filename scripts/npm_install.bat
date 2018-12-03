@@ -1,7 +1,7 @@
 @echo off
 setlocal
 rem Electron's version.
-set npm_config_target=3.0.3
+set npm_config_target=3.0.10
 rem Download headers for Electron.
 set npm_config_disturl="https://atom.io/download/electron"
 rem Tell node-pre-gyp that we are building for Electron.
