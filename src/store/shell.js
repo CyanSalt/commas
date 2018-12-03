@@ -1,6 +1,9 @@
 import {remote} from 'electron'
 
 export default {
+  states: {
+    multitabs: true,
+  },
   actions: {
     closing({state}, {event, i18n}) {
       const tabs = state.get('terminal.tabs')

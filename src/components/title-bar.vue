@@ -94,6 +94,7 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  /* Show ellipsis on left */
   direction: rtl;
   unicode-bidi: plaintext;
 }

@@ -41,6 +41,8 @@ export default {
   display: flex;
   padding: 4px 8px;
   position: relative;
+  /* Fix bug of `xterm.fit()` */
+  box-sizing: border-box;
 }
 .terminal-teletype .xterm {
   position: static;

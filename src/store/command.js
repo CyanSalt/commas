@@ -3,6 +3,7 @@ import {FileStorage} from '../plugins/storage'
 import {access, copyFile} from 'fs'
 import {resolve} from 'path'
 import {promisify} from 'util'
+import Vue from 'vue'
 
 const promises = {
   access: promisify(access),
@@ -46,6 +47,18 @@ const commands = {
       state.set('terminal.active', active + 1)
     }
   },
+  'toggle-tab-list'({state, action}) {
+    state.update('shell.multitabs', value => !value, true)
+    Vue.nextTick(() => {
+      action.dispatch('terminal.resize')
+    })
+  },
+  'launch'({accessor, action}) {
+    const current = accessor.get('terminal.current')
+    if (current.launcher) {
+      action.dispatch('launcher.launch', current.launcher)
+    }
+  },
   'open-settings'() {
     openStorageFile('settings.json', 'settings.json')
   },
@@ -59,6 +72,9 @@ export default {
     exec(Maye, command) {
       if (!commands[command]) return false
       return commands[command].call(this, Maye)
+    },
+    register(Maye, user) {
+      Object.assign(commands, user)
     },
   },
 }

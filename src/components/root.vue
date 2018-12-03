@@ -2,7 +2,7 @@
   <div id="main">
     <title-bar></title-bar>
     <div class="content">
-      <tab-list></tab-list>
+      <tab-list v-show="multitabs"></tab-list>
       <keep-alive v-if="current">
         <terminal-teletype :key="current.id"
           :tab="current"></terminal-teletype>
@@ -27,6 +27,7 @@ export default {
   },
   computed: {
     current: VueMaye.accessor('terminal.current'),
+    multitabs: VueMaye.state('shell.multitabs'),
   },
   beforeCreate() {
     // custom stylesheet
@@ -65,6 +66,7 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  /* Default line height of xterm.js */
   line-height: 1.2;
   color: var(--theme-foreground);
   background: var(--theme-background);
