@@ -20,6 +20,16 @@ export default {
         if (response === 0) frame.destroy()
       })
       event.returnValue = false
+    },
+    drop({action}, {tab, files}) {
+      const paths = Array.from(files).map(({path}) => {
+        if (path.indexOf(' ') !== -1) return `"${path}"`
+        return path
+      })
+      action.dispatch('terminal.input', {
+        tab,
+        data: paths.join(' '),
+      })
     }
   }
 }

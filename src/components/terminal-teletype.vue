@@ -19,10 +19,9 @@ export default {
       const files = e.dataTransfer.files
       if (!files || !files.length) return
       const {action} = this.$maye
-      const paths = Array.from(e.dataTransfer.files).map(({path}) => path)
-      action.dispatch('terminal.input', {
+      action.dispatch('shell.drop', {
         tab: this.tab,
-        data: paths.join(' '),
+        files,
       })
     },
   },
