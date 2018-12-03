@@ -167,6 +167,13 @@ function createApplicationMenu() {
       role: 'help',
       submenu: [
         {role: 'toggledevtools'},
+        {
+          label: 'Reload All Windows',
+          accelerator: 'CmdOrCtrl+Shift+R',
+          click() {
+            frames.forEach(window => window.reload())
+          }
+        },
       ],
     },
   ])
@@ -189,6 +196,13 @@ function createWindowMenu(frame) {
       label: 'Help',
       submenu: [
         {role: 'toggledevtools'},
+        {
+          label: 'Reload all windows',
+          accelerator: 'CmdOrCtrl+Shift+R',
+          click() {
+            frames.forEach(window => window.reload())
+          }
+        },
       ],
     },
   ])
