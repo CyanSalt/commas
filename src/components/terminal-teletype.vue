@@ -45,7 +45,6 @@ export default {
 .terminal-teletype {
   flex: auto;
   display: flex;
-  width: 0;
   padding: 4px 8px;
   position: relative;
   /* Fix bug of `xterm.fit()` */

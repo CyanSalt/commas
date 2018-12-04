@@ -55,6 +55,9 @@ const commands = {
       action.dispatch('launcher.launch', current.launcher)
     }
   },
+  'find'({state}) {
+    state.set('shell.finding', true)
+  },
   'open-settings'() {
     openStorageFile('settings.json', 'settings.json')
   },

@@ -3,6 +3,7 @@ import {remote} from 'electron'
 export default {
   states: {
     multitabs: true,
+    finding: false,
   },
   actions: {
     closing({state}, {event, i18n}) {

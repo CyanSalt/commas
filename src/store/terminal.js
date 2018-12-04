@@ -162,5 +162,13 @@ export default {
     close(Maye, tab) {
       tab.pty.kill()
     },
+    find({accessor}, {keyword, options, back}) {
+      const current = accessor.get([this, 'current'])
+      if (back) {
+        current.xterm.findPrevious(keyword, options)
+      } else {
+        current.xterm.findNext(keyword, options)
+      }
+    },
   }
 }

@@ -96,6 +96,14 @@ function getSharedWindowMenu() {
     },
     {type: 'separator'},
     {
+      label: 'Find',
+      accelerator: 'CmdOrCtrl+F',
+      click() {
+        execCommand('find')
+      }
+    },
+    {type: 'separator'},
+    {
       label: 'Close Tab',
       accelerator: 'CmdOrCtrl+W',
       click() {

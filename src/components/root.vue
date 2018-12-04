@@ -3,10 +3,13 @@
     <title-bar></title-bar>
     <div class="content">
       <tab-list v-show="multitabs"></tab-list>
-      <keep-alive v-if="current">
-        <terminal-teletype :key="current.id"
-          :tab="current"></terminal-teletype>
-      </keep-alive>
+      <div class="interface">
+        <find-box></find-box>
+        <keep-alive v-if="current">
+          <terminal-teletype :key="current.id"
+            :tab="current"></terminal-teletype>
+        </keep-alive>
+      </div>
     </div>
   </div>
 </template>
@@ -15,6 +18,7 @@
 import VueMaye from 'maye/plugins/vue'
 import TitleBar from './title-bar'
 import TabList from './tab-list'
+import FindBox from './find-box'
 import TerminalTeletype from './terminal-teletype'
 import {ipcRenderer} from 'electron'
 
@@ -24,6 +28,7 @@ export default {
     'title-bar': TitleBar,
     'tab-list': TabList,
     'terminal-teletype': TerminalTeletype,
+    'find-box': FindBox,
   },
   computed: {
     current: VueMaye.accessor('terminal.current'),
@@ -71,5 +76,11 @@ export default {
 #main .content {
   flex: auto;
   display: flex;
+}
+#main .interface {
+  flex: auto;
+  width: 0;
+  display: flex;
+  flex-direction: column;
 }
 </style>
