@@ -70,16 +70,12 @@ export default {
       action.dispatch('command.exec', 'open-launchers')
     },
     resize(e) {
-      const {action} = this.$maye
       const original = this.width
       const start = e.clientX
+      const max = document.body.clientWidth / 2
       const handler = event => {
-        let width = original + event.clientX - start
-        width = Math.min(Math.max(width, 96), document.body.clientWidth / 2)
-        if (width !== this.width) {
-          this.width = width
-          action.dispatch('terminal.resize')
-        }
+        const width = original + event.clientX - start
+        this.width = Math.min(Math.max(width, 96), max)
       }
       const cancelation = () => {
         window.removeEventListener('mousemove', handler)

@@ -45,9 +45,6 @@ export default {
       action.dispatch('terminal.spawn')
     })
     action.dispatch('launcher.load')
-    window.addEventListener('resize', () => {
-      action.dispatch('terminal.resize')
-    })
     window.addEventListener('beforeunload', event => {
       action.dispatch('shell.closing', {event, i18n: this.i18n})
     })

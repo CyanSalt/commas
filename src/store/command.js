@@ -3,7 +3,6 @@ import {FileStorage} from '../plugins/storage'
 import {access, copyFile} from 'fs'
 import {resolve} from 'path'
 import {promisify} from 'util'
-import Vue from 'vue'
 
 const promises = {
   access: promisify(access),
@@ -49,9 +48,6 @@ const commands = {
   },
   'toggle-tab-list'({state, action}) {
     state.update('shell.multitabs', value => !value, true)
-    Vue.nextTick(() => {
-      action.dispatch('terminal.resize')
-    })
   },
   'launch'({accessor, action}) {
     const current = accessor.get('terminal.current')

@@ -1,10 +1,12 @@
 import {spawn} from 'node-pty'
 import {Terminal} from 'xterm'
 import * as fit from 'xterm/lib/addons/fit/fit'
+import * as search from 'xterm/lib/addons/search/search'
 import * as ligatures from 'xterm-addon-ligatures'
 import {remote} from 'electron'
 
 Terminal.applyAddon(fit)
+Terminal.applyAddon(search)
 Terminal.applyAddon(ligatures)
 
 const variables = {
@@ -16,6 +18,7 @@ const variables = {
 export default {
   states: {
     resizer: null,
+    observer: null,
     tabs: [],
     active: -1,
   },
@@ -76,6 +79,8 @@ export default {
       })
       pty.on('exit', () => {
         const active = state.get([this, 'active'])
+        const observer = state.get([this, 'observer'])
+        observer.unobserve(xterm.element)
         xterm.destroy()
         state.update([this, 'tabs'], tabs => {
           const index = tabs.indexOf(tab)
@@ -110,7 +115,14 @@ export default {
       })
       return tab
     },
-    mount({state}, {tab, element}) {
+    mount({state, action}, {tab, element}) {
+      let observer = state.get([this, 'observer'])
+      if (!observer) {
+        observer = new ResizeObserver(() => {
+          action.dispatch([this, 'resize'])
+        })
+        state.set([this, 'observer'], observer)
+      }
       const settings = state.get('settings.user')
       const {xterm} = tab
       requestIdleCallback(() => {
@@ -118,6 +130,7 @@ export default {
           element.appendChild(xterm.element)
         } else {
           xterm.open(element)
+          observer.observe(element)
           if (settings['terminal.style.fontLigatures']) {
             xterm.enableLigatures()
           }
