@@ -34,6 +34,9 @@ export default {
         tab,
         data: paths.join(' '),
       })
-    }
+    },
+    open(Maye, uri) {
+      remote.shell.openExternal(uri)
+    },
   }
 }

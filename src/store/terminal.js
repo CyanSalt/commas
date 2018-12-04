@@ -2,11 +2,13 @@ import {spawn} from 'node-pty'
 import {Terminal} from 'xterm'
 import * as fit from 'xterm/lib/addons/fit/fit'
 import * as search from 'xterm/lib/addons/search/search'
+import * as webLinks from 'xterm/lib/addons/webLinks/webLinks'
 import * as ligatures from 'xterm-addon-ligatures'
 import {remote} from 'electron'
 
 Terminal.applyAddon(fit)
 Terminal.applyAddon(search)
+Terminal.applyAddon(webLinks)
 Terminal.applyAddon(ligatures)
 
 const variables = {
@@ -131,6 +133,9 @@ export default {
         } else {
           xterm.open(element)
           observer.observe(element)
+          xterm.webLinksInit((event, uri) => {
+            if (event.altKey) action.dispatch('shell.open', uri)
+          })
           if (settings['terminal.style.fontLigatures']) {
             xterm.enableLigatures()
           }
