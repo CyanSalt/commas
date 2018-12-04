@@ -58,48 +58,45 @@ export default {
 </script>
 
 <style>
-.tab-list .tab {
-  width: 144px;
-}
-.tab-list .tab-name,
-.tab-list .tab-title {
+.tab .tab-name,
+.tab .tab-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   opacity: 0.5;
 }
-.tab-list .tab.active .tab-name,
-.tab-list .tab.active .tab-title {
+.tab.active .tab-name,
+.tab.active .tab-title {
   opacity: 1;
 }
-.tab-list .tab-overview {
+.tab .tab-overview {
   display: flex;
   justify-content: space-between;
   font-size: 18px;
   height: 32px;
   line-height: 32px;
 }
-.tab-list .tab .operations {
+.tab .operations {
   flex: none;
   display: none;
 }
-.tab-list .tab:hover .operations {
+.tab:hover .operations {
   display: flex;
 }
-.tab-list .close {
+.tab .close {
   cursor: pointer;
   transition: color 0.2s;
 }
-.tab-list .close:hover {
+.tab .close:hover {
   color: var(--theme-brightred);
 }
-.tab-list .divider {
+.tab .divider {
   height: 1px;
   margin: 7px 0;
   border-bottom: 2px solid;
   opacity: 0.05;
 }
-.tab-list .tab.active .divider {
+.tab.active .divider {
   color: var(--theme-brightcyan);
   opacity: 1;
 }

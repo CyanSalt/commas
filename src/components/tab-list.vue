@@ -1,6 +1,6 @@
 <template>
   <div class="tab-list">
-    <div class="list">
+    <div class="list" :style="{width: width + 'px'}">
       <div class="processes">
         <tab-item :tab="tab" @click.native="activite(tab)"
           v-for="(tab, index) in running" :key="tab.id"></tab-item>
@@ -31,7 +31,7 @@
         </div>
       </div>
     </div>
-    <div class="sash"></div>
+    <div class="sash" @mousedown.left="resize"></div>
   </div>
 </template>
 
@@ -46,6 +46,7 @@ export default {
   },
   data() {
     return {
+      width: 176,
       collapsed: true,
     }
   },
@@ -68,6 +69,25 @@ export default {
       const {action} = this.$maye
       action.dispatch('command.exec', 'open-launchers')
     },
+    resize(e) {
+      const {action} = this.$maye
+      const original = this.width
+      const start = e.clientX
+      const handler = event => {
+        let width = original + event.clientX - start
+        width = Math.min(Math.max(width, 96), document.body.clientWidth / 2)
+        if (width !== this.width) {
+          this.width = width
+          action.dispatch('terminal.resize')
+        }
+      }
+      const cancelation = () => {
+        window.removeEventListener('mousemove', handler)
+        window.removeEventListener('mouseup', cancelation)
+      }
+      window.addEventListener('mousemove', handler)
+      window.addEventListener('mouseup', cancelation)
+    },
   },
 }
 </script>
@@ -75,14 +95,15 @@ export default {
 <style>
 .tab-list {
   flex: none;
-  /* width: 180px; */
   display: flex;
   font-size: 14px;
 }
 .tab-list .list {
   flex: auto;
+  width: 176px;
   padding: 4px 16px;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 .tab-list .sash {
   flex: none;
@@ -90,6 +111,7 @@ export default {
   margin: 4px 0;
   border-right: 2px solid;
   opacity: 0.05;
+  cursor: col-resize;
 }
 .tab-list .invisible {
   visibility: hidden;
