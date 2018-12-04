@@ -1,7 +1,7 @@
 <template>
   <div class="find-box" v-show="finding">
     <input class="keyword" v-model="keyword" :placeholder="i18n('Find#!6')"
-      @keyup.enter="find" @keyup.esc="close" autofocus>
+      @keyup.enter="find" @keyup.esc="close" ref="keyword" autofocus>
     <div class="options">
       <div :class="['option', 'case-sensitive', {selected: options.caseSensitive}]"
         @click="toggle('caseSensitive')">Aa</div>
@@ -65,9 +65,22 @@ export default {
       })
     },
     close() {
-      const {state} = this.$maye
+      const {state, accessor} = this.$maye
       state.set('shell.finding', false)
+      this.$nextTick(() => {
+        const current = accessor.get('terminal.current')
+        current.xterm.focus()
+      })
     },
+  },
+  watch: {
+    finding(value, old) {
+      if (value && !old) {
+        this.$nextTick(() => {
+          this.$refs.keyword.focus()
+        })
+      }
+    }
   },
 }
 </script>
