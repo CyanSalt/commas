@@ -1,5 +1,5 @@
 <template>
-  <div class="terminal-teletype" ref="term"
+  <div class="terminal-teletype"
     @dragover.prevent="dragging" @drop.prevent="drop"></div>
 </template>
 
@@ -29,8 +29,14 @@ export default {
     const {action} = this.$maye
     action.dispatch('terminal.mount', {
       tab: this.tab,
-      element: this.$refs.term
+      element: this.$el,
     })
+  },
+  activated() {
+    const viewport = this.$el.querySelector('.xterm-viewport')
+    if (viewport) {
+      viewport.scrollTop = viewport.scrollHeight - viewport.clientHeight
+    }
   },
 }
 </script>
