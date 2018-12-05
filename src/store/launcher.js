@@ -1,5 +1,7 @@
 import {FileStorage} from '../plugins/storage'
 
+const quote = command => `"${command.replace(/"/g, '"\\""')}"`
+
 export default {
   states: {
     all: [],
@@ -25,12 +27,16 @@ export default {
     launch({action}, launcher) {
       action.dispatch([this, 'activite'], launcher)
       let command = launcher.command
+      if (launcher.login) {
+        command = `bash -lic ${quote(command)}`
+      } else {
+        command = `(${command})`
+      }
       if (launcher.directory) {
-        command = `cd ${launcher.directory} && (${command})`
+        command = `cd ${launcher.directory} && ${command}`
       }
       if (launcher.remote) {
-        command = `"${command.replace(/"/g, '"\\""')}"`
-        command = `ssh -t ${launcher.remote} ${command}`
+        command = `ssh -t ${launcher.remote} ${quote(command)}`
       }
       launcher.tab.pty.write(`${command}\n`)
     },
