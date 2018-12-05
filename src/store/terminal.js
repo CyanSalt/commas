@@ -19,7 +19,6 @@ const variables = {
 
 export default {
   states: {
-    resizer: null,
     observer: null,
     tabs: [],
     active: -1,
@@ -144,15 +143,11 @@ export default {
         xterm.focus()
       })
     },
-    resize({state, accessor}) {
-      if (state.get([this, 'resizer'])) return
-      const resizer = requestAnimationFrame(() => {
-        const current = accessor.get([this, 'current'])
-        if (!current) return
-        if (current.xterm) current.xterm.fit()
-        state.set([this, 'resizer'], null)
-      })
-      state.set([this, 'resizer'], resizer)
+    resize({accessor}) {
+      const current = accessor.get([this, 'current'])
+      if (current && current.xterm) {
+        current.xterm.fit()
+      }
     },
     input(Maye, {tab, data}) {
       tab.pty.write(data)

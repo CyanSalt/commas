@@ -65,22 +65,20 @@ export default {
       })
     },
     close() {
-      const {state, accessor} = this.$maye
+      const {state} = this.$maye
       state.set('shell.finding', false)
-      this.$nextTick(() => {
-        const current = accessor.get('terminal.current')
-        current.xterm.focus()
-      })
     },
   },
-  watch: {
-    finding(value, old) {
-      if (value && !old) {
-        this.$nextTick(() => {
-          this.$refs.keyword.focus()
-        })
+  mounted() {
+    const {accessor} = this.$maye
+    new IntersectionObserver(([{isIntersecting}]) => {
+      if (isIntersecting) {
+        this.$refs.keyword.focus()
+      } else {
+        const current = accessor.get('terminal.current')
+        current.xterm.focus()
       }
-    }
+    }).observe(this.$el)
   },
 }
 </script>
