@@ -6,9 +6,9 @@
 
 A hackable terminal and command runner. **Commas** means **Com**mand **Mas**ter.
 
-> *There should have been a screenshot here if i were not too lazy...*
+![Screenshot](https://user-images.githubusercontent.com/5101076/49566451-9e70b600-f965-11e8-8274-a39a5efd0071.png)
 
-### How to use
+### How to install
 
 * Currently you can clone or download this repository and compile this app locally. The release version is comming.
   - After downloading the source code, enter the directory in command line and execute the installation script. Make sure that Node.js with version >= 8.5.0 is installed on your device.
@@ -28,7 +28,7 @@ A hackable terminal and command runner. **Commas** means **Com**mand **Mas**ter.
 
 * You can put any of the files referenced above to your user data folder. JSON files will be treated as [JSON5](https://json5.org/) format (like the object literals in ECMAScript 5).
 
-* Press <kbd>&#8984;</kbd> / <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> to open devtools of Commas to check out the , just like what you do in Chrome!
+* Press <kbd>&#8984;</kbd> / <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> to open devtools of Commas to inspect the HTML elements of UI, just like what you do in Chrome!
 
 ### Extra tips
 
