@@ -18,6 +18,7 @@
   "terminal.style.fontLigatures": false,
 
   // File name of internal theme or files in `themes/` folder
+  // Support `oceanic-next` or `tomorrow` by default
   "terminal.theme.name": "oceanic-next",
 
   // Overwrite colors in the theme file

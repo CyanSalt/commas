@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "productName": "Commas",
   "author": "CyanSalt",
-  "description": "A command line GUI runner.",
+  "description": "A hackable terminal and command runner.",
   "main": "window.js",
   "scripts": {
     "build": "webpack --mode=production && node makefile.js",
