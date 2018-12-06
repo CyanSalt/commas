@@ -1,5 +1,5 @@
 <template>
-  <div :class="['tab', {active}]">
+  <div :class="['tab', {active, thin: !tab}]">
     <div class="tab-overview">
       <div class="tab-name">{{ name }}</div>
       <div class="operations">
@@ -9,7 +9,7 @@
         </div>
       </div>
     </div>
-    <div class="tab-title">{{ realtitle }}</div>
+    <div class="tab-title" v-if="tab">{{ realtitle }}</div>
     <div class="divider"></div>
   </div>
 </template>
@@ -28,6 +28,10 @@ export default {
       type: Object,
       default: null,
     },
+    short: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     tabs: VueMaye.state('terminal.tabs'),
@@ -36,13 +40,12 @@ export default {
       return this.tabs[this.focus] === this.tab
     },
     name() {
-      if (!this.tab) return '-'
+      if (!this.tab && this.title) return this.title
       VueMaye.watch('terminal.tabs')
       return this.tab.process
     },
     realtitle() {
       if (this.title) return this.title
-      if (!this.tab) return '-'
       VueMaye.watch('terminal.tabs')
       return this.tab.title || this.tab.id
     }
@@ -72,13 +75,16 @@ export default {
 .tab .tab-overview {
   display: flex;
   justify-content: space-between;
-  font-size: 18px;
   height: 32px;
   line-height: 32px;
+}
+.tab:not(.thin) .tab-name {
+  font-size: 18px;
 }
 .tab .operations {
   flex: none;
   display: none;
+  font-size: 18px;
 }
 .tab:hover .operations {
   display: flex;

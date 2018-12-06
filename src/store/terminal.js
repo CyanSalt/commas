@@ -81,7 +81,9 @@ export default {
       pty.on('exit', () => {
         const active = state.get([this, 'active'])
         const observer = state.get([this, 'observer'])
-        observer.unobserve(xterm.element)
+        if (xterm.element) {
+          observer.unobserve(xterm.element)
+        }
         xterm.destroy()
         state.update([this, 'tabs'], tabs => {
           const index = tabs.indexOf(tab)
@@ -145,7 +147,7 @@ export default {
     },
     resize({accessor}) {
       const current = accessor.get([this, 'current'])
-      if (current && current.xterm) {
+      if (current && current.xterm && current.xterm.element) {
         current.xterm.fit()
       }
     },

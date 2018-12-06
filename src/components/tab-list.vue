@@ -123,11 +123,16 @@ export default {
 }
 .tab-list .launcher-folder {
   display: flex;
-  margin-top: 17px;
+  padding-top: 17px;
   position: sticky;
-  top: 0;
+  /* use padding + top instead of margin
+     for blink's bug of `backdrop-filter` */
+  top: -17px;
   z-index: 1;
   cursor: pointer;
+  /* erase backdrop text */
+  background: var(--theme-background);
+  backdrop-filter: opacity(0);
 }
 .tab-list .group-name {
   flex: auto;

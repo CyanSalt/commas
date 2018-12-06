@@ -76,7 +76,7 @@ export default {
         this.$refs.keyword.focus()
       } else {
         const current = accessor.get('terminal.current')
-        current.xterm.focus()
+        if (current && current.xterm) current.xterm.focus()
       }
     }).observe(this.$el)
   },

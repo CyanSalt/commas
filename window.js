@@ -16,6 +16,8 @@ function createWindow(args) {
     frame: false,
     titleBarStyle: 'hiddenInset',
     transparent: true,
+    // fix bug of transparent background after toggling devtools
+    backgroundColor: '#00ffffff',
     acceptFirstMouse: true,
     affinity: 'default',
     webPreferences: {
