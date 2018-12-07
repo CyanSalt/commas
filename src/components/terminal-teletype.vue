@@ -33,10 +33,11 @@ export default {
     })
   },
   activated() {
-    const viewport = this.$el.querySelector('.xterm-viewport')
-    if (viewport) {
-      viewport.scrollTop = viewport.scrollHeight - viewport.clientHeight
-    }
+    // Fix bug of xterm.js after unmounted element updated
+    // eslint-disable-next-line no-underscore-dangle
+    const terminal = this.tab.xterm._core
+    if (terminal.viewport) terminal.viewport.syncScrollArea()
+    this.tab.xterm.scrollToBottom()
   },
 }
 </script>

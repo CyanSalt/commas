@@ -207,7 +207,7 @@ function createWindowMenu(frame) {
       submenu: [
         {role: 'toggledevtools'},
         {
-          label: 'Reload all windows',
+          label: 'Reload All Windows',
           accelerator: 'CmdOrCtrl+Shift+R',
           click() {
             frames.forEach(window => window.reload())
