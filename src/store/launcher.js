@@ -25,19 +25,19 @@ export default {
       }
     },
     launch({action}, launcher) {
+      const active = launcher.tab
       action.dispatch([this, 'activite'], launcher)
       let command = launcher.command
       if (launcher.login) {
         command = `bash -lic ${quote(command)}`
-      } else {
-        command = `(${command})`
       }
       if (launcher.directory) {
-        command = `cd ${launcher.directory} && ${command}`
+        command = `cd ${launcher.directory} && (${command})`
       }
       if (launcher.remote) {
         command = `ssh -t ${launcher.remote} ${quote(command)}`
       }
+      if (active) launcher.tab.pty.kill('SIGINT')
       launcher.tab.pty.write(`${command}\n`)
     },
   },
