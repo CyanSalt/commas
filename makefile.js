@@ -44,7 +44,7 @@ const options = {
   },
   extendInfo: {
     NSHumanReadableCopyright: [
-      'Copyright ©', new Date().getFullYear(), app.author,
+      'Copyright \u00a9', new Date().getFullYear(), app.author,
     ].join(' '),
   },
 }
