@@ -33,7 +33,7 @@ export default {
   },
   actions: {
     // eslint-disable-next-line max-lines-per-function
-    spawn({state, accessor}) {
+    spawn({state, accessor}, path) {
       const settings = state.get('settings.user')
       const shell = settings['terminal.shell.path'] || (
         process.platform === 'win32' ? process.env.COMSPEC : process.env.SHELL)
@@ -48,7 +48,7 @@ export default {
       const pty = spawn(shell, settings['terminal.shell.args'], {
         name: 'xterm-256color',
         encoding: 'utf8',
-        cwd: env.HOME,
+        cwd: path || env.HOME,
         env,
       })
       const tab = {
