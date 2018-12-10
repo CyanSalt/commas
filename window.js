@@ -23,7 +23,14 @@ function createWindow(args) {
     webPreferences: {
       experimentalFeatures: true,
     },
-    ...args,
+  }
+  // frame offset
+  if (frames.length) {
+    const rect = frames[frames.length - 1].getBounds()
+    Object.assign(options, {
+      x: rect.x + 30,
+      y: rect.y + 30,
+    })
   }
   const frame = new BrowserWindow(options)
   loadHTMLFile(frame, 'src/index.html')
@@ -38,6 +45,10 @@ function createWindow(args) {
   transferEvents(frame)
   // reference to avoid GC
   collectWindow(frame)
+  // additional arguments for renderer
+  if (args) {
+    frame.additionalArguments = args
+  }
 }
 
 function loadHTMLFile(frame, path) {
@@ -256,27 +267,44 @@ function transferInvoking() {
       sender.send('confirm', response)
     })
   })
-  ipcMain.on('open-window', event => {
-    const {sender} = event
-    const parent = frames.find(frame => frame.webContents === sender)
-    const rect = parent.getBounds()
-    createWindow({x: rect.x + 30, y: rect.y + 30})
+  ipcMain.on('open-window', () => {
+    createWindow()
   })
 }
 
+let cwd
 app.on('ready', () => {
   if (process.platform === 'darwin') {
     createApplicationMenu()
     createDockMenu()
   }
   transferInvoking()
-  createWindow()
+  createWindow(cwd && {path: cwd})
 })
 
 app.on('activate', () => {
   if (!frames.length && app.isReady()) {
     createWindow()
   }
+})
+
+app.on('will-finish-launching', () => {
+  // handle opening outside
+  app.on('open-file', (event, path) => {
+    event.preventDefault()
+    // for Windows
+    if (!path) {
+      path = process.argv[process.argv.length - 1]
+    }
+    if (!app.isReady()) {
+      cwd = path
+    } else if (frames.length) {
+      const last = frames[frames.length - 1]
+      last.webContents.send('open-path', path)
+    } else {
+      createWindow({path})
+    }
+  })
 })
 
 app.on('window-all-closed', () => {

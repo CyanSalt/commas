@@ -20,7 +20,7 @@ import TitleBar from './title-bar'
 import TabList from './tab-list'
 import FindBox from './find-box'
 import TerminalTeletype from './terminal-teletype'
-import {ipcRenderer} from 'electron'
+import {ipcRenderer, remote} from 'electron'
 
 export default {
   el: '#main',
@@ -45,13 +45,19 @@ export default {
   },
   created() {
     const {action} = this.$maye
+    const frame = remote.getCurrentWindow()
+    const initialPath = frame.additionalArguments &&
+      frame.additionalArguments.path
     action.dispatch('settings.load').then(() => {
       action.dispatch('theme.load')
-      action.dispatch('terminal.spawn')
+      action.dispatch('terminal.spawn', initialPath)
     })
     action.dispatch('launcher.load')
     window.addEventListener('beforeunload', event => {
       action.dispatch('shell.closing', {event, i18n: this.i18n})
+    })
+    ipcRenderer.on('open-path', (event, path) => {
+      action.dispatch('terminal.spawn', path)
     })
     ipcRenderer.on('command', (event, command) => {
       action.dispatch('command.exec', command)
