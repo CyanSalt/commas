@@ -4,7 +4,7 @@
       <div class="processes">
         <tab-item :tab="tab" @click.native="activite(tab)"
           v-for="(tab, index) in running" :key="tab.id"></tab-item>
-        <div class="new-tab anchor" @click="spawn">
+        <div class="new-tab anchor" @click="spawn()">
           <span class="feather-icon icon-plus"></span>
         </div>
       </div>
