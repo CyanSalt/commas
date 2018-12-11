@@ -33,7 +33,7 @@ export default {
     })
   },
   activated() {
-    // Fix bug of xterm.js after unmounted element updated
+    // issue@xterm: fix bug after unmounted element updated
     // eslint-disable-next-line no-underscore-dangle
     const terminal = this.tab.xterm._core
     if (terminal.viewport) terminal.viewport.syncScrollArea()

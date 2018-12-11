@@ -16,7 +16,7 @@ function createWindow(args) {
     frame: false,
     titleBarStyle: 'hiddenInset',
     transparent: true,
-    // fix bug of transparent background after toggling devtools
+    // issue@electron: fix bug of transparent background after toggling devtools
     backgroundColor: '#00ffffff',
     acceptFirstMouse: true,
     affinity: 'default',
@@ -165,7 +165,7 @@ function createApplicationMenu() {
           }
         },
         {type: 'separator'},
-        {role: 'services', submenu: []},
+        {role: 'services'},
         {type: 'separator'},
         {role: 'hide'},
         {role: 'hideothers'},

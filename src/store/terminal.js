@@ -17,6 +17,8 @@ const variables = {
   TERM_PROGRAM_VERSION: remote.app.getVersion(),
 }
 
+const isPackaged = remote.app.isPackaged
+
 export default {
   states: {
     observer: null,
@@ -42,8 +44,8 @@ export default {
         ...settings['terminal.shell.env'],
         ...variables,
       }
-      // Fix NVM `npm_config_prefix` error
-      if (env.npm_config_prefix) delete env.npm_config_prefix
+      // Fix NVM `npm_config_prefix` error in development environment
+      if (!isPackaged && env.npm_config_prefix) delete env.npm_config_prefix
       // Initialize node-pty process
       const pty = spawn(shell, settings['terminal.shell.args'], {
         name: 'xterm-256color',
@@ -56,7 +58,7 @@ export default {
         id: pty.pid,
         process: pty.process,
       }
-      // Apply transparency background color and selection
+      // issue@xterm: apply transparency background color and selection
       let theme = state.get('theme.user')
       theme = {...theme, background: 'transparent'}
       // Initialize xterm.js and attach it to the DOM

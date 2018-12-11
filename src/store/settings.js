@@ -24,6 +24,7 @@ export default {
         }
         return diff
       }
+      // TODO: better data merging logic
       const computed = Object.entries(defaultSettings).reduce(reducer, {})
       FileStorage.save('settings.json', computed)
     },
