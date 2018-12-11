@@ -54,7 +54,8 @@ export default {
     })
     action.dispatch('launcher.load')
     window.addEventListener('beforeunload', event => {
-      action.dispatch('shell.closing', {event, i18n: this.i18n})
+      const prevent = action.dispatch('shell.closing')
+      if (prevent) event.returnValue = false
     })
     ipcRenderer.on('open-path', (event, path) => {
       action.dispatch('terminal.spawn', path)

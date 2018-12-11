@@ -1,4 +1,5 @@
 import {remote} from 'electron'
+import {translate} from '../plugins/i18n'
 
 export default {
   states: {
@@ -6,15 +7,15 @@ export default {
     finding: false,
   },
   actions: {
-    closing({state}, {event, i18n}) {
+    closing({state}) {
       const tabs = state.get('terminal.tabs')
-      if (tabs.length <= 1) return
+      if (tabs.length <= 1) return false
       const args = {
-        message: i18n('Close Window?#!1'),
-        detail: i18n('All tabs in this window will be closed.#!2'),
+        message: translate('Close Window?#!1'),
+        detail: translate('All tabs in this window will be closed.#!2'),
         buttons: [
-          i18n('Confirm#!3'),
-          i18n('Cancel#!4'),
+          translate('Confirm#!3'),
+          translate('Cancel#!4'),
         ],
         cancelId: 1,
         defaultId: 0,
@@ -23,7 +24,7 @@ export default {
       remote.dialog.showMessageBox(frame, args, response => {
         if (response === 0) frame.destroy()
       })
-      event.returnValue = false
+      return true
     },
     drop({action}, {tab, files}) {
       const paths = Array.from(files).map(({path}) => {

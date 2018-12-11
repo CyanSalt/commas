@@ -19,26 +19,34 @@ function load(file) {
   }
 }
 
-export function getTranslationFile(locale) {
+function getTranslationFile(locale) {
   const translation = translations
     .find(({locales}) => locales.includes(locale))
   return translation ? translation.file : null
 }
 
+function getDictionary() {
+  let locale = remote.app.getLocale()
+  const custom = FileStorage.loadSync('translation.json') || {}
+  if (custom['@use']) locale = custom['@use']
+  // Load translation data
+  const file = getTranslationFile(locale)
+  const dictionary = (file && load(file)) || {}
+  // Merge user defined translation data
+  for (const [key, value] of Object.entries(custom)) {
+    if (value) dictionary[key] = value
+  }
+  return dictionary
+}
+
+const dictionary = getDictionary()
+
+export function translate(message) {
+  return dictionary[message] || message.split('#!')[0]
+}
+
 export default {
   install(Vue, options) {
-    let locale = remote.app.getLocale()
-    const custom = FileStorage.loadSync('translation.json') || {}
-    if (custom['@use']) locale = custom['@use']
-    // Load translation data
-    const file = getTranslationFile(locale)
-    const dictionary = (file && load(file)) || {}
-    // Merge user defined translation data
-    for (const [key, value] of Object.entries(custom)) {
-      if (value) dictionary[key] = value
-    }
-    Vue.prototype.i18n = function (message) {
-      return dictionary[message] || message.split('#!')[0]
-    }
+    Vue.prototype.i18n = translate
   }
 }
