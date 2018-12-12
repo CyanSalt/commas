@@ -1,4 +1,4 @@
-import defaultSettings from '../assets/settings.json'
+import fallback from '../assets/settings.json'
 import {FileStorage} from '../plugins/storage'
 
 function clone(object) {
@@ -11,8 +11,8 @@ function congruent(source, target) {
 
 export default {
   states: {
-    default: defaultSettings,
-    user: clone(defaultSettings),
+    default: fallback,
+    user: clone(fallback),
     watcher: null,
   },
   actions: {
@@ -20,7 +20,7 @@ export default {
       // load user settings
       const declared = await FileStorage.load('settings.json')
       if (!declared) return state.get([this, 'user'])
-      const data = {...clone(defaultSettings), ...declared}
+      const data = {...clone(fallback), ...declared}
       state.set([this, 'user'], data)
       return data
     },
@@ -28,13 +28,13 @@ export default {
       // filter default values on saving
       const data = state.get([this, 'user'])
       const reducer = (diff, [key, value]) => {
-        if (!congruent(value, data[key])) {
-          diff[key] = data[key]
+        if (!congruent(value, fallback[key])) {
+          diff[key] = fallback[key]
         }
         return diff
       }
       // TODO: better data merging logic
-      const computed = Object.entries(defaultSettings).reduce(reducer, {})
+      const computed = Object.entries(data).reduce(reducer, {})
       FileStorage.save('settings.json', computed)
     },
     watch({state, action}, callback) {

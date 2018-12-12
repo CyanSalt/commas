@@ -1,6 +1,6 @@
 import {readFileSync} from 'fs'
 import {resolve} from 'path'
-import defaultTheme from '../assets/themes/oceanic-next.json'
+import fallback from '../assets/themes/oceanic-next.json'
 import {FileStorage} from '../plugins/storage'
 
 function load(file) {
@@ -14,13 +14,13 @@ function load(file) {
 
 export default {
   states: {
-    default: defaultTheme,
+    default: fallback,
     user: null,
     watcher: null,
   },
   actions: {
     async load({state, action}) {
-      const theme = {...defaultTheme}
+      const theme = {...fallback}
       const settings = state.get('settings.user')
       const specified = settings['terminal.theme.name']
       if (specified && specified !== 'oceanic-next') {

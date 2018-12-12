@@ -7,5 +7,6 @@
 module.exports = function (Maye, $root) {
 
   // an example to hack your software
+  // console.log(Maye, $root)
 
 }
