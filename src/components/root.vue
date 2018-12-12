@@ -48,9 +48,14 @@ export default {
     const frame = remote.getCurrentWindow()
     const initialPath = frame.additionalArguments &&
       frame.additionalArguments.path
-    action.dispatch('settings.load').then(() => {
-      action.dispatch('theme.load')
+    ;(async function () {
+      await action.dispatch('settings.load')
+      await action.dispatch('theme.load')
       action.dispatch('terminal.spawn', initialPath)
+    })()
+    action.dispatch('settings.watch', async () => {
+      await action.dispatch('theme.load')
+      action.dispatch('terminal.refresh')
     })
     action.dispatch('launcher.load')
     window.addEventListener('beforeunload', event => {
@@ -77,7 +82,7 @@ export default {
   height: 100vh;
   /* Default line height of xterm.js */
   line-height: 1.2;
-  color: var(--theme-foreground);
+  color: var(--theme-foreground, transparent);
   background: var(--theme-background);
 }
 #main .content {

@@ -1,4 +1,4 @@
-import {readFile, readFileSync, writeFile, mkdir, access} from 'fs'
+import {readFile, readFileSync, writeFile, mkdir, access, watch} from 'fs'
 import {dirname, resolve} from 'path'
 import {promisify} from 'util'
 import {remote} from 'electron'
@@ -45,6 +45,10 @@ export const FileStorage = {
       await promises.mkdir(dirname(filename))
     } catch (e) {}
     return promises.writeFile(filename, content)
+  },
+  watch(basename, updater) {
+    // `chokidar` is too large; `gaze` seems to be OK. Use native currently.
+    return watch(this.filename(basename), updater)
   },
   readSync(basename) {
     try {

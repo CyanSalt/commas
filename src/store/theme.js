@@ -15,22 +15,27 @@ function load(file) {
 export default {
   states: {
     default: defaultTheme,
-    user: {},
+    user: null,
+    watcher: null,
   },
   actions: {
     async load({state, action}) {
-      const theme = defaultTheme
+      const theme = {...defaultTheme}
       const settings = state.get('settings.user')
       const specified = settings['terminal.theme.name']
       if (specified && specified !== 'oceanic-next') {
         const file = load(specified) ||
           await FileStorage.load(`themes/${specified}.json`)
-        if (file) Object.assign(theme, file)
+        if (file) {
+          action.dispatch([this, 'watch'], `themes/${specified}.json`)
+          Object.assign(theme, file)
+        }
       }
       const customization = settings['terminal.theme.customization']
       if (customization) {
         Object.assign(theme, customization)
       }
+      action.dispatch([this, 'eject'])
       state.set([this, 'user'], theme)
       action.dispatch([this, 'inject'])
     },
@@ -38,6 +43,7 @@ export default {
       const theme = state.get([this, 'user'])
       const settings = state.get('settings.user')
       const element = document.createElement('style')
+      element.id = 'commas-theme'
       const properties = {}
       Object.keys(theme).forEach(key => {
         properties[`--theme-${key.toLowerCase()}`] = theme[key]
@@ -50,6 +56,23 @@ export default {
       element.appendChild(document.createTextNode(`#main { ${declarations} }`))
       document.head.appendChild(element)
       document.body.classList.add(theme.type)
+    },
+    eject({state}) {
+      const theme = state.get([this, 'user'])
+      if (!theme) return
+      // TODO: performance review
+      const element = document.getElementById('commas-theme')
+      if (element) element.remove()
+      document.body.classList.remove(theme.type)
+    },
+    watch({state, action}, file) {
+      state.update([this, 'watcher'], watcher => {
+        if (watcher) watcher.close()
+        return FileStorage.watch(file, async () => {
+          await action.dispatch([this, 'load'])
+          action.dispatch('terminal.refresh')
+        })
+      }, true)
     },
   }
 }

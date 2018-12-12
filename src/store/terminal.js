@@ -145,7 +145,7 @@ export default {
         }
         xterm.fit()
         xterm.focus()
-      })
+      }, {timeout: 1000})
     },
     resize({accessor}) {
       const current = accessor.get([this, 'current'])
@@ -172,6 +172,21 @@ export default {
         current.xterm.findPrevious(keyword, options)
       } else {
         current.xterm.findNext(keyword, options)
+      }
+    },
+    refresh({state}) {
+      const tabs = state.get([this, 'tabs'])
+      const settings = state.get('settings.user')
+      let theme = state.get('theme.user')
+      theme = {...theme, background: 'transparent'}
+      // TODO: performance review
+      for (const tab of tabs) {
+        tab.xterm.setOption('fontSize', settings['terminal.style.fontSize'])
+        tab.xterm.setOption('fontFamily', settings['terminal.style.fontFamily'])
+        tab.xterm.setOption('theme', theme)
+        if (settings['terminal.style.fontLigatures']) {
+          tab.xterm.enableLigatures()
+        }
       }
     },
   }
