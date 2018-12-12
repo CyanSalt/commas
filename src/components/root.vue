@@ -48,7 +48,7 @@ export default {
     const frame = remote.getCurrentWindow()
     const initialPath = frame.additionalArguments &&
       frame.additionalArguments.path
-    ;(async function () {
+    ;(async () => {
       await action.dispatch('settings.load')
       await action.dispatch('theme.load')
       action.dispatch('terminal.spawn', initialPath)
@@ -58,6 +58,7 @@ export default {
       action.dispatch('terminal.refresh')
     })
     action.dispatch('launcher.load')
+    action.dispatch('launcher.watch')
     window.addEventListener('beforeunload', event => {
       const prevent = action.dispatch('shell.closing')
       if (prevent) event.returnValue = false

@@ -40,5 +40,17 @@ export default {
       if (active) launcher.tab.pty.kill('SIGINT')
       launcher.tab.pty.write(`${command}\n`)
     },
+    watch({state, action}) {
+      state.update([this, 'watcher'], watcher => {
+        if (watcher) watcher.close()
+        return FileStorage.watch('launchers.json', () => {
+          const launchers = state.get([this, 'all'])
+          // don't update if any launcher is running
+          if (launchers.every(launcher => !launcher.tab)) {
+            action.dispatch([this, 'load'])
+          }
+        })
+      }, true)
+    },
   },
 }
