@@ -1,17 +1,33 @@
 <template>
   <div class="terminal-teletype"
-    @dragover.prevent="dragging" @drop.prevent="drop"></div>
+    @dragover.prevent="dragging" @drop.prevent="drop">
+    <div class="terminal-content" ref="terminal"></div>
+    <scroll-bar :parent="viewport" v-if="viewport"></scroll-bar>
+  </div>
 </template>
 
 <script>
+import ScrollBar from './scroll-bar'
 import 'xterm/lib/xterm.css'
 
 export default {
   name: 'terminal-teletype',
+  components: {
+    'scroll-bar': ScrollBar,
+  },
   props: {
     tab: Object,
   },
+  data() {
+    return {
+      viewport: null,
+    }
+  },
   methods: {
+    bound() {
+      // eslint-disable-next-line no-underscore-dangle
+      this.viewport = this.tab.xterm._core._viewportElement
+    },
     dragging(e) {
       e.dataTransfer.dropEffect = 'copy'
     },
@@ -29,8 +45,12 @@ export default {
     const {action} = this.$maye
     action.dispatch('terminal.mount', {
       tab: this.tab,
-      element: this.$el,
+      element: this.$refs.terminal,
     })
+    new MutationObserver((mutations, observer) => {
+      this.bound()
+      observer.disconnect()
+    }).observe(this.$refs.terminal, {childList: true})
   },
   activated() {
     // issue@xterm: fix bug after unmounted element updated
@@ -46,12 +66,20 @@ export default {
 .terminal-teletype {
   flex: auto;
   display: flex;
-  padding: 4px 8px;
   position: relative;
-  /* Fix bug of `xterm.fit()` */
+}
+.terminal-content {
+  flex: auto;
+  padding: 4px 8px;
+  /* issue@xterm: change viewport element position */
+  position: relative;
+  /* issue@xterm: fix bug of `xterm.fit()` */
   box-sizing: border-box;
 }
-.terminal-teletype .xterm {
+.terminal-content .xterm {
   position: static;
+}
+.terminal-content .xterm-viewport {
+  overflow-y: hidden;
 }
 </style>

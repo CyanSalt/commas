@@ -31,6 +31,7 @@
         </div>
       </div>
     </div>
+    <scroll-bar></scroll-bar>
     <div class="sash" @mousedown.left="resize"></div>
   </div>
 </template>
@@ -38,11 +39,13 @@
 <script>
 import VueMaye from 'maye/plugins/vue'
 import TabItem from './tab-item'
+import ScrollBar from './scroll-bar'
 
 export default {
   name: 'tab-list',
   components: {
     'tab-item': TabItem,
+    'scroll-bar': ScrollBar,
   },
   data() {
     return {
@@ -92,6 +95,7 @@ export default {
 .tab-list {
   flex: none;
   display: flex;
+  position: relative;
   font-size: 14px;
 }
 .tab-list .list {
@@ -100,6 +104,12 @@ export default {
   padding: 4px 16px;
   overflow-y: auto;
   box-sizing: border-box;
+}
+.tab-list .list::-webkit-scrollbar {
+  width: 0px;
+}
+.tab-list .scroll-bar {
+  width: 8px;
 }
 .tab-list .sash {
   flex: none;
