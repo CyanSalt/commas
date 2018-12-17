@@ -260,6 +260,9 @@ function transferEvents(frame) {
 }
 
 function transferInvoking() {
+  app.on('before-quit', () => {
+    frames.forEach(frame => frame.webContents.send('before-quit'))
+  })
   ipcMain.on('confirm', (event, args) => {
     const {sender} = event
     const window = frames.find(frame => frame.webContents === sender)

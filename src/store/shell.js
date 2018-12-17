@@ -3,11 +3,13 @@ import {translate} from '../plugins/i18n'
 
 export default {
   states: {
+    quiting: false,
     multitabs: true,
     finding: false,
   },
   actions: {
     closing({state}) {
+      if (state.get([this, 'quiting'])) return false
       const tabs = state.get('terminal.tabs')
       if (tabs.length <= 1) return false
       const args = {

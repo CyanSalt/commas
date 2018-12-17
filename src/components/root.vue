@@ -44,7 +44,7 @@ export default {
     }
   },
   created() {
-    const {action} = this.$maye
+    const {state, action} = this.$maye
     const frame = remote.getCurrentWindow()
     const initialPath = frame.additionalArguments &&
       frame.additionalArguments.path
@@ -59,6 +59,9 @@ export default {
     })
     action.dispatch('launcher.load')
     action.dispatch('launcher.watch')
+    ipcRenderer.on('before-quit', (event, path) => {
+      state.set('shell.quiting', true)
+    })
     window.addEventListener('beforeunload', event => {
       const prevent = action.dispatch('shell.closing')
       if (prevent) event.returnValue = false
