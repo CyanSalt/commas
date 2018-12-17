@@ -12,13 +12,20 @@
         <div class="group-name">{{ i18n('Launchers#!5') }}</div>
         <div class="indicator">
           <span class="feather-icon icon-chevron-up" v-if="collapsed"></span>
-          <span class="feather-icon icon-chevron-down" v-else></span>
+          <template v-else>
+            <span class="feather-icon icon-search" @click.stop="find"></span>
+            <span class="feather-icon icon-chevron-down"></span>
+          </template>
         </div>
+      </div>
+      <div class="find-launcher" v-show="finding">
+        <input class="keyword" v-model="keyword" :placeholder="i18n('Find#!6')"
+          @keyup.esc="find" ref="keyword" autofocus>
       </div>
       <div class="launchers">
         <tab-item :tab="launcher.tab" :title="launcher.name"
           @click.native="open(launcher)"
-          v-for="(launcher, index) in launchers" :key="index"
+          v-for="(launcher, index) in filtered" :key="index"
           v-show="!collapsed || launcher.tab">
             <template slot="operations">
               <div class="launch" @click="launch(launcher)">
@@ -51,13 +58,21 @@ export default {
     return {
       width: 176,
       collapsed: true,
+      finding: false,
+      keyword: '',
     }
   },
   computed: {
     tabs: VueMaye.state('terminal.tabs'),
     launchers: VueMaye.state('launcher.all'),
-    running({state}) {
+    running() {
       return this.tabs.filter(tab => !tab.launcher)
+    },
+    filtered() {
+      if (!this.keyword) return this.launchers
+      const keywords = this.keyword.toLowerCase().split(/\s+/)
+      return this.launchers.filter(launcher => keywords.every(keyword =>
+        Object.values(launcher).join(' ').toLowerCase().indexOf(keyword) !== -1))
     },
   },
   methods: {
@@ -86,6 +101,13 @@ export default {
       }
       window.addEventListener('mousemove', handler)
       window.addEventListener('mouseup', cancelation)
+    },
+    find() {
+      if (this.finding) {
+        this.keyword = ''
+        this.$refs.keyword.blur()
+      }
+      this.finding = !this.finding
     },
   },
 }
@@ -156,8 +178,16 @@ export default {
 .tab-list .launcher-folder:hover .indicator {
   opacity: 1;
 }
+.tab-list .find-launcher,
 .tab-list .launchers {
   margin-top: 8px;
+}
+.tab-list .find-launcher .keyword {
+  border: none;
+  outline: none;
+  font: inherit;
+  color: inherit;
+  background: transparent;
 }
 .tab-list .edit-launcher {
   text-align: center;
