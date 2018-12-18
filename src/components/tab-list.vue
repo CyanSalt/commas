@@ -10,12 +10,15 @@
       </div>
       <div class="launcher-folder" @click="expandOrCollapse">
         <div class="group-name">{{ i18n('Launchers#!5') }}</div>
-        <div class="indicator">
-          <span class="feather-icon icon-chevron-up" v-if="collapsed"></span>
-          <template v-else>
-            <span class="feather-icon icon-search" @click.stop="find"></span>
-            <span class="feather-icon icon-chevron-down"></span>
-          </template>
+        <div class="buttons">
+          <div :class="['button', 'find', {active: finding}]"
+            @click.stop="find">
+            <span class="feather-icon icon-search"></span>
+          </div>
+          <div class="button indicator">
+            <span class="feather-icon icon-chevron-up" v-if="collapsed"></span>
+            <span class="feather-icon icon-chevron-down" v-else></span>
+          </div>
         </div>
       </div>
       <div class="find-launcher" v-show="finding">
@@ -170,13 +173,23 @@ export default {
   flex: auto;
   color: var(--theme-brightmagenta);
 }
-.tab-list .indicator {
+.tab-list .launcher-folder .buttons {
   flex: none;
+  display: flex;
+}
+.tab-list .launcher-folder .button {
+  width: 20px;
+  text-align: center;
   opacity: 0.5;
   transition: opacity 0.2s;
 }
+.tab-list .launcher-folder .find:hover,
 .tab-list .launcher-folder:hover .indicator {
   opacity: 1;
+}
+.tab-list .find.active {
+  opacity: 1;
+  color: var(--theme-blue);
 }
 .tab-list .find-launcher,
 .tab-list .launchers {
