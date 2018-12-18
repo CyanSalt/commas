@@ -24,12 +24,12 @@ export default {
       const settings = state.get('settings.user')
       const specified = settings['terminal.theme.name']
       if (specified && specified !== 'oceanic-next') {
-        const file = load(specified) ||
-          await FileStorage.load(`themes/${specified}.json`)
-        if (file) {
-          action.dispatch([this, 'watch'], `themes/${specified}.json`)
-          Object.assign(theme, file)
+        let file = load(specified)
+        if (!file) {
+          file = await FileStorage.load(`themes/${specified}.json`)
+          if (file) action.dispatch([this, 'watch'], `themes/${specified}.json`)
         }
+        if (file) Object.assign(theme, file)
       }
       const customization = settings['terminal.theme.customization']
       if (customization) {
