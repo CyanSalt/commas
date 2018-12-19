@@ -163,11 +163,13 @@ export default {
 }
 .tab-list .launcher-folder {
   display: flex;
-  padding-top: 17px;
   position: sticky;
-  /* use padding + top instead of margin
+  /* use padding + top/negative margin instead of margin
      for blink's bug of `backdrop-filter` */
+  padding-top: 17px;
+  padding-bottom: 8px;
   top: -17px;
+  margin-bottom: -8px;
   z-index: 1;
   cursor: pointer;
   /* erase backdrop text */
