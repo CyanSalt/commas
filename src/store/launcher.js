@@ -50,10 +50,7 @@ export default {
         process.env.HOME + launcher.directory.slice(1) : launcher.directory
       if (!explorer) return remote.shell.openItem(directory)
       const [command, ...args] = explorer.trim().split(/\s+/)
-      return spawn(command, [...args, launcher.directory], {
-        shell: true,
-        windowsHide: true,
-      })
+      return spawn(command, [...args, directory])
     },
     watch({state, action}) {
       state.update([this, 'watcher'], watcher => {
