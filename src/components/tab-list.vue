@@ -31,8 +31,11 @@
           v-for="(launcher, index) in filtered" :key="index"
           v-show="!collapsed || launcher.tab">
             <template slot="operations">
-              <div class="launch" @click="launch(launcher)">
+              <div class="button launch" @click.stop="launch(launcher)">
                 <span class="feather-icon icon-play"></span>
+              </div>
+              <div class="button assign" @click.stop="assign(launcher)">
+                <span class="feather-icon icon-external-link"></span>
               </div>
             </template>
           </tab-item>
@@ -83,6 +86,7 @@ export default {
     activite: VueMaye.action('terminal.activite'),
     open: VueMaye.action('launcher.activite'),
     launch: VueMaye.action('launcher.launch'),
+    assign: VueMaye.action('launcher.assign'),
     expandOrCollapse() {
       this.collapsed = !this.collapsed
     },
@@ -96,7 +100,7 @@ export default {
       const max = document.body.clientWidth / 2
       const handler = event => {
         const width = original + event.clientX - start
-        this.width = Math.min(Math.max(width, 96), max)
+        this.width = Math.min(Math.max(width, 120), max)
       }
       const cancelation = () => {
         window.removeEventListener('mousemove', handler)
@@ -135,6 +139,7 @@ export default {
 }
 .tab-list .scroll-bar {
   width: 8px;
+  right: 2px;
 }
 .tab-list .sash {
   flex: none;
@@ -218,5 +223,8 @@ export default {
 }
 .tab-list .launch:hover {
   color: var(--theme-green);
+}
+.tab-list .assign:hover {
+  color: var(--theme-blue);
 }
 </style>

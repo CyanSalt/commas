@@ -1,4 +1,6 @@
 import {FileStorage} from '../plugins/storage'
+import {remote} from 'electron'
+import {spawn} from 'child_process'
 
 const quote = command => `"${command.replace(/"/g, '"\\""')}"`
 
@@ -39,6 +41,19 @@ export default {
       }
       if (active) launcher.tab.pty.kill('SIGINT')
       launcher.tab.pty.write(`${command}\n`)
+    },
+    assign({state}, launcher) {
+      const settings = state.get('settings.user')
+      const explorer = settings['terminal.external.explorer']
+      if (!launcher.directory) return false
+      const directory = launcher.directory.startsWith('~') ?
+        process.env.HOME + launcher.directory.slice(1) : launcher.directory
+      if (!explorer) return remote.shell.openItem(directory)
+      const [command, ...args] = explorer.trim().split(/\s+/)
+      return spawn(command, [...args, launcher.directory], {
+        shell: true,
+        windowsHide: true,
+      })
     },
     watch({state, action}) {
       state.update([this, 'watcher'], watcher => {

@@ -8,6 +8,10 @@
   // Arguments of shell command line
   "terminal.shell.args": ["--login"],
 
+  // External file manager for launchers
+  // Open in system file manager by default
+  "terminal.external.explorer": "",
+
   // Font size for window in pixels
   "terminal.style.fontSize": 14,
 

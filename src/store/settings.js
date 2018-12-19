@@ -16,7 +16,7 @@ export default {
     watcher: null,
   },
   actions: {
-    async load({state, action}) {
+    async load({state}) {
       // load user settings
       const declared = await FileStorage.load('settings.json')
       if (!declared) return state.get([this, 'user'])

@@ -4,7 +4,7 @@
       <div class="tab-name">{{ name }}</div>
       <div class="operations">
         <slot name="operations"></slot>
-        <div class="close" @click="close">
+        <div class="button close" @click.stop="close" v-if="tab">
           <span class="feather-icon icon-x"></span>
         </div>
       </div>
@@ -84,12 +84,14 @@ export default {
 .tab .operations {
   flex: none;
   display: none;
-  font-size: 18px;
+  text-align: center;
+  font-size: 16px;
 }
 .tab:hover .operations {
   display: flex;
 }
-.tab .close {
+.tab .operations .button {
+  width: 18px;
   cursor: pointer;
   transition: color 0.2s;
 }
