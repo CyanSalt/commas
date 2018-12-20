@@ -1,8 +1,6 @@
 export default {
-  $maye: {
-    use(Maye) {
-      Maye.accessor = this
-    },
+  use(Maye) {
+    Maye.accessor = this
   },
   $store: Object.create(null),
   $get(descriptor) {

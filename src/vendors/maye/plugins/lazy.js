@@ -1,9 +1,7 @@
 export default {
-  $maye: {
-    use(Maye) {
-      Maye.state.lazy = this.$lazy
-      Maye.accessor.lazy = this.$lazy
-    }
+  use(Maye) {
+    Maye.state.lazy = this.$lazy
+    Maye.accessor.lazy = this.$lazy
   },
   $lazy(path) {
     const Maye = this.$maye.ref

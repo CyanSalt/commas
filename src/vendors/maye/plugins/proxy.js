@@ -1,8 +1,6 @@
 export default {
-  $maye: {
-    use(Maye) {
-      Maye.proxy = this.$getProxy()
-    }
+  use(Maye) {
+    Maye.proxy = this.$getProxy()
   },
   $identifier: '$',
   $getProxy(prefix = []) {

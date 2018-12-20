@@ -1,8 +1,6 @@
 export default {
-  $maye: {
-    use(Maye) {
-      Maye.action = this
-    },
+  use(Maye) {
+    Maye.action = this
   },
   $store: Object.create(null),
   define(path, callback) {

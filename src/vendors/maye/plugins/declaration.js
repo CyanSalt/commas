@@ -1,8 +1,6 @@
 export default {
-  $maye: {
-    use(Maye, options) {
-      this.$apply(Maye, options)
-    }
+  use(Maye, options) {
+    this.$apply(Maye, options)
   },
   $getReveiver(Maye, prefix) {
     if (Maye.path.Wrapper) {
