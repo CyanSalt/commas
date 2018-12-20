@@ -1,17 +1,17 @@
 export default {
   use(Maye) {
+    this.$store = Object.create(null)
     Maye.action = this
   },
-  $store: Object.create(null),
   define(path, callback) {
     if (typeof callback !== 'function') return
     const Maye = this.$maye.ref
-    const key = Maye.path.locate(path)
+    const key = Maye.path.normalize(path)
     this.$store[key] = callback
   },
   dispatch(path, payload) {
     const Maye = this.$maye.ref
-    const key = Maye.path.locate(path)
+    const key = Maye.path.normalize(path)
     const callback = this.$store[key]
     if (callback) {
       return callback(Maye, payload)

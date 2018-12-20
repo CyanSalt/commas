@@ -11,7 +11,7 @@ export default {
   },
   watch(path) {
     const {$maye, $vue} = this
-    const key = $maye.ref.path.locate(path)
+    const key = $maye.ref.path.normalize(path)
     if ($vue.hooks[key] === undefined) {
       $vue.$set($vue.hooks, key, true)
       $maye.ref.watcher.add(path, () => {

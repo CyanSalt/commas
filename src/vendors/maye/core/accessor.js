@@ -1,8 +1,8 @@
 export default {
   use(Maye) {
+    this.$store = Object.create(null)
     Maye.accessor = this
   },
-  $store: Object.create(null),
   $get(descriptor) {
     const Maye = this.$maye.ref
     const deps = []
@@ -57,7 +57,7 @@ export default {
   },
   set(path, value) {
     const Maye = this.$maye.ref
-    const key = Maye.path.locate(path)
+    const key = Maye.path.normalize(path)
     const descriptor = this.$store[key]
     if (descriptor && descriptor.set) {
       this.$set(descriptor, value)
@@ -74,7 +74,7 @@ export default {
   },
   exists(path) {
     const Maye = this.$maye.ref
-    const key = Maye.path.locate(path)
+    const key = Maye.path.normalize(path)
     return Boolean(this.$store[key])
   },
 }

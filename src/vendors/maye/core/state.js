@@ -1,8 +1,8 @@
 export default {
   use(Maye) {
+    this.$store = Object.create(null)
     Maye.state = this
   },
-  $store: Object.create(null),
   get(path) {
     const Maye = this.$maye.ref
     path = Maye.path.resolve(path)

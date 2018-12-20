@@ -1,9 +1,9 @@
 export default {
   use(Maye) {
+    this.$store = Object.create(null)
+    this.$inspectors = []
     Maye.watcher = this
   },
-  $store: Object.create(null),
-  $inspectors: [],
   $inspect(inspector) {
     if (typeof inspector !== 'function') return
     this.$inspectors.push(inspector)
@@ -20,7 +20,7 @@ export default {
   },
   $mutate(path, context) {
     const Maye = this.$maye.ref
-    const key = Maye.path.locate(path)
+    const key = Maye.path.normalize(path)
     const watchers = this.$store[key]
     if (watchers) {
       // a watcher may remove itself and change the index of watchers
@@ -33,7 +33,7 @@ export default {
   add(path, callback) {
     if (typeof callback !== 'function') return
     const Maye = this.$maye.ref
-    const key = Maye.path.locate(path)
+    const key = Maye.path.normalize(path)
     if (!this.$store[key]) {
       this.$store[key] = [callback]
     } else {
@@ -43,7 +43,7 @@ export default {
   remove(path, callback) {
     if (typeof callback !== 'function') return
     const Maye = this.$maye.ref
-    const key = Maye.path.locate(path)
+    const key = Maye.path.normalize(path)
     if (this.$store[key]) {
       const index = this.$store[key].indexOf(callback)
       if (index !== -1) {

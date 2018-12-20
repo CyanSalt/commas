@@ -1,9 +1,9 @@
 export default {
   use(Maye) {
+    this.$separator = '.'
+    this.$resolvers = []
     Maye.path = this
   },
-  $separator: '.',
-  $resolvers: [],
   resolve(path) {
     const Maye = this.$maye.ref
     if (path == null) {
@@ -18,7 +18,7 @@ export default {
   join(path) {
     return path.join(this.$separator)
   },
-  locate(path) {
+  normalize(path) {
     return this.resolve(path).join(this.$separator)
   },
 }
