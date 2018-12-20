@@ -6,8 +6,5 @@ export default {
     if ($maye.use) {
       $maye.use.call(mayeModule, this, options)
     }
-    if ($maye.name) {
-      this[$maye.name] = mayeModule
-    }
-  }
+  },
 }

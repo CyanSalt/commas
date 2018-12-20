@@ -1,6 +1,8 @@
 export default {
   $maye: {
-    name: 'watcher',
+    use(Maye) {
+      Maye.watcher = this
+    },
   },
   $store: Object.create(null),
   $inspectors: [],

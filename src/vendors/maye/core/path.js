@@ -1,6 +1,8 @@
 export default {
   $maye: {
-    name: 'path',
+    use(Maye) {
+      Maye.path = this
+    },
   },
   $separator: '.',
   $resolvers: [],

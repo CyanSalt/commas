@@ -1,6 +1,8 @@
 export default {
   $maye: {
-    name: 'state',
+    use(Maye) {
+      Maye.state = this
+    },
   },
   $store: Object.create(null),
   get(path) {
