@@ -40,13 +40,15 @@ export default {
       return this.tabs[this.focus] === this.tab
     },
     name() {
+      const {$vue} = this.$maye
       if (!this.tab && this.title) return this.title
-      VueMaye.watch('terminal.tabs')
+      $vue.watch('terminal.tabs')
       return this.tab.process
     },
     realtitle() {
+      const {$vue} = this.$maye
       if (this.title) return this.title
-      VueMaye.watch('terminal.tabs')
+      $vue.watch('terminal.tabs')
       return this.tab.title || this.tab.id
     }
   },

@@ -2,11 +2,8 @@ export default {
   use(Maye, options) {
     this.$apply(Maye, options)
   },
-  $getReveiver(Maye, prefix) {
-    if (Maye.path.Wrapper) {
-      return new Maye.path.Wrapper(prefix)
-    }
-    return null
+  $getReveiver({path}, prefix) {
+    return path.Wrapper ? new path.Wrapper(prefix) : null
   },
   $apply(Maye, options, prefix = []) {
     if (options.states) {

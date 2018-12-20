@@ -12,9 +12,9 @@ function flatMap(array, callback) {
 }
 
 export default {
-  use(Maye) {
-    Maye.path.$resolvers.push(this.$resolveWrapper)
-    Maye.path.Wrapper = Wrapper
+  use({path}) {
+    path.$resolvers.push(this.$resolveWrapper)
+    path.Wrapper = Wrapper
   },
   $resolveWrapper(Maye, path) {
     if (!Array.isArray(path)) {

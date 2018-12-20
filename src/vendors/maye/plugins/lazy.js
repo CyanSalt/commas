@@ -1,15 +1,15 @@
 export default {
-  use(Maye) {
-    Maye.state.lazy = this.$lazy
-    Maye.accessor.lazy = this.$lazy
+  use({state, accessor}) {
+    state.lazy = this.$lazy
+    accessor.lazy = this.$lazy
   },
   $lazy(path) {
-    const Maye = this.$maye
+    const {watcher} = this.$maye
     return {
       get: () => this.get(path),
       set: value => this.set(path, value),
-      watch: callback => Maye.watcher.add(path, callback),
-      unwatch: callback => Maye.watcher.remove(path, callback),
+      watch: callback => watcher.add(path, callback),
+      unwatch: callback => watcher.remove(path, callback),
     }
   },
 }

@@ -1,10 +1,10 @@
 export default {
-  use(Maye) {
-    Maye.path.$resolvers.push(this.$resolveString)
+  use({path}) {
+    path.$resolvers.push(this.$resolveString)
   },
-  $resolveString(Maye, str) {
+  $resolveString({path}, str) {
     if (typeof str === 'string' || str instanceof String) {
-      return str.split(Maye.path.$separator)
+      return str.split(path.$separator)
     }
     return str
   },

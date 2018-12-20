@@ -1,45 +1,49 @@
 export default {
   use(Maye, {Vue, install}) {
-    this.state = this.state.bind(this)
-    this.accessor = this.accessor.bind(this)
-    this.action = this.action.bind(this)
-    this.$vue = new Vue({data: {hooks: {}}})
-    if (install) Vue.prototype.$maye = Maye
+    this.$deps = new Vue({data: {hooks: {}}})
+    Maye.$vue = this
+    if (install) {
+      Vue.prototype.$maye = Maye
+    }
   },
   watch(path) {
-    const {$maye, $vue} = this
+    const {$maye, $deps} = this
     const key = $maye.path.normalize(path)
-    if ($vue.hooks[key] === undefined) {
-      $vue.$set($vue.hooks, key, true)
+    if ($deps.hooks[key] === undefined) {
+      $deps.$set($deps.hooks, key, true)
       $maye.watcher.add(path, () => {
-        $vue.hooks[key] = !$vue.hooks[key]
+        $deps.hooks[key] = !$deps.hooks[key]
       })
     }
     // eslint-disable-next-line no-unused-expressions
-    $vue.hooks[key]
+    $deps.hooks[key]
   },
   state(path) {
-    const $this = this
     return {
-      get: () => {
-        $this.watch(path)
-        return $this.$maye.state.get(path)
+      get() {
+        this.$maye.$vue.watch(path)
+        return this.$maye.state.get(path)
       },
-      set: value => $this.$maye.state.set(path, value),
+      set(value) {
+        return this.$maye.state.set(path, value)
+      },
     }
   },
   accessor(path) {
-    const $this = this
     return {
-      get: () => {
-        $this.watch(path)
-        return $this.$maye.accessor.get(path)
+      get() {
+        this.$maye.$vue.watch(path)
+        return this.$maye.accessor.get(path)
       },
-      set: value => $this.$maye.accessor.set(path, value),
+      set(value) {
+        return this.$maye.accessor.set(path, value)
+      },
     }
   },
   action(path) {
-    const $this = this
-    return payload => $this.$maye.action.dispatch(path, payload)
+    /** @this Vue */
+    return function (payload) {
+      this.$maye.action.dispatch(path, payload)
+    }
   },
 }
