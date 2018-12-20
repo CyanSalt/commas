@@ -5,7 +5,7 @@ export default {
     Maye.path = this
   },
   resolve(path) {
-    const Maye = this.$maye.ref
+    const Maye = this.$maye
     if (path == null) {
       throw new Error('Cannot get state with undefined or null')
     }

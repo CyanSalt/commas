@@ -1,20 +1,17 @@
 export default {
-  use(Maye, Vue) {
+  use(Maye, {Vue, install}) {
     this.state = this.state.bind(this)
     this.accessor = this.accessor.bind(this)
     this.action = this.action.bind(this)
     this.$vue = new Vue({data: {hooks: {}}})
-  },
-  // `Vue.use()` can be called after `Maye.use()`
-  install(Vue) {
-    Vue.prototype.$maye = this.$maye.ref
+    if (install) Vue.prototype.$maye = Maye
   },
   watch(path) {
     const {$maye, $vue} = this
-    const key = $maye.ref.path.normalize(path)
+    const key = $maye.path.normalize(path)
     if ($vue.hooks[key] === undefined) {
       $vue.$set($vue.hooks, key, true)
-      $maye.ref.watcher.add(path, () => {
+      $maye.watcher.add(path, () => {
         $vue.hooks[key] = !$vue.hooks[key]
       })
     }
@@ -22,24 +19,27 @@ export default {
     $vue.hooks[key]
   },
   state(path) {
+    const $this = this
     return {
       get: () => {
-        this.watch(path)
-        return this.$maye.ref.state.get(path)
+        $this.watch(path)
+        return $this.$maye.state.get(path)
       },
-      set: value => this.$maye.ref.state.set(path, value),
+      set: value => $this.$maye.state.set(path, value),
     }
   },
   accessor(path) {
+    const $this = this
     return {
       get: () => {
-        this.watch(path)
-        return this.$maye.ref.accessor.get(path)
+        $this.watch(path)
+        return $this.$maye.accessor.get(path)
       },
-      set: value => this.$maye.ref.accessor.set(path, value),
+      set: value => $this.$maye.accessor.set(path, value),
     }
   },
   action(path) {
-    return payload => this.$maye.ref.action.dispatch(path, payload)
+    const $this = this
+    return payload => $this.$maye.action.dispatch(path, payload)
   },
 }

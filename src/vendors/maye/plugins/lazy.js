@@ -4,7 +4,7 @@ export default {
     Maye.accessor.lazy = this.$lazy
   },
   $lazy(path) {
-    const Maye = this.$maye.ref
+    const Maye = this.$maye
     return {
       get: () => this.get(path),
       set: value => this.set(path, value),

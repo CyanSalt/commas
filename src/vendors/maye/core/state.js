@@ -4,14 +4,14 @@ export default {
     Maye.state = this
   },
   get(path) {
-    const Maye = this.$maye.ref
+    const Maye = this.$maye
     path = Maye.path.resolve(path)
     Maye.watcher.$collect({path, by: 'state'})
     const key = Maye.path.join(path)
     return this.$store[key]
   },
   update(path, mutation, returns) {
-    const Maye = this.$maye.ref
+    const Maye = this.$maye
     path = Maye.path.resolve(path)
     const key = Maye.path.join(path)
     const old = this.$store[key]

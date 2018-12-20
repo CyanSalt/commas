@@ -5,7 +5,7 @@ export default {
   $identifier: '$',
   $getProxy(prefix = []) {
     const $this = this
-    const Maye = this.$maye.ref
+    const Maye = this.$maye
     return new Proxy({}, {
       get(target, key) {
         const path = [...prefix, key]

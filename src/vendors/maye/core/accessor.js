@@ -4,7 +4,7 @@ export default {
     Maye.accessor = this
   },
   $get(descriptor) {
-    const Maye = this.$maye.ref
+    const Maye = this.$maye
     const deps = []
     const collect = ({path}) => {deps.push(path)}
     Maye.watcher.$inspect(collect)
@@ -14,11 +14,11 @@ export default {
     return value
   },
   $set(descriptor, value) {
-    const Maye = this.$maye.ref
+    const Maye = this.$maye
     return (0, descriptor.set)(Maye, value)
   },
   $memoize(descriptor, {value, deps}) {
-    const Maye = this.$maye.ref
+    const Maye = this.$maye
     if (!descriptor.$cache) {
       descriptor.$cache = {}
     } else {
@@ -42,7 +42,7 @@ export default {
     descriptor.$cache.value = value
   },
   get(path) {
-    const Maye = this.$maye.ref
+    const Maye = this.$maye
     path = Maye.path.resolve(path)
     Maye.watcher.$collect({path, by: 'accessor'})
     const key = Maye.path.join(path)
@@ -56,7 +56,7 @@ export default {
     return void 0
   },
   set(path, value) {
-    const Maye = this.$maye.ref
+    const Maye = this.$maye
     const key = Maye.path.normalize(path)
     const descriptor = this.$store[key]
     if (descriptor && descriptor.set) {
@@ -64,7 +64,7 @@ export default {
     }
   },
   define(path, descriptor) {
-    const Maye = this.$maye.ref
+    const Maye = this.$maye
     path = Maye.path.resolve(path)
     descriptor.$path = path
     const key = Maye.path.join(path)
@@ -73,7 +73,7 @@ export default {
     }
   },
   exists(path) {
-    const Maye = this.$maye.ref
+    const Maye = this.$maye
     const key = Maye.path.normalize(path)
     return Boolean(this.$store[key])
   },

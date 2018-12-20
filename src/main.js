@@ -12,10 +12,9 @@ import store from './store'
 Maye.use(pathString)
 Maye.use(pathWrapper)
 Maye.use(declaration, store)
-Maye.use(vueMaye, Vue)
+Maye.use(vueMaye, {Vue, install: true})
 
 Vue.use(I18N)
 Vue.use(FileStorage)
-Vue.use(vueMaye)
 
 new Vue(Root)
