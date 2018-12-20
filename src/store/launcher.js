@@ -49,7 +49,10 @@ export default {
       const directory = launcher.directory.startsWith('~') ?
         process.env.HOME + launcher.directory.slice(1) : launcher.directory
       if (!explorer) return remote.shell.openItem(directory)
-      const [command, ...args] = explorer.trim().split(/\s+/)
+      if (!Array.isArray(explorer)) {
+        return spawn(explorer, [directory])
+      }
+      const [command, ...args] = explorer
       return spawn(command, [...args, directory])
     },
     watch({state, action}) {

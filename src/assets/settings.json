@@ -8,7 +8,8 @@
   // Arguments of shell command line
   "terminal.shell.args": ["--login"],
 
-  // Absolute path of external file manager (or code editor, etc) for launchers
+  // Absolute path (or with args as array) of external file manager
+  // (or code editor, etc) for launchers
   // Open in system file manager by default
   "terminal.external.explorer": "",
 
