@@ -1,7 +1,7 @@
 <template>
   <div :class="['tab', {active, thin: !tab}]">
     <div class="tab-overview">
-      <div class="tab-name">{{ name }}</div>
+      <div class="tab-title">{{ title }}</div>
       <div class="operations">
         <slot name="operations"></slot>
         <div class="button close" @click.stop="close" v-if="tab">
@@ -9,7 +9,7 @@
         </div>
       </div>
     </div>
-    <div class="tab-title" v-if="tab">{{ realtitle }}</div>
+    <div class="tab-subtitle" v-if="tab">{{ subtitle }}</div>
     <div class="divider"></div>
   </div>
 </template>
@@ -20,7 +20,7 @@ import VueMaye from 'maye/plugins/vue'
 export default {
   name: 'tab-item',
   props: {
-    title: {
+    name: {
       type: String,
       default: '',
     },
@@ -39,17 +39,26 @@ export default {
     active() {
       return this.tabs[this.focus] === this.tab
     },
-    name() {
-      const {$vue} = this.$maye
-      if (!this.tab && this.title) return this.title
+    title() {
+      if (!this.tab) return this.name
+      const {state, $vue} = this.$maye
       $vue.watch('terminal.tabs')
-      return this.tab.process
+      const settings = state.get('settings.user')
+      const expr = settings['terminal.tab.titleFormat']
+      return (function ({title, name, process, id}) {
+        // eslint-disable-next-line no-eval
+        return eval('`' + expr + '`')
+      })(this.tab)
     },
-    realtitle() {
-      const {$vue} = this.$maye
-      if (this.title) return this.title
+    subtitle() {
+      const {state, $vue} = this.$maye
       $vue.watch('terminal.tabs')
-      return this.tab.title || this.tab.id
+      const settings = state.get('settings.user')
+      const expr = settings['terminal.tab.subtitleFormat']
+      return (function ({title, name, process, id}) {
+        // eslint-disable-next-line no-eval
+        return eval('`' + expr + '`')
+      })(this.tab)
     }
   },
   methods: {
@@ -63,15 +72,15 @@ export default {
 </script>
 
 <style>
-.tab .tab-name,
-.tab .tab-title {
+.tab .tab-title,
+.tab .tab-subtitle {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   opacity: 0.5;
 }
-.tab.active .tab-name,
-.tab.active .tab-title {
+.tab.active .tab-title,
+.tab.active .tab-subtitle {
   opacity: 1;
 }
 .tab .tab-overview {
@@ -80,7 +89,7 @@ export default {
   height: 32px;
   line-height: 32px;
 }
-.tab:not(.thin) .tab-name {
+.tab:not(.thin) .tab-title {
   font-size: 18px;
 }
 .tab .operations {

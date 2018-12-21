@@ -13,6 +13,16 @@
   // Open in system file manager by default
   "terminal.external.explorer": "",
 
+  // Title format of terminal window in grammer of ECMAScript template literals
+  // Supported variables: title (OSC, probably undefined), name (for launchers), process, id
+  "terminal.window.titleFormat": "${ title || process }",
+
+  // Title format of terminal tab (similar to terminal.window.titleFormat)
+  "terminal.tab.titleFormat": "${ process }",
+
+  // Subtitle format of terminal tab (similar to terminal.window.titleFormat)
+  "terminal.tab.subtitleFormat": "${ name || title || id }",
+
   // Font size for window in pixels
   "terminal.style.fontSize": 14,
 

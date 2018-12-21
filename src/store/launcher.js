@@ -19,6 +19,7 @@ export default {
       } else {
         const tab = action.dispatch('terminal.spawn')
         state.update('terminal.tabs', () => {
+          tab.name = launcher.name // title template variable
           tab.launcher = launcher
           state.update([this, 'all'], () => {
             launcher.tab = tab

@@ -38,7 +38,13 @@ export default {
     current: VueMaye.accessor('terminal.current'),
     title() {
       if (!this.current) return ''
-      return this.current.title || this.current.process
+      const {state} = this.$maye
+      const settings = state.get('settings.user')
+      const expr = settings['terminal.window.titleFormat']
+      return (function ({title, name, process, id}) {
+        // eslint-disable-next-line no-eval
+        return eval('`' + expr + '`')
+      })(this.current)
     }
   },
   methods: {

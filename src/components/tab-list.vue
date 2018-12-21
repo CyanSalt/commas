@@ -26,7 +26,7 @@
           @keyup.esc="find" ref="keyword" autofocus>
       </div>
       <div class="launchers">
-        <tab-item :tab="launcher.tab" :title="launcher.name"
+        <tab-item :tab="launcher.tab" :name="launcher.name"
           @click.native="open(launcher)"
           v-for="(launcher, index) in filtered" :key="index"
           v-show="!collapsed || launcher.tab">
