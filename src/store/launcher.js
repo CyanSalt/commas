@@ -3,6 +3,11 @@ import {remote} from 'electron'
 import {spawn} from 'child_process'
 
 const quote = command => `"${command.replace(/"/g, '"\\""')}"`
+const feelAtHome = directory => {
+  if (!directory) return directory
+  return directory.startsWith('~') ?
+    process.env.HOME + directory.slice(1) : directory
+}
 
 export default {
   states: {
@@ -17,7 +22,8 @@ export default {
       if (launcher.tab) {
         action.dispatch('terminal.activite', launcher.tab)
       } else {
-        const tab = action.dispatch('terminal.spawn')
+        const directory = launcher.remote ? null : launcher.directory
+        const tab = action.dispatch('terminal.spawn', feelAtHome(directory))
         state.update('terminal.tabs', () => {
           tab.name = launcher.name // title template variable
           tab.launcher = launcher
@@ -47,8 +53,7 @@ export default {
       const settings = state.get('settings.user')
       const explorer = settings['terminal.external.explorer']
       if (!launcher.directory) return false
-      const directory = launcher.directory.startsWith('~') ?
-        process.env.HOME + launcher.directory.slice(1) : launcher.directory
+      const directory = feelAtHome(launcher.directory)
       if (!explorer) return remote.shell.openItem(directory)
       if (!Array.isArray(explorer)) {
         return spawn(explorer, [directory])
