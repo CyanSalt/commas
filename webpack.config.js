@@ -5,6 +5,7 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const app = require('./package')
 
 function externalizeAllDenpendencies(dependencies) {
+  if (!dependencies) return {}
   return Object.keys(dependencies).reduce((externals, dependency) => {
     externals[dependency] = `commonjs2 ${dependency}`
     return externals

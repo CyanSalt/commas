@@ -43,7 +43,7 @@ export default {
       const theme = state.get([this, 'user'])
       const settings = state.get('settings.user')
       const element = document.createElement('style')
-      element.id = 'commas-theme'
+      element.id = 'app-theme'
       const properties = {}
       Object.keys(theme).forEach(key => {
         properties[`--theme-${key.toLowerCase()}`] = theme[key]
@@ -61,7 +61,7 @@ export default {
       const theme = state.get([this, 'user'])
       if (!theme) return
       // TODO: performance review
-      const element = document.getElementById('commas-theme')
+      const element = document.getElementById('app-theme')
       if (element) element.remove()
       document.body.classList.remove(theme.type)
     },

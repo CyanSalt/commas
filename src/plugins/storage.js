@@ -48,7 +48,11 @@ export const FileStorage = {
   },
   watch(basename, updater) {
     // `chokidar` is too large; `gaze` seems to be OK. Use native currently.
-    return watch(this.filename(basename), updater)
+    try {
+      return watch(this.filename(basename), updater)
+    } catch (e) {
+      return null
+    }
   },
   readSync(basename) {
     try {
