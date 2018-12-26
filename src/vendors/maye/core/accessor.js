@@ -47,11 +47,9 @@ export default {
     Maye.watcher.$collect({path, by: 'accessor'})
     const key = Maye.path.join(path)
     const descriptor = this.$store[key]
-    if (descriptor.$cache) {
-      return descriptor.$cache.value
-    }
-    if (descriptor && descriptor.get) {
-      return this.$get(descriptor)
+    if (descriptor) {
+      if (descriptor.$cache) return descriptor.$cache.value
+      if (descriptor.get) return this.$get(descriptor)
     }
     return void 0
   },
