@@ -6,7 +6,7 @@ export default {
   get(path) {
     const Maye = this.$maye
     path = Maye.path.resolve(path)
-    Maye.watcher.$collect({path, by: 'state'})
+    Maye.inspector.collect({path, by: 'state'})
     const key = Maye.path.join(path)
     return this.$store[key]
   },

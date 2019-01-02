@@ -18,32 +18,35 @@ export default {
     // eslint-disable-next-line no-unused-expressions
     $deps.hooks[key]
   },
-  state(path) {
-    return {
-      get() {
-        this.$maye.$vue.watch(path)
-        return this.$maye.state.get(path)
-      },
-      set(value) {
-        return this.$maye.state.set(path, value)
-      },
-    }
-  },
-  accessor(path) {
-    return {
-      get() {
-        this.$maye.$vue.watch(path)
-        return this.$maye.accessor.get(path)
-      },
-      set(value) {
-        return this.$maye.accessor.set(path, value)
-      },
-    }
-  },
-  action(path) {
-    /** @this Vue */
-    return function (payload) {
-      this.$maye.action.dispatch(path, payload)
-    }
-  },
+}
+
+export function state(path) {
+  return {
+    get() {
+      this.$maye.$vue.watch(path)
+      return this.$maye.state.get(path)
+    },
+    set(value) {
+      return this.$maye.state.set(path, value)
+    },
+  }
+}
+
+export function accessor(path) {
+  return {
+    get() {
+      this.$maye.$vue.watch(path)
+      return this.$maye.accessor.get(path)
+    },
+    set(value) {
+      return this.$maye.accessor.set(path, value)
+    },
+  }
+}
+
+export function action(path) {
+  /** @this Vue */
+  return function (payload) {
+    this.$maye.action.dispatch(path, payload)
+  }
 }

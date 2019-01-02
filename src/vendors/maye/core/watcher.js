@@ -1,22 +1,7 @@
 export default {
   use(Maye) {
     this.$store = Object.create(null)
-    this.$inspectors = []
     Maye.watcher = this
-  },
-  $inspect(inspector) {
-    if (typeof inspector !== 'function') return
-    this.$inspectors.push(inspector)
-  },
-  $release(inspector) {
-    const index = this.$inspectors.indexOf(inspector)
-    if (index !== -1) {
-      this.$inspectors.splice(index, 1)
-    }
-  },
-  $collect(context) {
-    const Maye = this.$maye
-    Maye.watcher.$inspectors.forEach(inspector => inspector(context))
   },
   $mutate(path, context) {
     const Maye = this.$maye

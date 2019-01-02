@@ -6,10 +6,10 @@ export default {
   $get(descriptor) {
     const Maye = this.$maye
     const deps = []
-    const collect = ({path}) => {deps.push(path)}
-    Maye.watcher.$inspect(collect)
-    const value = (0, descriptor.get)(Maye)
-    Maye.watcher.$release(collect)
+    const value = Maye.inspector.trace(
+      () => (0, descriptor.get)(Maye),
+      ({path}) => {deps.push(path)},
+    )
     this.$memoize(descriptor, {value, deps})
     return value
   },
@@ -44,7 +44,7 @@ export default {
   get(path) {
     const Maye = this.$maye
     path = Maye.path.resolve(path)
-    Maye.watcher.$collect({path, by: 'accessor'})
+    Maye.inspector.collect({path, by: 'accessor'})
     const key = Maye.path.join(path)
     const descriptor = this.$store[key]
     if (descriptor) {

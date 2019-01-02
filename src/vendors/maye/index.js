@@ -1,4 +1,5 @@
 import path from './core/path'
+import inspector from './core/inspector'
 import state from './core/state'
 import accessor from './core/accessor'
 import watcher from './core/watcher'
@@ -10,7 +11,6 @@ export default {
     if (typeof Plugin === 'function') {
       // eslint-disable-next-line new-cap
       plugin = new Plugin(this, options)
-      plugin.$maye = this
     } else {
       plugin = Object.create(Plugin)
       if (plugin.use) plugin.use(this, options)
@@ -22,6 +22,7 @@ export default {
     const Maye = Object.create(this)
     Maye.booted = true
     Maye.use(path)
+    Maye.use(inspector)
     Maye.use(state)
     Maye.use(accessor)
     Maye.use(watcher)
