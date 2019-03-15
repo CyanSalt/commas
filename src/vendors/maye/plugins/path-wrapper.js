@@ -7,10 +7,6 @@ class Wrapper {
   }
 }
 
-function flatMap(array, callback) {
-  return [].concat(...array.map(callback))
-}
-
 export default {
   use({path}) {
     path.$resolvers.push(this.$resolveWrapper)
@@ -20,6 +16,6 @@ export default {
     if (!Array.isArray(path)) {
       return Wrapper.unwrap(path)
     }
-    return flatMap(path, Wrapper.unwrap)
+    return path.flatMap(Wrapper.unwrap)
   },
 }
