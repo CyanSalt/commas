@@ -24,7 +24,7 @@ import {remote, ipcRenderer} from 'electron'
 import VueMaye from 'maye/plugins/vue'
 
 export default {
-  name: 'title-bar',
+  name: 'TitleBar',
   data() {
     const frame = remote.getCurrentWindow()
     return {
@@ -45,7 +45,7 @@ export default {
         // eslint-disable-next-line no-eval
         return eval('`' + expr + '`')
       })(this.current)
-    }
+    },
   },
   methods: {
     minimize() {

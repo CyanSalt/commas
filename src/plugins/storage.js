@@ -43,7 +43,9 @@ export const FileStorage = {
     const filename = this.filename(basename)
     try {
       await promises.mkdir(dirname(filename))
-    } catch (e) {}
+    } catch (e) {
+      // ignore error
+    }
     return promises.writeFile(filename, content)
   },
   watch(basename, updater) {
@@ -77,5 +79,5 @@ export const FileStorage = {
 export default {
   install(Vue, options) {
     Vue.prototype.$storage = FileStorage
-  }
+  },
 }

@@ -3,11 +3,12 @@
     <input class="keyword" v-model="keyword" :placeholder="i18n('Find#!6')"
       @keyup.enter="find" @keyup.esc="close" ref="keyword" autofocus>
     <div class="options">
-      <div :class="['option', 'case-sensitive', {selected: options.caseSensitive}]"
+      <div class="option case-sensitive"
+        :class="{selected: options.caseSensitive}"
         @click="toggle('caseSensitive')">Aa</div>
-      <div :class="['option', 'whole-word', {selected: options.wholeWord}]"
+      <div class="option whole-word" :class="{selected: options.wholeWord}"
         @click="toggle('wholeWord')">|Ab|</div>
-      <div :class="['option', 'use-regexp', {selected: options.regex}]"
+      <div class="option use-regexp" :class="{selected: options.regex}"
         @click="toggle('regex')">.*</div>
     </div>
     <div class="buttons">
@@ -28,7 +29,7 @@
 import VueMaye from 'maye/plugins/vue'
 
 export default {
-  name: 'find-box',
+  name: 'FindBox',
   data() {
     return {
       keyword: '',

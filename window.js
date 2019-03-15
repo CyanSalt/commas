@@ -55,7 +55,7 @@ function loadHTMLFile(frame, path) {
   frame.loadURL(format({
     protocol: 'file',
     slashes: true,
-    pathname: resolve(__dirname, path)
+    pathname: resolve(__dirname, path),
   }))
 }
 
@@ -83,14 +83,14 @@ function getSharedWindowMenu() {
       accelerator: 'CmdOrCtrl+T',
       click() {
         execCommand('open-tab')
-      }
+      },
     },
     {
       label: 'New Window',
       accelerator: 'CmdOrCtrl+N',
       click() {
         execCommand('open-window')
-      }
+      },
     },
     {type: 'separator'},
     {
@@ -98,14 +98,14 @@ function getSharedWindowMenu() {
       accelerator: 'CmdOrCtrl+Shift+[',
       click() {
         execCommand('previous-tab')
-      }
+      },
     },
     {
       label: 'Select Next Tab',
       accelerator: 'CmdOrCtrl+Shift+]',
       click() {
         execCommand('next-tab')
-      }
+      },
     },
     {type: 'separator'},
     {
@@ -113,7 +113,7 @@ function getSharedWindowMenu() {
       accelerator: 'CmdOrCtrl+F',
       click() {
         execCommand('find')
-      }
+      },
     },
     {type: 'separator'},
     {
@@ -121,14 +121,14 @@ function getSharedWindowMenu() {
       accelerator: 'CmdOrCtrl+W',
       click() {
         execCommand('close-tab')
-      }
+      },
     },
     {
       label: 'Close Window',
       accelerator: 'CmdOrCtrl+Shift+W',
       click() {
         execCommand('close-window')
-      }
+      },
     },
   ]
 }
@@ -162,7 +162,7 @@ function createApplicationMenu() {
           accelerator: 'Command+,',
           click() {
             execCommand('open-settings')
-          }
+          },
         },
         {type: 'separator'},
         {role: 'services'},
@@ -193,7 +193,7 @@ function createApplicationMenu() {
           accelerator: 'CmdOrCtrl+Shift+R',
           click() {
             frames.forEach(window => window.reload())
-          }
+          },
         },
       ],
     },
@@ -222,7 +222,7 @@ function createWindowMenu(frame) {
           accelerator: 'CmdOrCtrl+Shift+R',
           click() {
             frames.forEach(window => window.reload())
-          }
+          },
         },
       ],
     },
@@ -238,8 +238,8 @@ function createDockMenu() {
       accelerator: 'CmdOrCtrl+N',
       click() {
         execCommand('open-window')
-      }
-    }
+      },
+    },
   ])
   app.dock.setMenu(menu)
 }

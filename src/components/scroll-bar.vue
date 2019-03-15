@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: 'scroll-bar',
+  name: 'ScrollBar',
   props: {
     parent: {
       type: HTMLElement,
@@ -81,7 +81,7 @@ export default {
     this.container.addEventListener('scroll', () => {
       this.animate(() => this.follow())
     }, {passive: true})
-  }
+  },
 }
 </script>
 

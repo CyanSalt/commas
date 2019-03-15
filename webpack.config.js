@@ -23,11 +23,11 @@ module.exports = {
     __dirname: false,
   },
   entry: {
-    main: path.resolve(__dirname, 'src/main.js')
+    main: path.resolve(__dirname, 'src/main.js'),
   },
   output: {
     path: path.resolve(__dirname, 'src/build/'),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
   },
   externals: {
     'original-fs': 'commonjs2 original-fs',
@@ -41,13 +41,13 @@ module.exports = {
     modules: [
       path.resolve(__dirname, 'src/vendors'),
       'node_modules',
-    ]
+    ],
   },
   resolveLoader: {
     modules: [
       path.resolve(__dirname, 'src/vendors'),
       'node_modules',
-    ]
+    ],
   },
   module: {
     rules: [
@@ -71,9 +71,9 @@ module.exports = {
           'vue-style-loader',
           MiniCSSExtractPlugin.loader,
           'css-loader',
-        ]
-      }
-    ]
+        ],
+      },
+    ],
   },
   plugins: [
     new MiniCSSExtractPlugin({
@@ -83,6 +83,6 @@ module.exports = {
     new VueLoaderPlugin(),
   ],
   optimization: {
-    minimize: false
+    minimize: false,
   },
 }

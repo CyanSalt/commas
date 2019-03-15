@@ -18,7 +18,7 @@
 import VueMaye from 'maye/plugins/vue'
 
 export default {
-  name: 'tab-item',
+  name: 'TabItem',
   props: {
     name: {
       type: String,
@@ -59,7 +59,7 @@ export default {
         // eslint-disable-next-line no-eval
         return eval('`' + expr + '`')
       })(this.tab)
-    }
+    },
   },
   methods: {
     close() {

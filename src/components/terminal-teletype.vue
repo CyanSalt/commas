@@ -11,7 +11,7 @@ import ScrollBar from './scroll-bar'
 import 'xterm/lib/xterm.css'
 
 export default {
-  name: 'terminal-teletype',
+  name: 'TerminalTeletype',
   components: {
     'scroll-bar': ScrollBar,
   },

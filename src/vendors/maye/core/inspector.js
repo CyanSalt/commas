@@ -21,5 +21,5 @@ export default {
     const value = processor()
     this.release(inspector)
     return value
-  }
+  },
 }

@@ -13,5 +13,5 @@ export default {
     launcher,
     command,
     shell,
-  }
+  },
 }

@@ -189,5 +189,5 @@ export default {
         }
       }
     },
-  }
+  },
 }

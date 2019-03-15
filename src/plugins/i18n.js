@@ -7,7 +7,7 @@ const translations = [
   {
     file: 'zh-CN.json',
     locales: ['zh', 'zh-CN'],
-  }
+  },
 ]
 
 function load(file) {
@@ -48,5 +48,5 @@ export function translate(message) {
 export default {
   install(Vue, options) {
     Vue.prototype.i18n = translate
-  }
+  },
 }

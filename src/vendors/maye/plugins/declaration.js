@@ -50,5 +50,5 @@ export default {
         this.$apply(Maye, child, [...prefix, key])
       }
     }
-  }
+  },
 }

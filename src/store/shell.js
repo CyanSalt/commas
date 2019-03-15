@@ -41,5 +41,5 @@ export default {
     open(Maye, uri) {
       remote.shell.openExternal(uri)
     },
-  }
+  },
 }

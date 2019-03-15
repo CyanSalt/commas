@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const packager = require('electron-packager')
 const png2icons = require('png2icons')
 const path = require('path')
@@ -56,7 +57,9 @@ packager(options).then(appPaths => {
         const manifest = `${app.name}.VisualElementsManifest.xml`
         fs.copyFileSync(`src/assets/${manifest}`,
           `${dir}/${manifest}`)
-      } catch (e) {}
+      } catch (e) {
+        // ignore error
+      }
     }
   })
   console.log('Build finished.')
