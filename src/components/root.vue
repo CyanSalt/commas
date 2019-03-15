@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import VueMaye from 'maye/plugins/vue'
+import * as VueMaye from 'maye/plugins/vue'
 import TitleBar from './title-bar'
 import TabList from './tab-list'
 import FindBox from './find-box'

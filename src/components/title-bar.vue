@@ -21,7 +21,7 @@
 
 <script>
 import {remote, ipcRenderer} from 'electron'
-import VueMaye from 'maye/plugins/vue'
+import * as VueMaye from 'maye/plugins/vue'
 
 export default {
   name: 'TitleBar',

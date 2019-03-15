@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import VueMaye from 'maye/plugins/vue'
+import * as VueMaye from 'maye/plugins/vue'
 import TabItem from './tab-item'
 import ScrollBar from './scroll-bar'
 
