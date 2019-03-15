@@ -268,7 +268,7 @@ function transferInvoking() {
   })
   ipcMain.on('confirm', (event, args) => {
     const {sender} = event
-    const window = frames.find(frame => frame.webContents === sender)
+    const window = BrowserWindow.fromWebContents(sender)
     dialog.showMessageBox(window, args, response => {
       sender.send('confirm', response)
     })
