@@ -21,6 +21,7 @@ function createWindow(args) {
     acceptFirstMouse: true,
     affinity: 'default',
     webPreferences: {
+      nodeIntegration: true,
       experimentalFeatures: true,
     },
   }
