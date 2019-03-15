@@ -70,10 +70,12 @@ function collectWindow(frame) {
   })
 }
 
-function execCommand(command) {
-  let frame = BrowserWindow.getFocusedWindow()
-  if (!frame) frame = frames[frames.length - 1]
-  frame && frame.webContents.send('command', command)
+function execCommand(command, frame) {
+  if (!frame) {
+    frame = BrowserWindow.getFocusedWindow() || frames[frames.length - 1]
+    if (!frame) return
+  }
+  frame.webContents.send('command', command)
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -82,53 +84,53 @@ function getSharedWindowMenu() {
     {
       label: 'New Tab',
       accelerator: 'CmdOrCtrl+T',
-      click() {
-        execCommand('open-tab')
+      click(self, frame) {
+        execCommand('open-tab', frame)
       },
     },
     {
       label: 'New Window',
       accelerator: 'CmdOrCtrl+N',
-      click() {
-        execCommand('open-window')
+      click(self, frame) {
+        execCommand('open-window', frame)
       },
     },
     {type: 'separator'},
     {
       label: 'Select Previous Tab',
       accelerator: 'CmdOrCtrl+Shift+[',
-      click() {
-        execCommand('previous-tab')
+      click(self, frame) {
+        execCommand('previous-tab', frame)
       },
     },
     {
       label: 'Select Next Tab',
       accelerator: 'CmdOrCtrl+Shift+]',
-      click() {
-        execCommand('next-tab')
+      click(self, frame) {
+        execCommand('next-tab', frame)
       },
     },
     {type: 'separator'},
     {
       label: 'Find',
       accelerator: 'CmdOrCtrl+F',
-      click() {
-        execCommand('find')
+      click(self, frame) {
+        execCommand('find', frame)
       },
     },
     {type: 'separator'},
     {
       label: 'Close Tab',
       accelerator: 'CmdOrCtrl+W',
-      click() {
-        execCommand('close-tab')
+      click(self, frame) {
+        execCommand('close-tab', frame)
       },
     },
     {
       label: 'Close Window',
       accelerator: 'CmdOrCtrl+Shift+W',
-      click() {
-        execCommand('close-window')
+      click(self, frame) {
+        execCommand('close-window', frame)
       },
     },
   ]
@@ -141,8 +143,8 @@ function getUserCustomMenu() {
   try {
     const keybindings = parse(readFileSync(path))
     return keybindings.map(item => {
-      item.click = () => {
-        execCommand(item.command)
+      item.click = (self, frame) => {
+        execCommand(item.command, frame)
       }
       return item
     })
@@ -161,8 +163,8 @@ function createApplicationMenu() {
         {
           label: 'Preferences...',
           accelerator: 'Command+,',
-          click() {
-            execCommand('open-settings')
+          click(self, frame) {
+            execCommand('open-settings', frame)
           },
         },
         {type: 'separator'},
@@ -237,8 +239,8 @@ function createDockMenu() {
     {
       label: 'New Window',
       accelerator: 'CmdOrCtrl+N',
-      click() {
-        execCommand('open-window')
+      click(self, frame) {
+        execCommand('open-window', frame)
       },
     },
   ])
