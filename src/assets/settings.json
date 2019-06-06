@@ -38,4 +38,10 @@
 
   // Overwrite colors in the theme file
   "terminal.theme.customization": {},
+
+  // Specify rules for development proxy server
+  "terminal.proxyServer.rules": [],
+
+  // Specify HTTP port for development proxy server
+  "terminal.proxyServer.port": 16383,
 }

@@ -4,6 +4,7 @@ import terminal from './terminal'
 import launcher from './launcher'
 import command from './command'
 import shell from './shell'
+import proxy from './proxy'
 
 export default {
   children: {
@@ -13,5 +14,6 @@ export default {
     launcher,
     command,
     shell,
+    proxy,
   },
 }

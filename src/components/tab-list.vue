@@ -1,46 +1,57 @@
 <template>
   <div class="tab-list">
-    <div class="list" :style="{width: width + 'px'}">
-      <div class="processes">
-        <tab-item :tab="tab" @click.native="activite(tab)"
-          v-for="tab in running" :key="tab.id"></tab-item>
-        <div class="new-tab anchor" @click="spawn()">
-          <span class="feather-icon icon-plus"></span>
-        </div>
-      </div>
-      <div class="launcher-folder" @click="expandOrCollapse">
-        <div class="group-name">{{ i18n('Launchers#!5') }}</div>
-        <div class="buttons">
-          <div :class="['button', 'find', {active: finding}]"
-            @click.stop="find">
-            <span class="feather-icon icon-search"></span>
-          </div>
-          <div class="button indicator">
-            <span class="feather-icon icon-chevron-up" v-if="collapsed"></span>
-            <span class="feather-icon icon-chevron-down" v-else></span>
+    <div class="list-column" :style="{width: width + 'px'}">
+      <div class="list">
+        <div class="processes">
+          <tab-item :tab="tab" @click.native="activite(tab)"
+            v-for="tab in running" :key="tab.id"></tab-item>
+          <div class="new-tab anchor" @click="spawn()">
+            <span class="feather-icon icon-plus"></span>
           </div>
         </div>
+        <div class="launcher-folder" @click="expandOrCollapse">
+          <div class="group-name">{{ i18n('Launchers#!5') }}</div>
+          <div class="buttons">
+            <div :class="['button', 'find', {active: finding}]"
+              @click.stop="find">
+              <span class="feather-icon icon-search"></span>
+            </div>
+            <div class="button indicator">
+              <span class="feather-icon icon-chevron-up" v-if="collapsed"></span>
+              <span class="feather-icon icon-chevron-down" v-else></span>
+            </div>
+          </div>
+        </div>
+        <div class="find-launcher" v-show="finding">
+          <input class="keyword" v-model="keyword" :placeholder="i18n('Find#!6')"
+            @keyup.esc="find" ref="keyword" autofocus>
+        </div>
+        <div class="launchers">
+          <tab-item :tab="launcher.tab" :name="launcher.name"
+            @click.native="open(launcher)"
+            v-for="(launcher, index) in filtered" :key="index"
+            v-show="!collapsed || launcher.tab">
+              <template #operations>
+                <div class="button launch" @click.stop="launch(launcher)">
+                  <span class="feather-icon icon-play"></span>
+                </div>
+                <div class="button assign" @click.stop="assign(launcher)">
+                  <span class="feather-icon icon-external-link"></span>
+                </div>
+              </template>
+            </tab-item>
+          <div class="edit-launcher anchor" @click="edit" v-show="!collapsed">
+            <span class="feather-icon icon-plus"></span>
+          </div>
+        </div>
       </div>
-      <div class="find-launcher" v-show="finding">
-        <input class="keyword" v-model="keyword" :placeholder="i18n('Find#!6')"
-          @keyup.esc="find" ref="keyword" autofocus>
-      </div>
-      <div class="launchers">
-        <tab-item :tab="launcher.tab" :name="launcher.name"
-          @click.native="open(launcher)"
-          v-for="(launcher, index) in filtered" :key="index"
-          v-show="!collapsed || launcher.tab">
-            <template slot="operations">
-              <div class="button launch" @click.stop="launch(launcher)">
-                <span class="feather-icon icon-play"></span>
-              </div>
-              <div class="button assign" @click.stop="assign(launcher)">
-                <span class="feather-icon icon-external-link"></span>
-              </div>
-            </template>
-          </tab-item>
-        <div class="edit-launcher anchor" @click="edit" v-show="!collapsed">
-          <span class="feather-icon icon-plus"></span>
+      <div class="bottom-actions">
+        <div class="anchor" @click="configure()">
+          <span class="feather-icon icon-settings"></span>
+        </div>
+        <div :class="['anchor', 'proxy-server', {active: proxyServer}]" @click="proxy()">
+          <span class="feather-icon icon-navigation"></span>
+          <span v-if="proxyServer" class="server-port">{{ port }}</span>
         </div>
       </div>
     </div>
@@ -71,6 +82,8 @@ export default {
   computed: {
     tabs: VueMaye.state('terminal.tabs'),
     launchers: VueMaye.state('launcher.all'),
+    proxyServer: VueMaye.state('proxy.server'),
+    port: VueMaye.accessor('proxy.port'),
     running() {
       return this.tabs.filter(tab => !tab.launcher)
     },
@@ -93,6 +106,18 @@ export default {
     edit() {
       const {action} = this.$maye
       action.dispatch('command.exec', 'open-launchers')
+    },
+    configure() {
+      const {action} = this.$maye
+      action.dispatch('command.exec', 'open-settings')
+    },
+    proxy() {
+      const {action} = this.$maye
+      if (this.proxyServer) {
+        action.dispatch('proxy.close')
+      } else {
+        action.dispatch('proxy.open')
+      }
     },
     resize(e) {
       const original = this.width
@@ -127,9 +152,14 @@ export default {
   position: relative;
   font-size: 14px;
 }
-.tab-list .list {
+.tab-list .list-column {
   flex: auto;
   width: 176px;
+  display: flex;
+  flex-direction: column;
+}
+.tab-list .list {
+  flex: auto;
   padding: 4px 16px;
   overflow-y: auto;
   box-sizing: border-box;
@@ -215,12 +245,26 @@ export default {
   line-height: 26px;
   margin-bottom: 8px;
 }
+.tab-list .bottom-actions {
+  flex: none;
+  background: var(--theme-background);
+  display: flex;
+  padding: 4px 16px;
+  line-height: 24px;
+}
+.tab-list .bottom-actions .anchor {
+  margin-right: 8px;
+}
+.tab-list .server-port {
+  vertical-align: 1px;
+}
 .tab-list .anchor {
   cursor: pointer;
   opacity: 0.5;
   transition: opacity 0.2s;
 }
-.tab-list .anchor:hover {
+.tab-list .anchor:hover,
+.tab-list .anchor.active {
   opacity: 1;
 }
 .tab-list .launch:hover {
@@ -228,5 +272,8 @@ export default {
 }
 .tab-list .assign:hover {
   color: var(--theme-blue);
+}
+.tab-list .proxy-server.active {
+  color: var(--theme-cyan);
 }
 </style>
