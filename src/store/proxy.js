@@ -1,4 +1,5 @@
-import express from 'express'
+import connect from 'connect'
+import vhost from 'vhost'
 import proxy from 'http-proxy-middleware'
 
 export default {
@@ -16,11 +17,27 @@ export default {
       const settings = state.get('settings.user')
       let server = state.get([this, 'server'])
       if (server) return server
-      const app = express()
+      const app = connect()
       const rules = settings['terminal.proxyServer.rules']
       const port = settings['terminal.proxyServer.port']
-      for (const rule of rules) {
-        app.use(proxy(rule.context, rule.proxy))
+      const groups = rules.reduce((groups, rule) => {
+        const key = rule.vhost || ''
+        if (!groups[key]) groups[key] = []
+        groups[key].push(rule)
+        return groups
+      }, {})
+      for (const [host, rules] of Object.entries(groups)) {
+        if (host) {
+          const child = connect()
+          for (const rule of rules) {
+            child.use(proxy(rule.context, rule.proxy))
+          }
+          app.use(vhost(host, child))
+        } else {
+          for (const rule of rules) {
+            app.use(proxy(rule.context, rule.proxy))
+          }
+        }
       }
       server = app.listen(port)
       state.set([this, 'server'], server)
