@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import * as VueMaye from 'maye/plugins/vue'
+import {mapState, mapGetters} from 'vuex'
 
 export default {
   name: 'FindBox',
@@ -41,7 +41,8 @@ export default {
     }
   },
   computed: {
-    finding: VueMaye.state('shell.finding'),
+    ...mapState('shell', ['finding']),
+    ...mapGetters('terminal', ['current']),
   },
   methods: {
     toggle(option) {
@@ -51,32 +52,28 @@ export default {
       return e.shiftKey ? this.previous() : this.next()
     },
     next() {
-      const {action} = this.$maye
-      action.dispatch('terminal.find', {
+      this.$store.dispatch('terminal/find', {
         keyword: this.keyword,
         options: this.options,
       })
     },
     previous() {
-      const {action} = this.$maye
-      action.dispatch('terminal.find', {
+      this.$store.dispatch('terminal/find', {
         keyword: this.keyword,
         options: this.options,
         back: true,
       })
     },
     close() {
-      const {state} = this.$maye
-      state.set('shell.finding', false)
+      this.$store.commit('shell/setFinding', false)
     },
   },
   mounted() {
-    const {accessor} = this.$maye
     new IntersectionObserver(([{isIntersecting}]) => {
       if (isIntersecting) {
         this.$refs.keyword.focus()
       } else {
-        const current = accessor.get('terminal.current')
+        const current = this.current
         if (current && current.xterm) current.xterm.focus()
       }
     }).observe(this.$el)

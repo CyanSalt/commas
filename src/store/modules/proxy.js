@@ -3,20 +3,26 @@ import vhost from 'vhost'
 import proxy from 'http-proxy-middleware'
 
 export default {
-  states: {
+  namespaced: true,
+  state: {
     server: null,
   },
-  accessors: {
-    port({state}) {
-      const settings = state.get('settings.user')
+  getters: {
+    port(state, getters, rootState) {
+      const settings = rootState.settings.settings
       return settings['terminal.proxyServer.port']
     },
   },
+  mutations: {
+    setServer(state, value) {
+      state.server = value
+    },
+  },
   actions: {
-    open({state}) {
-      const settings = state.get('settings.user')
-      let server = state.get([this, 'server'])
-      if (server) return server
+    open({state, commit, rootState}) {
+      const settings = rootState.settings.settings
+      let server = state.server
+      if (server) return
       const app = connect()
       const rules = settings['terminal.proxyServer.rules']
       const port = settings['terminal.proxyServer.port']
@@ -40,15 +46,13 @@ export default {
         }
       }
       server = app.listen(port)
-      state.set([this, 'server'], server)
-      return server
+      commit('setServer', server)
     },
-    close({state}) {
-      let server = state.get([this, 'server'])
-      if (!server) return false
+    close({state, commit}) {
+      const server = state.server
+      if (!server) return
+      commit('setServer', null)
       server.close()
-      state.set([this, 'server'], null)
-      return true
     },
   },
 }

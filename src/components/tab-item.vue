@@ -1,5 +1,5 @@
 <template>
-  <div :class="['tab', {active, thin: !tab}]">
+  <div :class="['tab', {active: focused, thin: !tab}]">
     <div class="tab-overview">
       <div class="tab-title">{{ title }}</div>
       <div class="operations">
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import * as VueMaye from 'maye/plugins/vue'
+import {mapState} from 'vuex'
 
 export default {
   name: 'TabItem',
@@ -34,29 +34,23 @@ export default {
     },
   },
   computed: {
-    tabs: VueMaye.state('terminal.tabs'),
-    focus: VueMaye.state('terminal.active'),
-    active() {
-      return this.tabs[this.focus] === this.tab
+    ...mapState('settings', ['settings']),
+    ...mapState('terminal', ['tabs', 'active']),
+    focused() {
+      return this.tabs[this.active] === this.tab
     },
     title() {
       if (!this.tab) return this.name
-      const {state, $vue} = this.$maye
-      $vue.watch('terminal.tabs')
-      const settings = state.get('settings.user')
-      const expr = settings['terminal.tab.titleFormat']
+      this.tabs // dependency
+      const expr = this.settings['terminal.tab.titleFormat']
       return (function ({title, name, process, id}) {
-        // eslint-disable-next-line no-eval
         return eval('`' + expr + '`')
       })(this.tab)
     },
     subtitle() {
-      const {state, $vue} = this.$maye
-      $vue.watch('terminal.tabs')
-      const settings = state.get('settings.user')
-      const expr = settings['terminal.tab.subtitleFormat']
+      this.tabs // dependency
+      const expr = this.settings['terminal.tab.subtitleFormat']
       return (function ({title, name, process, id}) {
-        // eslint-disable-next-line no-eval
         return eval('`' + expr + '`')
       })(this.tab)
     },
@@ -64,8 +58,7 @@ export default {
   methods: {
     close() {
       if (!this.tab) return
-      const {action} = this.$maye
-      action.dispatch('terminal.close', this.tab)
+      this.$store.dispatch('terminal/close', this.tab)
     },
   },
 }

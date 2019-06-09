@@ -27,10 +27,10 @@
             @keyup.esc="find" ref="keyword" autofocus>
         </div>
         <div class="launchers">
-          <tab-item :tab="launcher.tab" :name="launcher.name"
+          <tab-item :tab="getLauncherTab(launcher)" :name="launcher.name"
             @click.native="open(launcher)"
-            v-for="(launcher, index) in filtered" :key="index"
-            v-show="!collapsed || launcher.tab">
+            v-for="launcher in filtered" :key="launcher.id"
+            v-show="!collapsed || getLauncherTab(launcher)">
               <template #operations>
                 <div class="button launch" @click.stop="launch(launcher)">
                   <span class="feather-icon icon-play"></span>
@@ -49,9 +49,9 @@
         <div class="anchor" @click="configure()">
           <span class="feather-icon icon-settings"></span>
         </div>
-        <div :class="['anchor', 'proxy-server', {active: proxyServer}]" @click="proxy()">
+        <div :class="['anchor', 'proxy-server', {active: server}]" @click="proxy()">
           <span class="feather-icon icon-navigation"></span>
-          <span v-if="proxyServer" class="server-port">{{ port }}</span>
+          <span v-if="server" class="server-port">{{ port }}</span>
         </div>
       </div>
     </div>
@@ -61,9 +61,10 @@
 </template>
 
 <script>
-import * as VueMaye from 'maye/plugins/vue'
 import TabItem from './tab-item'
 import ScrollBar from './scroll-bar'
+import {getLauncherTab} from '@/utils/terminal'
+import {mapState, mapGetters, mapActions} from 'vuex'
 
 export default {
   name: 'TabList',
@@ -80,10 +81,10 @@ export default {
     }
   },
   computed: {
-    tabs: VueMaye.state('terminal.tabs'),
-    launchers: VueMaye.state('launcher.all'),
-    proxyServer: VueMaye.state('proxy.server'),
-    port: VueMaye.accessor('proxy.port'),
+    ...mapState('terminal', ['tabs']),
+    ...mapState('launcher', ['launchers']),
+    ...mapState('proxy', ['server']),
+    ...mapGetters('proxy', ['port']),
     running() {
       return this.tabs.filter(tab => !tab.launcher)
     },
@@ -95,28 +96,25 @@ export default {
     },
   },
   methods: {
-    spawn: VueMaye.action('terminal.spawn'),
-    activite: VueMaye.action('terminal.activite'),
-    open: VueMaye.action('launcher.activite'),
-    launch: VueMaye.action('launcher.launch'),
-    assign: VueMaye.action('launcher.assign'),
+    ...mapActions('terminal', ['spawn', 'activite']),
+    ...mapActions('launcher', ['open', 'launch', 'assign']),
+    getLauncherTab(launcher) {
+      return getLauncherTab(this.tabs, launcher)
+    },
     expandOrCollapse() {
       this.collapsed = !this.collapsed
     },
     edit() {
-      const {action} = this.$maye
-      action.dispatch('command.exec', 'open-launchers')
+      this.$store.dispatch('command/exec', 'open-launchers')
     },
     configure() {
-      const {action} = this.$maye
-      action.dispatch('command.exec', 'open-settings')
+      this.$store.dispatch('command/exec', 'open-settings')
     },
     proxy() {
-      const {action} = this.$maye
-      if (this.proxyServer) {
-        action.dispatch('proxy.close')
+      if (this.server) {
+        this.$store.dispatch('proxy/close')
       } else {
-        action.dispatch('proxy.open')
+        this.$store.dispatch('proxy/open')
       }
     },
     resize(e) {

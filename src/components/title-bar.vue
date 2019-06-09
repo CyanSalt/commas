@@ -21,7 +21,7 @@
 
 <script>
 import {remote, ipcRenderer} from 'electron'
-import * as VueMaye from 'maye/plugins/vue'
+import {mapState, mapGetters} from 'vuex'
 
 export default {
   name: 'TitleBar',
@@ -35,14 +35,12 @@ export default {
     }
   },
   computed: {
-    current: VueMaye.accessor('terminal.current'),
+    ...mapState('settings', ['settings']),
+    ...mapGetters('terminal', ['current']),
     title() {
       if (!this.current) return ''
-      const {state} = this.$maye
-      const settings = state.get('settings.user')
-      const expr = settings['terminal.window.titleFormat']
+      const expr = this.settings['terminal.window.titleFormat']
       return (function ({title, name, process, id}) {
-        // eslint-disable-next-line no-eval
         return eval('`' + expr + '`')
       })(this.current)
     },

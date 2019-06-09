@@ -1,5 +1,5 @@
 import {ipcRenderer, remote} from 'electron'
-import {FileStorage} from '../plugins/storage'
+import {FileStorage} from '@/plugins/storage'
 import {access, copyFile} from 'fs'
 import {resolve} from 'path'
 import {promisify} from 'util'
@@ -20,43 +20,43 @@ async function openStorageFile(filename, example) {
 }
 
 const commands = {
-  'open-tab'({action}) {
-    return action.dispatch('terminal.spawn')
+  'open-tab'({dispatch}) {
+    return dispatch('terminal/spawn', null, {root: true})
   },
   'open-window'() {
     ipcRenderer.send('open-window')
   },
-  'close-tab'({state, action}) {
-    const active = state.get('terminal.active')
-    return action.dispatch('terminal.close', active)
+  'close-tab'({dispatch, rootState}) {
+    const active = rootState.terminal.active
+    return dispatch('terminal/close', active, {root: true})
   },
   'close-window'() {
     remote.getCurrentWindow().close()
   },
-  'previous-tab'({state}) {
-    const active = state.get('terminal.active')
+  'previous-tab'({commit, rootState}) {
+    const active = rootState.terminal.active
     if (active > 0) {
-      state.set('terminal.active', active - 1)
+      commit('terminal/setActive', active - 1, {root: true})
     }
   },
-  'next-tab'({state}) {
-    const active = state.get('terminal.active')
-    const tabs = state.get('terminal.tabs')
+  'next-tab'({commit, rootState}) {
+    const {tabs, active} = rootState.terminal.active
     if (active < tabs.length - 1) {
-      state.set('terminal.active', active + 1)
+      commit('terminal/setActive', active + 1, {root: true})
     }
   },
-  'toggle-tab-list'({state, action}) {
-    state.update('shell.multitabs', value => !value, true)
+  'toggle-tab-list'({commit, rootState}) {
+    const value = rootState.shell.multitabs
+    commit('shell/setMultitabs', !value, {root: true})
   },
-  'launch'({accessor, action}) {
-    const current = accessor.get('terminal.current')
+  'launch'({dispatch, rootGetters}) {
+    const current = rootGetters['terminal/current']
     if (current.launcher) {
-      action.dispatch('launcher.launch', current.launcher)
+      dispatch('launcher/launch', current.launcher, {root: true})
     }
   },
-  'find'({state}) {
-    state.set('shell.finding', true)
+  'find'({commit}) {
+    commit('shell/finding', true, {root: true})
   },
   'open-settings'() {
     openStorageFile('settings.json', 'settings.json')
@@ -67,12 +67,13 @@ const commands = {
 }
 
 export default {
+  namespaced: true,
   actions: {
-    exec(Maye, command) {
+    exec(store, command) {
       if (!commands[command]) return false
-      return commands[command].call(this, Maye)
+      return commands[command].call(this, store)
     },
-    register(Maye, user) {
+    register(store, user) {
       Object.assign(commands, user)
     },
   },

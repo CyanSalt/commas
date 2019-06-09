@@ -1,17 +1,29 @@
 import {remote} from 'electron'
-import {translate} from '../plugins/i18n'
+import {translate} from '@/plugins/i18n'
 
 export default {
-  states: {
+  namespaced: true,
+  state: {
     quiting: false,
     multitabs: true,
     finding: false,
   },
+  mutations: {
+    setQuiting(state, value) {
+      state.quiting = value
+    },
+    setMultitabs(state, value) {
+      state.multitabs = value
+    },
+    setFinding(state, value) {
+      state.finding = value
+    },
+  },
   actions: {
-    closing({state}) {
-      if (state.get([this, 'quiting'])) return false
-      const tabs = state.get('terminal.tabs')
-      if (tabs.length <= 1) return false
+    closing({state, rootState}) {
+      if (state.quiting) return
+      const tabs = rootState.terminal.tabs
+      if (tabs.length <= 1) return
       const args = {
         message: translate('Close Window?#!1'),
         detail: translate('All tabs in this window will be closed.#!2'),
@@ -23,22 +35,21 @@ export default {
         defaultId: 0,
       }
       const frame = remote.getCurrentWindow()
-      remote.dialog.showMessageBox(frame, args, response => {
+      throw remote.dialog.showMessageBox(frame, args, response => {
         if (response === 0) frame.destroy()
       })
-      return true
     },
-    drop({action}, {tab, files}) {
+    drop({dispatch}, {tab, files}) {
       const paths = Array.from(files).map(({path}) => {
         if (path.indexOf(' ') !== -1) return `"${path}"`
         return path
       })
-      action.dispatch('terminal.input', {
+      dispatch('terminal/input', {
         tab,
         data: paths.join(' '),
-      })
+      }, {root: true})
     },
-    open(Maye, uri) {
+    open(store, uri) {
       remote.shell.openExternal(uri)
     },
   },

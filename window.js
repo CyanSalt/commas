@@ -78,7 +78,6 @@ function execCommand(command, frame) {
   frame.webContents.send('command', command)
 }
 
-// eslint-disable-next-line max-lines-per-function
 function getSharedWindowMenu() {
   return [
     {

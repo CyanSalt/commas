@@ -30,6 +30,7 @@
     "vue-loader": "^15.7.0",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.10",
+    "vuex": "^3.1.1",
     "webpack": "^4.33.0",
     "webpack-cli": "^3.3.2",
     "xterm": "^3.14.2",
@@ -37,7 +38,6 @@
   },
   "dependencies": {
     "connect": "^3.7.0",
-    "express": "^4.17.1",
     "http-proxy-middleware": "^0.19.1",
     "json5": "^2.1.0",
     "node-pty": "^0.8.1",

@@ -5,6 +5,7 @@ import * as search from 'xterm/lib/addons/search/search'
 import * as webLinks from 'xterm/lib/addons/webLinks/webLinks'
 import * as ligatures from 'xterm-addon-ligatures'
 import {remote} from 'electron'
+import {updateItem, removeIndex} from '@/utils/array'
 
 Terminal.applyAddon(fit)
 Terminal.applyAddon(search)
@@ -20,25 +21,38 @@ const variables = {
 const isPackaged = remote.app.isPackaged
 
 export default {
-  states: {
-    observer: null,
+  namespaced: true,
+  state: {
     tabs: [],
+    poll: new Map(),
     active: -1,
+    observer: null,
   },
-  accessors: {
-    current({state}) {
-      const active = state.get([this, 'active'])
+  getters: {
+    current(state) {
+      const active = state.active
       if (active === -1) return null
-      const tabs = state.get([this, 'tabs'])
+      const tabs = state.tabs
       return tabs[active]
     },
   },
+  mutations: {
+    setTabs(state, value) {
+      state.tabs = value
+    },
+    setActive(state, value) {
+      state.active = value
+    },
+    setObserver(state, value) {
+      state.observer = value
+    },
+  },
   actions: {
-    // eslint-disable-next-line max-lines-per-function
-    spawn({state, accessor}, path) {
-      const settings = state.get('settings.user')
+    spawn({state, getters, commit, rootState}, path) {
+      const settings = rootState.settings.settings
       const shell = settings['terminal.shell.path'] || (
-        process.platform === 'win32' ? process.env.COMSPEC : process.env.SHELL)
+        process.platform === 'win32' ? process.env.COMSPEC : process.env.SHELL
+      )
       const env = {
         ...process.env,
         ...settings['terminal.shell.env'],
@@ -53,14 +67,12 @@ export default {
         cwd: path || env.HOME,
         env,
       })
-      const tab = {
-        pty, title: '',
-        id: pty.pid,
-        process: pty.process,
-      }
+      const id = pty.pid
       // issue@xterm: apply transparency background color and selection
-      let theme = state.get('theme.user')
-      theme = {...theme, background: 'transparent'}
+      const theme = {
+        ...rootState.theme.theme,
+        background: 'transparent',
+      }
       // Initialize xterm.js and attach it to the DOM
       const xterm = new Terminal({
         fontSize: settings['terminal.style.fontSize'],
@@ -75,61 +87,62 @@ export default {
       pty.on('data', data => {
         xterm.write(data)
         // TODO: performance review
+        const tab = state.tabs.find(tab => tab.id === id)
         const process = pty.process
         if (tab.process !== process) {
-          state.update([this, 'tabs'], () => {tab.process = pty.process})
+          commit('setTabs', updateItem(state.tabs, tab, {process}))
         }
       })
       pty.on('exit', () => {
-        const active = state.get([this, 'active'])
-        const observer = state.get([this, 'observer'])
         if (xterm.element) {
-          observer.unobserve(xterm.element)
+          state.observer.unobserve(xterm.element)
         }
         xterm.destroy()
-        state.update([this, 'tabs'], tabs => {
-          const index = tabs.indexOf(tab)
-          if (index !== -1) {
-            tabs.splice(index, 1)
-            if (!tabs.length) {
-              remote.getCurrentWindow().close()
-            } else if (active === index) {
-              state.set([this, 'active'], Math.min(index, tabs.length - 1))
-            }
+        const index = state.tabs.findIndex(tab => tab.id === id)
+        if (index !== -1) {
+          state.poll.delete(id)
+          const tabs = removeIndex(state.tabs, index)
+          commit('setTabs', tabs)
+          if (!tabs.length) {
+            remote.getCurrentWindow().close()
+          } else if (state.active === index) {
+            commit('setActive', Math.min(index, tabs.length - 1))
           }
-          if (tab.launcher) {
-            state.update('launcher.all', () => {
-              tab.launcher.tab = null
-            })
-          }
-        })
+        }
       })
       xterm.on('resize', ({cols, rows}) => {
         pty.resize(cols, rows)
       })
       xterm.on('title', title => {
-        state.update([this, 'tabs'], () => {tab.title = title})
-        if (tab === accessor.get([this, 'current'])) {
+        const tab = state.tabs.find(tab => tab.id === id)
+        if (tab.title !== title) {
+          commit('setTabs', updateItem(state.tabs, tab, {title}))
+        }
+        if (getters.current.id === id) {
           document.title = title
         }
       })
-      tab.xterm = xterm
-      state.update([this, 'tabs'], tabs => {
-        const length = tabs.push(tab)
-        state.set([this, 'active'], length - 1)
-      })
-      return tab
+      // Create new tab for current terminal
+      // TODO: put this before pty and xterm created
+      const tab = {
+        id,
+        title: '',
+        process: pty.process,
+      }
+      state.poll.set(id, {pty, xterm})
+      commit('setTabs', [...state.tabs, tab])
+      commit('setActive', state.tabs.length - 1)
     },
-    mount({state, action}, {tab, element}) {
-      let observer = state.get([this, 'observer'])
+    mount({state, commit, dispatch, rootState}, {tab, element}) {
+      let observer = state.observer
       if (!observer) {
         observer = new ResizeObserver(() => {
-          action.dispatch([this, 'resize'])
+          dispatch('resize')
         })
-        state.set([this, 'observer'], observer)
+        commit('setObserver', observer)
       }
-      const settings = state.get('settings.user')
-      const {xterm} = tab
+      const settings = rootState.settings.settings
+      const {xterm} = state.poll.get(tab.id)
       requestIdleCallback(() => {
         if (xterm.element) {
           element.appendChild(xterm.element)
@@ -137,7 +150,7 @@ export default {
           xterm.open(element)
           observer.observe(element)
           xterm.webLinksInit((event, uri) => {
-            if (event.altKey) action.dispatch('shell.open', uri)
+            if (event.altKey) dispatch('shell/open', uri, {root: true})
           })
           if (settings['terminal.style.fontLigatures']) {
             xterm.enableLigatures()
@@ -147,45 +160,46 @@ export default {
         xterm.focus()
       }, {timeout: 1000})
     },
-    resize({accessor}) {
-      const current = accessor.get([this, 'current'])
+    resize({getters}) {
+      const current = getters.current
       if (current && current.xterm && current.xterm.element) {
         current.xterm.fit()
       }
     },
-    input(Maye, {tab, data}) {
-      tab.pty.write(data)
+    input({state}, {tab, data}) {
+      state.poll.get(tab.id).pty.write(data)
     },
-    activite({state}, tab) {
-      const tabs = state.get([this, 'tabs'])
+    activite({state, commit}, tab) {
+      const tabs = state.tabs
       const index = tabs.indexOf(tab)
       if (index !== -1) {
-        state.set([this, 'active'], index)
+        commit('setActive', index)
       }
     },
-    close(Maye, tab) {
-      tab.pty.kill()
+    close({state}, tab) {
+      state.poll.get(tab.id).pty.kill()
     },
-    find({accessor}, {keyword, options, back}) {
-      const current = accessor.get([this, 'current'])
+    find({getters}, {keyword, options, back}) {
+      const current = getters.current
       if (back) {
         current.xterm.findPrevious(keyword, options)
       } else {
         current.xterm.findNext(keyword, options)
       }
     },
-    refresh({state}) {
-      const tabs = state.get([this, 'tabs'])
-      const settings = state.get('settings.user')
-      let theme = state.get('theme.user')
+    refresh({state, rootState}) {
+      const tabs = state.tabs
+      const settings = rootState.settings.settings
+      let theme = rootState.theme.theme
       theme = {...theme, background: 'transparent'}
       // TODO: performance review
       for (const tab of tabs) {
-        tab.xterm.setOption('fontSize', settings['terminal.style.fontSize'])
-        tab.xterm.setOption('fontFamily', settings['terminal.style.fontFamily'])
-        tab.xterm.setOption('theme', theme)
+        const {xterm} = state.poll.get(tab.id)
+        xterm.setOption('fontSize', settings['terminal.style.fontSize'])
+        xterm.setOption('fontFamily', settings['terminal.style.fontFamily'])
+        xterm.setOption('theme', theme)
         if (settings['terminal.style.fontLigatures']) {
-          tab.xterm.enableLigatures()
+          xterm.enableLigatures()
         }
       }
     },

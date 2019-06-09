@@ -1,7 +1,7 @@
 import {readFileSync} from 'fs'
 import {resolve} from 'path'
-import fallback from '../assets/themes/oceanic-next.json'
-import {FileStorage} from '../plugins/storage'
+import fallback from '@/assets/themes/oceanic-next.json'
+import {FileStorage} from '@/plugins/storage'
 
 function load(file) {
   const path = resolve(__dirname, `assets/themes/${file}.json`)
@@ -13,21 +13,30 @@ function load(file) {
 }
 
 export default {
-  states: {
-    default: fallback,
-    user: null,
+  namespaced: true,
+  state: {
+    fallback,
+    theme: null,
     watcher: null,
   },
+  mutations: {
+    setTheme(state, value) {
+      state.theme = value
+    },
+    setWatcher(state, value) {
+      state.watcher = value
+    },
+  },
   actions: {
-    async load({state, action}) {
+    async load({commit, dispatch, rootState}) {
       const theme = {...fallback}
-      const settings = state.get('settings.user')
+      const settings = rootState.settings.settings
       const specified = settings['terminal.theme.name']
       if (specified && specified !== 'oceanic-next') {
         let file = load(specified)
         if (!file) {
           file = await FileStorage.load(`themes/${specified}.json`)
-          if (file) action.dispatch([this, 'watch'], `themes/${specified}.json`)
+          if (file) dispatch('watch', `themes/${specified}.json`)
         }
         if (file) Object.assign(theme, file)
       }
@@ -35,13 +44,13 @@ export default {
       if (customization) {
         Object.assign(theme, customization)
       }
-      action.dispatch([this, 'eject'])
-      state.set([this, 'user'], theme)
-      action.dispatch([this, 'inject'])
+      await dispatch('eject')
+      commit('setTheme', theme)
+      dispatch('inject')
     },
-    inject({state}) {
-      const theme = state.get([this, 'user'])
-      const settings = state.get('settings.user')
+    inject({state, rootState}) {
+      const theme = state.theme
+      const settings = rootState.settings.settings
       const element = document.createElement('style')
       element.id = 'app-theme'
       const properties = {}
@@ -58,21 +67,20 @@ export default {
       document.body.classList.add(theme.type)
     },
     eject({state}) {
-      const theme = state.get([this, 'user'])
+      const theme = state.theme
       if (!theme) return
       // TODO: performance review
       const element = document.getElementById('app-theme')
       if (element) element.remove()
       document.body.classList.remove(theme.type)
     },
-    watch({state, action}, file) {
-      state.update([this, 'watcher'], watcher => {
-        if (watcher) watcher.close()
-        return FileStorage.watch(file, async () => {
-          await action.dispatch([this, 'load'])
-          action.dispatch('terminal.refresh')
-        })
-      }, true)
+    watch({state, commit, dispatch}, file) {
+      if (state.watcher) state.watcher.close()
+      const watcher = FileStorage.watch(file, async () => {
+        await dispatch('load')
+        dispatch('terminal/refresh', null, {root: true})
+      })
+      commit('setWatcher', watcher)
     },
   },
 }

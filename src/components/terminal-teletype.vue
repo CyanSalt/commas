@@ -9,6 +9,7 @@
 <script>
 import ScrollBar from './scroll-bar'
 import 'xterm/lib/xterm.css'
+import {mapState} from 'vuex'
 
 export default {
   name: 'TerminalTeletype',
@@ -23,10 +24,13 @@ export default {
       viewport: null,
     }
   },
+  computed: {
+    ...mapState('terminal', ['poll']),
+  },
   methods: {
     bound() {
-      // eslint-disable-next-line no-underscore-dangle
-      this.viewport = this.tab.xterm._core._viewportElement
+      const {xterm} = this.poll.get(this.tab.id)
+      this.viewport = xterm._core._viewportElement
     },
     dragging(e) {
       e.dataTransfer.dropEffect = 'copy'
@@ -34,16 +38,14 @@ export default {
     drop(e) {
       const files = e.dataTransfer.files
       if (!files || !files.length) return
-      const {action} = this.$maye
-      action.dispatch('shell.drop', {
+      this.$store.dispatch('shell/drop', {
         tab: this.tab,
         files,
       })
     },
   },
   mounted() {
-    const {action} = this.$maye
-    action.dispatch('terminal.mount', {
+    this.$store.dispatch('terminal/mount', {
       tab: this.tab,
       element: this.$refs.terminal,
     })
@@ -54,10 +56,9 @@ export default {
   },
   activated() {
     // issue@xterm: fix bug after unmounted element updated
-    // eslint-disable-next-line no-underscore-dangle
-    const terminal = this.tab.xterm._core
-    if (terminal.viewport) terminal.viewport.syncScrollArea()
-    this.tab.xterm.scrollToBottom()
+    const {xterm} = this.poll.get(this.tab.id)
+    if (xterm._core.viewport) xterm._core.viewport.syncScrollArea()
+    xterm.scrollToBottom()
   },
 }
 </script>
