@@ -16,13 +16,10 @@ function createWindow(args) {
     frame: false,
     titleBarStyle: 'hiddenInset',
     transparent: true,
-    // issue@electron: fix bug of transparent background after toggling devtools
-    backgroundColor: '#00ffffff',
     acceptFirstMouse: true,
     affinity: 'default',
     webPreferences: {
       nodeIntegration: true,
-      experimentalFeatures: true,
     },
   }
   // frame offset

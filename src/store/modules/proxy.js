@@ -2,10 +2,17 @@ import connect from 'connect'
 import vhost from 'vhost'
 import proxy from 'http-proxy-middleware'
 
+const createProxyMiddleware = rule => proxy(rule.context, {
+  logLevel: 'silent',
+  ...rule.proxy,
+})
+
+let singleton = null
+
 export default {
   namespaced: true,
   state: {
-    server: null,
+    serving: false,
   },
   getters: {
     port(state, getters, rootState) {
@@ -15,7 +22,8 @@ export default {
   },
   mutations: {
     setServer(state, value) {
-      state.server = value
+      state.serving = Boolean(value)
+      singleton = value
     },
   },
   actions: {
@@ -36,12 +44,12 @@ export default {
         if (host) {
           const child = connect()
           for (const rule of rules) {
-            child.use(proxy(rule.context, rule.proxy))
+            child.use(createProxyMiddleware(rule))
           }
           app.use(vhost(host, child))
         } else {
           for (const rule of rules) {
-            app.use(proxy(rule.context, rule.proxy))
+            app.use(createProxyMiddleware(rule))
           }
         }
       }
@@ -49,8 +57,8 @@ export default {
       commit('setServer', server)
     },
     close({state, commit}) {
-      const server = state.server
-      if (!server) return
+      if (!state.serving) return
+      const server = singleton
       commit('setServer', null)
       server.close()
     },

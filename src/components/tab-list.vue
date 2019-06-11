@@ -49,9 +49,9 @@
         <div class="anchor" @click="configure()">
           <span class="feather-icon icon-settings"></span>
         </div>
-        <div :class="['anchor', 'proxy-server', {active: server}]" @click="proxy()">
+        <div :class="['anchor', 'proxy-server', {active: serving}]" @click="proxy()">
           <span class="feather-icon icon-navigation"></span>
-          <span v-if="server" class="server-port">{{ port }}</span>
+          <span v-if="serving" class="server-port">{{ port }}</span>
         </div>
       </div>
     </div>
@@ -83,7 +83,7 @@ export default {
   computed: {
     ...mapState('terminal', ['tabs']),
     ...mapState('launcher', ['launchers']),
-    ...mapState('proxy', ['server']),
+    ...mapState('proxy', ['serving']),
     ...mapGetters('proxy', ['port']),
     running() {
       return this.tabs.filter(tab => !tab.launcher)
@@ -111,7 +111,7 @@ export default {
       this.$store.dispatch('command/exec', 'open-settings')
     },
     proxy() {
-      if (this.server) {
+      if (this.serving) {
         this.$store.dispatch('proxy/close')
       } else {
         this.$store.dispatch('proxy/open')
@@ -192,17 +192,13 @@ export default {
 .tab-list .launcher-folder {
   display: flex;
   position: sticky;
-  /* use padding + top/negative margin instead of margin
-     for blink's bug of `backdrop-filter` */
   padding-top: 17px;
   padding-bottom: 8px;
   top: -17px;
   margin-bottom: -8px;
   z-index: 1;
   cursor: pointer;
-  /* erase backdrop text */
   background: var(--theme-background);
-  backdrop-filter: opacity(0);
 }
 .tab-list .group-name {
   flex: auto;
@@ -245,7 +241,6 @@ export default {
 }
 .tab-list .bottom-actions {
   flex: none;
-  background: var(--theme-background);
   display: flex;
   padding: 4px 16px;
   line-height: 24px;

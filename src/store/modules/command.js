@@ -56,7 +56,7 @@ const commands = {
     }
   },
   'find'({commit}) {
-    commit('shell/finding', true, {root: true})
+    commit('shell/setFinding', true, {root: true})
   },
   'open-settings'() {
     openStorageFile('settings.json', 'settings.json')

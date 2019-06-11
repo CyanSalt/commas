@@ -93,6 +93,7 @@ export default {
 #main .content {
   flex: auto;
   display: flex;
+  overflow: hidden;
 }
 #main .interface {
   flex: auto;
