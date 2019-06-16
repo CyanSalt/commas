@@ -41,14 +41,12 @@ export default {
     },
     title() {
       if (!this.tab) return this.name
-      this.tabs // dependency
       const expr = this.settings['terminal.tab.titleFormat']
       return (function ({title, name, process, id}) {
         return eval('`' + expr + '`')
       })(this.tab)
     },
     subtitle() {
-      this.tabs // dependency
       const expr = this.settings['terminal.tab.subtitleFormat']
       return (function ({title, name, process, id}) {
         return eval('`' + expr + '`')
