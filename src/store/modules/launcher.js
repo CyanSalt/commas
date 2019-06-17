@@ -1,13 +1,11 @@
 import {FileStorage} from '@/plugins/storage'
-import {createIDGenerator} from '@/utils/identity'
 import {quote, resolveHome} from '@/utils/shell'
 import {updateItem} from '@/utils/array'
 import {getLauncherTab} from '@/utils/terminal'
+import {merge} from '@/utils/launcher'
 import {remote} from 'electron'
 import {spawn} from 'child_process'
 import {EOL} from 'os'
-
-const generateID = createIDGenerator()
 
 export default {
   namespaced: true,
@@ -24,13 +22,17 @@ export default {
     },
   },
   actions: {
-    async load({commit}) {
+    async load({state, commit, rootState}) {
       const launchers = await FileStorage.load('launchers.json')
       if (!launchers) return
-      commit('setLaunchers', launchers.map(launcher => ({
-        ...launcher,
-        id: generateID(),
-      })))
+      const merged = merge(state.launchers, launchers)
+      commit('setLaunchers', merged)
+      commit('terminal/setTabs', rootState.terminal.tabs.map(tab => {
+        if (!tab.launcher) return tab
+        const updated = merged.find(item => item.id === tab.launcher)
+        return updated ? {...tab, name: updated.name}
+          : {...tab, launcher: undefined, name: undefined}
+      }), {root: true})
     },
     async open({state, commit, dispatch, rootState, rootGetters}, launcher) {
       const tab = getLauncherTab(rootState.terminal.tabs, launcher)
@@ -41,8 +43,8 @@ export default {
         await dispatch('terminal/spawn', resolveHome(directory), {root: true})
         const current = rootGetters['terminal/current']
         commit('terminal/setTabs', updateItem(rootState.terminal.tabs, current, {
-          name: launcher.name, // title template variable
           launcher: launcher.id,
+          name: launcher.name, // title template variable
         }), {root: true})
       }
     },
@@ -85,12 +87,7 @@ export default {
     watch({state, commit, dispatch, rootState}) {
       if (state.watcher) state.watcher.close()
       const watcher = FileStorage.watch('launchers.json', () => {
-        const launchers = state.launchers
-        // don't update if any launcher is running
-        const tabs = rootState.terminal.tabs
-        if (launchers.every(launcher => !getLauncherTab(tabs, launcher))) {
-          dispatch('load')
-        }
+        dispatch('load')
       })
       commit('setWatcher', watcher)
     },
