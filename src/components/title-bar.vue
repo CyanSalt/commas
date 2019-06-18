@@ -22,6 +22,7 @@
 <script>
 import {remote, ipcRenderer} from 'electron'
 import {mapState, mapGetters} from 'vuex'
+import {getPrompt} from '@/utils/terminal'
 
 export default {
   name: 'TitleBar',
@@ -38,11 +39,9 @@ export default {
     ...mapState('settings', ['settings']),
     ...mapGetters('terminal', ['current']),
     title() {
-      if (!this.current) return ''
+      if (this.current && this.current.title) return this.current.title
       const expr = this.settings['terminal.window.titleFormat']
-      return (function ({title, name, process, id}) {
-        return eval('`' + expr + '`')
-      })(this.current)
+      return getPrompt(expr, this.current)
     },
   },
   methods: {

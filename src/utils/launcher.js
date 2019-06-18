@@ -2,6 +2,10 @@ import {createIDGenerator} from '@/utils/identity'
 
 const generateID = createIDGenerator()
 
+export const getLauncherTab = (tabs, launcher) => {
+  return tabs.find(tab => tab.launcher === launcher.id)
+}
+
 function getMatchedLauncher(launchers, declarations, condition) {
   let matches = launchers.filter(condition)
   let siblings = declarations.filter(condition)

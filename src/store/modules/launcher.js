@@ -1,7 +1,7 @@
 import {FileStorage} from '@/plugins/storage'
-import {quote, resolveHome} from '@/utils/shell'
+import {quote, resolveHome} from '@/utils/terminal'
 import {updateItem} from '@/utils/array'
-import {getLauncherTab} from '@/utils/terminal'
+import {getLauncherTab} from '@/utils/launcher'
 import {merge} from '@/utils/launcher'
 import {remote} from 'electron'
 import {spawn} from 'child_process'
@@ -30,11 +30,10 @@ export default {
       commit('terminal/setTabs', rootState.terminal.tabs.map(tab => {
         if (!tab.launcher) return tab
         const updated = merged.find(item => item.id === tab.launcher)
-        return updated ? {...tab, name: updated.name}
-          : {...tab, launcher: undefined, name: undefined}
+        return updated ? tab : {...tab, launcher: undefined}
       }), {root: true})
     },
-    async open({state, commit, dispatch, rootState, rootGetters}, launcher) {
+    async open({commit, dispatch, rootState, rootGetters}, launcher) {
       const tab = getLauncherTab(rootState.terminal.tabs, launcher)
       if (tab) {
         return dispatch('terminal/activite', tab, {root: true})
@@ -44,7 +43,6 @@ export default {
         const current = rootGetters['terminal/current']
         commit('terminal/setTabs', updateItem(rootState.terminal.tabs, current, {
           launcher: launcher.id,
-          name: launcher.name, // title template variable
         }), {root: true})
       }
     },

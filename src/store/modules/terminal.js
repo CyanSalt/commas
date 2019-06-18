@@ -6,6 +6,8 @@ import * as webLinks from 'xterm/lib/addons/webLinks/webLinks'
 import * as ligatures from 'xterm-addon-ligatures'
 import {remote} from 'electron'
 import {updateItem, removeIndex} from '@/utils/array'
+import {getCwd} from '@/utils/terminal'
+import {debounce} from 'lodash'
 
 Terminal.applyAddon(fit)
 Terminal.applyAddon(search)
@@ -61,10 +63,11 @@ export default {
       // Fix NVM `npm_config_prefix` error in development environment
       if (!isPackaged && env.npm_config_prefix) delete env.npm_config_prefix
       // Initialize node-pty process
+      const cwd = path || env.HOME
       const pty = spawn(shell, settings['terminal.shell.args'], {
         name: 'xterm-256color',
         encoding: 'utf8',
-        cwd: path || env.HOME,
+        cwd,
         env,
       })
       const id = pty.pid
@@ -122,10 +125,21 @@ export default {
           document.title = title
         }
       })
+      const updateCwd = debounce(async () => {
+        const cwd = await getCwd(id)
+        if (cwd) {
+          const tab = state.tabs.find(tab => tab.id === id)
+          commit('setTabs', updateItem(state.tabs, tab, {cwd}))
+        }
+      }, 1000)
+      xterm.on('key', (key, event) => {
+        if (event.keyCode === 13) updateCwd()
+      })
       // Create new tab for current terminal
       // TODO: put this before pty and xterm created
       const tab = {
         id,
+        cwd,
         title: '',
         process: pty.process,
       }

@@ -16,6 +16,7 @@
 
 <script>
 import {mapState} from 'vuex'
+import {getPrompt} from '@/utils/terminal'
 
 export default {
   name: 'TabItem',
@@ -42,15 +43,13 @@ export default {
     title() {
       if (!this.tab) return this.name
       const expr = this.settings['terminal.tab.titleFormat']
-      return (function ({title, name, process, id}) {
-        return eval('`' + expr + '`')
-      })(this.tab)
+      return getPrompt(expr, this.tab) || this.tab.process
     },
     subtitle() {
+      if (this.name) return this.name
+      if (this.tab.title) return this.tab.title
       const expr = this.settings['terminal.tab.subtitleFormat']
-      return (function ({title, name, process, id}) {
-        return eval('`' + expr + '`')
-      })(this.tab)
+      return getPrompt(expr, this.tab)
     },
   },
   methods: {

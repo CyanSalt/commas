@@ -65,7 +65,7 @@
 <script>
 import TabItem from './tab-item'
 import ScrollBar from './scroll-bar'
-import {getLauncherTab} from '@/utils/terminal'
+import {getLauncherTab} from '@/utils/launcher'
 import {mapState, mapGetters, mapActions} from 'vuex'
 
 export default {
