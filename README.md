@@ -31,9 +31,9 @@ A hackable terminal and command runner. **Commas** means **Com**mand **Mas**ter.
 
 ### Extra tips
 
-#### How to show work directory in the title on macOS?
+#### How to show work directory in the title without `terminal.tab.liveCwd` enabled?
 
-You can append shell scripts below to your profile (`~/.bashrc`, `~/.zshrc`, `~/.profile` or others):
+(Recommended) You can append shell scripts below to your profile (`~/.bashrc`, `~/.zshrc`, `~/.profile` or others):
 
 ```bash
 if [ "$TERM_PROGRAM" = "Commas" ]; then

@@ -125,16 +125,18 @@ export default {
           document.title = title
         }
       })
-      const updateCwd = debounce(async () => {
-        const cwd = await getCwd(id)
-        if (cwd) {
-          const tab = state.tabs.find(tab => tab.id === id)
-          commit('setTabs', updateItem(state.tabs, tab, {cwd}))
-        }
-      }, 1000)
-      xterm.on('key', (key, event) => {
-        if (event.keyCode === 13) updateCwd()
-      })
+      if (settings['terminal.tab.liveCwd']) {
+        const updateCwd = debounce(async () => {
+          const cwd = await getCwd(id)
+          if (cwd) {
+            const tab = state.tabs.find(tab => tab.id === id)
+            commit('setTabs', updateItem(state.tabs, tab, {cwd}))
+          }
+        }, 1000)
+        xterm.on('key', (key, event) => {
+          if (event.keyCode === 13) updateCwd()
+        })
+      }
       // Create new tab for current terminal
       // TODO: put this before pty and xterm created
       const tab = {
