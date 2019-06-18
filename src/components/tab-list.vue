@@ -1,49 +1,52 @@
 <template>
   <div class="tab-list">
     <div class="list-column" :style="{width: width + 'px'}">
-      <div class="list">
-        <div class="processes">
-          <tab-item :tab="tab" @click.native="activite(tab)"
-            v-for="tab in running" :key="tab.id"></tab-item>
-          <div class="new-tab anchor" @click="spawn()">
-            <span class="feather-icon icon-plus"></span>
-          </div>
-        </div>
-        <div class="launcher-folder" @click="expandOrCollapse">
-          <div class="group-name">{{ i18n('Launchers#!5') }}</div>
-          <div class="buttons">
-            <div :class="['button', 'find', {active: finding}]"
-              @click.stop="find">
-              <span class="feather-icon icon-search"></span>
-            </div>
-            <div class="button indicator">
-              <span class="feather-icon icon-chevron-up" v-if="collapsed"></span>
-              <span class="feather-icon icon-chevron-down" v-else></span>
+      <div class="scroll-area">
+        <div class="list">
+          <div class="processes">
+            <tab-item :tab="tab" @click.native="activite(tab)"
+              v-for="tab in running" :key="tab.id"></tab-item>
+            <div class="new-tab anchor" @click="spawn()">
+              <span class="feather-icon icon-plus"></span>
             </div>
           </div>
-        </div>
-        <div class="find-launcher" v-show="finding">
-          <input class="keyword" v-model="keyword" :placeholder="i18n('Find#!6')"
-            @keyup.esc="find" ref="keyword" autofocus>
-        </div>
-        <div class="launchers">
-          <tab-item :tab="getLauncherTab(launcher)" :name="launcher.name"
-            @click.native="open(launcher)"
-            v-for="launcher in filtered" :key="launcher.id"
-            v-show="!collapsed || getLauncherTab(launcher)">
-              <template #operations>
-                <div class="button launch" @click.stop="launch(launcher)">
-                  <span class="feather-icon icon-play"></span>
-                </div>
-                <div class="button assign" @click.stop="assign(launcher)">
-                  <span class="feather-icon icon-external-link"></span>
-                </div>
-              </template>
-            </tab-item>
-          <div class="edit-launcher anchor" @click="edit" v-show="!collapsed">
-            <span class="feather-icon icon-plus"></span>
+          <div class="launcher-folder" @click="expandOrCollapse">
+            <div class="group-name">{{ i18n('Launchers#!5') }}</div>
+            <div class="buttons">
+              <div :class="['button', 'find', {active: finding}]"
+                @click.stop="find">
+                <span class="feather-icon icon-search"></span>
+              </div>
+              <div class="button indicator">
+                <span class="feather-icon icon-chevron-up" v-if="collapsed"></span>
+                <span class="feather-icon icon-chevron-down" v-else></span>
+              </div>
+            </div>
+          </div>
+          <div class="find-launcher" v-show="finding">
+            <input class="keyword" v-model="keyword" :placeholder="i18n('Find#!6')"
+              @keyup.esc="find" ref="keyword" autofocus>
+          </div>
+          <div class="launchers">
+            <tab-item :tab="getLauncherTab(launcher)" :name="launcher.name"
+              @click.native="open(launcher)"
+              v-for="launcher in filtered" :key="launcher.id"
+              v-show="!collapsed || getLauncherTab(launcher)">
+                <template #operations>
+                  <div class="button launch" @click.stop="launch(launcher)">
+                    <span class="feather-icon icon-play"></span>
+                  </div>
+                  <div class="button assign" @click.stop="assign(launcher)">
+                    <span class="feather-icon icon-external-link"></span>
+                  </div>
+                </template>
+              </tab-item>
+            <div class="edit-launcher anchor" @click="edit" v-show="!collapsed">
+              <span class="feather-icon icon-plus"></span>
+            </div>
           </div>
         </div>
+        <scroll-bar></scroll-bar>
       </div>
       <div class="bottom-actions">
         <div class="anchor" @click="configure()">
@@ -55,7 +58,6 @@
         </div>
       </div>
     </div>
-    <scroll-bar></scroll-bar>
     <div class="sash" @mousedown.left="resize"></div>
   </div>
 </template>
@@ -147,7 +149,6 @@ export default {
 .tab-list {
   flex: none;
   display: flex;
-  position: relative;
   font-size: 14px;
 }
 .tab-list .list-column {
@@ -156,9 +157,14 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.tab-list .list {
+.tab-list .scroll-area {
   flex: auto;
+  height: 0;
+  position: relative;
+}
+.tab-list .list {
   padding: 4px 16px;
+  height: 100%;
   overflow-y: auto;
   box-sizing: border-box;
 }
