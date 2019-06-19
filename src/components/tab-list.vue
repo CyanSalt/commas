@@ -32,18 +32,15 @@
               @click.native="open(launcher)"
               v-for="launcher in filtered" :key="launcher.id"
               v-show="!collapsed || getLauncherTab(launcher)">
-                <template #operations>
-                  <div class="button launch" @click.stop="launch(launcher)">
-                    <span class="feather-icon icon-play"></span>
-                  </div>
-                  <div class="button assign" @click.stop="assign(launcher)">
-                    <span class="feather-icon icon-external-link"></span>
-                  </div>
-                </template>
-              </tab-item>
-            <div class="edit-launcher anchor" @click="edit" v-show="!collapsed">
-              <span class="feather-icon icon-plus"></span>
-            </div>
+              <template #operations>
+                <div class="button launch" @click.stop="launch(launcher)">
+                  <span class="feather-icon icon-play"></span>
+                </div>
+                <div class="button assign" @click.stop="assign(launcher)">
+                  <span class="feather-icon icon-external-link"></span>
+                </div>
+              </template>
+            </tab-item>
           </div>
         </div>
         <scroll-bar></scroll-bar>
@@ -106,9 +103,6 @@ export default {
     },
     expandOrCollapse() {
       this.collapsed = !this.collapsed
-    },
-    edit() {
-      this.$store.dispatch('command/exec', 'open-launchers')
     },
     configure() {
       this.$store.dispatch('terminal/interact', InternalTerminals.settings)
