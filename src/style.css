@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'Oxygen';
+  src: url('./assets/fonts/oxygen.woff2');
+}
+
 body {
   margin: 0;
   font-size: 14px;

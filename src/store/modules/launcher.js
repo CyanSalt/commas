@@ -3,7 +3,7 @@ import {quote, resolveHome} from '@/utils/terminal'
 import {updateItem} from '@/utils/array'
 import {getLauncherTab} from '@/utils/launcher'
 import {merge} from '@/utils/launcher'
-import {remote} from 'electron'
+import {shell} from 'electron'
 import {spawn} from 'child_process'
 import {EOL} from 'os'
 
@@ -72,7 +72,7 @@ export default {
       if (!launcher.directory) return false
       const directory = resolveHome(launcher.directory)
       if (!explorer) {
-        remote.shell.openItem(directory)
+        shell.openItem(directory)
         return
       }
       if (!Array.isArray(explorer)) {

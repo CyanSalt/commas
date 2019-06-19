@@ -48,5 +48,12 @@ export function translate(message) {
 export default {
   install(Vue, options) {
     Vue.prototype.i18n = translate
+    Vue.directive('i18n', (el, {value}) => {
+      let text = translate(el.innerText)
+      if (value) for (const [key, replacer] of Object.entries(value)) {
+        text = text.replace('%' + key, replacer)
+      }
+      el.innerText = text
+    })
   },
 }

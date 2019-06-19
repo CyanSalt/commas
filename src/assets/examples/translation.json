@@ -1,0 +1,7 @@
+{
+  // Use @ to refer to existing translation files
+  // "@use": "zh-CN",
+
+  // Or add translations for specific text
+  // "Close Window?#!1": "fermer cette fenêtre?",
+}

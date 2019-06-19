@@ -160,7 +160,7 @@ function createApplicationMenu() {
           label: 'Preferences...',
           accelerator: 'Command+,',
           click(self, frame) {
-            execCommand('open-settings', frame)
+            execCommand('interact-settings', frame)
           },
         },
         {type: 'separator'},

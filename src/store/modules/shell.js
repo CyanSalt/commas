@@ -49,8 +49,5 @@ export default {
         data: paths.join(' '),
       }, {root: true})
     },
-    open(store, uri) {
-      remote.shell.openExternal(uri)
-    },
   },
 }

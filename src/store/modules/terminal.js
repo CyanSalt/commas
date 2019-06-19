@@ -4,7 +4,7 @@ import * as fit from 'xterm/lib/addons/fit/fit'
 import * as search from 'xterm/lib/addons/search/search'
 import * as webLinks from 'xterm/lib/addons/webLinks/webLinks'
 import * as ligatures from 'xterm-addon-ligatures'
-import {remote} from 'electron'
+import {remote, shell} from 'electron'
 import {updateItem, removeIndex} from '@/utils/array'
 import {getCwd} from '@/utils/terminal'
 import {debounce} from 'lodash'
@@ -50,7 +50,7 @@ export default {
     },
   },
   actions: {
-    spawn({state, getters, commit, rootState}, path) {
+    spawn({state, getters, commit, dispatch, rootState}, path) {
       const settings = rootState.settings.settings
       const shell = settings['terminal.shell.path'] || (
         process.platform === 'win32' ? process.env.COMSPEC : process.env.SHELL
@@ -101,17 +101,8 @@ export default {
           state.observer.unobserve(xterm.element)
         }
         xterm.destroy()
-        const index = state.tabs.findIndex(tab => tab.id === id)
-        if (index !== -1) {
-          state.poll.delete(id)
-          const tabs = removeIndex(state.tabs, index)
-          commit('setTabs', tabs)
-          if (!tabs.length) {
-            remote.getCurrentWindow().close()
-          } else if (state.active === index) {
-            commit('setActive', Math.min(index, tabs.length - 1))
-          }
-        }
+        state.poll.delete(id)
+        dispatch('remove', id)
       })
       xterm.on('resize', ({cols, rows}) => {
         pty.resize(cols, rows)
@@ -166,7 +157,7 @@ export default {
           xterm.open(element)
           observer.observe(element)
           xterm.webLinksInit((event, uri) => {
-            if (event.altKey) dispatch('shell/open', uri, {root: true})
+            if (event.altKey) shell.openExternal(uri)
           })
           if (settings['terminal.style.fontLigatures']) {
             xterm.enableLigatures()
@@ -175,6 +166,16 @@ export default {
         xterm.fit()
         xterm.focus()
       }, {timeout: 1000})
+    },
+    interact({state, commit}, tab) {
+      const tabs = state.tabs
+      const index = tabs.findIndex(item => item.id === tab.id)
+      if (index !== -1) {
+        commit('setActive', index)
+      } else {
+        commit('setTabs', [...tabs, tab])
+        commit('setActive', state.tabs.length - 1)
+      }
     },
     resize({getters}) {
       const current = getters.current
@@ -192,8 +193,23 @@ export default {
         commit('setActive', index)
       }
     },
-    close({state}, tab) {
-      state.poll.get(tab.id).pty.kill()
+    close({state, dispatch}, tab) {
+      if (tab.internal) {
+        dispatch('remove', tab.id)
+      } else {
+        state.poll.get(tab.id).pty.kill()
+      }
+    },
+    remove({state, commit}, id) {
+      const index = state.tabs.findIndex(tab => tab.id === id)
+      if (index === -1) return
+      const tabs = removeIndex(state.tabs, index)
+      commit('setTabs', tabs)
+      if (!tabs.length) {
+        remote.getCurrentWindow().close()
+      } else if (state.active === index) {
+        commit('setActive', Math.min(index, tabs.length - 1))
+      }
     },
     find({getters}, {keyword, options, back}) {
       const current = getters.current

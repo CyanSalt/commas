@@ -1,8 +1,9 @@
-import {ipcRenderer, remote} from 'electron'
+import {ipcRenderer, remote, shell} from 'electron'
 import {FileStorage} from '@/plugins/storage'
 import {access, copyFile} from 'fs'
 import {resolve} from 'path'
 import {promisify} from 'util'
+import {InternalTerminals} from '@/utils/terminal'
 
 const promises = {
   access: promisify(access),
@@ -16,7 +17,7 @@ async function openStorageFile(filename, example) {
   } catch (e) {
     await promises.copyFile(resolve(__dirname, 'assets', example), path)
   }
-  remote.shell.openItem(path)
+  shell.openItem(path)
 }
 
 const commands = {
@@ -58,11 +59,29 @@ const commands = {
   'find'({commit}) {
     commit('shell/setFinding', true, {root: true})
   },
+  'interact-settings'({dispatch}) {
+    dispatch('terminal/interact', InternalTerminals.settings, {root: true})
+  },
+  'open-user-directory'() {
+    shell.openItem(FileStorage.filename('.'))
+  },
   'open-settings'() {
     openStorageFile('settings.json', 'settings.json')
   },
   'open-launchers'() {
     openStorageFile('launchers.json', 'examples/launchers.json')
+  },
+  'open-keybindings'() {
+    openStorageFile('keybindings.json', 'examples/keybindings.json')
+  },
+  'open-custom-js'() {
+    openStorageFile('custom.js', 'examples/custom.js')
+  },
+  'open-custom-css'() {
+    openStorageFile('custom.css', 'examples/custom.css')
+  },
+  'open-translation'() {
+    openStorageFile('translation.json', 'examples/translation.json')
   },
 }
 

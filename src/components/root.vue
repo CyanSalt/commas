@@ -6,8 +6,10 @@
       <div class="interface">
         <find-box></find-box>
         <keep-alive v-if="current">
-          <terminal-teletype :key="current.id"
-            :tab="current"></terminal-teletype>
+          <settings-panel v-if="current === internal.settings"
+            :key="current.id"></settings-panel>
+          <terminal-teletype v-else :tab="current"
+            :key="current.id"></terminal-teletype>
         </keep-alive>
       </div>
     </div>
@@ -19,8 +21,10 @@ import TitleBar from './title-bar'
 import TabList from './tab-list'
 import FindBox from './find-box'
 import TerminalTeletype from './terminal-teletype'
+import SettingsPanel from './settings-panel'
 import {ipcRenderer, remote} from 'electron'
 import {mapState, mapGetters} from 'vuex'
+import {InternalTerminals} from '@/utils/terminal'
 
 export default {
   components: {
@@ -28,6 +32,12 @@ export default {
     'tab-list': TabList,
     'terminal-teletype': TerminalTeletype,
     'find-box': FindBox,
+    'settings-panel': SettingsPanel,
+  },
+  data() {
+    return {
+      internal: InternalTerminals,
+    }
   },
   computed: {
     ...mapGetters('terminal', ['current']),

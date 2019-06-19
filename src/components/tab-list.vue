@@ -1,8 +1,8 @@
 <template>
   <div class="tab-list">
     <div class="list-column" :style="{width: width + 'px'}">
-      <div class="scroll-area">
-        <div class="list">
+      <div class="list">
+        <div class="scroll-area">
           <div class="processes">
             <tab-item :tab="tab" @click.native="activite(tab)"
               v-for="tab in running" :key="tab.id"></tab-item>
@@ -11,7 +11,7 @@
             </div>
           </div>
           <div class="launcher-folder" @click="expandOrCollapse">
-            <div class="group-name">{{ i18n('Launchers#!5') }}</div>
+            <div class="group-name" v-i18n>Launchers#!5</div>
             <div class="buttons">
               <div :class="['button', 'find', {active: finding}]"
                 @click.stop="find">
@@ -66,6 +66,7 @@
 import TabItem from './tab-item'
 import ScrollBar from './scroll-bar'
 import {getLauncherTab} from '@/utils/launcher'
+import {InternalTerminals} from '@/utils/terminal'
 import {mapState, mapGetters, mapActions} from 'vuex'
 
 export default {
@@ -110,7 +111,7 @@ export default {
       this.$store.dispatch('command/exec', 'open-launchers')
     },
     configure() {
-      this.$store.dispatch('command/exec', 'open-settings')
+      this.$store.dispatch('terminal/interact', InternalTerminals.settings)
     },
     proxy() {
       if (this.serving) {
@@ -157,18 +158,18 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.tab-list .scroll-area {
+.tab-list .list {
   flex: auto;
   height: 0;
   position: relative;
 }
-.tab-list .list {
+.tab-list .scroll-area {
   padding: 4px 16px;
   height: 100%;
   overflow-y: auto;
   box-sizing: border-box;
 }
-.tab-list .list::-webkit-scrollbar {
+.tab-list .scroll-area::-webkit-scrollbar {
   width: 0px;
 }
 .tab-list .scroll-bar {

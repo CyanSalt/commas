@@ -3,10 +3,25 @@ import {readlink} from 'fs'
 import {promisify} from 'util'
 import {hostname, userInfo} from 'os'
 import {basename} from 'path'
+import {remote} from 'electron'
+import {createIDGenerator} from '@/utils/identity'
+import {translate} from '@/plugins/i18n'
 
 const promises = {
   exec: promisify(exec),
   readlink: promisify(readlink),
+}
+
+const generateID = createIDGenerator()
+
+export const InternalTerminals = {
+  settings: {
+    internal: true,
+    id: -generateID(),
+    process: remote.app.getName(),
+    title: translate('Settings#!7'),
+    cwd: '',
+  },
 }
 
 export const quote = command => `"${command.replace(/"/g, '"\\""')}"`
