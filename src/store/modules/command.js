@@ -71,6 +71,9 @@ const commands = {
   'open-launchers'() {
     openStorageFile('launchers.json', 'examples/launchers.json')
   },
+  'open-proxy-rules'() {
+    openStorageFile('proxy-rules.json', 'examples/proxy-rules.json')
+  },
   'open-keybindings'() {
     openStorageFile('keybindings.json', 'examples/keybindings.json')
   },

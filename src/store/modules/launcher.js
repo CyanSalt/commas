@@ -82,7 +82,7 @@ export default {
       const [command, ...args] = explorer
       spawn(command, [...args, directory])
     },
-    watch({state, commit, dispatch, rootState}) {
+    watch({state, commit, dispatch}) {
       if (state.watcher) state.watcher.close()
       const watcher = FileStorage.watch('launchers.json', () => {
         dispatch('load')

@@ -3,6 +3,7 @@ import {dirname, resolve} from 'path'
 import {promisify} from 'util'
 import {remote} from 'electron'
 import * as JSON from 'json5'
+import {debounce} from 'lodash'
 
 const promises = {
   readFile: promisify(readFile),
@@ -51,7 +52,7 @@ export const FileStorage = {
   watch(basename, updater) {
     // `chokidar` is too large; `gaze` seems to be OK. Use native currently.
     try {
-      return watch(this.filename(basename), updater)
+      return watch(this.filename(basename), debounce(updater, 500))
     } catch (e) {
       return null
     }

@@ -19,6 +19,10 @@
           <span class="feather-icon icon-play"></span>
           <span v-i18n="{F: 'launchers.json'}">Edit %F#!13</span>
         </span>
+        <span class="link" @click="exec('open-proxy-rules')">
+          <span class="feather-icon icon-navigation"></span>
+          <span v-i18n="{F: 'proxy-rules.json'}">Edit %F#!13</span>
+        </span>
       </div>
       <h2 class="group-title" v-i18n>Customization#!10</h2>
       <div class="group">
@@ -76,7 +80,7 @@ export default {
 <style>
 .settings-panel {
   position: relative;
-  padding: 4px 8px;
+  padding: 4px 24px;
   height: 100%;
   box-sizing: border-box;
 }
@@ -98,7 +102,7 @@ export default {
 }
 .settings-panel .scroll-area {
   height: 100%;
-  overflow: scroll;
+  overflow: auto;
 }
 .settings-panel .scroll-area::-webkit-scrollbar {
   width: 0px;

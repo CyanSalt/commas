@@ -1,6 +1,7 @@
 import connect from 'connect'
 import vhost from 'vhost'
 import proxy from 'http-proxy-middleware'
+import {FileStorage} from '@/plugins/storage'
 
 const createProxyMiddleware = rule => proxy(rule.context, {
   logLevel: 'silent',
@@ -13,6 +14,8 @@ export default {
   namespaced: true,
   state: {
     serving: false,
+    rules: [],
+    watcher: null,
   },
   getters: {
     port(state, getters, rootState) {
@@ -25,15 +28,25 @@ export default {
       state.serving = Boolean(value)
       singleton = value
     },
+    setRules(state, value) {
+      state.rules = value
+    },
+    setWatcher(state, value) {
+      state.watcher = value
+    },
   },
   actions: {
-    open({state, commit, rootState}) {
-      const settings = rootState.settings.settings
+    async load({commit}) {
+      const rules = await FileStorage.load('proxy-rules.json')
+      if (!rules) return
+      commit('setRules', rules)
+    },
+    open({state, getters, commit, rootState}) {
       let server = state.server
       if (server) return
       const app = connect()
-      const rules = settings['terminal.proxyServer.rules']
-      const port = settings['terminal.proxyServer.port']
+      const rules = state.rules
+      const port = getters.port
       const groups = rules.reduce((groups, rule) => {
         const key = rule.vhost || ''
         if (!groups[key]) groups[key] = []
@@ -61,6 +74,17 @@ export default {
       const server = singleton
       commit('setServer', null)
       server.close()
+    },
+    watch({state, commit, dispatch}) {
+      if (state.watcher) state.watcher.close()
+      const watcher = FileStorage.watch('proxy-rules.json', async () => {
+        await dispatch('load')
+        if (state.serving) {
+          await dispatch('close')
+          dispatch('open')
+        }
+      })
+      commit('setWatcher', watcher)
     },
   },
 }
