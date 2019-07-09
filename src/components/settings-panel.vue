@@ -118,10 +118,11 @@ export default {
 }
 .settings-panel .group {
   margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 .settings-panel .link {
-  display: block;
-  width: fit-content;
   line-height: 32px;
   cursor: pointer;
   opacity: 0.5;
@@ -135,8 +136,6 @@ export default {
   margin-left: 4px;
 }
 .settings-panel .text {
-  display: block;
-  width: fit-content;
   line-height: 32px;
 }
 </style>

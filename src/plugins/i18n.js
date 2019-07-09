@@ -10,6 +10,8 @@ const translations = [
   },
 ]
 
+const comment = '#!'
+
 function load(file) {
   const path = resolve(__dirname, 'assets/locales', file)
   try {
@@ -34,26 +36,35 @@ function getDictionary() {
   const dictionary = (file && load(file)) || {}
   // Merge user defined translation data
   for (const [key, value] of Object.entries(custom)) {
-    if (value) dictionary[key] = value
+    if (typeof value === 'string') dictionary[key] = value
   }
   return dictionary
 }
 
-const dictionary = getDictionary()
+const unabridged = getDictionary()
+const dictionary = Object.entries(unabridged)
+  .reduce((collection, [key, value]) => {
+    const identity = key.substring(0, key.indexOf(comment))
+    if (identity) collection[identity] = value
+    return collection
+  }, {})
 
 export function translate(message) {
-  return dictionary[message] || message.split('#!')[0]
+  if (unabridged[message]) return unabridged[message]
+  const identity = message.substring(0, message.indexOf(comment))
+  if (dictionary[identity]) return dictionary[identity]
+  return message.split(comment)[0]
 }
 
 export default {
   install(Vue, options) {
     Vue.prototype.i18n = translate
     Vue.directive('i18n', (el, {value}) => {
-      let text = translate(el.innerText)
+      let text = translate(el.textContent)
       if (value) for (const [key, replacer] of Object.entries(value)) {
         text = text.replace('%' + key, replacer)
       }
-      el.innerText = text
+      el.textContent = text
     })
   },
 }

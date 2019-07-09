@@ -27,6 +27,7 @@ import {mapState, mapGetters} from 'vuex'
 import {InternalTerminals} from '@/utils/terminal'
 
 export default {
+  name: 'App',
   components: {
     'title-bar': TitleBar,
     'tab-list': TabList,

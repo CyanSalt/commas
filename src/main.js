@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import I18N from './plugins/i18n'
 import FileStorage from './plugins/storage'
-import Root from './components/root'
+import App from './components/app'
 import store from './store'
 
 Vue.use(I18N)
@@ -11,5 +11,5 @@ new Vue({
   store,
   el: '#main',
   functional: true,
-  render: h => h(Root),
+  render: h => h(App),
 })
