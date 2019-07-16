@@ -20,11 +20,12 @@
   },
   "devDependencies": {
     "css-loader": "^3.0.0",
-    "electron": "^5.0.4",
+    "electron": "^5.0.6",
     "electron-packager": "^13.1.1",
     "eslint": "^5.16.0",
-    "eslint-plugin-vue": "^5.2.2",
-    "lodash-es": "^4.17.11",
+    "eslint-plugin-vue": "^5.2.3",
+    "jscodeshift": "^0.6.4",
+    "lodash-es": "^4.17.14",
     "mini-css-extract-plugin": "^0.7.0",
     "png2icons": "^1.0.1",
     "vue": "^2.6.10",
@@ -32,9 +33,9 @@
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.10",
     "vuex": "^3.1.1",
-    "webpack": "^4.34.0",
-    "webpack-cli": "^3.3.4",
-    "xterm": "^3.14.2",
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.6",
+    "xterm": "^3.14.5",
     "xterm-addon-ligatures": "0.1.0-beta-2"
   },
   "dependencies": {

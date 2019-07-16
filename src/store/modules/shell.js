@@ -1,5 +1,5 @@
 import {remote} from 'electron'
-import {translate} from '@/plugins/i18n'
+import {translate} from '@/utils/i18n'
 
 export default {
   namespaced: true,

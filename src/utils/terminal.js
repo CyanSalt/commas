@@ -5,7 +5,7 @@ import {hostname, userInfo} from 'os'
 import {basename} from 'path'
 import {remote} from 'electron'
 import {createIDGenerator} from '@/utils/identity'
-import {translate} from '@/plugins/i18n'
+import {translate} from '@/utils/i18n'
 
 const promises = {
   exec: promisify(exec),

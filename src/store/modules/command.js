@@ -1,8 +1,8 @@
 import {ipcRenderer, remote, shell} from 'electron'
-import {FileStorage} from '@/plugins/storage'
 import {access, copyFile} from 'fs'
 import {resolve} from 'path'
 import {promisify} from 'util'
+import FileStorage from '@/utils/storage'
 import {InternalTerminals} from '@/utils/terminal'
 
 const promises = {

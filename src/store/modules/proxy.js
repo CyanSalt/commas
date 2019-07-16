@@ -1,7 +1,7 @@
 import connect from 'connect'
 import vhost from 'vhost'
 import proxy from 'http-proxy-middleware'
-import {FileStorage} from '@/plugins/storage'
+import FileStorage from '@/utils/storage'
 
 const createProxyMiddleware = rule => proxy(rule.context, {
   logLevel: 'silent',
