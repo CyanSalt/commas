@@ -17,7 +17,7 @@ try {
     const input = fs.readFileSync(`${folder}/icon.png`)
     console.log('Generating program icon...')
     const builder = suffix === 'icns' ? png2icons.createICNS : png2icons.createICO
-    const output = builder(input, png2icons.BICUBIC, false)
+    const output = builder(input, png2icons.BICUBIC2, 0, false, true)
     fs.writeFileSync(iconPath, output)
   } catch (e) {
     iconPath = null

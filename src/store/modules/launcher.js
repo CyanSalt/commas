@@ -46,9 +46,10 @@ export default {
       }
     },
     async launch({state, dispatch, rootState}, launcher) {
+      const id = launcher.id
       const active = getLauncherTab(rootState.terminal.tabs, launcher)
       await dispatch('open', launcher)
-      launcher = state.launchers.find(item => item.id === launcher.id)
+      launcher = state.launchers.find(item => item.id === id)
       let command = launcher.command
       if (launcher.login) {
         command = `bash -lic ${quote(command)}`

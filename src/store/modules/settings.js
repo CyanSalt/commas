@@ -1,6 +1,6 @@
 import fallback from '@/assets/settings.json'
 import FileStorage from '@/utils/storage'
-import Writer from '@/utils/writer'
+// import Writer from '@/utils/writer'
 import {clone, congruent} from '@/utils/object'
 import * as JSON from 'json5'
 
@@ -28,7 +28,7 @@ export default {
       // Load user settings
       const source = await FileStorage.read('settings.json')
       if (!source) return
-      commit('setWriter', new Writer(source))
+      // commit('setWriter', new Writer(source))
       try {
         const declared = JSON.parse(source)
         commit('setSettings', {...clone(fallback), ...declared})
@@ -38,7 +38,6 @@ export default {
     },
     save({state}) {
       const writer = state.writer
-      if (!writer) return
       // Filter default values on saving
       const reducer = (diff, [key, value]) => {
         if (!congruent(value, fallback[key])) {
@@ -47,10 +46,13 @@ export default {
         return diff
       }
       // TODO: better data merging logic
-      const computed = Object.entries(state.settings)
-        .reduce(reducer, {})
-      writer.write(computed)
-      return FileStorage.write('settings.json', writer.toSource())
+      const computed = Object.entries(state.settings).reduce(reducer, {})
+      if (writer) {
+        writer.write(computed)
+        return FileStorage.write('settings.json', writer.toSource())
+      } else {
+        return FileStorage.save('settings.json', computed)
+      }
     },
     watch({state, commit, dispatch}, callback) {
       if (state.watcher) state.watcher.close()
