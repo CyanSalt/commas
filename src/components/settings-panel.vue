@@ -71,7 +71,8 @@ export default {
   methods: {
     ...mapActions('command', ['exec']),
     visit() {
-      shell.openExternal('https://github.com/CyanSalt/commas')
+      const {project} = this.$store.state.updater
+      shell.openExternal(`https://github.com/${project.owner}/${project.repository}`)
     },
   },
 }

@@ -46,12 +46,19 @@
         <scroll-bar></scroll-bar>
       </div>
       <div class="bottom-actions">
-        <div class="anchor" @click="configure()">
-          <span class="feather-icon icon-settings"></span>
+        <div class="action-group">
+          <div class="anchor" @click="configure">
+            <span class="feather-icon icon-settings"></span>
+          </div>
+          <div :class="['anchor', 'proxy-server', {active: serving}]" @click="proxy">
+            <span class="feather-icon icon-navigation"></span>
+            <span v-if="serving" class="server-port">{{ port }}</span>
+          </div>
         </div>
-        <div :class="['anchor', 'proxy-server', {active: serving}]" @click="proxy()">
-          <span class="feather-icon icon-navigation"></span>
-          <span v-if="serving" class="server-port">{{ port }}</span>
+        <div class="action-group">
+          <div v-if="outdated" class="anchor updater" @click="update">
+            <span class="feather-icon icon-arrow-up-circle"></span>
+          </div>
         </div>
       </div>
     </div>
@@ -85,6 +92,7 @@ export default {
     ...mapState('launcher', ['launchers']),
     ...mapState('proxy', ['serving']),
     ...mapGetters('proxy', ['port']),
+    ...mapGetters('updater', ['outdated']),
     running() {
       return this.tabs.filter(tab => !tab.launcher)
     },
@@ -98,6 +106,7 @@ export default {
   methods: {
     ...mapActions('terminal', ['spawn', 'activite']),
     ...mapActions('launcher', ['open', 'launch', 'assign']),
+    ...mapActions('updater', ['update']),
     getLauncherTab(launcher) {
       return getLauncherTab(this.tabs, launcher)
     },
@@ -243,8 +252,12 @@ export default {
 .tab-list .bottom-actions {
   flex: none;
   display: flex;
+  justify-content: space-between;
   padding: 4px 16px;
   line-height: 24px;
+}
+.tab-list .bottom-actions .action-group {
+  display: flex;
 }
 .tab-list .bottom-actions .anchor {
   margin-right: 8px;
@@ -269,5 +282,9 @@ export default {
 }
 .tab-list .proxy-server.active {
   color: var(--theme-cyan);
+}
+.tab-list .updater {
+  color: var(--theme-red);
+  opacity: 1;
 }
 </style>
