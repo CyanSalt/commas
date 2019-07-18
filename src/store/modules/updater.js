@@ -1,6 +1,6 @@
 import {remote, shell} from 'electron'
 
-function compareVersion(ver1, ver2) {
+function compareVersions(ver1, ver2) {
   const arr1 = ver1.split('.')
   const arr2 = ver2.split('.')
   for (let index = 0; index < arr1.length; index++) {
@@ -28,7 +28,7 @@ export default {
   getters: {
     outdated: state => {
       if (!state.latest) return false
-      return compareVersion(state.latest, currentVersion) !== 1
+      return compareVersions(state.latest, currentVersion) === 1
     },
   },
   mutations: {
