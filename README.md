@@ -8,9 +8,13 @@ A hackable terminal and command runner. **Commas** means **Com**mand **Mas**ter.
 
 ![Screenshot](https://user-images.githubusercontent.com/5101076/49566451-9e70b600-f965-11e8-8274-a39a5efd0071.png)
 
-### How to install
+### Usage
 
-* Currently you can clone or download this repository and compile this app locally. The release version is comming.
+[Download the latest version](https://github.com/CyanSalt/commas/releases)
+
+### Install manually
+
+You can also clone or download this repository and compile this app locally.
   - After downloading the source code, enter the directory in command line and execute the installation script. Make sure that Node.js with version >= 8.5.0 is installed on your device.
   - Run `npm install` to install all dependencies
   - Run `npm run build` to generate a portable version of the application after the dependencies installed successfully
