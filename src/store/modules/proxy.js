@@ -3,10 +3,14 @@ import vhost from 'vhost'
 import proxy from 'http-proxy-middleware'
 import FileStorage from '@/utils/storage'
 
-const createProxyMiddleware = rule => proxy(rule.context, {
-  logLevel: 'silent',
-  ...rule.proxy,
-})
+const createProxyMiddleware = rule => {
+  let options = rule.proxy
+  if (typeof options === 'string') {
+    options = {target: options}
+  }
+  options.logLevel = 'silent'
+  return proxy(rule.context, options)
+}
 
 let singleton = null
 
@@ -66,6 +70,7 @@ export default {
           }
         }
       }
+      // TODO: catch EADDRINUSE and notify error
       server = app.listen(port)
       commit('setServer', server)
     },
