@@ -35,7 +35,9 @@ export default {
       const active = state.active
       if (active === -1) return null
       const tabs = state.tabs
-      return tabs[active]
+      const tab = tabs[active]
+      const instances = state.poll.get(tab.id)
+      return {...tab, ...instances}
     },
   },
   mutations: {
@@ -218,6 +220,10 @@ export default {
       } else {
         current.xterm.findNext(keyword, options)
       }
+    },
+    clear({getters}) {
+      const current = getters.current
+      current.xterm.clear()
     },
     refresh({state, rootState}) {
       const tabs = state.tabs

@@ -59,6 +59,9 @@ const commands = {
   'find'({commit}) {
     commit('shell/setFinding', true, {root: true})
   },
+  'clear'({dispatch}) {
+    dispatch('terminal/clear', null, {root: true})
+  },
   'interact-settings'({dispatch}) {
     dispatch('terminal/interact', InternalTerminals.settings, {root: true})
   },

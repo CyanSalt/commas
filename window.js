@@ -114,6 +114,13 @@ function getSharedWindowMenu() {
         execCommand('find', frame)
       },
     },
+    {
+      label: 'Clear',
+      accelerator: 'CmdOrCtrl+K',
+      click(self, frame) {
+        execCommand('clear', frame)
+      },
+    },
     {type: 'separator'},
     {
       label: 'Close Tab',
