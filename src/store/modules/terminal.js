@@ -114,9 +114,6 @@ export default {
         if (tab.title !== title) {
           commit('setTabs', updateItem(state.tabs, tab, {title}))
         }
-        if (getters.current.id === id) {
-          document.title = title
-        }
       })
       if (settings['terminal.tab.liveCwd']) {
         const updateCwd = debounce(async () => {

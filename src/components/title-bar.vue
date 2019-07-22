@@ -44,6 +44,11 @@ export default {
       return getPrompt(expr, this.current)
     },
   },
+  watch: {
+    title(value) {
+      document.title = value
+    },
+  },
   methods: {
     minimize() {
       this.frame.minimize()
