@@ -14,7 +14,7 @@ async function openStorageFile(filename, example) {
   const path = FileStorage.filename(filename)
   try {
     await promises.access(path)
-  } catch (e) {
+  } catch (err) {
     await promises.copyFile(resolve(__dirname, 'assets', example), path)
   }
   shell.openItem(path)

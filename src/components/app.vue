@@ -77,7 +77,7 @@ export default {
     window.addEventListener('beforeunload', event => {
       try {
         this.$store.dispatch('shell/closing')
-      } catch (e) {
+      } catch (err) {
         event.returnValue = false
       }
     })

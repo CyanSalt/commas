@@ -7,7 +7,7 @@ function load(file) {
   const path = resolve(__dirname, `assets/themes/${file}.json`)
   try {
     return JSON.parse(readFileSync(path))
-  } catch (e) {
+  } catch (err) {
     return null
   }
 }

@@ -144,7 +144,7 @@ function getUserCustomMenu() {
       }
       return item
     })
-  } catch (e) {
+  } catch (err) {
     return []
   }
 }

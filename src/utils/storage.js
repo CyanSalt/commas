@@ -19,14 +19,14 @@ export default {
   async load(basename) {
     try {
       return JSON.parse(await this.read(basename))
-    } catch (e) {
+    } catch (err) {
       return null
     }
   },
   loadSync(basename) {
     try {
       return JSON.parse(this.readSync(basename))
-    } catch (e) {
+    } catch (err) {
       return null
     }
   },
@@ -36,7 +36,7 @@ export default {
   async read(basename) {
     try {
       return await promises.readFile(this.filename(basename))
-    } catch (e) {
+    } catch (err) {
       return null
     }
   },
@@ -44,7 +44,7 @@ export default {
     const filename = this.filename(basename)
     try {
       await promises.mkdir(dirname(filename))
-    } catch (e) {
+    } catch (err) {
       // ignore error
     }
     return promises.writeFile(filename, content)
@@ -53,14 +53,14 @@ export default {
     // `chokidar` is too large; `gaze` seems to be OK. Use native currently.
     try {
       return watch(this.filename(basename), debounce(updater, 500))
-    } catch (e) {
+    } catch (err) {
       return null
     }
   },
   readSync(basename) {
     try {
       return readFileSync(this.filename(basename))
-    } catch (e) {
+    } catch (err) {
       return null
     }
   },
@@ -68,7 +68,7 @@ export default {
     const filename = this.filename(basename)
     try {
       return global.require(filename)
-    } catch (e) {
+    } catch (err) {
       return null
     }
   },
