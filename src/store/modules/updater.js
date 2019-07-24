@@ -1,5 +1,7 @@
 import {remote, shell} from 'electron'
 
+const isPackaged = remote.app.isPackaged
+
 function compareVersions(ver1, ver2) {
   const arr1 = ver1.split('.')
   const arr2 = ver2.split('.')
@@ -38,6 +40,7 @@ export default {
   },
   actions: {
     async check({state, commit}) {
+      if (!isPackaged) return
       const {project} = state
       const checkpoint = `https://api.github.com/repos/${project.owner}/${project.repository}/releases/latest`
       const response = await fetch(checkpoint)
