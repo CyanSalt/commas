@@ -41,7 +41,7 @@ const commands = {
     }
   },
   'next-tab'({commit, rootState}) {
-    const {tabs, active} = rootState.terminal.active
+    const {tabs, active} = rootState.terminal
     if (active < tabs.length - 1) {
       commit('terminal/setActive', active + 1, {root: true})
     }
