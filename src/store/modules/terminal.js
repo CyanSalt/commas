@@ -8,6 +8,7 @@ import {remote, shell} from 'electron'
 import {updateItem, removeIndex} from '@/utils/array'
 import {getCwd} from '@/utils/terminal'
 import {debounce} from 'lodash'
+import {hasAlphaChannel, rgba} from '@/utils/color'
 
 Terminal.applyAddon(fit)
 Terminal.applyAddon(search)
@@ -73,10 +74,11 @@ export default {
         env,
       })
       const id = pty.pid
-      // issue@xterm: apply transparency background color and selection
-      const theme = {
-        ...rootState.theme.theme,
-        background: 'transparent',
+      // TODO: support transparency background color
+      const theme = {...rootState.theme.theme}
+      if (!hasAlphaChannel(theme.selection)) {
+        const alpha = theme.type === 'light' ? 0.15 : 0.3
+        theme.selection = rgba(theme.foreground, alpha)
       }
       // Initialize xterm.js and attach it to the DOM
       const xterm = new Terminal({

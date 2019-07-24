@@ -10,10 +10,3 @@ body {
   cursor: default;
   -webkit-tap-highlight-color: transparent;
 }
-/* issue@xterm: fix selection layer */
-.xterm-text-layer {
-  z-index: 1 !important;
-}
-.xterm-selection-layer {
-  z-index: 0 !important;
-}
