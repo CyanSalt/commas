@@ -60,7 +60,7 @@ export default {
     ;(async () => {
       await this.$store.dispatch('settings/load')
       await this.$store.dispatch('theme/load')
-      this.$store.dispatch('terminal/spawn', initialPath)
+      this.$store.dispatch('terminal/spawn', {cwd: initialPath})
     })()
     this.$store.dispatch('settings/watch', async () => {
       await this.$store.dispatch('theme/load')
@@ -82,7 +82,7 @@ export default {
       }
     })
     ipcRenderer.on('open-path', (event, path) => {
-      this.$store.dispatch('terminal/spawn', path)
+      this.$store.dispatch('terminal/spawn', {cwd: path})
     })
     ipcRenderer.on('command', (event, command) => {
       this.$store.dispatch('command/exec', command)

@@ -1,6 +1,5 @@
 import FileStorage from '@/utils/storage'
 import {quote, resolveHome} from '@/utils/terminal'
-import {updateItem} from '@/utils/array'
 import {getLauncherTab, merge} from '@/utils/launcher'
 import {shell} from 'electron'
 import {spawn} from 'child_process'
@@ -32,17 +31,16 @@ export default {
         return updated ? tab : {...tab, launcher: undefined}
       }), {root: true})
     },
-    async open({commit, dispatch, rootState, rootGetters}, launcher) {
+    open({dispatch, rootState}, launcher) {
       const tab = getLauncherTab(rootState.terminal.tabs, launcher)
       if (tab) {
         return dispatch('terminal/activite', tab, {root: true})
       } else {
         const directory = launcher.remote ? null : launcher.directory
-        await dispatch('terminal/spawn', resolveHome(directory), {root: true})
-        const current = rootGetters['terminal/current']
-        commit('terminal/setTabs', updateItem(rootState.terminal.tabs, current, {
+        return dispatch('terminal/spawn', {
+          cwd: resolveHome(directory),
           launcher: launcher.id,
-        }), {root: true})
+        }, {root: true})
       }
     },
     async launch({state, dispatch, rootState}, launcher) {

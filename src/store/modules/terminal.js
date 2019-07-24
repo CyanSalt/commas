@@ -54,7 +54,8 @@ export default {
     },
   },
   actions: {
-    spawn({state, getters, commit, dispatch, rootState}, path) {
+    spawn({state, commit, dispatch, rootState}, payload) {
+      payload = payload || {}
       const settings = rootState.settings.settings
       const shell = settings['terminal.shell.path'] || (
         process.platform === 'win32' ? process.env.COMSPEC : process.env.SHELL
@@ -67,7 +68,7 @@ export default {
       // Fix NVM `npm_config_prefix` error in development environment
       if (!isPackaged && env.npm_config_prefix) delete env.npm_config_prefix
       // Initialize node-pty process
-      const cwd = path || env.HOME
+      const cwd = payload.cwd || env.HOME
       const pty = spawn(shell, settings['terminal.shell.args'], {
         name: 'xterm-256color',
         encoding: 'utf8',
@@ -138,6 +139,7 @@ export default {
         title: '',
         process: pty.process,
       }
+      if (payload.launcher) tab.launcher = payload.launcher
       state.poll.set(id, {pty, xterm})
       commit('setTabs', [...state.tabs, tab])
       commit('setActive', state.tabs.length - 1)
