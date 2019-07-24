@@ -37,6 +37,7 @@ export default {
       if (active === -1) return null
       const tabs = state.tabs
       const tab = tabs[active]
+      if (tab.internal) return tab
       const instances = state.poll.get(tab.id)
       return {...tab, ...instances}
     },
