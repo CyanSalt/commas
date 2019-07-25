@@ -194,9 +194,9 @@ export default {
   margin-top: 0;
 }
 .tab-list .new-tab {
-  height: 42px;
-  line-height: 42px;
-  font-size: 28px;
+  height: 32px;
+  line-height: 32px;
+  font-size: 21px;
   text-align: center;
 }
 .tab-list .launcher-folder {

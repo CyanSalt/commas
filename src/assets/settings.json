@@ -15,14 +15,12 @@
 
   // Support dynamic \w and \W in formatting
   // This feature will result in a little more performance overhead.
-  "terminal.tab.liveCwd": false,
+  "terminal.tab.liveCwd": true,
 
   // Title format of terminal tab in grammer of bash prompt
+  // It will not work if title is set from OSC 0 or OSC 2
   // Supported identifiers: \h \H \l \u \v \w \W
-  "terminal.tab.titleFormat": "\\v",
-
-  // Subtitle format of terminal tab (similar to terminal.tab.titleFormat)
-  "terminal.tab.subtitleFormat": "\\l",
+  "terminal.tab.titleFormat": "\\v: \\w",
 
   // Title format of terminal window (similar to terminal.tab.titleFormat)
   "terminal.window.titleFormat": "\\v",

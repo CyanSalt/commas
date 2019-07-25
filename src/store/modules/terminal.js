@@ -41,6 +41,12 @@ export default {
       const instances = state.poll.get(tab.id)
       return {...tab, ...instances}
     },
+    shell(state, getters, rootState) {
+      const settings = rootState.settings.settings
+      return settings['terminal.shell.path'] || (
+        process.platform === 'win32' ? process.env.COMSPEC : process.env.SHELL
+      )
+    },
   },
   mutations: {
     setTabs(state, value) {
@@ -54,12 +60,9 @@ export default {
     },
   },
   actions: {
-    spawn({state, commit, dispatch, rootState}, payload) {
+    spawn({state, getters, commit, dispatch, rootState}, payload) {
       payload = payload || {}
       const settings = rootState.settings.settings
-      const shell = settings['terminal.shell.path'] || (
-        process.platform === 'win32' ? process.env.COMSPEC : process.env.SHELL
-      )
       const env = {
         ...process.env,
         ...settings['terminal.shell.env'],
@@ -69,7 +72,7 @@ export default {
       if (!isPackaged && env.npm_config_prefix) delete env.npm_config_prefix
       // Initialize node-pty process
       const cwd = payload.cwd || env.HOME
-      const pty = spawn(shell, settings['terminal.shell.args'], {
+      const pty = spawn(getters.shell, settings['terminal.shell.args'], {
         name: 'xterm-256color',
         encoding: 'utf8',
         cwd,
@@ -126,7 +129,7 @@ export default {
             const tab = state.tabs.find(tab => tab.id === id)
             commit('setTabs', updateItem(state.tabs, tab, {cwd}))
           }
-        }, 1000)
+        }, 250)
         xterm.onKey(({key, domEvent}) => {
           if (domEvent.keyCode === 13) updateCwd()
         })
