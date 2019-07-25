@@ -219,7 +219,7 @@ export default {
   display: flex;
 }
 .tab-list .launcher-folder .button {
-  width: 20px;
+  width: 18px;
   text-align: center;
   opacity: 0.5;
   transition: opacity 0.2s;

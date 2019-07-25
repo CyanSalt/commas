@@ -90,7 +90,7 @@ export default {
         theme,
       })
       // Setup communication between xterm.js and node-pty
-      xterm.on('data', data => {
+      xterm.onData(data => {
         pty.write(data)
       })
       pty.on('data', data => {
@@ -110,10 +110,10 @@ export default {
         state.poll.delete(id)
         dispatch('remove', id)
       })
-      xterm.on('resize', ({cols, rows}) => {
+      xterm.onResize(({cols, rows}) => {
         pty.resize(cols, rows)
       })
-      xterm.on('title', title => {
+      xterm.onTitleChange(title => {
         const tab = state.tabs.find(tab => tab.id === id)
         if (tab.title !== title) {
           commit('setTabs', updateItem(state.tabs, tab, {title}))
@@ -127,8 +127,8 @@ export default {
             commit('setTabs', updateItem(state.tabs, tab, {cwd}))
           }
         }, 1000)
-        xterm.on('key', (key, event) => {
-          if (event.keyCode === 13) updateCwd()
+        xterm.onKey(({key, domEvent}) => {
+          if (domEvent.keyCode === 13) updateCwd()
         })
       }
       // Create new tab for current terminal

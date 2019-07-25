@@ -38,7 +38,7 @@ module.exports = {
     alias: {
       '@': path.resolve(__dirname, 'src'),
       'vue$': 'vue/dist/vue.esm.js',
-      'lodash$': 'lodash-es',
+      'lodash': 'lodash-es',
     },
     modules: [
       path.resolve(__dirname, 'src/vendors'),

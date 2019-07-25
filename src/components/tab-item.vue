@@ -29,10 +29,6 @@ export default {
       type: Object,
       default: null,
     },
-    short: {
-      type: Boolean,
-      default: false,
-    },
   },
   computed: {
     ...mapState('settings', ['settings']),
@@ -86,7 +82,7 @@ export default {
   flex: none;
   display: none;
   text-align: center;
-  font-size: 16px;
+  font-size: 14px;
 }
 .tab:hover .operations {
   display: flex;
