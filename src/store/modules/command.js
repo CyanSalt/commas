@@ -52,7 +52,7 @@ const commands = {
   },
   'launch'({dispatch, rootGetters}) {
     const current = rootGetters['terminal/current']
-    if (current.launcher) {
+    if (current && current.launcher) {
       dispatch('launcher/launch', current.launcher, {root: true})
     }
   },

@@ -66,6 +66,7 @@ export default {
 <style>
 .terminal-teletype {
   flex: auto;
+  height: 0;
   display: flex;
   position: relative;
 }
