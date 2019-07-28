@@ -115,13 +115,14 @@ export default {
   cursor: pointer;
   transition: color 0.2s;
 }
+/* colors from macOS */
 .title-bar .button.minimize:hover {
-  color: var(--theme-green);
+  color: #28c941;
 }
 .title-bar .button.maximize:hover {
-  color: var(--theme-blue);
+  color: #ffbd2e;
 }
 .title-bar .button.close:hover {
-  color: var(--theme-brightred);
+  color: #ff6159;
 }
 </style>

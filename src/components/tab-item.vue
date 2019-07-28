@@ -85,7 +85,8 @@ export default {
   bottom: 4px;
   transform: scale(0);
   left: -16px;
-  border-left: 5px solid var(--theme-blue);
+  /* blue from Google */
+  border-left: 5px solid #4285f4;
   transition: transform 0.15s;
 }
 .tab-item.active .tab-overview::before {
@@ -124,7 +125,7 @@ export default {
   transition: color 0.2s;
 }
 .tab-item .close:hover {
-  color: var(--theme-brightred);
+  color: #ff6159;
 }
 .tab-item .divider {
   height: 1px;
