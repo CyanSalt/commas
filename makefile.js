@@ -39,14 +39,13 @@ const options = {
     '^/src/assets/.*\\.(ico|icns)$',
   ],
   appVersion: app.version,
+  appCopyright: [
+    'Copyright \u00a9', new Date().getFullYear(), app.author,
+  ].join(' '),
+  appCategoryType: 'public.app-category.developer-tools',
   win32metadata: {
     FileDescription: app.productName,
     OriginalFilename: `${app.name}.exe`,
-  },
-  extendInfo: {
-    NSHumanReadableCopyright: [
-      'Copyright \u00a9', new Date().getFullYear(), app.author,
-    ].join(' '),
   },
 }
 

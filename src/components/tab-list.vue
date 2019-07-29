@@ -22,10 +22,10 @@
                 <span class="feather-icon icon-chevron-down" v-else></span>
               </div>
             </div>
-          </div>
-          <div class="find-launcher" v-show="finding">
-            <input class="keyword" v-model="keyword" :placeholder="i18n('Find#!6')"
-              @keyup.esc="find" ref="keyword" autofocus>
+            <div class="find-launcher" v-show="finding">
+              <input class="keyword" v-model="keyword" :placeholder="i18n('Find#!6')"
+                @keyup.esc="find" ref="keyword" autofocus>
+            </div>
           </div>
           <div class="launchers">
             <tab-item :tab="getLauncherTab(launcher)" :name="launcher.name"
@@ -154,6 +154,7 @@ export default {
   flex: none;
   display: flex;
   font-size: 14px;
+  --tab-height: 46px;
 }
 .tab-list .list-column {
   flex: auto;
@@ -167,7 +168,6 @@ export default {
   position: relative;
 }
 .tab-list .scroll-area {
-  padding: 4px 16px;
   height: 100%;
   overflow-y: auto;
   box-sizing: border-box;
@@ -183,30 +183,31 @@ export default {
   flex: none;
   width: 2px;
   margin: 4px 0;
-  border-right: 2px solid;
-  opacity: 0.05;
+  border-right: 2px solid rgba(127, 127, 127, 0.1);
   cursor: col-resize;
 }
 .tab-list .invisible {
   visibility: hidden;
 }
-.tab-list .only-end {
-  margin-top: 0;
+.tab-list .processes,
+.tab-list .launchers {
+  padding: 0 16px;
 }
 .tab-list .new-tab {
-  height: 32px;
-  line-height: 32px;
+  height: var(--tab-height);
+  line-height: var(--tab-height);
   font-size: 21px;
   text-align: center;
 }
 .tab-list .launcher-folder {
   display: flex;
+  flex-wrap: wrap;
   position: sticky;
-  padding-top: 17px;
-  padding-bottom: 8px;
-  top: -17px;
-  margin-bottom: -8px;
+  top: 0;
   z-index: 1;
+  padding: 8px 16px;
+  height: 16px;
+  line-height: 16px;
   cursor: pointer;
   background: var(--theme-background);
 }
@@ -233,11 +234,12 @@ export default {
   opacity: 1;
   color: #4285f4;
 }
-.tab-list .find-launcher,
-.tab-list .launchers {
+.tab-list .find-launcher {
+  flex-basis: 100%;
   margin-top: 8px;
 }
 .tab-list .find-launcher .keyword {
+  padding: 0;
   border: none;
   outline: none;
   font: inherit;
@@ -254,8 +256,9 @@ export default {
   flex: none;
   display: flex;
   justify-content: space-between;
-  padding: 4px 16px;
-  line-height: 24px;
+  padding: 8px 16px;
+  line-height: 16px;
+  height: 16px;
 }
 .tab-list .bottom-actions .action-group {
   display: flex;

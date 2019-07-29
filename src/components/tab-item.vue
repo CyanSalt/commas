@@ -7,7 +7,7 @@
         <div class="operations">
           <slot name="operations"></slot>
           <div class="button close" @click.stop="close" v-if="tab">
-            <span class="feather-icon icon-x"></span>
+            <div class="feather-icon icon-x"></div>
           </div>
         </div>
       </div>
@@ -75,14 +75,14 @@ export default {
   position: relative;
   display: flex;
   justify-content: space-between;
-  height: 32px;
-  line-height: 32px;
+  align-items: center;
+  height: var(--tab-height);
 }
 .tab-item .tab-overview::before {
   content: '';
   position: absolute;
-  top: 4px;
-  bottom: 4px;
+  top: 11px;
+  bottom: 11px;
   transform: scale(0);
   left: -16px;
   /* blue from Google */
@@ -128,9 +128,6 @@ export default {
   color: #ff6159;
 }
 .tab-item .divider {
-  height: 1px;
-  margin: 7px 0;
-  border-bottom: 2px solid;
-  opacity: 0.05;
+  border-bottom: 1px solid rgba(127, 127, 127, 0.1);
 }
 </style>
