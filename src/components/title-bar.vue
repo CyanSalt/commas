@@ -49,6 +49,20 @@ export default {
       document.title = value
     },
   },
+  created() {
+    ipcRenderer.on('maximize', () => {
+      this.maximized = true
+    })
+    ipcRenderer.on('unmaximize', () => {
+      this.maximized = false
+    })
+    ipcRenderer.on('enter-full-screen', () => {
+      this.fullscreen = true
+    })
+    ipcRenderer.on('leave-full-screen', () => {
+      this.fullscreen = false
+    })
+  },
   methods: {
     minimize() {
       this.frame.minimize()
@@ -63,20 +77,6 @@ export default {
     close() {
       this.frame.close()
     },
-  },
-  created() {
-    ipcRenderer.on('maximize', () => {
-      this.maximized = true
-    })
-    ipcRenderer.on('unmaximize', () => {
-      this.maximized = false
-    })
-    ipcRenderer.on('enter-full-screen', () => {
-      this.fullscreen = true
-    })
-    ipcRenderer.on('leave-full-screen', () => {
-      this.fullscreen = false
-    })
   },
 }
 </script>

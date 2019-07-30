@@ -47,6 +47,16 @@ export default {
       return this.finding && this.current && !this.current.internal
     },
   },
+  mounted() {
+    new IntersectionObserver(([{isIntersecting}]) => {
+      if (isIntersecting) {
+        this.$refs.keyword.focus()
+      } else {
+        const current = this.current
+        if (current && current.xterm) current.xterm.focus()
+      }
+    }).observe(this.$el)
+  },
   methods: {
     toggle(option) {
       this.options[option] = !this.options[option]
@@ -70,16 +80,6 @@ export default {
     close() {
       this.$store.commit('shell/setFinding', false)
     },
-  },
-  mounted() {
-    new IntersectionObserver(([{isIntersecting}]) => {
-      if (isIntersecting) {
-        this.$refs.keyword.focus()
-      } else {
-        const current = this.current
-        if (current && current.xterm) current.xterm.focus()
-      }
-    }).observe(this.$el)
   },
 }
 </script>

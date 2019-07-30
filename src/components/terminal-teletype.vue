@@ -27,6 +27,22 @@ export default {
   computed: {
     ...mapState('terminal', ['poll']),
   },
+  mounted() {
+    this.$store.dispatch('terminal/mount', {
+      tab: this.tab,
+      element: this.$refs.terminal,
+    })
+    new MutationObserver((mutations, observer) => {
+      this.bound()
+      observer.disconnect()
+    }).observe(this.$refs.terminal, {childList: true})
+  },
+  activated() {
+    // issue@xterm: fix bug after unmounted element updated
+    const {xterm} = this.poll.get(this.tab.id)
+    if (xterm._core.viewport) xterm._core.viewport.syncScrollArea()
+    xterm.scrollToBottom()
+  },
   methods: {
     bound() {
       const {xterm} = this.poll.get(this.tab.id)
@@ -43,22 +59,6 @@ export default {
         files,
       })
     },
-  },
-  mounted() {
-    this.$store.dispatch('terminal/mount', {
-      tab: this.tab,
-      element: this.$refs.terminal,
-    })
-    new MutationObserver((mutations, observer) => {
-      this.bound()
-      observer.disconnect()
-    }).observe(this.$refs.terminal, {childList: true})
-  },
-  activated() {
-    // issue@xterm: fix bug after unmounted element updated
-    const {xterm} = this.poll.get(this.tab.id)
-    if (xterm._core.viewport) xterm._core.viewport.syncScrollArea()
-    xterm.scrollToBottom()
   },
 }
 </script>

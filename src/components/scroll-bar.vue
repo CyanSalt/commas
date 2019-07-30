@@ -36,6 +36,12 @@ export default {
       }
     },
   },
+  mounted() {
+    this.maxHeight = this.$el.parentElement.clientHeight
+    this.container.addEventListener('scroll', () => {
+      this.animate(() => this.follow())
+    }, {passive: true})
+  },
   methods: {
     animate(action) {
       if (this.animation) return
@@ -75,12 +81,6 @@ export default {
     jump(event) {
       this.animate(() => this.send(event.offsetY - (this.height / 2)))
     },
-  },
-  mounted() {
-    this.maxHeight = this.$el.parentElement.clientHeight
-    this.container.addEventListener('scroll', () => {
-      this.animate(() => this.follow())
-    }, {passive: true})
   },
 }
 </script>
