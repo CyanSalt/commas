@@ -1,5 +1,5 @@
 <template>
-  <div id="main">
+  <div id="main" class="app">
     <title-bar></title-bar>
     <div class="content">
       <tab-list v-show="multitabs"></tab-list>
@@ -95,7 +95,7 @@ export default {
 </script>
 
 <style>
-#main {
+.app {
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -104,13 +104,13 @@ export default {
   color: var(--theme-foreground, transparent);
   background: var(--theme-background);
 }
-#main .content {
+.app .content {
   flex: auto;
   width: 100vw;
   display: flex;
   overflow: hidden;
 }
-#main .interface {
+.app .interface {
   flex: auto;
   width: 0;
   display: flex;
