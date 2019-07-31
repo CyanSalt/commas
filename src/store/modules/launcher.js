@@ -25,11 +25,11 @@ export default {
       if (!launchers) return
       const merged = merge(state.launchers, launchers)
       commit('setLaunchers', merged)
-      commit('terminal/setTabs', rootState.terminal.tabs.map(tab => {
-        if (!tab.launcher) return tab
-        const updated = merged.find(item => item.id === tab.launcher)
-        return updated ? tab : {...tab, launcher: undefined}
-      }), {root: true})
+      rootState.terminal.tabs.forEach(tab => {
+        if (tab.launcher && !merged.some(item => item.id === tab.launcher)) {
+          commit('terminal/updateTab', {id: tab.id, launcher: undefined})
+        }
+      })
     },
     open({dispatch, rootState}, launcher) {
       const tab = getLauncherTab(rootState.terminal.tabs, launcher)

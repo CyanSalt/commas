@@ -206,7 +206,6 @@ export default {
   top: 0;
   z-index: 1;
   padding: 8px 16px;
-  height: 16px;
   line-height: 16px;
   cursor: pointer;
   background: var(--theme-background);

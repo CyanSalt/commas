@@ -106,6 +106,7 @@ export default {
 }
 #main .content {
   flex: auto;
+  width: 100vw;
   display: flex;
   overflow: hidden;
 }

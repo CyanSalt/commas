@@ -5,7 +5,6 @@ import * as search from 'xterm/lib/addons/search/search'
 import * as webLinks from 'xterm/lib/addons/webLinks/webLinks'
 import * as ligatures from 'xterm-addon-ligatures'
 import {remote, shell} from 'electron'
-import {updateItem, removeIndex} from '@/utils/array'
 import {getCwd} from '@/utils/terminal'
 import {debounce} from 'lodash'
 import {hasAlphaChannel, rgba} from '@/utils/color'
@@ -49,8 +48,15 @@ export default {
     },
   },
   mutations: {
-    setTabs(state, value) {
-      state.tabs = value
+    updateTab(state, {id, ...props}) {
+      let tab = state.tabs.find(item => item.id === id)
+      if (tab) Object.assign(tab, props)
+    },
+    appendTab(state, tab) {
+      state.tabs.push(tab)
+    },
+    removeTab(state, index) {
+      state.tabs.splice(index, 1)
     },
     setActive(state, value) {
       state.active = value
@@ -99,11 +105,7 @@ export default {
       pty.on('data', data => {
         xterm.write(data)
         // TODO: performance review
-        const tab = state.tabs.find(tab => tab.id === id)
-        const process = pty.process
-        if (tab.process !== process) {
-          commit('setTabs', updateItem(state.tabs, tab, {process}))
-        }
+        commit('updateTab', {id, process: pty.process})
       })
       pty.on('exit', () => {
         if (xterm.element) {
@@ -117,18 +119,12 @@ export default {
         pty.resize(cols, rows)
       })
       xterm.onTitleChange(title => {
-        const tab = state.tabs.find(tab => tab.id === id)
-        if (tab.title !== title) {
-          commit('setTabs', updateItem(state.tabs, tab, {title}))
-        }
+        commit('updateTab', {id, title})
       })
       if (settings['terminal.tab.liveCwd']) {
         const updateCwd = debounce(async () => {
           const cwd = await getCwd(id)
-          if (cwd) {
-            const tab = state.tabs.find(tab => tab.id === id)
-            commit('setTabs', updateItem(state.tabs, tab, {cwd}))
-          }
+          if (cwd) commit('updateTab', {id, cwd})
         }, 250)
         xterm.onKey(({key, domEvent}) => {
           if (domEvent.keyCode === 13) updateCwd()
@@ -144,15 +140,15 @@ export default {
       }
       if (payload.launcher) tab.launcher = payload.launcher
       state.poll.set(id, {pty, xterm})
-      commit('setTabs', [...state.tabs, tab])
+      commit('appendTab', tab)
       commit('setActive', state.tabs.length - 1)
     },
     mount({state, commit, dispatch, rootState}, {tab, element}) {
       let observer = state.observer
       if (!observer) {
-        observer = new ResizeObserver(() => {
+        observer = new ResizeObserver(debounce(() => {
           dispatch('resize')
-        })
+        }, 250))
         commit('setObserver', observer)
       }
       const settings = rootState.settings.settings
@@ -180,7 +176,7 @@ export default {
       if (index !== -1) {
         commit('setActive', index)
       } else {
-        commit('setTabs', [...tabs, tab])
+        commit('appendTab', tab)
         commit('setActive', state.tabs.length - 1)
       }
     },
@@ -210,12 +206,12 @@ export default {
     remove({state, commit}, id) {
       const index = state.tabs.findIndex(tab => tab.id === id)
       if (index === -1) return
-      const tabs = removeIndex(state.tabs, index)
-      commit('setTabs', tabs)
-      if (!tabs.length) {
+      commit('removeTab', index)
+      const length = state.tabs.length
+      if (!length) {
         remote.getCurrentWindow().close()
       } else if (state.active === index) {
-        commit('setActive', Math.min(index, tabs.length - 1))
+        commit('setActive', Math.min(index, length - 1))
       }
     },
     find({getters}, {keyword, options, back}) {
