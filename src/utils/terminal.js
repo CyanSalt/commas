@@ -6,6 +6,7 @@ import {basename} from 'path'
 import {remote} from 'electron'
 import {createIDGenerator} from '@/utils/identity'
 import {translate} from '@/utils/i18n'
+import {hasAlphaChannel, rgba} from '@/utils/color'
 
 const promises = {
   exec: promisify(exec),
@@ -64,4 +65,14 @@ export const getPrompt = (expr, tab) => {
     .replace(/\\v/g, tab ? tab.process : '')
     .replace(/\\w/g, tab ? () => omitHome(tab.cwd) : '')
     .replace(/\\W/g, tab ? () => basename(tab.cwd) : '')
+}
+
+export const normalizeTheme = original => {
+  // TODO: support transparency background color
+  const theme = {...original}
+  if (!hasAlphaChannel(theme.selection)) {
+    const alpha = theme.type === 'light' ? 0.15 : 0.3
+    theme.selection = rgba(theme.foreground, alpha)
+  }
+  return theme
 }

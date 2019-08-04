@@ -5,9 +5,8 @@ import * as search from 'xterm/lib/addons/search/search'
 import * as webLinks from 'xterm/lib/addons/webLinks/webLinks'
 import * as ligatures from 'xterm-addon-ligatures'
 import {remote, shell} from 'electron'
-import {getCwd} from '@/utils/terminal'
+import {getCwd, normalizeTheme} from '@/utils/terminal'
 import {debounce} from 'lodash'
-import {hasAlphaChannel, rgba} from '@/utils/color'
 
 Terminal.applyAddon(fit)
 Terminal.applyAddon(search)
@@ -85,18 +84,12 @@ export default {
         env,
       })
       const id = pty.pid
-      // TODO: support transparency background color
-      const theme = {...rootState.theme.theme}
-      if (!hasAlphaChannel(theme.selection)) {
-        const alpha = theme.type === 'light' ? 0.15 : 0.3
-        theme.selection = rgba(theme.foreground, alpha)
-      }
       // Initialize xterm.js and attach it to the DOM
       const xterm = new Terminal({
         fontSize: settings['terminal.style.fontSize'],
         fontFamily: settings['terminal.style.fontFamily'],
         allowTransparency: true,
-        theme,
+        theme: normalizeTheme(rootState.theme.theme),
       })
       // Setup communication between xterm.js and node-pty
       xterm.onData(data => {
@@ -229,14 +222,12 @@ export default {
     refresh({state, rootState}) {
       const tabs = state.tabs
       const settings = rootState.settings.settings
-      let theme = rootState.theme.theme
-      theme = {...theme, background: 'transparent'}
       // TODO: performance review
       for (const tab of tabs) {
         const {xterm} = state.poll.get(tab.id)
         xterm.setOption('fontSize', settings['terminal.style.fontSize'])
         xterm.setOption('fontFamily', settings['terminal.style.fontFamily'])
-        xterm.setOption('theme', theme)
+        xterm.setOption('theme', normalizeTheme(rootState.theme.theme))
         if (settings['terminal.style.fontLigatures']) {
           xterm.enableLigatures()
         }
