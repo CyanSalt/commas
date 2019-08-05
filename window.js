@@ -1,8 +1,9 @@
 const {app, BrowserWindow, Menu, ipcMain, dialog} = require('electron')
-const {resolve} = require('path')
-const {format} = require('url')
-const {readFileSync} = require('fs')
-const {parse} = require('json5')
+const updateElectronApp = require('update-electron-app')
+const path = require('path')
+const url = require('url')
+const fs = require('fs')
+const JSON = require('json5')
 
 const frames = []
 
@@ -49,11 +50,11 @@ function createWindow(args) {
   }
 }
 
-function loadHTMLFile(frame, path) {
-  frame.loadURL(format({
+function loadHTMLFile(frame, file) {
+  frame.loadURL(url.format({
     protocol: 'file',
     slashes: true,
-    pathname: resolve(__dirname, path),
+    pathname: path.resolve(__dirname, file),
   }))
 }
 
@@ -141,10 +142,10 @@ function getSharedWindowMenu() {
 
 function getUserCustomMenu() {
   const userdata = app.isPackaged ?
-    app.getPath('userData') : resolve(__dirname, 'userdata')
-  const path = resolve(userdata, 'keybindings.json')
+    app.getPath('userData') : path.resolve(__dirname, 'userdata')
+  const file = path.resolve(userdata, 'keybindings.json')
   try {
-    const keybindings = parse(readFileSync(path))
+    const keybindings = JSON.parse(fs.readFileSync(file))
     return keybindings.map(item => {
       item.click = (self, frame) => {
         execCommand(item.command, frame)
@@ -299,19 +300,19 @@ app.on('activate', () => {
 
 app.on('will-finish-launching', () => {
   // handle opening outside
-  app.on('open-file', (event, path) => {
+  app.on('open-file', (event, file) => {
     event.preventDefault()
     // for Windows
-    if (!path) {
-      path = process.argv[process.argv.length - 1]
+    if (!file) {
+      file = process.argv[process.argv.length - 1]
     }
     if (!app.isReady()) {
-      cwd = path
+      cwd = file
     } else if (frames.length) {
       const last = frames[frames.length - 1]
-      last.webContents.send('open-path', path)
+      last.webContents.send('open-path', file)
     } else {
-      createWindow({path})
+      createWindow({path: file})
     }
   })
 })
@@ -320,4 +321,9 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
+})
+
+updateElectronApp({
+  repo: 'CyanSalt/commas',
+  updateInterval: '1 hour',
 })

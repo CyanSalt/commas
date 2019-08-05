@@ -1,6 +1,6 @@
 {
   "name": "commas",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "productName": "Commas",
   "author": "CyanSalt",
   "description": "A hackable terminal and command runner.",
@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "json5": "^2.1.0",
-    "node-pty": "^0.8.1"
+    "node-pty": "^0.8.1",
+    "update-electron-app": "^1.5.0"
   }
 }

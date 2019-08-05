@@ -3,6 +3,7 @@ const packager = require('electron-packager')
 const png2icons = require('png2icons')
 const path = require('path')
 const fs = require('fs')
+const childProcess = require('child_process')
 const app = require('./package.json')
 
 const suffix = process.platform === 'darwin' ? 'icns' : 'ico'
@@ -47,6 +48,15 @@ const options = {
     FileDescription: app.productName,
     OriginalFilename: `${app.name}.exe`,
   },
+}
+
+// Use free developer certification
+if (process.platform === 'darwin') {
+  options.osxSign = {
+    identity: childProcess.execSync(
+      'security find-identity -p codesigning -v | grep -o "\\"Mac Developer: .*\\""'
+    ).toString().trim(),
+  }
 }
 
 packager(options).then(appPaths => {

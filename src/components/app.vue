@@ -70,7 +70,6 @@ export default {
     this.$store.dispatch('launcher/watch')
     this.$store.dispatch('proxy/load')
     this.$store.dispatch('proxy/watch')
-    this.$store.dispatch('updater/check')
     ipcRenderer.on('before-quit', (event, path) => {
       this.$store.commit('shell/quiting', true)
     })
