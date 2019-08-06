@@ -20,10 +20,7 @@ export default {
     },
   },
   actions: {
-    closing({state, rootState}) {
-      if (state.quiting) return
-      const tabs = rootState.terminal.tabs
-      if (tabs.length <= 1) return
+    closing() {
       const args = {
         message: translate('Close Window?#!1'),
         detail: translate('All tabs in this window will be closed.#!2'),
@@ -31,11 +28,13 @@ export default {
           translate('Confirm#!3'),
           translate('Cancel#!4'),
         ],
-        cancelId: 1,
         defaultId: 0,
+        cancelId: 1,
       }
       const frame = remote.getCurrentWindow()
-      throw remote.dialog.showMessageBox(frame, args, response => {
+      // const {response} = await remote.dialog.showMessageBox(frame, args)
+      // if (response === 0) frame.destroy()
+      remote.dialog.showMessageBox(frame, args, response => {
         if (response === 0) frame.destroy()
       })
     },

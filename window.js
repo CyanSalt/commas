@@ -280,9 +280,12 @@ function checkForUpdates() {
     const options = {
       message: process.platform === 'win32' ? releaseNotes : releaseName,
       detail: translate('A new version has been downloaded. Restart the application to apply the updates.#!16'),
-      buttons: [translate('Restart#!17'), translate('Later#!18')],
-      cancelId: 1,
+      buttons: [
+        translate('Restart#!17'),
+        translate('Later#!18'),
+      ],
       defaultId: 0,
+      cancelId: 1,
     }
     // const {response} = await dialog.showMessageBox(options)
     // if (response === 0) autoUpdater.quitAndInstall()

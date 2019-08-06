@@ -71,13 +71,13 @@ export default {
     this.$store.dispatch('proxy/load')
     this.$store.dispatch('proxy/watch')
     ipcRenderer.on('before-quit', (event, path) => {
-      this.$store.commit('shell/quiting', true)
+      this.$store.commit('shell/setQuiting', true)
     })
     window.addEventListener('beforeunload', event => {
-      try {
-        this.$store.dispatch('shell/closing')
-      } catch (err) {
+      const state = this.$store.state
+      if (!state.shell.quiting && state.terminal.tabs.length > 1) {
         event.returnValue = false
+        this.$store.dispatch('shell/closing')
       }
     })
     ipcRenderer.on('open-path', (event, path) => {
