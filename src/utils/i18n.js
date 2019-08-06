@@ -1,7 +1,7 @@
-import {remote} from 'electron'
 import {readFileSync} from 'fs'
 import {resolve} from 'path'
 import FileStorage from './storage'
+import {app, src, onAppReady} from './electron'
 
 const translations = [
   {
@@ -13,7 +13,7 @@ const translations = [
 const comment = '#!'
 
 function load(file) {
-  const path = resolve(__dirname, 'assets/locales', file)
+  const path = resolve(src, 'assets/locales', file)
   try {
     return JSON.parse(readFileSync(path))
   } catch (err) {
@@ -28,7 +28,7 @@ function getTranslationFile(locale) {
 }
 
 function getDictionary() {
-  let locale = remote.app.getLocale()
+  let locale = app.getLocale()
   const custom = FileStorage.loadSync('translation.json') || {}
   if (custom['@use']) locale = custom['@use']
   // Load translation data
@@ -41,13 +41,17 @@ function getDictionary() {
   return dictionary
 }
 
-const unabridged = getDictionary()
-const dictionary = Object.entries(unabridged)
-  .reduce((collection, [key, value]) => {
-    const identity = key.substring(0, key.indexOf(comment))
-    if (identity) collection[identity] = value
-    return collection
-  }, {})
+let unabridged = {}
+let dictionary = {}
+onAppReady(() => {
+  unabridged = getDictionary()
+  dictionary = Object.entries(unabridged)
+    .reduce((collection, [key, value]) => {
+      const identity = key.substring(0, key.indexOf(comment))
+      if (identity) collection[identity] = value
+      return collection
+    }, {})
+})
 
 export function translate(message) {
   if (unabridged[message]) return unabridged[message]

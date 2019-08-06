@@ -1,9 +1,9 @@
 import {readFile, readFileSync, writeFile, mkdir, access, watch} from 'fs'
 import {dirname, resolve} from 'path'
 import {promisify} from 'util'
-import {remote} from 'electron'
 import * as JSON from 'json5'
 import {debounce} from 'lodash'
+import {app, src} from './electron'
 
 const promises = {
   readFile: promisify(readFile),
@@ -12,8 +12,8 @@ const promises = {
   writeFile: promisify(writeFile),
 }
 
-const PATH = remote.app.isPackaged ?
-  remote.app.getPath('userData') : resolve(__dirname, '..', 'userdata')
+const PATH = app.isPackaged ?
+  app.getPath('userData') : resolve(src, '..', 'userdata')
 
 export default {
   async load(basename) {

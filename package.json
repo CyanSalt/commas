@@ -22,28 +22,27 @@
     "connect": "^3.7.0",
     "css-loader": "^3.1.0",
     "electron": "^5.0.8",
-    "electron-packager": "^14.0.2",
+    "electron-packager": "^14.0.4",
     "eslint": "^6.1.0",
     "eslint-plugin-vue": "^5.2.3",
     "http-proxy-middleware": "^0.19.1",
     "jscodeshift": "^0.6.4",
+    "json5": "^2.1.0",
     "lodash-es": "^4.17.15",
     "mini-css-extract-plugin": "^0.8.0",
-    "png2icons": "^2.0.0",
+    "png2icons": "^2.0.1",
     "vhost": "^3.0.2",
     "vue": "^2.6.10",
     "vue-loader": "^15.7.1",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.10",
     "vuex": "^3.1.1",
-    "webpack": "^4.37.0",
+    "webpack": "^4.39.1",
     "webpack-cli": "^3.3.6",
     "xterm": "^3.14.5",
     "xterm-addon-ligatures": "0.1.0-beta-2"
   },
   "dependencies": {
-    "json5": "^2.1.0",
-    "node-pty": "^0.8.1",
-    "update-electron-app": "^1.5.0"
+    "node-pty": "^0.8.1"
   }
 }

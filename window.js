@@ -1,9 +1,8 @@
-const {app, BrowserWindow, Menu, ipcMain, dialog} = require('electron')
-const updateElectronApp = require('update-electron-app')
+const {app, BrowserWindow, Menu, ipcMain, dialog, autoUpdater} = require('electron')
+const {translate, JSON} = require('./src/build/helper')
 const path = require('path')
 const url = require('url')
 const fs = require('fs')
-const JSON = require('json5')
 
 const frames = []
 
@@ -270,16 +269,37 @@ function transferInvoking() {
   app.on('before-quit', () => {
     frames.forEach(frame => frame.webContents.send('before-quit'))
   })
-  ipcMain.on('confirm', (event, args) => {
-    const {sender} = event
-    const window = BrowserWindow.fromWebContents(sender)
-    dialog.showMessageBox(window, args, response => {
-      sender.send('confirm', response)
-    })
-  })
   ipcMain.on('open-window', () => {
     createWindow()
   })
+}
+
+function checkForUpdates() {
+  if (!app.isPackaged || !['darwin', 'win32'].includes(process.platform)) return
+  autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
+    const options = {
+      message: process.platform === 'win32' ? releaseNotes : releaseName,
+      detail: translate('A new version has been downloaded. Restart the application to apply the updates.#!16'),
+      buttons: [translate('Restart#!17'), translate('Later#!18')],
+      cancelId: 1,
+      defaultId: 0,
+    }
+    // const {response} = await dialog.showMessageBox(options)
+    // if (response === 0) autoUpdater.quitAndInstall()
+    dialog.showMessageBox(options, response => {
+      if (response === 0) autoUpdater.quitAndInstall()
+    })
+  })
+  // Electron official feed URL
+  const repo = 'CyanSalt/commas'
+  const host = 'https://update.electronjs.org'
+  const feedURL = `${host}/${repo}/${process.platform}-${process.arch}/${app.getVersion()}`
+  autoUpdater.setFeedURL(feedURL)
+  // Check for updates endlessly
+  setInterval(() => {
+    autoUpdater.checkForUpdates()
+  }, 3600 * 1e3)
+  autoUpdater.checkForUpdates()
 }
 
 let cwd
@@ -290,6 +310,7 @@ app.on('ready', () => {
   }
   transferInvoking()
   createWindow(cwd && {path: cwd})
+  checkForUpdates()
 })
 
 app.on('activate', () => {
@@ -321,9 +342,4 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
-})
-
-updateElectronApp({
-  repo: 'CyanSalt/commas',
-  updateInterval: '1 hour',
 })

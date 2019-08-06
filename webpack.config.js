@@ -24,10 +24,12 @@ module.exports = {
   },
   entry: {
     main: path.resolve(__dirname, 'src/main.js'),
+    helper: path.resolve(__dirname, 'src/helper.js'),
   },
   output: {
     path: path.resolve(__dirname, 'src/build/'),
-    filename: 'bundle.js',
+    filename: '[name].js',
+    libraryTarget: 'commonjs2',
   },
   externals: {
     'original-fs': 'commonjs2 original-fs',

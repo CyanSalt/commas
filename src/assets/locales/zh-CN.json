@@ -13,5 +13,8 @@
   "Open user directory#!12": "打开用户目录",
   "Edit %F#!13": "编辑 %F",
   "Visit our website#!14": "访问网站",
-  "Current version: %V#!15": "当前版本: %V"
+  "Current version: %V#!15": "当前版本: %V",
+  "A new version has been downloaded. Restart the application to apply the updates.#!16": "新版本已下载完毕，重启以应用更新。",
+  "Restart#!17": "立即重启",
+  "Later#!18": "稍后重启"
 }
