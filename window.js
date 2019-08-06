@@ -1,8 +1,7 @@
 const {app, BrowserWindow, Menu, ipcMain, dialog, autoUpdater} = require('electron')
-const {translate, JSON} = require('./src/build/helper')
+const {translate, FileStorage} = require('./src/build/helper')
 const path = require('path')
 const url = require('url')
-const fs = require('fs')
 
 const frames = []
 
@@ -140,20 +139,13 @@ function getSharedWindowMenu() {
 }
 
 function getUserCustomMenu() {
-  const userdata = app.isPackaged ?
-    app.getPath('userData') : path.resolve(__dirname, 'userdata')
-  const file = path.resolve(userdata, 'keybindings.json')
-  try {
-    const keybindings = JSON.parse(fs.readFileSync(file))
-    return keybindings.map(item => {
-      item.click = (self, frame) => {
-        execCommand(item.command, frame)
-      }
-      return item
-    })
-  } catch (err) {
-    return []
-  }
+  const keybindings = FileStorage.loadSync('keybindings.json') || []
+  return keybindings.map(item => {
+    item.click = (self, frame) => {
+      execCommand(item.command, frame)
+    }
+    return item
+  })
 }
 
 function createApplicationMenu() {
@@ -274,11 +266,15 @@ function transferInvoking() {
   })
 }
 
+let autoUpdateChecker
 function checkForUpdates() {
   if (!app.isPackaged || !['darwin', 'win32'].includes(process.platform)) return
-  autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
+  autoUpdater.on('update-available', () => {
+    clearInterval(autoUpdateChecker)
+  })
+  autoUpdater.on('update-downloaded', (event, notes, name) => {
     const options = {
-      message: process.platform === 'win32' ? releaseNotes : releaseName,
+      message: name,
       detail: translate('A new version has been downloaded. Restart the application to apply the updates.#!16'),
       buttons: [
         translate('Restart#!17'),
@@ -299,7 +295,7 @@ function checkForUpdates() {
   const feedURL = `${host}/${repo}/${process.platform}-${process.arch}/${app.getVersion()}`
   autoUpdater.setFeedURL(feedURL)
   // Check for updates endlessly
-  setInterval(() => {
+  autoUpdateChecker = setInterval(() => {
     autoUpdater.checkForUpdates()
   }, 3600 * 1e3)
   autoUpdater.checkForUpdates()

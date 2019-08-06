@@ -1,7 +1,7 @@
-import * as JSON from 'json5'
+import FileStorage from '@/utils/storage'
 import {translate} from '@/utils/i18n'
 
 export {
-  JSON,
+  FileStorage,
   translate,
 }

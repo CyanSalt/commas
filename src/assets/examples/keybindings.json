@@ -4,8 +4,8 @@
   // The `command` could be registered in your custom script.
 
   // {
-  //   "label": "Open New Tab",
-  //   "accelerator": "CmdOrCtrl+Shift+T",
-  //   "command": "open-tab"
+  //   "label": "Toggle Tab List",
+  //   "accelerator": "CmdOrCtrl+B",
+  //   "command": "toggle-tab-list"
   // }
 ]
