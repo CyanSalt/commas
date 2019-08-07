@@ -62,7 +62,7 @@ export default {
       return getPrompt('\\w', this.current)
     },
     title() {
-      if (!this.current && this.current.title) return this.current.title
+      if (this.current && this.current.title) return this.current.title
       const expr = this.settings['terminal.tab.titleFormat']
       return getPrompt(expr, this.current)
     },
