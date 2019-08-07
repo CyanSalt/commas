@@ -1,6 +1,6 @@
 {
   "name": "commas",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "productName": "Commas",
   "author": "CyanSalt",
   "description": "A hackable terminal and command runner.",
@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "connect": "^3.7.0",
-    "css-loader": "^3.1.0",
+    "css-loader": "^3.2.0",
     "electron": "^5.0.8",
     "electron-packager": "^14.0.4",
     "eslint": "^6.1.0",

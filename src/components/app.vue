@@ -97,7 +97,9 @@ export default {
 .app {
   display: flex;
   flex-direction: column;
+  width: 100vw;
   height: 100vh;
+  overflow: hidden;
   /* Default line height of xterm.js */
   line-height: 1.2;
   color: var(--theme-foreground, transparent);
