@@ -70,9 +70,11 @@ export const getPrompt = (expr, tab) => {
 export const normalizeTheme = original => {
   // TODO: support transparency background color
   const theme = {...original}
-  if (!hasAlphaChannel(theme.selection)) {
+  if (!theme.selection || !hasAlphaChannel(theme.selection)) {
     const alpha = theme.type === 'light' ? 0.15 : 0.3
     theme.selection = rgba(theme.foreground, alpha)
   }
+  if (!theme.cursor) theme.cursor = theme.foreground
+  if (!theme.cursorAccent) theme.cursorAccent = theme.background
   return theme
 }
