@@ -49,9 +49,9 @@
         <div class="anchor" @click="configure">
           <span class="feather-icon icon-settings"></span>
         </div>
-        <div :class="['anchor', 'proxy-server', {active: server}]" @click="proxy">
+        <div :class="['anchor', 'proxy-server', {active: port}]" @click="proxy">
           <span class="feather-icon icon-navigation"></span>
-          <span v-if="server" class="server-port">{{ port }}</span>
+          <span v-if="port" class="server-port">{{ port }}</span>
         </div>
       </div>
     </div>
@@ -64,7 +64,7 @@ import TabItem from './tab-item'
 import ScrollBar from './scroll-bar'
 import {getLauncherTab} from '@/utils/launcher'
 import {InternalTerminals} from '@/utils/terminal'
-import {mapState, mapGetters, mapActions} from 'vuex'
+import {mapState, mapActions} from 'vuex'
 
 export default {
   name: 'TabList',
@@ -83,8 +83,7 @@ export default {
   computed: {
     ...mapState('terminal', ['tabs']),
     ...mapState('launcher', ['launchers']),
-    ...mapState('proxy', ['server']),
-    ...mapGetters('proxy', ['port']),
+    ...mapState('proxy', ['port']),
     running() {
       return this.tabs.filter(tab => !tab.launcher)
     },
@@ -108,7 +107,7 @@ export default {
       this.$store.dispatch('terminal/interact', InternalTerminals.settings)
     },
     proxy() {
-      if (this.server) {
+      if (this.port) {
         this.$store.dispatch('proxy/close')
       } else {
         this.$store.dispatch('proxy/open')

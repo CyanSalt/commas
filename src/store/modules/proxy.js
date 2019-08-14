@@ -17,18 +17,16 @@ export default {
   namespaced: true,
   state: {
     server: null,
+    port: null,
     rules: [],
     watcher: null,
-  },
-  getters: {
-    port(state, getters, rootState) {
-      const settings = rootState.settings.settings
-      return settings['terminal.proxyServer.port']
-    },
   },
   mutations: {
     setServer(state, value) {
       state.server = value
+    },
+    setPort(state, value) {
+      state.port = value
     },
     setRules(state, value) {
       state.rules = value
@@ -43,12 +41,13 @@ export default {
       if (!rules) return
       commit('setRules', rules)
     },
-    open({state, getters, commit}) {
+    open({state, commit, rootState}) {
       let server = state.server
       if (server) return
       const app = connect()
       const rules = state.rules
-      const port = getters.port
+      const settings = rootState.settings.settings
+      const port = settings['terminal.proxyServer.port']
       const groups = rules.reduce((groups, rule) => {
         const key = rule.vhost || ''
         if (!groups[key]) groups[key] = []
@@ -71,11 +70,13 @@ export default {
       // TODO: catch EADDRINUSE and notify error
       server = app.listen(port)
       commit('setServer', unreactive(server))
+      commit('setPort', port)
     },
     close({state, commit}) {
       if (!state.server) return
       state.server.close()
       commit('setServer', null)
+      commit('setPort', null)
     },
     watch({state, commit, dispatch}) {
       if (state.watcher) state.watcher.close()
@@ -87,6 +88,15 @@ export default {
         }
       })
       commit('setWatcher', watcher)
+    },
+    async refresh({state, dispatch, rootState}) {
+      if (!state.server) return
+      const settings = rootState.settings.settings
+      const port = settings['terminal.proxyServer.port']
+      if (port !== state.port) {
+        await dispatch('close')
+        dispatch('open')
+      }
     },
   },
 }

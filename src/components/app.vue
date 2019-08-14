@@ -65,6 +65,7 @@ export default {
     this.$store.dispatch('settings/watch', async () => {
       await this.$store.dispatch('theme/load')
       this.$store.dispatch('terminal/refresh')
+      this.$store.dispatch('proxy/refresh')
     })
     this.$store.dispatch('launcher/load')
     this.$store.dispatch('launcher/watch')
