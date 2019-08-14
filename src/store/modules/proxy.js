@@ -2,6 +2,7 @@ import connect from 'connect'
 import vhost from 'vhost'
 import proxy from 'http-proxy-middleware'
 import FileStorage from '@/utils/storage'
+import {unreactive} from '@/utils/object'
 
 const createProxyMiddleware = rule => {
   let options = rule.proxy
@@ -12,12 +13,10 @@ const createProxyMiddleware = rule => {
   return proxy(rule.context, options)
 }
 
-let singleton = null
-
 export default {
   namespaced: true,
   state: {
-    serving: false,
+    server: null,
     rules: [],
     watcher: null,
   },
@@ -29,8 +28,7 @@ export default {
   },
   mutations: {
     setServer(state, value) {
-      state.serving = Boolean(value)
-      singleton = value
+      state.server = value
     },
     setRules(state, value) {
       state.rules = value
@@ -45,7 +43,7 @@ export default {
       if (!rules) return
       commit('setRules', rules)
     },
-    open({state, getters, commit, rootState}) {
+    open({state, getters, commit}) {
       let server = state.server
       if (server) return
       const app = connect()
@@ -72,19 +70,18 @@ export default {
       }
       // TODO: catch EADDRINUSE and notify error
       server = app.listen(port)
-      commit('setServer', server)
+      commit('setServer', unreactive(server))
     },
     close({state, commit}) {
-      if (!state.serving) return
-      const server = singleton
+      if (!state.server) return
+      state.server.close()
       commit('setServer', null)
-      server.close()
     },
     watch({state, commit, dispatch}) {
       if (state.watcher) state.watcher.close()
       const watcher = FileStorage.watch('proxy-rules.json', async () => {
         await dispatch('load')
-        if (state.serving) {
+        if (state.server) {
           await dispatch('close')
           dispatch('open')
         }

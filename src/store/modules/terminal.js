@@ -6,6 +6,7 @@ import * as webLinks from 'xterm/lib/addons/webLinks/webLinks'
 import * as ligatures from 'xterm-addon-ligatures'
 import {remote, shell} from 'electron'
 import {getCwd, normalizeTheme} from '@/utils/terminal'
+import {unreactive} from '@/utils/object'
 import {debounce} from 'lodash'
 
 Terminal.applyAddon(fit)
@@ -25,7 +26,6 @@ export default {
   namespaced: true,
   state: {
     tabs: [],
-    poll: new Map(),
     active: -1,
     observer: null,
   },
@@ -35,9 +35,7 @@ export default {
       if (active === -1) return null
       const tabs = state.tabs
       const tab = tabs[active]
-      if (tab.internal) return tab
-      const instances = state.poll.get(tab.id)
-      return {...tab, ...instances}
+      return tab
     },
     shell(state, getters, rootState) {
       const settings = rootState.settings.settings
@@ -105,7 +103,6 @@ export default {
           state.observer.unobserve(xterm.element)
         }
         xterm.destroy()
-        state.poll.delete(id)
         dispatch('remove', id)
       })
       xterm.onResize(({cols, rows}) => {
@@ -130,9 +127,10 @@ export default {
         cwd,
         title: '',
         process: pty.process,
+        pty: unreactive(pty),
+        xterm: unreactive(xterm),
       }
       if (payload.launcher) tab.launcher = payload.launcher
-      state.poll.set(id, {pty, xterm})
       commit('appendTab', tab)
       commit('setActive', state.tabs.length - 1)
     },
@@ -145,7 +143,7 @@ export default {
         commit('setObserver', observer)
       }
       const settings = rootState.settings.settings
-      const {xterm} = state.poll.get(tab.id)
+      const xterm = tab.xterm
       requestIdleCallback(() => {
         if (xterm.element) {
           element.appendChild(xterm.element)
@@ -179,8 +177,8 @@ export default {
         current.xterm.fit()
       }
     },
-    input({state}, {tab, data}) {
-      state.poll.get(tab.id).pty.write(data)
+    input(store, {tab, data}) {
+      tab.pty.write(data)
     },
     activite({state, commit}, tab) {
       const tabs = state.tabs
@@ -189,11 +187,11 @@ export default {
         commit('setActive', index)
       }
     },
-    close({state, dispatch}, tab) {
+    close({dispatch}, tab) {
       if (tab.internal) {
         dispatch('remove', tab.id)
       } else {
-        state.poll.get(tab.id).pty.kill()
+        tab.pty.kill()
       }
     },
     remove({state, commit}, id) {
@@ -224,7 +222,7 @@ export default {
       const settings = rootState.settings.settings
       // TODO: performance review
       for (const tab of tabs) {
-        const {xterm} = state.poll.get(tab.id)
+        const xterm = tab.xterm
         xterm.setOption('fontSize', settings['terminal.style.fontSize'])
         xterm.setOption('fontFamily', settings['terminal.style.fontFamily'])
         xterm.setOption('theme', normalizeTheme(rootState.theme.theme))

@@ -49,9 +49,9 @@
         <div class="anchor" @click="configure">
           <span class="feather-icon icon-settings"></span>
         </div>
-        <div :class="['anchor', 'proxy-server', {active: serving}]" @click="proxy">
+        <div :class="['anchor', 'proxy-server', {active: server}]" @click="proxy">
           <span class="feather-icon icon-navigation"></span>
-          <span v-if="serving" class="server-port">{{ port }}</span>
+          <span v-if="server" class="server-port">{{ port }}</span>
         </div>
       </div>
     </div>
@@ -83,7 +83,7 @@ export default {
   computed: {
     ...mapState('terminal', ['tabs']),
     ...mapState('launcher', ['launchers']),
-    ...mapState('proxy', ['serving']),
+    ...mapState('proxy', ['server']),
     ...mapGetters('proxy', ['port']),
     running() {
       return this.tabs.filter(tab => !tab.launcher)
@@ -108,7 +108,7 @@ export default {
       this.$store.dispatch('terminal/interact', InternalTerminals.settings)
     },
     proxy() {
-      if (this.serving) {
+      if (this.server) {
         this.$store.dispatch('proxy/close')
       } else {
         this.$store.dispatch('proxy/open')

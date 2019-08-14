@@ -45,7 +45,6 @@ export default {
     },
     async launch({state, dispatch, rootState}, launcher) {
       const id = launcher.id
-      const active = getLauncherTab(rootState.terminal.tabs, launcher)
       await dispatch('open', launcher)
       launcher = state.launchers.find(item => item.id === id)
       let command = launcher.command
@@ -59,10 +58,7 @@ export default {
         command = `ssh -t ${launcher.remote} ${quote(command)}`
       }
       const tab = getLauncherTab(rootState.terminal.tabs, launcher)
-      const {pty} = rootState.terminal.poll.get(tab.id)
-      // Windows does not support pty signal
-      if (active && process.platform !== 'win32') pty.kill('SIGINT')
-      pty.write(command + EOL)
+      return dispatch('terminal/input', {tab, data: command + EOL}, {root: true})
     },
     assign({rootState}, launcher) {
       const settings = rootState.settings.settings

@@ -9,7 +9,6 @@
 <script>
 import ScrollBar from './scroll-bar'
 import 'xterm/lib/xterm.css'
-import {mapState} from 'vuex'
 
 export default {
   name: 'TerminalTeletype',
@@ -24,9 +23,6 @@ export default {
       viewport: null,
     }
   },
-  computed: {
-    ...mapState('terminal', ['poll']),
-  },
   mounted() {
     this.$store.dispatch('terminal/mount', {
       tab: this.tab,
@@ -39,13 +35,13 @@ export default {
   },
   activated() {
     // issue@xterm: fix bug after unmounted element updated
-    const {xterm} = this.poll.get(this.tab.id)
+    const xterm = this.tab.xterm
     if (xterm._core.viewport) xterm._core.viewport.syncScrollArea()
     xterm.scrollToBottom()
   },
   methods: {
     bound() {
-      const {xterm} = this.poll.get(this.tab.id)
+      const xterm = this.tab.xterm
       this.viewport = xterm._core._viewportElement
     },
     dragging(e) {
