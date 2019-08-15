@@ -4,7 +4,7 @@
   "productName": "Commas",
   "author": "CyanSalt",
   "description": "A hackable terminal and command runner.",
-  "main": "window.js",
+  "main": "app/main.js",
   "scripts": {
     "build": "webpack --mode=production && node makefile.js",
     "dev": "webpack --mode=development && electron .",

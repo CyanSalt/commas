@@ -3,7 +3,7 @@ import {dirname, resolve} from 'path'
 import {promisify} from 'util'
 import * as JSON from 'json5'
 import {debounce} from 'lodash'
-import {app, src} from './electron'
+import {app, dir} from './electron'
 
 const promises = {
   readFile: promisify(readFile),
@@ -13,7 +13,7 @@ const promises = {
 }
 
 const PATH = app.isPackaged ?
-  app.getPath('userData') : resolve(src, '..', 'userdata')
+  app.getPath('userData') : resolve(dir, '..', 'userdata')
 
 export default {
   async load(basename) {

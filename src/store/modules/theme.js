@@ -1,10 +1,11 @@
 import {readFileSync} from 'fs'
 import {resolve} from 'path'
-import fallback from '@/assets/themes/oceanic-next.json'
+import fallback from '@assets/themes/oceanic-next.json'
 import FileStorage from '@/utils/storage'
+import {dir} from '@/utils/electron'
 
 function load(file) {
-  const path = resolve(__dirname, `assets/themes/${file}.json`)
+  const path = resolve(dir, `assets/themes/${file}.json`)
   try {
     return JSON.parse(readFileSync(path))
   } catch (err) {

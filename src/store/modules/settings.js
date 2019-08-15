@@ -1,4 +1,4 @@
-import fallback from '@/assets/settings.json'
+import fallback from '@assets/settings.json'
 import FileStorage from '@/utils/storage'
 // import Writer from '@/utils/writer'
 import {clone, congruent} from '@/utils/object'

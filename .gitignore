@@ -1,7 +1,7 @@
 .DS_Store
 /dist
 /node_modules
-/src/assets/images/*.ico
-/src/assets/images/*.icns
-/src/build
+/app/assets/images/*.ico
+/app/assets/images/*.icns
+/app/build
 /userdata

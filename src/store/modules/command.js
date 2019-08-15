@@ -4,6 +4,7 @@ import {resolve} from 'path'
 import {promisify} from 'util'
 import FileStorage from '@/utils/storage'
 import {InternalTerminals} from '@/utils/terminal'
+import {dir} from '@/utils/electron'
 
 const promises = {
   access: promisify(access),
@@ -15,7 +16,7 @@ async function openStorageFile(filename, example) {
   try {
     await promises.access(path)
   } catch (err) {
-    await promises.copyFile(resolve(__dirname, 'assets', example), path)
+    await promises.copyFile(resolve(dir, 'assets', example), path)
   }
   shell.openItem(path)
 }

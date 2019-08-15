@@ -1,5 +1,5 @@
 const {app, BrowserWindow, Menu, ipcMain, dialog, autoUpdater} = require('electron')
-const {translate, FileStorage} = require('./src/build/helper')
+const {translate, FileStorage} = require('./build/main')
 const path = require('path')
 const url = require('url')
 
@@ -30,7 +30,7 @@ function createWindow(args) {
     })
   }
   const frame = new BrowserWindow(options)
-  loadHTMLFile(frame, 'src/index.html')
+  loadHTMLFile(frame, 'index.html')
   if (process.platform !== 'darwin') {
     createWindowMenu(frame)
   }

@@ -1,7 +1,7 @@
 import {readFileSync} from 'fs'
 import {resolve} from 'path'
 import FileStorage from './storage'
-import {app, src, onAppReady} from './electron'
+import {app, dir, onAppReady} from './electron'
 
 const translations = [
   {
@@ -13,7 +13,7 @@ const translations = [
 const comment = '#!'
 
 function load(file) {
-  const path = resolve(src, 'assets/locales', file)
+  const path = resolve(dir, 'assets/locales', file)
   try {
     return JSON.parse(readFileSync(path))
   } catch (err) {

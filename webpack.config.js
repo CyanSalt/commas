@@ -23,11 +23,11 @@ module.exports = {
     __dirname: false,
   },
   entry: {
+    renderer: path.resolve(__dirname, 'src/renderer.js'),
     main: path.resolve(__dirname, 'src/main.js'),
-    helper: path.resolve(__dirname, 'src/helper.js'),
   },
   output: {
-    path: path.resolve(__dirname, 'src/build/'),
+    path: path.resolve(__dirname, 'app/build/'),
     filename: '[name].js',
     libraryTarget: 'commonjs2',
   },
@@ -39,6 +39,7 @@ module.exports = {
     extensions: ['.js', '.vue'],
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      '@assets': path.resolve(__dirname, 'app/assets'),
       'vue$': 'vue/dist/vue.esm.js',
       'lodash': 'lodash-es',
     },
@@ -81,7 +82,7 @@ module.exports = {
   },
   plugins: [
     new MiniCSSExtractPlugin({
-      filename: 'bundle.css',
+      filename: 'renderer.css',
     }),
     new webpack.ProgressPlugin(),
     new VueLoaderPlugin(),
