@@ -69,13 +69,8 @@ export default {
 .terminal-content {
   flex: auto;
   padding: 4px 8px;
-  /* issue@xterm: change viewport element position */
-  position: relative;
   /* issue@xterm: fix bug of `xterm.fit()` */
   box-sizing: border-box;
-}
-.terminal-content .xterm {
-  position: static;
 }
 .terminal-content .xterm-viewport {
   overflow-y: hidden;
