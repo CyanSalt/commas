@@ -1,7 +1,5 @@
-import {readFileSync} from 'fs'
-import {resolve} from 'path'
 import FileStorage from './storage'
-import {app, dir, onAppReady} from './electron'
+import {app, onAppReady} from './electron'
 
 const translations = [
   {
@@ -11,15 +9,6 @@ const translations = [
 ]
 
 const comment = '#!'
-
-function load(file) {
-  const path = resolve(dir, 'assets/locales', file)
-  try {
-    return JSON.parse(readFileSync(path))
-  } catch (err) {
-    return null
-  }
-}
 
 function getTranslationFile(locale) {
   const translation = translations
@@ -32,8 +21,12 @@ function getDictionary() {
   const custom = FileStorage.loadSync('translation.json') || {}
   if (custom['@use']) locale = custom['@use']
   // Load translation data
+  let dictionary = {}
   const file = getTranslationFile(locale)
-  const dictionary = (file && load(file)) || {}
+  if (file) {
+    const result = FileStorage.assets().loadSync(`locales/${file}`)
+    if (result) dictionary = result
+  }
   // Merge user defined translation data
   for (const [key, value] of Object.entries(custom)) {
     if (typeof value === 'string') dictionary[key] = value

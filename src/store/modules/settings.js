@@ -1,14 +1,14 @@
 import fallback from '@assets/settings.json'
 import FileStorage from '@/utils/storage'
 // import Writer from '@/utils/writer'
-import {clone, congruent} from '@/utils/object'
+import {cloneDeep, isEqual} from 'lodash'
 import * as JSON from 'json5'
 
 export default {
   namespaced: true,
   state: {
     fallback,
-    settings: clone(fallback),
+    settings: cloneDeep(fallback),
     watcher: null,
     writer: null,
   },
@@ -31,7 +31,7 @@ export default {
       // commit('setWriter', new Writer(source))
       try {
         const declared = JSON.parse(source)
-        commit('setSettings', {...clone(fallback), ...declared})
+        commit('setSettings', {...cloneDeep(fallback), ...declared})
       } catch (err) {
         // ignore error
       }
@@ -40,7 +40,7 @@ export default {
       const writer = state.writer
       // Filter default values on saving
       const reducer = (diff, [key, value]) => {
-        if (!congruent(value, fallback[key])) {
+        if (!isEqual(value, fallback[key])) {
           diff[key] = value
         }
         return diff

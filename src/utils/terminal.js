@@ -1,5 +1,5 @@
-import {exec} from 'child_process'
-import {readlink} from 'fs'
+import {exec as execCallback} from 'child_process'
+import {promises as fs} from 'fs'
 import {promisify} from 'util'
 import {hostname, userInfo} from 'os'
 import {basename} from 'path'
@@ -8,11 +8,7 @@ import {createIDGenerator} from '@/utils/identity'
 import {translate} from '@/utils/i18n'
 import {hasAlphaChannel, rgba} from '@/utils/color'
 
-const promises = {
-  exec: promisify(exec),
-  readlink: promisify(readlink),
-}
-
+const exec = promisify(execCallback)
 const generateID = createIDGenerator()
 
 export const InternalTerminals = {
@@ -42,10 +38,10 @@ export const omitHome = directory => {
 export const getCwd = async pid => {
   try {
     if (process.platform === 'darwin') {
-      const {stdout} = await promises.exec(`lsof -p ${pid} | grep cwd`)
+      const {stdout} = await exec(`lsof -p ${pid} | grep cwd`)
       return stdout.substring(stdout.indexOf('/'), stdout.length - 1)
     } else if (process.platform === 'linux') {
-      return await readlink(`/proc/${pid}/cwd`)
+      return await fs.readlink(`/proc/${pid}/cwd`)
     }
   } catch (err) {
     return ''

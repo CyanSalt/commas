@@ -1,17 +1,5 @@
-import {readFileSync} from 'fs'
-import {resolve} from 'path'
 import fallback from '@assets/themes/oceanic-next.json'
 import FileStorage from '@/utils/storage'
-import {dir} from '@/utils/electron'
-
-function load(file) {
-  const path = resolve(dir, `assets/themes/${file}.json`)
-  try {
-    return JSON.parse(readFileSync(path))
-  } catch (err) {
-    return null
-  }
-}
 
 export default {
   namespaced: true,
@@ -34,10 +22,11 @@ export default {
       const settings = rootState.settings.settings
       const specified = settings['terminal.theme.name']
       if (specified && specified !== 'oceanic-next') {
-        let file = load(specified)
+        const path = `themes/${specified}.json`
+        let file = await FileStorage.assets().load(path)
         if (!file) {
-          file = await FileStorage.load(`themes/${specified}.json`)
-          if (file) dispatch('watch', `themes/${specified}.json`)
+          file = await FileStorage.load(path)
+          if (file) dispatch('watch', path)
         }
         if (file) Object.assign(theme, file)
       }

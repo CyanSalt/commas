@@ -15,7 +15,7 @@ A hackable terminal and command runner. **Commas** means **Com**mand **Mas**ter.
 ### Install manually
 
 You can also clone or download this repository and compile this app locally.
-  - After downloading the source code, enter the directory in command line and execute the installation script. Make sure that Node.js with version >= 8.5.0 is installed on your device.
+  - After downloading the source code, enter the directory in command line and execute the installation script. Make sure that Node.js with version >= 10.0.0 is installed on your device.
   - Run `npm install` to install all dependencies
   - Run `npm run build` to generate a portable version of the application after the dependencies installed successfully
 

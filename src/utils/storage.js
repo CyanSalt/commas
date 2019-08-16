@@ -1,21 +1,16 @@
-import {readFile, readFileSync, writeFile, mkdir, access, watch} from 'fs'
+import {readFileSync, watch, promises as fs} from 'fs'
 import {dirname, resolve} from 'path'
-import {promisify} from 'util'
 import * as JSON from 'json5'
 import {debounce} from 'lodash'
-import {app, dir} from './electron'
-
-const promises = {
-  readFile: promisify(readFile),
-  access: promisify(access),
-  mkdir: promisify(mkdir),
-  writeFile: promisify(writeFile),
-}
-
-const PATH = app.isPackaged ?
-  app.getPath('userData') : resolve(dir, '..', 'userdata')
+import {assetsDir, userDataDir} from './electron'
 
 export default {
+  directory: userDataDir,
+  assets() {
+    return Object.assign(Object.create(this), {
+      directory: assetsDir,
+    })
+  },
   async load(basename) {
     try {
       return JSON.parse(await this.read(basename))
@@ -35,7 +30,7 @@ export default {
   },
   async read(basename) {
     try {
-      return await promises.readFile(this.filename(basename))
+      return await fs.readFile(this.filename(basename))
     } catch (err) {
       return null
     }
@@ -43,11 +38,11 @@ export default {
   async write(basename, content) {
     const filename = this.filename(basename)
     try {
-      await promises.mkdir(dirname(filename))
+      await fs.mkdir(dirname(filename))
     } catch (err) {
       // ignore error
     }
-    return promises.writeFile(filename, content)
+    return fs.writeFile(filename, content)
   },
   watch(basename, updater) {
     // `chokidar` is too large; `gaze` seems to be OK. Use native currently.
@@ -73,6 +68,6 @@ export default {
     }
   },
   filename(basename) {
-    return resolve(PATH, basename)
+    return resolve(this.directory, basename)
   },
 }

@@ -1,22 +1,16 @@
 import {ipcRenderer, remote, shell} from 'electron'
-import {access, copyFile} from 'fs'
+import {promises as fs} from 'fs'
 import {resolve} from 'path'
-import {promisify} from 'util'
 import FileStorage from '@/utils/storage'
 import {InternalTerminals} from '@/utils/terminal'
-import {dir} from '@/utils/electron'
-
-const promises = {
-  access: promisify(access),
-  copyFile: promisify(copyFile),
-}
+import {assetsDir} from '@/utils/electron'
 
 async function openStorageFile(filename, example) {
   const path = FileStorage.filename(filename)
   try {
-    await promises.access(path)
+    await fs.access(path)
   } catch (err) {
-    await promises.copyFile(resolve(dir, 'assets', example), path)
+    await fs.copyFile(resolve(assetsDir, example), path)
   }
   shell.openItem(path)
 }

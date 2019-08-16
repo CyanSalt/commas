@@ -35,12 +35,10 @@
 import {remote, ipcRenderer, shell} from 'electron'
 import {mapState, mapGetters} from 'vuex'
 import {getPrompt, resolveHome} from '@/utils/terminal'
-import {exec} from 'child_process'
+import {exec as execCallback} from 'child_process'
 import {promisify} from 'util'
 
-const promises = {
-  exec: promisify(exec),
-}
+const exec = promisify(execCallback)
 
 export default {
   name: 'TitleBar',
@@ -107,7 +105,7 @@ export default {
       shell.openItem(resolveHome(this.directory))
     },
     async updateBranch() {
-      const {stdout} = await promises.exec(
+      const {stdout} = await exec(
         `cd ${this.directory} && git branch 2> /dev/null | grep \\* | cut -d " " -f2`,
       )
       this.branch = stdout
