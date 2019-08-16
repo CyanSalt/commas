@@ -10,7 +10,7 @@ export const onAppReady = callback => {
   else callback()
 }
 
-const appDir = isMainProcess ? join(__dirname, '../') : __dirname
+export const appDir = isMainProcess ? join(__dirname, '../') : __dirname
 
 export const assetsDir = join(appDir, 'assets/')
 

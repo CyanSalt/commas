@@ -1,0 +1,47 @@
+[
+  {
+    "label": "New Tab",
+    "accelerator": "CmdOrCtrl+T",
+    "command": "open-tab"
+  },
+  {
+    "label": "New Window",
+    "accelerator": "CmdOrCtrl+N",
+    "command": "open-window"
+  },
+  {
+    "type": "separator"
+  },
+  {
+    "label": "Select Previous Tab",
+    "accelerator": "CmdOrCtrl+Shift+[",
+    "command": "previous-tab"
+  },
+  {
+    "label": "Select Next Tab",
+    "accelerator": "CmdOrCtrl+Shift+]",
+    "command": "next-tab"
+  },
+  {"type": "separator"},
+  {
+    "label": "Find",
+    "accelerator": "CmdOrCtrl+F",
+    "command": "find"
+  },
+  {
+    "label": "Clear",
+    "accelerator": "CmdOrCtrl+K",
+    "command": "clear"
+  },
+  {"type": "separator"},
+  {
+    "label": "Close Tab",
+    "accelerator": "CmdOrCtrl+W",
+    "command": "close-tab"
+  },
+  {
+    "label": "Close Window",
+    "accelerator": "CmdOrCtrl+Shift+W",
+    "command": "close-window"
+  }
+]
