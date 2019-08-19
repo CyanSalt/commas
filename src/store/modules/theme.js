@@ -2,14 +2,20 @@ import fallback from '@assets/themes/oceanic-next.json'
 import {colors} from '@/utils/theme'
 import FileStorage from '@/utils/storage'
 
+const downloadURL = 'https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/windowsterminal'
+
 export default {
   namespaced: true,
   state: {
     fallback,
+    name: null,
     theme: null,
     watcher: null,
   },
   mutations: {
+    setName(state, value) {
+      state.name = value
+    },
     setTheme(state, value) {
       state.theme = value
     },
@@ -18,18 +24,32 @@ export default {
     },
   },
   actions: {
-    async load({commit, dispatch, rootState}) {
+    async load({state, dispatch, rootState}) {
+      const settings = rootState.settings.settings
+      const name = settings['terminal.theme.name']
+      if (name !== state.name) {
+        return dispatch('apply', {name})
+      }
+    },
+    async apply({commit, dispatch, rootState}, {name, download}) {
       const theme = {...fallback}
       const settings = rootState.settings.settings
-      const specified = settings['terminal.theme.name']
-      if (specified && specified !== 'oceanic-next') {
-        const path = `themes/${specified}.json`
+      const configured = settings['terminal.theme.name']
+      if (name && name !== 'oceanic-next') {
+        const path = `themes/${name}.json`
         let file = await FileStorage.assets().load(path)
         if (!file) {
           file = await FileStorage.load(path)
+          if (!file && download) {
+            file = await FileStorage.download(path, `${downloadURL}/${name}.json`)
+          }
           if (file) dispatch('watch', path)
         }
         if (file) Object.assign(theme, file)
+      }
+      commit('setName', name)
+      if (name !== configured) {
+        dispatch('settings/update', {'terminal.theme.name': name}, {root: true})
       }
       const customization = settings['terminal.theme.customization']
       if (customization) {
@@ -56,7 +76,7 @@ export default {
         .map(key => `${key}: ${properties[key]};`).join(' ')
       element.appendChild(document.createTextNode(`#main { ${declarations} }`))
       document.head.appendChild(element)
-      document.body.classList.add(theme.type)
+      if (theme.type) document.body.classList.add(theme.type)
     },
     eject({state}) {
       const theme = state.theme
@@ -64,7 +84,7 @@ export default {
       // TODO: performance review
       const element = document.getElementById('app-theme')
       if (element) element.remove()
-      document.body.classList.remove(theme.type)
+      if (theme.type) document.body.classList.remove(theme.type)
     },
     watch({state, commit, dispatch}, file) {
       if (state.watcher) state.watcher.close()

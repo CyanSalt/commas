@@ -16,5 +16,7 @@
   "Current version: %V#!15": "当前版本: %V",
   "A new version has been downloaded. Restart the application to apply the updates.#!16": "新版本已下载完毕，重启以应用更新。",
   "Restart#!17": "立即重启",
-  "Later#!18": "稍后重启"
+  "Later#!18": "稍后重启",
+  "Theme#!19": "主题",
+  "Theme will be downloaded from#!20": "主题来自于"
 }

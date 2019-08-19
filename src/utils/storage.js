@@ -1,6 +1,6 @@
 import {readFileSync, watch, promises as fs} from 'fs'
 import {dirname, resolve} from 'path'
-import * as JSON from 'json5'
+import {parse} from 'json5'
 import {debounce} from 'lodash'
 import {assetsDir, userDataDir} from './electron'
 
@@ -13,14 +13,14 @@ export default {
   },
   async load(basename) {
     try {
-      return JSON.parse(await this.read(basename))
+      return parse(await this.read(basename))
     } catch (err) {
       return null
     }
   },
   loadSync(basename) {
     try {
-      return JSON.parse(this.readSync(basename))
+      return parse(this.readSync(basename))
     } catch (err) {
       return null
     }
@@ -63,6 +63,15 @@ export default {
     const filename = this.filename(basename)
     try {
       return global.require(filename)
+    } catch (err) {
+      return null
+    }
+  },
+  async download(basename, url) {
+    try {
+      const data = await fetch(url).then(response => response.json())
+      await this.save(basename, data)
+      return data
     } catch (err) {
       return null
     }

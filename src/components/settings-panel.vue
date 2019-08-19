@@ -22,6 +22,21 @@
         <span v-i18n="{F: 'proxy-rules.json'}">Edit %F#!13</span>
       </span>
     </div>
+    <h2 class="group-title" v-i18n>Theme#!19</h2>
+    <div class="group">
+      <div class="form-line">
+        <input type="text" v-model="theme.name" :placeholder="activeTheme"
+          class="form-control">
+        <span :class="['link form-action', {loading: theme.loading}]" @click="dress">
+          <span class="feather-icon icon-download"></span>
+        </span>
+        <div class="form-line-tip">
+          <span v-i18n>Theme will be downloaded from#!20</span>
+          <span class="link" data-href="https://github.com/mbadolato/iTerm2-Color-Schemes/tree/master/windowsterminal"
+            @click="open">mbadolato/iTerm2-Color-Schemes</span>
+        </div>
+      </div>
+    </div>
     <h2 class="group-title" v-i18n>Customization#!10</h2>
     <div class="group">
       <span class="link" @click="exec('open-keybindings')">
@@ -53,7 +68,7 @@
 <script>
 import InternalPanel from './internal-panel'
 import {remote, shell} from 'electron'
-import {mapActions} from 'vuex'
+import {mapActions, mapState} from 'vuex'
 
 export default {
   name: 'SettingsPanel',
@@ -62,13 +77,29 @@ export default {
   },
   data() {
     return {
+      theme: {
+        name: '',
+        loading: false,
+      },
       version: remote.app.getVersion(),
     }
+  },
+  computed: {
+    ...mapState('theme', {activeTheme: 'name'}),
   },
   methods: {
     ...mapActions('command', ['exec']),
     open(e) {
       shell.openExternal(e.target.dataset.href)
+    },
+    async dress() {
+      if (!this.theme.name) return
+      this.theme.loading = true
+      await this.$store.dispatch('theme/apply', {
+        name: this.theme.name,
+        download: true,
+      })
+      this.theme.loading = false
     },
   },
 }

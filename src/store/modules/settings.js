@@ -1,8 +1,8 @@
 import fallback from '@assets/settings.json'
 import FileStorage from '@/utils/storage'
-// import Writer from '@/utils/writer'
+import Writer from '@/utils/writer'
 import {cloneDeep, isEqual} from 'lodash'
-import * as JSON from 'json5'
+import {parse} from 'json5'
 
 export default {
   namespaced: true,
@@ -14,7 +14,7 @@ export default {
   },
   mutations: {
     setSettings(state, value) {
-      state.settings = value
+      Object.assign(state.settings, value)
     },
     setWatcher(state, value) {
       state.watcher = value
@@ -28,10 +28,10 @@ export default {
       // Load user settings
       const source = await FileStorage.read('settings.json')
       if (!source) return
-      // commit('setWriter', new Writer(source))
+      commit('setWriter', new Writer(source))
       try {
-        const declared = JSON.parse(source)
-        commit('setSettings', {...cloneDeep(fallback), ...declared})
+        const declared = parse(source)
+        commit('setSettings', declared)
       } catch (err) {
         // ignore error
       }
@@ -53,6 +53,10 @@ export default {
       } else {
         return FileStorage.save('settings.json', computed)
       }
+    },
+    update({commit, dispatch}, patch) {
+      commit('setSettings', patch)
+      return dispatch('save')
     },
     watch({state, commit, dispatch}, callback) {
       if (state.watcher) state.watcher.close()

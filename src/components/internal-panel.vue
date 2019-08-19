@@ -79,4 +79,50 @@ export default {
 .internal-panel .text {
   line-height: 32px;
 }
+.internal-panel .form-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.internal-panel .form-label {
+  width: 12em;
+}
+.internal-panel .form-line-tip {
+  flex-basis: 100%;
+  font-size: 12px;
+  font-style: italic;
+  line-height: 24px;
+}
+.internal-panel .form-line-tip::before {
+  content: '*';
+  margin-right: 1em;
+}
+.internal-panel input[type="text"].form-control {
+  padding: 2px 6px;
+  line-height: 20px;
+  border: none;
+  outline: none;
+  color: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  background: rgba(127, 127, 127, 0.2);
+}
+.internal-panel input[type="text"].form-control::placeholder {
+  color: var(--theme-foreground);
+  opacity: 0.25;
+}
+.internal-panel .form-action {
+  margin-left: 8px;
+  font-size: 16px;
+}
+@keyframes blink {
+  50% {
+    opacity: 0.382;
+  }
+}
+.internal-panel .form-action.loading {
+  opacity: 1;
+  animation: blink 1s ease-in-out infinite;
+  pointer-events: none;
+}
 </style>

@@ -223,6 +223,7 @@ export default {
       const settings = rootState.settings.settings
       // TODO: performance review
       for (const tab of tabs) {
+        if (tab.internal) continue
         const xterm = tab.xterm
         xterm.setOption('fontSize', settings['terminal.style.fontSize'])
         xterm.setOption('fontFamily', settings['terminal.style.fontFamily'])
