@@ -6,15 +6,14 @@ import {basename} from 'path'
 import {remote} from 'electron'
 import {createIDGenerator} from '@/utils/identity'
 import {translate} from '@/utils/i18n'
-import {hasAlphaChannel, rgba} from '@/utils/color'
 
 const exec = promisify(execCallback)
-const generateID = createIDGenerator()
+const generateID = createIDGenerator(id => id - 1)
 
 export const InternalTerminals = {
   settings: {
     internal: true,
-    id: -generateID(),
+    id: generateID(),
     process: remote.app.getName(),
     title: translate('Settings#!7'),
     cwd: '',
@@ -61,16 +60,4 @@ export const getPrompt = (expr, tab) => {
     .replace(/\\v/g, tab ? tab.process : '')
     .replace(/\\w/g, tab ? () => omitHome(tab.cwd) : '')
     .replace(/\\W/g, tab ? () => basename(tab.cwd) : '')
-}
-
-export const normalizeTheme = original => {
-  // TODO: support transparency background color
-  const theme = {...original}
-  if (!theme.selection || !hasAlphaChannel(theme.selection)) {
-    const alpha = theme.type === 'light' ? 0.15 : 0.3
-    theme.selection = rgba(theme.foreground, alpha)
-  }
-  if (!theme.cursor) theme.cursor = theme.foreground
-  if (!theme.cursorAccent) theme.cursorAccent = theme.background
-  return theme
 }

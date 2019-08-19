@@ -6,10 +6,10 @@
       <div class="interface">
         <find-box></find-box>
         <keep-alive v-if="current">
-          <settings-panel v-if="current === internal.settings"
-            :key="current.id"></settings-panel>
-          <terminal-teletype v-else :tab="current"
+          <terminal-teletype v-if="!current.internal" :tab="current"
             :key="current.id"></terminal-teletype>
+          <settings-panel v-else-if="current === internal.settings"
+            :key="current.id"></settings-panel>
         </keep-alive>
       </div>
     </div>

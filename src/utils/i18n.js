@@ -46,9 +46,19 @@ onAppReady(() => {
     }, {})
 })
 
-export function translate(message) {
+function translateText(message) {
   if (unabridged[message]) return unabridged[message]
   const identity = message.substring(0, message.indexOf(comment))
   if (dictionary[identity]) return dictionary[identity]
   return message.split(comment)[0]
+}
+
+export function translate(message, variables) {
+  let text = translateText(message)
+  if (variables) {
+    for (const [key, replacer] of Object.entries(variables)) {
+      text = text.replace('%' + key, replacer)
+    }
+  }
+  return text
 }

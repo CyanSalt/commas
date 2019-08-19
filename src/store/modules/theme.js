@@ -1,4 +1,5 @@
 import fallback from '@assets/themes/oceanic-next.json'
+import {colors} from '@/utils/theme'
 import FileStorage from '@/utils/storage'
 
 export default {
@@ -44,7 +45,8 @@ export default {
       const element = document.createElement('style')
       element.id = 'app-theme'
       const properties = {}
-      Object.keys(theme).forEach(key => {
+      colors.forEach(key => {
+        if (!theme[key]) return
         properties[`--theme-${key.toLowerCase()}`] = theme[key]
       })
       // TODO: use custom.css instead of styles in settings.json
