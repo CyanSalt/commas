@@ -89,6 +89,7 @@ export default {
 }
 .internal-panel .form-line-tip {
   flex-basis: 100%;
+  margin-bottom: 8px;
   font-size: 12px;
   font-style: italic;
   line-height: 24px;
