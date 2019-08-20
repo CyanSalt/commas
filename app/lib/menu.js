@@ -2,7 +2,6 @@ const {app, Menu} = require('electron')
 const shared = require('../assets/menu')
 const {FileStorage} = require('../build/main')
 const {execCommand} = require('./command')
-const {forEachWindow} = require('./frame')
 
 function resolveBindingCommand(binding) {
   if (binding.command) {
@@ -61,10 +60,10 @@ function createApplicationMenu() {
       submenu: [
         {role: 'toggledevtools'},
         {
-          label: 'Reload All Windows',
+          label: 'Relaunch App',
           accelerator: 'CmdOrCtrl+Shift+R',
           click() {
-            forEachWindow(window => window.reload())
+            app.relaunch()
           },
         },
       ],
@@ -90,10 +89,10 @@ function createWindowMenu(frame) {
       submenu: [
         {role: 'toggledevtools'},
         {
-          label: 'Reload All Windows',
+          label: 'Relaunch App',
           accelerator: 'CmdOrCtrl+Shift+R',
           click() {
-            forEachWindow(window => window.reload())
+            app.relaunch()
           },
         },
       ],

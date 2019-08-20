@@ -22,7 +22,7 @@ import TabList from './tab-list'
 import FindBox from './find-box'
 import TerminalTeletype from './terminal-teletype'
 import SettingsPanel from './settings-panel'
-import {ipcRenderer, remote} from 'electron'
+import {ipcRenderer} from 'electron'
 import {mapState, mapGetters} from 'vuex'
 import {InternalTerminals} from '@/utils/terminal'
 
@@ -54,9 +54,9 @@ export default {
     }
   },
   created() {
-    const frame = remote.getCurrentWindow()
-    const initialPath = frame.additionalArguments &&
-      frame.additionalArguments.path
+    const index = process.argv.indexOf('--') + 1
+    const args = index ? process.argv.slice(index) : []
+    const initialPath = args[0]
     ;(async () => {
       await this.$store.dispatch('settings/load')
       await this.$store.dispatch('theme/load')

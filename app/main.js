@@ -13,7 +13,7 @@ app.on('ready', () => {
   }
   transferInvoking()
   checkForUpdates()
-  createWindow(cwd && {path: cwd})
+  createWindow(cwd)
 })
 
 app.on('activate', () => {
@@ -36,7 +36,7 @@ app.on('will-finish-launching', () => {
       const last = getLastWindow()
       last.webContents.send('open-path', file)
     } else {
-      createWindow({path: file})
+      createWindow(file)
     }
   })
 })

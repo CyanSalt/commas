@@ -14,7 +14,7 @@ function loadHTMLFile(frame, file) {
   }))
 }
 
-function createWindow(args) {
+function createWindow(...args) {
   const options = {
     show: false,
     title: app.getName(),
@@ -28,6 +28,9 @@ function createWindow(args) {
     affinity: 'default',
     webPreferences: {
       nodeIntegration: true,
+      additionalArguments: [
+        '--', ...args.filter(arg => arg !== undefined),
+      ],
     },
   }
   // frame offset
@@ -51,10 +54,6 @@ function createWindow(args) {
   transferEvents(frame)
   // reference to avoid GC
   collectWindow(frame)
-  // additional arguments for renderer
-  if (args) {
-    frame.additionalArguments = args
-  }
 }
 
 module.exports = {
