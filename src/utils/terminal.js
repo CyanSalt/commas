@@ -23,19 +23,19 @@ export const InternalTerminals = {
 
 export const quote = command => `"${command.replace(/"/g, '"\\""')}"`
 
-export const resolveHome = directory => {
+export function resolveHome(directory) {
   if (!directory) return directory
   return directory.startsWith('~') ?
     process.env.HOME + directory.slice(1) : directory
 }
 
-export const omitHome = directory => {
-  if (!directory) return directory
+export function omitHome(directory) {
+  if (!directory || process.platform === 'win32') return directory
   return directory.startsWith(process.env.HOME) ?
     '~' + directory.slice(process.env.HOME.length) : directory
 }
 
-export const getCwd = async pid => {
+export async function getCwd(pid) {
   try {
     if (process.platform === 'darwin') {
       const {stdout} = await exec(`lsof -p ${pid} | grep cwd`)
@@ -48,11 +48,20 @@ export const getCwd = async pid => {
   }
 }
 
+// for Windows cmd.exe only
+export function getProcessName(title) {
+  let program = basename(title)
+  const separator = ' - '
+  const index = program.indexOf(separator)
+  if (index === -1) return program
+  return program.slice(index + separator.length)
+}
+
 const host = hostname()
 const shorthost = host.split('.')[0]
 const user = userInfo().username
 
-export const getPrompt = (expr, tab) => {
+export function getPrompt(expr, tab) {
   return expr
     .replace(/\\h/g, shorthost)
     .replace(/\\H/g, host)

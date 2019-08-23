@@ -8,6 +8,9 @@
   // Arguments of shell command line
   "terminal.shell.args": ["--login"],
 
+  // Arguments of shell command line (for Windows)
+  "terminal.shell.args.windows": [],
+
   // Absolute path (or with args as array) of external file manager
   // (or code editor, etc) for launchers
   // Open in system file manager by default

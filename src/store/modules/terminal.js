@@ -5,7 +5,7 @@ import * as search from 'xterm/lib/addons/search/search'
 import * as webLinks from 'xterm/lib/addons/webLinks/webLinks'
 import * as ligatures from 'xterm-addon-ligatures'
 import {remote, shell} from 'electron'
-import {getCwd} from '@/utils/terminal'
+import {getCwd, getProcessName} from '@/utils/terminal'
 import {normalizeTheme} from '@/utils/theme'
 import {unreactive} from '@/utils/object'
 import {debounce} from 'lodash'
@@ -76,12 +76,18 @@ export default {
       if (!isPackaged && env.npm_config_prefix) delete env.npm_config_prefix
       // Initialize node-pty process
       const cwd = payload.cwd || env.HOME
-      const pty = spawn(getters.shell, settings['terminal.shell.args'], {
+      const options = {
         name: 'xterm-256color',
-        encoding: 'utf8',
         cwd,
         env,
-      })
+      }
+      let args = settings['terminal.shell.args']
+      if (process.platform === 'win32') {
+        args = settings['terminal.shell.args.windows']
+      } else {
+        options.encoding = 'utf8'
+      }
+      const pty = spawn(getters.shell, args, options)
       const id = pty.pid
       // Initialize xterm.js and attach it to the DOM
       const xterm = new Terminal({
@@ -97,7 +103,9 @@ export default {
       pty.on('data', data => {
         xterm.write(data)
         // TODO: performance review
-        commit('updateTab', {id, process: pty.process})
+        if (process.platform !== 'win32') {
+          commit('updateTab', {id, process: pty.process})
+        }
       })
       pty.on('exit', () => {
         if (xterm.element) {
@@ -110,7 +118,11 @@ export default {
         pty.resize(cols, rows)
       })
       xterm.onTitleChange(title => {
-        commit('updateTab', {id, title})
+        const patch = {id, title}
+        if (process.platform === 'win32') {
+          patch.process = getProcessName(title)
+        }
+        commit('updateTab', patch)
       })
       if (settings['terminal.tab.liveCwd']) {
         const updateCwd = debounce(async () => {

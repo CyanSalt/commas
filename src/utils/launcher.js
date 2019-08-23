@@ -2,7 +2,7 @@ import {createIDGenerator} from '@/utils/identity'
 
 const generateID = createIDGenerator()
 
-export const getLauncherTab = (tabs, launcher) => {
+export function getLauncherTab(tabs, launcher) {
   return tabs.find(tab => tab.launcher === launcher.id)
 }
 

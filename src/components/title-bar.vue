@@ -105,9 +105,10 @@ export default {
       shell.openItem(resolveHome(this.directory))
     },
     async updateBranch() {
-      const {stdout} = await exec(
-        `cd ${this.directory} && git branch 2> /dev/null | grep \\* | cut -d " " -f2`,
-      )
+      const branch = process.platform === 'win32' ?
+        'git rev-parse --abbrev-ref HEAD 2> NUL' :
+        'git branch 2> /dev/null | grep \\* | cut -d " " -f2'
+      const {stdout} = await exec(`cd ${this.directory} && ${branch}`)
       this.branch = stdout
     },
   },
