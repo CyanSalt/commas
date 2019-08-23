@@ -195,13 +195,17 @@ export default {
         tab.pty.kill()
       }
     },
-    remove({state, commit}, id) {
+    remove({state, commit, dispatch, rootState}, id) {
       const index = state.tabs.findIndex(tab => tab.id === id)
       if (index === -1) return
       commit('removeTab', index)
       const length = state.tabs.length
       if (!length) {
-        remote.getCurrentWindow().close()
+        if (rootState.proxy.server) {
+          dispatch('spawn')
+        } else {
+          remote.getCurrentWindow().close()
+        }
       } else if (state.active === index) {
         commit('setActive', Math.min(index, length - 1))
       }
