@@ -1,7 +1,10 @@
 <template>
   <div :class="['tab-item', {active: focused}]">
     <div class="tab-overview">
-      <div class="tab-title">{{ title }}</div>
+      <div class="tab-title">
+        <span v-if="icon" :class="['tab-icon devicon', icon.icon]"></span>
+        <span class="tab-name">{{ title }}</span>
+      </div>
       <div class="right-side">
         <div v-if="idleState" :class="['idle-light', idleState]"></div>
         <div class="operations">
@@ -18,7 +21,7 @@
 
 <script>
 import {mapState, mapGetters} from 'vuex'
-import {getPrompt} from '@/utils/terminal'
+import {getPrompt, getIcon} from '@/utils/terminal'
 import {basename} from 'path'
 
 export default {
@@ -51,6 +54,10 @@ export default {
       if (this.tab.process === basename(this.shell)) return 'idle'
       return 'busy'
     },
+    icon() {
+      if (this.name || !this.tab || this.tab.internal) return null
+      return getIcon(this.tab.process)
+    },
   },
   methods: {
     close() {
@@ -63,13 +70,24 @@ export default {
 
 <style>
 .tab-item .tab-title {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  flex: auto;
+  width: 0;
+  display: flex;
+  align-items: center;
   opacity: 0.5;
 }
 .tab-item.active .tab-title {
   opacity: 1;
+}
+.tab-item .tab-icon {
+  flex: none;
+  margin-right: 6px;
+}
+.tab-item .tab-name {
+  flex: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .tab-item .tab-overview {
   position: relative;

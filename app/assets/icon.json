@@ -1,0 +1,36 @@
+[
+  {
+    "context": ["ssh"],
+    "icon": "devicon-ssh"
+  },
+  {
+    "context": ["git"],
+    "icon": "devicon-git",
+    "color": "#f05032"
+  },
+  {
+    "context": ["vi", "vim", "neovim"],
+    "icon": "devicon-vim",
+    "color": "#019733"
+  },
+  {
+    "context": ["node"],
+    "icon": "devicon-nodejs",
+    "color": "#339933"
+  },
+  {
+    "pattern": "^python\\d*",
+    "icon": "devicon-python",
+    "color": "#3776ab"
+  },
+  {
+    "context": ["docker", "docker-compose"],
+    "icon": "devicon-docker",
+    "color": "#1488c6"
+  },
+  {
+    "context": ["aws"],
+    "icon": "devicon-amazonwebservices",
+    "color": "#232f3e"
+  }
+]

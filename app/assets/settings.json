@@ -20,7 +20,7 @@
   // Title format of terminal tab in grammer of bash prompt
   // It will not work if title is set from OSC 0 or OSC 2
   // Supported identifiers: \h \H \l \u \v \w \W
-  "terminal.tab.titleFormat": "\\v: \\w",
+  "terminal.tab.titleFormat": "\\v",
 
   // Font size for window in pixels
   "terminal.style.fontSize": 14,

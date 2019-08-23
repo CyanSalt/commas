@@ -1,0 +1,374 @@
+@font-face {
+	font-family: 'Devicon';
+  src: url('devicon.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.devicon {
+  font-family: 'Devicon';
+}
+
+.devicon-sketch::before {
+  content: '\e94d';
+}
+.devicon-npm::before {
+  content: '\e952';
+}
+.devicon-ionic::before {
+  content: '\e954';
+}
+.devicon-ember::before {
+  content: '\e955';
+}
+.devicon-electron::before {
+  content: '\e957';
+}
+.devicon-vagrant::before {
+  content: '\e94f';
+}
+.devicon-yarn::before {
+  content: '\e951';
+}
+.devicon-handlebars::before {
+  content: '\e94b';
+}
+.devicon-couchdb::before {
+  content: '\e949';
+}
+.devicon-behance::before {
+  content: '\e945';
+}
+.devicon-linkedin::before {
+  content: '\e947';
+}
+.devicon-ceylon::before {
+  content: '\e944';
+}
+.devicon-elm::before {
+  content: '\e942';
+}
+.devicon-cakephp::before {
+  content: '\e940';
+}
+.devicon-stylus::before {
+  content: '\e93e';
+}
+.devicon-express::before {
+  content: '\e93d';
+}
+.devicon-devicon::before {
+  content: '\e93b';
+}
+.devicon-intellij::before {
+  content: '\e933';
+}
+.devicon-pycharm::before {
+  content: '\e935';
+}
+.devicon-rubymine::before {
+  content: '\e937';
+}
+.devicon-webstorm::before {
+  content: '\e939';
+}
+.devicon-tomcat::before {
+  content: '\e92d';
+}
+.devicon-vuejs::before {
+  content: '\e931';
+}
+.devicon-swift::before {
+  content: '\e92b';
+}
+.devicon-webpack::before {
+  content: '\e929';
+}
+.devicon-visualstudio::before {
+  content: '\e927';
+}
+.devicon-slack::before {
+  content: '\e925';
+}
+.devicon-sequelize::before {
+  content: '\e923';
+}
+.devicon-typescript::before {
+  content: '\e920';
+}
+.devicon-babel::before {
+  content: '\e921';
+}
+.devicon-facebook::before {
+  content: '\e91c';
+}
+.devicon-google::before {
+  content: '\e91e';
+}
+.devicon-twitter::before {
+  content: '\e91f';
+}
+.devicon-mocha::before {
+  content: '\e919';
+}
+.devicon-jasmine::before {
+  content: '\e91a';
+}
+.devicon-gatling::before {
+  content: '\e917';
+}
+.devicon-phpstorm::before {
+  content: '\e911';
+}
+.devicon-sourcetree::before {
+  content: '\e913';
+}
+.devicon-ssh::before {
+  content: '\e915';
+}
+.devicon-ssh-wordmark::before {
+  content: '\e916';
+}
+.devicon-jeet::before {
+  content: '\e903';
+}
+.devicon-gitlab::before {
+  content: '\e907';
+}
+.devicon-github::before {
+  content: '\e909';
+}
+.devicon-d3js::before {
+  content: '\e90b';
+}
+.devicon-confluence::before {
+  content: '\e90d';
+}
+.devicon-bitbucket::before {
+  content: '\e90f';
+}
+.devicon-gradle::before {
+  content: '\e902';
+}
+.devicon-cucumber::before {
+  content: '\e904';
+}
+.devicon-protractor::before {
+  content: '\e900';
+}
+.devicon-safari::before {
+  content: '\e63c';
+}
+.devicon-jetbrains::before {
+  content: '\e63d';
+}
+.devicon-django::before {
+  content: '\e63f';
+}
+.devicon-gimp::before {
+  content: '\e633';
+}
+.devicon-redhat::before {
+  content: '\e62b';
+}
+.devicon-cplusplus::before {
+  content: '\e635';
+}
+.devicon-csharp::before {
+  content: '\e637';
+}
+.devicon-c::before {
+  content: '\e639';
+}
+.devicon-nodewebkit::before {
+  content: '\e614';
+}
+.devicon-nginx::before {
+  content: '\e615';
+}
+.devicon-erlang::before {
+  content: '\e617';
+}
+.devicon-doctrine::before {
+  content: '\e625';
+}
+.devicon-apache::before {
+  content: '\e629';
+}
+.devicon-redis::before {
+  content: '\e607';
+}
+.devicon-meteor::before {
+  content: '\e609';
+}
+.devicon-heroku::before {
+  content: '\e60f';
+}
+.devicon-go::before {
+  content: '\e61b';
+}
+.devicon-docker::before {
+  content: '\e61f';
+}
+.devicon-symfony::before {
+  content: '\e605';
+}
+.devicon-react::before {
+  content: '\e601';
+}
+.devicon-amazonwebservices::before {
+  content: '\e603';
+}
+.devicon-android::before {
+  content: '\e60e';
+}
+.devicon-angularjs::before {
+  content: '\e61d';
+}
+.devicon-appcelerator::before {
+  content: '\e620';
+}
+.devicon-apple::before {
+  content: '\e622';
+}
+.devicon-atom::before {
+  content: '\e624';
+}
+.devicon-backbonejs::before {
+  content: '\e62d';
+}
+.devicon-bootstrap::before {
+  content: '\e62f';
+}
+.devicon-bower::before {
+  content: '\e64f';
+}
+.devicon-chrome::before {
+  content: '\e666';
+}
+.devicon-codeigniter::before {
+  content: '\e668';
+}
+.devicon-coffeescript::before {
+  content: '\e66a';
+}
+.devicon-css3::before {
+  content: '\e679';
+}
+.devicon-debian::before {
+  content: '\e67f';
+}
+.devicon-dot-net::before {
+  content: '\e6d4';
+}
+.devicon-drupal::before {
+  content: '\e6e3';
+}
+.devicon-firefox::before {
+  content: '\e75e';
+}
+.devicon-foundation::before {
+  content: '\e7a3';
+}
+.devicon-git::before {
+  content: '\e7a8';
+}
+.devicon-grunt::before {
+  content: '\e7eb';
+}
+.devicon-gulp::before {
+  content: '\e7ec';
+}
+.devicon-html5::before {
+  content: '\e7f7';
+}
+.devicon-ie10::before {
+  content: '\e7f8';
+}
+.devicon-illustrator::before {
+  content: '\e7fa';
+}
+.devicon-inkscape::before {
+  content: '\e835';
+}
+.devicon-java::before {
+  content: '\e842';
+}
+.devicon-javascript::before {
+  content: '\e845';
+}
+.devicon-jquery::before {
+  content: '\e84a';
+}
+.devicon-krakenjs::before {
+  content: '\e850';
+}
+.devicon-laravel::before {
+  content: '\e852';
+}
+.devicon-less::before {
+  content: '\e853';
+}
+.devicon-linux::before {
+  content: '\eb1c';
+}
+.devicon-mongodb::before {
+  content: '\eb44';
+}
+.devicon-moodle::before {
+  content: '\eb5b';
+}
+.devicon-mysql::before {
+  content: '\eb61';
+}
+.devicon-nodejs::before {
+  content: '\eb6a';
+}
+.devicon-oracle::before {
+  content: '\eb6b';
+}
+.devicon-photoshop::before {
+  content: '\eb6d';
+}
+.devicon-php::before {
+  content: '\eb71';
+}
+.devicon-postgresql::before {
+  content: '\eb7d';
+}
+.devicon-python::before {
+  content: '\eb89';
+}
+.devicon-rails::before {
+  content: '\eba3';
+}
+.devicon-ruby::before {
+  content: '\ebca';
+}
+.devicon-sass::before {
+  content: '\ebcb';
+}
+.devicon-travis::before {
+  content: '\ebcd';
+}
+.devicon-trello::before {
+  content: '\ebcf';
+}
+.devicon-ubuntu::before {
+  content: '\ebd1';
+}
+.devicon-vim::before {
+  content: '\ebf3';
+}
+.devicon-windows8::before {
+  content: '\ebf5';
+}
+.devicon-wordpress::before {
+  content: '\ebfe';
+}
+.devicon-yii::before {
+  content: '\ec02';
+}
+.devicon-zend::before {
+  content: '\ec04';
+}

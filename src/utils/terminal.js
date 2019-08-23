@@ -6,6 +6,7 @@ import {basename} from 'path'
 import {remote} from 'electron'
 import {createIDGenerator} from '@/utils/identity'
 import {translate} from '@/utils/i18n'
+import icons from '@assets/icon.json'
 
 const exec = promisify(execCallback)
 const generateID = createIDGenerator(id => id - 1)
@@ -60,4 +61,23 @@ export const getPrompt = (expr, tab) => {
     .replace(/\\v/g, tab ? tab.process : '')
     .replace(/\\w/g, tab ? () => omitHome(tab.cwd) : '')
     .replace(/\\W/g, tab ? () => basename(tab.cwd) : '')
+}
+
+const iconset = icons.map(icon => {
+  if (icon.pattern) {
+    try {
+      icon.pattern = new RegExp(icon.pattern)
+    } catch (err) {
+      icon.pattern = null
+    }
+  }
+  return icon
+})
+
+export function getIcon(process) {
+  const name = process.toLowerCase()
+  return iconset.find(icon => {
+    if (icon.pattern) return new RegExp(icon.pattern).test(name)
+    return icon.context.includes(name)
+  })
 }
