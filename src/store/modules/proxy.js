@@ -1,17 +1,8 @@
-import connect from 'connect'
-import vhost from 'vhost'
-import proxy from 'http-proxy-middleware'
+import {createServer} from 'http'
+import {createProxyServer} from 'http-proxy'
 import FileStorage from '@/utils/storage'
 import {unreactive} from '@/utils/object'
-
-const createProxyMiddleware = rule => {
-  let options = rule.proxy
-  if (typeof options === 'string') {
-    options = {target: options}
-  }
-  options.logLevel = 'silent'
-  return proxy(rule.context, options)
-}
+import {normalizeRules, getMatchedProxy} from '@/utils/proxy'
 
 export default {
   namespaced: true,
@@ -44,31 +35,15 @@ export default {
     open({state, commit, rootState}) {
       let server = state.server
       if (server) return
-      const app = connect()
-      const rules = state.rules
+      const rules = normalizeRules(state.rules)
       const settings = rootState.settings.settings
       const port = settings['terminal.proxyServer.port']
-      const groups = rules.reduce((groups, rule) => {
-        const key = rule.vhost || ''
-        if (!groups[key]) groups[key] = []
-        groups[key].push(rule)
-        return groups
-      }, {})
-      for (const [host, rules] of Object.entries(groups)) {
-        if (host) {
-          const child = connect()
-          for (const rule of rules) {
-            child.use(createProxyMiddleware(rule))
-          }
-          app.use(vhost(host, child))
-        } else {
-          for (const rule of rules) {
-            app.use(createProxyMiddleware(rule))
-          }
-        }
-      }
       // TODO: catch EADDRINUSE and notify error
-      server = app.listen(port)
+      const proxyServer = createProxyServer()
+      server = createServer((req, res) => {
+        proxyServer.web(req, res, getMatchedProxy(rules, req.url))
+      })
+      server.listen(port)
       commit('setServer', unreactive(server))
       commit('setPort', port)
     },
