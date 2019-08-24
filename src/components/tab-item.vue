@@ -45,7 +45,7 @@ export default {
     },
     title() {
       if (this.name) return this.name
-      if (this.tab.title) return this.tab.title
+      if (process.platform !== 'win32' && this.tab.title) return this.tab.title
       const expr = this.settings['terminal.tab.titleFormat']
       return getPrompt(expr, this.tab) || this.tab.process
     },

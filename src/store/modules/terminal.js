@@ -5,7 +5,7 @@ import * as search from 'xterm/lib/addons/search/search'
 import * as webLinks from 'xterm/lib/addons/webLinks/webLinks'
 import * as ligatures from 'xterm-addon-ligatures'
 import {remote, shell} from 'electron'
-import {getCwd, getProcessName} from '@/utils/terminal'
+import {getCwd, getWindowsProcessInfo} from '@/utils/terminal'
 import {normalizeTheme} from '@/utils/theme'
 import {unreactive} from '@/utils/object'
 import {debounce} from 'lodash'
@@ -103,6 +103,7 @@ export default {
       pty.on('data', data => {
         xterm.write(data)
         // TODO: performance review
+        // pty.process on Windows will be always equivalent to pty.name
         if (process.platform !== 'win32') {
           commit('updateTab', {id, process: pty.process})
         }
@@ -120,7 +121,8 @@ export default {
       xterm.onTitleChange(title => {
         const patch = {id, title}
         if (process.platform === 'win32') {
-          patch.process = getProcessName(title)
+          const info = getWindowsProcessInfo(getters.shell, title)
+          if (info) Object.assign(patch, info)
         }
         commit('updateTab', patch)
       })
