@@ -22,6 +22,7 @@ export default {
   actions: {
     closing() {
       const args = {
+        type: 'info',
         message: translate('Close Window?#!1'),
         detail: translate('All tabs in this window will be closed.#!2'),
         buttons: [

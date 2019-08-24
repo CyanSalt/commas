@@ -10,6 +10,7 @@ function checkForUpdates() {
   })
   autoUpdater.on('update-downloaded', (event, notes, name) => {
     const options = {
+      type: 'info',
       message: name,
       detail: translate('A new version has been downloaded. Restart the application to apply the updates.#!16'),
       buttons: [
