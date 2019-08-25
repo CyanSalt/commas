@@ -1,34 +1,33 @@
-import * as codeshift from 'jscodeshift'
+import * as recast from 'recast'
+
+const {namedTypes, builders} = recast.types
 
 function write(node, data) {
   if (data === undefined) {
     return node
   }
-  const type = node ? node.type : ''
   if (Array.isArray(data)) {
-    if (type !== 'ArrayExpression') {
-      node = codeshift.arrayExpression([])
+    if (!namedTypes.ArrayExpression.check(node)) {
+      node = builders.arrayExpression([])
     }
     data.forEach((item, index) => {
       node.elements[index] = write(node.elements[index], item)
     })
     node.elements.length = data.length
   } else if (typeof data === 'object' && data !== null) {
-    if (type !== 'ObjectExpression') {
-      node = codeshift.objectExpression([])
+    if (!namedTypes.ObjectExpression.check(node)) {
+      node = builders.objectExpression([])
     }
     // TODO: consider order, not to replace all
     const result = []
     Object.entries(data).forEach(([name, value]) => {
-      let property = node.properties.find(
-        ({key}) => (key.name || key.value) === name
-      )
+      let property = node.properties.find(({key}) => key.value === name)
       if (property) {
         property.value = write(property.value, value)
       } else {
-        property = codeshift.property(
+        property = builders.property(
           'init',
-          codeshift.literal(name),
+          builders.literal(name),
           write(undefined, value)
         )
       }
@@ -36,8 +35,8 @@ function write(node, data) {
     })
     node.properties = result
   } else {
-    if (type !== 'Literal') {
-      node = codeshift.literal(data)
+    if (!namedTypes.Literal.check(node)) {
+      node = builders.literal(data)
     } else {
       node.value = data
     }
@@ -49,20 +48,17 @@ const EXPORTS = 'exports='
 
 class Writer {
   constructor(source) {
-    Object.defineProperty(this, 'ast', {
-      value: codeshift(EXPORTS + source.toString().trim()),
-      configurable: false,
-    })
+    this.ast = recast.parse(EXPORTS + source.toString().trim())
   }
   write(value) {
-    const root = this.ast.nodes()[0].program.body[0].expression
+    const root = this.ast.program.body[0].expression
     root.right = write(root.right, value)
   }
   toSource() {
-    let source = this.ast.toSource({
+    const result = recast.print(this.ast, {
       quote: 'double',
-      quoteKeys: true,
     })
+    let source = result.code
     if (source.startsWith(EXPORTS)) {
       source = source.slice(EXPORTS.length)
     }

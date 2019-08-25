@@ -1,6 +1,7 @@
 import fallback from '@assets/settings.json'
 import FileStorage from '@/utils/storage'
 import Writer from '@/utils/writer'
+import {unreactive} from '@/utils/object'
 import {cloneDeep, isEqual} from 'lodash'
 import {parse} from 'json5'
 
@@ -28,7 +29,7 @@ export default {
       // Load user settings
       const source = await FileStorage.read('settings.json')
       if (!source) return
-      commit('setWriter', new Writer(source))
+      commit('setWriter', unreactive(new Writer(source)))
       try {
         const declared = parse(source)
         commit('setSettings', declared)
