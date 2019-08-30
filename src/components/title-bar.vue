@@ -157,7 +157,7 @@ export default {
   -webkit-app-region: no-drag;
 }
 .title-bar .title-wrapper .open-directory:hover {
-  color: #4285f4;
+  color: var(--design-blue);
 }
 .title-bar .title-text {
   overflow: hidden;
@@ -205,14 +205,13 @@ export default {
   transition: color 0.2s;
   -webkit-app-region: no-drag;
 }
-/* colors from macOS */
 .title-bar .button.minimize:hover {
-  color: #28c941;
+  color: var(--design-green);
 }
 .title-bar .button.maximize:hover {
-  color: #ffbd2e;
+  color: var(--design-yellow);
 }
 .title-bar .button.close:hover {
-  color: #ff6159;
+  color: var(--design-red);
 }
 </style>

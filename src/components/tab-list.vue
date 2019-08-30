@@ -202,8 +202,7 @@ export default {
 }
 .tab-list .group-name {
   flex: auto;
-  /* magenta from After Effects */
-  color: #cf96fd;
+  color: var(--design-magenta);
 }
 .tab-list .launcher-folder .buttons {
   flex: none;
@@ -221,7 +220,7 @@ export default {
 }
 .tab-list .find.active {
   opacity: 1;
-  color: #4285f4;
+  color: var(--design-blue);
 }
 .tab-list .find-launcher {
   flex-basis: 100%;
@@ -264,13 +263,12 @@ export default {
   opacity: 1;
 }
 .tab-list .launch:hover {
-  color: #28c941;
+  color: var(--design-green);
 }
 .tab-list .assign:hover {
-  color: #4285f4;
+  color: var(--design-blue);
 }
-/* cyan from Material Design */
 .tab-list .proxy-server.active {
-  color: #03dac6;
+  color: var(--design-cyan);
 }
 </style>

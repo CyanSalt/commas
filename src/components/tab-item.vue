@@ -103,8 +103,7 @@ export default {
   bottom: 11px;
   transform: scale(0);
   left: -16px;
-  /* blue from Google */
-  border-left: 5px solid #4285f4;
+  border-left: 5px solid var(--design-blue);
   transition: transform 0.15s;
 }
 .tab-item.active .tab-overview::before {
@@ -124,7 +123,7 @@ export default {
   transition: color 0.2s;
 }
 .tab-item .idle-light.busy {
-  color: #28c941;
+  color: var(--design-green);
 }
 .tab-item .operations {
   display: none;
@@ -143,7 +142,7 @@ export default {
   transition: color 0.2s;
 }
 .tab-item .close:hover {
-  color: #ff6159;
+  color: var(--design-red);
 }
 .tab-item .divider {
   border-bottom: 1px solid rgba(127, 127, 127, 0.1);
