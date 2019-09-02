@@ -25,6 +25,7 @@ import SettingsPanel from './settings-panel'
 import {ipcRenderer} from 'electron'
 import {mapState, mapGetters} from 'vuex'
 import {InternalTerminals} from '@/utils/terminal'
+import hooks from '@/hooks'
 
 export default {
   name: 'App',
@@ -87,9 +88,11 @@ export default {
     ipcRenderer.on('command', (event, command) => {
       this.$store.dispatch('command/exec', command)
     })
+    // prepare for hooks
+    hooks.core.dangerouslySetViewModel(this)
     // custom script
     const initScript = this.$storage.require('custom.js')
-    initScript && initScript(this)
+    initScript && initScript(hooks)
   },
 }
 </script>

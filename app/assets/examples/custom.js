@@ -1,11 +1,11 @@
 /**
  * Your init script
- * @param {Vue} $root ViewModal for root element of Vue.js
+ * @param {Object} commas Hooks for Commas App
  * @return {void}
  */
-module.exports = function ($root) {
+module.exports = function (commas) {
 
   // an example to hack your software
-  // console.log($root)
+  // console.log(commas.core.getUnstableViewModel())
 
 }
