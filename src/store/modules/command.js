@@ -48,57 +48,62 @@ const commands = {
   'launch'({dispatch, rootGetters}) {
     const current = rootGetters['terminal/current']
     if (current && current.launcher) {
-      dispatch('launcher/launch', current.launcher, {root: true})
+      return dispatch('launcher/launch', current.launcher, {root: true})
     }
   },
   'find'({commit}) {
     commit('shell/setFinding', true, {root: true})
   },
   'clear'({dispatch}) {
-    dispatch('terminal/clear', null, {root: true})
+    return dispatch('terminal/clear', null, {root: true})
   },
   'interact-settings'({dispatch}) {
-    dispatch('terminal/interact', InternalTerminals.settings, {root: true})
+    return dispatch('terminal/interact', InternalTerminals.settings, {root: true})
   },
   'open-user-directory'() {
     shell.openItem(FileStorage.filename('.'))
   },
   'open-settings'() {
-    openStorageFile('settings.json', 'settings.json')
+    return openStorageFile('settings.json', 'settings.json')
   },
   'open-launchers'() {
-    openStorageFile('launchers.json', 'examples/launchers.json')
+    return openStorageFile('launchers.json', 'examples/launchers.json')
   },
   'open-proxy-rules'() {
-    openStorageFile('proxy-rules.json', 'examples/proxy-rules.json')
+    return openStorageFile('proxy-rules.json', 'examples/proxy-rules.json')
   },
   'open-keybindings'() {
-    openStorageFile('keybindings.json', 'examples/keybindings.json')
+    return openStorageFile('keybindings.json', 'examples/keybindings.json')
   },
   'open-custom-js'() {
-    openStorageFile('custom.js', 'examples/custom.js')
+    return openStorageFile('custom.js', 'examples/custom.js')
   },
   'open-custom-css'() {
-    openStorageFile('custom.css', 'examples/custom.css')
+    return openStorageFile('custom.css', 'examples/custom.css')
   },
   'open-translation'() {
-    openStorageFile('translation.json', 'examples/translation.json')
+    return openStorageFile('translation.json', 'examples/translation.json')
   },
 }
 
 export default {
   namespaced: true,
+  state: {
+    registry: commands,
+  },
   actions: {
     exec(store, payload) {
       if (typeof payload === 'string') {
         payload = {command: payload}
       }
       const {command, args} = payload
-      if (!commands[command]) return false
-      return commands[command].call(this, store, args)
+      const handler = store.state.registry[command]
+      if (!handler) return false
+      return handler.call(this, store, args)
     },
-    register(store, user) {
-      Object.assign(commands, user)
+    register({state}, {command, handler}) {
+      if (state.registry[command]) return false
+      state.registry[command] = handler
     },
   },
 }

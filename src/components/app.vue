@@ -60,10 +60,12 @@ export default {
     const initialPath = args[0]
     ;(async () => {
       await this.$store.dispatch('settings/load')
+      hooks.events.emit('settings.loaded')
       await this.$store.dispatch('theme/load')
       this.$store.dispatch('terminal/spawn', {cwd: initialPath})
     })()
     this.$store.dispatch('settings/watch', async () => {
+      hooks.events.emit('settings.reloaded')
       await this.$store.dispatch('theme/load')
       this.$store.dispatch('terminal/refresh')
       this.$store.dispatch('proxy/refresh')

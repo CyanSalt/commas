@@ -6,6 +6,11 @@
 module.exports = function (commas) {
 
   // an example to hack your software
-  // console.log(commas.core.getUnstableViewModel())
+
+  // commas.events.on('settings.loaded', () => {
+  //   if (commas.settings.get('mynamespace.disableTabs')) {
+  //     commas.command.exec('toggle-tab-list')
+  //   }
+  // })
 
 }
