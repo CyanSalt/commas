@@ -6,8 +6,13 @@
           <div class="processes">
             <tab-item :tab="tab" @click.native="activite(tab)"
               v-for="tab in running" :key="tab.id"></tab-item>
-            <div class="new-tab anchor" @click="spawn()">
-              <span class="feather-icon icon-plus"></span>
+            <div class="new-tab">
+              <div v-if="shells.length" class="select-shell anchor" @click="select">
+                <span class="feather-icon icon-chevron-down"></span>
+              </div>
+              <div class="default-shell anchor" @click="spawn()">
+                <span class="feather-icon icon-plus"></span>
+              </div>
             </div>
           </div>
           <div class="launcher-folder" @click="expandOrCollapse">
@@ -18,8 +23,8 @@
                 <span class="feather-icon icon-search"></span>
               </div>
               <div class="button indicator">
-                <span class="feather-icon icon-chevron-up" v-if="collapsed"></span>
-                <span class="feather-icon icon-chevron-down" v-else></span>
+                <span class="feather-icon icon-chevron-down" v-if="collapsed"></span>
+                <span class="feather-icon icon-chevron-up" v-else></span>
               </div>
             </div>
             <div class="find-launcher" v-show="finding">
@@ -60,11 +65,13 @@
 </template>
 
 <script>
+import {ipcRenderer} from 'electron'
 import TabItem from './tab-item'
 import ScrollBar from './scroll-bar'
 import {getLauncherTab} from '@/utils/launcher'
 import {InternalTerminals} from '@/utils/terminal'
 import {mapState, mapActions} from 'vuex'
+import {basename} from 'path'
 
 export default {
   name: 'TabList',
@@ -81,7 +88,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('terminal', ['tabs']),
+    ...mapState('terminal', ['tabs', 'shells']),
     ...mapState('launcher', ['launchers']),
     ...mapState('proxy', ['port']),
     running() {
@@ -135,6 +142,21 @@ export default {
       }
       this.finding = !this.finding
     },
+    select(e) {
+      ipcRenderer.send('contextmenu', {
+        template: this.shells.map(shell => ({
+          label: basename(shell),
+          command: 'open-tab',
+          args: {
+            shell,
+          },
+        })),
+        position: {
+          x: e.clientX,
+          y: e.clientY,
+        },
+      })
+    },
   },
 }
 </script>
@@ -184,10 +206,22 @@ export default {
   padding: 0 16px;
 }
 .tab-list .new-tab {
+  display: flex;
   height: var(--tab-height);
   line-height: var(--tab-height);
-  font-size: 21px;
   text-align: center;
+}
+.tab-list .new-tab .select-shell {
+  flex: none;
+  width: 18px;
+}
+.tab-list .new-tab .default-shell {
+  flex: auto;
+  font-size: 21px;
+}
+.tab-list .new-tab .select-shell + .default-shell {
+  order: -1;
+  padding-left: 18px;
 }
 .tab-list .launcher-folder {
   display: flex;
@@ -213,6 +247,9 @@ export default {
   text-align: center;
   opacity: 0.5;
   transition: opacity 0.2s;
+}
+.tab-list .launcher-folder .button + .button {
+  margin-left: 3px;
 }
 .tab-list .launcher-folder .find:hover,
 .tab-list .launcher-folder:hover .indicator {

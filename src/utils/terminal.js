@@ -1,14 +1,12 @@
-import {exec as execCallback} from 'child_process'
 import {promises as fs} from 'fs'
-import {promisify} from 'util'
 import {hostname, userInfo} from 'os'
 import {basename, sep} from 'path'
 import {remote} from 'electron'
-import {createIDGenerator} from '@/utils/identity'
-import {translate} from '@/utils/i18n'
+import {exec} from './electron'
+import {createIDGenerator} from './identity'
+import {translate} from './i18n'
 import icons from '@assets/icon.json'
 
-const exec = promisify(execCallback)
 const generateID = createIDGenerator(id => id - 1)
 
 export const InternalTerminals = {

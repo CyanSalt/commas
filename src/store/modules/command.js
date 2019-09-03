@@ -16,8 +16,8 @@ async function openStorageFile(filename, example) {
 }
 
 const commands = {
-  'open-tab'({dispatch}) {
-    return dispatch('terminal/spawn', null, {root: true})
+  'open-tab'({dispatch}, payload) {
+    return dispatch('terminal/spawn', payload, {root: true})
   },
   'open-window'() {
     ipcRenderer.send('open-window')
@@ -89,9 +89,13 @@ const commands = {
 export default {
   namespaced: true,
   actions: {
-    exec(store, command) {
+    exec(store, payload) {
+      if (typeof payload === 'string') {
+        payload = {command: payload}
+      }
+      const {command, args} = payload
       if (!commands[command]) return false
-      return commands[command].call(this, store)
+      return commands[command].call(this, store, args)
     },
     register(store, user) {
       Object.assign(commands, user)

@@ -1,6 +1,7 @@
-const {app, ipcMain} = require('electron')
+const {app, ipcMain, BrowserWindow} = require('electron')
 const {forEachWindow} = require('./frame')
 const {createWindow} = require('./window')
+const {createMenu} = require('./menu')
 
 function transferEvents(frame) {
   frame.on('maximize', () => {
@@ -23,6 +24,14 @@ function transferInvoking() {
   })
   ipcMain.on('open-window', () => {
     createWindow()
+  })
+  ipcMain.on('contextmenu', (event, data) => {
+    const menu = createMenu(data.template)
+    menu.popup({
+      window: BrowserWindow.fromWebContents(event.sender),
+      x: data.position.x,
+      y: data.position.y,
+    })
   })
 }
 

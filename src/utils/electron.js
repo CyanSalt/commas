@@ -1,5 +1,9 @@
 import {app as mainProcessApp, remote} from 'electron'
+import {exec as execCallback} from 'child_process'
+import {promisify} from 'util'
 import {join} from 'path'
+
+export const exec = promisify(execCallback)
 
 export const isMainProcess = process.type === 'browser'
 

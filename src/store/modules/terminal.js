@@ -8,6 +8,7 @@ import {remote, shell} from 'electron'
 import {getCwd, getWindowsProcessInfo} from '@/utils/terminal'
 import {normalizeTheme} from '@/utils/theme'
 import {unreactive} from '@/utils/object'
+import {exec} from '@/utils/electron'
 import {debounce} from 'lodash'
 
 Terminal.applyAddon(fit)
@@ -27,6 +28,7 @@ export default {
   namespaced: true,
   state: {
     tabs: [],
+    shells: [],
     active: -1,
     observer: null,
   },
@@ -56,6 +58,9 @@ export default {
     removeTab(state, index) {
       state.tabs.splice(index, 1)
     },
+    setShells(state, value) {
+      state.shells = value
+    },
     setActive(state, value) {
       state.active = value
     },
@@ -64,6 +69,11 @@ export default {
     },
   },
   actions: {
+    async load({commit}) {
+      if (process.platform === 'win32') return
+      const {stdout} = await exec('grep "^/" /etc/shells')
+      commit('setShells', stdout.trim().split('\n'))
+    },
     spawn({state, getters, commit, dispatch, rootState}, payload) {
       payload = payload || {}
       const settings = rootState.settings.settings
@@ -74,6 +84,7 @@ export default {
       }
       // Fix NVM `npm_config_prefix` error in development environment
       if (!isPackaged && env.npm_config_prefix) delete env.npm_config_prefix
+      const shell = payload.shell || getters.shell
       // Initialize node-pty process
       const cwd = payload.cwd || env.HOME
       const options = {
@@ -87,7 +98,7 @@ export default {
       } else {
         options.encoding = 'utf8'
       }
-      const pty = spawn(getters.shell, args, options)
+      const pty = spawn(shell, args, options)
       const id = pty.pid
       // Initialize xterm.js and attach it to the DOM
       const xterm = new Terminal({
@@ -140,6 +151,7 @@ export default {
       const tab = {
         id,
         cwd,
+        shell,
         title: '',
         process: pty.process,
         pty: unreactive(pty),
@@ -220,8 +232,10 @@ export default {
         } else {
           remote.getCurrentWindow().close()
         }
-      } else if (state.active === index) {
-        commit('setActive', Math.min(index, length - 1))
+      } else {
+        const active = state.active > index ?
+          state.active - 1 : Math.min(index, length - 1)
+        commit('setActive', active)
       }
     },
     find({getters}, {keyword, options, back}) {

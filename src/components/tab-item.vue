@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import {mapState, mapGetters} from 'vuex'
+import {mapState} from 'vuex'
 import {getPrompt, getIcon} from '@/utils/terminal'
 import {basename} from 'path'
 
@@ -39,7 +39,6 @@ export default {
   computed: {
     ...mapState('settings', ['settings']),
     ...mapState('terminal', ['tabs', 'active']),
-    ...mapGetters('terminal', ['shell']),
     focused() {
       return this.tabs[this.active] === this.tab
     },
@@ -51,7 +50,7 @@ export default {
     },
     idleState() {
       if (!this.tab || this.tab.internal) return ''
-      if (this.tab.process === basename(this.shell)) return 'idle'
+      if (this.tab.process === basename(this.tab.shell)) return 'idle'
       return 'busy'
     },
     icon() {

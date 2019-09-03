@@ -35,10 +35,7 @@
 import {remote, ipcRenderer, shell} from 'electron'
 import {mapState, mapGetters} from 'vuex'
 import {getPrompt, resolveHome} from '@/utils/terminal'
-import {exec as execCallback} from 'child_process'
-import {promisify} from 'util'
-
-const exec = promisify(execCallback)
+import {exec} from '@/utils/electron'
 
 export default {
   name: 'TitleBar',

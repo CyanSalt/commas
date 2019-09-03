@@ -68,6 +68,7 @@ export default {
       this.$store.dispatch('terminal/refresh')
       this.$store.dispatch('proxy/refresh')
     })
+    this.$store.dispatch('terminal/load')
     this.$store.dispatch('launcher/load')
     this.$store.dispatch('launcher/watch')
     this.$store.dispatch('proxy/load')
@@ -85,8 +86,8 @@ export default {
     ipcRenderer.on('open-path', (event, path) => {
       this.$store.dispatch('terminal/spawn', {cwd: path})
     })
-    ipcRenderer.on('command', (event, command) => {
-      this.$store.dispatch('command/exec', command)
+    ipcRenderer.on('command', (event, payload) => {
+      this.$store.dispatch('command/exec', payload)
     })
     // prepare for hooks
     hooks.core.dangerouslySetViewModel(this)

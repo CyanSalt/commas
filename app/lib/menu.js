@@ -6,7 +6,7 @@ const {execCommand} = require('./command')
 function resolveBindingCommand(binding) {
   if (binding.command) {
     binding.click = (self, frame) => {
-      execCommand(binding.command, frame)
+      execCommand(frame, binding.command, binding.args)
     }
   }
   return binding
@@ -32,7 +32,7 @@ function createApplicationMenu() {
           label: 'Preferences...',
           accelerator: 'Command+,',
           click(self, frame) {
-            execCommand('interact-settings', frame)
+            execCommand(frame, 'interact-settings')
           },
         },
         {type: 'separator'},
@@ -108,15 +108,20 @@ function createDockMenu() {
       label: 'New Window',
       accelerator: 'CmdOrCtrl+N',
       click(self, frame) {
-        execCommand('open-window', frame)
+        execCommand(frame, 'open-window')
       },
     },
   ])
   app.dock.setMenu(menu)
 }
 
+function createMenu(template) {
+  return Menu.buildFromTemplate(template.map(resolveBindingCommand))
+}
+
 module.exports = {
   createApplicationMenu,
   createWindowMenu,
   createDockMenu,
+  createMenu,
 }
