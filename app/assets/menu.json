@@ -33,6 +33,11 @@
     "accelerator": "CmdOrCtrl+K",
     "command": "clear"
   },
+  {
+    "label": "Toggle Tab List",
+    "accelerator": "CmdOrCtrl+B",
+    "command": "toggle-tab-list"
+  },
   {"type": "separator"},
   {
     "label": "Close Tab",

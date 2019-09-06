@@ -4,8 +4,8 @@
   // The `command` could be registered in your custom script.
 
   // {
-  //   "label": "Toggle Tab List",
-  //   "accelerator": "CmdOrCtrl+B",
-  //   "command": "toggle-tab-list"
+  //   "label": "Open User Directory",
+  //   "accelerator": "CmdOrCtrl+Shift+,",
+  //   "command": "open-user-directory"
   // }
 ]
