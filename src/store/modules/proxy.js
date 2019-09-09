@@ -3,6 +3,7 @@ import {createProxyServer} from 'http-proxy'
 import FileStorage from '@/utils/storage'
 import {unreactive} from '@/utils/object'
 import {normalizeRules, getMatchedProxy} from '@/utils/proxy'
+import {setGlobalWebProxy} from '@/utils/terminal'
 
 export default {
   namespaced: true,
@@ -10,6 +11,7 @@ export default {
     server: null,
     port: null,
     rules: [],
+    globe: false,
     watcher: null,
   },
   mutations: {
@@ -21,6 +23,9 @@ export default {
     },
     setRules(state, value) {
       state.rules = value
+    },
+    setGlobe(state, value) {
+      state.globe = value
     },
     setWatcher(state, value) {
       state.watcher = value
@@ -72,6 +77,14 @@ export default {
         await dispatch('close')
         dispatch('open')
       }
+    },
+    async toggleGlobal({state, commit, rootState}) {
+      const value = !state.globe
+      const settings = rootState.settings.settings
+      const port = state.port || settings['terminal.proxyServer.port']
+      const proxy = value ? {host: '127.0.0.1', port} : false
+      await setGlobalWebProxy(proxy)
+      commit('setGlobe', value)
     },
   },
 }

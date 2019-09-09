@@ -73,9 +73,6 @@ export default {
 .internal-panel .link:hover {
   opacity: 1;
 }
-.internal-panel .link .feather-icon {
-  margin-left: 4px;
-}
 .internal-panel .text {
   line-height: 32px;
 }
@@ -112,9 +109,16 @@ export default {
   color: var(--theme-foreground);
   opacity: 0.25;
 }
+.internal-panel input[type="checkbox"].form-control {
+  margin: -3px 0 0;
+  width: 14px;
+  height: 14px;
+}
 .internal-panel .form-action {
   margin-left: 8px;
   font-size: 16px;
+  width: 24px;
+  text-align: center;
 }
 @keyframes blink {
   50% {

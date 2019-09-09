@@ -123,3 +123,46 @@ export function getIcon(process) {
     return icon.context.includes(name)
   })
 }
+
+export async function getGitBranch(directory) {
+  const command = process.platform === 'win32' ?
+    'git rev-parse --abbrev-ref HEAD 2> NUL' :
+    'git branch 2> /dev/null | grep \\* | cut -d " " -f2'
+  try {
+    const {stdout} = await exec(command, {cwd: resolveHome(directory)})
+    return stdout
+  } catch (err) {
+    // Git for Windows will throw error if the directory is not a repository
+    return ''
+  }
+}
+
+export async function getMacOSCurrentNetworkService() {
+  const networkInterface = 'route get default | grep interface | awk \'{print $2}\''
+  const pipes = [
+    'networksetup -listnetworkserviceorder',
+    `grep -C1 $(${networkInterface})`,
+    // 'awk "FNR == 1{print $2}"'
+    'head -n 1 | cut -d " " -f2-',
+  ]
+  const {stdout} = await exec(pipes.join(' | '))
+  return stdout.trim()
+}
+
+export async function setGlobalWebProxy(options) {
+  if (process.platform !== 'darwin') return
+  const service = await getMacOSCurrentNetworkService()
+  const {host, port} = {host: '""', port: 0, ...options}
+  const args = [host, port].join(' ')
+  const commands = [
+    `networksetup -setwebproxy "${service}" ${args}`,
+    `networksetup -setsecurewebproxy "${service}" ${args}`,
+  ]
+  if (!options) {
+    commands.push(
+      `networksetup -setwebproxystate "${service}" off`,
+      `networksetup -setsecurewebproxystate "${service}" off`,
+    )
+  }
+  return exec(commands.join(' && '))
+}

@@ -24,6 +24,10 @@
     </div>
     <h2 class="group-title" v-i18n>Feature#!9</h2>
     <div class="group">
+      <div v-if="platform === 'darwin'" class="form-line">
+        <label class="form-label" v-i18n>Proxy for macOS#!?</label>
+        <input type="checkbox" :value="globe" @change="toggleGlobal" class="form-control">
+      </div>
       <span class="link" @click="exec('open-launchers')">
         <span v-i18n="{F: 'launchers.json'}">Edit %F#!13</span>
       </span>
@@ -72,13 +76,16 @@ export default {
         loading: false,
       },
       version: remote.app.getVersion(),
+      platform: process.platform,
     }
   },
   computed: {
     ...mapState('theme', {activeTheme: 'name'}),
+    ...mapState('proxy', ['globe']),
   },
   methods: {
     ...mapActions('command', ['exec']),
+    ...mapActions('proxy', ['toggleGlobal']),
     open(e) {
       shell.openExternal(e.target.dataset.href)
     },

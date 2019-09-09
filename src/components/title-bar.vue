@@ -34,8 +34,7 @@
 <script>
 import {remote, ipcRenderer, shell} from 'electron'
 import {mapState, mapGetters} from 'vuex'
-import {getPrompt, resolveHome} from '@/utils/terminal'
-import {exec} from '@/utils/electron'
+import {getPrompt, resolveHome, getGitBranch} from '@/utils/terminal'
 
 export default {
   name: 'TitleBar',
@@ -106,16 +105,7 @@ export default {
         this.branch = ''
         return
       }
-      const command = process.platform === 'win32' ?
-        'git rev-parse --abbrev-ref HEAD 2> NUL' :
-        'git branch 2> /dev/null | grep \\* | cut -d " " -f2'
-      try {
-        const {stdout} = await exec(command, {cwd: resolveHome(this.directory)})
-        this.branch = stdout
-      } catch (err) {
-        // Git for Windows will throw error if the directory is not a repository
-        this.branch = ''
-      }
+      this.branch = await getGitBranch(this.directory)
     },
   },
 }
