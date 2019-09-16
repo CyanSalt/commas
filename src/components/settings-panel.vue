@@ -26,7 +26,7 @@
     <div class="group">
       <div v-if="platform === 'darwin'" class="form-line">
         <label class="form-label" v-i18n>Proxy for macOS#!?</label>
-        <input type="checkbox" :value="globe" @change="toggleGlobal" class="form-control">
+        <switch-control :checked="globe" @change="toggleGlobal"></switch-control>
       </div>
       <span class="link" @click="exec('open-launchers')">
         <span v-i18n="{F: 'launchers.json'}">Edit %F#!13</span>
@@ -61,6 +61,7 @@
 
 <script>
 import InternalPanel from './internal-panel'
+import SwitchControl from './switch-control'
 import {remote, shell} from 'electron'
 import {mapActions, mapState} from 'vuex'
 
@@ -68,6 +69,7 @@ export default {
   name: 'SettingsPanel',
   components: {
     'internal-panel': InternalPanel,
+    'switch-control': SwitchControl,
   },
   data() {
     return {

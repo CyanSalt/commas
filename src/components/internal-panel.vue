@@ -109,11 +109,6 @@ export default {
   color: var(--theme-foreground);
   opacity: 0.25;
 }
-.internal-panel input[type="checkbox"].form-control {
-  margin: -3px 0 0;
-  width: 14px;
-  height: 14px;
-}
 .internal-panel .form-action {
   margin-left: 8px;
   font-size: 16px;

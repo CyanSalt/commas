@@ -3,7 +3,7 @@ import {createProxyServer} from 'http-proxy'
 import FileStorage from '@/utils/storage'
 import {unreactive} from '@/utils/object'
 import {normalizeRules, getMatchedProxy} from '@/utils/proxy'
-import {setGlobalWebProxy} from '@/utils/terminal'
+import {getGlobalWebProxy, setGlobalWebProxy} from '@/utils/terminal'
 
 export default {
   namespaced: true,
@@ -34,8 +34,16 @@ export default {
   actions: {
     async load({commit}) {
       const rules = await FileStorage.load('proxy-rules.json')
-      if (!rules) return
-      commit('setRules', rules)
+      if (rules) commit('setRules', rules)
+    },
+    async loadSystem({commit, rootState}) {
+      const settings = rootState.settings.settings
+      const port = settings['terminal.proxyServer.port']
+      const proxy = await getGlobalWebProxy()
+      if (!proxy) return
+      const globe = proxy.Enabled === 'Yes' && proxy.Server === '127.0.0.1'
+        && proxy.Port === String(port)
+      commit('setGlobe', globe)
     },
     open({state, commit, rootState}) {
       let server = state.server

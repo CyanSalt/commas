@@ -61,6 +61,7 @@ export default {
     ;(async () => {
       await this.$store.dispatch('settings/load')
       hooks.events.emit('settings.loaded')
+      this.$store.dispatch('proxy/loadSystem')
       await this.$store.dispatch('theme/load')
       this.$store.dispatch('terminal/spawn', {cwd: initialPath})
     })()
