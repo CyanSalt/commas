@@ -2,7 +2,7 @@
   <div :class="['tab-item', {active: focused}]">
     <div class="tab-overview">
       <div class="tab-title">
-        <span v-if="icon" :class="['tab-icon devicon', icon.icon]"></span>
+        <span v-if="icon" :class="['tab-icon', icon.icon]"></span>
         <span class="tab-name">{{ title }}</span>
       </div>
       <div class="right-side">
@@ -54,7 +54,8 @@ export default {
       return 'busy'
     },
     icon() {
-      if (this.name || !this.tab || this.tab.internal) return null
+      if (this.name || !this.tab) return null
+      if (this.tab.internal) return this.tab.internal
       return getIcon(this.tab.process)
     },
   },
@@ -80,7 +81,11 @@ export default {
 }
 .tab-item .tab-icon {
   flex: none;
+  display: inline-block;
   margin-right: 6px;
+}
+.tab-item .tab-icon.feather-icon {
+  margin-top: -2px;
 }
 .tab-item .tab-name {
   flex: auto;

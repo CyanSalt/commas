@@ -11,7 +11,9 @@ const generateID = createIDGenerator(id => id - 1)
 
 export const InternalTerminals = {
   settings: {
-    internal: true,
+    internal: {
+      icon: 'feather-icon icon-settings',
+    },
     id: generateID(),
     process: remote.app.getName(),
     title: translate('Settings#!7'),
