@@ -6,8 +6,9 @@
         <label class="form-label" v-i18n>Apply theme#!19</label>
         <input type="text" v-model="theme.name" :placeholder="activeTheme"
           class="form-control">
-        <span :class="['link form-action', {loading: theme.loading}]" @click="dress">
-          <span class="feather-icon icon-download"></span>
+        <span class="link form-action" @click="dress">
+          <loading-spinner v-if="theme.loading"></loading-spinner>
+          <span v-else class="feather-icon icon-download"></span>
         </span>
         <div class="form-line-tip">
           <span v-i18n>Theme will be downloaded from#!20</span>
@@ -62,6 +63,7 @@
 <script>
 import InternalPanel from './internal-panel'
 import SwitchControl from './switch-control'
+import LoadingSpinner from './loading-spinner'
 import {remote, shell} from 'electron'
 import {mapActions, mapState} from 'vuex'
 
@@ -70,6 +72,7 @@ export default {
   components: {
     'internal-panel': InternalPanel,
     'switch-control': SwitchControl,
+    'loading-spinner': LoadingSpinner,
   },
   data() {
     return {
@@ -92,7 +95,7 @@ export default {
       shell.openExternal(e.target.dataset.href)
     },
     async dress() {
-      if (!this.theme.name) return
+      if (this.theme.loading || !this.theme.name) return
       this.theme.loading = true
       await this.$store.dispatch('theme/apply', {
         name: this.theme.name,

@@ -115,14 +115,4 @@ export default {
   width: 24px;
   text-align: center;
 }
-@keyframes blink {
-  50% {
-    opacity: 0.382;
-  }
-}
-.internal-panel .form-action.loading {
-  opacity: 1;
-  animation: blink 1s ease-in-out infinite;
-  pointer-events: none;
-}
 </style>
