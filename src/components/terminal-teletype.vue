@@ -8,7 +8,7 @@
 
 <script>
 import ScrollBar from './scroll-bar'
-import 'xterm/lib/xterm.css'
+import 'xterm/css/xterm.css'
 
 export default {
   name: 'TerminalTeletype',

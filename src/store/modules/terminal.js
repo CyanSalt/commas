@@ -1,20 +1,15 @@
 import {spawn} from 'node-pty'
 import {Terminal} from 'xterm'
-import * as fit from 'xterm/lib/addons/fit/fit'
-import * as search from 'xterm/lib/addons/search/search'
-import * as webLinks from 'xterm/lib/addons/webLinks/webLinks'
-import * as ligatures from 'xterm-addon-ligatures'
+import {FitAddon} from 'xterm-addon-fit'
+import {SearchAddon} from 'xterm-addon-search'
+import {WebLinksAddon} from 'xterm-addon-web-links'
+import {LigaturesAddon} from 'xterm-addon-ligatures'
 import {remote, shell} from 'electron'
 import {getCwd, getWindowsProcessInfo} from '@/utils/terminal'
 import {normalizeTheme} from '@/utils/theme'
 import {unreactive} from '@/utils/object'
 import {exec} from '@/utils/electron'
 import {debounce} from 'lodash'
-
-Terminal.applyAddon(fit)
-Terminal.applyAddon(search)
-Terminal.applyAddon(webLinks)
-Terminal.applyAddon(ligatures)
 
 const variables = {
   LANG: remote.app.getLocale().replace('-', '_') + '.UTF-8',
@@ -107,6 +102,7 @@ export default {
         allowTransparency: true,
         theme: normalizeTheme(rootState.theme.theme),
       })
+      xterm.$ = {}
       // Setup communication between xterm.js and node-pty
       xterm.onData(data => {
         pty.write(data)
@@ -123,7 +119,7 @@ export default {
         if (xterm.element) {
           state.observer.unobserve(xterm.element)
         }
-        xterm.destroy()
+        xterm.dispose()
         dispatch('remove', id)
       })
       xterm.onResize(({cols, rows}) => {
@@ -176,15 +172,20 @@ export default {
           element.appendChild(xterm.element)
         } else {
           xterm.open(element)
-          observer.observe(element)
-          xterm.webLinksInit((event, uri) => {
+          xterm.$.fit = new FitAddon()
+          xterm.loadAddon(xterm.$.fit)
+          xterm.$.search = new SearchAddon()
+          xterm.loadAddon(xterm.$.search)
+          xterm.loadAddon(new WebLinksAddon((event, uri) => {
             if (event.altKey) shell.openExternal(uri)
-          })
+          }))
           if (settings['terminal.style.fontLigatures']) {
-            xterm.enableLigatures()
+            xterm.$.ligatures = new LigaturesAddon()
+            xterm.loadAddon(xterm.$.ligatures)
           }
+          observer.observe(element)
         }
-        xterm.fit()
+        xterm.$.fit.fit()
         xterm.focus()
       }, {timeout: 1000})
     },
@@ -201,7 +202,7 @@ export default {
     resize({getters}) {
       const current = getters.current
       if (current && current.xterm && current.xterm.element) {
-        current.xterm.fit()
+        current.xterm.$.fit.fit()
       }
     },
     input(store, {tab, data}) {
@@ -241,9 +242,9 @@ export default {
     find({getters}, {keyword, options, back}) {
       const current = getters.current
       if (back) {
-        current.xterm.findPrevious(keyword, options)
+        current.xterm.$.search.findPrevious(keyword, options)
       } else {
-        current.xterm.findNext(keyword, options)
+        current.xterm.$.search.findNext(keyword, options)
       }
     },
     clear({getters}) {
@@ -260,8 +261,12 @@ export default {
         xterm.setOption('fontSize', settings['terminal.style.fontSize'])
         xterm.setOption('fontFamily', settings['terminal.style.fontFamily'])
         xterm.setOption('theme', normalizeTheme(rootState.theme.theme))
+        // TODO: unload when settings disabled
         if (settings['terminal.style.fontLigatures']) {
-          xterm.enableLigatures()
+          if (!xterm.$.ligatures) {
+            xterm.$.ligatures = new LigaturesAddon()
+            xterm.loadAddon(xterm.$.ligatures)
+          }
         }
       }
     },
