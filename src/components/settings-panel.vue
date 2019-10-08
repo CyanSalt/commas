@@ -26,7 +26,7 @@
     <h2 class="group-title" v-i18n>Feature#!9</h2>
     <div class="group">
       <div v-if="platform === 'darwin'" class="form-line">
-        <label class="form-label" v-i18n>Proxy for macOS#!?</label>
+        <label class="form-label" v-i18n>Enable system proxy#!21</label>
         <switch-control :checked="globe" @change="toggleGlobal"></switch-control>
       </div>
       <span class="link" @click="exec('open-launchers')">

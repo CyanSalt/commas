@@ -82,7 +82,7 @@ export default {
   align-items: center;
 }
 .internal-panel .form-label {
-  width: 12em;
+  width: 14em;
 }
 .internal-panel .form-line-tip {
   flex-basis: 100%;
