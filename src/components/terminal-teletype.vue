@@ -74,5 +74,6 @@ export default {
 }
 .terminal-content .xterm-viewport {
   overflow-y: hidden;
+  background-color: transparent !important;
 }
 </style>

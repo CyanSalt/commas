@@ -25,6 +25,10 @@
   // Supported identifiers: \h \H \l \u \v \w \W
   "terminal.tab.titleFormat": "\\v",
 
+  // Background opacity of window
+  // It will not work if RGBA background is specified in theme file
+  "terminal.style.opacity": 1,
+
   // Font size for window in pixels
   "terminal.style.fontSize": 14,
 

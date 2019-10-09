@@ -18,14 +18,13 @@ function hasAlphaChannel(color) {
   return color.startsWith('rgba(')
 }
 
-function rgba(color, alpha) {
+export function rgba(color, alpha) {
   color = normalizeColor(color)
   if (!color.startsWith('rgb(')) return color
   return `rgba(${color.slice(4, -1)}, ${alpha})`
 }
 
 export function normalizeTheme(original) {
-  // TODO: support transparency background color
   const theme = {...original}
   if (!theme.selection || !hasAlphaChannel(theme.selection)) {
     const alpha = theme.type === 'light' ? 0.15 : 0.3
