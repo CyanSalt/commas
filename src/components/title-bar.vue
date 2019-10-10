@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!fullscreen" :class="['title-bar', {'no-controls': platform === 'darwin'}]">
+  <div :class="['title-bar', {'no-controls': platform === 'darwin'}]">
     <div class="git-branch">
       <template v-if="branch">
         <span class="branch-updater" @click="updateBranch">
@@ -20,7 +20,7 @@
           <span class="feather-icon icon-minus"></span>
         </div>
         <div class="maximize button" @click="maximize">
-          <span :class="['feather-icon', maximized ?
+          <span :class="['feather-icon', currentState.maximized ?
             'icon-minimize-2' : 'icon-maximize-2']"></span>
         </div>
         <div class="close button" @click="close">
@@ -32,18 +32,17 @@
 </template>
 
 <script>
-import {remote, ipcRenderer, shell} from 'electron'
+import {shell} from 'electron'
 import {mapState, mapGetters} from 'vuex'
 import {getPrompt, resolveHome, getGitBranch} from '@/utils/terminal'
+import {currentWindow, currentState} from '@/utils/frame'
 
 export default {
   name: 'TitleBar',
   data() {
-    const frame = remote.getCurrentWindow()
     return {
-      frame,
-      maximized: frame.isMaximized(),
-      fullscreen: frame.isFullScreen(),
+      currentWindow,
+      currentState,
       platform: process.platform,
       branch: '',
     }
@@ -69,33 +68,19 @@ export default {
       this.updateBranch()
     },
   },
-  created() {
-    ipcRenderer.on('maximize', () => {
-      this.maximized = true
-    })
-    ipcRenderer.on('unmaximize', () => {
-      this.maximized = false
-    })
-    ipcRenderer.on('enter-full-screen', () => {
-      this.fullscreen = true
-    })
-    ipcRenderer.on('leave-full-screen', () => {
-      this.fullscreen = false
-    })
-  },
   methods: {
     minimize() {
-      this.frame.minimize()
+      this.currentWindow.minimize()
     },
     maximize() {
-      if (this.frame.isMaximized()) {
-        this.frame.unmaximize()
+      if (this.currentWindow.isMaximized()) {
+        this.currentWindow.unmaximize()
       } else {
-        this.frame.maximize()
+        this.currentWindow.maximize()
       }
     },
     close() {
-      this.frame.close()
+      this.currentWindow.close()
     },
     open() {
       shell.openItem(resolveHome(this.directory))

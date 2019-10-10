@@ -1,5 +1,5 @@
 <template>
-  <div id="main" class="app">
+  <div id="main" :class="['app', {opaque}]">
     <title-bar></title-bar>
     <div class="content">
       <tab-list v-show="multitabs"></tab-list>
@@ -25,6 +25,7 @@ import SettingsPanel from './settings-panel'
 import {ipcRenderer} from 'electron'
 import {mapState, mapGetters} from 'vuex'
 import {InternalTerminals} from '@/utils/terminal'
+import {currentState} from '@/utils/frame'
 import hooks from '@/hooks'
 
 export default {
@@ -44,6 +45,9 @@ export default {
   computed: {
     ...mapGetters('terminal', ['current']),
     ...mapState('shell', ['multitabs']),
+    opaque() {
+      return currentState.fullscreen
+    },
   },
   beforeCreate() {
     // custom stylesheet
@@ -111,6 +115,9 @@ export default {
   /* Default line height of xterm.js */
   line-height: 1.2;
   color: var(--theme-foreground, transparent);
+  background: var(--theme-backdrop);
+}
+.app.opaque {
   background: var(--theme-background);
 }
 .app .content {

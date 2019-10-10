@@ -1,5 +1,5 @@
 import fallback from '@assets/themes/oceanic-next.json'
-import {colors, rgba} from '@/utils/theme'
+import {colors, rgba, rgb} from '@/utils/theme'
 import FileStorage from '@/utils/storage'
 
 const downloadURL = 'https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/windowsterminal'
@@ -59,6 +59,8 @@ export default {
       if (theme.background && opacity < 1 && opacity > 0) {
         theme.background = rgba(theme.background, opacity)
       }
+      theme.backdrop = theme.background
+      theme.background = rgb(theme.backdrop)
       await dispatch('eject')
       commit('setTheme', theme)
       dispatch('inject')

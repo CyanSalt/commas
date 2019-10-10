@@ -1,5 +1,5 @@
 export const colors = [
-  'foreground', 'background',
+  'foreground', 'background', 'backdrop',
   'black', 'red', 'green', 'yellow',
   'blue', 'magenta', 'cyan', 'white',
   'brightBlack', 'brightRed', 'brightGreen', 'brightYellow',
@@ -22,6 +22,12 @@ export function rgba(color, alpha) {
   color = normalizeColor(color)
   if (!color.startsWith('rgb(')) return color
   return `rgba(${color.slice(4, -1)}, ${alpha})`
+}
+
+export function rgb(color) {
+  color = normalizeColor(color)
+  if (!hasAlphaChannel(color)) return color
+  return color.split(',').slice(0, -1).join(',') + ')'
 }
 
 export function normalizeTheme(original) {
