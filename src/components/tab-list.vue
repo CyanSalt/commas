@@ -27,7 +27,7 @@
                 <span class="feather-icon icon-chevron-up" v-else></span>
               </div>
             </div>
-            <div class="find-launcher" v-show="finding">
+            <div class="find-launcher" v-show="finding" @click.stop>
               <input class="keyword" v-model="keyword" :placeholder="i18n('Find#!6')"
                 @keyup.esc="find" ref="keyword" autofocus>
             </div>
