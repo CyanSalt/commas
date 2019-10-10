@@ -167,27 +167,21 @@ export default {
       }
       const settings = rootState.settings.settings
       const xterm = tab.xterm
-      requestIdleCallback(() => {
-        if (xterm.element) {
-          element.appendChild(xterm.element)
-        } else {
-          xterm.open(element)
-          xterm.$.fit = new FitAddon()
-          xterm.loadAddon(xterm.$.fit)
-          xterm.$.search = new SearchAddon()
-          xterm.loadAddon(xterm.$.search)
-          xterm.loadAddon(new WebLinksAddon((event, uri) => {
-            if (event.altKey) shell.openExternal(uri)
-          }))
-          if (settings['terminal.style.fontLigatures']) {
-            xterm.$.ligatures = new LigaturesAddon()
-            xterm.loadAddon(xterm.$.ligatures)
-          }
-          observer.observe(element)
-        }
-        xterm.$.fit.fit()
-        xterm.focus()
-      }, {timeout: 1000})
+      xterm.open(element)
+      xterm.$.fit = new FitAddon()
+      xterm.loadAddon(xterm.$.fit)
+      xterm.$.search = new SearchAddon()
+      xterm.loadAddon(xterm.$.search)
+      xterm.loadAddon(new WebLinksAddon((event, uri) => {
+        if (event.altKey) shell.openExternal(uri)
+      }))
+      if (settings['terminal.style.fontLigatures']) {
+        xterm.$.ligatures = new LigaturesAddon()
+        xterm.loadAddon(xterm.$.ligatures)
+      }
+      observer.observe(element)
+      xterm.$.fit.fit()
+      xterm.focus()
     },
     interact({state, commit}, tab) {
       const tabs = state.tabs
