@@ -1,7 +1,17 @@
 const {app, autoUpdater, dialog} = require('electron')
+const {promises: fs} = require('fs')
 const {translate} = require('../build/main')
 
 let autoUpdateChecker
+
+async function executeUpdateChecking() {
+  try {
+    await fs.access(app.getPath('exe'))
+    autoUpdater.checkForUpdates()
+  } catch (err) {
+    clearInterval(autoUpdateChecker)
+  }
+}
 
 function checkForUpdates() {
   if (!app.isPackaged || !['darwin', 'win32'].includes(process.platform)) return
@@ -32,10 +42,8 @@ function checkForUpdates() {
   const feedURL = `${host}/${repo}/${process.platform}-${process.arch}/${app.getVersion()}`
   autoUpdater.setFeedURL(feedURL)
   // Check for updates endlessly
-  autoUpdateChecker = setInterval(() => {
-    autoUpdater.checkForUpdates()
-  }, 3600 * 1e3)
-  autoUpdater.checkForUpdates()
+  autoUpdateChecker = setInterval(executeUpdateChecking, 3600 * 1e3)
+  executeUpdateChecking()
 }
 
 module.exports = {

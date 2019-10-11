@@ -46,5 +46,5 @@
   "terminal.theme.customization": {},
 
   // Specify HTTP port for development proxy server
-  "terminal.proxyServer.port": 16383,
+  "terminal.proxyServer.port": 16383
 }
