@@ -27,7 +27,7 @@
     <div class="group">
       <div v-if="platform === 'darwin'" class="form-line">
         <label class="form-label" v-i18n>Enable system proxy#!21</label>
-        <switch-control :checked="globe" @change="toggleGlobal"></switch-control>
+        <switch-control :checked="proxyGlobal" @change="toggleProxyGlobal"></switch-control>
       </div>
       <span class="link" @click="exec('open-launchers')">
         <span v-i18n="{F: 'launchers.json'}">Edit %F#!13</span>
@@ -54,6 +54,10 @@
     <h2 class="group-title" v-i18n>About#!11</h2>
     <div class="group">
       <span class="text" v-i18n="{V: version}">Current version: %V#!15</span>
+      <div class="form-line">
+        <label class="form-label" v-i18n>Enable auto updating#!22</label>
+        <switch-control :checked="updaterEnabled" @change="toggleUpdaterEnabled"></switch-control>
+      </div>
       <span class="link" data-href="https://github.com/CyanSalt/commas" v-i18n
         @click="open">Visit our website#!14</span>
     </div>
@@ -86,11 +90,13 @@ export default {
   },
   computed: {
     ...mapState('theme', {activeTheme: 'name'}),
-    ...mapState('proxy', ['globe']),
+    ...mapState('proxy', {proxyGlobal: 'globe'}),
+    ...mapState('updater', {updaterEnabled: 'enabled'}),
   },
   methods: {
     ...mapActions('command', ['exec']),
-    ...mapActions('proxy', ['toggleGlobal']),
+    ...mapActions('proxy', {toggleProxyGlobal: 'toggleGlobal'}),
+    ...mapActions('updater', {toggleUpdaterEnabled: 'toggle'}),
     open(e) {
       shell.openExternal(e.target.dataset.href)
     },

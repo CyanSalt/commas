@@ -7,6 +7,7 @@ import launcher from './modules/launcher'
 import command from './modules/command'
 import shell from './modules/shell'
 import proxy from './modules/proxy'
+import updater from './modules/updater'
 
 Vue.use(Vuex)
 
@@ -20,5 +21,6 @@ export default new Vuex.Store({
     command,
     shell,
     proxy,
+    updater,
   },
 })

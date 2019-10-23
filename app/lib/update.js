@@ -2,15 +2,21 @@ const {app, autoUpdater, dialog} = require('electron')
 const {promises: fs} = require('fs')
 const {translate} = require('../build/main')
 
+let autoUpdateEnabled = true
 let autoUpdateChecker
 
 async function executeUpdateChecking() {
+  if (!autoUpdateEnabled) return
   try {
     await fs.access(app.getPath('exe'))
     autoUpdater.checkForUpdates()
   } catch (err) {
     clearInterval(autoUpdateChecker)
   }
+}
+
+function toggleAutoUpdate(value) {
+  autoUpdateEnabled = value
 }
 
 function checkForUpdates() {
@@ -47,5 +53,6 @@ function checkForUpdates() {
 }
 
 module.exports = {
+  toggleAutoUpdate,
   checkForUpdates,
 }

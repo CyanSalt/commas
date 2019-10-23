@@ -2,6 +2,7 @@ const {app, ipcMain, BrowserWindow} = require('electron')
 const {forEachWindow} = require('./frame')
 const {createWindow} = require('./window')
 const {createMenu} = require('./menu')
+const {toggleAutoUpdate} = require('./update')
 
 function transferEvents(frame) {
   frame.on('maximize', () => {
@@ -32,6 +33,9 @@ function transferInvoking() {
       x: data.position.x,
       y: data.position.y,
     })
+  })
+  ipcMain.on('toggle-auto-update', (event, data) => {
+    toggleAutoUpdate(data)
   })
 }
 
