@@ -20,7 +20,7 @@ export default {
     },
   },
   actions: {
-    closing() {
+    async closing() {
       const args = {
         type: 'info',
         message: translate('Close Window?#!1'),
@@ -33,11 +33,8 @@ export default {
         cancelId: 1,
       }
       const frame = remote.getCurrentWindow()
-      // const {response} = await remote.dialog.showMessageBox(frame, args)
-      // if (response === 0) frame.destroy()
-      remote.dialog.showMessageBox(frame, args, response => {
-        if (response === 0) frame.destroy()
-      })
+      const response = await remote.dialog.showMessageBox(frame, args)
+      if (response === 0) frame.destroy()
     },
     drop({dispatch}, {tab, files}) {
       const paths = Array.from(files).map(({path}) => {

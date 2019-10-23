@@ -24,7 +24,7 @@ function checkForUpdates() {
   autoUpdater.on('update-available', () => {
     clearInterval(autoUpdateChecker)
   })
-  autoUpdater.on('update-downloaded', (event, notes, name) => {
+  autoUpdater.on('update-downloaded', async (event, notes, name) => {
     const options = {
       type: 'info',
       message: name,
@@ -36,11 +36,8 @@ function checkForUpdates() {
       defaultId: 0,
       cancelId: 1,
     }
-    // const {response} = await dialog.showMessageBox(options)
-    // if (response === 0) autoUpdater.quitAndInstall()
-    dialog.showMessageBox(options, response => {
-      if (response === 0) autoUpdater.quitAndInstall()
-    })
+    const response = await dialog.showMessageBox(options)
+    if (response === 0) autoUpdater.quitAndInstall()
   })
   // Electron official feed URL
   const repo = 'CyanSalt/commas'
