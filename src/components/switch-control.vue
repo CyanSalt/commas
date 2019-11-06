@@ -36,7 +36,7 @@ export default {
   border-radius: 0.5em;
   background: currentColor;
   opacity: 0.25;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, background 0.2s;
 }
 .switch-control .switch-content::after {
   position: absolute;
@@ -51,7 +51,8 @@ export default {
   transition: transform 0.2s;
 }
 .switch-control input:checked + .switch-content::before {
-  opacity: 0.75;
+  background: var(--design-blue);
+  opacity: 1;
 }
 .switch-control input:checked + .switch-content::after {
   transform: translateX(100%);

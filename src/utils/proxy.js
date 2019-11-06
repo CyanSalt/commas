@@ -4,6 +4,7 @@ export function normalizeRules(rules) {
       return collection
     }
     const rule = {...original}
+    // TODO: `vhost` will be removed after v0.8.0
     if (!rule.host && rule.vhost) {
       rule.host = rule.vhost
     }

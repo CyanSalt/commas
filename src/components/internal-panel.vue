@@ -1,6 +1,6 @@
 <template>
   <div class="internal-panel">
-    <div class="pattern">$,,,</div>
+    <div class="app-pattern">$,,,</div>
     <div class="scroll-area">
       <slot></slot>
     </div>
@@ -26,7 +26,7 @@ export default {
   height: 100%;
   box-sizing: border-box;
 }
-.internal-panel .pattern {
+.internal-panel .app-pattern {
   position: absolute;
   width: 128px;
   height: 128px;
@@ -69,6 +69,9 @@ export default {
   cursor: pointer;
   opacity: 0.5;
   transition: opacity 0.2s;
+}
+.internal-panel .link.disabled {
+  pointer-events: none;
 }
 .internal-panel .link:hover {
   opacity: 1;

@@ -29,6 +29,9 @@
         <label class="form-label" v-i18n>Enable system proxy#!21</label>
         <switch-control :checked="proxyGlobal" @change="toggleProxyGlobal"></switch-control>
       </div>
+      <span class="link" @click="editProxy">
+        <span v-i18n>Configure proxy rules#!24</span>
+      </span>
       <span class="link" @click="exec('open-launchers')">
         <span v-i18n="{F: 'launchers.json'}">Edit %F#!13</span>
       </span>
@@ -70,6 +73,7 @@ import SwitchControl from './switch-control'
 import LoadingSpinner from './loading-spinner'
 import {remote, shell} from 'electron'
 import {mapActions, mapState} from 'vuex'
+import {InternalTerminals} from '@/utils/terminal'
 
 export default {
   name: 'SettingsPanel',
@@ -108,6 +112,9 @@ export default {
         download: true,
       })
       this.theme.loading = false
+    },
+    editProxy() {
+      this.$store.dispatch('terminal/interact', InternalTerminals.proxy)
     },
   },
 }

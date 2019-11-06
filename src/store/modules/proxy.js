@@ -4,6 +4,8 @@ import FileStorage from '@/utils/storage'
 import {unreactive} from '@/utils/object'
 import {normalizeRules, getMatchedProxy} from '@/utils/proxy'
 import {getGlobalWebProxy, setGlobalWebProxy} from '@/utils/terminal'
+import Writer from '@/utils/writer'
+import {parse} from 'json5'
 
 export default {
   namespaced: true,
@@ -13,6 +15,7 @@ export default {
     rules: [],
     globe: false,
     watcher: null,
+    writer: null,
   },
   mutations: {
     setServer(state, value) {
@@ -30,11 +33,21 @@ export default {
     setWatcher(state, value) {
       state.watcher = value
     },
+    setWriter(state, value) {
+      state.writer = value
+    },
   },
   actions: {
     async load({commit}) {
-      const rules = await FileStorage.load('proxy-rules.json')
-      if (rules) commit('setRules', rules)
+      const source = await FileStorage.read('proxy-rules.json')
+      if (!source) return
+      commit('setWriter', unreactive(new Writer(source)))
+      try {
+        const rules = parse(source)
+        commit('setRules', rules)
+      } catch (err) {
+        // ignore error
+      }
     },
     async loadSystem({commit, rootState}) {
       const settings = rootState.settings.settings
@@ -84,6 +97,15 @@ export default {
       if (port !== state.port) {
         await dispatch('close')
         dispatch('open')
+      }
+    },
+    save({state}, value) {
+      const writer = state.writer
+      if (writer) {
+        writer.write(value)
+        return FileStorage.write('proxy-rules.json', writer.toSource())
+      } else {
+        return FileStorage.save('proxy-rules.json', value)
       }
     },
     async toggleGlobal({state, commit, rootState}) {

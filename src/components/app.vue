@@ -10,6 +10,8 @@
             :key="current.id"></terminal-teletype>
           <settings-panel v-else-if="current === internal.settings"
             :key="current.id"></settings-panel>
+          <proxy-panel v-else-if="current === internal.proxy"
+            :key="current.id"></proxy-panel>
         </keep-alive>
       </div>
     </div>
@@ -22,6 +24,7 @@ import TabList from './tab-list'
 import FindBox from './find-box'
 import TerminalTeletype from './terminal-teletype'
 import SettingsPanel from './settings-panel'
+import ProxyPanel from './proxy-panel'
 import {ipcRenderer} from 'electron'
 import {mapState, mapGetters} from 'vuex'
 import {InternalTerminals} from '@/utils/terminal'
@@ -36,6 +39,7 @@ export default {
     'terminal-teletype': TerminalTeletype,
     'find-box': FindBox,
     'settings-panel': SettingsPanel,
+    'proxy-panel': ProxyPanel,
   },
   data() {
     return {
