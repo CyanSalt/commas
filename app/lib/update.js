@@ -36,7 +36,7 @@ function checkForUpdates() {
       defaultId: 0,
       cancelId: 1,
     }
-    const response = await dialog.showMessageBox(options)
+    const {response} = await dialog.showMessageBox(options)
     if (response === 0) autoUpdater.quitAndInstall()
   })
   // Electron official feed URL

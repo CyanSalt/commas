@@ -33,7 +33,7 @@ export default {
         cancelId: 1,
       }
       const frame = remote.getCurrentWindow()
-      const response = await remote.dialog.showMessageBox(frame, args)
+      const {response} = await remote.dialog.showMessageBox(frame, args)
       if (response === 0) frame.destroy()
     },
     drop({dispatch}, {tab, files}) {
