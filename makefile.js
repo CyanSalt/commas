@@ -48,7 +48,7 @@ const options = {
   },
 }
 
-// Use free developer certification
+// equivalent to {type: 'development'} for electron-osx-sign
 if (process.platform === 'darwin') {
   options.osxSign = {
     identity: childProcess.execSync(

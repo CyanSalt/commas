@@ -3,10 +3,11 @@ const {promises: fs} = require('fs')
 const {translate} = require('../build/main')
 
 let autoUpdateEnabled = true
+let autoUpdatePrepared = false
 let autoUpdateChecker
 
 async function executeUpdateChecking() {
-  if (!autoUpdateEnabled) return
+  if (!autoUpdateEnabled || !autoUpdatePrepared) return
   try {
     await fs.access(app.getPath('exe'))
     autoUpdater.checkForUpdates()
@@ -43,7 +44,12 @@ function checkForUpdates() {
   const repo = 'CyanSalt/commas'
   const host = 'https://update.electronjs.org'
   const feedURL = `${host}/${repo}/${process.platform}-${process.arch}/${app.getVersion()}`
-  autoUpdater.setFeedURL(feedURL)
+  try {
+    autoUpdater.setFeedURL(feedURL)
+  } catch (err) {
+    return
+  }
+  autoUpdatePrepared = true
   // Check for updates endlessly
   autoUpdateChecker = setInterval(executeUpdateChecking, 3600 * 1e3)
   executeUpdateChecking()
