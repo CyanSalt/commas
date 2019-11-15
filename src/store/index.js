@@ -4,7 +4,6 @@ import settings from './modules/settings'
 import theme from './modules/theme'
 import terminal from './modules/terminal'
 import launcher from './modules/launcher'
-import command from './modules/command'
 import shell from './modules/shell'
 import proxy from './modules/proxy'
 import updater from './modules/updater'
@@ -18,7 +17,6 @@ export default new Vuex.Store({
     theme,
     terminal,
     launcher,
-    command,
     shell,
     proxy,
     updater,

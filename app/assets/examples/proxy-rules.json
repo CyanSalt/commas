@@ -2,7 +2,7 @@
   // Configure your proxy rules here
 
   // {
-  //   "vhost": "my.website.com", // optional
+  //   "host": "my.website.com", // optional
   //   "context": ["/api"],
   //   "proxy": {
   //     "target": "http://192.168.1.1:32767",

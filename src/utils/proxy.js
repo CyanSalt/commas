@@ -7,6 +7,7 @@ export function normalizeRules(rules) {
     // TODO: `vhost` will be removed after v0.8.0
     if (!rule.host && rule.vhost) {
       rule.host = rule.vhost
+      delete rule.vhost
     }
     if (rule.pattern) {
       try {
@@ -32,7 +33,7 @@ export function getMatchedProxy(rules, url) {
     if (rule.pattern) return rule.pattern.test(url.href)
     if (rule.host) {
       if (rule.host !== url.hostname) return false
-      if (!rule.context) return true
+      if (!rule.context || !rule.context.length) return true
     }
     return rule.context.some(path => url.pathname.startsWith(path))
   })

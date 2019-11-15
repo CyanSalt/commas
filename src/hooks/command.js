@@ -1,14 +1,87 @@
 import {ui} from './core'
+import shell from './shell'
+import {InternalTerminals} from '@/utils/terminal'
+
+const registry = {
+  'open-tab'(args) {
+    return ui.store.dispatch('terminal/spawn', args)
+  },
+  'open-window'() {
+    return shell.openWindow()
+  },
+  'close-tab'() {
+    const active = ui.store.state.terminal.active
+    return ui.store.dispatch('terminal/close', active)
+  },
+  'close-window'() {
+    return shell.closeWindow()
+  },
+  'previous-tab'() {
+    const active = ui.store.state.terminal.active
+    if (active > 0) {
+      ui.store.commit('terminal/setActive', active - 1)
+    }
+  },
+  'next-tab'() {
+    const {tabs, active} = ui.store.state.terminal
+    if (active < tabs.length - 1) {
+      ui.store.commit('terminal/setActive', active + 1)
+    }
+  },
+  'toggle-tab-list'() {
+    const value = ui.store.state.shell.multitabs
+    ui.store.commit('shell/setMultitabs', !value)
+  },
+  'launch'() {
+    const current = ui.store.getters['terminal/current']
+    if (current && current.launcher) {
+      return ui.store.dispatch('launcher/launch', current.launcher)
+    }
+  },
+  'find'() {
+    ui.store.commit('shell/setFinding', true)
+  },
+  'clear'() {
+    return ui.store.dispatch('terminal/clear')
+  },
+  'interact-settings'() {
+    return ui.store.dispatch('terminal/interact', InternalTerminals.settings)
+  },
+  'open-user-directory'() {
+    return shell.openUserDirectory()
+  },
+  'open-settings'() {
+    return shell.openUserFile('settings.json', 'settings.json')
+  },
+  'open-launchers'() {
+    return shell.openUserFile('launchers.json', 'examples/launchers.json')
+  },
+  'open-proxy-rules'() {
+    return shell.openUserFile('proxy-rules.json', 'examples/proxy-rules.json')
+  },
+  'open-keybindings'() {
+    return shell.openUserFile('keybindings.json', 'examples/keybindings.json')
+  },
+  'open-custom-js'() {
+    return shell.openUserFile('custom.js', 'examples/custom.js')
+  },
+  'open-custom-css'() {
+    return shell.openUserFile('custom.css', 'examples/custom.css')
+  },
+  'open-translation'() {
+    return shell.openUserFile('translation.json', 'examples/translation.json')
+  },
+}
 
 export default {
   exec(command, args) {
-    return ui.store.dispatch('command/exec', {command, args})
+    const handler = registry[command]
+    return handler ? handler(args) : false
   },
   register(command, handler) {
-    const registry = ui.store.state.command.registry
     if (registry[command]) {
       throw new Error(`Command '${command}' has already exists`)
     }
-    return ui.store.dispatch('command/register', {command, handler})
+    registry[command] = handler
   },
 }

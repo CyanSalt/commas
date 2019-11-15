@@ -74,6 +74,7 @@ import LoadingSpinner from './loading-spinner'
 import {remote, shell} from 'electron'
 import {mapActions, mapState} from 'vuex'
 import {InternalTerminals} from '@/utils/terminal'
+import hooks from '@/hooks'
 
 export default {
   name: 'SettingsPanel',
@@ -98,9 +99,9 @@ export default {
     ...mapState('updater', {updaterEnabled: 'enabled'}),
   },
   methods: {
-    ...mapActions('command', ['exec']),
     ...mapActions('proxy', {toggleProxyGlobal: 'toggleGlobal'}),
     ...mapActions('updater', {toggleUpdaterEnabled: 'toggle'}),
+    exec: hooks.command.exec,
     open(e) {
       shell.openExternal(e.target.dataset.href)
     },

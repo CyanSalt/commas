@@ -71,7 +71,7 @@
 
 <script>
 import InternalPanel from './internal-panel'
-import {mapState, mapActions} from 'vuex'
+import {mapState} from 'vuex'
 import {cloneDeep, isEqual} from 'lodash'
 import {normalizeRules} from '@/utils/proxy'
 
@@ -98,7 +98,6 @@ export default {
     this.revert()
   },
   methods: {
-    ...mapActions('command', ['exec']),
     addRule() {
       this.table.push({proxy: {target: ''}})
     },

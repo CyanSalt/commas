@@ -97,8 +97,8 @@ export default {
     ipcRenderer.on('open-path', (event, path) => {
       this.$store.dispatch('terminal/spawn', {cwd: path})
     })
-    ipcRenderer.on('command', (event, payload) => {
-      this.$store.dispatch('command/exec', payload)
+    ipcRenderer.on('command', (event, {command, args}) => {
+      hooks.command.exec(command, args)
     })
     // prepare for hooks
     hooks.core.dangerouslySetViewModel(this)
