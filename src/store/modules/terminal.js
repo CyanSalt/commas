@@ -13,7 +13,7 @@ import {debounce} from 'lodash'
 
 const variables = {
   LANG: remote.app.getLocale().replace('-', '_') + '.UTF-8',
-  TERM_PROGRAM: remote.app.getName(),
+  TERM_PROGRAM: remote.app.name,
   TERM_PROGRAM_VERSION: remote.app.getVersion(),
 }
 
@@ -107,7 +107,7 @@ export default {
       xterm.onData(data => {
         pty.write(data)
       })
-      pty.on('data', data => {
+      pty.onData(data => {
         xterm.write(data)
         // TODO: performance review
         // pty.process on Windows will be always equivalent to pty.name
@@ -115,7 +115,7 @@ export default {
           commit('updateTab', {id, process: pty.process})
         }
       })
-      pty.on('exit', () => {
+      pty.onExit(() => {
         if (xterm.element) {
           state.observer.unobserve(xterm.element)
         }

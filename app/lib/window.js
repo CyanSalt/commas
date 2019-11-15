@@ -17,7 +17,7 @@ function loadHTMLFile(frame, file) {
 function createWindow(...args) {
   const options = {
     show: false,
-    title: app.getName(),
+    title: app.name,
     width: (8 * 80) + (2 * 8) + 180,
     minWidth: (8 * 40) + (2 * 8) + 180,
     height: (17 * 25) + (2 * 4) + 36,

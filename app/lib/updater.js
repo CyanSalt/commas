@@ -2,28 +2,28 @@ const {app, autoUpdater, dialog} = require('electron')
 const {promises: fs} = require('fs')
 const {translate} = require('../build/main')
 
-let autoUpdateEnabled = true
-let autoUpdatePrepared = false
-let autoUpdateChecker
+let autoUpdaterEnabled = true
+let autoUpdaterPrepared = false
+let autoUpdaterChecker
 
-async function executeUpdateChecking() {
-  if (!autoUpdateEnabled || !autoUpdatePrepared) return
+async function executeChecking() {
+  if (!autoUpdaterEnabled || !autoUpdaterPrepared) return
   try {
     await fs.access(app.getPath('exe'))
     autoUpdater.checkForUpdates()
   } catch (err) {
-    clearInterval(autoUpdateChecker)
+    clearInterval(autoUpdaterChecker)
   }
 }
 
-function toggleAutoUpdate(value) {
-  autoUpdateEnabled = value
+function toggleAutoUpdater(value) {
+  autoUpdaterEnabled = value
 }
 
 function checkForUpdates() {
   if (!app.isPackaged || !['darwin', 'win32'].includes(process.platform)) return
   autoUpdater.on('update-available', () => {
-    clearInterval(autoUpdateChecker)
+    clearInterval(autoUpdaterChecker)
   })
   autoUpdater.on('update-downloaded', async (event, notes, name) => {
     const options = {
@@ -49,13 +49,13 @@ function checkForUpdates() {
   } catch (err) {
     return
   }
-  autoUpdatePrepared = true
+  autoUpdaterPrepared = true
   // Check for updates endlessly
-  autoUpdateChecker = setInterval(executeUpdateChecking, 3600 * 1e3)
-  executeUpdateChecking()
+  autoUpdaterChecker = setInterval(executeChecking, 3600 * 1e3)
+  executeChecking()
 }
 
 module.exports = {
-  toggleAutoUpdate,
+  toggleAutoUpdater,
   checkForUpdates,
 }

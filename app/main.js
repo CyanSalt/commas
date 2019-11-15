@@ -3,7 +3,7 @@ const {createWindow} = require('./lib/window')
 const {createApplicationMenu, createDockMenu} = require('./lib/menu')
 const {hasWindow, getLastWindow} = require('./lib/frame')
 const {transferInvoking} = require('./lib/transfer')
-const {checkForUpdates} = require('./lib/update')
+const {checkForUpdates} = require('./lib/updater')
 
 let cwd
 app.on('ready', () => {
