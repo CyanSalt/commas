@@ -49,13 +49,14 @@ export default {
       launcher = state.launchers.find(item => item.id === id)
       let command = launcher.command
       if (launcher.login) {
-        command = `bash -lic ${quote(command)}`
+        command = `$SHELL -lic ${quote(command, '"')}`
       }
       if (launcher.directory) {
-        command = `cd ${launcher.directory} && (${command})`
+        const directory = launcher.directory.replace(' ', '\\ ')
+        command = `cd ${directory} && (${command})`
       }
       if (launcher.remote) {
-        command = `ssh -t ${launcher.remote} ${quote(command)}`
+        command = `ssh -t ${launcher.remote} ${quote(command, '\'')}`
       }
       const tab = getLauncherTab(rootState.terminal.tabs, launcher)
       return dispatch('terminal/input', {tab, data: command + EOL}, {root: true})

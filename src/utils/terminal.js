@@ -30,7 +30,9 @@ export const InternalTerminals = {
   },
 }
 
-export const quote = command => `"${command.replace(/"/g, '"\\""')}"`
+export function quote(command, q) {
+  return `${q}${command.replace(new RegExp(q, 'g'), `${q}\\${q}${q}`)}${q}`
+}
 
 export function resolveHome(directory) {
   if (!directory) return directory
