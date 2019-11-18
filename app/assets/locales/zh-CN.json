@@ -23,9 +23,5 @@
   "Enable auto updating#!22": "启用自动更新",
   "Proxy Rules#!23": "代理规则",
   "Configure proxy rules#!24": "配置代理规则",
-  "Proxy to...#!25": "代理至...",
-  "Regular Expression...#!26": "正则表达式...",
-  "Host#!27": "域名",
-  "Path#!28": "路径",
-  "Pattern#!29": "匹配"
+  "Proxy to...#!25": "代理至..."
 }

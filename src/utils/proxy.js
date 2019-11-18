@@ -1,22 +1,7 @@
 export function normalizeRules(rules) {
   return rules.reduce((collection, original) => {
-    if (!original.proxy) {
-      return collection
-    }
     const rule = {...original}
-    // TODO: `vhost` will be removed after v0.8.0
-    if (!rule.host && rule.vhost) {
-      rule.host = rule.vhost
-      delete rule.vhost
-    }
-    if (rule.pattern) {
-      try {
-        rule.pattern = new RegExp(rule.pattern)
-      } catch (err) {
-        rule.pattern = null
-      }
-    }
-    if (!rule.pattern && !rule.host && !rule.context) {
+    if (!rule.proxy || !rule.context) {
       return collection
     }
     if (!rule.proxy.target) {
@@ -27,15 +12,68 @@ export function normalizeRules(rules) {
   }, [])
 }
 
-export function getMatchedProxy(rules, url) {
+function parseRuleEntry(expression) {
+  const regexp = expression.match(/^s\/(.+?)\/([a-z]+)?$/)
+  if (regexp) {
+    let pattern
+    try {
+      pattern = new RegExp(regexp[1], regexp[2])
+    } catch (err) {
+      return null
+    }
+    return {pattern}
+  }
+  let matches = {}
+  let url = expression
+  if (expression.startsWith('//')) {
+    matches.host = true
+    url = 'http:' + url
+  } else if (expression.startsWith('/')) {
+    url = 'http://localhost' + url
+  } else if (expression.indexOf('://') !== -1) {
+    matches.host = true
+    matches.protocol = true
+  } else {
+    matches.host = true
+    url = 'http://' + url
+  }
+  try {
+    url = new URL(url)
+  } catch (err) {
+    return null
+  }
+  return {url, matches}
+}
+
+export function parseProxyRules(rules) {
+  rules = normalizeRules(rules)
+  return rules.reduce((collection, original) => {
+    const rule = {...original}
+    const entries = rule.context.reduce((entries, expression) => {
+      const entry = parseRuleEntry(expression)
+      if (entry) entries.push(entry)
+      return entries
+    }, [])
+    if (entries.length) {
+      rule.entries = entries
+      collection.push(rule)
+    }
+    return collection
+  }, [])
+}
+
+export function matchProxyRule(rules, url) {
   url = new URL(url)
   const rule = rules.find(rule => {
-    if (rule.pattern) return rule.pattern.test(url.href)
-    if (rule.host) {
-      if (rule.host !== url.hostname) return false
-      if (!rule.context || !rule.context.length) return true
-    }
-    return rule.context.some(path => url.pathname.startsWith(path))
+    return rule.entries.some(entry => {
+      if (entry.pattern) return entry.pattern.test(url.href)
+      if (entry.matches.host && entry.url.host !== url.host) return false
+      if (entry.matches.protocol && entry.url.protocol !== url.protocol) return false
+      if (entry.url.search && ![...entry.url.searchParams].every(
+        (key, value) => url.searchParams.get(key) === value,
+      )) return false
+      return url.pathname.startsWith(entry.url.pathname)
+    })
   })
   return rule ? rule.proxy : {target: url.origin}
 }

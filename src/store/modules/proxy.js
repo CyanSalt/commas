@@ -2,7 +2,7 @@ import {createServer} from 'http'
 import {createProxyServer} from 'http-proxy'
 import FileStorage from '@/utils/storage'
 import {unreactive} from '@/utils/object'
-import {normalizeRules, getMatchedProxy} from '@/utils/proxy'
+import {parseProxyRules, matchProxyRule} from '@/utils/proxy'
 import {getGlobalWebProxy, setGlobalWebProxy} from '@/utils/terminal'
 import Writer from '@/utils/writer'
 import {parse} from 'json5'
@@ -61,13 +61,13 @@ export default {
     open({state, commit, rootState}) {
       let server = state.server
       if (server) return
-      const rules = normalizeRules(state.rules)
+      const rules = parseProxyRules(state.rules)
       const settings = rootState.settings.settings
       const port = settings['terminal.proxyServer.port']
       // TODO: catch EADDRINUSE and notify error
       const proxyServer = createProxyServer()
       server = createServer((req, res) => {
-        proxyServer.web(req, res, getMatchedProxy(rules, req.url))
+        proxyServer.web(req, res, matchProxyRule(rules, req.url))
       })
       server.listen(port)
       commit('setServer', unreactive(server))

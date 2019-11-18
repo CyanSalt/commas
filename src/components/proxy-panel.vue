@@ -1,6 +1,6 @@
 <template>
   <internal-panel class="proxy-panel">
-    <h2 class="group-title">{{ i18n('Proxy Rules#!23') }} (beta)</h2>
+    <h2 class="group-title" v-i18n>Proxy Rules#!23</h2>
     <div class="group">
       <div class="form-line">
         <span :class="['link form-action revert', {disabled: !changed}]" @click="revert">
@@ -12,56 +12,35 @@
       </div>
       <div class="proxy-table">
         <div v-for="(rule, index) of table" :key="index" class="proxy-rule">
+          <template v-if="rule.context">
+            <div v-for="(path, index) in rule.context" :key="index" class="rule-line">
+              <span class="list-style">
+                <span v-if="index === 0" class="feather-icon icon-chevron-down"></span>
+              </span>
+              <span class="link remove" @click="$delete(rule.context, index)">
+                <span class="feather-icon icon-minus"></span>
+              </span>
+              <input type="text" v-model="rule.context[index]" class="form-control">
+            </div>
+          </template>
           <div class="rule-line">
-            <span class="list-style">
-              <span class="feather-icon icon-chevron-down"></span>
-            </span>
+            <span class="list-style"></span>
             <span class="link remove" @click="$delete(table, index)">
               <span class="feather-icon icon-minus"></span>
+            </span>
+            <span class="link add" @click="addContext(rule)">
+              <span class="feather-icon icon-plus"></span>
+            </span>
+            <span class="proxy-to">
+              <span class="feather-icon icon-arrow-right"></span>
             </span>
             <input type="text" v-model="rule.proxy.target"
               :placeholder="i18n('Proxy to...#!25')" class="form-control target">
           </div>
-          <div v-if="typeof rule.host === 'string'" class="rule-line">
-            <span class="list-style"></span>
-            <span class="link remove" @click="$delete(rule, 'host')">
-              <span class="feather-icon icon-minus"></span>
-            </span>
-            <label class="rule-label" v-i18n>Host#!27</label>
-            <input type="text" v-model="rule.host" class="form-control">
-          </div>
-          <template v-if="rule.context">
-            <div v-for="(path, index) in rule.context" :key="index" class="rule-line">
-              <span class="list-style"></span>
-              <span class="link remove" @click="$delete(rule.context, index)">
-                <span class="feather-icon icon-minus"></span>
-              </span>
-            <label class="rule-label" v-i18n>Path#!28</label>
-              <input type="text" v-model="rule.context[index]" class="form-control">
-            </div>
-          </template>
-          <div v-if="typeof rule.pattern === 'string'" class="rule-line">
-            <span class="list-style"></span>
-            <span class="link remove" @click="$delete(rule, 'pattern')">
-              <span class="feather-icon icon-minus"></span>
-            </span>
-            <label class="rule-label" v-i18n>Pattern#!29</label>
-            <input type="text" v-model="rule.pattern"
-              :placeholder="i18n('Regular Expression...#!26')" class="form-control">
-          </div>
-          <div class="rule-line">
-            <span class="list-style"></span>
-            <span v-if="typeof rule.host !== 'string'" class="link add"
-              v-i18n @click="$set(rule, 'host', '')">Host#!27</span>
-            <span class="link add"
-              v-i18n @click="addContext(rule)">Path#!28</span>
-            <span v-if="typeof rule.pattern !== 'string'" class="link add"
-              v-i18n @click="$set(rule, 'pattern', '')">Pattern#!29</span>
-          </div>
         </div>
         <div class="rule-line">
           <span class="link" @click="addRule">
-            <span class="feather-icon icon-plus"></span>
+            <span class="feather-icon icon-plus-square"></span>
           </span>
         </div>
       </div>
@@ -137,23 +116,23 @@ export default {
 .proxy-panel .list-style {
   width: 24px;
   text-align: center;
-  opacity: 0.25;
+  opacity: 0.5;
 }
 .proxy-panel .link {
   width: 24px;
   text-align: center;
   transition: opacity 0.2s, color 0.2s;
 }
+.proxy-panel .proxy-to {
+  width: 36px;
+  text-align: center;
+}
 .proxy-panel .link.remove {
   margin-right: 4px;
   color: var(--design-red);
 }
-.proxy-panel .link.add {
-  margin-right: 14px;
-  width: auto;
-}
 .proxy-panel .form-control {
-  width: 180px;
+  width: 320px;
 }
 .proxy-panel .form-control.target {
   width: 260px;
