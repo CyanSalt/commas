@@ -165,6 +165,7 @@ export async function getMacOSCurrentNetworkService() {
 export async function getGlobalWebProxy() {
   if (process.platform !== 'darwin') return
   const service = await getMacOSCurrentNetworkService()
+  if (!service) return
   const {stdout} = await exec(`networksetup -getwebproxy "${service}"`)
   return stdout.trim().split('\n').reduce((result, line) => {
     const [key, value] = line.split(': ')
@@ -176,6 +177,7 @@ export async function getGlobalWebProxy() {
 export async function setGlobalWebProxy(options) {
   if (process.platform !== 'darwin') return
   const service = await getMacOSCurrentNetworkService()
+  if (!service) return
   const {host, port} = {host: '""', port: 0, ...options}
   const args = [host, port].join(' ')
   const commands = [
