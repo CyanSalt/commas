@@ -1,3 +1,5 @@
+import {cloneDeep} from 'lodash'
+
 export function normalizeRules(rules) {
   return rules.reduce((collection, original) => {
     const rule = {...original}
@@ -13,7 +15,7 @@ export function normalizeRules(rules) {
 }
 
 function parseRuleEntry(expression) {
-  const regexp = expression.match(/^s\/(.+?)\/([a-z]+)?$/)
+  const regexp = expression.match(/^s\/(.+)\/([a-z]+)?$/)
   if (regexp) {
     let pattern
     try {
@@ -76,4 +78,27 @@ export function matchProxyRule(rules, url) {
     })
   })
   return rule ? rule.proxy : {target: url.origin}
+}
+
+export function trackRuleTargets(rules) {
+  rules = normalizeRules(rules)
+  rules = cloneDeep(rules)
+  rules.forEach(({proxy}) => {
+    proxy._target = proxy.target
+  })
+  return rules
+}
+
+export function resolveRuleTargets(rules) {
+  rules = cloneDeep(rules)
+  rules.forEach(({proxy}) => {
+    if (proxy.target !== proxy._target) {
+      if (!proxy.records) proxy.records = []
+      if (!proxy.records.includes(proxy._target)) {
+        proxy.records.push(proxy._target)
+      }
+    }
+    delete proxy._target
+  })
+  return rules
 }

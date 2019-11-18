@@ -2,10 +2,14 @@
   // Configure your proxy rules here
 
   // {
-  //   "host": "my.website.com", // optional
-  //   "context": ["/api"],
+  //   "context": [
+  //     "/api", // will match path prefix
+  //     "example.com/api", // will also match host
+  //     "http://example.com/api", // and protocol
+  //     "s/^https?://(.*)\\.example.com/i", // or use sed-style regexp
+  //   ],
   //   "proxy": {
-  //     "target": "http://192.168.1.1:32767",
+  //     "target": "http://127.0.0.1:32767",
   //   },
   // },
 ]

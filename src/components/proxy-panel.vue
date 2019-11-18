@@ -12,31 +12,45 @@
       </div>
       <div class="proxy-table">
         <div v-for="(rule, index) of table" :key="index" class="proxy-rule">
-          <template v-if="rule.context">
-            <div v-for="(path, index) in rule.context" :key="index" class="rule-line">
-              <span class="list-style">
-                <span v-if="index === 0" class="feather-icon icon-chevron-down"></span>
-              </span>
-              <span class="link remove" @click="$delete(rule.context, index)">
-                <span class="feather-icon icon-minus"></span>
-              </span>
-              <input type="text" v-model="rule.context[index]" class="form-control">
-            </div>
-          </template>
-          <div class="rule-line">
-            <span class="list-style"></span>
-            <span class="link remove" @click="$delete(table, index)">
+          <div v-for="(entry, index) in rule.context" :key="`entry:${index}`" class="rule-line">
+            <span class="list-style">
+              <span v-if="index === 0" class="feather-icon icon-chevron-down"></span>
+            </span>
+            <span class="link remove" @click="$delete(rule.context, index)">
               <span class="feather-icon icon-minus"></span>
+            </span>
+            <input type="text" v-model="rule.context[index]" class="form-control">
+          </div>
+          <div class="rule-line">
+            <span class="list-style">
+              <span v-if="!rule.context.length" class="feather-icon icon-chevron-down"></span>
+            </span>
+            <span class="link remove" @click="$delete(table, index)">
+              <span class="feather-icon icon-minus-square"></span>
             </span>
             <span class="link add" @click="addContext(rule)">
               <span class="feather-icon icon-plus"></span>
             </span>
-            <span class="proxy-to">
+            <span :class="['proxy-to', {active: recalling === rule, valid: rule.proxy.records}]"
+              @click="recall(rule)">
               <span class="feather-icon icon-arrow-right"></span>
             </span>
-            <input type="text" v-model="rule.proxy.target"
+            <input type="text" v-model="rule.proxy.target" :readonly="recalling === rule"
               :placeholder="i18n('Proxy to...#!25')" class="form-control target">
           </div>
+          <template v-if="recalling === rule">
+            <div v-for="(record, index) in rule.proxy.records"
+              :key="`record:${index}`" class="rule-line">
+              <span class="list-style wide"></span>
+              <span class="link record-action remove" @click="$delete(rule.proxy.records, index)">
+                <span class="feather-icon icon-minus"></span>
+              </span>
+              <span class="link record-action confirm" @click="useRecord(rule, record)">
+                <span class="feather-icon icon-check"></span>
+              </span>
+              <input type="text" :value="record" readonly class="form-control target">
+            </div>
+          </template>
         </div>
         <div class="rule-line">
           <span class="link" @click="addRule">
@@ -52,7 +66,7 @@
 import InternalPanel from './internal-panel'
 import {mapState} from 'vuex'
 import {cloneDeep, isEqual} from 'lodash'
-import {normalizeRules} from '@/utils/proxy'
+import {trackRuleTargets, resolveRuleTargets} from '@/utils/proxy'
 
 export default {
   name: 'ProxyPanel',
@@ -64,6 +78,7 @@ export default {
       platform: process.platform,
       original: [],
       table: [],
+      recalling: null,
     }
   },
   computed: {
@@ -72,24 +87,44 @@ export default {
       return !isEqual(this.original, this.table)
     },
   },
-  created() {
-    this.original = normalizeRules(this.rules)
-    this.revert()
+  watch: {
+    rules: {
+      handler(value, oldValue) {
+        if (value === oldValue) return
+        if (!this.changed) this.apply(value)
+      },
+      immediate: true,
+    },
   },
   methods: {
+    apply(rules) {
+      this.original = trackRuleTargets(rules)
+      this.revert()
+    },
     addRule() {
-      this.table.push({proxy: {target: ''}})
+      this.table.push({
+        context: [],
+        proxy: {target: ''},
+      })
     },
     addContext(rule) {
-      if (!rule.context) this.$set(rule, 'context', [''])
-      else rule.context.push('')
+      rule.context.push('')
+    },
+    recall(rule) {
+      if (!rule.proxy.records) return
+      this.recalling = this.recalling === rule ? null : rule
+    },
+    useRecord(rule, record) {
+      rule.proxy.target = record
+      this.recalling = null
     },
     revert() {
       this.table = cloneDeep(this.original)
     },
     confirm() {
-      this.$store.dispatch('proxy/save', this.table)
-      this.original = cloneDeep(this.table)
+      const latest = resolveRuleTargets(this.table)
+      this.$store.dispatch('proxy/save', latest)
+      this.apply(latest)
     },
   },
 }
@@ -98,11 +133,9 @@ export default {
 <style>
 .proxy-panel .revert {
   color: var(--design-red);
-  opacity: 1;
 }
 .proxy-panel .confirm {
   color: var(--design-green);
-  opacity: 1;
 }
 .proxy-panel .revert.disabled,
 .proxy-panel .confirm.disabled {
@@ -118,6 +151,11 @@ export default {
   text-align: center;
   opacity: 0.5;
 }
+.proxy-panel .list-style.wide {
+  width: 52px;
+  text-align: center;
+  opacity: 0.5;
+}
 .proxy-panel .link {
   width: 24px;
   text-align: center;
@@ -126,6 +164,14 @@ export default {
 .proxy-panel .proxy-to {
   width: 36px;
   text-align: center;
+  transition: transform 0.2s, color 0.2s;
+}
+.proxy-panel .proxy-to.active {
+  color: var(--design-yellow);
+  transform: rotate(90deg);
+}
+.proxy-panel .proxy-to.valid {
+  color: var(--design-yellow);
 }
 .proxy-panel .link.remove {
   margin-right: 4px;
@@ -139,5 +185,11 @@ export default {
 }
 .proxy-panel .rule-label {
   width: 80px;
+}
+.proxy-panel .record-action.remove {
+  margin-right: 0;
+}
+.proxy-panel .record-action.confirm {
+  width: 36px;
 }
 </style>

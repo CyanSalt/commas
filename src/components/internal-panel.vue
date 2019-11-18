@@ -112,6 +112,9 @@ export default {
   color: var(--theme-foreground);
   opacity: 0.25;
 }
+.internal-panel input[type="text"].form-control:read-only {
+  opacity: 0.5;
+}
 .internal-panel .form-action {
   margin-left: 8px;
   font-size: 16px;
