@@ -1,6 +1,11 @@
 <template>
   <div class="internal-panel">
-    <div class="app-pattern">$,,,</div>
+    <svg class="app-pattern" viewBox="0 0 144 144" version="1.1"
+      xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <rect x="10.8" y="10.8" width="122.4" height="122.4" rx="38.4" ry="38.4"/>
+      <path d="M57 72h24" stroke="currentColor" stroke-width="6" stroke-opacity=".8" stroke-linecap="round" fill="none"/>
+      <path d="M42.52 35.7a11.12 11.12 0 100 22.23 10.37 10.37 0 002.5-.32.56.56 0 01.63.83 15.37 15.37 0 01-13.23 7.93 2.81 2.81 0 000 5.62 21.85 21.85 0 0021.22-22.38v-2.8A11.13 11.13 0 0042.52 35.7z" fill="currentColor" fill-opacity=".8"/>
+    </svg>
     <div class="scroll-area">
       <slot></slot>
     </div>
@@ -28,19 +33,15 @@ export default {
 }
 .internal-panel .app-pattern {
   position: absolute;
-  width: 128px;
-  height: 128px;
-  line-height: 128px;
-  bottom: 24px;
-  right: 24px;
-  font-size: 56px;
-  border-radius: 16px;
-  text-align: center;
-  font-family: 'Oxygen';
-  font-weight: bold;
+  width: 144px;
+  height: 144px;
+  bottom: 12px;
+  right: 12px;
   color: var(--theme-background);
-  background: var(--theme-foreground);
   opacity: 0.1;
+}
+.internal-panel .app-pattern rect {
+  fill: var(--theme-foreground);
 }
 .internal-panel .scroll-area {
   height: 100%;
