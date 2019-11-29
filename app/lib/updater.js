@@ -1,4 +1,4 @@
-const {app, autoUpdater, dialog} = require('electron')
+const {app, autoUpdater, Notification, dialog} = require('electron')
 const {promises: fs} = require('fs')
 const {translate} = require('../build/main')
 
@@ -20,24 +20,46 @@ function toggleAutoUpdater(value) {
   autoUpdaterEnabled = value
 }
 
+async function notify({title, body, actions}) {
+  if (Notification.isSupported() && process.platform === 'darwin') {
+    const notification = new Notification({
+      title,
+      body,
+      silent: true,
+      actions: actions.map(text => ({type: 'button', text})),
+    })
+    return new Promise(resolve => {
+      notification.on('action', (event, index) => resolve(index))
+      notification.show()
+    })
+  } else {
+    const options = {
+      type: 'info',
+      message: title,
+      detail: body,
+      buttons: actions,
+      defaultId: 0,
+      cancelId: 1,
+    }
+    const {response} = await dialog.showMessageBox(options)
+    return response
+  }
+}
+
 function checkForUpdates() {
   if (!app.isPackaged || !['darwin', 'win32'].includes(process.platform)) return
   autoUpdater.on('update-available', () => {
     clearInterval(autoUpdaterChecker)
   })
   autoUpdater.on('update-downloaded', async (event, notes, name) => {
-    const options = {
-      type: 'info',
-      message: name,
-      detail: translate('A new version has been downloaded. Restart the application to apply the updates.#!16'),
-      buttons: [
+    const response = await notify({
+      title: name,
+      body: translate('A new version has been downloaded. Restart the application to apply the updates.#!16'),
+      actions: [
         translate('Restart#!17'),
         translate('Later#!18'),
       ],
-      defaultId: 0,
-      cancelId: 1,
-    }
-    const {response} = await dialog.showMessageBox(options)
+    })
     if (response === 0) autoUpdater.quitAndInstall()
   })
   // Electron official feed URL

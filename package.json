@@ -21,9 +21,9 @@
   },
   "devDependencies": {
     "css-loader": "^3.2.0",
-    "electron": "^7.1.1",
-    "electron-packager": "^14.1.0",
-    "eslint": "^6.6.0",
+    "electron": "^7.1.2",
+    "electron-packager": "^14.1.1",
+    "eslint": "^6.7.1",
     "eslint-plugin-vue": "^6.0.1",
     "http-proxy": "^1.18.0",
     "json5": "^2.1.1",

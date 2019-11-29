@@ -42,6 +42,9 @@ const options = {
     'Copyright \u00a9', new Date().getFullYear(), app.author,
   ].join(' '),
   appCategoryType: 'public.app-category.developer-tools',
+  extendInfo: {
+    NSUserNotificationAlertStyle: 'alert',
+  },
   win32metadata: {
     FileDescription: app.productName,
     OriginalFilename: `${app.name}.exe`,

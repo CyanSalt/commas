@@ -18,7 +18,7 @@ module.exports = {
     'array-bracket-spacing': 'error',
     'arrow-spacing': 'error',
     'brace-style': 'error',
-    'comma-dangle': ['error', 'always-multiline'],
+    'comma-dangle': ['error', {arrays: 'always-multiline', objects: 'always-multiline', imports: 'always-multiline', exports: 'always-multiline', functions: 'only-multiline'}],
     'comma-spacing': 'error',
     'comma-style': 'error',
     'computed-property-spacing': 'error',
@@ -80,6 +80,6 @@ module.exports = {
     'vue/this-in-template': 'error',
     'vue/v-bind-style': 'error',
     'vue/v-on-style': 'error',
-    // 'vue/v-slot-style': 'error',
+    'vue/v-slot-style': 'error',
   }
 }
