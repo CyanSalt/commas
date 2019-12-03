@@ -92,6 +92,7 @@ export function trackRuleTargets(rules) {
 export function resolveRuleTargets(rules) {
   rules = cloneDeep(rules)
   rules.forEach(({proxy}) => {
+    if (!proxy._target) return
     if (proxy.target !== proxy._target) {
       if (!proxy.records) proxy.records = []
       if (!proxy.records.includes(proxy._target)) {
