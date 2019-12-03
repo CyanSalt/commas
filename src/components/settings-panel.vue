@@ -25,18 +25,11 @@
     </div>
     <h2 class="group-title" v-i18n>Feature#!9</h2>
     <div class="group">
-      <div v-if="platform === 'darwin'" class="form-line">
-        <label class="form-label" v-i18n>Enable system proxy#!21</label>
-        <switch-control :checked="proxyGlobal" @change="toggleProxyGlobal"></switch-control>
-      </div>
       <span class="link" @click="editProxy">
         <span v-i18n>Configure proxy rules#!24</span>
       </span>
       <span class="link" @click="exec('open-launchers')">
         <span v-i18n="{F: 'launchers.json'}">Edit %F#!13</span>
-      </span>
-      <span class="link" @click="exec('open-proxy-rules')">
-        <span v-i18n="{F: 'proxy-rules.json'}">Edit %F#!13</span>
       </span>
     </div>
     <h2 class="group-title" v-i18n>Customization#!10</h2>
@@ -69,7 +62,6 @@
 
 <script>
 import InternalPanel from './internal-panel'
-import SwitchControl from './switch-control'
 import LoadingSpinner from './loading-spinner'
 import {remote, shell} from 'electron'
 import {mapActions, mapState} from 'vuex'
@@ -80,7 +72,6 @@ export default {
   name: 'SettingsPanel',
   components: {
     'internal-panel': InternalPanel,
-    'switch-control': SwitchControl,
     'loading-spinner': LoadingSpinner,
   },
   data() {
@@ -90,16 +81,13 @@ export default {
         loading: false,
       },
       version: remote.app.getVersion(),
-      platform: process.platform,
     }
   },
   computed: {
     ...mapState('theme', {activeTheme: 'name'}),
-    ...mapState('proxy', {proxyGlobal: 'globe'}),
     ...mapState('updater', {updaterEnabled: 'enabled'}),
   },
   methods: {
-    ...mapActions('proxy', {toggleProxyGlobal: 'toggleGlobal'}),
     ...mapActions('updater', {toggleUpdaterEnabled: 'toggle'}),
     exec: hooks.command.exec,
     open(e) {

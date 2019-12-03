@@ -1,5 +1,15 @@
 <template>
   <internal-panel class="proxy-panel">
+    <h2 class="group-title" v-i18n>General#!8</h2>
+    <div class="group">
+      <div v-if="platform === 'darwin'" class="form-line">
+        <label class="form-label" v-i18n>Enable system proxy#!21</label>
+        <switch-control :checked="globe" @change="toggleGlobal"></switch-control>
+      </div>
+      <span class="link" @click="exec('open-proxy-rules')">
+        <span v-i18n="{F: 'proxy-rules.json'}">Edit %F#!13</span>
+      </span>
+    </div>
     <h2 class="group-title" v-i18n>Proxy Rules#!23</h2>
     <div class="group">
       <div class="form-line">
@@ -11,10 +21,12 @@
         </span>
       </div>
       <div class="proxy-table">
-        <div v-for="(rule, index) of table" :key="index" class="proxy-rule">
+        <div v-for="(rule, row) of table" :key="row" class="proxy-rule">
           <div v-for="(entry, index) in rule.context" :key="`entry:${index}`" class="rule-line">
             <span class="list-style">
-              <span v-if="index === 0" class="feather-icon icon-chevron-down"></span>
+              <span v-if="index === 0" class="link remove" @click="$delete(table, row)">
+                <span class="feather-icon icon-minus-circle"></span>
+              </span>
             </span>
             <span class="link remove" @click="$delete(rule.context, index)">
               <span class="feather-icon icon-minus"></span>
@@ -23,17 +35,16 @@
           </div>
           <div class="rule-line">
             <span class="list-style">
-              <span v-if="!rule.context.length" class="feather-icon icon-chevron-down"></span>
-            </span>
-            <span class="link remove" @click="$delete(table, index)">
-              <span class="feather-icon icon-minus-square"></span>
+              <span v-if="!rule.context.length" class="link remove" @click="$delete(table, row)">
+                <span class="feather-icon icon-minus-circle"></span>
+              </span>
             </span>
             <span class="link add" @click="addContext(rule)">
               <span class="feather-icon icon-plus"></span>
             </span>
             <span :class="['proxy-to', {active: recalling === rule, valid: rule.proxy.records}]"
               @click="recall(rule)">
-              <span class="feather-icon icon-arrow-right"></span>
+              <span class="feather-icon icon-corner-down-right"></span>
             </span>
             <input type="text" v-model="rule.proxy.target" :readonly="recalling === rule"
               :placeholder="i18n('Proxy to...#!25')" class="form-control target">
@@ -41,9 +52,9 @@
           <template v-if="recalling === rule">
             <div v-for="(record, index) in rule.proxy.records"
               :key="`record:${index}`" class="rule-line">
-              <span class="list-style wide"></span>
+              <span class="list-style"></span>
               <span class="link record-action remove" @click="$delete(rule.proxy.records, index)">
-                <span class="feather-icon icon-minus"></span>
+                <span class="feather-icon icon-x"></span>
               </span>
               <span class="link record-action confirm" @click="useRecord(rule, record)">
                 <span class="feather-icon icon-check"></span>
@@ -53,8 +64,10 @@
           </template>
         </div>
         <div class="rule-line">
-          <span class="link" @click="addRule">
-            <span class="feather-icon icon-plus-square"></span>
+          <span class="list-style">
+            <span class="link add" @click="addRule">
+              <span class="feather-icon icon-plus-circle"></span>
+            </span>
           </span>
         </div>
       </div>
@@ -64,14 +77,17 @@
 
 <script>
 import InternalPanel from './internal-panel'
-import {mapState} from 'vuex'
+import SwitchControl from './switch-control'
+import {mapState, mapActions} from 'vuex'
 import {cloneDeep, isEqual} from 'lodash'
 import {trackRuleTargets, resolveRuleTargets} from '@/utils/proxy'
+import hooks from '@/hooks'
 
 export default {
   name: 'ProxyPanel',
   components: {
     'internal-panel': InternalPanel,
+    'switch-control': SwitchControl,
   },
   data() {
     return {
@@ -82,7 +98,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('proxy', ['rules']),
+    ...mapState('proxy', ['rules', 'globe']),
     changed() {
       return !isEqual(this.original, this.table)
     },
@@ -97,13 +113,15 @@ export default {
     },
   },
   methods: {
+    ...mapActions('proxy', ['toggleGlobal']),
+    exec: hooks.command.exec,
     apply(rules) {
       this.original = trackRuleTargets(rules)
       this.revert()
     },
     addRule() {
       this.table.push({
-        context: [],
+        context: [''],
         proxy: {target: ''},
       })
     },
@@ -131,6 +149,9 @@ export default {
 </script>
 
 <style>
+.proxy-panel .form-action {
+  margin: 0;
+}
 .proxy-panel .revert {
   color: var(--design-red);
 }
@@ -142,54 +163,47 @@ export default {
   color: inherit;
   opacity: 0.5;
 }
-.proxy-panel .rule-line {
+.proxy-table .rule-line {
   display: flex;
   align-items: center;
 }
-.proxy-panel .list-style {
+.proxy-table .list-style {
   width: 24px;
   text-align: center;
-  opacity: 0.5;
 }
-.proxy-panel .list-style.wide {
-  width: 52px;
-  text-align: center;
-  opacity: 0.5;
-}
-.proxy-panel .link {
+.proxy-table .link {
   width: 24px;
   text-align: center;
   transition: opacity 0.2s, color 0.2s;
 }
-.proxy-panel .proxy-to {
+.proxy-table .proxy-to {
   width: 36px;
   text-align: center;
   transition: transform 0.2s, color 0.2s;
 }
-.proxy-panel .proxy-to.active {
+.proxy-table .proxy-to.active {
   color: var(--design-yellow);
   transform: rotate(90deg);
 }
-.proxy-panel .proxy-to.valid {
+.proxy-table .proxy-to.valid {
   color: var(--design-yellow);
 }
-.proxy-panel .link.remove {
-  margin-right: 4px;
+.proxy-table .link.remove {
   color: var(--design-red);
 }
-.proxy-panel .form-control {
+.proxy-table .link.remove + .form-control {
+  margin-left: 4px;
+}
+.proxy-table .form-control {
   width: 320px;
 }
-.proxy-panel .form-control.target {
-  width: 260px;
+.proxy-table .form-control.target {
+  width: 288px;
 }
-.proxy-panel .rule-label {
+.proxy-table .rule-label {
   width: 80px;
 }
-.proxy-panel .record-action.remove {
-  margin-right: 0;
-}
-.proxy-panel .record-action.confirm {
+.proxy-table .record-action.confirm {
   width: 36px;
 }
 </style>
