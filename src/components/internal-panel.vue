@@ -30,6 +30,7 @@ export default {
   padding: 4px 24px;
   height: 100%;
   box-sizing: border-box;
+  z-index: 0;
 }
 .internal-panel .app-pattern {
   position: absolute;
@@ -39,6 +40,8 @@ export default {
   right: 12px;
   color: var(--theme-background);
   opacity: 0.1;
+  pointer-events: none;
+  z-index: -1;
 }
 .internal-panel .app-pattern rect {
   fill: var(--theme-foreground);

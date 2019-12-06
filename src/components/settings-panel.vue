@@ -63,6 +63,7 @@
 <script>
 import InternalPanel from './internal-panel'
 import LoadingSpinner from './loading-spinner'
+import SwitchControl from './switch-control'
 import {remote, shell} from 'electron'
 import {mapActions, mapState} from 'vuex'
 import {InternalTerminals} from '@/utils/terminal'
@@ -73,6 +74,7 @@ export default {
   components: {
     'internal-panel': InternalPanel,
     'loading-spinner': LoadingSpinner,
+    'switch-control': SwitchControl,
   },
   data() {
     return {
