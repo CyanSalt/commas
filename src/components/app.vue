@@ -84,6 +84,9 @@ export default {
     this.$store.dispatch('launcher/watch')
     this.$store.dispatch('proxy/load')
     this.$store.dispatch('proxy/watch')
+    ipcRenderer.on('uncaught-error', (event, error) => {
+      console.error(`Uncaught error in main process: ${error}`)
+    })
     ipcRenderer.on('before-quit', (event, path) => {
       this.$store.commit('shell/setQuiting', true)
     })

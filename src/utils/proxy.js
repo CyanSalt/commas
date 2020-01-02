@@ -20,7 +20,7 @@ function parseRuleEntry(expression) {
     let pattern
     try {
       pattern = new RegExp(regexp[1], regexp[2])
-    } catch (err) {
+    } catch {
       return null
     }
     return {pattern}
@@ -41,7 +41,7 @@ function parseRuleEntry(expression) {
   }
   try {
     url = new URL(url)
-  } catch (err) {
+  } catch {
     return null
   }
   return {url, matches}
@@ -92,14 +92,18 @@ export function trackRuleTargets(rules) {
 export function resolveRuleTargets(rules) {
   rules = cloneDeep(rules)
   rules.forEach(({proxy}) => {
-    if (!proxy._target) return
-    if (proxy.target !== proxy._target) {
-      if (!proxy.records) proxy.records = []
-      if (!proxy.records.includes(proxy._target)) {
-        proxy.records.push(proxy._target)
+    if (proxy._target) {
+      if (proxy.target !== proxy._target) {
+        if (!proxy.records) proxy.records = []
+        if (!proxy.records.includes(proxy._target)) {
+          proxy.records.push(proxy._target)
+        }
       }
+      delete proxy._target
     }
-    delete proxy._target
+    if (proxy.records && !proxy.records.length) {
+      delete proxy.records
+    }
   })
   return rules
 }

@@ -17,7 +17,7 @@
   "terminal.external.explorer": "",
 
   // Support dynamic \w and \W in formatting
-  // This feature will result in a little more performance overhead.
+  // Disabling this feature will slightly improved performance.
   "terminal.tab.liveCwd": true,
 
   // Title format of terminal tab in grammer of bash prompt

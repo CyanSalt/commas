@@ -187,6 +187,7 @@ export default {
 }
 .proxy-table .proxy-to.valid {
   color: var(--design-yellow);
+  cursor: pointer;
 }
 .proxy-table .link.remove {
   color: var(--design-red);

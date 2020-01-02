@@ -33,7 +33,7 @@ export default {
       try {
         const declared = parse(source)
         commit('setSettings', declared)
-      } catch (err) {
+      } catch {
         // ignore error
       }
     },

@@ -18,7 +18,7 @@ export default {
     const path = FileStorage.filename(filename)
     try {
       await fs.access(path)
-    } catch (err) {
+    } catch {
       await fs.copyFile(resolve(assetsDir, example), path)
     }
     shell.openItem(path)

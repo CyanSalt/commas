@@ -1,6 +1,6 @@
 ## Commas
 
-<img src="https://raw.githubusercontent.com/CyanSalt/commas/master/app/assets/images/icon.png" width="96">
+<img src="https://raw.githubusercontent.com/CyanSalt/commas/master/app/assets/images/icon.svg" width="96">
 
 A hackable terminal and command runner. **Commas** means **Com**mand **Mas**ter.
 

@@ -45,7 +45,7 @@ export default {
       try {
         const rules = parse(source)
         commit('setRules', rules)
-      } catch (err) {
+      } catch {
         // ignore error
       }
     },

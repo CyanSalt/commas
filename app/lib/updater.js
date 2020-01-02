@@ -8,12 +8,18 @@ let autoUpdaterChecker
 
 async function executeChecking() {
   if (!autoUpdaterEnabled || !autoUpdaterPrepared) return
+  if (autoUpdaterChecker) clearTimeout(autoUpdaterChecker)
   try {
     await fs.access(app.getPath('exe'))
     autoUpdater.checkForUpdates()
-  } catch (err) {
-    clearInterval(autoUpdaterChecker)
+  } catch {
+    return
   }
+  // Check for updates endlessly
+  autoUpdaterChecker = setTimeout(() => {
+    autoUpdaterChecker = null
+    executeChecking()
+  }, 3600 * 1e3)
 }
 
 function toggleAutoUpdater(value) {
@@ -72,8 +78,6 @@ function checkForUpdates() {
     return
   }
   autoUpdaterPrepared = true
-  // Check for updates endlessly
-  autoUpdaterChecker = setInterval(executeChecking, 3600 * 1e3)
   executeChecking()
 }
 

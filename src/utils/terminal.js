@@ -68,7 +68,7 @@ export async function getCwd(pid) {
     } else if (process.platform === 'linux') {
       return await fs.readlink(`/proc/${pid}/cwd`)
     }
-  } catch (err) {
+  } catch {
     return ''
   }
 }
@@ -119,7 +119,7 @@ const iconset = icons.map(icon => {
   if (icon.pattern) {
     try {
       icon.pattern = new RegExp(icon.pattern)
-    } catch (err) {
+    } catch {
       icon.pattern = null
     }
   }
@@ -144,7 +144,7 @@ export async function getGitBranch(directory) {
   try {
     const {stdout} = await exec(command, {cwd: resolveHome(directory)})
     return stdout
-  } catch (err) {
+  } catch {
     // Git for Windows will throw error if the directory is not a repository
     return ''
   }

@@ -12,7 +12,7 @@ let iconPath = `app/assets/images/icon.${suffix}`
 // Check icon file
 try {
   fs.accessSync(iconPath)
-} catch (err) {
+} catch {
   const folder = path.dirname(iconPath)
   try {
     const input = fs.readFileSync(`${folder}/icon.png`)
@@ -20,7 +20,7 @@ try {
     const builder = suffix === 'icns' ? png2icons.createICNS : png2icons.createICO
     const output = builder(input, png2icons.BICUBIC2, 0, false, true)
     fs.writeFileSync(iconPath, output)
-  } catch (err) {
+  } catch {
     iconPath = null
   }
 }
@@ -67,7 +67,7 @@ packager(options).then(appPaths => {
         const manifest = `${app.name}.VisualElementsManifest.xml`
         fs.copyFileSync(`app/assets/${manifest}`,
           `${dir}/${manifest}`)
-      } catch (err) {
+      } catch {
         // ignore error
       }
     }
