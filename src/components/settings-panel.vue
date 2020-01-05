@@ -19,6 +19,9 @@
       <span class="link" @click="exec('open-user-directory')">
         <span v-i18n>Open user directory#!12</span>
       </span>
+      <span class="link" @click="exec('open-default-settings')">
+        <span v-i18n>Open default settings#!26</span>
+      </span>
       <span class="link" @click="exec('open-settings')">
         <span v-i18n="{F: 'settings.json'}">Edit %F#!13</span>
       </span>

@@ -50,6 +50,9 @@ const registry = {
   'open-user-directory'() {
     return shell.openUserDirectory()
   },
+  'open-default-settings'() {
+    return shell.openDefaultSettings()
+  },
   'open-settings'() {
     return shell.openUserFile('settings.json', 'settings.json')
   },
