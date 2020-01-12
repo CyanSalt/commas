@@ -53,6 +53,24 @@ export default {
     removeTab(state, index) {
       state.tabs.splice(index, 1)
     },
+    moveTab(state, [from, to]) {
+      const fromIndex = state.tabs.indexOf(from)
+      const toIndex = state.tabs.indexOf(to)
+      if (fromIndex < toIndex) {
+        state.tabs.splice(toIndex + 1, 0, from)
+        state.tabs.splice(fromIndex, 1)
+      } else {
+        state.tabs.splice(fromIndex, 1)
+        state.tabs.splice(toIndex, 0, from)
+      }
+      if (state.active === fromIndex) {
+        state.active = toIndex
+      } else if (state.active > fromIndex && state.active < toIndex) {
+        state.active -= 1
+      } else if (state.active < fromIndex && state.active > toIndex) {
+        state.active += 1
+      }
+    },
     setShells(state, value) {
       state.shells = value
     },
@@ -202,7 +220,7 @@ export default {
     input(store, {tab, data}) {
       tab.pty.write(data)
     },
-    activite({state, commit}, tab) {
+    activate({state, commit}, tab) {
       const tabs = state.tabs
       const index = tabs.indexOf(tab)
       if (index !== -1) {

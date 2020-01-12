@@ -69,6 +69,9 @@ export default {
 </script>
 
 <style>
+.tab-item {
+  padding: 0 16px;
+}
 .tab-item .tab-title {
   flex: auto;
   width: 0;
@@ -108,7 +111,7 @@ export default {
   transform: scale(0);
   left: -16px;
   border-left: 5px solid var(--design-blue);
-  transition: transform 0.15s;
+  transition: transform 0.15s, border-color 0.2s;
 }
 .tab-item.active .tab-overview::before {
   transform: scale(1);
@@ -150,5 +153,12 @@ export default {
 }
 .tab-item .divider {
   border-bottom: 1px solid rgba(127, 127, 127, 0.1);
+}
+.sortable-item.dragging .tab-item .tab-overview::before {
+  transform: scale(1);
+  border-left-color: var(--design-yellow);
+}
+.sortable-item.dragging .tab-item .tab-title {
+  opacity: 1;
 }
 </style>

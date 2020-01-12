@@ -34,7 +34,7 @@ export default {
     open({dispatch, rootState}, launcher) {
       const tab = getLauncherTab(rootState.terminal.tabs, launcher)
       if (tab) {
-        return dispatch('terminal/activite', tab, {root: true})
+        return dispatch('terminal/activate', tab, {root: true})
       } else {
         const directory = launcher.remote ? null : launcher.directory
         return dispatch('terminal/spawn', {

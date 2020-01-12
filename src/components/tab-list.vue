@@ -3,16 +3,17 @@
     <div class="list-column" :style="{width: width + 'px'}">
       <div class="list">
         <div class="scroll-area">
-          <div class="processes">
-            <tab-item :tab="tab" @click.native="activite(tab)"
-              v-for="tab in running" :key="tab.id"></tab-item>
-            <div class="new-tab">
-              <div v-if="shells.length" class="select-shell anchor" @click="select">
-                <span class="feather-icon icon-chevron-down"></span>
-              </div>
-              <div class="default-shell anchor" @click="spawn()">
-                <span class="feather-icon icon-plus"></span>
-              </div>
+          <sortable-list :value="running" v-slot="{value}"
+            class="processes" @change="sortTabs">
+            <tab-item :tab="value" :key="value.id"
+              @click.native="activate(value)"></tab-item>
+          </sortable-list>
+          <div class="new-tab">
+            <div v-if="shells.length" class="select-shell anchor" @click="select">
+              <span class="feather-icon icon-chevron-down"></span>
+            </div>
+            <div class="default-shell anchor" @click="spawn()">
+              <span class="feather-icon icon-plus"></span>
             </div>
           </div>
           <div class="launcher-folder" @click="expandOrCollapse">
@@ -68,6 +69,7 @@
 import {ipcRenderer} from 'electron'
 import TabItem from './tab-item'
 import ScrollBar from './scroll-bar'
+import SortableList from './sortable-list'
 import {getLauncherTab} from '@/utils/launcher'
 import {InternalTerminals} from '@/utils/terminal'
 import {mapState, mapActions} from 'vuex'
@@ -78,6 +80,7 @@ export default {
   components: {
     'tab-item': TabItem,
     'scroll-bar': ScrollBar,
+    'sortable-list': SortableList,
   },
   data() {
     return {
@@ -102,7 +105,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('terminal', ['spawn', 'activite']),
+    ...mapActions('terminal', ['spawn', 'activate']),
     ...mapActions('launcher', ['open', 'launch', 'assign']),
     getLauncherTab(launcher) {
       return getLauncherTab(this.tabs, launcher)
@@ -157,6 +160,12 @@ export default {
         },
       })
     },
+    sortTabs(from, to) {
+      this.$store.commit('terminal/moveTab', [
+        this.running[from],
+        this.running[to],
+      ])
+    },
   },
 }
 </script>
@@ -201,11 +210,8 @@ export default {
 .tab-list .invisible {
   visibility: hidden;
 }
-.tab-list .processes,
-.tab-list .launchers {
-  padding: 0 16px;
-}
 .tab-list .new-tab {
+  padding: 0 16px;
   display: flex;
   height: var(--tab-height);
   line-height: var(--tab-height);
