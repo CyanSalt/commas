@@ -8,10 +8,8 @@
         <keep-alive v-if="current">
           <terminal-teletype v-if="!current.internal" :tab="current"
             :key="current.id"></terminal-teletype>
-          <settings-panel v-else-if="current === internal.settings"
-            :key="current.id"></settings-panel>
-          <proxy-panel v-else-if="current === internal.proxy"
-            :key="current.id"></proxy-panel>
+          <component v-else-if="internal" :is="internal"
+            :key="current.id"></component>
         </keep-alive>
       </div>
     </div>
@@ -25,6 +23,7 @@ import FindBox from './find-box'
 import TerminalTeletype from './terminal-teletype'
 import SettingsPanel from './settings-panel'
 import ProxyPanel from './proxy-panel'
+import ThemePanel from './theme-panel'
 import {ipcRenderer} from 'electron'
 import {mapState, mapGetters} from 'vuex'
 import {InternalTerminals} from '@/utils/terminal'
@@ -38,19 +37,20 @@ export default {
     'tab-list': TabList,
     'terminal-teletype': TerminalTeletype,
     'find-box': FindBox,
-    'settings-panel': SettingsPanel,
-    'proxy-panel': ProxyPanel,
-  },
-  data() {
-    return {
-      internal: InternalTerminals,
-    }
   },
   computed: {
     ...mapGetters('terminal', ['current']),
     ...mapState('shell', ['multitabs']),
     opaque() {
       return currentState.fullscreen
+    },
+    internal() {
+      switch (this.current) {
+        case InternalTerminals.settings: return SettingsPanel
+        case InternalTerminals.proxy: return ProxyPanel
+        case InternalTerminals.theme: return ThemePanel
+        default: return null
+      }
     },
   },
   beforeCreate() {

@@ -34,4 +34,7 @@ export default {
     }
     shell.openItem(path)
   },
+  openExternalByEvent(event) {
+    shell.openExternal(event.target.dataset.href)
+  },
 }

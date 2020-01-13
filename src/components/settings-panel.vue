@@ -2,20 +2,9 @@
   <internal-panel class="settings-panel">
     <h2 class="group-title" v-i18n>General#!8</h2>
     <div class="group">
-      <div class="form-line">
-        <label class="form-label" v-i18n>Apply theme#!19</label>
-        <input type="text" v-model="theme.name" :placeholder="activeTheme"
-          class="form-control">
-        <span class="link form-action" @click="dress">
-          <loading-spinner v-if="theme.loading"></loading-spinner>
-          <span v-else class="feather-icon icon-download"></span>
-        </span>
-        <div class="form-line-tip">
-          <span v-i18n>Theme will be downloaded from#!20</span>
-          <span class="link" data-href="https://github.com/mbadolato/iTerm2-Color-Schemes/tree/master/windowsterminal"
-            @click="open">mbadolato/iTerm2-Color-Schemes</span>
-        </div>
-      </div>
+      <span class="link" @click="interact(internal.theme)">
+        <span v-i18n>Configure theme#!28</span>
+      </span>
       <span class="link" @click="exec('open-user-directory')">
         <span v-i18n>Open user directory#!12</span>
       </span>
@@ -28,7 +17,7 @@
     </div>
     <h2 class="group-title" v-i18n>Feature#!9</h2>
     <div class="group">
-      <span class="link" @click="editProxy">
+      <span class="link" @click="interact(internal.proxy)">
         <span v-i18n>Configure proxy rules#!24</span>
       </span>
       <span class="link" @click="exec('open-launchers')">
@@ -65,9 +54,8 @@
 
 <script>
 import InternalPanel from './internal-panel'
-import LoadingSpinner from './loading-spinner'
 import SwitchControl from './switch-control'
-import {remote, shell} from 'electron'
+import {remote} from 'electron'
 import {mapActions, mapState} from 'vuex'
 import {InternalTerminals} from '@/utils/terminal'
 import hooks from '@/hooks'
@@ -76,40 +64,22 @@ export default {
   name: 'SettingsPanel',
   components: {
     'internal-panel': InternalPanel,
-    'loading-spinner': LoadingSpinner,
     'switch-control': SwitchControl,
   },
   data() {
     return {
-      theme: {
-        name: '',
-        loading: false,
-      },
+      internal: InternalTerminals,
       version: remote.app.getVersion(),
     }
   },
   computed: {
-    ...mapState('theme', {activeTheme: 'name'}),
     ...mapState('updater', {updaterEnabled: 'enabled'}),
   },
   methods: {
+    ...mapActions('terminal', ['interact']),
     ...mapActions('updater', {toggleUpdaterEnabled: 'toggle'}),
     exec: hooks.command.exec,
-    open(e) {
-      shell.openExternal(e.target.dataset.href)
-    },
-    async dress() {
-      if (this.theme.loading || !this.theme.name) return
-      this.theme.loading = true
-      await this.$store.dispatch('theme/apply', {
-        name: this.theme.name,
-        download: true,
-      })
-      this.theme.loading = false
-    },
-    editProxy() {
-      this.$store.dispatch('terminal/interact', InternalTerminals.proxy)
-    },
+    open: hooks.shell.openExternalByEvent,
   },
 }
 </script>

@@ -9,25 +9,20 @@ import icons from '@assets/icon.json'
 
 const generateID = createIDGenerator(id => id - 1)
 
+const createInternalTerminal = (title, icon) => ({
+  internal: {
+    icon: `feather-icon ${icon}`,
+  },
+  id: generateID(),
+  process: remote.app.name,
+  title: translate(title),
+  cwd: '',
+})
+
 export const InternalTerminals = {
-  settings: {
-    internal: {
-      icon: 'feather-icon icon-settings',
-    },
-    id: generateID(),
-    process: remote.app.name,
-    title: translate('Settings#!7'),
-    cwd: '',
-  },
-  proxy: {
-    internal: {
-      icon: 'feather-icon icon-navigation',
-    },
-    id: generateID(),
-    process: remote.app.name,
-    title: translate('Proxy Rules#!23'),
-    cwd: '',
-  },
+  settings: createInternalTerminal('Settings#!7', 'icon-settings'),
+  proxy: createInternalTerminal('Proxy Rules#!23', 'icon-navigation'),
+  theme: createInternalTerminal('Theme#!27', 'icon-feather'),
 }
 
 export function quote(command, q) {
