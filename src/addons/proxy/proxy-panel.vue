@@ -47,7 +47,7 @@
               <span class="feather-icon icon-corner-down-right"></span>
             </span>
             <input type="text" v-model="rule.proxy.target" :readonly="recalling === rule"
-              :placeholder="i18n('Proxy to...#!25')" class="form-control target">
+              v-i18n placeholder="Proxy to...#!25" class="form-control target">
           </div>
           <template v-if="recalling === rule">
             <div v-for="(record, index) in rule.proxy.records"

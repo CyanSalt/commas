@@ -1,6 +1,6 @@
 <template>
   <div class="find-box" v-show="visible">
-    <input class="keyword" v-model="keyword" :placeholder="i18n('Find#!6')"
+    <input class="keyword" v-model="keyword" v-i18n placeholder="Find#!6"
       @keyup.enter="find" @keyup.esc="close" ref="keyword" autofocus>
     <div class="options">
       <div class="option case-sensitive"

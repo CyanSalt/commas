@@ -47,6 +47,7 @@ onAppReady(() => {
 })
 
 function translateText(message) {
+  if (!message) return message
   if (unabridged[message]) return unabridged[message]
   const identity = message.substring(0, message.indexOf(comment))
   if (dictionary[identity]) return dictionary[identity]
