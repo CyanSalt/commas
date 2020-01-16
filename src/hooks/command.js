@@ -1,6 +1,5 @@
 import {ui} from './core'
 import shell from './shell'
-import {InternalTerminals} from '@/utils/terminal'
 
 const registry = {
   'open-tab'(args) {
@@ -43,9 +42,6 @@ const registry = {
   },
   'clear'() {
     return ui.store.dispatch('terminal/clear')
-  },
-  'interact-settings'() {
-    return ui.store.dispatch('terminal/interact', InternalTerminals.settings)
   },
   'open-user-directory'() {
     return shell.openUserDirectory()

@@ -3,6 +3,7 @@ import events from './events'
 import settings from './settings'
 import command from './command'
 import shell from './shell'
+import workspace from './workspace'
 
 export default {
   core,
@@ -10,4 +11,5 @@ export default {
   settings,
   command,
   shell,
+  workspace,
 }

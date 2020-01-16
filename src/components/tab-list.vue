@@ -52,13 +52,8 @@
         <scroll-bar></scroll-bar>
       </div>
       <div class="bottom-actions">
-        <div class="anchor" @click="configure">
-          <span class="feather-icon icon-settings"></span>
-        </div>
-        <div :class="['anchor', 'proxy-server', {active: port}]" @click="proxy">
-          <span class="feather-icon icon-navigation"></span>
-          <span v-if="port" class="server-port">{{ port }}</span>
-        </div>
+        <component v-for="(anchor, index) in anchors" :key="index"
+          :is="anchor" class="anchor"></component>
       </div>
     </div>
     <div class="sash" @mousedown.left="resize"></div>
@@ -71,7 +66,7 @@ import TabItem from './tab-item'
 import ScrollBar from './scroll-bar'
 import SortableList from './sortable-list'
 import {getLauncherTab} from '@/utils/launcher'
-import {InternalTerminals} from '@/utils/terminal'
+import hooks from '@/hooks'
 import {mapState, mapActions} from 'vuex'
 import {basename} from 'path'
 
@@ -88,12 +83,12 @@ export default {
       collapsed: true,
       finding: false,
       keyword: '',
+      anchors: hooks.workspace.anchor.all(),
     }
   },
   computed: {
     ...mapState('terminal', ['tabs', 'shells']),
     ...mapState('launcher', ['launchers']),
-    ...mapState('proxy', ['port']),
     running() {
       return this.tabs.filter(tab => !tab.launcher)
     },
@@ -112,16 +107,6 @@ export default {
     },
     expandOrCollapse() {
       this.collapsed = !this.collapsed
-    },
-    configure() {
-      this.$store.dispatch('terminal/interact', InternalTerminals.settings)
-    },
-    proxy() {
-      if (this.port) {
-        this.$store.dispatch('proxy/close')
-      } else {
-        this.$store.dispatch('proxy/open')
-      }
     },
     resize(e) {
       const original = this.width
@@ -310,8 +295,5 @@ export default {
 }
 .tab-list .assign:hover {
   color: var(--design-blue);
-}
-.tab-list .proxy-server.active {
-  color: var(--design-cyan);
 }
 </style>

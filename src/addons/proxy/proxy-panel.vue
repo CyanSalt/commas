@@ -76,8 +76,6 @@
 </template>
 
 <script>
-import InternalPanel from './internal-panel'
-import SwitchControl from './switch-control'
 import {mapState, mapActions} from 'vuex'
 import {cloneDeep, isEqual} from 'lodash'
 import {trackRuleTargets, resolveRuleTargets} from '@/utils/proxy'
@@ -86,8 +84,8 @@ import hooks from '@/hooks'
 export default {
   name: 'ProxyPanel',
   components: {
-    'internal-panel': InternalPanel,
-    'switch-control': SwitchControl,
+    'internal-panel': hooks.workspace.components.InternalPanel,
+    'switch-control': hooks.workspace.components.SwitchControl,
   },
   data() {
     return {

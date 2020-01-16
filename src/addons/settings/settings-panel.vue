@@ -2,7 +2,7 @@
   <internal-panel class="settings-panel">
     <h2 class="group-title" v-i18n>General#!8</h2>
     <div class="group">
-      <span class="link" @click="interact(internal.theme)">
+      <span class="link" @click="interact('theme')">
         <span v-i18n>Configure theme#!28</span>
       </span>
       <span class="link" @click="exec('open-user-directory')">
@@ -17,7 +17,7 @@
     </div>
     <h2 class="group-title" v-i18n>Feature#!9</h2>
     <div class="group">
-      <span class="link" @click="interact(internal.proxy)">
+      <span class="link" @click="interact('proxy')">
         <span v-i18n>Configure proxy rules#!24</span>
       </span>
       <span class="link" @click="exec('open-launchers')">
@@ -53,22 +53,18 @@
 </template>
 
 <script>
-import InternalPanel from './internal-panel'
-import SwitchControl from './switch-control'
 import {remote} from 'electron'
 import {mapActions, mapState} from 'vuex'
-import {InternalTerminals} from '@/utils/terminal'
 import hooks from '@/hooks'
 
 export default {
   name: 'SettingsPanel',
   components: {
-    'internal-panel': InternalPanel,
-    'switch-control': SwitchControl,
+    'internal-panel': hooks.workspace.components.InternalPanel,
+    'switch-control': hooks.workspace.components.SwitchControl,
   },
   data() {
     return {
-      internal: InternalTerminals,
       version: remote.app.getVersion(),
     }
   },
@@ -76,10 +72,10 @@ export default {
     ...mapState('updater', {updaterEnabled: 'enabled'}),
   },
   methods: {
-    ...mapActions('terminal', ['interact']),
     ...mapActions('updater', {toggleUpdaterEnabled: 'toggle'}),
     exec: hooks.command.exec,
     open: hooks.shell.openExternalByEvent,
+    interact: hooks.workspace.panel.open,
   },
 }
 </script>

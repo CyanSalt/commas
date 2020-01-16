@@ -1,29 +1,8 @@
 import {promises as fs} from 'fs'
 import {hostname, userInfo} from 'os'
 import {basename, sep} from 'path'
-import {remote} from 'electron'
 import {exec} from './electron'
-import {createIDGenerator} from './identity'
-import {translate} from './i18n'
 import icons from '@assets/icon.json'
-
-const generateID = createIDGenerator(id => id - 1)
-
-const createInternalTerminal = (title, icon) => ({
-  internal: {
-    icon: `feather-icon ${icon}`,
-  },
-  id: generateID(),
-  process: remote.app.name,
-  title: translate(title),
-  cwd: '',
-})
-
-export const InternalTerminals = {
-  settings: createInternalTerminal('Settings#!7', 'icon-settings'),
-  proxy: createInternalTerminal('Proxy Rules#!23', 'icon-navigation'),
-  theme: createInternalTerminal('Theme#!27', 'icon-feather'),
-}
 
 export function quote(command, q) {
   return `${q}${command.replace(new RegExp(q, 'g'), `${q}\\${q}${q}`)}${q}`

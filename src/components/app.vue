@@ -6,10 +6,10 @@
       <div class="interface">
         <find-box></find-box>
         <keep-alive v-if="current">
-          <terminal-teletype v-if="!current.internal" :tab="current"
-            :key="current.id"></terminal-teletype>
-          <component v-else-if="internal" :is="internal"
+          <component v-if="current.internal" :is="current.internal.component"
             :key="current.id"></component>
+          <terminal-teletype v-else :tab="current"
+            :key="current.id"></terminal-teletype>
         </keep-alive>
       </div>
     </div>
@@ -21,12 +21,8 @@ import TitleBar from './title-bar'
 import TabList from './tab-list'
 import FindBox from './find-box'
 import TerminalTeletype from './terminal-teletype'
-import SettingsPanel from './settings-panel'
-import ProxyPanel from './proxy-panel'
-import ThemePanel from './theme-panel'
 import {ipcRenderer} from 'electron'
 import {mapState, mapGetters} from 'vuex'
-import {InternalTerminals} from '@/utils/terminal'
 import {currentState} from '@/utils/frame'
 import hooks from '@/hooks'
 
@@ -43,14 +39,6 @@ export default {
     ...mapState('shell', ['multitabs']),
     opaque() {
       return currentState.fullscreen
-    },
-    internal() {
-      switch (this.current) {
-        case InternalTerminals.settings: return SettingsPanel
-        case InternalTerminals.proxy: return ProxyPanel
-        case InternalTerminals.theme: return ThemePanel
-        default: return null
-      }
     },
   },
   beforeCreate() {
