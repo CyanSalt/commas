@@ -63,3 +63,11 @@ export function translate(message, variables) {
   }
   return text
 }
+
+export function translateElement(el, {value}) {
+  if (['INPUT', 'TEXTAREA'].includes(el.tagName)) {
+    el.placeholder = translate(el.placeholder, value)
+  } else {
+    el.textContent = translate(el.textContent, value)
+  }
+}

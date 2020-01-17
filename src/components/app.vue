@@ -24,6 +24,7 @@ import TerminalTeletype from './terminal-teletype'
 import {ipcRenderer} from 'electron'
 import {mapState, mapGetters} from 'vuex'
 import {currentState} from '@/utils/frame'
+import FileStorage from '@/utils/storage'
 import hooks from '@/hooks'
 
 export default {
@@ -43,7 +44,7 @@ export default {
   },
   beforeCreate() {
     // custom stylesheet
-    const stylesheet = this.$storage.readSync('custom.css')
+    const stylesheet = FileStorage.readSync('custom.css')
     if (stylesheet) {
       const element = document.createElement('style')
       element.appendChild(document.createTextNode(stylesheet))
@@ -91,7 +92,7 @@ export default {
       hooks.command.exec(command, args)
     })
     // custom script
-    const initScript = this.$storage.require('custom.js')
+    const initScript = FileStorage.require('custom.js')
     initScript && initScript(hooks)
   },
 }
