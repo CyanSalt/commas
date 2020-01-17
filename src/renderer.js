@@ -11,9 +11,9 @@ import ThemeAddon from './addons/theme'
 Vue.use(I18N)
 Vue.use(FileStorage)
 
-SettingsAddon.install(hooks)
-ProxyAddon.install(hooks)
-ThemeAddon.install(hooks)
+hooks.addon.load(SettingsAddon)
+hooks.addon.load(ProxyAddon)
+hooks.addon.load(ThemeAddon)
 
 new Vue({
   store,

@@ -5,6 +5,7 @@ import command from './command'
 import shell from './shell'
 import workspace from './workspace'
 import utils from './utils'
+import addon from './addon'
 
 export default {
   core,
@@ -14,4 +15,5 @@ export default {
   shell,
   workspace,
   utils,
+  addon,
 }
