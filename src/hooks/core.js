@@ -4,8 +4,11 @@ export const ui = {
 }
 
 export default {
-  getUnstableViewModel() {
+  getViewModel() {
     return ui.vm
+  },
+  getStore() {
+    return ui.store
   },
   dangerouslySetViewModel(vm) {
     ui.vm = vm

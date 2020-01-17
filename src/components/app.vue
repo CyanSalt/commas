@@ -51,27 +51,26 @@ export default {
     }
   },
   created() {
+    // prepare for hooks
+    hooks.core.dangerouslySetViewModel(this)
+    hooks.events.emit('ready')
     const index = process.argv.indexOf('--') + 1
     const args = index ? process.argv.slice(index) : []
     const initialPath = args[0]
     ;(async () => {
       await this.$store.dispatch('settings/load')
-      hooks.events.emit('settings.loaded')
-      this.$store.dispatch('proxy/loadSystem')
+      hooks.events.emit('settings:loaded')
       await this.$store.dispatch('theme/load')
       this.$store.dispatch('terminal/spawn', {cwd: initialPath})
     })()
     this.$store.dispatch('settings/watch', async () => {
-      hooks.events.emit('settings.reloaded')
+      hooks.events.emit('settings:reloaded')
       await this.$store.dispatch('theme/load')
       this.$store.dispatch('terminal/refresh')
-      this.$store.dispatch('proxy/refresh')
     })
     this.$store.dispatch('terminal/load')
     this.$store.dispatch('launcher/load')
     this.$store.dispatch('launcher/watch')
-    this.$store.dispatch('proxy/load')
-    this.$store.dispatch('proxy/watch')
     ipcRenderer.on('uncaught-error', (event, error) => {
       console.error(`Uncaught error in main process: ${error}`)
     })
@@ -91,8 +90,6 @@ export default {
     ipcRenderer.on('command', (event, {command, args}) => {
       hooks.command.exec(command, args)
     })
-    // prepare for hooks
-    hooks.core.dangerouslySetViewModel(this)
     // custom script
     const initScript = this.$storage.require('custom.js')
     initScript && initScript(hooks)

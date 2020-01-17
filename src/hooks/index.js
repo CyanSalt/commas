@@ -4,6 +4,7 @@ import settings from './settings'
 import command from './command'
 import shell from './shell'
 import workspace from './workspace'
+import utils from './utils'
 
 export default {
   core,
@@ -12,4 +13,5 @@ export default {
   command,
   shell,
   workspace,
+  utils,
 }

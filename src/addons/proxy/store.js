@@ -1,11 +1,10 @@
 import {createServer} from 'http'
 import {createProxyServer} from 'http-proxy'
 import FileStorage from '@/utils/storage'
-import {unreactive} from '@/utils/object'
-import {parseProxyRules, matchProxyRule} from '@/utils/proxy'
-import {getGlobalWebProxy, setGlobalWebProxy} from '@/utils/terminal'
-import Writer from '@/utils/writer'
-import {parse} from 'json5'
+import {
+  parseProxyRules, matchProxyRule, getGlobalWebProxy, setGlobalWebProxy,
+} from './utils'
+import hooks from '@/hooks'
 
 export default {
   namespaced: true,
@@ -39,15 +38,10 @@ export default {
   },
   actions: {
     async load({commit}) {
-      const source = await FileStorage.read('proxy-rules.json')
-      if (!source) return
-      commit('setWriter', unreactive(new Writer(source)))
-      try {
-        const rules = parse(source)
-        commit('setRules', rules)
-      } catch {
-        // ignore error
-      }
+      const result = await FileStorage.fetch('proxy-rules.json')
+      if (!result) return
+      commit('setRules', result.data)
+      commit('setWriter', hooks.utils.unreactive(result.writer))
     },
     async loadSystem({commit, rootState}) {
       const settings = rootState.settings.settings
@@ -70,7 +64,7 @@ export default {
         proxyServer.web(req, res, matchProxyRule(rules, req.url))
       })
       server.listen(port)
-      commit('setServer', unreactive(server))
+      commit('setServer', hooks.utils.unreactive(server))
       commit('setPort', port)
     },
     close({state, commit}) {
@@ -100,13 +94,10 @@ export default {
       }
     },
     save({state}, value) {
-      const writer = state.writer
-      if (writer) {
-        writer.write(value)
-        return FileStorage.write('proxy-rules.json', writer.toSource())
-      } else {
-        return FileStorage.save('proxy-rules.json', value)
-      }
+      return FileStorage.update('proxy-rules.json', {
+        data: value,
+        writer: state.writer,
+      })
     },
     async toggleGlobal({state, commit, rootState}) {
       const value = !state.globe

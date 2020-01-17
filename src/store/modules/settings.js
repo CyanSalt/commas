@@ -1,9 +1,7 @@
 import fallback from '@assets/settings.json'
 import FileStorage from '@/utils/storage'
-import Writer from '@/utils/writer'
 import {unreactive} from '@/utils/object'
 import {cloneDeep, isEqual} from 'lodash'
-import {parse} from 'json5'
 
 export default {
   namespaced: true,
@@ -27,18 +25,12 @@ export default {
   actions: {
     async load({commit}) {
       // Load user settings
-      const source = await FileStorage.read('settings.json')
-      if (!source) return
-      commit('setWriter', unreactive(new Writer(source)))
-      try {
-        const declared = parse(source)
-        commit('setSettings', declared)
-      } catch {
-        // ignore error
-      }
+      const result = await FileStorage.fetch('settings.json')
+      if (!result) return
+      commit('setSettings', result.data)
+      commit('setWriter', unreactive(result.writer))
     },
     save({state}) {
-      const writer = state.writer
       // Filter default values on saving
       const reducer = (diff, [key, value]) => {
         if (!isEqual(value, fallback[key])) {
@@ -46,14 +38,11 @@ export default {
         }
         return diff
       }
-      // TODO: better data merging logic
-      const computed = Object.entries(state.settings).reduce(reducer, {})
-      if (writer) {
-        writer.write(computed)
-        return FileStorage.write('settings.json', writer.toSource())
-      } else {
-        return FileStorage.save('settings.json', computed)
-      }
+      return FileStorage.update('settings.json', {
+        // TODO: better data merging logic
+        data: Object.entries(state.settings).reduce(reducer, {}),
+        writer: state.writer,
+      })
     },
     update({commit, dispatch}, patch) {
       commit('setSettings', patch)

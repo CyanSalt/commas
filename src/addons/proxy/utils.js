@@ -1,6 +1,7 @@
 import {cloneDeep} from 'lodash'
+import hooks from '@/hooks'
 
-export function normalizeRules(rules) {
+function normalizeRules(rules) {
   return rules.reduce((collection, original) => {
     const rule = {...original}
     if (!rule.proxy || !rule.context) {
@@ -119,4 +120,47 @@ export function resolveRuleTargets(rules) {
     }
   })
   return rules
+}
+
+export async function getMacOSCurrentNetworkService() {
+  const networkInterface = 'route get default | grep interface | awk \'{print $2}\''
+  const pipes = [
+    'networksetup -listnetworkserviceorder',
+    `grep -C1 $(${networkInterface})`,
+    // 'awk "FNR == 1{print $2}"'
+    'head -n 1 | cut -d " " -f2-',
+  ]
+  const {stdout} = await hooks.utils.exec(pipes.join(' | '))
+  return stdout.trim()
+}
+
+export async function getGlobalWebProxy() {
+  if (process.platform !== 'darwin') return
+  const service = await getMacOSCurrentNetworkService()
+  if (!service) return
+  const {stdout} = await hooks.utils.exec(`networksetup -getwebproxy "${service}"`)
+  return stdout.trim().split('\n').reduce((result, line) => {
+    const [key, value] = line.split(': ')
+    result[key.trim()] = value.trim()
+    return result
+  }, {})
+}
+
+export async function setGlobalWebProxy(options) {
+  if (process.platform !== 'darwin') return
+  const service = await getMacOSCurrentNetworkService()
+  if (!service) return
+  const {host, port} = {host: '""', port: 0, ...options}
+  const args = [host, port].join(' ')
+  const commands = [
+    `networksetup -setwebproxy "${service}" ${args}`,
+    `networksetup -setsecurewebproxy "${service}" ${args}`,
+  ]
+  if (!options) {
+    commands.push(
+      `networksetup -setwebproxystate "${service}" off`,
+      `networksetup -setsecurewebproxystate "${service}" off`,
+    )
+  }
+  return hooks.utils.exec(commands.join(' && '))
 }
