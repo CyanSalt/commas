@@ -1,4 +1,4 @@
-import FileStorage from '@/utils/storage'
+import {userStorage} from '@/utils/storage'
 import {quote, resolveHome} from '@/utils/terminal'
 import {getLauncherTab, merge} from '@/utils/launcher'
 import {shell} from 'electron'
@@ -21,7 +21,7 @@ export default {
   },
   actions: {
     async load({state, commit, rootState}) {
-      const launchers = await FileStorage.load('launchers.json')
+      const launchers = await userStorage.load('launchers.json')
       if (!launchers) return
       const merged = merge(state.launchers, launchers)
       commit('setLaunchers', merged)
@@ -82,7 +82,7 @@ export default {
     },
     watch({state, commit, dispatch}) {
       if (state.watcher) state.watcher.close()
-      const watcher = FileStorage.watch('launchers.json', () => {
+      const watcher = userStorage.watch('launchers.json', () => {
         dispatch('load')
       })
       commit('setWatcher', watcher)

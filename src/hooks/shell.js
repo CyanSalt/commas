@@ -2,7 +2,7 @@ import {shell, ipcRenderer, remote} from 'electron'
 import {promises as fs} from 'fs'
 import {tmpdir} from 'os'
 import {resolve} from 'path'
-import FileStorage from '@/utils/storage'
+import {userStorage} from '@/utils/storage'
 import {assetsDir} from '@/utils/electron'
 
 export default {
@@ -13,7 +13,7 @@ export default {
     remote.getCurrentWindow().close()
   },
   openUserDirectory() {
-    shell.openItem(FileStorage.filename('.'))
+    shell.openItem(userStorage.filename('.'))
   },
   openDefaultSettings() {
     const source = resolve(assetsDir, 'settings.json')
@@ -26,7 +26,7 @@ export default {
     }
   },
   async openUserFile(filename, example) {
-    const path = FileStorage.filename(filename)
+    const path = userStorage.filename(filename)
     try {
       await fs.access(path)
     } catch {

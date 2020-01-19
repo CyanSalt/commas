@@ -1,4 +1,4 @@
-import FileStorage from './storage'
+import {userStorage, assetsStorage} from './storage'
 import {app, onAppReady} from './electron'
 
 const translations = [
@@ -18,13 +18,13 @@ function getTranslationFile(locale) {
 
 function getDictionary() {
   let locale = app.getLocale()
-  const custom = FileStorage.loadSync('translation.json') || {}
+  const custom = userStorage.loadSync('translation.json') || {}
   if (custom['@use']) locale = custom['@use']
   // Load translation data
   let dictionary = {}
   const file = getTranslationFile(locale)
   if (file) {
-    const result = FileStorage.assets().loadSync(`locales/${file}`)
+    const result = assetsStorage.loadSync(`locales/${file}`)
     if (result) dictionary = result
   }
   // Merge user defined translation data

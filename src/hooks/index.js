@@ -4,6 +4,7 @@ import settings from './settings'
 import command from './command'
 import shell from './shell'
 import workspace from './workspace'
+import storage from './storage'
 import utils from './utils'
 import addon from './addon'
 
@@ -14,6 +15,7 @@ export default {
   command,
   shell,
   workspace,
+  storage,
   utils,
   addon,
 }

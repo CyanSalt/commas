@@ -1,6 +1,6 @@
 const {app, Menu} = require('electron')
 const shared = require('../assets/menu')
-const {FileStorage} = require('../build/main')
+const {userStorage} = require('../build/main')
 const {execCommand} = require('./command')
 
 function resolveBindingCommand(binding) {
@@ -17,7 +17,7 @@ function getSharedWindowMenu() {
 }
 
 function getUserCustomMenu() {
-  const keybindings = FileStorage.loadSync('keybindings.json') || []
+  const keybindings = userStorage.loadSync('keybindings.json') || []
   return keybindings.map(resolveBindingCommand)
 }
 

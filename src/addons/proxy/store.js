@@ -1,6 +1,5 @@
 import {createServer} from 'http'
 import {createProxyServer} from 'http-proxy'
-import FileStorage from '@/utils/storage'
 import {
   parseProxyRules, matchProxyRule, getGlobalWebProxy, setGlobalWebProxy,
 } from './utils'
@@ -38,7 +37,7 @@ export default {
   },
   actions: {
     async load({commit}) {
-      const result = await FileStorage.fetch('proxy-rules.json')
+      const result = await hooks.storage.user.fetch('proxy-rules.json')
       if (!result) return
       commit('setRules', result.data)
       commit('setWriter', hooks.utils.unreactive(result.writer))
@@ -75,7 +74,7 @@ export default {
     },
     watch({state, commit, dispatch}) {
       if (state.watcher) state.watcher.close()
-      const watcher = FileStorage.watch('proxy-rules.json', async () => {
+      const watcher = hooks.storage.user.watch('proxy-rules.json', async () => {
         await dispatch('load')
         if (state.server) {
           await dispatch('close')
@@ -94,7 +93,7 @@ export default {
       }
     },
     save({state}, value) {
-      return FileStorage.update('proxy-rules.json', {
+      return hooks.storage.user.update('proxy-rules.json', {
         data: value,
         writer: state.writer,
       })

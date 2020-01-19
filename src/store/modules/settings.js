@@ -1,5 +1,5 @@
 import fallback from '@assets/settings.json'
-import FileStorage from '@/utils/storage'
+import {userStorage} from '@/utils/storage'
 import {unreactive} from '@/utils/object'
 import {cloneDeep, isEqual} from 'lodash'
 
@@ -25,7 +25,7 @@ export default {
   actions: {
     async load({commit}) {
       // Load user settings
-      const result = await FileStorage.fetch('settings.json')
+      const result = await userStorage.fetch('settings.json')
       if (!result) return
       commit('setSettings', result.data)
       commit('setWriter', unreactive(result.writer))
@@ -38,7 +38,7 @@ export default {
         }
         return diff
       }
-      return FileStorage.update('settings.json', {
+      return userStorage.update('settings.json', {
         // TODO: better data merging logic
         data: Object.entries(state.settings).reduce(reducer, {}),
         writer: state.writer,
@@ -50,7 +50,7 @@ export default {
     },
     watch({state, commit, dispatch}, callback) {
       if (state.watcher) state.watcher.close()
-      const watcher = FileStorage.watch('settings.json', async () => {
+      const watcher = userStorage.watch('settings.json', async () => {
         await dispatch('load')
         callback(state.settings)
       })
