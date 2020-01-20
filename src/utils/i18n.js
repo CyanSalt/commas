@@ -56,7 +56,7 @@ function translateText(message) {
 
 export function translate(message, variables) {
   let text = translateText(message)
-  if (variables) {
+  if (variables && typeof variables === 'object') {
     for (const [key, replacer] of Object.entries(variables)) {
       text = text.replace('%' + key, replacer)
     }

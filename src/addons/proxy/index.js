@@ -1,5 +1,6 @@
 import ProxyPanel from './proxy-panel'
 import ProxyAnchor from './proxy-anchor'
+import ProxyLink from './proxy-link'
 import ProxyStore from './store'
 
 export default {
@@ -8,8 +9,13 @@ export default {
       component: ProxyPanel,
       title: 'Proxy Rules#!23',
       icon: 'feather-icon icon-navigation',
+      i18n: true,
     })
     hooks.workspace.anchor.add(ProxyAnchor)
+    hooks.addon.data.add('settings', {
+      component: ProxyLink,
+      group: 'feature',
+    })
     hooks.events.on('ready', () => {
       const store = hooks.core.getStore()
       store.registerModule('proxy', ProxyStore)

@@ -7,6 +7,7 @@ export default {
       component: SettingsPanel,
       title: 'Settings#!7',
       icon: 'feather-icon icon-settings',
+      i18n: true,
     })
     hooks.command.register('interact-settings', () => {
       return hooks.workspace.panel.open('settings')

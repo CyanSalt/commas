@@ -8,14 +8,14 @@ import {ui} from './core'
 
 const generateID = createIDGenerator(id => id - 1)
 
-const createInternalTerminal = ({title, icon, component}) => ({
+const createInternalTerminal = ({title, icon, component, i18n}) => ({
   internal: {
     icon,
     component,
   },
   id: generateID(),
   process: remote.app.name,
-  title: translate(title),
+  title: i18n ? translate(title, i18n) : title,
   cwd: '',
 })
 
