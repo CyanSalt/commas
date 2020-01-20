@@ -6,7 +6,7 @@
         <label class="form-label" v-i18n>Enable system proxy#!21</label>
         <switch-control :checked="globe" @change="toggleGlobal"></switch-control>
       </div>
-      <span class="link" @click="exec('open-proxy-rules')">
+      <span class="link" @click="openFile">
         <span v-i18n="{F: 'proxy-rules.json'}">Edit %F#!13</span>
       </span>
     </div>
@@ -141,6 +141,9 @@ export default {
       const latest = resolveRuleTargets(this.table)
       this.$store.dispatch('proxy/save', latest)
       this.apply(latest)
+    },
+    openFile() {
+      hooks.shell.openUserFile('proxy-rules.json', 'examples/proxy-rules.json')
     },
   },
 }

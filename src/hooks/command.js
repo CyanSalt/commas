@@ -55,9 +55,6 @@ const registry = {
   'open-launchers'() {
     return shell.openUserFile('launchers.json', 'examples/launchers.json')
   },
-  'open-proxy-rules'() {
-    return shell.openUserFile('proxy-rules.json', 'examples/proxy-rules.json')
-  },
   'open-keybindings'() {
     return shell.openUserFile('keybindings.json', 'examples/keybindings.json')
   },
