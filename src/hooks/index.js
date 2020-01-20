@@ -5,6 +5,7 @@ import command from './command'
 import shell from './shell'
 import workspace from './workspace'
 import storage from './storage'
+import i18n from './i18n'
 import utils from './utils'
 import addon from './addon'
 
@@ -16,6 +17,7 @@ export default {
   shell,
   workspace,
   storage,
+  i18n,
   utils,
   addon,
 }

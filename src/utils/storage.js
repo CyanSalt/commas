@@ -65,10 +65,14 @@ export class FileStorage {
       return null
     }
   }
-  // TODO: remove
-  async download(basename, url) {
+  async download(basename, url, force) {
+    if (!force) {
+      const data = await this.load(basename)
+      if (data) return data
+    }
     try {
-      const data = await fetch(url).then(response => response.json())
+      const response = await fetch(url)
+      const data = await response.json()
       await this.save(basename, data)
       return data
     } catch {

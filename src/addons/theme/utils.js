@@ -1,26 +1,27 @@
-import {get} from 'https'
+import mapping from './mapping.json'
 
-function getRemoteContent(url) {
-  return new Promise((resolve, reject) => {
-    get(url, response => {
-      let result = ''
-      response.on('data', (chunk) => {
-        result += chunk
-      })
-      response.on('end', () => {
-        resolve(result)
-      })
-    }).on('error', reject)
-  })
-}
-
-const documentation = 'https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/README.md'
+const rawFilePath = 'https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master'
 
 export async function getThemeList() {
-  const content = await getRemoteContent(documentation)
-  return content
-    .split(/^##\s+/m)
-    .find(section => section.startsWith('Screenshots'))
-    .match(/^#{3}\s+(.+)$/mg)
-    .map(title => title.slice(4))
+  const response = await fetch(`${rawFilePath}/README.md`)
+  const content = await response.text()
+  const extractor = /\n###\s+(.+)\s+!\[Screenshot\]\((.+)\)/g
+  const list = []
+  let matches
+  while ((matches = extractor.exec(content)) !== null) {
+    let url
+    const declared = mapping.find(item => item.name === matches[1])
+    if (declared) {
+      if (!declared.path) continue
+      url = `${rawFilePath}/${declared.path}`
+    } else {
+      url = `${rawFilePath}/windowsterminal/${matches[1]}.json`
+    }
+    list.push({
+      name: matches[1],
+      screenshot: `${rawFilePath}/${matches[2]}`,
+      url,
+    })
+  }
+  return list
 }

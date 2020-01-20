@@ -17,7 +17,7 @@
   "A new version has been downloaded. Restart the application to apply the updates.#!16": "新版本已下载完毕，重启以应用更新。",
   "Restart#!17": "立即重启",
   "Later#!18": "稍后重启",
-  "Apply theme#!19": "应用主题",
+  "Search#!19": "搜索",
   "Theme will be downloaded from#!20": "主题来自于",
   "Enable system proxy#!21": "启用系统代理",
   "Enable auto updating#!22": "启用自动更新",
@@ -26,5 +26,6 @@
   "Proxy to...#!25": "代理至...",
   "Open default settings#!26": "打开默认配置",
   "Theme#!27": "主题",
-  "Configure theme#!28": "配置主题"
+  "Configure theme#!28": "配置主题",
+  "Reset to default#!29": "重置为默认值"
 }

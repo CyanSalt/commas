@@ -2,8 +2,6 @@ import fallback from '@assets/themes/oceanic-next.json'
 import {colors, rgba, rgb} from '@/utils/theme'
 import {userStorage, assetsStorage} from '@/utils/storage'
 
-const downloadURL = 'https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/windowsterminal'
-
 export default {
   namespaced: true,
   state: {
@@ -31,7 +29,7 @@ export default {
         return dispatch('apply', {name})
       }
     },
-    async apply({commit, dispatch, rootState}, {name, download}) {
+    async apply({commit, dispatch, rootState}, {name}) {
       const theme = {...fallback}
       const settings = rootState.settings.settings
       const configured = settings['terminal.theme.name']
@@ -40,9 +38,6 @@ export default {
         let file = await assetsStorage.load(path)
         if (!file) {
           file = await userStorage.load(path)
-          if (!file && download) {
-            file = await userStorage.download(path, `${downloadURL}/${name}.json`)
-          }
           if (file) dispatch('watch', path)
         }
         if (file) Object.assign(theme, file)
