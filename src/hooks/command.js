@@ -43,6 +43,9 @@ const registry = {
   'clear'() {
     return ui.store.dispatch('terminal/clear')
   },
+  'run-script'(args) {
+    return ui.store.dispatch('launcher/runScript', args)
+  },
   'open-user-directory'() {
     return shell.openUserDirectory()
   },

@@ -37,4 +37,13 @@ export default {
   openExternalByEvent(event) {
     shell.openExternal(event.target.dataset.href)
   },
+  openContextByEvent(event, template) {
+    ipcRenderer.send('contextmenu', {
+      template,
+      position: {
+        x: event.clientX,
+        y: event.clientY,
+      },
+    })
+  },
 }

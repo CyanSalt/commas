@@ -1,6 +1,6 @@
 import {userStorage} from '@/utils/storage'
-import {quote, resolveHome} from '@/utils/terminal'
-import {getLauncherTab, merge} from '@/utils/launcher'
+import {resolveHome} from '@/utils/terminal'
+import {getLauncherTab, getLauncherCommand, merge} from '@/utils/launcher'
 import {shell} from 'electron'
 import {spawn} from 'child_process'
 import {EOL} from 'os'
@@ -47,21 +47,8 @@ export default {
       const id = launcher.id
       await dispatch('open', launcher)
       launcher = state.launchers.find(item => item.id === id)
-      let command = launcher.command
-      if (launcher.login) {
-        command = command ? `$SHELL -lic ${quote(command, '"')}`
-          : '$SHELL -li'
-      }
-      if (launcher.directory) {
-        const directory = launcher.directory.replace(' ', '\\ ')
-        command = command ? `cd ${directory} && (${command})`
-          : `cd ${directory}`
-      }
-      if (launcher.remote) {
-        command = command ? `ssh -t ${launcher.remote} ${quote(command, '\'')}`
-          : `ssh -t ${launcher.remote}`
-      }
       const tab = getLauncherTab(rootState.terminal.tabs, launcher)
+      const command = getLauncherCommand(launcher)
       return dispatch('terminal/input', {tab, data: command + EOL}, {root: true})
     },
     assign({rootState}, launcher) {
@@ -79,6 +66,17 @@ export default {
       }
       const [command, ...args] = explorer
       spawn(command, [...args, directory])
+    },
+    async runScript({state, dispatch, rootState}, {launcher, index}) {
+      const id = launcher.id
+      await dispatch('open', launcher)
+      launcher = state.launchers.find(item => item.id === id)
+      const tab = getLauncherTab(rootState.terminal.tabs, launcher)
+      const command = getLauncherCommand({
+        ...launcher,
+        ...launcher.scripts[index],
+      })
+      return dispatch('terminal/input', {tab, data: command + EOL}, {root: true})
     },
     watch({state, commit, dispatch}) {
       if (state.watcher) state.watcher.close()

@@ -9,7 +9,10 @@
       </template>
     </div>
     <div class="title-wrapper">
-      <div v-if="directory" class="open-directory" @click="open">
+      <div v-if="scripts.length" class="shortcut run-script" @click="runScript">
+        <span class="feather-icon icon-play"></span>
+      </div>
+      <div v-if="directory" class="shortcut open-directory" @click="open">
         <span class="feather-icon icon-folder"></span>
       </div>
       <div class="title-text">{{ directory || title }}</div>
@@ -36,6 +39,8 @@ import {shell} from 'electron'
 import {mapState, mapGetters} from 'vuex'
 import {getPrompt, resolveHome, getGitBranch} from '@/utils/terminal'
 import {currentWindow, currentState} from '@/utils/frame'
+import {getTabLauncher} from '@/utils/launcher'
+import hooks from '@/hooks'
 
 export default {
   name: 'TitleBar',
@@ -49,6 +54,7 @@ export default {
   },
   computed: {
     ...mapState('settings', ['settings']),
+    ...mapState('launcher', ['launchers']),
     ...mapGetters('terminal', ['current']),
     directory() {
       if (!this.current || this.current.internal) return ''
@@ -58,6 +64,16 @@ export default {
       if (this.current && this.current.title) return this.current.title
       const expr = this.settings['terminal.tab.titleFormat']
       return getPrompt(expr, this.current)
+    },
+    launcher() {
+      if (this.current && this.current.launcher) {
+        return getTabLauncher(this.launchers, this.current)
+      }
+      return null
+    },
+    scripts() {
+      if (this.launcher && this.launcher.scripts) return this.launcher.scripts
+      return []
     },
   },
   watch: {
@@ -84,6 +100,16 @@ export default {
     },
     open() {
       shell.openItem(resolveHome(this.directory))
+    },
+    runScript(event) {
+      hooks.shell.openContextByEvent(event, this.scripts.map((script, index) => ({
+        label: script.name || script.command,
+        command: 'run-script',
+        args: {
+          launcher: this.launcher,
+          index: index,
+        },
+      })))
     },
     async updateBranch() {
       if (!this.directory) {
@@ -121,7 +147,7 @@ export default {
   justify-content: center;
   align-items: center;
 }
-.title-bar .title-wrapper .open-directory {
+.title-bar .title-wrapper .shortcut {
   flex: none;
   margin-right: 8px;
   cursor: pointer;
@@ -130,6 +156,9 @@ export default {
 }
 .title-bar .title-wrapper .open-directory:hover {
   color: var(--design-blue);
+}
+.title-bar .title-wrapper .run-script:hover {
+  color: var(--design-green);
 }
 .title-bar .title-text {
   overflow: hidden;

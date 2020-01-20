@@ -64,7 +64,6 @@
 </template>
 
 <script>
-import {ipcRenderer} from 'electron'
 import TabItem from './tab-item'
 import ScrollBar from './scroll-bar'
 import SortableList from './sortable-list'
@@ -137,20 +136,14 @@ export default {
       hooks.command.exec('interact-settings')
         || hooks.command.exec('open-settings')
     },
-    select(e) {
-      ipcRenderer.send('contextmenu', {
-        template: this.shells.map(shell => ({
-          label: basename(shell),
-          command: 'open-tab',
-          args: {
-            shell,
-          },
-        })),
-        position: {
-          x: e.clientX,
-          y: e.clientY,
+    select(event) {
+      hooks.shell.openContextByEvent(event, this.shells.map(shell => ({
+        label: basename(shell),
+        command: 'open-tab',
+        args: {
+          shell,
         },
-      })
+      })))
     },
     sortTabs(from, to) {
       this.$store.commit('terminal/moveTab', [
