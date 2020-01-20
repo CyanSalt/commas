@@ -43,10 +43,6 @@
     <div class="group">
       <component v-for="(item, index) in slots.about"
         :is="item.component" :key="index"></component>
-      <div class="form-line">
-        <label class="form-label" v-i18n>Enable auto updating#!22</label>
-        <switch-control :checked="updaterEnabled" @change="toggleUpdaterEnabled"></switch-control>
-      </div>
       <span class="text" v-i18n="{V: version}">Current version: %V#!15</span>
       <span class="link" data-href="https://github.com/CyanSalt/commas" v-i18n
         @click="open">Visit our website#!14</span>
@@ -56,7 +52,6 @@
 
 <script>
 import {remote} from 'electron'
-import {mapActions, mapState} from 'vuex'
 import hooks from '@/hooks'
 
 export default {
@@ -72,7 +67,6 @@ export default {
     }
   },
   computed: {
-    ...mapState('updater', {updaterEnabled: 'enabled'}),
     slots() {
       return {
         general: this.divide('general'),
@@ -83,7 +77,6 @@ export default {
     },
   },
   methods: {
-    ...mapActions('updater', {toggleUpdaterEnabled: 'toggle'}),
     exec: hooks.command.exec,
     open: hooks.shell.openExternalByEvent,
     divide(group) {

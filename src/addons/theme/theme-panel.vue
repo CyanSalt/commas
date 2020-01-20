@@ -14,7 +14,8 @@
             @click="open">mbadolato/iTerm2-Color-Schemes</span>
         </div>
       </div>
-      <div class="theme-list">
+      <loading-spinner v-if="!list.length" class="theme-loading"></loading-spinner>
+      <div v-else class="theme-list">
         <div v-for="item in filtered" :key="item.name" class="theme-item">
           <img class="theme-screenshot" :src="item.screenshot">
           <div class="theme-action">
@@ -125,5 +126,8 @@ export default {
   align-items: center;
   padding: 0 12px;
   height: 48px;
+}
+.theme-panel .theme-loading {
+  margin: 12px 0;
 }
 </style>

@@ -5,11 +5,13 @@ import hooks from './hooks'
 import SettingsAddon from './addons/settings'
 import ProxyAddon from './addons/proxy'
 import ThemeAddon from './addons/theme'
+import UpdaterAddon from './addons/updater'
 import {translateElement} from './utils/i18n'
 
 hooks.addon.load(SettingsAddon)
 hooks.addon.load(ProxyAddon)
 hooks.addon.load(ThemeAddon)
+hooks.addon.load(UpdaterAddon)
 
 Vue.directive('i18n', translateElement)
 
