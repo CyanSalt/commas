@@ -1,5 +1,4 @@
 import SettingsPanel from './settings-panel'
-import SettingsAnchor from './settings-anchor'
 
 export default {
   install(hooks) {
@@ -12,6 +11,5 @@ export default {
     hooks.command.register('interact-settings', () => {
       return hooks.workspace.panel.open('settings')
     })
-    hooks.workspace.anchor.add(SettingsAnchor)
   },
 }

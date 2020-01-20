@@ -75,7 +75,9 @@ const registry = {
 export default {
   exec(command, args) {
     const handler = registry[command]
-    return handler ? handler(args) : false
+    if (!handler) return false
+    handler(args)
+    return true
   },
   register(command, handler) {
     if (registry[command]) {

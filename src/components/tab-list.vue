@@ -52,6 +52,9 @@
         <scroll-bar></scroll-bar>
       </div>
       <div class="bottom-actions">
+        <div class="anchor" @click="configure">
+          <span class="feather-icon icon-settings"></span>
+        </div>
         <component v-for="(anchor, index) in anchors" :key="index"
           :is="anchor" class="anchor"></component>
       </div>
@@ -129,6 +132,10 @@ export default {
         this.$refs.keyword.blur()
       }
       this.finding = !this.finding
+    },
+    configure() {
+      hooks.command.exec('interact-settings')
+        || hooks.command.exec('open-settings')
     },
     select(e) {
       ipcRenderer.send('contextmenu', {
