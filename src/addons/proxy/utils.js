@@ -7,9 +7,6 @@ function normalizeRules(rules) {
     if (!rule.proxy || !rule.context) {
       return collection
     }
-    if (!rule.proxy.target) {
-      rule.proxy = {target: rule.proxy}
-    }
     collection.push(rule)
     return collection
   }, [])
@@ -57,20 +54,29 @@ export function parseProxyRules(rules) {
   }, [])
 }
 
-export function matchProxyRule(rules, url) {
+function getMatchedProxyRules(rules, url) {
+  return rules.filter(rule => rule.entries.some(entry => {
+    if (entry.pattern) return entry.pattern.test(url.href)
+    if (entry.matches.host && entry.url.host !== url.host) return false
+    if (entry.matches.protocol && entry.url.protocol !== url.protocol) return false
+    if (entry.url.search && ![...entry.url.searchParams].every(
+      (key, value) => url.searchParams.get(key) === value,
+    )) return false
+    return url.pathname.startsWith(entry.url.pathname)
+  }))
+}
+
+export function getProxyByURL(rules, url) {
   url = new URL(url)
-  const rule = rules.find(rule => {
-    return rule.entries.some(entry => {
-      if (entry.pattern) return entry.pattern.test(url.href)
-      if (entry.matches.host && entry.url.host !== url.host) return false
-      if (entry.matches.protocol && entry.url.protocol !== url.protocol) return false
-      if (entry.url.search && ![...entry.url.searchParams].every(
-        (key, value) => url.searchParams.get(key) === value,
-      )) return false
-      return url.pathname.startsWith(entry.url.pathname)
-    })
-  })
+  const matched = getMatchedProxyRules(rules, url)
+  const rule = matched.find(rule => rule.proxy.target)
   return rule ? rule.proxy : {target: url.origin}
+}
+
+export function getRewriteRulesByURL(rules, url) {
+  url = new URL(url)
+  const matched = getMatchedProxyRules(rules, url)
+  return [].concat(...matched.map(rule => rule.proxy.rewrite).filter(Boolean))
 }
 
 function getRewritingContent(when, target, rule) {
@@ -109,9 +115,8 @@ function setRewritingContent(when, target, rule, content) {
   }
 }
 
-export function rewriteProxy(when, target, proxy) {
-  if (!proxy.rewrite) return
-  const rules = proxy.rewrite.filter(item => item.when === when)
+export function rewriteProxy(when, target, rules) {
+  rules = rules.filter(item => item.when === when)
   for (const rule of rules) {
     const original = getRewritingContent(when, target, rule)
     let matched = true

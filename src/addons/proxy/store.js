@@ -1,7 +1,7 @@
 import {createServer} from 'http'
 import {createProxyServer} from 'http-proxy'
 import {
-  parseProxyRules, matchProxyRule, rewriteProxy,
+  parseProxyRules, getProxyByURL, getRewriteRulesByURL, rewriteProxy,
   getGlobalWebProxy, setGlobalWebProxy,
 } from './utils'
 import hooks from '@/hooks'
@@ -61,13 +61,13 @@ export default {
       // TODO: catch EADDRINUSE and notify error
       const proxyServer = createProxyServer()
       proxyServer.on('proxyReq', (proxyReq, req, res) => {
-        rewriteProxy('request', proxyReq, matchProxyRule(rules, req.url))
+        rewriteProxy('request', proxyReq, getRewriteRulesByURL(rules, req.url))
       })
       proxyServer.on('proxyRes', (proxyRes, req, res) => {
-        rewriteProxy('response', res, matchProxyRule(rules, req.url))
+        rewriteProxy('response', res, getRewriteRulesByURL(rules, req.url))
       })
       server = createServer((req, res) => {
-        proxyServer.web(req, res, matchProxyRule(rules, req.url))
+        proxyServer.web(req, res, getProxyByURL(rules, req.url))
       })
       server.listen(port)
       commit('setServer', hooks.utils.unreactive(server))
