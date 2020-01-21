@@ -3,7 +3,7 @@ import UpdaterStore from './store'
 
 export default {
   install(hooks) {
-    hooks.addon.data.add('settings', {
+    hooks.addon.data.add('settings:slots', {
       component: UpdaterLine,
       group: 'about',
     })

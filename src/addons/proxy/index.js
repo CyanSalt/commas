@@ -12,7 +12,7 @@ export default {
       i18n: true,
     })
     hooks.workspace.anchor.add(ProxyAnchor)
-    hooks.addon.data.add('settings', {
+    hooks.addon.data.add('settings:slots', {
       component: ProxyLink,
       group: 'feature',
     })

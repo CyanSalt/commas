@@ -63,7 +63,7 @@ export default {
   data() {
     return {
       version: remote.app.getVersion(),
-      list: hooks.addon.data.get('settings'),
+      list: hooks.addon.data.get('settings:slots'),
     }
   },
   computed: {

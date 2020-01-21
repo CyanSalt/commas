@@ -9,7 +9,7 @@ export default {
       icon: 'feather-icon icon-feather',
       i18n: true,
     })
-    hooks.addon.data.add('settings', {
+    hooks.addon.data.add('settings:slots', {
       component: ThemeLink,
       group: 'general',
     })
