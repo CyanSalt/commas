@@ -16,16 +16,8 @@ function normalizeRules(rules) {
 }
 
 function parseRuleEntry(expression) {
-  const regexp = expression.match(/^s\/(.+)\/([a-z]+)?$/)
-  if (regexp) {
-    let pattern
-    try {
-      pattern = new RegExp(regexp[1], regexp[2])
-    } catch {
-      return null
-    }
-    return {pattern}
-  }
+  const pattern = hooks.utils.regexp(expression)
+  if (pattern) return {pattern}
   let matches = {}
   let url = expression
   if (expression.startsWith('//')) {
@@ -79,6 +71,61 @@ export function matchProxyRule(rules, url) {
     })
   })
   return rule ? rule.proxy : {target: url.origin}
+}
+
+function getRewritingContent(when, target, rule) {
+  switch (rule.type) {
+    case 'header':
+      if (rule.name === ':method' && when === 'request') {
+        return target.method
+      } else if (rule.name === ':status' && when === 'response') {
+        return target.statusCode
+      } else {
+        return target.getHeader(rule.name) || ''
+      }
+    default:
+      return ''
+  }
+}
+
+function setRewritingContent(when, target, rule, content) {
+  switch (rule.type) {
+    case 'header':
+      if (content === null) {
+        target.removeHeader(rule.name)
+        return
+      }
+      if (name === ':method' && when === 'request') {
+        target.method = content
+      } else if (name === ':status' && when === 'response') {
+        target.writeHead(content)
+      } else {
+        target.setHeader(name, content)
+      }
+      return
+    case 'body':
+      target.end(content)
+      return
+  }
+}
+
+export function rewriteProxy(when, target, proxy) {
+  if (!proxy.rewrite) return
+  const rules = proxy.rewrite.filter(item => item.when === when)
+  for (const rule of rules) {
+    const original = getRewritingContent(when, target, rule)
+    let matched = true
+    if (rule.from) {
+      const regexp = hooks.utils.regexp(rule.from)
+      matched = regexp ? regexp.match(original) : original === rule.from
+    }
+    let content = rule.content
+    if (Array.isArray(matched) && content !== null) {
+      content = content
+        .replace(/\$(\d+)/, (sign, group) => matched[group])
+    }
+    setRewritingContent(when, target, rule, content)
+  }
 }
 
 export function trackRuleTargets(rules) {

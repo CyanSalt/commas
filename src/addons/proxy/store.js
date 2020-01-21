@@ -1,7 +1,8 @@
 import {createServer} from 'http'
 import {createProxyServer} from 'http-proxy'
 import {
-  parseProxyRules, matchProxyRule, getGlobalWebProxy, setGlobalWebProxy,
+  parseProxyRules, matchProxyRule, rewriteProxy,
+  getGlobalWebProxy, setGlobalWebProxy,
 } from './utils'
 import hooks from '@/hooks'
 
@@ -59,6 +60,12 @@ export default {
       const port = settings['terminal.proxyServer.port']
       // TODO: catch EADDRINUSE and notify error
       const proxyServer = createProxyServer()
+      proxyServer.on('proxyReq', (proxyReq, req, res) => {
+        rewriteProxy('request', proxyReq, matchProxyRule(rules, req.url))
+      })
+      proxyServer.on('proxyRes', (proxyRes, req, res) => {
+        rewriteProxy('response', res, matchProxyRule(rules, req.url))
+      })
       server = createServer((req, res) => {
         proxyServer.web(req, res, matchProxyRule(rules, req.url))
       })

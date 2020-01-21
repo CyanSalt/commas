@@ -48,6 +48,9 @@
             </span>
             <input type="text" v-model="rule.proxy.target" :readonly="recalling === rule"
               v-i18n placeholder="Proxy to...#!25" class="form-control target">
+            <span v-if="rule.proxy.rewrite" class="rewriting">
+              <span class="feather-icon icon-activity"></span>
+            </span>
           </div>
           <template v-if="recalling === rule">
             <div v-for="(record, index) in rule.proxy.records"
@@ -189,6 +192,12 @@ export default {
 .proxy-table .proxy-to.valid {
   color: var(--design-yellow);
   cursor: pointer;
+}
+.proxy-table .rewriting {
+  width: 36px;
+  text-align: center;
+  color: var(--design-yellow);
+  opacity: 0.5;
 }
 .proxy-table .link.remove {
   color: var(--design-red);
