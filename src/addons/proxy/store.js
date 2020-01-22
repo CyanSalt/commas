@@ -1,4 +1,5 @@
 import {createServer} from 'http'
+import {connect} from 'net'
 import {createProxyServer} from 'http-proxy'
 import {
   parseProxyRules, getProxyByURL, getRewriteRulesByURL, rewriteProxy,
@@ -68,6 +69,17 @@ export default {
       })
       server = createServer((req, res) => {
         proxyServer.web(req, res, getProxyByURL(rules, req.url))
+      })
+      /** Inspired by {@link https://gist.github.com/tonygambone/2422322} */
+      server.on('connect', (req, socket) => {
+        const proxy = getProxyByURL(rules, 'https://' + req.url)
+        let {protocol, host, port} = new URL(proxy.target)
+        if (!port) port = protocol === 'http:' ? 80 : 443
+        const connection = connect(port, host, () => {
+          socket.write('HTTP/1.1 200 OK\r\n\r\n')
+          socket.pipe(connection)
+          connection.pipe(socket)
+        })
       })
       server.listen(port)
       commit('setServer', hooks.utils.unreactive(server))

@@ -101,12 +101,12 @@ function setRewritingContent(when, target, rule, content) {
         target.removeHeader(rule.name)
         return
       }
-      if (name === ':method' && when === 'request') {
+      if (rule.name === ':method' && when === 'request') {
         target.method = content
-      } else if (name === ':status' && when === 'response') {
+      } else if (rule.name === ':status' && when === 'response') {
         target.writeHead(content)
       } else {
-        target.setHeader(name, content)
+        target.setHeader(rule.name, content)
       }
       return
     case 'body':
