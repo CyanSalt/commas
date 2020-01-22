@@ -31,10 +31,7 @@ module.exports = {
     filename: '[name].js',
     libraryTarget: 'commonjs2',
   },
-  externals: {
-    'original-fs': 'commonjs2 original-fs',
-    ...externalizeAllDenpendencies(app.dependencies),
-  },
+  externals: externalizeAllDenpendencies(app.dependencies),
   resolve: {
     extensions: ['.js', '.vue'],
     alias: {
