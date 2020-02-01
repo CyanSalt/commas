@@ -1,16 +1,16 @@
 <template>
   <internal-panel class="proxy-panel">
-    <h2 class="group-title" v-i18n>General#!8</h2>
+    <h2 class="group-title" v-i18n>General#!settings.2</h2>
     <div class="group">
       <div v-if="platform === 'darwin'" class="form-line">
-        <label class="form-label" v-i18n>Enable system proxy#!21</label>
+        <label class="form-label" v-i18n>Enable system proxy#!proxy.3</label>
         <switch-control :checked="globe" @change="toggleGlobal"></switch-control>
       </div>
       <span class="link" @click="openFile">
-        <span v-i18n="{F: 'proxy-rules.json'}">Edit %F#!13</span>
+        <span v-i18n="{F: 'proxy-rules.json'}">Edit %F#!settings.8</span>
       </span>
     </div>
-    <h2 class="group-title" v-i18n>Proxy Rules#!23</h2>
+    <h2 class="group-title" v-i18n>Proxy Rules#!proxy.1</h2>
     <div class="group">
       <div class="form-line">
         <span :class="['link form-action revert', {disabled: !changed}]" @click="revert">
@@ -47,7 +47,7 @@
               <span class="feather-icon icon-corner-down-right"></span>
             </span>
             <input type="text" v-model="rule.proxy.target" :readonly="recalling === rule"
-              v-i18n placeholder="Proxy to...#!25" class="form-control target">
+              v-i18n placeholder="Proxy to...#!proxy.4" class="form-control target">
             <span v-if="rule.proxy.rewrite" class="rewriting">
               <span class="feather-icon icon-activity"></span>
             </span>

@@ -60,10 +60,10 @@ function checkForUpdates() {
   autoUpdater.on('update-downloaded', async (event, notes, name) => {
     const response = await notify({
       title: name,
-      body: translate('A new version has been downloaded. Restart the application to apply the updates.#!16'),
+      body: translate('A new version has been downloaded. Restart the application to apply the updates.#!7'),
       actions: [
-        translate('Restart#!17'),
-        translate('Later#!18'),
+        translate('Restart#!8'),
+        translate('Later#!9'),
       ],
     })
     if (response === 0) autoUpdater.quitAndInstall()

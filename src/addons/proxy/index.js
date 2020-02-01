@@ -1,3 +1,4 @@
+import locales from './locales.json'
 import ProxyPanel from './proxy-panel'
 import ProxyAnchor from './proxy-anchor'
 import ProxyLink from './proxy-link'
@@ -5,9 +6,10 @@ import ProxyStore from './store'
 
 export default {
   install(hooks) {
+    hooks.i18n.addTranslations(locales)
     hooks.workspace.panel.register('proxy', {
       component: ProxyPanel,
-      title: 'Proxy Rules#!23',
+      title: 'Proxy Rules#!proxy.1',
       icon: 'feather-icon icon-navigation',
       i18n: true,
     })

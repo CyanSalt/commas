@@ -1,15 +1,15 @@
 <template>
   <internal-panel class="theme-panel">
-    <h2 class="group-title" v-i18n>Configure theme#!28</h2>
+    <h2 class="group-title" v-i18n>Configure theme#!theme.2</h2>
     <div class="group">
       <div class="form-line">
-        <span v-i18n class="link" @click="reset">Reset to default#!29</span>
+        <span v-i18n class="link" @click="reset">Reset to default#!settings.12</span>
       </div>
       <div class="form-line">
-        <label class="form-label" v-i18n>Search#!19</label>
+        <label class="form-label" v-i18n>Search#!settings.11</label>
         <input type="text" v-model="keyword" class="form-control">
         <div class="form-line-tip">
-          <span v-i18n>Theme will be downloaded from#!20</span>
+          <span v-i18n>Theme will be downloaded from#!theme.3</span>
           <span class="link" data-href="https://github.com/mbadolato/iTerm2-Color-Schemes/tree/master/windowsterminal"
             @click="open">mbadolato/iTerm2-Color-Schemes</span>
         </div>
