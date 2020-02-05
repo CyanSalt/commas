@@ -39,8 +39,10 @@ import hooks from '@/hooks'
 export default {
   name: 'ThemePanel',
   components: {
-    'internal-panel': hooks.workspace.components.InternalPanel,
-    'loading-spinner': hooks.workspace.components.LoadingSpinner,
+    ...hooks.workspace.component.pick([
+      'internal-panel',
+      'loading-spinner',
+    ]),
   },
   data() {
     return {

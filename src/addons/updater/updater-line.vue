@@ -12,7 +12,9 @@ import hooks from '@/hooks'
 export default {
   name: 'UpdaterLine',
   components: {
-    'switch-control': hooks.workspace.components.SwitchControl,
+    ...hooks.workspace.component.pick([
+      'switch-control',
+    ]),
   },
   computed: {
     ...mapState('updater', ['enabled']),

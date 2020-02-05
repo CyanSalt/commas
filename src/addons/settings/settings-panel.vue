@@ -57,8 +57,10 @@ import hooks from '@/hooks'
 export default {
   name: 'SettingsPanel',
   components: {
-    'internal-panel': hooks.workspace.components.InternalPanel,
-    'switch-control': hooks.workspace.components.SwitchControl,
+    ...hooks.workspace.component.pick([
+      'internal-panel',
+      'switch-control',
+    ]),
   },
   data() {
     return {

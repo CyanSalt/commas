@@ -21,12 +21,23 @@ const createInternalTerminal = ({title, icon, component, i18n}) => ({
 
 const anchors = []
 const panels = {}
+const components = {
+  'internal-panel': InternalPanel,
+  'switch-control': SwitchControl,
+  'loading-spinner': LoadingSpinner,
+}
 
 export default {
-  components: {
-    InternalPanel,
-    SwitchControl,
-    LoadingSpinner,
+  component: {
+    get(name) {
+      return components[name]
+    },
+    pick(names) {
+      return names.reduce((result, name) => {
+        result[name] = components[name]
+        return result
+      }, {})
+    },
   },
   anchor: {
     all() {
