@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import {mapState, mapGetters} from 'vuex'
 import {getThemeList} from './utils'
 import hooks from '@/hooks'
 
@@ -51,7 +51,7 @@ export default {
   },
   computed: {
     ...mapState('theme', ['name']),
-    ...mapState('settings', ['fallback']),
+    ...mapGetters('settings', ['fallback']),
     filtered() {
       if (!this.keyword) return this.list
       return this.list.filter(item => item.name.indexOf(this.keyword) !== -1)

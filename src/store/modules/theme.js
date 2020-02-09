@@ -22,10 +22,10 @@ export default {
     },
   },
   actions: {
-    async load({commit, dispatch, rootState, rootGetters}) {
+    async load({commit, dispatch, rootGetters}) {
       const theme = {...fallback}
       const settings = rootGetters['settings/settings']
-      const defaultSettings = rootState.settings.fallback
+      const defaultSettings = rootGetters['settings/fallback']
       const name = settings['terminal.theme.name']
       if (name && name !== defaultSettings['terminal.theme.name']) {
         const path = `themes/${name}.json`

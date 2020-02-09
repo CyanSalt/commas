@@ -148,7 +148,7 @@ export default {
       this.apply(latest)
     },
     openFile() {
-      hooks.shell.openUserFile('proxy-rules.json', 'examples/proxy-rules.json')
+      hooks.shell.openUserFile('proxy-rules.json', 'examples/proxy-rules.json', true)
     },
   },
 }

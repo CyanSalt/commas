@@ -1,22 +1,35 @@
-import fallback from '@assets/settings.json'
+import specs from '@assets/settings.spec.json'
 import {userStorage} from '@/utils/storage'
 import {unreactive} from '@/utils/object'
-import {isEqual} from 'lodash'
+import {cloneDeep, isEqual} from 'lodash'
 
 export default {
   namespaced: true,
   state: {
-    fallback,
+    specs,
     settings: {},
     watcher: null,
     writer: null,
   },
   getters: {
-    settings: state => {
-      return {...fallback, ...state.settings}
+    fallback: state => {
+      console.log(state.specs.reduce((settings, spec) => {
+        settings[spec.key] = cloneDeep(spec.default)
+        return settings
+      }, {}))
+      return state.specs.reduce((settings, spec) => {
+        settings[spec.key] = cloneDeep(spec.default)
+        return settings
+      }, {})
+    },
+    settings: (state, getters) => {
+      return {...getters.fallback, ...state.settings}
     },
   },
   mutations: {
+    addSpec(state, value) {
+      state.specs.push(value)
+    },
     setSettings(state, value) {
       state.settings = value
     },
@@ -35,10 +48,10 @@ export default {
       commit('setSettings', result.data)
       commit('setWriter', unreactive(result.writer))
     },
-    save({state}) {
+    save({state, getters}) {
       // Filter default values on saving
       const reducer = (diff, [key, value]) => {
-        if (!isEqual(value, fallback[key])) {
+        if (!isEqual(value, getters.fallback[key])) {
           diff[key] = value
         }
         return diff

@@ -13,7 +13,7 @@
 
 <script>
 import hooks from '@/hooks'
-import {mapState} from 'vuex'
+import {mapGetters} from 'vuex'
 
 export default {
   name: 'UserSettingsLine',
@@ -36,7 +36,7 @@ export default {
     },
   },
   computed: {
-    ...mapState('settings', ['fallback']),
+    ...mapGetters('settings', ['fallback']),
     model: {
       get() {
         if (this.value === undefined && this.spec.type === 'boolean') {

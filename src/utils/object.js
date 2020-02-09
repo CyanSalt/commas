@@ -14,3 +14,26 @@ export function regexp(expression) {
     return null
   }
 }
+
+export function generateSource(specs) {
+  const sources = []
+  for (const spec of specs) {
+    if (sources.length) {
+      sources[sources.length - 1] += ',\n'
+    }
+    if (spec.comments) {
+      for (const comment of spec.comments) {
+        sources.push(`// ${comment}`)
+      }
+    }
+    const key = JSON.stringify(spec.key)
+    const value = JSON.stringify(spec.default, null, 2)
+    const entry = `${key}: ${value}`
+    const lines = entry.split('\n')
+    for (const line of lines) {
+      sources.push(line)
+    }
+  }
+  return ['{', ...sources.map(line => (line ? `  ${line}` : '')), '}', '']
+    .join('\n')
+}

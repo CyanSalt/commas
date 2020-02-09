@@ -1,3 +1,5 @@
+import specs from '@assets/settings.spec.json'
+import {generateSource} from '@/utils/object'
 import {ui} from './core'
 import shell from './shell'
 
@@ -53,23 +55,23 @@ const registry = {
     return shell.openDefaultSettings()
   },
   'open-settings'() {
-    // TODO: generate with specs
-    return shell.openUserFile('settings.json', 'settings.json')
+    const source = generateSource(specs)
+    return shell.openUserFile('settings.json', source)
   },
   'open-launchers'() {
-    return shell.openUserFile('launchers.json', 'examples/launchers.json')
+    return shell.openUserFile('launchers.json', 'examples/launchers.json', true)
   },
   'open-keybindings'() {
-    return shell.openUserFile('keybindings.json', 'examples/keybindings.json')
+    return shell.openUserFile('keybindings.json', 'examples/keybindings.json', true)
   },
   'open-custom-js'() {
-    return shell.openUserFile('custom.js', 'examples/custom.js')
+    return shell.openUserFile('custom.js', 'examples/custom.js', true)
   },
   'open-custom-css'() {
-    return shell.openUserFile('custom.css', 'examples/custom.css')
+    return shell.openUserFile('custom.css', 'examples/custom.css', true)
   },
   'open-translation'() {
-    return shell.openUserFile('translation.json', 'examples/translation.json')
+    return shell.openUserFile('translation.json', 'examples/translation.json', true)
   },
 }
 

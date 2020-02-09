@@ -1,3 +1,4 @@
+import specs from '@assets/settings.spec.json'
 import {shell, ipcRenderer} from 'electron'
 import {promises as fs} from 'fs'
 import {tmpdir} from 'os'
@@ -5,6 +6,7 @@ import {resolve} from 'path'
 import {userStorage} from '@/utils/storage'
 import {assetsDir} from '@/utils/electron'
 import {currentWindow} from '@/utils/frame'
+import {generateSource} from '@/utils/object'
 
 export default {
   openWindow() {
@@ -17,22 +19,25 @@ export default {
     shell.openItem(userStorage.filename('.'))
   },
   async openDefaultSettings() {
-    // TODO: generate with specs
-    const source = resolve(assetsDir, 'settings.json')
+    const source = generateSource(specs)
     const target = resolve(tmpdir(), 'commas-default-settings.json')
     try {
-      await fs.copyFile(source, target)
+      await fs.writeFile(target, source)
       shell.openItem(target)
     } catch {
       // ignore error
     }
   },
-  async openUserFile(filename, example) {
+  async openUserFile(filename, source, assets) {
     const path = userStorage.filename(filename)
     try {
       await fs.access(path)
     } catch {
-      await fs.copyFile(resolve(assetsDir, example), path)
+      if (assets) {
+        await fs.copyFile(resolve(assetsDir, source), path)
+      } else {
+        await userStorage.write(filename, source)
+      }
     }
     shell.openItem(path)
   },

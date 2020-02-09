@@ -21,7 +21,7 @@ You can also clone or download this repository and compile this app locally.
 
 * All of user data are stored in your user data folder, which is `~/Library/Application Support/Commas/` on macOS, `%localappdata%/Commas/` on Windows and `~/.config/Commas/` on Linux
 
-* You can open your settings file by pressing <kbd>&#8984;</kbd> + <kbd>,</kbd> on macOS and change any options of the default settings. Check out the [default settings file](https://github.com/CyanSalt/commas/blob/master/app/assets/settings.json),  modify and copy it to your user data folder.
+* You can open your settings file by pressing <kbd>&#8984;</kbd> + <kbd>,</kbd> on macOS and change any options of the default settings. Check out the default settings,  modify and copy it to your user data folder.
 
 * If this app has no internal translation for your language, you can add `translation.json` file to your user data folder. The content of the file could be part of entries in [the locale file](https://github.com/CyanSalt/commas/blob/master/app/assets/locales/zh-CN.json), or contain a pair of key-value like `"@use": "zh-CN"` to reference an existed translation file.
 
