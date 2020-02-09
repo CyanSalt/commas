@@ -12,7 +12,7 @@
     </div>
     <h2 class="group-title" v-i18n>Proxy Rules#!proxy.1</h2>
     <div class="group">
-      <div class="form-line">
+      <div class="action-line">
         <span :class="['link form-action revert', {disabled: !changed}]" @click="revert">
           <span class="feather-icon icon-rotate-ccw"></span>
         </span>

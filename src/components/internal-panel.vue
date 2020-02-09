@@ -83,13 +83,18 @@ export default {
 .internal-panel .text {
   line-height: 32px;
 }
-.internal-panel .form-line {
+.internal-panel .form-line,
+.internal-panel .action-line {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
 }
+.internal-panel .form-line + .form-line {
+  margin-top: 10px;
+}
 .internal-panel .form-label {
   width: 14em;
+  align-self: flex-start;
 }
 .internal-panel .form-line-tip {
   flex-basis: 100%;
@@ -102,7 +107,8 @@ export default {
   content: '*';
   margin-right: 1em;
 }
-.internal-panel input[type="text"].form-control {
+.internal-panel input[type="text"].form-control,
+.internal-panel textarea.form-control {
   padding: 2px 6px;
   line-height: 20px;
   border: none;
@@ -112,11 +118,18 @@ export default {
   font-family: inherit;
   background: rgba(127, 127, 127, 0.2);
 }
-.internal-panel input[type="text"].form-control::placeholder {
+.internal-panel textarea.form-control {
+  width: 165px;
+  height: 60px;
+  resize: none;
+}
+.internal-panel input[type="text"].form-control::placeholder,
+.internal-panel textarea.form-control::placeholder {
   color: var(--theme-foreground);
   opacity: 0.25;
 }
-.internal-panel input[type="text"].form-control:read-only {
+.internal-panel input[type="text"].form-control:read-only,
+.internal-panel textarea.form-control:read-only {
   opacity: 0.5;
 }
 .internal-panel .form-action {

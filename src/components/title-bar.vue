@@ -46,7 +46,6 @@ export default {
   name: 'TitleBar',
   data() {
     return {
-      currentWindow,
       currentState,
       platform: process.platform,
       branch: '',
@@ -86,17 +85,17 @@ export default {
   },
   methods: {
     minimize() {
-      this.currentWindow.minimize()
+      currentWindow.minimize()
     },
     maximize() {
-      if (this.currentWindow.isMaximized()) {
-        this.currentWindow.unmaximize()
+      if (currentWindow.isMaximized()) {
+        currentWindow.unmaximize()
       } else {
-        this.currentWindow.maximize()
+        currentWindow.maximize()
       }
     },
     close() {
-      this.currentWindow.close()
+      currentWindow.close()
     },
     open() {
       shell.openItem(resolveHome(this.directory))

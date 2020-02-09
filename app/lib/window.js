@@ -42,6 +42,15 @@ function createWindow(...args) {
     })
   }
   const frame = new BrowserWindow(options)
+  // Fix shadow issue on macOS
+  if (process.platform === 'darwin') {
+    frame.setSize(options.width - 1, options.height - 1)
+    frame.webContents.once('did-finish-load', () => {
+      setTimeout(() => {
+        frame.setSize(options.width, options.height)
+      }, 500)
+    })
+  }
   loadHTMLFile(frame, 'index.html')
   if (process.platform !== 'darwin') {
     createWindowMenu(frame)

@@ -22,18 +22,12 @@ export default {
     },
   },
   actions: {
-    async load({state, dispatch, rootState}) {
-      const settings = rootState.settings.settings
-      const name = settings['terminal.theme.name']
-      if (name !== state.name) {
-        return dispatch('apply', {name})
-      }
-    },
-    async apply({commit, dispatch, rootState}, {name}) {
+    async load({commit, dispatch, rootState}) {
       const theme = {...fallback}
       const settings = rootState.settings.settings
-      const configured = settings['terminal.theme.name']
-      if (name && name !== 'oceanic-next') {
+      const defaultSettings = rootState.settings.fallback
+      const name = settings['terminal.theme.name']
+      if (name && name !== defaultSettings['terminal.theme.name']) {
         const path = `themes/${name}.json`
         let file = await assetsStorage.load(path)
         if (!file) {
@@ -43,9 +37,6 @@ export default {
         if (file) Object.assign(theme, file)
       }
       commit('setName', name)
-      if (name !== configured) {
-        dispatch('settings/update', {'terminal.theme.name': name}, {root: true})
-      }
       const customization = settings['terminal.theme.customization']
       if (customization) {
         Object.assign(theme, customization)

@@ -1,6 +1,7 @@
 import {remote} from 'electron'
 import {createIDGenerator} from '@/utils/identity'
 import {translate} from '@/utils/i18n'
+import {unreactive} from '@/utils/object'
 import InternalPanel from '@/components/internal-panel'
 import SwitchControl from '@/components/switch-control'
 import LoadingSpinner from '@/components/loading-spinner'
@@ -8,7 +9,7 @@ import {ui} from './core'
 
 const generateID = createIDGenerator(id => id - 1)
 
-const createInternalTerminal = ({title, icon, component, i18n}) => ({
+const createInternalTerminal = ({title, icon, component, i18n}) => unreactive({
   internal: {
     icon,
     component,

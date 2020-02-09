@@ -109,6 +109,7 @@ export default {
   line-height: 1.2;
   color: var(--theme-foreground, transparent);
   background: var(--theme-backdrop);
+  transition: background 0.2s;
 }
 .app.opaque {
   background: var(--theme-background);

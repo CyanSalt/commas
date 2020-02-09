@@ -1,6 +1,7 @@
 <template>
   <label class="switch-control">
-    <input type="checkbox" v-bind="$attrs" v-on="$listeners">
+    <input type="checkbox" @change="change"
+      v-bind="$attrs" v-on="listeners">
     <span class="switch-content"></span>
   </label>
 </template>
@@ -9,6 +10,21 @@
 export default {
   name: 'SwitchControl',
   inheritAttrs: false,
+  model: {
+    prop: 'checked',
+    event: 'change',
+  },
+  computed: {
+    listeners() {
+      const {change, ...listeners} = this.$listeners
+      return listeners
+    },
+  },
+  methods: {
+    change(event) {
+      this.$emit('change', event.target.checked)
+    },
+  },
 }
 </script>
 

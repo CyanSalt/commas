@@ -42,7 +42,7 @@ module.exports = {
     'no-trailing-spaces': 'error',
     'no-undef-init': 'error',
     'no-unused-labels': 'error',
-    'no-unused-vars': ['error', {args: 'none'}],
+    'no-unused-vars': ['error', {args: 'none', ignoreRestSiblings: true}],
     'no-unneeded-ternary': 'error',
     'no-useless-computed-key': 'error',
     'no-useless-rename': 'error',

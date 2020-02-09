@@ -13,7 +13,7 @@ export default {
   },
   mutations: {
     setSettings(state, value) {
-      Object.assign(state.settings, value)
+      state.settings = {...state.settings, ...value}
     },
     setWatcher(state, value) {
       state.watcher = value

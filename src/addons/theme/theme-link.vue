@@ -1,5 +1,5 @@
 <template>
-  <span class="link theme-link" @click="configure('theme')">
+  <span class="link theme-link" @click="configure">
     <span v-i18n>Configure theme#!theme.2</span>
   </span>
 </template>

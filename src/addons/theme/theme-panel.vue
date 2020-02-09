@@ -2,9 +2,7 @@
   <internal-panel class="theme-panel">
     <h2 class="group-title" v-i18n>Configure theme#!theme.2</h2>
     <div class="group">
-      <div class="form-line">
-        <span v-i18n class="link" @click="reset">Reset to default#!settings.12</span>
-      </div>
+      <span v-i18n class="link" @click="reset">Reset to default#!settings.12</span>
       <div class="form-line">
         <label class="form-label" v-i18n>Search#!settings.11</label>
         <input type="text" v-model="keyword" class="form-control">
@@ -53,6 +51,7 @@ export default {
   },
   computed: {
     ...mapState('theme', ['name']),
+    ...mapState('settings', ['fallback']),
     filtered() {
       if (!this.keyword) return this.list
       return this.list.filter(item => item.name.indexOf(this.keyword) !== -1)
@@ -75,16 +74,15 @@ export default {
         item.url,
       )
       if (result) {
-        await this.$store.dispatch('theme/apply', {
-          name: item.name,
-          download: true,
+        await this.$store.dispatch('settings/update', {
+          'terminal.theme.name': item.name,
         })
       }
       this.loading = false
     },
     reset() {
-      this.$store.dispatch('theme/apply', {
-        name: 'oceanic-next',
+      this.$store.dispatch('settings/update', {
+        'terminal.theme.name': this.fallback['terminal.theme.name'],
       })
     },
   },

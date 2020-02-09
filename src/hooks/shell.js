@@ -1,25 +1,26 @@
-import {shell, ipcRenderer, remote} from 'electron'
+import {shell, ipcRenderer} from 'electron'
 import {promises as fs} from 'fs'
 import {tmpdir} from 'os'
 import {resolve} from 'path'
 import {userStorage} from '@/utils/storage'
 import {assetsDir} from '@/utils/electron'
+import {currentWindow} from '@/utils/frame'
 
 export default {
   openWindow() {
     ipcRenderer.send('open-window')
   },
   closeWindow() {
-    remote.getCurrentWindow().close()
+    currentWindow.close()
   },
   openUserDirectory() {
     shell.openItem(userStorage.filename('.'))
   },
-  openDefaultSettings() {
+  async openDefaultSettings() {
     const source = resolve(assetsDir, 'settings.json')
     const target = resolve(tmpdir(), 'commas-default-settings.json')
     try {
-      fs.copyFile(source, target)
+      await fs.copyFile(source, target)
       shell.openItem(target)
     } catch {
       // ignore error

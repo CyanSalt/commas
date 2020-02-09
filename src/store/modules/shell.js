@@ -1,5 +1,6 @@
 import {remote} from 'electron'
 import {translate} from '@/utils/i18n'
+import {currentWindow} from '@/utils/frame'
 
 export default {
   namespaced: true,
@@ -32,7 +33,7 @@ export default {
         defaultId: 0,
         cancelId: 1,
       }
-      const frame = remote.getCurrentWindow()
+      const frame = currentWindow
       const {response} = await remote.dialog.showMessageBox(frame, args)
       if (response === 0) frame.destroy()
     },
