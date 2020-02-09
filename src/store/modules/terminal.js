@@ -88,9 +88,9 @@ export default {
       const {stdout} = await exec('grep "^/" /etc/shells')
       commit('setShells', stdout.trim().split('\n'))
     },
-    spawn({state, getters, commit, dispatch, rootState}, payload) {
+    spawn({state, getters, commit, dispatch, rootState, rootGetters}, payload) {
       payload = payload || {}
-      const settings = rootState.settings.settings
+      const settings = rootGetters['settings/settings']
       const env = {
         ...process.env,
         ...settings['terminal.shell.env'],
@@ -264,9 +264,9 @@ export default {
       const current = getters.current
       current.xterm.clear()
     },
-    refresh({state, rootState}) {
+    refresh({state, rootState, rootGetters}) {
       const tabs = state.tabs
-      const settings = rootState.settings.settings
+      const settings = rootGetters['settings/settings']
       // TODO: performance review
       for (const tab of tabs) {
         if (tab.internal) continue

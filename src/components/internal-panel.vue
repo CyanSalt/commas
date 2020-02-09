@@ -107,7 +107,8 @@ export default {
   content: '*';
   margin-right: 1em;
 }
-.internal-panel input[type="text"].form-control,
+.internal-panel input.form-control,
+.internal-panel input.form-control,
 .internal-panel textarea.form-control {
   padding: 2px 6px;
   line-height: 20px;
@@ -123,12 +124,12 @@ export default {
   height: 60px;
   resize: none;
 }
-.internal-panel input[type="text"].form-control::placeholder,
+.internal-panel input.form-control::placeholder,
 .internal-panel textarea.form-control::placeholder {
   color: var(--theme-foreground);
   opacity: 0.25;
 }
-.internal-panel input[type="text"].form-control:read-only,
+.internal-panel input.form-control:read-only,
 .internal-panel textarea.form-control:read-only {
   opacity: 0.5;
 }

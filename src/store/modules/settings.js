@@ -1,19 +1,24 @@
 import fallback from '@assets/settings.json'
 import {userStorage} from '@/utils/storage'
 import {unreactive} from '@/utils/object'
-import {cloneDeep, isEqual} from 'lodash'
+import {isEqual} from 'lodash'
 
 export default {
   namespaced: true,
   state: {
     fallback,
-    settings: cloneDeep(fallback),
+    settings: {},
     watcher: null,
     writer: null,
   },
+  getters: {
+    settings: state => {
+      return {...fallback, ...state.settings}
+    },
+  },
   mutations: {
     setSettings(state, value) {
-      state.settings = {...state.settings, ...value}
+      state.settings = value
     },
     setWatcher(state, value) {
       state.watcher = value
@@ -44,9 +49,12 @@ export default {
         writer: state.writer,
       })
     },
-    update({commit, dispatch}, patch) {
-      commit('setSettings', patch)
+    overwrite({commit, dispatch}, settings) {
+      commit('setSettings', settings)
       return dispatch('save')
+    },
+    update({state, dispatch}, patch) {
+      return dispatch('overwrite', {...state.settings, ...patch})
     },
     watch({state, commit, dispatch}, callback) {
       if (state.watcher) state.watcher.close()

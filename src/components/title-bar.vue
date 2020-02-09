@@ -52,8 +52,8 @@ export default {
     }
   },
   computed: {
-    ...mapState('settings', ['settings']),
     ...mapState('launcher', ['launchers']),
+    ...mapGetters('settings', ['settings']),
     ...mapGetters('terminal', ['current']),
     directory() {
       if (!this.current || this.current.internal) return ''

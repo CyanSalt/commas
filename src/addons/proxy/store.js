@@ -44,8 +44,8 @@ export default {
       commit('setRules', result.data)
       commit('setWriter', hooks.utils.unreactive(result.writer))
     },
-    async loadSystem({commit, rootState}) {
-      const settings = rootState.settings.settings
+    async loadSystem({commit, rootGetters}) {
+      const settings = rootGetters['settings/settings']
       const port = settings['terminal.proxyServer.port']
       const proxy = await getGlobalWebProxy()
       if (!proxy) return
@@ -53,11 +53,11 @@ export default {
         && proxy.Port === String(port)
       commit('setGlobe', globe)
     },
-    open({state, commit, rootState}) {
+    open({state, commit, rootGetters}) {
       let server = state.server
       if (server) return
       const rules = parseProxyRules(state.rules)
-      const settings = rootState.settings.settings
+      const settings = rootGetters['settings/settings']
       const port = settings['terminal.proxyServer.port']
       // TODO: catch EADDRINUSE and notify error
       const proxyServer = createProxyServer()
@@ -102,9 +102,9 @@ export default {
       })
       commit('setWatcher', watcher)
     },
-    async refresh({state, dispatch, rootState}) {
+    async refresh({state, dispatch, rootGetters}) {
       if (!state.server) return
-      const settings = rootState.settings.settings
+      const settings = rootGetters['settings/settings']
       const port = settings['terminal.proxyServer.port']
       if (port !== state.port) {
         await dispatch('close')
@@ -117,9 +117,9 @@ export default {
         writer: state.writer,
       })
     },
-    async toggleGlobal({state, commit, rootState}) {
+    async toggleGlobal({state, commit, rootGetters}) {
       const value = !state.globe
-      const settings = rootState.settings.settings
+      const settings = rootGetters['settings/settings']
       const port = state.port || settings['terminal.proxyServer.port']
       const proxy = value ? {host: '127.0.0.1', port} : false
       await setGlobalWebProxy(proxy)

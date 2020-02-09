@@ -22,9 +22,9 @@ export default {
     },
   },
   actions: {
-    async load({commit, dispatch, rootState}) {
+    async load({commit, dispatch, rootState, rootGetters}) {
       const theme = {...fallback}
-      const settings = rootState.settings.settings
+      const settings = rootGetters['settings/settings']
       const defaultSettings = rootState.settings.fallback
       const name = settings['terminal.theme.name']
       if (name && name !== defaultSettings['terminal.theme.name']) {
@@ -51,9 +51,9 @@ export default {
       commit('setTheme', theme)
       dispatch('inject')
     },
-    inject({state, rootState}) {
+    inject({state, rootGetters}) {
       const theme = state.theme
-      const settings = rootState.settings.settings
+      const settings = rootGetters['settings/settings']
       const element = document.createElement('style')
       element.id = 'app-theme'
       const properties = {}

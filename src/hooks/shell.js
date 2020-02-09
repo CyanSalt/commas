@@ -17,6 +17,7 @@ export default {
     shell.openItem(userStorage.filename('.'))
   },
   async openDefaultSettings() {
+    // TODO: generate with specs
     const source = resolve(assetsDir, 'settings.json')
     const target = resolve(tmpdir(), 'commas-default-settings.json')
     try {

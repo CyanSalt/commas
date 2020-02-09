@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import {mapState, mapGetters} from 'vuex'
 import {getPrompt, getIcon} from '@/utils/terminal'
 import {basename} from 'path'
 
@@ -37,8 +37,8 @@ export default {
     },
   },
   computed: {
-    ...mapState('settings', ['settings']),
     ...mapState('terminal', ['tabs', 'active']),
+    ...mapGetters('settings', ['settings']),
     focused() {
       return this.tabs[this.active] === this.tab
     },

@@ -53,6 +53,7 @@ const registry = {
     return shell.openDefaultSettings()
   },
   'open-settings'() {
+    // TODO: generate with specs
     return shell.openUserFile('settings.json', 'settings.json')
   },
   'open-launchers'() {
