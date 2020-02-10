@@ -1,7 +1,7 @@
-import specs from '@assets/settings.spec.json'
 import {generateSource} from '@/utils/object'
 import {ui} from './core'
 import shell from './shell'
+import settings from './settings'
 
 const registry = {
   'open-tab'(args) {
@@ -55,6 +55,7 @@ const registry = {
     return shell.openDefaultSettings()
   },
   'open-settings'() {
+    const specs = settings.getSpecs()
     const source = generateSource(specs)
     return shell.openUserFile('settings.json', source)
   },

@@ -13,7 +13,6 @@
 
 <script>
 import hooks from '@/hooks'
-import {mapGetters} from 'vuex'
 
 export default {
   name: 'UserSettingsLine',
@@ -36,7 +35,6 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('settings', ['fallback']),
     model: {
       get() {
         if (this.value === undefined && this.spec.type === 'boolean') {
@@ -49,7 +47,7 @@ export default {
       },
     },
     placeholder() {
-      return this.flattern(this.fallback[this.spec.key])
+      return this.flattern(this.spec.default)
     },
   },
   methods: {

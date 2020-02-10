@@ -1,4 +1,3 @@
-import specs from '@assets/settings.spec.json'
 import {shell, ipcRenderer} from 'electron'
 import {promises as fs} from 'fs'
 import {tmpdir} from 'os'
@@ -7,6 +6,7 @@ import {userStorage} from '@/utils/storage'
 import {assetsDir} from '@/utils/electron'
 import {currentWindow} from '@/utils/frame'
 import {generateSource} from '@/utils/object'
+import settings from './settings'
 
 export default {
   openWindow() {
@@ -19,6 +19,7 @@ export default {
     shell.openItem(userStorage.filename('.'))
   },
   async openDefaultSettings() {
+    const specs = settings.getSpecs()
     const source = generateSource(specs)
     const target = resolve(tmpdir(), 'commas-default-settings.json')
     try {

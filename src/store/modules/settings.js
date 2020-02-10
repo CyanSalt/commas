@@ -13,10 +13,6 @@ export default {
   },
   getters: {
     fallback: state => {
-      console.log(state.specs.reduce((settings, spec) => {
-        settings[spec.key] = cloneDeep(spec.default)
-        return settings
-      }, {}))
       return state.specs.reduce((settings, spec) => {
         settings[spec.key] = cloneDeep(spec.default)
         return settings
@@ -27,8 +23,8 @@ export default {
     },
   },
   mutations: {
-    addSpec(state, value) {
-      state.specs.push(value)
+    setSpecs(state, value) {
+      state.specs = value
     },
     setSettings(state, value) {
       state.settings = value

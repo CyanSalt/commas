@@ -9,6 +9,7 @@ import ThemeAddon from './addons/theme'
 import UpdaterAddon from './addons/updater'
 import {translateElement} from './utils/i18n'
 
+hooks.core.dangerouslySetStore(store)
 hooks.addon.load(SettingsAddon)
 hooks.addon.load(ProxyAddon)
 hooks.addon.load(UserSettingsAddon)

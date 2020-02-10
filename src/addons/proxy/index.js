@@ -7,6 +7,16 @@ import ProxyStore from './store'
 export default {
   install(hooks) {
     hooks.i18n.addTranslations(locales)
+    hooks.settings.register({
+      key: 'terminal.proxyServer.port',
+      type: 'number',
+      paradigm: [0, 65535],
+      label: 'Proxy Server Port',
+      comments: [
+        'Specify HTTP port for development proxy server',
+      ],
+      default: 16383,
+    })
     hooks.workspace.panel.register('proxy', {
       component: ProxyPanel,
       title: 'Proxy Rules#!proxy.1',

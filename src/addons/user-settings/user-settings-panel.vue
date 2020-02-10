@@ -10,7 +10,7 @@
           <span class="feather-icon icon-check"></span>
         </span>
       </div>
-      <user-settings-line v-for="row in specs" :key="row.key"
+      <user-settings-line v-for="row in rows" :key="row.key"
         v-model="values[row.key]" :spec="row"></user-settings-line>
     </div>
   </internal-panel>
@@ -18,7 +18,6 @@
 
 <script>
 import UserSettingsLine from './user-settings-line'
-import specs from '@assets/settings.spec.json'
 import hooks from '@/hooks'
 import {mapState} from 'vuex'
 import {cloneDeep, isEqual} from 'lodash'
@@ -37,9 +36,9 @@ export default {
     }
   },
   computed: {
-    ...mapState('settings', ['settings']),
-    specs() {
-      return specs
+    ...mapState('settings', ['specs', 'settings']),
+    rows() {
+      return this.specs
         .filter((item) => (
           !Array.isArray(item.configurable)
             || item.configurable.includes(process.platform)
