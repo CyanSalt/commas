@@ -64,7 +64,7 @@ export default {
       }
     },
     flattern(value) {
-      if (this.accepts('array') && Array.isArray(value)) {
+      if (this.accepts('list') && Array.isArray(value)) {
         return JSON.stringify(value)
       }
       if (this.accepts('map') && typeof value === 'object') {
@@ -79,7 +79,7 @@ export default {
           return parsed
         }
       }
-      if (this.accepts('array')) {
+      if (this.accepts('list')) {
         const parsed = this.parse(value)
         if (Array.isArray(parsed)) {
           return parsed

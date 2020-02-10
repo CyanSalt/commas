@@ -36,8 +36,8 @@ export default {
     'find-box': FindBox,
   },
   computed: {
-    ...mapGetters('terminal', ['current']),
     ...mapState('shell', ['multitabs']),
+    ...mapGetters('terminal', ['current']),
     opaque() {
       return currentState.fullscreen
     },

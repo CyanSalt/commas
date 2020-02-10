@@ -9,7 +9,7 @@ export default {
       component: UpdaterLine,
       group: 'about',
     })
-    hooks.events.on('ready', () => {
+    hooks.events.once('ready', () => {
       const store = hooks.core.getStore()
       store.registerModule('updater', UpdaterStore)
     })
