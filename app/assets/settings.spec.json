@@ -130,5 +130,15 @@
       "Overwrite colors in the theme file"
     ],
     "default": {}
+  },
+  {
+    "key": "terminal.addon.enabled",
+    "type": "list",
+    "paradigm": ["string"],
+    "label": "Enabled Addons",
+    "comments": [
+      "List of enabled addon name"
+    ],
+    "default": ["settings", "proxy", "user-settings", "theme", "updater"]
   }
 ]

@@ -42,7 +42,7 @@ export default {
   },
   anchor: {
     all() {
-      return anchors.concat()
+      return anchors
     },
     add(components) {
       if (anchors.includes(components)) return anchors.length

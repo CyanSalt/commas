@@ -14,6 +14,7 @@
     "Theme Name#!user-settings.terminal.theme.name": "主题名称",
     "Custom Theme Colors#!user-settings.terminal.theme.customization": "自定义主题颜色",
     "Proxy Server Port#!user-settings.terminal.proxyServer.port": "代理服务器端口",
+    "Enabled Addons#!user-settings.terminal.addon.enabled": "启用组件",
     "User Settings#!user-settings.1": "用户设置",
     "Configure User Settings#!user-settings.2": "配置用户设置"
   }

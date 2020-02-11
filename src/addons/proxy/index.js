@@ -28,15 +28,11 @@ export default {
       component: ProxyLink,
       group: 'feature',
     })
-    hooks.events.once('ready', () => {
-      const store = hooks.core.getStore()
-      store.registerModule('proxy', ProxyStore)
-      store.dispatch('proxy/load')
-      store.dispatch('proxy/watch')
-    })
-    hooks.events.once('settings:loaded', () => {
-      hooks.core.getStore().dispatch('proxy/loadSystem')
-    })
+    const store = hooks.core.getStore()
+    store.registerModule('proxy', ProxyStore)
+    store.dispatch('proxy/load')
+    store.dispatch('proxy/watch')
+    store.dispatch('proxy/loadSystem')
     hooks.events.on('settings:reloaded', () => {
       hooks.core.getStore().dispatch('proxy/refresh')
     })

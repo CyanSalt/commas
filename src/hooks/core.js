@@ -12,8 +12,6 @@ export default {
   },
   dangerouslySetViewModel(vm) {
     ui.vm = vm
-  },
-  dangerouslySetStore(store) {
-    ui.store = store
+    ui.store = vm.$store
   },
 }

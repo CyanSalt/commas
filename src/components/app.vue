@@ -37,6 +37,7 @@ export default {
   },
   computed: {
     ...mapState('shell', ['multitabs']),
+    ...mapGetters('settings', ['settings']),
     ...mapGetters('terminal', ['current']),
     opaque() {
       return currentState.fullscreen
@@ -54,7 +55,6 @@ export default {
   created() {
     // prepare for hooks
     hooks.core.dangerouslySetViewModel(this)
-    hooks.events.emit('ready')
     const index = process.argv.indexOf('--') + 1
     const args = index ? process.argv.slice(index) : []
     const initialPath = args[0]
@@ -63,6 +63,12 @@ export default {
       hooks.events.emit('settings:loaded')
       await this.$store.dispatch('theme/load')
       this.$store.dispatch('terminal/spawn', {cwd: initialPath})
+      // Load addons
+      const addons = this.settings['terminal.addon.enabled']
+      for (const name of addons) {
+        const addon = require(`@/addons/${name}`).default
+        hooks.addon.load(addon)
+      }
     })()
     this.$store.dispatch('settings/watch', async () => {
       hooks.events.emit('settings:reloaded')
