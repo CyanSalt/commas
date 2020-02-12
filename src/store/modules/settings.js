@@ -1,6 +1,6 @@
 import specs from '@assets/settings.spec.json'
 import {userStorage} from '@/utils/storage'
-import {unreactive} from '@/utils/object'
+import {unreactive} from '@/utils/helper'
 import {cloneDeep, isEqual} from 'lodash'
 
 export default {

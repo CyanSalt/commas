@@ -1,5 +1,4 @@
-import {unreactive, regexp} from '@/utils/object'
-import {exec} from '@/utils/electron'
+import {unreactive, regexp, exec} from '@/utils/helper'
 
 export default {
   unreactive,

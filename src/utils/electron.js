@@ -1,9 +1,5 @@
 import {app as mainProcessApp, remote} from 'electron'
-import {exec as execCallback} from 'child_process'
-import {promisify} from 'util'
 import {join} from 'path'
-
-export const exec = promisify(execCallback)
 
 export const isMainProcess = process.type === 'browser'
 
@@ -14,9 +10,11 @@ export const onAppReady = callback => {
   else callback()
 }
 
+export const isPackaged = app.isPackaged
+
 export const appDir = isMainProcess ? join(__dirname, '../') : __dirname
 
 export const assetsDir = join(appDir, 'assets/')
 
-export const userDataDir = app.isPackaged ?
+export const userDataDir = isPackaged ?
   app.getPath('userData') : join(appDir, '..', 'userdata/')

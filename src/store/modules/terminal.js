@@ -7,8 +7,8 @@ import {LigaturesAddon} from 'xterm-addon-ligatures'
 import {remote, shell} from 'electron'
 import {getCwd, getWindowsProcessInfo} from '@/utils/terminal'
 import {normalizeTheme} from '@/utils/theme'
-import {unreactive} from '@/utils/object'
-import {exec} from '@/utils/electron'
+import {exec, unreactive} from '@/utils/helper'
+import {isPackaged} from '@/utils/electron'
 import {currentWindow} from '@/utils/frame'
 import {debounce} from 'lodash'
 
@@ -17,8 +17,6 @@ const variables = {
   TERM_PROGRAM: remote.app.name,
   TERM_PROGRAM_VERSION: remote.app.getVersion(),
 }
-
-const isPackaged = remote.app.isPackaged
 
 export default {
   namespaced: true,

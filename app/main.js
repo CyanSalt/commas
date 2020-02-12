@@ -5,13 +5,14 @@ const {hasWindow, getLastWindow, forEachWindow} = require('./lib/frame')
 const {transferInvoking} = require('./lib/transfer')
 const {checkForUpdates} = require('./lib/updater')
 
+transferInvoking()
+
 let cwd
 app.on('ready', () => {
   if (process.platform === 'darwin') {
     createApplicationMenu()
     createDockMenu()
   }
-  transferInvoking()
   checkForUpdates()
   createWindow(cwd)
 })

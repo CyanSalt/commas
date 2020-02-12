@@ -1,3 +1,8 @@
+import {exec as execCallback} from 'child_process'
+import {promisify} from 'util'
+
+export const exec = promisify(execCallback)
+
 export const unreactive = object => new Proxy(object, {
   // Prevent `__ob__` and getters/setters
   defineProperty: () => true,

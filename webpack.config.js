@@ -80,8 +80,8 @@ module.exports = {
     new MiniCSSExtractPlugin({
       filename: 'renderer.css',
     }),
-    new webpack.ProgressPlugin(),
     new VueLoaderPlugin(),
+    new webpack.ProgressPlugin(),
   ],
   optimization: {
     minimize: false,

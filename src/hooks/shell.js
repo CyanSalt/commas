@@ -2,10 +2,9 @@ import {shell, ipcRenderer} from 'electron'
 import {promises as fs} from 'fs'
 import {tmpdir} from 'os'
 import {resolve} from 'path'
-import {userStorage} from '@/utils/storage'
-import {assetsDir} from '@/utils/electron'
+import {userStorage, assetsStorage} from '@/utils/storage'
 import {currentWindow} from '@/utils/frame'
-import {generateSource} from '@/utils/object'
+import {generateSource} from '@/utils/helper'
 import settings from './settings'
 
 export default {
@@ -35,7 +34,8 @@ export default {
       await fs.access(path)
     } catch {
       if (assets) {
-        await fs.copyFile(resolve(assetsDir, source), path)
+        const file = assetsStorage.filename(source)
+        await fs.copyFile(file, path)
       } else {
         await userStorage.write(filename, source)
       }

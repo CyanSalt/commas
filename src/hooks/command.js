@@ -1,4 +1,4 @@
-import {generateSource} from '@/utils/object'
+import {generateSource} from '@/utils/helper'
 import {ui} from './core'
 import shell from './shell'
 import settings from './settings'
