@@ -4,11 +4,13 @@ const {createApplicationMenu, createDockMenu} = require('./lib/menu')
 const {hasWindow, getLastWindow, forEachWindow} = require('./lib/frame')
 const {transferInvoking} = require('./lib/transfer')
 const {checkForUpdates} = require('./lib/updater')
+const {loadTranslation} = require('./build/main')
 
 transferInvoking()
 
 let cwd
 app.on('ready', () => {
+  loadTranslation(app.getLocale())
   if (process.platform === 'darwin') {
     createApplicationMenu()
     createDockMenu()

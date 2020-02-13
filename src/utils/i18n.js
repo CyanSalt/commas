@@ -1,5 +1,4 @@
 import {userStorage, assetsStorage} from './storage'
-import {app, onAppReady} from './electron'
 
 const registry = [
   {
@@ -55,15 +54,14 @@ function getTranslation(locale) {
 }
 
 let current
-onAppReady(() => {
-  let locale = app.getLocale()
+export function loadTranslation(locale) {
   const custom = userStorage.loadSync('translation.json') || {}
   if (custom['@use']) locale = custom['@use']
   const translation = getTranslation(locale)
   loadDictionary(translation)
   addDictionary(translation, custom, Priority.custom)
   current = translation
-})
+}
 
 function translateText(message) {
   if (!message || !current) return message

@@ -21,10 +21,11 @@ import TitleBar from './title-bar'
 import TabList from './tab-list'
 import FindBox from './find-box'
 import TerminalTeletype from './terminal-teletype'
-import {ipcRenderer} from 'electron'
+import {remote, ipcRenderer} from 'electron'
 import {mapState, mapGetters} from 'vuex'
 import {currentState} from '@/utils/frame'
 import {userStorage} from '@/utils/storage'
+import {loadTranslation} from '@/utils/i18n'
 import hooks from '@/hooks'
 
 export default {
@@ -44,6 +45,7 @@ export default {
     },
   },
   beforeCreate() {
+    loadTranslation(remote.app.getLocale())
     // custom stylesheet
     const stylesheet = userStorage.readSync('custom.css')
     if (stylesheet) {
