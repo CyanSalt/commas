@@ -7,7 +7,11 @@ export default {
     if (!addon || typeof addon.install !== 'function') {
       throw new Error('An addon must be an object with \'install\' method.')
     }
-    addon.install(hooks)
+    try {
+      addon.install(hooks)
+    } catch (err) {
+      console.error(err)
+    }
   },
   data: {
     get(namespace) {
