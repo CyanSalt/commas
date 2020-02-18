@@ -1,7 +1,7 @@
 const {app} = require('electron')
 const {createWindow} = require('./lib/window')
 const {createApplicationMenu, createDockMenu} = require('./lib/menu')
-const {hasWindow, getLastWindow, forEachWindow} = require('./lib/frame')
+const {hasWindow, getLastWindow} = require('./lib/frame')
 const {transferInvoking} = require('./lib/transfer')
 const {checkForUpdates} = require('./lib/updater')
 const {loadTranslation} = require('./build/main')
@@ -49,8 +49,4 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
-})
-
-process.on('uncaughtException', error => {
-  forEachWindow(frame => frame.webContents.send('uncaught-error', String(error)))
 })

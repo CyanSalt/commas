@@ -20,6 +20,9 @@ function transferEvents(frame) {
 }
 
 function transferInvoking() {
+  process.on('uncaughtException', error => {
+    forEachWindow(frame => frame.webContents.send('uncaught-error', String(error)))
+  })
   app.on('before-quit', () => {
     forEachWindow(frame => frame.webContents.send('before-quit'))
   })

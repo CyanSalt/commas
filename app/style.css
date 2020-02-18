@@ -12,14 +12,10 @@ body {
 }
 
 #main {
-  /* colors from macOS */
   --design-green: #28c941;
   --design-yellow: #ffbd2e;
   --design-red: #ff6159;
-  /* blue from Google */
-  --design-blue: #4285f4;
-  /* magenta from After Effects */
+  --design-blue: #2f88ff;
   --design-magenta: #cf96fd;
-  /* cyan from Material Design */
-  --design-cyan: #03dac6;
+  --design-cyan: #00c8d2;
 }

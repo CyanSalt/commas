@@ -38,6 +38,7 @@ export default {
 .switch-control .switch-content {
   position: relative;
   display: inline-block;
+  padding: 1px;
   width: 2em;
   height: 1em;
 }
@@ -56,14 +57,14 @@ export default {
 }
 .switch-control .switch-content::after {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 1px;
+  left: 1px;
   content: '';
   display: inline-block;
   width: 1em;
   height: 1em;
   border-radius: 0.5em;
-  background: currentColor;
+  background: white;
   transition: transform 0.2s;
 }
 .switch-control input:checked + .switch-content::before {
