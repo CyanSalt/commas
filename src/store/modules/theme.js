@@ -1,5 +1,5 @@
 import fallback from '@assets/themes/oceanic-next.json'
-import {colors, rgba, rgb} from '@/utils/theme'
+import {rgba, rgb} from '@/utils/theme'
 import {userStorage, assetsStorage} from '@/utils/storage'
 
 export default {
@@ -57,7 +57,7 @@ export default {
       const element = document.createElement('style')
       element.id = 'app-theme'
       const properties = {}
-      colors.forEach(key => {
+      ;['backdrop', ...Object.keys(fallback)].forEach(key => {
         if (!theme[key]) return
         properties[`--theme-${key.toLowerCase()}`] = theme[key]
       })

@@ -1,11 +1,3 @@
-export const colors = [
-  'foreground', 'background', 'backdrop',
-  'black', 'red', 'green', 'yellow',
-  'blue', 'magenta', 'cyan', 'white',
-  'brightBlack', 'brightRed', 'brightGreen', 'brightYellow',
-  'brightBlue', 'brightMagenta', 'brightCyan', 'brightWhite',
-]
-
 let element
 function normalizeColor(color) {
   if (!element) element = document.createElement('div')
@@ -46,10 +38,10 @@ export function mix(color1, color2, weight) {
   const c2 = color(color2)
   const w1 = weight
   const w2 = 1 - weight
-  const r = w1 * c1.r + w2 * c2.r
-  const g = w1 * c1.g + w2 * c2.g
-  const b = w1 * c1.b + w2 * c2.b
-  return `rgb(${r}, ${g}, ${b})`
+  const r = Math.round(w1 * c1.r + w2 * c2.r)
+  const g = Math.round(w1 * c1.g + w2 * c2.g)
+  const b = Math.round(w1 * c1.b + w2 * c2.b)
+  return '#' + [r, g, b].map(n => n.toString(16).padStart(2, '0')).join('')
 }
 
 export function normalizeTheme(original) {

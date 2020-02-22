@@ -117,7 +117,7 @@
     "label": "Theme Name",
     "comments": [
       "File name of internal theme or files in `themes/` folder",
-      "Support `oceanic-next` or `tomorrow` by default"
+      "Support `oceanic-next`, `tomorrow` or `high-contrast` by default"
     ],
     "default": "oceanic-next"
   },

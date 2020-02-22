@@ -1,0 +1,20 @@
+{
+  "foreground": "#ffffff",
+  "background": "#000000",
+  "black": "#000000",
+  "red": "#ff0000",
+  "green": "#008000",
+  "yellow": "#ffff00",
+  "blue": "#0000ff",
+  "magenta": "#ff00ff",
+  "cyan": "#00ffff",
+  "white": "#ffffff",
+  "brightBlack": "#000000",
+  "brightRed": "#ff0000",
+  "brightGreen": "#00ff00",
+  "brightYellow": "#ffff00",
+  "brightBlue": "#0000ff",
+  "brightMagenta": "#ff00ff",
+  "brightCyan": "#00ffff",
+  "brightWhite": "#ffffff"
+}
