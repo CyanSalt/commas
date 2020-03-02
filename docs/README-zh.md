@@ -37,7 +37,7 @@
 
 * Commas 也支持添加自定义初始脚本和样式表。你可以查看这里的[示例文件](https://github.com/CyanSalt/commas/tree/master/assets/examples)。这个目录下也包含了可以定制按键绑定、应用菜单、以及启动项的示例。
 
-* Commas 内置了一组完善的[钩子 API](https://github.com/CyanSalt/commas/tree/master/src/hooks)。你可以参考 Commas 的[自带插件](https://github.com/CyanSalt/commas/tree/master/src/addons)来编写自己的插件。
+* Commas 内置了一组完善的[钩子 API](https://github.com/CyanSalt/commas/tree/master/renderer/hooks)。你可以参考 Commas 的[自带插件](https://github.com/CyanSalt/commas/tree/master/renderer/addons)来编写自己的插件。
 
 * 你可以把上面提到的任意文件放置在用户数据文件夹下。所有的 JSON 文件都会被作为 [JSON5](https://json5.org/) 格式解析（类似于 ECMAScript 5 中的对象字面量)。
 

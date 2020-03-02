@@ -32,7 +32,7 @@
 <script>
 import {mapState, mapGetters} from 'vuex'
 import {getThemeList} from './utils'
-import hooks from '@/hooks'
+import hooks from '@hooks'
 
 export default {
   name: 'ThemePanel',

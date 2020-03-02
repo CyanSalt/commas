@@ -1,5 +1,5 @@
-import {createIDGenerator} from '@/utils/identity'
-import {quote} from '@/utils/terminal'
+import {createIDGenerator} from './identity'
+import {quote} from './terminal'
 
 const generateID = createIDGenerator()
 

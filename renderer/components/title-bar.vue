@@ -37,10 +37,10 @@
 <script>
 import {shell} from 'electron'
 import {mapState, mapGetters} from 'vuex'
-import {getPrompt, resolveHome, getGitBranch} from '@/utils/terminal'
-import {currentWindow, currentState} from '@/utils/frame'
-import {getTabLauncher} from '@/utils/launcher'
-import hooks from '@/hooks'
+import {getPrompt, resolveHome, getGitBranch} from '../utils/terminal'
+import {currentWindow, currentState} from '../utils/frame'
+import {getTabLauncher} from '../utils/launcher'
+import hooks from '@hooks'
 
 export default {
   name: 'TitleBar',

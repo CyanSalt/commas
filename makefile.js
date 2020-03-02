@@ -34,9 +34,9 @@ const options = {
   asar: true,
   icon: iconPath,
   ignore: [
-    '^/(?!assets|app|node_modules|package\\.json)',
+    '^/(?!assets|main|renderer|node_modules|package\\.json)',
     '^/assets/.*\\.(ico|icns)$',
-    '^/src/(?!build|index\\.html)$',
+    '^/renderer/(?!build|index\\.html)$',
   ],
   appVersion: app.version,
   appCopyright: [

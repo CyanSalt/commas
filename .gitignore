@@ -4,5 +4,5 @@
 /assets/images/*.ico
 /assets/images/*.icns
 /main/build
-/src/build
+/renderer/build
 /userdata

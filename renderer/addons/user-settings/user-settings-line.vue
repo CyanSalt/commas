@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import hooks from '@/hooks'
+import hooks from '@hooks'
 
 export default {
   name: 'UserSettingsLine',

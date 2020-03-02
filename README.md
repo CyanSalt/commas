@@ -37,7 +37,7 @@ You can also clone or download this repository and compile this app locally.
 
 * Commas also supports you to add custom init script and stylesheet. Check out the example files at [here](https://github.com/CyanSalt/commas/tree/master/assets/examples). This directory also contains the example files which could help you to customize key bindings, application menu, and the launchers in the terminal sidebar.
 
-* A well-run [Hooks API](https://github.com/CyanSalt/commas/tree/master/src/hooks) for addons is built in Commas. Write your own addon like [various addons](https://github.com/CyanSalt/commas/tree/master/src/addons) with Commas itself.
+* A well-run [Hooks API](https://github.com/CyanSalt/commas/tree/master/renderer/hooks) for addons is built in Commas. Write your own addon like [various addons](https://github.com/CyanSalt/commas/tree/master/renderer/addons) with Commas itself.
 
 * You can put any of the files referenced above to your user data folder. JSON files will be treated as [JSON5](https://json5.org/) format (like the object literals in ECMAScript 5).
 

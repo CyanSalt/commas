@@ -5,7 +5,7 @@ import {
   parseProxyRules, getProxyByURL, getRewriteRulesByURL, rewriteProxy,
   getGlobalWebProxy, setGlobalWebProxy,
 } from './utils'
-import hooks from '@/hooks'
+import hooks from '@hooks'
 
 export default {
   namespaced: true,

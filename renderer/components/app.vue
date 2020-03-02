@@ -23,8 +23,8 @@ import TitleBar from './title-bar'
 import TabList from './tab-list'
 import FindBox from './find-box'
 import TerminalTeletype from './terminal-teletype'
-import hooks from '../hooks'
 import {currentState} from '../utils/frame'
+import hooks from '@hooks'
 
 export default {
   name: 'App',
@@ -65,7 +65,7 @@ export default {
       // Load addons
       const addons = this.settings['terminal.addon.enabled']
       for (const name of addons) {
-        const addon = require(`@/addons/${name}`).default
+        const addon = require(`../addons/${name}`).default
         hooks.addon.load(addon)
       }
     })()

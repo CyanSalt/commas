@@ -21,7 +21,7 @@
 
 <script>
 import {mapState, mapGetters} from 'vuex'
-import {getPrompt, getIcon} from '@/utils/terminal'
+import {getPrompt, getIcon} from '../utils/terminal'
 import {basename} from 'path'
 
 export default {

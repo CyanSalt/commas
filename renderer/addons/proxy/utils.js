@@ -1,5 +1,5 @@
 import {cloneDeep} from 'lodash'
-import hooks from '@/hooks'
+import hooks from '@hooks'
 
 function normalizeRules(rules) {
   return rules.reduce((collection, original) => {

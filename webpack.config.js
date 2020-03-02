@@ -23,7 +23,7 @@ module.exports = {
     __dirname: false,
   },
   entry: {
-    renderer: path.resolve(__dirname, 'src/entry.js'),
+    renderer: path.resolve(__dirname, 'renderer/entry.js'),
     main: path.resolve(__dirname, 'main/entry.js'),
   },
   output: {
@@ -35,7 +35,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.vue'],
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      '@hooks': path.resolve(__dirname, 'renderer/hooks'),
       'vue$': 'vue/dist/vue.esm.js',
       'lodash': 'lodash-es',
     },
@@ -77,7 +77,7 @@ module.exports = {
   },
   plugins: [
     new MiniCSSExtractPlugin({
-      filename: 'src/build/index.css',
+      filename: 'renderer/build/index.css',
     }),
     new VueLoaderPlugin(),
     new webpack.ProgressPlugin(),

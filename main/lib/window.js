@@ -50,7 +50,7 @@ function createWindow(...args) {
       }, 500)
     })
   }
-  loadHTMLFile(frame, '../../src/index.html')
+  loadHTMLFile(frame, '../../renderer/index.html')
   if (process.platform !== 'darwin') {
     createWindowMenu(frame)
   }

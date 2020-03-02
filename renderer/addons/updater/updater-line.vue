@@ -7,7 +7,7 @@
 
 <script>
 import {mapState, mapActions} from 'vuex'
-import hooks from '@/hooks'
+import hooks from '@hooks'
 
 export default {
   name: 'UpdaterLine',
