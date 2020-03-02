@@ -7,7 +7,7 @@ const childProcess = require('child_process')
 const app = require('./package.json')
 
 const suffix = process.platform === 'darwin' ? 'icns' : 'ico'
-let iconPath = `app/assets/images/icon.${suffix}`
+let iconPath = `assets/images/icon.${suffix}`
 
 // Check icon file
 try {
@@ -34,8 +34,8 @@ const options = {
   asar: true,
   icon: iconPath,
   ignore: [
-    '^/(?!app|node_modules|package\\.json)',
-    '^/app/assets/.*\\.(ico|icns)$',
+    '^/(?!assets|app|node_modules|package\\.json)',
+    '^/assets/.*\\.(ico|icns)$',
     '^/src/(?!build|index\\.html)$',
   ],
   appVersion: app.version,
@@ -66,7 +66,7 @@ packager(options).then(appPaths => {
     if (dir.includes('win32')) {
       try {
         const manifest = `${app.name}.VisualElementsManifest.xml`
-        fs.copyFileSync(`app/assets/${manifest}`,
+        fs.copyFileSync(`assets/${manifest}`,
           `${dir}/${manifest}`)
       } catch {
         // ignore error

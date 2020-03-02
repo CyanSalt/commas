@@ -1,6 +1,7 @@
-import fallback from '@assets/themes/oceanic-next.json'
 import {rgba, rgb} from '../../utils/theme'
 import {userStorage, assetsStorage} from '../../../common/storage'
+
+const fallback = assetsStorage.require('themes/oceanic-next.json')
 
 export default {
   namespaced: true,

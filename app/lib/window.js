@@ -1,7 +1,6 @@
 const {app, BrowserWindow} = require('electron')
 const {format} = require('url')
 const {resolve} = require('path')
-const {appDir} = require('../build/app')
 const {hasWindow, getLastWindow, collectWindow} = require('./frame')
 const {createWindowMenu} = require('./menu')
 const {transferEvents} = require('./transfer')
@@ -10,7 +9,7 @@ function loadHTMLFile(frame, file) {
   frame.loadURL(format({
     protocol: 'file',
     slashes: true,
-    pathname: resolve(appDir, file),
+    pathname: resolve(__dirname, file),
   }))
 }
 
@@ -51,7 +50,7 @@ function createWindow(...args) {
       }, 500)
     })
   }
-  loadHTMLFile(frame, 'index.html')
+  loadHTMLFile(frame, '../../src/index.html')
   if (process.platform !== 'darwin') {
     createWindowMenu(frame)
   }

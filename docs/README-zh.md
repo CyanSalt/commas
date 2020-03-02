@@ -1,6 +1,6 @@
 # Commas
 
-<img src="https://raw.githubusercontent.com/CyanSalt/commas/master/app/assets/images/icon.svg" width="96">
+<img src="https://raw.githubusercontent.com/CyanSalt/commas/master/assets/images/icon.svg" width="96">
 
 [EN](https://github.com/CyanSalt/commas/blob/master/README.md) | 中文
 
@@ -33,9 +33,9 @@
 
 * 所有的数据都存储在**用户数据文件夹**下, 在 macOS 上是 `~/Library/Application Support/Commas/`, 在 Windows 上是 `%localappdata%/Commas/`，在 Linux 上是 `~/.config/Commas/`。
 
-* 如果应用内没有你想要语言的翻译，你可以在用户数据文件夹下添加 `translation.json` 文件。文件内容可以是类似于这个[翻译文件](https://github.com/CyanSalt/commas/blob/master/app/assets/locales/zh-CN.json)的一部分，或者是通过像 `"@use": "zh-CN"` 这样的键值对来引用已有的翻译文件。
+* 如果应用内没有你想要语言的翻译，你可以在用户数据文件夹下添加 `translation.json` 文件。文件内容可以是类似于这个[翻译文件](https://github.com/CyanSalt/commas/blob/master/assets/locales/zh-CN.json)的一部分，或者是通过像 `"@use": "zh-CN"` 这样的键值对来引用已有的翻译文件。
 
-* Commas 也支持添加自定义初始脚本和样式表。你可以查看这里的[示例文件](https://github.com/CyanSalt/commas/tree/master/app/assets/examples)。这个目录下也包含了可以定制按键绑定、应用菜单、以及启动项的示例。
+* Commas 也支持添加自定义初始脚本和样式表。你可以查看这里的[示例文件](https://github.com/CyanSalt/commas/tree/master/assets/examples)。这个目录下也包含了可以定制按键绑定、应用菜单、以及启动项的示例。
 
 * Commas 内置了一组完善的[钩子 API](https://github.com/CyanSalt/commas/tree/master/src/hooks)。你可以参考 Commas 的[自带插件](https://github.com/CyanSalt/commas/tree/master/src/addons)来编写自己的插件。
 

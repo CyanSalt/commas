@@ -2,7 +2,9 @@ import {promises as fs} from 'fs'
 import {hostname, userInfo} from 'os'
 import {basename, sep} from 'path'
 import {exec} from './helper'
-import icons from '@assets/icon.json'
+import {assetsStorage} from '../../common/storage'
+
+const icons = assetsStorage.require('icon.json')
 
 export function quote(command, q) {
   return `${q}${command.replace(new RegExp(q, 'g'), `${q}\\${q}${q}`)}${q}`

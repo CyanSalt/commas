@@ -1,6 +1,6 @@
 # Commas
 
-<img src="https://raw.githubusercontent.com/CyanSalt/commas/master/app/assets/images/icon.svg" width="96">
+<img src="https://raw.githubusercontent.com/CyanSalt/commas/master/assets/images/icon.svg" width="96">
 
 EN | [中文](https://github.com/CyanSalt/commas/blob/master/docs/README-zh.md)
 
@@ -33,9 +33,9 @@ You can also clone or download this repository and compile this app locally.
 
 * All of user data are stored in your **user data folder**, which is `~/Library/Application Support/Commas/` on macOS, `%localappdata%/Commas/` on Windows and `~/.config/Commas/` on Linux.
 
-* If this app has no internal translation for your language, you can add `translation.json` file to your user data folder. The content of the file could be part of entries in [the locale file](https://github.com/CyanSalt/commas/blob/master/app/assets/locales/zh-CN.json), or contain a pair of key-value like `"@use": "zh-CN"` to reference an existed translation file.
+* If this app has no internal translation for your language, you can add `translation.json` file to your user data folder. The content of the file could be part of entries in [the locale file](https://github.com/CyanSalt/commas/blob/master/assets/locales/zh-CN.json), or contain a pair of key-value like `"@use": "zh-CN"` to reference an existed translation file.
 
-* Commas also supports you to add custom init script and stylesheet. Check out the example files at [here](https://github.com/CyanSalt/commas/tree/master/app/assets/examples). This directory also contains the example files which could help you to customize key bindings, application menu, and the launchers in the terminal sidebar.
+* Commas also supports you to add custom init script and stylesheet. Check out the example files at [here](https://github.com/CyanSalt/commas/tree/master/assets/examples). This directory also contains the example files which could help you to customize key bindings, application menu, and the launchers in the terminal sidebar.
 
 * A well-run [Hooks API](https://github.com/CyanSalt/commas/tree/master/src/hooks) for addons is built in Commas. Write your own addon like [various addons](https://github.com/CyanSalt/commas/tree/master/src/addons) with Commas itself.
 

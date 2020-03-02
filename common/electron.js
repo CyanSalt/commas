@@ -12,9 +12,9 @@ export const onAppReady = callback => {
 
 export const isPackaged = app.isPackaged
 
-export const appDir = isMainProcess ? join(__dirname, '../') : __dirname
+export const rootDir = isMainProcess ? join(__dirname, '../../') : join(__dirname, '../')
 
-export const assetsDir = join(appDir, 'assets/')
+export const assetsDir = join(rootDir, 'assets/')
 
 export const userDataDir = isPackaged ?
-  app.getPath('userData') : join(appDir, '..', 'userdata/')
+  app.getPath('userData') : join(rootDir, 'userdata/')

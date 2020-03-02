@@ -36,7 +36,6 @@ module.exports = {
     extensions: ['.js', '.vue'],
     alias: {
       '@': path.resolve(__dirname, 'src'),
-      '@assets': path.resolve(__dirname, 'app/assets'),
       'vue$': 'vue/dist/vue.esm.js',
       'lodash': 'lodash-es',
     },

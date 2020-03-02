@@ -1,7 +1,7 @@
-import defaultSpecs from '@assets/settings.spec.json'
 import {ui} from './core'
+import storage from './storage'
 
-let specs = defaultSpecs
+let specs = storage.assets.require('settings.spec.json')
 
 export default {
   get(key) {
