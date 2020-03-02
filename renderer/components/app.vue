@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="['app', {opaque}]">
+  <div id="root" :class="['app', {opaque}]">
     <title-bar></title-bar>
     <div class="content">
       <tab-list v-show="multitabs"></tab-list>
@@ -111,7 +111,7 @@ body {
   cursor: default;
   -webkit-tap-highlight-color: transparent;
 }
-#app {
+#root {
   --design-green: #28c941;
   --design-yellow: #ffbd2e;
   --design-red: #ff6159;

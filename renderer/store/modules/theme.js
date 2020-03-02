@@ -67,7 +67,7 @@ export default {
       properties['font-family'] = settings['terminal.style.fontFamily']
       const declarations = Object.keys(properties)
         .map(key => `${key}: ${properties[key]};`).join(' ')
-      element.appendChild(document.createTextNode(`#app { ${declarations} }`))
+      element.appendChild(document.createTextNode(`#root { ${declarations} }`))
       document.head.appendChild(element)
       if (theme.type) document.body.classList.add(theme.type)
     },
