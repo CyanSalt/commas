@@ -1,5 +1,5 @@
 <template>
-  <div id="main" :class="['app', {opaque}]">
+  <div id="app" :class="['app', {opaque}]">
     <title-bar></title-bar>
     <div class="content">
       <tab-list v-show="multitabs"></tab-list>

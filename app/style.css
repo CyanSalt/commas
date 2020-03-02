@@ -11,7 +11,7 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-#main {
+#app {
   --design-green: #28c941;
   --design-yellow: #ffbd2e;
   --design-red: #ff6159;

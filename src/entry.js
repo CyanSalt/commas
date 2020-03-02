@@ -9,7 +9,7 @@ Vue.directive('i18n', translateElement)
 
 new Vue({
   store,
-  el: '#main',
+  el: '#app',
   functional: true,
   render: h => h(App),
 })
