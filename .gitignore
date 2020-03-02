@@ -3,6 +3,6 @@
 /node_modules
 /assets/images/*.ico
 /assets/images/*.icns
-/app/build
+/main/build
 /src/build
 /userdata

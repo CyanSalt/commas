@@ -4,7 +4,7 @@ const {createApplicationMenu, createDockMenu} = require('./lib/menu')
 const {hasWindow, getLastWindow} = require('./lib/frame')
 const {transferInvoking} = require('./lib/transfer')
 const {checkForUpdates} = require('./lib/updater')
-const {loadTranslation} = require('./build/app')
+const {loadTranslation} = require('./build')
 
 app.allowRendererProcessReuse = false
 transferInvoking()

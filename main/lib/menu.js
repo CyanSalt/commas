@@ -1,5 +1,5 @@
 const {app, Menu} = require('electron')
-const {userStorage, assetsStorage} = require('../build/app')
+const {userStorage, assetsStorage} = require('../build')
 const {execCommand} = require('./command')
 
 const shared = assetsStorage.require('menu.json')

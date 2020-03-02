@@ -24,7 +24,7 @@ module.exports = {
   },
   entry: {
     renderer: path.resolve(__dirname, 'src/entry.js'),
-    app: path.resolve(__dirname, 'app/entry.js'),
+    main: path.resolve(__dirname, 'main/entry.js'),
   },
   output: {
     path: __dirname,
