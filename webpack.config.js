@@ -23,8 +23,8 @@ module.exports = {
     __dirname: false,
   },
   entry: {
-    renderer: path.resolve(__dirname, 'src/renderer.js'),
-    main: path.resolve(__dirname, 'src/main.js'),
+    renderer: path.resolve(__dirname, 'src/entry.js'),
+    main: path.resolve(__dirname, 'main/entry.js'),
   },
   output: {
     path: path.resolve(__dirname, 'app/build/'),
