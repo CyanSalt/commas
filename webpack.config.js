@@ -28,7 +28,7 @@ module.exports = {
   },
   output: {
     path: __dirname,
-    filename: '[name]/index.js',
+    filename: '[name]/build/index.js',
     libraryTarget: 'commonjs2',
   },
   externals: externalizeAllDenpendencies(app.dependencies),
