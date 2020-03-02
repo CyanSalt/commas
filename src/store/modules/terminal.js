@@ -1,16 +1,16 @@
+import {remote, shell} from 'electron'
 import {spawn} from 'node-pty'
 import {Terminal} from 'xterm'
 import {FitAddon} from 'xterm-addon-fit'
 import {SearchAddon} from 'xterm-addon-search'
 import {WebLinksAddon} from 'xterm-addon-web-links'
 import {LigaturesAddon} from 'xterm-addon-ligatures'
-import {remote, shell} from 'electron'
-import {getCwd, getWindowsProcessInfo} from '@/utils/terminal'
-import {normalizeTheme} from '@/utils/theme'
-import {exec, unreactive} from '@/utils/helper'
-import {isPackaged} from '@/utils/electron'
-import {currentWindow} from '@/utils/frame'
 import {debounce} from 'lodash'
+import {getCwd, getWindowsProcessInfo} from '../../utils/terminal'
+import {normalizeTheme} from '../../utils/theme'
+import {exec, unreactive} from '../../utils/helper'
+import {currentWindow} from '../../utils/frame'
+import {isPackaged} from '../../../common/electron'
 
 const variables = {
   LANG: remote.app.getLocale().replace('-', '_') + '.UTF-8',

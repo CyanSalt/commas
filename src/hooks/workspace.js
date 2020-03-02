@@ -1,11 +1,11 @@
 import {remote} from 'electron'
-import {createIDGenerator} from '@/utils/identity'
-import {translate} from '@/utils/i18n'
-import {unreactive} from '@/utils/helper'
-import InternalPanel from '@/components/internal-panel'
-import SwitchControl from '@/components/switch-control'
-import LoadingSpinner from '@/components/loading-spinner'
+import {createIDGenerator} from '../utils/identity'
+import {unreactive} from '../utils/helper'
+import InternalPanel from '../components/internal-panel'
+import SwitchControl from '../components/switch-control'
+import LoadingSpinner from '../components/loading-spinner'
 import {ui} from './core'
+import intl from './i18n'
 
 const generateID = createIDGenerator(id => id - 1)
 
@@ -16,7 +16,7 @@ const createInternalTerminal = ({title, icon, component, i18n}) => unreactive({
   },
   id: generateID(),
   process: remote.app.name,
-  title: i18n ? translate(title, i18n) : title,
+  title: i18n ? intl.translate(title, i18n) : title,
   cwd: '',
 })
 

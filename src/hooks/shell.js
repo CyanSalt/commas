@@ -2,10 +2,10 @@ import {shell, ipcRenderer} from 'electron'
 import {promises as fs} from 'fs'
 import {tmpdir} from 'os'
 import {resolve} from 'path'
-import {userStorage, assetsStorage} from '@/utils/storage'
-import {currentWindow} from '@/utils/frame'
-import {generateSource} from '@/utils/helper'
+import {currentWindow} from '../utils/frame'
+import {generateSource} from '../utils/helper'
 import settings from './settings'
+import storage from './storage'
 
 export default {
   openWindow() {
@@ -15,7 +15,7 @@ export default {
     currentWindow.close()
   },
   openUserDirectory() {
-    shell.openItem(userStorage.filename('.'))
+    shell.openItem(storage.user.filename('.'))
   },
   async openDefaultSettings() {
     const specs = settings.getSpecs()
@@ -29,15 +29,15 @@ export default {
     }
   },
   async openUserFile(filename, source, assets) {
-    const path = userStorage.filename(filename)
+    const path = storage.user.filename(filename)
     try {
       await fs.access(path)
     } catch {
       if (assets) {
-        const file = assetsStorage.filename(source)
+        const file = storage.assets.filename(source)
         await fs.copyFile(file, path)
       } else {
-        await userStorage.write(filename, source)
+        await storage.user.write(filename, source)
       }
     }
     shell.openItem(path)

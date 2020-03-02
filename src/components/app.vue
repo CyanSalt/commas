@@ -17,16 +17,14 @@
 </template>
 
 <script>
+import {ipcRenderer} from 'electron'
+import {mapState, mapGetters} from 'vuex'
 import TitleBar from './title-bar'
 import TabList from './tab-list'
 import FindBox from './find-box'
 import TerminalTeletype from './terminal-teletype'
-import {remote, ipcRenderer} from 'electron'
-import {mapState, mapGetters} from 'vuex'
-import {currentState} from '@/utils/frame'
-import {userStorage} from '@/utils/storage'
-import {loadTranslation} from '@/utils/i18n'
-import hooks from '@/hooks'
+import hooks from '../hooks'
+import {currentState} from '../utils/frame'
 
 export default {
   name: 'App',
@@ -45,9 +43,8 @@ export default {
     },
   },
   beforeCreate() {
-    loadTranslation(remote.app.getLocale())
     // custom stylesheet
-    const stylesheet = userStorage.readSync('custom.css')
+    const stylesheet = hooks.storage.user.readSync('custom.css')
     if (stylesheet) {
       const element = document.createElement('style')
       element.appendChild(document.createTextNode(stylesheet))
@@ -100,7 +97,7 @@ export default {
       hooks.command.exec(command, args)
     })
     // custom script
-    const initScript = userStorage.require('custom.js')
+    const initScript = hooks.storage.user.require('custom.js')
     initScript && initScript(hooks)
   },
 }

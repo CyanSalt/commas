@@ -1,6 +1,6 @@
 import {remote} from 'electron'
-import {translate} from '@/utils/i18n'
-import {currentWindow} from '@/utils/frame'
+import {translate} from '../../../common/i18n'
+import {currentWindow} from '../../utils/frame'
 
 export default {
   namespaced: true,

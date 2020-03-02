@@ -1,6 +1,6 @@
-import {appDir} from '@/utils/electron'
-import {userStorage} from '@/utils/storage'
-import {loadTranslation, translate} from '@/utils/i18n'
+import {appDir} from '../common/electron'
+import {userStorage} from '../common/storage'
+import {loadTranslation, translate} from '../common/i18n'
 
 export {
   appDir,

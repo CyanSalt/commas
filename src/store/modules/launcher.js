@@ -1,9 +1,9 @@
-import {userStorage} from '@/utils/storage'
-import {resolveHome} from '@/utils/terminal'
-import {getLauncherTab, getLauncherCommand, merge} from '@/utils/launcher'
 import {shell} from 'electron'
 import {spawn} from 'child_process'
 import {EOL} from 'os'
+import {resolveHome} from '../../utils/terminal'
+import {getLauncherTab, getLauncherCommand, merge} from '../../utils/launcher'
+import {userStorage} from '../../../common/storage'
 
 export default {
   namespaced: true,
