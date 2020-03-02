@@ -1,9 +1,28 @@
 <template>
   <div class="internal-panel">
-    <svg class="app-pattern" viewBox="0 0 144 144" version="1.1"
-      xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-      <rect x="10.8" y="10.8" width="122.4" height="122.4" rx="38.4" ry="38.4"/>
-      <path d="M63 79h24" stroke="currentColor" stroke-width="6" stroke-opacity=".8" stroke-linecap="round" fill="none"/>
+    <svg
+      class="app-pattern"
+      viewBox="0 0 144 144"
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
+      <rect
+        x="10.8"
+        y="10.8"
+        width="122.4"
+        height="122.4"
+        rx="38.4"
+        ry="38.4"
+      />
+      <path
+        d="M63 79h24"
+        stroke="currentColor"
+        stroke-width="6"
+        stroke-opacity=".8"
+        stroke-linecap="round"
+        fill="none"
+      />
       <path d="M48.52 41.7a11.12 11.12 0 100 22.23 10.37 10.37 0 002.5-.32.56.56 0 01.63.83 15.37 15.37 0 01-13.23 7.93 2.81 2.81 0 000 5.62 21.85 21.85 0 0021.22-22.38v-2.8A11.13 11.13 0 0048.52 41.7z" fill="currentColor" fill-opacity=".8"/>
     </svg>
     <div class="scroll-area">

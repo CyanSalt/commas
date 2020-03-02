@@ -57,8 +57,8 @@ export default {
       const settings = rootGetters['settings/settings']
       const element = document.createElement('style')
       element.id = 'app-theme'
-      const properties = {}
-      ;['backdrop', ...Object.keys(fallback)].forEach(key => {
+      const properties = {};
+      ['backdrop', ...Object.keys(fallback)].forEach(key => {
         if (!theme[key]) return
         properties[`--theme-${key.toLowerCase()}`] = theme[key]
       })

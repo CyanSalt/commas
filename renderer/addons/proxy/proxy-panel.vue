@@ -1,16 +1,16 @@
 <template>
   <internal-panel class="proxy-panel">
-    <h2 class="group-title" v-i18n>General#!settings.2</h2>
+    <h2 v-i18n class="group-title">General#!settings.2</h2>
     <div class="group">
       <div v-if="platform === 'darwin'" class="form-line">
-        <label class="form-label" v-i18n>Enable system proxy#!proxy.3</label>
+        <label v-i18n class="form-label">Enable system proxy#!proxy.3</label>
         <switch-control :checked="globe" @change="toggleGlobal"></switch-control>
       </div>
       <span class="link" @click="openFile">
         <span v-i18n="{F: 'proxy-rules.json'}">Edit %F#!settings.8</span>
       </span>
     </div>
-    <h2 class="group-title" v-i18n>Proxy Rules#!proxy.1</h2>
+    <h2 v-i18n class="group-title">Proxy Rules#!proxy.1</h2>
     <div class="group">
       <div class="action-line">
         <span :class="['link form-action revert', {disabled: !changed}]" @click="revert">
@@ -31,7 +31,7 @@
             <span class="link remove" @click="$delete(rule.context, index)">
               <span class="feather-icon icon-minus"></span>
             </span>
-            <input type="text" v-model="rule.context[index]" class="form-control">
+            <input v-model="rule.context[index]" type="text" class="form-control">
           </div>
           <div class="rule-line">
             <span class="list-style">
@@ -42,19 +42,30 @@
             <span class="link add" @click="addContext(rule)">
               <span class="feather-icon icon-plus"></span>
             </span>
-            <span :class="['proxy-to', {active: recalling === rule, valid: rule.proxy.records}]"
-              @click="recall(rule)">
+            <span
+              :class="['proxy-to', {active: recalling === rule, valid: rule.proxy.records}]"
+              @click="recall(rule)"
+            >
               <span class="feather-icon icon-corner-down-right"></span>
             </span>
-            <input type="text" v-model="rule.proxy.target" :readonly="recalling === rule"
-              v-i18n placeholder="Proxy to...#!proxy.4" class="form-control target">
+            <input
+              v-model="rule.proxy.target"
+              v-i18n
+              type="text"
+              :readonly="recalling === rule"
+              placeholder="Proxy to...#!proxy.4"
+              class="form-control target"
+            >
             <span v-if="rule.proxy.rewrite" class="rewriting">
               <span class="feather-icon icon-activity"></span>
             </span>
           </div>
           <template v-if="recalling === rule">
-            <div v-for="(record, index) in rule.proxy.records"
-              :key="`record:${index}`" class="rule-line">
+            <div
+              v-for="(record, index) in rule.proxy.records"
+              :key="`record:${index}`"
+              class="rule-line"
+            >
               <span class="list-style"></span>
               <span class="link record-action remove" @click="$delete(rule.proxy.records, index)">
                 <span class="feather-icon icon-x"></span>

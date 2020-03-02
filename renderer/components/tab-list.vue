@@ -3,10 +3,17 @@
     <div class="list-column" :style="{width: width + 'px'}">
       <div class="list">
         <div class="scroll-area">
-          <sortable-list :value="running" v-slot="{value}"
-            class="processes" @change="sortTabs">
-            <tab-item :tab="value" :key="value.id"
-              @click.native="activate(value)"></tab-item>
+          <sortable-list
+            v-slot="{value}"
+            :value="running"
+            class="processes"
+            @change="sortTabs"
+          >
+            <tab-item
+              :key="value.id"
+              :tab="value"
+              @click.native="activate(value)"
+            ></tab-item>
           </sortable-list>
           <div class="new-tab">
             <div v-if="shells.length" class="select-shell anchor" @click="select">
@@ -17,27 +24,40 @@
             </div>
           </div>
           <div class="launcher-folder" @click="expandOrCollapse">
-            <div class="group-name" v-i18n>Launchers#!5</div>
+            <div v-i18n class="group-name">Launchers#!5</div>
             <div class="buttons">
-              <div :class="['button', 'find', {active: finding}]"
-                @click.stop="find">
+              <div
+                :class="['button', 'find', {active: finding}]"
+                @click.stop="find"
+              >
                 <span class="feather-icon icon-search"></span>
               </div>
               <div class="button indicator">
-                <span class="feather-icon icon-chevron-down" v-if="collapsed"></span>
-                <span class="feather-icon icon-chevron-up" v-else></span>
+                <span v-if="collapsed" class="feather-icon icon-chevron-down"></span>
+                <span v-else class="feather-icon icon-chevron-up"></span>
               </div>
             </div>
-            <div class="find-launcher" v-show="finding" @click.stop>
-              <input class="keyword" v-model="keyword" v-i18n placeholder="Find#!6"
-                @keyup.esc="find" ref="keyword" autofocus>
+            <div v-show="finding" class="find-launcher" @click.stop>
+              <input
+                ref="keyword"
+                v-model="keyword"
+                v-i18n
+                class="keyword"
+                placeholder="Find#!6"
+                autofocus
+                @keyup.esc="find"
+              >
             </div>
           </div>
           <div class="launchers">
-            <tab-item :tab="getLauncherTab(launcher)" :name="launcher.name"
+            <tab-item
+              v-for="launcher in filtered"
+              v-show="!collapsed || getLauncherTab(launcher)"
+              :key="launcher.id"
+              :tab="getLauncherTab(launcher)"
+              :name="launcher.name"
               @click.native="open(launcher)"
-              v-for="launcher in filtered" :key="launcher.id"
-              v-show="!collapsed || getLauncherTab(launcher)">
+            >
               <template #operations>
                 <div class="button launch" @click.stop="launch(launcher)">
                   <span class="feather-icon icon-play"></span>
@@ -55,8 +75,12 @@
         <div class="anchor" @click="configure">
           <span class="feather-icon icon-settings"></span>
         </div>
-        <component v-for="(anchor, index) in anchors" :key="index"
-          :is="anchor" class="anchor"></component>
+        <component
+          :is="anchor"
+          v-for="(anchor, index) in anchors"
+          :key="index"
+          class="anchor"
+        ></component>
       </div>
     </div>
     <div class="sash" @mousedown.left="resize"></div>

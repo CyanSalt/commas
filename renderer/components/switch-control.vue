@@ -1,7 +1,11 @@
 <template>
   <label class="switch-control">
-    <input type="checkbox" @change="change"
-      v-bind="$attrs" v-on="listeners">
+    <input
+      type="checkbox"
+      v-bind="$attrs"
+      @change="change"
+      v-on="listeners"
+    >
     <span class="switch-content"></span>
   </label>
 </template>

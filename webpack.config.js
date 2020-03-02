@@ -36,8 +36,8 @@ module.exports = {
     extensions: ['.js', '.vue'],
     alias: {
       '@hooks': path.resolve(__dirname, 'renderer/hooks'),
-      'vue$': 'vue/dist/vue.esm.js',
-      'lodash': 'lodash-es',
+      vue$: 'vue/dist/vue.esm.js',
+      lodash: 'lodash-es',
     },
     modules: [
       path.resolve(__dirname, 'packages'),

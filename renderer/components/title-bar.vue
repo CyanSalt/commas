@@ -23,8 +23,10 @@
           <span class="feather-icon icon-minus"></span>
         </div>
         <div class="maximize button" @click="maximize">
-          <span :class="['feather-icon', currentState.maximized ?
-            'icon-minimize-2' : 'icon-maximize-2']"></span>
+          <span
+            :class="['feather-icon', currentState.maximized ?
+              'icon-minimize-2' : 'icon-maximize-2']"
+          ></span>
         </div>
         <div class="close button" @click="close">
           <span class="feather-icon icon-x"></span>
@@ -106,7 +108,7 @@ export default {
         command: 'run-script',
         args: {
           launcher: this.launcher,
-          index: index,
+          index,
         },
       })))
     },

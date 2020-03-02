@@ -16,5 +16,5 @@ export const rootDir = isMainProcess ? join(__dirname, '../../') : join(__dirnam
 
 export const assetsDir = join(rootDir, 'assets/')
 
-export const userDataDir = isPackaged ?
-  app.getPath('userData') : join(rootDir, 'userdata/')
+export const userDataDir = isPackaged
+  ? app.getPath('userData') : join(rootDir, 'userdata/')

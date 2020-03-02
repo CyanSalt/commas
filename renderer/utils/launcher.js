@@ -22,12 +22,14 @@ function getMatchedLauncher(launchers, declarations, condition) {
 
 function getLauncherID(launchers, declarations, declaration) {
   let matched = getMatchedLauncher(
-    launchers, declarations,
+    launchers,
+    declarations,
     item => item.name === declaration.name,
   )
   if (matched) return matched.id
   matched = getMatchedLauncher(
-    launchers, declarations,
+    launchers,
+    declarations,
     item => item.remote === declaration.remote
       && item.directory === declaration.directory
   )

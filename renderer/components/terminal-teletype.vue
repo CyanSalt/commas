@@ -1,8 +1,11 @@
 <template>
-  <div class="terminal-teletype"
-    @dragover.prevent="dragging" @drop.prevent="drop">
-    <div class="terminal-content" ref="terminal"></div>
-    <scroll-bar :parent="viewport" v-if="viewport"></scroll-bar>
+  <div
+    class="terminal-teletype"
+    @dragover.prevent="dragging"
+    @drop.prevent="drop"
+  >
+    <div ref="terminal" class="terminal-content"></div>
+    <scroll-bar v-if="viewport" :parent="viewport"></scroll-bar>
   </div>
 </template>
 

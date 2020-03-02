@@ -6,10 +6,16 @@
       <div class="interface">
         <find-box></find-box>
         <keep-alive v-if="current">
-          <component v-if="current.internal" :is="current.internal.component"
-            :key="current.id"></component>
-          <terminal-teletype v-else :tab="current"
-            :key="current.id"></terminal-teletype>
+          <component
+            :is="current.internal.component"
+            v-if="current.internal"
+            :key="current.id"
+          ></component>
+          <terminal-teletype
+            v-else
+            :key="current.id"
+            :tab="current"
+          ></terminal-teletype>
         </keep-alive>
       </div>
     </div>
@@ -56,8 +62,8 @@ export default {
     hooks.core.dangerouslySetViewModel(this)
     const index = process.argv.indexOf('--') + 1
     const args = index ? process.argv.slice(index) : []
-    const initialPath = args[0]
-    ;(async () => {
+    const initialPath = args[0];
+    (async () => {
       await this.$store.dispatch('settings/load')
       hooks.events.emit('settings:loaded')
       await this.$store.dispatch('theme/load')

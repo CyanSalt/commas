@@ -1,6 +1,6 @@
 <template>
   <div class="form-line updater-line">
-    <label class="form-label" v-i18n>Enable auto updating#!updater.1</label>
+    <label v-i18n class="form-label">Enable auto updating#!updater.1</label>
     <switch-control :checked="enabled" @change="toggle"></switch-control>
   </div>
 </template>

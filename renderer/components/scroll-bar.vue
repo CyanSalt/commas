@@ -1,5 +1,5 @@
 <template>
-  <div :class="['scroll-bar', {scrolling}]" v-show="overflow">
+  <div v-show="overflow" :class="['scroll-bar', {scrolling}]">
     <div class="scroll-track" @click.self="jump"></div>
     <div class="scroll-thumb" :style="style" @mousedown="scroll"></div>
   </div>

@@ -1,6 +1,6 @@
 <template>
   <internal-panel class="user-settings-panel">
-    <h2 class="group-title" v-i18n>User Settings#!user-settings.1</h2>
+    <h2 v-i18n class="group-title">User Settings#!user-settings.1</h2>
     <div class="group">
       <div class="action-line">
         <span :class="['link form-action revert', {disabled: !changed}]" @click="revert">
@@ -10,8 +10,12 @@
           <span class="feather-icon icon-check"></span>
         </span>
       </div>
-      <user-settings-line v-for="row in rows" :key="row.key"
-        v-model="values[row.key]" :spec="row"></user-settings-line>
+      <user-settings-line
+        v-for="row in rows"
+        :key="row.key"
+        v-model="values[row.key]"
+        :spec="row"
+      ></user-settings-line>
     </div>
   </internal-panel>
 </template>
@@ -23,7 +27,7 @@ import {mapState} from 'vuex'
 import {cloneDeep, isEqual} from 'lodash'
 
 export default {
-  name: 'SettingsPanel',
+  name: 'UserSettingsPanel',
   components: {
     'user-settings-line': UserSettingsLine,
     ...hooks.workspace.component.pick([

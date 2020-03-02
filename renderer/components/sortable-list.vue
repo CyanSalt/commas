@@ -1,9 +1,13 @@
 <template>
   <div class="sortable-list">
-    <div v-for="(item, index) in value" :key="index"
+    <div
+      v-for="(item, index) in value"
+      :key="index"
       :class="['sortable-item', {dragging: draggingIndex === index}]"
       :style="{order: index * 2}"
-      @mousedown="start($event, index)" @click.capture="click">
+      @mousedown="start($event, index)"
+      @click.capture="click"
+    >
       <slot :value="item" :index="index"></slot>
     </div>
   </div>

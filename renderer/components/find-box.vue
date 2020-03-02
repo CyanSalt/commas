@@ -1,15 +1,31 @@
 <template>
-  <div class="find-box" v-show="visible">
-    <input class="keyword" v-model="keyword" v-i18n placeholder="Find#!6"
-      @keyup.enter="find" @keyup.esc="close" ref="keyword" autofocus>
+  <div v-show="visible" class="find-box">
+    <input
+      ref="keyword"
+      v-model="keyword"
+      v-i18n
+      class="keyword"
+      placeholder="Find#!6"
+      autofocus
+      @keyup.enter="find"
+      @keyup.esc="close"
+    >
     <div class="options">
-      <div class="option case-sensitive"
+      <div
+        class="option case-sensitive"
         :class="{selected: options.caseSensitive}"
-        @click="toggle('caseSensitive')">Aa</div>
-      <div class="option whole-word" :class="{selected: options.wholeWord}"
-        @click="toggle('wholeWord')">|Ab|</div>
-      <div class="option use-regexp" :class="{selected: options.regex}"
-        @click="toggle('regex')">.*</div>
+        @click="toggle('caseSensitive')"
+      >Aa</div>
+      <div
+        class="option whole-word"
+        :class="{selected: options.wholeWord}"
+        @click="toggle('wholeWord')"
+      >|Ab|</div>
+      <div
+        class="option use-regexp"
+        :class="{selected: options.regex}"
+        @click="toggle('regex')"
+      >.*</div>
     </div>
     <div class="buttons">
       <div class="button previous">

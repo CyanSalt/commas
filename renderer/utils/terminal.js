@@ -12,14 +12,14 @@ export function quote(command, q) {
 
 export function resolveHome(directory) {
   if (!directory) return directory
-  return directory.startsWith('~') ?
-    process.env.HOME + directory.slice(1) : directory
+  return directory.startsWith('~')
+    ? process.env.HOME + directory.slice(1) : directory
 }
 
 export function omitHome(directory) {
   if (!directory || process.platform === 'win32') return directory
-  return directory.startsWith(process.env.HOME) ?
-    '~' + directory.slice(process.env.HOME.length) : directory
+  return directory.startsWith(process.env.HOME)
+    ? '~' + directory.slice(process.env.HOME.length) : directory
 }
 
 // Supports WSL Style `/mnt/c/Users` and MinGW Style `/c/Users`
@@ -114,9 +114,9 @@ export function getIcon(process) {
 }
 
 export async function getGitBranch(directory) {
-  const command = process.platform === 'win32' ?
-    'git rev-parse --abbrev-ref HEAD 2> NUL' :
-    'git branch 2> /dev/null | grep \\* | cut -d " " -f2'
+  const command = process.platform === 'win32'
+    ? 'git rev-parse --abbrev-ref HEAD 2> NUL'
+    : 'git branch 2> /dev/null | grep \\* | cut -d " " -f2'
   try {
     const {stdout} = await exec(command, {cwd: resolveHome(directory)})
     return stdout

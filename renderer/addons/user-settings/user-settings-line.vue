@@ -1,13 +1,27 @@
 <template>
   <div class="form-line">
-    <label class="form-label" v-i18n>{{ spec.label }}</label>
+    <label v-i18n class="form-label">{{ spec.label }}</label>
     <switch-control v-if="spec.type === 'boolean'" v-model="model"></switch-control>
-    <input v-else-if="spec.type === 'number'" v-model="model" :placeholder="placeholder"
-      type="number" class="form-control">
-    <input v-else-if="spec.type === 'string'" v-model="model" :placeholder="placeholder"
-      type="text" class="form-control">
-    <textarea v-else v-model="model" :placeholder="placeholder"
-      class="form-control"></textarea>
+    <input
+      v-else-if="spec.type === 'number'"
+      v-model="model"
+      :placeholder="placeholder"
+      type="number"
+      class="form-control"
+    >
+    <input
+      v-else-if="spec.type === 'string'"
+      v-model="model"
+      :placeholder="placeholder"
+      type="text"
+      class="form-control"
+    >
+    <textarea
+      v-else
+      v-model="model"
+      :placeholder="placeholder"
+      class="form-control"
+    ></textarea>
   </div>
 </template>
 
@@ -31,6 +45,7 @@ export default {
       required: true,
     },
     value: {
+      type: undefined,
       required: true,
     },
   },

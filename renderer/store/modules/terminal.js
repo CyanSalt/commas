@@ -245,8 +245,8 @@ export default {
           currentWindow.close()
         }
       } else {
-        const active = state.active > index ?
-          state.active - 1 : Math.min(index, length - 1)
+        const active = state.active > index
+          ? state.active - 1 : Math.min(index, length - 1)
         commit('setActive', active)
       }
     },

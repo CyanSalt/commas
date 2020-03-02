@@ -27,8 +27,8 @@ try {
 
 const options = {
   dir: '.',
-  name: process.platform === 'win32' ?
-    app.name : app.productName,
+  name: process.platform === 'win32'
+    ? app.name : app.productName,
   out: 'dist/',
   overwrite: true,
   asar: true,
@@ -66,8 +66,10 @@ packager(options).then(appPaths => {
     if (dir.includes('win32')) {
       try {
         const manifest = `${app.name}.VisualElementsManifest.xml`
-        fs.copyFileSync(`assets/${manifest}`,
-          `${dir}/${manifest}`)
+        fs.copyFileSync(
+          `assets/${manifest}`,
+          `${dir}/${manifest}`
+        )
       } catch {
         // ignore error
       }

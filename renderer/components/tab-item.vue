@@ -9,7 +9,7 @@
         <div v-if="idleState" :class="['idle-light', idleState]"></div>
         <div class="operations">
           <slot name="operations"></slot>
-          <div class="button close" @click.stop="close" v-if="tab">
+          <div v-if="tab" class="button close" @click.stop="close">
             <div class="feather-icon icon-x"></div>
           </div>
         </div>
