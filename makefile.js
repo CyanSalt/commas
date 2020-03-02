@@ -36,6 +36,7 @@ const options = {
   ignore: [
     '^/(?!app|node_modules|package\\.json)',
     '^/app/assets/.*\\.(ico|icns)$',
+    '^/src/(?!build|index\\.html)$',
   ],
   appVersion: app.version,
   appCopyright: [

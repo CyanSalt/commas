@@ -4,4 +4,5 @@
 /app/assets/images/*.ico
 /app/assets/images/*.icns
 /app/build
+/src/build
 /userdata

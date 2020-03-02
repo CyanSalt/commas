@@ -24,11 +24,11 @@ module.exports = {
   },
   entry: {
     renderer: path.resolve(__dirname, 'src/entry.js'),
-    main: path.resolve(__dirname, 'main/entry.js'),
+    app: path.resolve(__dirname, 'app/entry.js'),
   },
   output: {
-    path: path.resolve(__dirname, 'app/build/'),
-    filename: '[name].js',
+    path: __dirname,
+    filename: '[name]/index.js',
     libraryTarget: 'commonjs2',
   },
   externals: externalizeAllDenpendencies(app.dependencies),
@@ -78,7 +78,7 @@ module.exports = {
   },
   plugins: [
     new MiniCSSExtractPlugin({
-      filename: 'renderer.css',
+      filename: 'src/build/index.css',
     }),
     new VueLoaderPlugin(),
     new webpack.ProgressPlugin(),

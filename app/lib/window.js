@@ -1,7 +1,7 @@
 const {app, BrowserWindow} = require('electron')
 const {format} = require('url')
 const {resolve} = require('path')
-const {appDir} = require('../build/main')
+const {appDir} = require('../build/app')
 const {hasWindow, getLastWindow, collectWindow} = require('./frame')
 const {createWindowMenu} = require('./menu')
 const {transferEvents} = require('./transfer')

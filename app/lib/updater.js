@@ -1,6 +1,6 @@
 const {app, autoUpdater, Notification, dialog} = require('electron')
 const {promises: fs} = require('fs')
-const {translate} = require('../build/main')
+const {translate} = require('../build/app')
 
 let autoUpdaterEnabled = true
 let autoUpdaterPrepared = false

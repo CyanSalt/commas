@@ -1,6 +1,6 @@
 const {app, Menu} = require('electron')
 const shared = require('../assets/menu')
-const {userStorage} = require('../build/main')
+const {userStorage} = require('../build/app')
 const {execCommand} = require('./command')
 
 function resolveBindingCommand(binding) {
