@@ -41,13 +41,13 @@ module.exports = {
       'lodash': 'lodash-es',
     },
     modules: [
-      path.resolve(__dirname, 'src/vendors'),
+      path.resolve(__dirname, 'packages'),
       'node_modules',
     ],
   },
   resolveLoader: {
     modules: [
-      path.resolve(__dirname, 'src/vendors'),
+      path.resolve(__dirname, 'packages'),
       'node_modules',
     ],
   },
