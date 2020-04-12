@@ -22,7 +22,9 @@
     "accelerator": "CmdOrCtrl+Shift+]",
     "command": "next-tab"
   },
-  {"type": "separator"},
+  {
+    "type": "separator"
+  },
   {
     "label": "Find",
     "accelerator": "CmdOrCtrl+F",
@@ -38,7 +40,9 @@
     "accelerator": "CmdOrCtrl+B",
     "command": "toggle-tab-list"
   },
-  {"type": "separator"},
+  {
+    "type": "separator"
+  },
   {
     "label": "Close Tab",
     "accelerator": "CmdOrCtrl+W",

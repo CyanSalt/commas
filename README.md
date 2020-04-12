@@ -1,6 +1,6 @@
 # Commas
 
-<img src="https://raw.githubusercontent.com/CyanSalt/commas/master/assets/images/icon.svg" width="96">
+<img src="https://raw.githubusercontent.com/CyanSalt/commas/master/assets/images/icon.png" width="96">
 
 EN | [中文](https://github.com/CyanSalt/commas/blob/master/docs/README-zh.md)
 
