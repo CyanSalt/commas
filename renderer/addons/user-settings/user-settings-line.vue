@@ -16,6 +16,17 @@
       type="text"
       class="form-control"
     >
+    <select
+      v-else-if="spec.type === 'enum'"
+      v-model="model"
+      type="text"
+      class="form-control"
+    >
+      <option
+        v-for="option in spec.paradigm"
+        :key="option"
+      >{{ option }}</option>
+    </select>
     <textarea
       v-else
       v-model="model"
@@ -52,7 +63,7 @@ export default {
   computed: {
     model: {
       get() {
-        if (this.value === undefined && this.spec.type === 'boolean') {
+        if (this.value === undefined && ['boolean', 'enum'].includes(this.spec.type)) {
           return this.placeholder
         }
         return this.flattern(this.value)

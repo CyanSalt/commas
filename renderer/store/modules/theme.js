@@ -1,4 +1,5 @@
-import {rgba, rgb} from '../../utils/theme'
+import {ipcRenderer} from 'electron'
+import {rgba, rgb, distance} from '../../utils/theme'
 import {userStorage, assetsStorage} from '../../../common/storage'
 
 const fallback = assetsStorage.require('themes/oceanic-next.json')
@@ -48,6 +49,8 @@ export default {
       }
       theme.backdrop = theme.background
       theme.background = rgb(theme.backdrop)
+      theme.type = distance(theme.background, '#000') < distance(theme.background, '#fff')
+        ? 'dark' : 'light'
       await dispatch('eject')
       commit('setTheme', theme)
       dispatch('inject')
@@ -69,7 +72,8 @@ export default {
         .map(key => `${key}: ${properties[key]};`).join(' ')
       element.appendChild(document.createTextNode(`#root { ${declarations} }`))
       document.head.appendChild(element)
-      if (theme.type) document.body.classList.add(theme.type)
+      document.body.classList.add(theme.type)
+      ipcRenderer.invoke('update-theme', theme.type)
     },
     eject({state}) {
       const theme = state.theme
@@ -77,7 +81,8 @@ export default {
       // TODO: performance review
       const element = document.getElementById('app-theme')
       if (element) element.remove()
-      if (theme.type) document.body.classList.remove(theme.type)
+      document.body.classList.remove(theme.type)
+      ipcRenderer.invoke('update-theme', 'system')
     },
     watch({state, commit, dispatch}, file) {
       if (state.watcher) state.watcher.close()

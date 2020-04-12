@@ -14,7 +14,7 @@ export default {
     toggle({state, commit}) {
       const value = !state.enabled
       commit('setEnabled', value)
-      ipcRenderer.send('toggle-auto-update', value)
+      ipcRenderer.invoke('toggle-auto-updater', value)
     },
   },
 }

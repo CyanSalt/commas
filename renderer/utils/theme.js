@@ -33,6 +33,12 @@ export function color(value) {
   }
 }
 
+export function distance(color1, color2) {
+  const c1 = color(color1)
+  const c2 = color(color2)
+  return (c1.r - c2.r) ** 2 + (c1.g - c2.g) ** 2 + (c1.b - c2.b) ** 2
+}
+
 export function mix(color1, color2, weight) {
   const c1 = color(color1)
   const c2 = color(color2)

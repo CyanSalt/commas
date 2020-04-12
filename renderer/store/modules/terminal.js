@@ -4,6 +4,7 @@ import {Terminal} from 'xterm'
 import {FitAddon} from 'xterm-addon-fit'
 import {SearchAddon} from 'xterm-addon-search'
 import {WebLinksAddon} from 'xterm-addon-web-links'
+import {Unicode11Addon} from 'xterm-addon-unicode11'
 import {LigaturesAddon} from 'xterm-addon-ligatures'
 import {debounce} from 'lodash'
 import {getCwd, getWindowsProcessInfo} from '../../utils/terminal'
@@ -190,8 +191,13 @@ export default {
       xterm.$.search = new SearchAddon()
       xterm.loadAddon(xterm.$.search)
       xterm.loadAddon(new WebLinksAddon((event, uri) => {
-        if (event.altKey) shell.openExternal(uri)
+        const settings = rootState.settings.settings // real-time value
+        const shouldOpen = settings['terminal.link.modifier'] === 'Alt' ? event.altKey
+          : (process.platform === 'darwin' ? event.metaKey : event.ctrlKey)
+        if (shouldOpen) shell.openExternal(uri)
       }))
+      xterm.loadAddon(new Unicode11Addon())
+      xterm.unicode.activeVersion = '11'
       if (settings['terminal.style.fontLigatures']) {
         xterm.$.ligatures = new LigaturesAddon()
         xterm.loadAddon(xterm.$.ligatures)

@@ -1,4 +1,4 @@
-const {app, ipcMain, BrowserWindow} = require('electron')
+const {app, ipcMain, BrowserWindow, nativeTheme} = require('electron')
 const {forEachWindow} = require('./frame')
 const {createWindow} = require('./window')
 const {createMenu} = require('./menu')
@@ -26,10 +26,10 @@ function transferInvoking() {
   app.on('before-quit', () => {
     forEachWindow(frame => frame.webContents.send('before-quit'))
   })
-  ipcMain.on('open-window', () => {
+  ipcMain.handle('open-window', () => {
     createWindow()
   })
-  ipcMain.on('contextmenu', (event, data) => {
+  ipcMain.handle('contextmenu', (event, data) => {
     const menu = createMenu(data.template)
     menu.popup({
       window: BrowserWindow.fromWebContents(event.sender),
@@ -37,8 +37,11 @@ function transferInvoking() {
       y: data.position.y,
     })
   })
-  ipcMain.on('toggle-auto-updater', (event, data) => {
+  ipcMain.handle('toggle-auto-updater', (event, data) => {
     toggleAutoUpdater(data)
+  })
+  ipcMain.handle('update-theme', (event, source) => {
+    nativeTheme.themeSource = source
   })
 }
 

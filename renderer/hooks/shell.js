@@ -9,7 +9,7 @@ import storage from './storage'
 
 export default {
   openWindow() {
-    ipcRenderer.send('open-window')
+    ipcRenderer.invoke('open-window')
   },
   closeWindow() {
     currentWindow.close()
@@ -46,7 +46,7 @@ export default {
     shell.openExternal(event.target.dataset.href)
   },
   openContextByEvent(event, template) {
-    ipcRenderer.send('contextmenu', {
+    ipcRenderer.invoke('contextmenu', {
       template,
       position: {
         x: event.clientX,

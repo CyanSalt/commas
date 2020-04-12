@@ -7,6 +7,7 @@
     "External Explorer#!user-settings.terminal.external.explorer": "外部资源管理程序",
     "Enable Live CWD#!user-settings.terminal.tab.liveCwd": "启用动态工作路径",
     "Tab Title Format#!user-settings.terminal.tab.titleFormat": "标签页标题格式",
+    "Link Modifier#!user-settings.terminal.link.modifier": "链接修饰键",
     "Background Opacity#!user-settings.terminal.style.opacity": "背景不透明度",
     "Font Size#!user-settings.terminal.style.fontSize": "字体大小",
     "Font Family#!user-settings.terminal.style.fontFamily": "字体名称",

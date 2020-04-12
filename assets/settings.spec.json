@@ -73,6 +73,17 @@
     "default": "\\v"
   },
   {
+    "key": "terminal.link.modifier",
+    "type": "enum",
+    "paradigm": ["CmdOrCtrl", "Alt"],
+    "label": "Link Modifier",
+    "comments": [
+      "Keyboard modifier for opening link by click",
+      "Options: 'CmdOrCtrl' or 'Alt'"
+    ],
+    "default": "Alt"
+  },
+  {
     "key": "terminal.style.opacity",
     "type": "number",
     "paradigm": [0, 1],
