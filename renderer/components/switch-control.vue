@@ -20,7 +20,7 @@ export default {
   },
   computed: {
     listeners() {
-      const {change, ...listeners} = this.$listeners
+      const { change, ...listeners } = this.$listeners
       return listeners
     },
   },

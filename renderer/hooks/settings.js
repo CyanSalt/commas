@@ -1,4 +1,4 @@
-import {ui} from './core'
+import { ui } from './core'
 import storage from './storage'
 
 let specs = storage.assets.require('settings.spec.json')

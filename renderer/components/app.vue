@@ -1,5 +1,5 @@
 <template>
-  <div id="root" :class="['app', {opaque}]">
+  <div id="root" :class="['app', { opaque }]">
     <title-bar></title-bar>
     <div class="content">
       <tab-list v-show="multitabs"></tab-list>
@@ -23,13 +23,13 @@
 </template>
 
 <script>
-import {ipcRenderer} from 'electron'
-import {mapState, mapGetters} from 'vuex'
+import { ipcRenderer } from 'electron'
+import { mapState, mapGetters } from 'vuex'
 import TitleBar from './title-bar'
 import TabList from './tab-list'
 import FindBox from './find-box'
 import TerminalTeletype from './terminal-teletype'
-import {currentState} from '../utils/frame'
+import { currentState } from '../utils/frame'
 import hooks from '@hooks'
 
 export default {
@@ -67,7 +67,7 @@ export default {
       await this.$store.dispatch('settings/load')
       hooks.events.emit('settings:loaded')
       await this.$store.dispatch('theme/load')
-      this.$store.dispatch('terminal/spawn', {cwd: initialPath})
+      this.$store.dispatch('terminal/spawn', { cwd: initialPath })
       // Load addons
       const addons = this.settings['terminal.addon.enabled']
       for (const name of addons) {
@@ -97,9 +97,9 @@ export default {
       }
     })
     ipcRenderer.on('open-path', (event, path) => {
-      this.$store.dispatch('terminal/spawn', {cwd: path})
+      this.$store.dispatch('terminal/spawn', { cwd: path })
     })
-    ipcRenderer.on('command', (event, {command, args}) => {
+    ipcRenderer.on('command', (event, { command, args }) => {
       hooks.command.exec(command, args)
     })
     // custom script

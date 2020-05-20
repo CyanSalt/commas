@@ -1,8 +1,8 @@
-import {readFileSync, watch, promises as fs} from 'fs'
-import {dirname, resolve} from 'path'
-import {parse} from 'json5'
-import {debounce} from 'lodash'
-import {assetsDir, userDataDir} from './electron'
+import { readFileSync, watch, promises as fs } from 'fs'
+import { dirname, resolve } from 'path'
+import { parse } from 'json5'
+import { debounce } from 'lodash'
+import { assetsDir, userDataDir } from './electron'
 import Writer from './writer'
 
 export class FileStorage {
@@ -85,12 +85,12 @@ export class FileStorage {
     const writer = new Writer(source)
     try {
       const data = parse(source)
-      return {writer, data}
+      return { writer, data }
     } catch {
       return null
     }
   }
-  update(name, {writer, data}) {
+  update(name, { writer, data }) {
     if (writer) {
       writer.write(data)
       return this.write(name, writer.toSource())

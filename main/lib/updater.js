@@ -1,6 +1,6 @@
-const {app, autoUpdater, Notification, dialog} = require('electron')
-const {promises: fs} = require('fs')
-const {translate} = require('../build')
+const { app, autoUpdater, Notification, dialog } = require('electron')
+const { promises: fs } = require('fs')
+const { translate } = require('../build')
 
 let autoUpdaterEnabled = true
 let autoUpdaterPrepared = false
@@ -26,13 +26,13 @@ function toggleAutoUpdater(value) {
   autoUpdaterEnabled = value
 }
 
-async function notify({title, body, actions}) {
+async function notify({ title, body, actions }) {
   if (Notification.isSupported() && process.platform === 'darwin') {
     const notification = new Notification({
       title,
       body,
       silent: true,
-      actions: actions.map(text => ({type: 'button', text})),
+      actions: actions.map(text => ({ type: 'button', text })),
     })
     return new Promise(resolve => {
       notification.on('action', (event, index) => resolve(index))
@@ -47,7 +47,7 @@ async function notify({title, body, actions}) {
       defaultId: 0,
       cancelId: 1,
     }
-    const {response} = await dialog.showMessageBox(options)
+    const { response } = await dialog.showMessageBox(options)
     return response
   }
 }

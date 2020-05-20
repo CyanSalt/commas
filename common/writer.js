@@ -1,6 +1,6 @@
 import * as recast from 'recast'
 
-const {namedTypes, builders} = recast.types
+const { namedTypes, builders } = recast.types
 
 function write(node, data) {
   if (data === undefined) {
@@ -21,7 +21,7 @@ function write(node, data) {
     // TODO: consider order, not to replace all
     const result = []
     Object.entries(data).forEach(([name, value]) => {
-      let property = node.properties.find(({key}) => key.value === name)
+      let property = node.properties.find(({ key }) => key.value === name)
       if (property) {
         property.value = write(property.value, value)
       } else {

@@ -1,5 +1,5 @@
 <template>
-  <div :class="['title-bar', {'no-controls': platform === 'darwin'}]">
+  <div :class="['title-bar', { 'no-controls': platform === 'darwin' }]">
     <div class="git-branch">
       <template v-if="branch">
         <span class="branch-updater" @click="updateBranch">
@@ -37,11 +37,11 @@
 </template>
 
 <script>
-import {shell} from 'electron'
-import {mapState, mapGetters} from 'vuex'
-import {getPrompt, resolveHome, getGitBranch} from '../utils/terminal'
-import {currentWindow, currentState} from '../utils/frame'
-import {getTabLauncher} from '../utils/launcher'
+import { shell } from 'electron'
+import { mapState, mapGetters } from 'vuex'
+import { getPrompt, resolveHome, getGitBranch } from '../utils/terminal'
+import { currentWindow, currentState } from '../utils/frame'
+import { getTabLauncher } from '../utils/launcher'
 import hooks from '@hooks'
 
 export default {

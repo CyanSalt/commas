@@ -13,17 +13,17 @@
     <div class="options">
       <div
         class="option case-sensitive"
-        :class="{selected: options.caseSensitive}"
+        :class="{ selected: options.caseSensitive }"
         @click="toggle('caseSensitive')"
       >Aa</div>
       <div
         class="option whole-word"
-        :class="{selected: options.wholeWord}"
+        :class="{ selected: options.wholeWord }"
         @click="toggle('wholeWord')"
       >|Ab|</div>
       <div
         class="option use-regexp"
-        :class="{selected: options.regex}"
+        :class="{ selected: options.regex }"
         @click="toggle('regex')"
       >.*</div>
     </div>
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import {mapState, mapGetters} from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'FindBox',
@@ -64,7 +64,7 @@ export default {
     },
   },
   mounted() {
-    new IntersectionObserver(([{isIntersecting}]) => {
+    new IntersectionObserver(([{ isIntersecting }]) => {
       if (isIntersecting) {
         this.$refs.keyword.focus()
       } else {

@@ -1,4 +1,4 @@
-import {ipcRenderer} from 'electron'
+import { ipcRenderer } from 'electron'
 
 export default {
   namespaced: true,
@@ -11,7 +11,7 @@ export default {
     },
   },
   actions: {
-    toggle({state, commit}) {
+    toggle({ state, commit }) {
       const value = !state.enabled
       commit('setEnabled', value)
       ipcRenderer.invoke('toggle-auto-updater', value)

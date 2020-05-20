@@ -1,5 +1,5 @@
-import {createIDGenerator} from './identity'
-import {quote} from './terminal'
+import { createIDGenerator } from './identity'
+import { quote } from './terminal'
 
 const generateID = createIDGenerator()
 
@@ -64,6 +64,6 @@ export function merge(launchers, declarations) {
   }
   return declarations.map(declaration => {
     const id = getLauncherID(launchers, declarations, declaration)
-    return {...declaration, id}
+    return { ...declaration, id }
   })
 }

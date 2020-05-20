@@ -1,4 +1,4 @@
-import {FileStorage, userStorage, assetsStorage} from '../../common/storage'
+import { FileStorage, userStorage, assetsStorage } from '../../common/storage'
 
 export default {
   FileStorage,

@@ -1,5 +1,5 @@
-import {app as mainProcessApp, remote} from 'electron'
-import {join} from 'path'
+import { app as mainProcessApp, remote } from 'electron'
+import { join } from 'path'
 
 export const isMainProcess = process.type === 'browser'
 

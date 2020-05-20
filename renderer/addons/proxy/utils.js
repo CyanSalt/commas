@@ -1,9 +1,9 @@
-import {cloneDeep} from 'lodash'
+import { cloneDeep } from 'lodash'
 import hooks from '@hooks'
 
 function normalizeRules(rules) {
   return rules.reduce((collection, original) => {
-    const rule = {...original}
+    const rule = { ...original }
     if (!rule.proxy || !rule.context) {
       return collection
     }
@@ -14,7 +14,7 @@ function normalizeRules(rules) {
 
 function parseRuleEntry(expression) {
   const pattern = hooks.utils.regexp(expression)
-  if (pattern) return {pattern}
+  if (pattern) return { pattern }
   let matches = {}
   let url = expression
   if (expression.startsWith('//')) {
@@ -34,13 +34,13 @@ function parseRuleEntry(expression) {
   } catch {
     return null
   }
-  return {url, matches}
+  return { url, matches }
 }
 
 export function parseProxyRules(rules) {
   rules = normalizeRules(rules)
   return rules.reduce((collection, original) => {
-    const rule = {...original}
+    const rule = { ...original }
     const entries = rule.context.reduce((entries, expression) => {
       const entry = parseRuleEntry(expression)
       if (entry) entries.push(entry)
@@ -70,7 +70,7 @@ export function getProxyByURL(rules, url) {
   url = new URL(url)
   const matched = getMatchedProxyRules(rules, url)
   const rule = matched.find(rule => rule.proxy.target)
-  return rule ? rule.proxy : {target: url.origin}
+  return rule ? rule.proxy : { target: url.origin }
 }
 
 export function getRewriteRulesByURL(rules, url) {
@@ -136,7 +136,7 @@ export function rewriteProxy(when, target, rules) {
 export function trackRuleTargets(rules) {
   rules = normalizeRules(rules)
   rules = cloneDeep(rules)
-  rules.forEach(({proxy}) => {
+  rules.forEach(({ proxy }) => {
     proxy._target = proxy.target
   })
   return rules
@@ -144,7 +144,7 @@ export function trackRuleTargets(rules) {
 
 export function resolveRuleTargets(rules) {
   rules = cloneDeep(rules)
-  rules.forEach(({proxy}) => {
+  rules.forEach(({ proxy }) => {
     if (proxy._target) {
       if (proxy.target !== proxy._target) {
         if (!proxy.records) {
@@ -182,7 +182,7 @@ export async function getMacOSCurrentNetworkService() {
     // 'awk "FNR == 1{print $2}"'
     'head -n 1 | cut -d " " -f2-',
   ]
-  const {stdout} = await hooks.utils.exec(pipes.join(' | '))
+  const { stdout } = await hooks.utils.exec(pipes.join(' | '))
   return stdout.trim()
 }
 
@@ -190,7 +190,7 @@ export async function getGlobalWebProxy() {
   if (process.platform !== 'darwin') return
   const service = await getMacOSCurrentNetworkService()
   if (!service) return
-  const {stdout} = await hooks.utils.exec(`networksetup -getwebproxy "${service}"`)
+  const { stdout } = await hooks.utils.exec(`networksetup -getwebproxy "${service}"`)
   return stdout.trim().split('\n').reduce((result, line) => {
     const [key, value] = line.split(': ')
     result[key.trim()] = value.trim()
@@ -202,7 +202,7 @@ export async function setGlobalWebProxy(options) {
   if (process.platform !== 'darwin') return
   const service = await getMacOSCurrentNetworkService()
   if (!service) return
-  const {host, port} = {host: '""', port: 0, ...options}
+  const { host, port } = { host: '""', port: 0, ...options }
   const args = [host, port].join(' ')
   const commands = [
     `networksetup -setwebproxy "${service}" ${args}`,

@@ -1,9 +1,9 @@
-import {shell} from 'electron'
-import {spawn} from 'child_process'
-import {EOL} from 'os'
-import {resolveHome} from '../../utils/terminal'
-import {getLauncherTab, getLauncherCommand, merge} from '../../utils/launcher'
-import {userStorage} from '../../../common/storage'
+import { shell } from 'electron'
+import { spawn } from 'child_process'
+import { EOL } from 'os'
+import { resolveHome } from '../../utils/terminal'
+import { getLauncherTab, getLauncherCommand, merge } from '../../utils/launcher'
+import { userStorage } from '../../../common/storage'
 
 export default {
   namespaced: true,
@@ -20,38 +20,38 @@ export default {
     },
   },
   actions: {
-    async load({state, commit, rootState}) {
+    async load({ state, commit, rootState }) {
       const launchers = await userStorage.load('launchers.json')
       if (!launchers) return
       const merged = merge(state.launchers, launchers)
       commit('setLaunchers', merged)
       rootState.terminal.tabs.forEach(tab => {
         if (tab.launcher && !merged.some(item => item.id === tab.launcher)) {
-          commit('terminal/updateTab', {id: tab.id, launcher: undefined})
+          commit('terminal/updateTab', { id: tab.id, launcher: undefined })
         }
       })
     },
-    open({dispatch, rootState}, launcher) {
+    open({ dispatch, rootState }, launcher) {
       const tab = getLauncherTab(rootState.terminal.tabs, launcher)
       if (tab) {
-        return dispatch('terminal/activate', tab, {root: true})
+        return dispatch('terminal/activate', tab, { root: true })
       } else {
         const directory = launcher.remote ? null : launcher.directory
         return dispatch('terminal/spawn', {
           cwd: resolveHome(directory),
           launcher: launcher.id,
-        }, {root: true})
+        }, { root: true })
       }
     },
-    async launch({state, dispatch, rootState}, launcher) {
+    async launch({ state, dispatch, rootState }, launcher) {
       const id = launcher.id
       await dispatch('open', launcher)
       launcher = state.launchers.find(item => item.id === id)
       const tab = getLauncherTab(rootState.terminal.tabs, launcher)
       const command = getLauncherCommand(launcher)
-      return dispatch('terminal/input', {tab, data: command + EOL}, {root: true})
+      return dispatch('terminal/input', { tab, data: command + EOL }, { root: true })
     },
-    assign({rootState}, launcher) {
+    assign({ rootState }, launcher) {
       const settings = rootState.settings.settings
       const explorer = settings['terminal.external.explorer']
       if (!launcher.directory) return false
@@ -67,7 +67,7 @@ export default {
       const [command, ...args] = explorer
       spawn(command, [...args, directory])
     },
-    async runScript({state, dispatch, rootState}, {launcher, index}) {
+    async runScript({ state, dispatch, rootState }, { launcher, index }) {
       const id = launcher.id
       await dispatch('open', launcher)
       launcher = state.launchers.find(item => item.id === id)
@@ -76,9 +76,9 @@ export default {
         ...launcher,
         ...launcher.scripts[index],
       })
-      return dispatch('terminal/input', {tab, data: command + EOL}, {root: true})
+      return dispatch('terminal/input', { tab, data: command + EOL }, { root: true })
     },
-    watch({state, commit, dispatch}) {
+    watch({ state, commit, dispatch }) {
       if (state.watcher) state.watcher.close()
       const watcher = userStorage.watch('launchers.json', () => {
         dispatch('load')

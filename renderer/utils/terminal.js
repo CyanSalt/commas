@@ -1,8 +1,8 @@
-import {promises as fs} from 'fs'
-import {hostname, userInfo} from 'os'
-import {basename, sep} from 'path'
-import {exec} from './helper'
-import {assetsStorage} from '../../common/storage'
+import { promises as fs } from 'fs'
+import { hostname, userInfo } from 'os'
+import { basename, sep } from 'path'
+import { exec } from './helper'
+import { assetsStorage } from '../../common/storage'
 
 const icons = assetsStorage.require('icon.json')
 
@@ -39,7 +39,7 @@ export async function getCwd(pid) {
   try {
     // TODO: no command supported on Windows
     if (process.platform === 'darwin') {
-      const {stdout} = await exec(`lsof -p ${pid} | grep cwd`)
+      const { stdout } = await exec(`lsof -p ${pid} | grep cwd`)
       return stdout.substring(stdout.indexOf('/'), stdout.length - 1)
     } else if (process.platform === 'linux') {
       return await fs.readlink(`/proc/${pid}/cwd`)
@@ -64,13 +64,13 @@ export function getWindowsProcessInfo(shell, title) {
     if (index !== -1) {
       program = program.slice(index + separator.length)
     }
-    return {process: program}
+    return { process: program }
   } else if (windowsStandardShells.includes(shell)) {
     const separator = title.startsWith('MINGW') ? ':' : ': '
     const index = title.indexOf(separator)
     if (index !== -1) {
       const cwd = title.slice(index + separator.length)
-      return {cwd: resolveWindowsDisk(cwd)}
+      return { cwd: resolveWindowsDisk(cwd) }
     }
   }
   return null
@@ -118,7 +118,7 @@ export async function getGitBranch(directory) {
     ? 'git rev-parse --abbrev-ref HEAD 2> NUL'
     : 'git branch 2> /dev/null | grep \\* | cut -d " " -f2'
   try {
-    const {stdout} = await exec(command, {cwd: resolveHome(directory)})
+    const { stdout } = await exec(command, { cwd: resolveHome(directory) })
     return stdout
   } catch {
     // Git for Windows will throw error if the directory is not a repository

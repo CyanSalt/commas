@@ -1,10 +1,10 @@
 <template>
   <div class="tab-list">
-    <div class="list-column" :style="{width: width + 'px'}">
+    <div class="list-column" :style="{ width: width + 'px' }">
       <div class="list">
         <div class="scroll-area">
           <sortable-list
-            v-slot="{value}"
+            v-slot="{ value }"
             :value="running"
             class="processes"
             @change="sortTabs"
@@ -27,7 +27,7 @@
             <div v-i18n class="group-name">Launchers#!5</div>
             <div class="buttons">
               <div
-                :class="['button', 'find', {active: finding}]"
+                :class="['button', 'find', { active: finding }]"
                 @click.stop="find"
               >
                 <span class="feather-icon icon-search"></span>
@@ -88,12 +88,12 @@
 </template>
 
 <script>
-import {mapState, mapActions} from 'vuex'
-import {basename} from 'path'
+import { mapState, mapActions } from 'vuex'
+import { basename } from 'path'
 import TabItem from './tab-item'
 import ScrollBar from './scroll-bar'
 import SortableList from './sortable-list'
-import {getLauncherTab} from '../utils/launcher'
+import { getLauncherTab } from '../utils/launcher'
 import hooks from '@hooks'
 
 export default {

@@ -1,12 +1,12 @@
 <template>
-  <div :class="['proxy-anchor', {active: port}]" @click="toggle">
+  <div :class="['proxy-anchor', { active: port }]" @click="toggle">
     <span class="feather-icon icon-navigation"></span>
     <span v-if="port" class="server-port">{{ port }}</span>
   </div>
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   name: 'ProxyAnchor',

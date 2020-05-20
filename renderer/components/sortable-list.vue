@@ -3,8 +3,8 @@
     <div
       v-for="(item, index) in value"
       :key="index"
-      :class="['sortable-item', {dragging: draggingIndex === index}]"
-      :style="{order: index * 2}"
+      :class="['sortable-item', { dragging: draggingIndex === index }]"
+      :style="{ order: index * 2 }"
       @mousedown="start($event, index)"
       @click.capture="click"
     >
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import {debounce} from 'lodash'
+import { debounce } from 'lodash'
 
 export default {
   name: 'SortableList',
@@ -42,7 +42,7 @@ export default {
       }, 500)
     },
     drag(event, index) {
-      window.addEventListener('mousemove', this.move, {passive: true})
+      window.addEventListener('mousemove', this.move, { passive: true })
       window.addEventListener('mouseup', this.end)
       this.draggingIndex = index
       const draggingEl = this.$el.children[this.draggingIndex]
@@ -84,7 +84,7 @@ export default {
       const draggingEl = this.$el.children[this.draggingIndex]
       draggingEl.style.transform = ''
       draggingEl.style.order = 2 * this.draggingIndex
-      let {offset, index, target} = this.getMovingTarget(event)
+      let { offset, index, target } = this.getMovingTarget(event)
       if (index !== this.draggingIndex) {
         const currentBounds = target.getBoundingClientRect()
         draggingEl.style.order = index * 2 + (offset > 0 ? 1 : -1)
@@ -99,7 +99,7 @@ export default {
       const draggingEl = this.$el.children[this.draggingIndex]
       draggingEl.style.transform = ''
       draggingEl.style.order = 2 * this.draggingIndex
-      const {index} = this.getMovingTarget(event)
+      const { index } = this.getMovingTarget(event)
       if (index !== this.draggingIndex) {
         this.$emit('change', this.draggingIndex, index)
       }

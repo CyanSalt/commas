@@ -1,6 +1,6 @@
-import {cloneDeep, isEqual} from 'lodash'
-import {unreactive} from '../../utils/helper'
-import {userStorage, assetsStorage} from '../../../common/storage'
+import { cloneDeep, isEqual } from 'lodash'
+import { unreactive } from '../../utils/helper'
+import { userStorage, assetsStorage } from '../../../common/storage'
 
 const specs = assetsStorage.require('settings.spec.json')
 
@@ -20,7 +20,7 @@ export default {
       }, {})
     },
     settings: (state, getters) => {
-      return {...getters.fallback, ...state.settings}
+      return { ...getters.fallback, ...state.settings }
     },
   },
   mutations: {
@@ -38,14 +38,14 @@ export default {
     },
   },
   actions: {
-    async load({commit}) {
+    async load({ commit }) {
       // Load user settings
       const result = await userStorage.fetch('settings.json')
       if (!result) return
       commit('setSettings', result.data)
       commit('setWriter', unreactive(result.writer))
     },
-    save({state, getters}) {
+    save({ state, getters }) {
       // Filter default values on saving
       const reducer = (diff, [key, value]) => {
         if (!isEqual(value, getters.fallback[key])) {
@@ -59,14 +59,14 @@ export default {
         writer: state.writer,
       })
     },
-    overwrite({commit, dispatch}, settings) {
+    overwrite({ commit, dispatch }, settings) {
       commit('setSettings', settings)
       return dispatch('save')
     },
-    update({state, dispatch}, patch) {
-      return dispatch('overwrite', {...state.settings, ...patch})
+    update({ state, dispatch }, patch) {
+      return dispatch('overwrite', { ...state.settings, ...patch })
     },
-    watch({state, commit, dispatch}, callback) {
+    watch({ state, commit, dispatch }, callback) {
       if (state.watcher) state.watcher.close()
       const watcher = userStorage.watch('settings.json', async () => {
         await dispatch('load')

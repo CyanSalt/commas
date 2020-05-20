@@ -51,7 +51,7 @@ export function mix(color1, color2, weight) {
 }
 
 export function normalizeTheme(original) {
-  const theme = {...original}
+  const theme = { ...original }
   if (!theme.selection || !hasAlphaChannel(theme.selection)) {
     const weight = theme.type === 'light' ? 0.15 : 0.3
     theme.selection = mix(theme.foreground, theme.background, weight)

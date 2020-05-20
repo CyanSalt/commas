@@ -1,6 +1,6 @@
-const {app, Menu} = require('electron')
-const {userStorage, assetsStorage} = require('../build')
-const {execCommand} = require('./command')
+const { app, Menu } = require('electron')
+const { userStorage, assetsStorage } = require('../build')
+const { execCommand } = require('./command')
 
 const shared = assetsStorage.require('menu.json')
 
@@ -27,8 +27,8 @@ function createApplicationMenu() {
     {
       label: app.name,
       submenu: [
-        {role: 'about'},
-        {type: 'separator'},
+        { role: 'about' },
+        { type: 'separator' },
         {
           label: 'Preferences...',
           accelerator: 'Command+,',
@@ -36,22 +36,22 @@ function createApplicationMenu() {
             execCommand(frame, 'interact-settings')
           },
         },
-        {type: 'separator'},
-        {role: 'services'},
-        {type: 'separator'},
-        {role: 'hide'},
-        {role: 'hideothers'},
-        {role: 'unhide'},
-        {type: 'separator'},
-        {role: 'quit'},
+        { type: 'separator' },
+        { role: 'services' },
+        { type: 'separator' },
+        { role: 'hide' },
+        { role: 'hideothers' },
+        { role: 'unhide' },
+        { type: 'separator' },
+        { role: 'quit' },
       ],
     },
     {
       label: 'Shell',
       submenu: getSharedWindowMenu(),
     },
-    {role: 'editMenu'},
-    {role: 'windowMenu'},
+    { role: 'editMenu' },
+    { role: 'windowMenu' },
     {
       label: 'User',
       submenu: getUserCustomMenu(),
@@ -59,7 +59,7 @@ function createApplicationMenu() {
     {
       role: 'help',
       submenu: [
-        {role: 'toggledevtools'},
+        { role: 'toggledevtools' },
         {
           label: 'Relaunch App',
           accelerator: 'CmdOrCtrl+Shift+R',
@@ -79,8 +79,8 @@ function createWindowMenu(frame) {
       label: 'Shell',
       submenu: getSharedWindowMenu(),
     },
-    {role: 'editMenu'},
-    {role: 'windowMenu'},
+    { role: 'editMenu' },
+    { role: 'windowMenu' },
     {
       label: 'User',
       submenu: getUserCustomMenu(),
@@ -88,7 +88,7 @@ function createWindowMenu(frame) {
     {
       label: 'Help',
       submenu: [
-        {role: 'toggledevtools'},
+        { role: 'toggledevtools' },
         {
           label: 'Relaunch App',
           accelerator: 'CmdOrCtrl+Shift+R',

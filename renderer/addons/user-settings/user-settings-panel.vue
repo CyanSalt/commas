@@ -3,10 +3,10 @@
     <h2 v-i18n class="group-title">User Settings#!user-settings.1</h2>
     <div class="group">
       <div class="action-line">
-        <span :class="['link form-action revert', {disabled: !changed}]" @click="revert">
+        <span :class="['link form-action revert', { disabled: !changed }]" @click="revert">
           <span class="feather-icon icon-rotate-ccw"></span>
         </span>
-        <span :class="['link form-action confirm', {disabled: !changed}]" @click="confirm">
+        <span :class="['link form-action confirm', { disabled: !changed }]" @click="confirm">
           <span class="feather-icon icon-check"></span>
         </span>
       </div>
@@ -23,8 +23,8 @@
 <script>
 import UserSettingsLine from './user-settings-line'
 import hooks from '@hooks'
-import {mapState} from 'vuex'
-import {cloneDeep, isEqual} from 'lodash'
+import { mapState } from 'vuex'
+import { cloneDeep, isEqual } from 'lodash'
 
 export default {
   name: 'UserSettingsPanel',
@@ -48,7 +48,7 @@ export default {
             || item.configurable.includes(process.platform)
         ))
         .map(item => {
-          item = {...item}
+          item = { ...item }
           if (item.label) item.label += `#!user-settings.${item.key}`
           return item
         })

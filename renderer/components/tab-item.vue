@@ -1,5 +1,5 @@
 <template>
-  <div :class="['tab-item', {active: focused}]">
+  <div :class="['tab-item', { active: focused }]">
     <div class="tab-overview">
       <div class="tab-title">
         <span v-if="icon" :class="['tab-icon', icon.icon]"></span>
@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import {mapState, mapGetters} from 'vuex'
-import {getPrompt, getIcon} from '../utils/terminal'
-import {basename} from 'path'
+import { mapState, mapGetters } from 'vuex'
+import { getPrompt, getIcon } from '../utils/terminal'
+import { basename } from 'path'
 
 export default {
   name: 'TabItem',

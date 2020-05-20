@@ -7,16 +7,16 @@
         <switch-control :checked="globe" @change="toggleGlobal"></switch-control>
       </div>
       <span class="link" @click="openFile">
-        <span v-i18n="{F: 'proxy-rules.json'}">Edit %F#!settings.8</span>
+        <span v-i18n="{ F: 'proxy-rules.json' }">Edit %F#!settings.8</span>
       </span>
     </div>
     <h2 v-i18n class="group-title">Proxy Rules#!proxy.1</h2>
     <div class="group">
       <div class="action-line">
-        <span :class="['link form-action revert', {disabled: !changed}]" @click="revert">
+        <span :class="['link form-action revert', { disabled: !changed }]" @click="revert">
           <span class="feather-icon icon-rotate-ccw"></span>
         </span>
-        <span :class="['link form-action confirm', {disabled: !changed}]" @click="confirm">
+        <span :class="['link form-action confirm', { disabled: !changed }]" @click="confirm">
           <span class="feather-icon icon-check"></span>
         </span>
       </div>
@@ -43,7 +43,7 @@
               <span class="feather-icon icon-plus"></span>
             </span>
             <span
-              :class="['proxy-to', {active: recalling === rule, valid: rule.proxy.records}]"
+              :class="['proxy-to', { active: recalling === rule, valid: rule.proxy.records }]"
               @click="recall(rule)"
             >
               <span class="feather-icon icon-corner-down-right"></span>
@@ -90,9 +90,9 @@
 </template>
 
 <script>
-import {mapState, mapActions} from 'vuex'
-import {cloneDeep, isEqual} from 'lodash'
-import {trackRuleTargets, resolveRuleTargets} from './utils'
+import { mapState, mapActions } from 'vuex'
+import { cloneDeep, isEqual } from 'lodash'
+import { trackRuleTargets, resolveRuleTargets } from './utils'
 import hooks from '@hooks'
 
 export default {
@@ -136,7 +136,7 @@ export default {
     addRule() {
       this.table.push({
         context: [''],
-        proxy: {target: ''},
+        proxy: { target: '' },
       })
     },
     addContext(rule) {

@@ -1,8 +1,8 @@
-const {app, ipcMain, BrowserWindow, nativeTheme} = require('electron')
-const {forEachWindow} = require('./frame')
-const {createWindow} = require('./window')
-const {createMenu} = require('./menu')
-const {toggleAutoUpdater} = require('./updater')
+const { app, ipcMain, BrowserWindow, nativeTheme } = require('electron')
+const { forEachWindow } = require('./frame')
+const { createWindow } = require('./window')
+const { createMenu } = require('./menu')
+const { toggleAutoUpdater } = require('./updater')
 
 function transferEvents(frame) {
   frame.on('maximize', () => {

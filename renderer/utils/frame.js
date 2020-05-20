@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import {remote, ipcRenderer} from 'electron'
+import { remote, ipcRenderer } from 'electron'
 
 const currentWindow = remote.getCurrentWindow()
 const currentState = Vue.observable({

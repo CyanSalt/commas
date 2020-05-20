@@ -1,5 +1,5 @@
 <template>
-  <div v-show="overflow" :class="['scroll-bar', {scrolling}]">
+  <div v-show="overflow" :class="['scroll-bar', { scrolling }]">
     <div class="scroll-track" @click.self="jump"></div>
     <div class="scroll-thumb" :style="style" @mousedown="scroll"></div>
   </div>
@@ -40,7 +40,7 @@ export default {
     this.maxHeight = this.$el.parentElement.clientHeight
     this.container.addEventListener('scroll', () => {
       this.animate(() => this.follow())
-    }, {passive: true})
+    }, { passive: true })
   },
   methods: {
     animate(action) {

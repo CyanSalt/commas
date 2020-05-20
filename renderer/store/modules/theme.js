@@ -1,6 +1,6 @@
-import {ipcRenderer} from 'electron'
-import {rgba, rgb, distance} from '../../utils/theme'
-import {userStorage, assetsStorage} from '../../../common/storage'
+import { ipcRenderer } from 'electron'
+import { rgba, rgb, distance } from '../../utils/theme'
+import { userStorage, assetsStorage } from '../../../common/storage'
 
 const fallback = assetsStorage.require('themes/oceanic-next.json')
 
@@ -24,8 +24,8 @@ export default {
     },
   },
   actions: {
-    async load({commit, dispatch, rootGetters}) {
-      const theme = {...fallback}
+    async load({ commit, dispatch, rootGetters }) {
+      const theme = { ...fallback }
       const settings = rootGetters['settings/settings']
       const defaultSettings = rootGetters['settings/fallback']
       const name = settings['terminal.theme.name']
@@ -55,7 +55,7 @@ export default {
       commit('setTheme', theme)
       dispatch('inject')
     },
-    inject({state, rootGetters}) {
+    inject({ state, rootGetters }) {
       const theme = state.theme
       const settings = rootGetters['settings/settings']
       const element = document.createElement('style')
@@ -75,7 +75,7 @@ export default {
       document.body.classList.add(theme.type)
       ipcRenderer.invoke('update-theme', theme.type)
     },
-    eject({state}) {
+    eject({ state }) {
       const theme = state.theme
       if (!theme) return
       // TODO: performance review
@@ -84,11 +84,11 @@ export default {
       document.body.classList.remove(theme.type)
       ipcRenderer.invoke('update-theme', 'system')
     },
-    watch({state, commit, dispatch}, file) {
+    watch({ state, commit, dispatch }, file) {
       if (state.watcher) state.watcher.close()
       const watcher = userStorage.watch(file, async () => {
         await dispatch('load')
-        dispatch('terminal/refresh', null, {root: true})
+        dispatch('terminal/refresh', null, { root: true })
       })
       commit('setWatcher', watcher)
     },

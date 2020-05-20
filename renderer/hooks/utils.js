@@ -1,4 +1,4 @@
-import {unreactive, regexp, exec} from '../utils/helper'
+import { unreactive, regexp, exec } from '../utils/helper'
 
 export default {
   unreactive,

@@ -1,6 +1,6 @@
-import {createServer} from 'http'
-import {connect} from 'net'
-import {createProxyServer} from 'http-proxy'
+import { createServer } from 'http'
+import { connect } from 'net'
+import { createProxyServer } from 'http-proxy'
 import {
   parseProxyRules, getProxyByURL, getRewriteRulesByURL, rewriteProxy,
   getGlobalWebProxy, setGlobalWebProxy,
@@ -38,13 +38,13 @@ export default {
     },
   },
   actions: {
-    async load({commit}) {
+    async load({ commit }) {
       const result = await hooks.storage.user.fetch('proxy-rules.json')
       if (!result) return
       commit('setRules', result.data)
       commit('setWriter', hooks.utils.unreactive(result.writer))
     },
-    async loadSystem({commit, rootGetters}) {
+    async loadSystem({ commit, rootGetters }) {
       const settings = rootGetters['settings/settings']
       const port = settings['terminal.proxyServer.port']
       const proxy = await getGlobalWebProxy()
@@ -53,7 +53,7 @@ export default {
         && proxy.Port === String(port)
       commit('setGlobe', globe)
     },
-    open({state, commit, rootGetters}) {
+    open({ state, commit, rootGetters }) {
       let server = state.server
       if (server) return
       const rules = parseProxyRules(state.rules)
@@ -73,7 +73,7 @@ export default {
       /** Inspired by {@link https://gist.github.com/tonygambone/2422322} */
       server.on('connect', (req, socket) => {
         const proxy = getProxyByURL(rules, 'https://' + req.url)
-        let {protocol, host, port} = new URL(proxy.target)
+        let { protocol, host, port } = new URL(proxy.target)
         if (!port) port = protocol === 'http:' ? 80 : 443
         const connection = connect(port, host, () => {
           socket.write('HTTP/1.1 200 OK\r\n\r\n')
@@ -85,13 +85,13 @@ export default {
       commit('setServer', hooks.utils.unreactive(server))
       commit('setPort', port)
     },
-    close({state, commit}) {
+    close({ state, commit }) {
       if (!state.server) return
       state.server.close()
       commit('setServer', null)
       commit('setPort', null)
     },
-    watch({state, commit, dispatch}) {
+    watch({ state, commit, dispatch }) {
       if (state.watcher) state.watcher.close()
       const watcher = hooks.storage.user.watch('proxy-rules.json', async () => {
         await dispatch('load')
@@ -102,7 +102,7 @@ export default {
       })
       commit('setWatcher', watcher)
     },
-    async refresh({state, dispatch, rootGetters}) {
+    async refresh({ state, dispatch, rootGetters }) {
       if (!state.server) return
       const settings = rootGetters['settings/settings']
       const port = settings['terminal.proxyServer.port']
@@ -111,17 +111,17 @@ export default {
         dispatch('open')
       }
     },
-    save({state}, value) {
+    save({ state }, value) {
       return hooks.storage.user.update('proxy-rules.json', {
         data: value,
         writer: state.writer,
       })
     },
-    async toggleGlobal({state, commit, rootGetters}) {
+    async toggleGlobal({ state, commit, rootGetters }) {
       const value = !state.globe
       const settings = rootGetters['settings/settings']
       const port = state.port || settings['terminal.proxyServer.port']
-      const proxy = value ? {host: '127.0.0.1', port} : false
+      const proxy = value ? { host: '127.0.0.1', port } : false
       await setGlobalWebProxy(proxy)
       commit('setGlobe', value)
     },

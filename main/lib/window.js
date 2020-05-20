@@ -1,9 +1,9 @@
-const {app, BrowserWindow} = require('electron')
-const {format} = require('url')
-const {resolve} = require('path')
-const {hasWindow, getLastWindow, collectWindow} = require('./frame')
-const {createWindowMenu} = require('./menu')
-const {transferEvents} = require('./transfer')
+const { app, BrowserWindow } = require('electron')
+const { format } = require('url')
+const { resolve } = require('path')
+const { hasWindow, getLastWindow, collectWindow } = require('./frame')
+const { createWindowMenu } = require('./menu')
+const { transferEvents } = require('./transfer')
 
 function loadHTMLFile(frame, file) {
   frame.loadURL(format({

@@ -1,5 +1,5 @@
-import {generateSource} from '../utils/helper'
-import {ui} from './core'
+import { generateSource } from '../utils/helper'
+import { ui } from './core'
 import shell from './shell'
 import settings from './settings'
 
@@ -24,7 +24,7 @@ const registry = {
     }
   },
   'next-tab'() {
-    const {tabs, active} = ui.store.state.terminal
+    const { tabs, active } = ui.store.state.terminal
     if (active < tabs.length - 1) {
       ui.store.commit('terminal/setActive', active + 1)
     }

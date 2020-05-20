@@ -34,7 +34,7 @@ export default {
     new MutationObserver((mutations, observer) => {
       this.bound()
       observer.disconnect()
-    }).observe(this.$refs.terminal, {childList: true})
+    }).observe(this.$refs.terminal, { childList: true })
   },
   activated() {
     // issue@xterm: fix bug after unmounted element updated

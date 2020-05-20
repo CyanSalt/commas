@@ -1,6 +1,6 @@
-import {remote} from 'electron'
-import {translate} from '../../../common/i18n'
-import {currentWindow} from '../../utils/frame'
+import { remote } from 'electron'
+import { translate } from '../../../common/i18n'
+import { currentWindow } from '../../utils/frame'
 
 export default {
   namespaced: true,
@@ -34,18 +34,18 @@ export default {
         cancelId: 1,
       }
       const frame = currentWindow
-      const {response} = await remote.dialog.showMessageBox(frame, args)
+      const { response } = await remote.dialog.showMessageBox(frame, args)
       if (response === 0) frame.destroy()
     },
-    drop({dispatch}, {tab, files}) {
-      const paths = Array.from(files).map(({path}) => {
+    drop({ dispatch }, { tab, files }) {
+      const paths = Array.from(files).map(({ path }) => {
         if (path.indexOf(' ') !== -1) return `"${path}"`
         return path
       })
       dispatch('terminal/input', {
         tab,
         data: paths.join(' '),
-      }, {root: true})
+      }, { root: true })
     },
   },
 }

@@ -1,17 +1,17 @@
-import {remote, shell} from 'electron'
-import {spawn} from 'node-pty'
-import {Terminal} from 'xterm'
-import {FitAddon} from 'xterm-addon-fit'
-import {SearchAddon} from 'xterm-addon-search'
-import {WebLinksAddon} from 'xterm-addon-web-links'
-import {Unicode11Addon} from 'xterm-addon-unicode11'
-import {LigaturesAddon} from 'xterm-addon-ligatures'
-import {debounce} from 'lodash'
-import {getCwd, getWindowsProcessInfo} from '../../utils/terminal'
-import {normalizeTheme} from '../../utils/theme'
-import {exec, unreactive} from '../../utils/helper'
-import {currentWindow} from '../../utils/frame'
-import {isPackaged} from '../../../common/electron'
+import { remote, shell } from 'electron'
+import { spawn } from 'node-pty'
+import { Terminal } from 'xterm'
+import { FitAddon } from 'xterm-addon-fit'
+import { SearchAddon } from 'xterm-addon-search'
+import { WebLinksAddon } from 'xterm-addon-web-links'
+import { Unicode11Addon } from 'xterm-addon-unicode11'
+import { LigaturesAddon } from 'xterm-addon-ligatures'
+import { debounce } from 'lodash'
+import { getCwd, getWindowsProcessInfo } from '../../utils/terminal'
+import { normalizeTheme } from '../../utils/theme'
+import { exec, unreactive } from '../../utils/helper'
+import { currentWindow } from '../../utils/frame'
+import { isPackaged } from '../../../common/electron'
 
 const variables = {
   LANG: remote.app.getLocale().replace('-', '_') + '.UTF-8',
@@ -43,7 +43,7 @@ export default {
     },
   },
   mutations: {
-    updateTab(state, {id, ...props}) {
+    updateTab(state, { id, ...props }) {
       let tab = state.tabs.find(item => item.id === id)
       if (tab) Object.assign(tab, props)
     },
@@ -82,12 +82,12 @@ export default {
     },
   },
   actions: {
-    async load({commit}) {
+    async load({ commit }) {
       if (process.platform === 'win32') return
-      const {stdout} = await exec('grep "^/" /etc/shells')
+      const { stdout } = await exec('grep "^/" /etc/shells')
       commit('setShells', stdout.trim().split('\n'))
     },
-    spawn({state, getters, commit, dispatch, rootState, rootGetters}, payload) {
+    spawn({ state, getters, commit, dispatch, rootState, rootGetters }, payload) {
       payload = payload || {}
       const settings = rootGetters['settings/settings']
       const env = {
@@ -130,7 +130,7 @@ export default {
         // TODO: performance review
         // pty.process on Windows will be always equivalent to pty.name
         if (process.platform !== 'win32') {
-          commit('updateTab', {id, process: pty.process})
+          commit('updateTab', { id, process: pty.process })
         }
       })
       pty.onExit(() => {
@@ -140,11 +140,11 @@ export default {
         xterm.dispose()
         dispatch('remove', id)
       })
-      xterm.onResize(({cols, rows}) => {
+      xterm.onResize(({ cols, rows }) => {
         pty.resize(cols, rows)
       })
       xterm.onTitleChange(title => {
-        const patch = {id, title}
+        const patch = { id, title }
         if (process.platform === 'win32') {
           const info = getWindowsProcessInfo(getters.shell, title)
           if (info) Object.assign(patch, info)
@@ -154,9 +154,9 @@ export default {
       if (settings['terminal.tab.liveCwd']) {
         const updateCwd = debounce(async () => {
           const cwd = await getCwd(id)
-          if (cwd) commit('updateTab', {id, cwd})
+          if (cwd) commit('updateTab', { id, cwd })
         }, 250)
-        xterm.onKey(({key, domEvent}) => {
+        xterm.onKey(({ key, domEvent }) => {
           if (domEvent.keyCode === 13) updateCwd()
         })
       }
@@ -175,7 +175,7 @@ export default {
       commit('appendTab', tab)
       commit('setActive', state.tabs.length - 1)
     },
-    mount({state, commit, dispatch, rootState}, {tab, element}) {
+    mount({ state, commit, dispatch, rootState }, { tab, element }) {
       let observer = state.observer
       if (!observer) {
         observer = new ResizeObserver(debounce(() => {
@@ -206,7 +206,7 @@ export default {
       xterm.$.fit.fit()
       xterm.focus()
     },
-    interact({state, commit}, tab) {
+    interact({ state, commit }, tab) {
       const tabs = state.tabs
       const index = tabs.findIndex(item => item.id === tab.id)
       if (index !== -1) {
@@ -216,30 +216,30 @@ export default {
         commit('setActive', state.tabs.length - 1)
       }
     },
-    resize({getters}) {
+    resize({ getters }) {
       const current = getters.current
       if (current && current.xterm && current.xterm.element) {
         current.xterm.$.fit.fit()
       }
     },
-    input(store, {tab, data}) {
+    input(store, { tab, data }) {
       tab.pty.write(data)
     },
-    activate({state, commit}, tab) {
+    activate({ state, commit }, tab) {
       const tabs = state.tabs
       const index = tabs.indexOf(tab)
       if (index !== -1) {
         commit('setActive', index)
       }
     },
-    close({dispatch}, tab) {
+    close({ dispatch }, tab) {
       if (tab.internal) {
         dispatch('remove', tab.id)
       } else {
         tab.pty.kill()
       }
     },
-    remove({state, commit, dispatch, rootState}, id) {
+    remove({ state, commit, dispatch, rootState }, id) {
       const index = state.tabs.findIndex(tab => tab.id === id)
       if (index === -1) return
       commit('removeTab', index)
@@ -256,7 +256,7 @@ export default {
         commit('setActive', active)
       }
     },
-    find({getters}, {keyword, options, back}) {
+    find({ getters }, { keyword, options, back }) {
       const current = getters.current
       if (back) {
         current.xterm.$.search.findPrevious(keyword, options)
@@ -264,11 +264,11 @@ export default {
         current.xterm.$.search.findNext(keyword, options)
       }
     },
-    clear({getters}) {
+    clear({ getters }) {
       const current = getters.current
       current.xterm.clear()
     },
-    refresh({state, rootState, rootGetters}) {
+    refresh({ state, rootState, rootGetters }) {
       const tabs = state.tabs
       const settings = rootGetters['settings/settings']
       // TODO: performance review

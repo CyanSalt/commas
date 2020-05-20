@@ -1,4 +1,4 @@
-import {userStorage, assetsStorage} from './storage'
+import { userStorage, assetsStorage } from './storage'
 
 const registry = [
   {
@@ -21,7 +21,7 @@ function addDictionary(translation, dictionary, priority) {
   for (const [key, value] of Object.entries(dictionary)) {
     if (typeof value === 'string') filtered[key] = value
   }
-  translation.data.push({dictionary: filtered, priority})
+  translation.data.push({ dictionary: filtered, priority })
   translation.data.sort((a, b) => a.priority - b.priority)
   // Generate mapping
   translation.unabridged = translation.data
@@ -45,9 +45,9 @@ function loadDictionary(translation) {
 
 function getTranslation(locale) {
   let translation = registry
-    .find(({locales}) => locales.includes(locale))
+    .find(({ locales }) => locales.includes(locale))
   if (!translation) {
-    translation = {locales: [locale]}
+    translation = { locales: [locale] }
     registry.push(translation)
   }
   return translation
@@ -65,7 +65,7 @@ export function loadTranslation(locale) {
 
 function translateText(message) {
   if (!message || !current) return message
-  const {unabridged, dictionary} = current
+  const { unabridged, dictionary } = current
   if (unabridged[message]) return unabridged[message]
   const identity = message.substring(message.indexOf(comment))
   if (dictionary[identity]) return dictionary[identity]
@@ -82,7 +82,7 @@ export function translate(message, variables) {
   return text
 }
 
-export function translateElement(el, {value}) {
+export function translateElement(el, { value }) {
   if (['INPUT', 'TEXTAREA'].includes(el.tagName)) {
     el.placeholder = translate(el.placeholder, value)
   } else {
