@@ -5,6 +5,10 @@ const { hasWindow, getLastWindow, collectWindow } = require('./frame')
 const { createWindowMenu } = require('./menu')
 const { transferEvents } = require('./transfer')
 
+/**
+ * @param {BrowserWindow} frame
+ * @param {string} file
+ */
 function loadHTMLFile(frame, file) {
   frame.loadURL(format({
     protocol: 'file',
@@ -13,6 +17,9 @@ function loadHTMLFile(frame, file) {
   }))
 }
 
+/**
+ * @param  {...string} args
+ */
 function createWindow(...args) {
   const options = {
     show: false,

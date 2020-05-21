@@ -47,6 +47,9 @@ function write(node, data) {
 const EXPORTS = 'exports='
 
 class Writer {
+  /**
+   * @param {string} source
+   */
   constructor(source) {
     this.ast = recast.parse(EXPORTS + source.toString().trim())
   }

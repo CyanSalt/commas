@@ -77,12 +77,20 @@ const registry = {
 }
 
 export default {
+  /**
+   * @param {string} command
+   * @param {any} args
+   */
   exec(command, args) {
     const handler = registry[command]
     if (!handler) return false
     handler(args)
     return true
   },
+  /**
+   * @param {string} command
+   * @param {(args?: any) => void} handler
+   */
   register(command, handler) {
     if (registry[command]) {
       throw new Error(`Command '${command}' has already exists`)

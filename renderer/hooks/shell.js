@@ -28,6 +28,11 @@ export default {
       // ignore error
     }
   },
+  /**
+   * @param {string} filename
+   * @param {string} source
+   * @param {boolean} [assets]
+   */
   async openUserFile(filename, source, assets) {
     const path = storage.user.filename(filename)
     try {
@@ -42,9 +47,16 @@ export default {
     }
     shell.openItem(path)
   },
+  /**
+   * @param {Event} event
+   */
   openExternalByEvent(event) {
     shell.openExternal(event.target.dataset.href)
   },
+  /**
+   * @param {MouseEvent} event
+   * @param {import('../../main/lib/menu').KeyBinding} template
+   */
   openContextByEvent(event, template) {
     ipcRenderer.invoke('contextmenu', {
       template,

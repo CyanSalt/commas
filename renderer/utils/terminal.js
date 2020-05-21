@@ -4,25 +4,55 @@ import { basename, sep } from 'path'
 import { exec } from './helper'
 import { assetsStorage } from '../../common/storage'
 
+/**
+ * @typedef TerminalTab
+ * @property {number} id
+ * @property {string} process
+ * @property {string} title
+ * @property {string} cwd
+ * @property {number} [launcher]
+ *
+ * @typedef TerimalIcon
+ * @property {string[]} context
+ * @property {string|RegExp} [pattern]
+ * @property {string} icon
+ */
+
+/**
+ * @type {TerimalIcon[]}
+ */
 const icons = assetsStorage.require('icon.json')
 
+/**
+ * @param {string} command
+ * @param {'\''|'"'} q
+ */
 export function quote(command, q) {
   return `${q}${command.replace(new RegExp(q, 'g'), `${q}\\${q}${q}`)}${q}`
 }
 
+/**
+ * @param {string} directory
+ */
 export function resolveHome(directory) {
   if (!directory) return directory
   return directory.startsWith('~')
     ? process.env.HOME + directory.slice(1) : directory
 }
 
+/**
+ * @param {string} directory
+ */
 export function omitHome(directory) {
   if (!directory || process.platform === 'win32') return directory
   return directory.startsWith(process.env.HOME)
     ? '~' + directory.slice(process.env.HOME.length) : directory
 }
 
-// Supports WSL Style `/mnt/c/Users` and MinGW Style `/c/Users`
+/**
+ * Supports WSL Style `/mnt/c/Users` and MinGW Style `/c/Users`
+ * @param {string} directory
+ */
 export function resolveWindowsDisk(directory) {
   if (!directory) return directory
   const slices = directory.split('/')
@@ -35,6 +65,9 @@ export function resolveWindowsDisk(directory) {
   return directory
 }
 
+/**
+ * @param {number} pid
+ */
 export async function getCwd(pid) {
   try {
     // TODO: no command supported on Windows
@@ -55,6 +88,11 @@ const windowsCMDShells = ['cmd.exe']
 // TODO: judge title feature with both command and arguments
 const windowsStandardShells = ['bash.exe', 'git-cmd.exe']
 
+/**
+ * @param {string} shell
+ * @param {string} title
+ * @returns {Partial<TerminalTab>}
+ */
 export function getWindowsProcessInfo(shell, title) {
   shell = basename(shell)
   if (windowsCMDShells.includes(shell)) {
@@ -80,6 +118,10 @@ const host = hostname()
 const shorthost = host.split('.')[0]
 const user = userInfo().username
 
+/**
+ * @param {string} expr
+ * @param {TerminalTab} tab
+ */
 export function getPrompt(expr, tab) {
   return expr
     .replace(/\\h/g, shorthost)
@@ -102,6 +144,9 @@ const iconset = icons.map(icon => {
   return icon
 })
 
+/**
+ * @param {string} process
+ */
 export function getIcon(process) {
   let name = process.toLowerCase()
   // strip extname in process name (Windows only)
@@ -113,6 +158,9 @@ export function getIcon(process) {
   })
 }
 
+/**
+ * @param {string} directory
+ */
 export async function getGitBranch(directory) {
   const command = process.platform === 'win32'
     ? 'git rev-parse --abbrev-ref HEAD 2> NUL'

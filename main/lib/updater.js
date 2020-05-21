@@ -22,10 +22,21 @@ async function executeChecking() {
   }, 3600 * 1e3)
 }
 
+/**
+ * @param {boolean} value
+ */
 function toggleAutoUpdater(value) {
   autoUpdaterEnabled = value
 }
 
+/**
+ * @typedef NotifyContext
+ * @property {string} title
+ * @property {string} body
+ * @property {string[]} actions
+ *
+ * @param {NotifyContext} context
+ */
 async function notify({ title, body, actions }) {
   if (Notification.isSupported() && process.platform === 'darwin') {
     const notification = new Notification({

@@ -5,10 +5,20 @@ import { debounce } from 'lodash'
 import { assetsDir, userDataDir } from './electron'
 import Writer from './writer'
 
+/**
+ * @typedef {import('./writer').default} Writer
+ */
+
 export class FileStorage {
+  /**
+   * @param {string} directory
+   */
   constructor(directory) {
     this.directory = directory
   }
+  /**
+   * @param {string} basename
+   */
   async load(basename) {
     try {
       return parse(await this.read(basename))
@@ -16,6 +26,9 @@ export class FileStorage {
       return null
     }
   }
+  /**
+   * @param {string} basename
+   */
   loadSync(basename) {
     try {
       return parse(this.readSync(basename))
@@ -23,9 +36,16 @@ export class FileStorage {
       return null
     }
   }
+  /**
+   * @param {string} basename
+   * @param {any} data
+   */
   save(basename, data) {
     return this.write(basename, JSON.stringify(data, null, 2))
   }
+  /**
+   * @param {string} basename
+   */
   async read(basename) {
     try {
       return await fs.readFile(this.filename(basename))
@@ -33,6 +53,9 @@ export class FileStorage {
       return null
     }
   }
+  /**
+   * @param {string} basename
+   */
   readSync(basename) {
     try {
       return readFileSync(this.filename(basename))
@@ -40,6 +63,10 @@ export class FileStorage {
       return null
     }
   }
+  /**
+   * @param {string} basename
+   * @param {string} content
+   */
   async write(basename, content) {
     const filename = this.filename(basename)
     try {
@@ -49,6 +76,10 @@ export class FileStorage {
     }
     return fs.writeFile(filename, content)
   }
+  /**
+   * @param {string} basename
+   * @param {(event: string, filename: string) => void} updater
+   */
   watch(basename, updater) {
     // `chokidar` is too large; `gaze` seems to be OK. Use native currently.
     try {
@@ -57,6 +88,9 @@ export class FileStorage {
       return null
     }
   }
+  /**
+   * @param {string} basename
+   */
   require(basename) {
     const filename = this.filename(basename)
     try {
@@ -65,6 +99,11 @@ export class FileStorage {
       return null
     }
   }
+  /**
+   * @param {string} basename
+   * @param {string} url
+   * @param {boolean} [force]
+   */
   async download(basename, url, force) {
     if (!force) {
       const data = await this.load(basename)
@@ -79,8 +118,11 @@ export class FileStorage {
       return null
     }
   }
-  async fetch(name) {
-    const source = await this.read(name)
+  /**
+   * @param {string} basename
+   */
+  async fetch(basename) {
+    const source = await this.read(basename)
     if (!source) return null
     const writer = new Writer(source)
     try {
@@ -90,14 +132,21 @@ export class FileStorage {
       return null
     }
   }
-  update(name, { writer, data }) {
+  /**
+   * @param {string} basename
+   * @param {{writer?: Writer, data: any}} context
+   */
+  update(basename, { writer, data }) {
     if (writer) {
       writer.write(data)
-      return this.write(name, writer.toSource())
+      return this.write(basename, writer.toSource())
     } else {
-      return this.save(name, data)
+      return this.save(basename, data)
     }
   }
+  /**
+   * @param {string} basename
+   */
   filename(basename) {
     return resolve(this.directory, basename)
   }

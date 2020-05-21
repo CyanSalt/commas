@@ -2,7 +2,14 @@ import locales from './locales.json'
 import ThemePanel from './theme-panel'
 import ThemeLink from './theme-link'
 
+/**
+ * @typedef {typeof import('../../hooks').default} Hooks
+ */
+
 export default {
+  /**
+   * @param {Hooks} hooks
+   */
   install(hooks) {
     hooks.i18n.addTranslations(locales)
     hooks.workspace.panel.register('theme', {

@@ -1,16 +1,40 @@
 import { createIDGenerator } from './identity'
 import { quote } from './terminal'
 
+/**
+ * @typedef {import('./terminal').TerminalTab} TerminalTab
+ *
+ * @typedef Launcher
+ * @property {number} id
+ * @property {string} command
+ * @property {string} [directory]
+ * @property {boolean} [login]
+ * @property {boolean} [remote]
+ */
+
 const generateID = createIDGenerator()
 
+/**
+ * @param {TerminalTab[]} tabs
+ * @param {Launcher} launcher
+ */
 export function getLauncherTab(tabs, launcher) {
   return tabs.find(tab => tab.launcher === launcher.id)
 }
 
+/**
+ * @param {Launcher[]} launchers
+ * @param {TerminalTab} tab
+ */
 export function getTabLauncher(launchers, tab) {
   return launchers.find(launcher => tab.launcher === launcher.id)
 }
 
+/**
+ * @param {Launcher[]} launchers
+ * @param {Launcher[]} declarations
+ * @param {(value: Launcher, index: number, array: Launcher[]) => value is Launcher} condition
+ */
 function getMatchedLauncher(launchers, declarations, condition) {
   let matches = launchers.filter(condition)
   let siblings = declarations.filter(condition)
@@ -20,6 +44,11 @@ function getMatchedLauncher(launchers, declarations, condition) {
   return null
 }
 
+/**
+ * @param {Launcher[]} launchers
+ * @param {Launcher[]} declarations
+ * @param {Launcher} declaration
+ */
 function getLauncherID(launchers, declarations, declaration) {
   let matched = getMatchedLauncher(
     launchers,
@@ -37,6 +66,9 @@ function getLauncherID(launchers, declarations, declaration) {
   return generateID()
 }
 
+/**
+ * @param {Launcher} launcher
+ */
 export function getLauncherCommand(launcher) {
   let command = launcher.command
   if (launcher.login) {
@@ -55,6 +87,11 @@ export function getLauncherCommand(launcher) {
   return command
 }
 
+/**
+ * @param {Launcher[]} launchers
+ * @param {Launcher[]} declarations
+ * @returnes {Launcher[]}
+ */
 export function merge(launchers, declarations) {
   if (!launchers.length) {
     return declarations.map(declaration => ({

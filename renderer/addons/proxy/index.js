@@ -4,7 +4,14 @@ import ProxyAnchor from './proxy-anchor'
 import ProxyLink from './proxy-link'
 import ProxyStore from './store'
 
+/**
+ * @typedef {typeof import('../../hooks').default} Hooks
+ */
+
 export default {
+  /**
+   * @param {Hooks} hooks
+   */
   install(hooks) {
     hooks.i18n.addTranslations(locales)
     hooks.settings.register({

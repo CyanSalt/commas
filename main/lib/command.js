@@ -1,5 +1,10 @@
 const { BrowserWindow } = require('electron')
 
+/**
+ * @param {BrowserWindow} [frame]
+ * @param {string} command
+ * @param {any} args
+ */
 function execCommand(frame, command, args) {
   if (!frame) {
     frame = BrowserWindow.getFocusedWindow() || frames[frames.length - 1]

@@ -2,8 +2,23 @@ const { app, Menu } = require('electron')
 const { userStorage, assetsStorage } = require('../build')
 const { execCommand } = require('./command')
 
+/**
+ * @typedef {import('electron').BrowserWindow} BrowserWindow
+ *
+ * @typedef KeyBinding
+ * @property {Function} [click]
+ * @property {string} [command]
+ * @property {any} args
+ */
+
+/**
+ * @type {KeyBinding[]}
+ */
 const shared = assetsStorage.require('menu.json')
 
+/**
+ * @param {KeyBinding} binding
+ */
 function resolveBindingCommand(binding) {
   if (binding.command) {
     binding.click = (self, frame) => {
@@ -18,6 +33,7 @@ function getSharedWindowMenu() {
 }
 
 function getUserCustomMenu() {
+  /** @type {KeyBinding[]} */
   const keybindings = userStorage.loadSync('keybindings.json') || []
   return keybindings.map(resolveBindingCommand)
 }
@@ -73,6 +89,9 @@ function createApplicationMenu() {
   Menu.setApplicationMenu(menu)
 }
 
+/**
+ * @param {BrowserWindow} frame
+ */
 function createWindowMenu(frame) {
   const menu = Menu.buildFromTemplate([
     {
@@ -116,6 +135,9 @@ function createDockMenu() {
   app.dock.setMenu(menu)
 }
 
+/**
+ * @param {KeyBinding[]} template
+ */
 function createMenu(template) {
   return Menu.buildFromTemplate(template.map(resolveBindingCommand))
 }

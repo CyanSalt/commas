@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@hooks/*": ["src/renderer/*"],
+      "@hooks/*": ["src/renderer/hooks/*"],
     }
   },
   "exclude": ["node_modules", "dist"]

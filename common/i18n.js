@@ -1,5 +1,18 @@
 import { userStorage, assetsStorage } from './storage'
 
+/**
+ * @typedef {{[placeholder: string]: string}} Dictionary
+ *
+ * @typedef Translation
+ * @property {string} file
+ * @property {string[]} locales
+ * @property {{dictionary: Dictionary[], priority: Priority}[]} [data]
+ * @property {boolean} [loaded]
+ */
+
+/**
+ * @type {Translation[]}
+ */
 const registry = [
   {
     file: 'zh-CN.json',
@@ -9,12 +22,20 @@ const registry = [
 
 const comment = '#!'
 
+/**
+ * @enum {number}
+ */
 const Priority = {
   custom: 0,
   addon: 1,
   builtin: 2,
 }
 
+/**
+ * @param {Translation} translation
+ * @param {Dictionary} dictionary
+ * @param {Priority} priority
+ */
 function addDictionary(translation, dictionary, priority) {
   if (!translation.data) translation.data = []
   let filtered = {}
@@ -36,6 +57,9 @@ function addDictionary(translation, dictionary, priority) {
     }, {})
 }
 
+/**
+ * @param {Translation} translation
+ */
 function loadDictionary(translation) {
   if (translation.loaded || !translation.file) return
   const result = assetsStorage.loadSync(`locales/${translation.file}`)
@@ -43,6 +67,9 @@ function loadDictionary(translation) {
   addDictionary(translation, result, Priority.builtin)
 }
 
+/**
+ * @param {string} locale
+ */
 function getTranslation(locale) {
   let translation = registry
     .find(({ locales }) => locales.includes(locale))
@@ -53,7 +80,14 @@ function getTranslation(locale) {
   return translation
 }
 
+/**
+ * @type {Translation}
+ */
 let current
+
+/**
+ * @param {string} locale
+ */
 export function loadTranslation(locale) {
   const custom = userStorage.loadSync('translation.json') || {}
   if (custom['@use']) locale = custom['@use']
@@ -63,6 +97,10 @@ export function loadTranslation(locale) {
   current = translation
 }
 
+/**
+ * @param {string} message
+ * @returns {string}
+ */
 function translateText(message) {
   if (!message || !current) return message
   const { unabridged, dictionary } = current
@@ -72,6 +110,12 @@ function translateText(message) {
   return message.split(comment)[0]
 }
 
+/**
+ * @typedef {{[key: string]: string}} TranslateContext
+ *
+ * @param {string} message
+ * @param {TranslateContext} [variables]
+ */
 export function translate(message, variables) {
   let text = translateText(message)
   if (variables && typeof variables === 'object') {
@@ -82,6 +126,10 @@ export function translate(message, variables) {
   return text
 }
 
+/**
+ * @param {HTMLElement} el
+ * @param {{value: TranslateContext}} binding
+ */
 export function translateElement(el, { value }) {
   if (['INPUT', 'TEXTAREA'].includes(el.tagName)) {
     el.placeholder = translate(el.placeholder, value)
@@ -90,6 +138,9 @@ export function translateElement(el, { value }) {
   }
 }
 
+/**
+ * @param {{[locale: string]: Dictionary}} data
+ */
 export function addTranslations(data) {
   for (const [locale, dictionary] of Object.entries(data)) {
     const translation = getTranslation(locale)

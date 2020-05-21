@@ -1,8 +1,17 @@
 import { exec as execCallback } from 'child_process'
 import { promisify } from 'util'
 
+/**
+ * @typedef {import('../hooks/settings').SettingSpec} SettingSpec
+ */
+
 export const exec = promisify(execCallback)
 
+/**
+ * @template T
+ * @param {T} object
+ * @returns {T}
+ */
 export const unreactive = object => new Proxy(object, {
   // Prevent `__ob__` and getters/setters
   defineProperty: () => true,
@@ -10,6 +19,9 @@ export const unreactive = object => new Proxy(object, {
   ownKeys: () => [],
 })
 
+/**
+ * @param {string} expression
+ */
 export function regexp(expression) {
   const matches = expression.match(/^s\/(.+)\/([a-z]+)?$/)
   if (!matches) return null
@@ -20,6 +32,9 @@ export function regexp(expression) {
   }
 }
 
+/**
+ * @param {SettingSpec} specs
+ */
 export function generateSource(specs) {
   const sources = []
   for (const spec of specs) {

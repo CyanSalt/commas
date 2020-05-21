@@ -4,6 +4,9 @@ const { createWindow } = require('./window')
 const { createMenu } = require('./menu')
 const { toggleAutoUpdater } = require('./updater')
 
+/**
+ * @param {BrowserWindow} frame
+ */
 function transferEvents(frame) {
   frame.on('maximize', () => {
     frame.webContents.send('maximize')

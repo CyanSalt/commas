@@ -1,6 +1,38 @@
 import { cloneDeep } from 'lodash'
 import hooks from '@hooks'
 
+/**
+ * @typedef {import('http').IncomingMessage} Request
+ * @typedef {import('http').OutgoingMessage} Response
+ *
+ * @typedef ProxyRewriteRule
+ * @property {'request'|'response'} when
+ * @property {'header'|'body'} type
+ * @property {string} content
+ * @property {string} [name]
+ * @property {string} [from]
+ *
+ * @typedef ProxyOptions
+ * @property {string} target
+ * @property {string} [_target]
+ * @property {string[]} [records]
+ * @property {ProxyRewriteRule[]} [rewrite]
+ *
+ * @typedef ProxyRuleEntry
+ * @property {URL} url
+ * @property {RegExp} [pattern]
+ * @property {{protocol?: boolean, host?: boolean}} matches
+ *
+ * @typedef ProxyRule
+ * @property {ProxyOptions} proxy
+ * @property {string[]} context
+ * @property {ProxyRuleEntry[]} entries
+ */
+
+/**
+ * @param {ProxyRule[]} rules
+ * @returns {ProxyRule[]}
+ */
 function normalizeRules(rules) {
   return rules.reduce((collection, original) => {
     const rule = { ...original }
@@ -12,6 +44,10 @@ function normalizeRules(rules) {
   }, [])
 }
 
+/**
+ * @param {string} expression
+ * @returns {ProxyRuleEntry}
+ */
 function parseRuleEntry(expression) {
   const pattern = hooks.utils.regexp(expression)
   if (pattern) return { pattern }
@@ -37,6 +73,10 @@ function parseRuleEntry(expression) {
   return { url, matches }
 }
 
+/**
+ * @param {ProxyRule[]} rules
+ * @returns {ProxyRule[]}
+ */
 export function parseProxyRules(rules) {
   rules = normalizeRules(rules)
   return rules.reduce((collection, original) => {
@@ -54,6 +94,10 @@ export function parseProxyRules(rules) {
   }, [])
 }
 
+/**
+ * @param {ProxyRule[]} rules
+ * @param {string} url
+ */
 function getMatchedProxyRules(rules, url) {
   return rules.filter(rule => rule.entries.some(entry => {
     if (entry.pattern) return entry.pattern.test(url.href)
@@ -66,6 +110,11 @@ function getMatchedProxyRules(rules, url) {
   }))
 }
 
+/**
+ * @param {ProxyRule[]} rules
+ * @param {string} url
+ * @returns {ProxyOptions}
+ */
 export function getProxyByURL(rules, url) {
   url = new URL(url)
   const matched = getMatchedProxyRules(rules, url)
@@ -73,12 +122,23 @@ export function getProxyByURL(rules, url) {
   return rule ? rule.proxy : { target: url.origin }
 }
 
+/**
+ * @param {ProxyRule[]} rules
+ * @param {string} url
+ * @returns {ProxyRewriteRule[]}
+ */
 export function getRewriteRulesByURL(rules, url) {
   url = new URL(url)
   const matched = getMatchedProxyRules(rules, url)
   return [].concat(...matched.map(rule => rule.proxy.rewrite).filter(Boolean))
 }
 
+/**
+ * @param {'request'|'response'} when
+ * @param {Request|Response} target
+ * @param {ProxyRewriteRule} rule
+ * @returns {number|string}
+ */
 function getRewritingContent(when, target, rule) {
   switch (rule.type) {
     case 'header':
@@ -94,6 +154,11 @@ function getRewritingContent(when, target, rule) {
   }
 }
 
+/**
+ * @param {'request'|'response'} when
+ * @param {Request|Response} target
+ * @param {ProxyRewriteRule} rule
+ */
 function setRewritingContent(when, target, rule, content) {
   switch (rule.type) {
     case 'header':
@@ -115,6 +180,11 @@ function setRewritingContent(when, target, rule, content) {
   }
 }
 
+/**
+ * @param {'request'|'response'} when
+ * @param {Request|Response} target
+ * @param {ProxyRewriteRule[]} rule
+ */
 export function rewriteProxy(when, target, rules) {
   rules = rules.filter(item => item.when === when)
   for (const rule of rules) {
@@ -133,6 +203,9 @@ export function rewriteProxy(when, target, rules) {
   }
 }
 
+/**
+ * @param {ProxyRule[]} rules
+ */
 export function trackRuleTargets(rules) {
   rules = normalizeRules(rules)
   rules = cloneDeep(rules)
@@ -142,6 +215,9 @@ export function trackRuleTargets(rules) {
   return rules
 }
 
+/**
+ * @param {ProxyRule[]} rules
+ */
 export function resolveRuleTargets(rules) {
   rules = cloneDeep(rules)
   rules.forEach(({ proxy }) => {

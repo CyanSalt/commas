@@ -5,6 +5,9 @@ export const isMainProcess = process.type === 'browser'
 
 export const app = isMainProcess ? mainProcessApp : remote.app
 
+/**
+ * @param {(launchInfo: unknown) => void} callback
+ */
 export const onAppReady = callback => {
   if (isMainProcess && !app.isReady()) app.on('ready', callback)
   else callback()

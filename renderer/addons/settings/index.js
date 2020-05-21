@@ -1,7 +1,14 @@
 import locales from './locales.json'
 import SettingsPanel from './settings-panel'
 
+/**
+ * @typedef {typeof import('../../hooks').default} Hooks
+ */
+
 export default {
+  /**
+   * @param {Hooks} hooks
+   */
   install(hooks) {
     hooks.i18n.addTranslations(locales)
     hooks.workspace.panel.register('settings', {
