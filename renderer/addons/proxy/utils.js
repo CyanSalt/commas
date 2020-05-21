@@ -2,8 +2,8 @@ import { cloneDeep } from 'lodash'
 import hooks from '@hooks'
 
 /**
- * @typedef {import('http').IncomingMessage} Request
- * @typedef {import('http').OutgoingMessage} Response
+ * @typedef {import('http').ClientRequest} Request
+ * @typedef {import('http').ServerResponse} Response
  *
  * @typedef ProxyRewriteRule
  * @property {'request'|'response'} when
@@ -142,13 +142,13 @@ export function getRewriteRulesByURL(rules, url) {
 function getRewritingContent(when, target, rule) {
   switch (rule.type) {
     case 'header':
-      if (rule.name === ':method' && when === 'request') {
-        return target.method
-      } else if (rule.name === ':status' && when === 'response') {
-        return target.statusCode
-      } else {
-        return target.getHeader(rule.name) || ''
+      if (when === 'request') {
+        if (rule.name === ':method') return target.method
+        if (rule.name === ':path') return target.path
+      } else if (when === 'response') {
+        if (rule.name === ':status') return target.statusCode
       }
+      return target.getHeader(rule.name) || ''
     default:
       return ''
   }
@@ -166,13 +166,13 @@ function setRewritingContent(when, target, rule, content) {
         target.removeHeader(rule.name)
         return
       }
-      if (rule.name === ':method' && when === 'request') {
-        target.method = content
-      } else if (rule.name === ':status' && when === 'response') {
-        target.writeHead(content)
-      } else {
-        target.setHeader(rule.name, content)
+      if (when === 'request') {
+        if (rule.name === ':method') target.method = content
+        if (rule.name === ':path') target.path = content
+      } else if (when === 'response') {
+        if (rule.name === ':status') target.writeHead(content)
       }
+      target.setHeader(rule.name, content)
       return
     case 'body':
       target.end(content)
@@ -192,7 +192,7 @@ export function rewriteProxy(when, target, rules) {
     let matched = true
     if (rule.from) {
       const regexp = hooks.utils.regexp(rule.from)
-      matched = regexp ? regexp.match(original) : original === rule.from
+      matched = regexp ? original.match(regexp) : original === rule.from
     }
     let content = rule.content
     if (Array.isArray(matched) && content !== null) {
