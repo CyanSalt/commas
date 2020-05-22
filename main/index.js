@@ -6,7 +6,7 @@ const { transferInvoking } = require('./lib/transfer')
 const { checkForUpdates } = require('./lib/updater')
 const { loadTranslation } = require('./build')
 
-app.allowRendererProcessReuse = false
+app.allowRendererProcessReuse = true
 transferInvoking()
 
 let cwd

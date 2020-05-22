@@ -16,7 +16,10 @@ export const unreactive = object => new Proxy(object, {
   // Prevent `__ob__` and getters/setters
   defineProperty: () => true,
   // Prevent deep traversing
-  ownKeys: () => [],
+  // notice that 'ownKeys' must contains unconfigurable keys
+  ownKeys: () => Object.entries(Object.getOwnPropertyDescriptors(object))
+    .filter(([key, value]) => !value.configurable)
+    .map(([key, value]) => key),
 })
 
 /**
