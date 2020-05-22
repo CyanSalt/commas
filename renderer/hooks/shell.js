@@ -15,7 +15,7 @@ export default {
     currentWindow.close()
   },
   openUserDirectory() {
-    shell.openItem(storage.user.filename('.'))
+    shell.openPath(storage.user.filename('.'))
   },
   async openDefaultSettings() {
     const specs = settings.getSpecs()
@@ -23,7 +23,7 @@ export default {
     const target = resolve(tmpdir(), 'commas-default-settings.json')
     try {
       await fs.writeFile(target, source)
-      shell.openItem(target)
+      shell.openPath(target)
     } catch {
       // ignore error
     }
@@ -45,7 +45,7 @@ export default {
         await storage.user.write(filename, source)
       }
     }
-    shell.openItem(path)
+    shell.openPath(path)
   },
   /**
    * @param {Event} event

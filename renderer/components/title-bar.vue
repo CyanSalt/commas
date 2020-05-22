@@ -100,7 +100,7 @@ export default {
       currentWindow.close()
     },
     open() {
-      shell.openItem(resolveHome(this.directory))
+      shell.openPath(resolveHome(this.directory))
     },
     runScript(event) {
       hooks.shell.openContextByEvent(event, this.scripts.map((script, index) => ({

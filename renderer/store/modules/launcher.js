@@ -57,7 +57,7 @@ export default {
       if (!launcher.directory) return false
       const directory = resolveHome(launcher.directory)
       if (!explorer) {
-        shell.openItem(directory)
+        shell.openPath(directory)
         return
       }
       if (!Array.isArray(explorer)) {
