@@ -58,6 +58,7 @@ if (process.platform === 'darwin') {
     identity: childProcess.execSync(
       'security find-identity -p codesigning -v | grep -o "\\"Apple Development: .*\\""'
     ).toString().trim(),
+    timestamp: 'none',
   }
 }
 
