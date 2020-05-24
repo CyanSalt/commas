@@ -1,4 +1,4 @@
-const { app, ipcMain, BrowserWindow, nativeTheme } = require('electron')
+const { app, ipcMain, BrowserWindow, nativeTheme, dialog } = require('electron')
 const { forEachWindow } = require('./frame')
 const { createWindow } = require('./window')
 const { createMenu } = require('./menu')
@@ -31,6 +31,15 @@ function transferInvoking() {
   })
   ipcMain.handle('open-window', () => {
     createWindow()
+  })
+  ipcMain.handle('destroy', (event, data) => {
+    BrowserWindow.fromWebContents(event.sender).destroy()
+  })
+  ipcMain.handle('message-box', (event, data) => {
+    return dialog.showMessageBox(
+      BrowserWindow.fromWebContents(event.sender),
+      data,
+    )
   })
   ipcMain.handle('contextmenu', (event, data) => {
     const menu = createMenu(data.template)

@@ -1,6 +1,5 @@
-import { remote } from 'electron'
+import { ipcRenderer } from 'electron'
 import { translate } from '../../../common/i18n'
-import { currentWindow } from '../../utils/frame'
 
 export default {
   namespaced: true,
@@ -33,9 +32,8 @@ export default {
         defaultId: 0,
         cancelId: 1,
       }
-      const frame = currentWindow
-      const { response } = await remote.dialog.showMessageBox(frame, args)
-      if (response === 0) frame.destroy()
+      const { response } = await ipcRenderer.invoke('message-box', args)
+      if (response === 0) ipcRenderer.invoke('destroy')
     },
     drop({ dispatch }, { tab, files }) {
       const paths = Array.from(files).map(({ path }) => {
