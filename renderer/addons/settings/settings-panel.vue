@@ -68,7 +68,7 @@
 
 <script>
 import { remote } from 'electron'
-import hooks from '@hooks'
+import hooks from '@commas/hooks'
 
 export default {
   name: 'SettingsPanel',

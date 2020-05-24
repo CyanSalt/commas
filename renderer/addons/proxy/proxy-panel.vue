@@ -93,7 +93,7 @@
 import { mapState, mapActions } from 'vuex'
 import { cloneDeep, isEqual } from 'lodash'
 import { trackRuleTargets, resolveRuleTargets } from './utils'
-import hooks from '@hooks'
+import hooks from '@commas/hooks'
 
 export default {
   name: 'ProxyPanel',

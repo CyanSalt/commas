@@ -22,7 +22,7 @@
 
 <script>
 import UserSettingsLine from './user-settings-line'
-import hooks from '@hooks'
+import hooks from '@commas/hooks'
 import { mapState } from 'vuex'
 import { cloneDeep, isEqual } from 'lodash'
 

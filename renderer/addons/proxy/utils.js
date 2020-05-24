@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash'
-import hooks from '@hooks'
+import hooks from '@commas/hooks'
 
 /**
  * @typedef {import('http').ClientRequest} Request

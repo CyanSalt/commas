@@ -30,7 +30,7 @@ import TabList from './tab-list'
 import FindBox from './find-box'
 import TerminalTeletype from './terminal-teletype'
 import { currentState } from '../utils/frame'
-import hooks from '@hooks'
+import hooks from '@commas/hooks'
 
 export default {
   name: 'App',

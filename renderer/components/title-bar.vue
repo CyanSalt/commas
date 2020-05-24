@@ -42,7 +42,7 @@ import { mapState, mapGetters } from 'vuex'
 import { getPrompt, resolveHome, getGitBranch } from '../utils/terminal'
 import { currentState } from '../utils/frame'
 import { getTabLauncher } from '../utils/launcher'
-import hooks from '@hooks'
+import hooks from '@commas/hooks'
 
 export default {
   name: 'TitleBar',

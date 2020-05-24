@@ -94,7 +94,7 @@ import TabItem from './tab-item'
 import ScrollBar from './scroll-bar'
 import SortableList from './sortable-list'
 import { getLauncherTab } from '../utils/launcher'
-import hooks from '@hooks'
+import hooks from '@commas/hooks'
 
 export default {
   name: 'TabList',

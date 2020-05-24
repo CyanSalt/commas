@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import hooks from '@hooks'
+import hooks from '@commas/hooks'
 
 export default {
   name: 'ProxyLink',

@@ -10,7 +10,8 @@ import { debounce } from 'lodash'
 import { getCwd, getWindowsProcessInfo } from '../../utils/terminal'
 import { normalizeTheme } from '../../utils/theme'
 import { exec, unreactive } from '../../utils/helper'
-import { isPackaged } from '../../../common/electron'
+
+const isPackaged = process.env.NODE_ENV === 'production'
 
 const variables = {
   LANG: remote.app.getLocale().replace('-', '_') + '.UTF-8',
