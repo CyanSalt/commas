@@ -10,7 +10,6 @@ import { debounce } from 'lodash'
 import { getCwd, getWindowsProcessInfo } from '../../utils/terminal'
 import { normalizeTheme } from '../../utils/theme'
 import { exec, unreactive } from '../../utils/helper'
-import { currentWindow } from '../../utils/frame'
 import { isPackaged } from '../../../common/electron'
 
 const variables = {
@@ -248,7 +247,7 @@ export default {
         if (rootState.proxy.server) {
           dispatch('spawn')
         } else {
-          currentWindow.close()
+          window.close()
         }
       } else {
         const active = state.active > index

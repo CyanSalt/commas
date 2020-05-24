@@ -2,7 +2,6 @@ import { shell, ipcRenderer } from 'electron'
 import { promises as fs } from 'fs'
 import { tmpdir } from 'os'
 import { resolve } from 'path'
-import { currentWindow } from '../utils/frame'
 import { generateSource } from '../utils/helper'
 import settings from './settings'
 import storage from './storage'
@@ -12,7 +11,7 @@ export default {
     ipcRenderer.invoke('open-window')
   },
   closeWindow() {
-    currentWindow.close()
+    window.close()
   },
   openUserDirectory() {
     shell.openPath(storage.user.filename('.'))

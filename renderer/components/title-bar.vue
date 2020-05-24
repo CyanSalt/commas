@@ -97,7 +97,7 @@ export default {
       }
     },
     close() {
-      currentWindow.close()
+      hooks.shell.closeWindow()
     },
     open() {
       shell.openPath(resolveHome(this.directory))
