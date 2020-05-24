@@ -37,10 +37,10 @@
 </template>
 
 <script>
-import { shell } from 'electron'
+import { shell, ipcRenderer } from 'electron'
 import { mapState, mapGetters } from 'vuex'
 import { getPrompt, resolveHome, getGitBranch } from '../utils/terminal'
-import { currentWindow, currentState } from '../utils/frame'
+import { currentState } from '../utils/frame'
 import { getTabLauncher } from '../utils/launcher'
 import hooks from '@hooks'
 
@@ -87,14 +87,10 @@ export default {
   },
   methods: {
     minimize() {
-      currentWindow.minimize()
+      ipcRenderer.invoke('toggle-minimized')
     },
     maximize() {
-      if (currentWindow.isMaximized()) {
-        currentWindow.unmaximize()
-      } else {
-        currentWindow.maximize()
-      }
+      ipcRenderer.invoke('toggle-maximized')
     },
     close() {
       hooks.shell.closeWindow()

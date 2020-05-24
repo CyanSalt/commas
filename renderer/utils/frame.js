@@ -7,20 +7,13 @@ const currentState = Vue.observable({
   fullscreen: currentWindow.isFullScreen(),
 })
 
-ipcRenderer.on('maximize', () => {
-  currentState.maximized = true
+ipcRenderer.on('maximized-changed', (event, flag) => {
+  currentState.maximized = flag
 })
-ipcRenderer.on('unmaximize', () => {
-  currentState.maximized = false
-})
-ipcRenderer.on('enter-full-screen', () => {
-  currentState.fullscreen = true
-})
-ipcRenderer.on('leave-full-screen', () => {
-  currentState.fullscreen = false
+ipcRenderer.on('fullscreen-changed', (event, flag) => {
+  currentState.fullscreen = flag
 })
 
 export {
-  currentWindow,
   currentState,
 }

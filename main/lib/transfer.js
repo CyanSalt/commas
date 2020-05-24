@@ -9,21 +9,22 @@ const { toggleAutoUpdater } = require('./updater')
  */
 function transferEvents(frame) {
   frame.on('maximize', () => {
-    frame.webContents.send('maximize')
+    frame.webContents.send('maximized-changed', true)
   })
   frame.on('unmaximize', () => {
-    frame.webContents.send('unmaximize')
+    frame.webContents.send('maximized-changed', false)
   })
   frame.on('enter-full-screen', () => {
-    frame.webContents.send('enter-full-screen')
+    frame.webContents.send('fullscreen-changed', true)
   })
   frame.on('leave-full-screen', () => {
-    frame.webContents.send('leave-full-screen')
+    frame.webContents.send('fullscreen-changed', false)
   })
 }
 
 function transferInvoking() {
   process.on('uncaughtException', error => {
+    console.log('error', error)
     forEachWindow(frame => frame.webContents.send('uncaught-error', String(error)))
   })
   app.on('before-quit', () => {
@@ -33,18 +34,18 @@ function transferInvoking() {
     createWindow()
   })
   ipcMain.handle('destroy', (event, data) => {
-    BrowserWindow.fromWebContents(event.sender).destroy()
+    const frame = BrowserWindow.fromWebContents(event.sender)
+    frame.destroy()
   })
   ipcMain.handle('message-box', (event, data) => {
-    return dialog.showMessageBox(
-      BrowserWindow.fromWebContents(event.sender),
-      data,
-    )
+    const frame = BrowserWindow.fromWebContents(event.sender)
+    return dialog.showMessageBox(frame, data)
   })
   ipcMain.handle('contextmenu', (event, data) => {
+    const frame = BrowserWindow.fromWebContents(event.sender)
     const menu = createMenu(data.template)
     menu.popup({
-      window: BrowserWindow.fromWebContents(event.sender),
+      window: frame,
       x: data.position.x,
       y: data.position.y,
     })
@@ -54,6 +55,22 @@ function transferInvoking() {
   })
   ipcMain.handle('update-theme', (event, source) => {
     nativeTheme.themeSource = source
+  })
+  ipcMain.handle('toggle-minimized', event => {
+    const frame = BrowserWindow.fromWebContents(event.sender)
+    if (frame.isMinimized()) {
+      frame.restore()
+    } else {
+      frame.minimize()
+    }
+  })
+  ipcMain.handle('toggle-maximized', event => {
+    const frame = BrowserWindow.fromWebContents(event.sender)
+    if (frame.isMaximized()) {
+      frame.unmaximize()
+    } else {
+      frame.maximize()
+    }
   })
 }
 

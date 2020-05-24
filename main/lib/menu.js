@@ -14,7 +14,7 @@ const { execCommand } = require('./command')
 /**
  * @type {KeyBinding[]}
  */
-const shared = assetsStorage.require('menu.json')
+const shared = assetsStorage.loadSync('menu.json')
 
 /**
  * @param {KeyBinding} binding
