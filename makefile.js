@@ -1,38 +1,39 @@
-/* eslint-disable no-console */
 const packager = require('electron-packager')
 const png2icons = require('png2icons')
-const path = require('path')
-const fs = require('fs')
-const childProcess = require('child_process')
+const { promises: fs } = require('fs')
+const { exec } = require('child_process')
+const { promisify } = require('util')
 const app = require('./package.json')
 
-const suffix = process.platform === 'darwin' ? 'icns' : 'ico'
-let iconPath = `assets/images/icon.${suffix}`
+const execa = promisify(exec)
 
-// Check icon file
-try {
-  fs.accessSync(iconPath)
-} catch {
-  const folder = path.dirname(iconPath)
+async function generateAppIcon(input, icon, suffix) {
+  // Check icon file
+  const iconPath = `${icon}${suffix}`
   try {
-    const input = fs.readFileSync(`${folder}/icon.png`)
-    console.log('Generating program icon...')
+    await fs.access(iconPath)
+    return
+  } catch {
+    // ignore error
+  }
+  try {
+    console.log(`Generating ${suffix.toUpperCase()} icon for application...`)
     const builder = suffix === 'icns' ? png2icons.createICNS : png2icons.createICO
     const output = builder(input, png2icons.BICUBIC2, 0, false, true)
-    fs.writeFileSync(iconPath, output)
+    await fs.writeFile(iconPath, output)
   } catch {
-    iconPath = null
+    // ignore error
   }
 }
 
 const options = {
   dir: '.',
-  name: process.platform === 'win32'
-    ? app.name : app.productName,
+  platform: 'all',
+  executableName: app.name,
   out: 'dist/',
   overwrite: true,
   asar: true,
-  icon: iconPath,
+  icon: 'assets/images/icon',
   ignore: [
     '^/(?!assets|main|renderer|node_modules|package\\.json)',
     '^/assets/.*\\.(ico|icns)$',
@@ -52,31 +53,51 @@ const options = {
   },
 }
 
-// equivalent to {type: 'development'} for electron-osx-sign
-if (process.platform === 'darwin') {
-  options.osxSign = {
-    identity: childProcess.execSync(
-      'security find-identity -p codesigning -v | grep -o "\\"Apple Development: .*\\""'
-    ).toString().trim(),
-    timestamp: 'none',
+async function getMacOSCodeSign(name) {
+  const { stdout } = await execa(
+    `security find-identity -p codesigning -v | grep -o "\\"${name}: .*\\""`
+  )
+  return stdout.toString().trim()
+}
+
+async function copyWindowsManifest(dir) {
+  try {
+    console.log(`Copying Visual Elements Manifest for Windows...`)
+    const manifest = `${app.name}.VisualElementsManifest.xml`
+    await fs.copyFile(`assets/${manifest}`, `${dir}/${manifest}`)
+  } catch {
+    // ignore error
   }
 }
 
-packager(options).then(appPaths => {
-  appPaths.forEach(dir => {
-    if (dir.includes('win32')) {
-      try {
-        const manifest = `${app.name}.VisualElementsManifest.xml`
-        fs.copyFileSync(
-          `assets/${manifest}`,
-          `${dir}/${manifest}`
-        )
-      } catch {
-        // ignore error
-      }
+async function make() {
+  // Generate icons
+  const startedAt = Date.now()
+  const input = await fs.readFile(`${options.icon}.png`)
+  await Promise.all([
+    generateAppIcon(input, options.icon, '.ico'),
+    generateAppIcon(input, options.icon, '.icns'),
+  ])
+  // Equivalent to {type: 'development'} for electron-osx-sign
+  if (process.platform === 'darwin') {
+    options.osxSign = {
+      identity: await getMacOSCodeSign('Apple Development'),
+      timestamp: 'none',
     }
-  })
-  console.log('Build finished.')
-}).catch(e => {
-  console.error(e)
-})
+  }
+  // Run electron-packager
+  const appPaths = await packager(options)
+  await Promise.all(
+    appPaths.map(async dir => {
+      if (dir.includes('win32')) {
+        await copyWindowsManifest(dir)
+      }
+    })
+  )
+  return Date.now() - startedAt
+}
+
+make().then(
+  duration => console.log(`Build finished after ${duration / 1000}s.`),
+  err => console.error(err),
+)

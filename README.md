@@ -12,8 +12,6 @@ A hackable terminal and command runner. **Commas** means **Com**mand **Mas**ter.
 
 [Download the latest version](https://github.com/CyanSalt/commas/releases)
 
-*\* Support macOS only currently*
-
 ### Build manually
 
 You can also clone or download this repository and compile this app locally.

@@ -12,8 +12,6 @@
 
 [下载最新版本](https://github.com/CyanSalt/commas/releases)
 
-*\* 目前仅支持 macOS*
-
 ### 手动构建
 
 你也可以克隆或下载这个仓库，然后在本地完成编译。
