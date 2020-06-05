@@ -190,16 +190,21 @@ export function rewriteProxy(when, target, rules) {
   for (const rule of rules) {
     const original = getRewritingContent(when, target, rule)
     let matched = true
+    let content = rule.content
     if (rule.from) {
       const regexp = hooks.utils.regexp(rule.from)
-      matched = regexp ? original.match(regexp) : original === rule.from
+      if (!regexp) {
+        matched = original === rule.from
+      } else {
+        matched = regexp.test(original)
+        if (matched && content !== null) {
+          content = original.replace(regexp, content)
+        }
+      }
     }
-    let content = rule.content
-    if (Array.isArray(matched) && content !== null) {
-      content = content
-        .replace(/\$(\d+)/, (sign, group) => matched[group])
+    if (matched) {
+      setRewritingContent(when, target, rule, content)
     }
-    setRewritingContent(when, target, rule, content)
   }
 }
 
