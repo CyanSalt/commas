@@ -1,4 +1,5 @@
 const { BrowserWindow } = require('electron')
+const { getLastWindow } = require('./frame')
 
 /**
  * @param {BrowserWindow} [frame]
@@ -7,7 +8,7 @@ const { BrowserWindow } = require('electron')
  */
 function execCommand(frame, command, args) {
   if (!frame) {
-    frame = BrowserWindow.getFocusedWindow() || frames[frames.length - 1]
+    frame = BrowserWindow.getFocusedWindow() || getLastWindow()
     if (!frame) return
   }
   frame.webContents.send('command', { command, args })
