@@ -1,6 +1,8 @@
+const { BrowserWindow } = require('electron')
+
 /**
- * @typedef {import('electron').BrowserWindow} BrowserWindow
- */
+* @typedef {import('electron').BrowserWindow} BrowserWindow
+*/
 
 /**
  * @type {BrowserWindow[]}
@@ -23,6 +25,16 @@ function forEachWindow(callback) {
 }
 
 /**
+ * @param {string} event
+ * @param  {...any} args
+ */
+function broadcast(event, ...args) {
+  forEachWindow(frame => {
+    frame.webContents.send(event, ...args)
+  })
+}
+
+/**
  * @param {BrowserWindow} frame
  */
 function collectWindow(frame) {
@@ -35,9 +47,20 @@ function collectWindow(frame) {
   })
 }
 
+function getFocusedWindow() {
+  let frame = BrowserWindow.getFocusedWindow()
+  if (!frame) {
+    frame = getLastWindow()
+    frame.focus()
+  }
+  return frame
+}
+
 module.exports = {
   hasWindow,
   getLastWindow,
   forEachWindow,
+  broadcast,
   collectWindow,
+  getFocusedWindow,
 }

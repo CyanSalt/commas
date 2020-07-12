@@ -1,7 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const { VueLoaderPlugin } = require('vue-loader')
 
 module.exports = {
   target: 'electron-renderer',
@@ -13,48 +13,26 @@ module.exports = {
   node: {
     __dirname: false,
   },
-  entry: {
-    renderer: path.resolve(__dirname, 'renderer/entry.js'),
-    main: path.resolve(__dirname, 'main/entry.js'),
-  },
+  entry: path.resolve(__dirname, 'renderer/main.mjs'),
   output: {
     path: __dirname,
-    filename: '[name]/build/index.js',
+    filename: 'renderer/build/index.js',
     libraryTarget: 'commonjs2',
   },
   resolve: {
-    extensions: ['.js', '.vue'],
     alias: {
-      '@commas/hooks': path.resolve(__dirname, 'renderer/hooks'),
-      vue$: 'vue/dist/vue.esm.js',
-      lodash: 'lodash-es',
+      vue$: 'vue/dist/vue.esm-bundler.js',
     },
-    modules: [
-      path.resolve(__dirname, 'packages'),
-      'node_modules',
-    ],
-  },
-  resolveLoader: {
-    modules: [
-      path.resolve(__dirname, 'packages'),
-      'node_modules',
-    ],
   },
   module: {
     rules: [
       {
-        test: /\.json$/,
-        loader: 'graceful-json5-loader',
+        test: /\.mjs$/,
+        type: 'javascript/auto',
       },
       {
         test: /\.vue$/,
         loader: 'vue-loader',
-        options: {
-          transformAssetUrls: {
-            img: [],
-            image: [],
-          },
-        },
       },
       {
         test: /\.css$/,
@@ -74,5 +52,7 @@ module.exports = {
   ],
   optimization: {
     minimize: false,
+    namedModules: true,
+    usedExports: false,
   },
 }

@@ -1,20 +1,20 @@
 <template>
-  <div id="root" :class="['app', { opaque }]">
+  <div id="root" :class="['app', { opaque: isFullscreen }]">
     <title-bar></title-bar>
     <div class="content">
-      <tab-list v-show="multitabs"></tab-list>
+      <tab-list v-show="isTabListEnabled"></tab-list>
       <div class="interface">
         <find-box></find-box>
-        <keep-alive v-if="current">
+        <keep-alive v-if="terminal">
           <component
-            :is="current.internal.component"
-            v-if="current.internal"
-            :key="current.id"
+            :is="terminal.pane.component"
+            v-if="terminal.pane"
+            :key="terminal.pid"
           ></component>
           <terminal-teletype
             v-else
-            :key="current.id"
-            :tab="current"
+            :key="terminal.pid"
+            :tab="terminal"
           ></terminal-teletype>
         </keep-alive>
       </div>
@@ -24,13 +24,29 @@
 
 <script>
 import { ipcRenderer } from 'electron'
-import { mapState, mapGetters } from 'vuex'
-import TitleBar from './title-bar'
-import TabList from './tab-list'
-import FindBox from './find-box'
-import TerminalTeletype from './terminal-teletype'
-import { currentState } from '../utils/frame'
-import hooks from '@commas/hooks'
+import { reactive, toRefs, unref, onMounted } from 'vue'
+import TitleBar from './title-bar.vue'
+import TabList from './tab-list.vue'
+import FindBox from './find-box.vue'
+import TerminalTeletype from './terminal-teletype.vue'
+import {
+  useFullscreen,
+  handleFrameMessages,
+} from '../hooks/frame'
+import {
+  useIsTabListEnabled,
+  useWillQuit,
+  confirmClosing,
+  handleShellMessages,
+} from '../hooks/shell'
+import {
+  useCurrentTerminal,
+  useTerminalTabs,
+  handleTerminalMessages,
+  createTerminalTab,
+} from '../hooks/terminal'
+import { injectTheme } from '../hooks/theme'
+import { loadAddons } from '../hooks/addon'
 
 export default {
   name: 'App',
@@ -40,71 +56,55 @@ export default {
     'terminal-teletype': TerminalTeletype,
     'find-box': FindBox,
   },
-  computed: {
-    ...mapState('shell', ['multitabs']),
-    ...mapGetters('settings', ['settings']),
-    ...mapGetters('terminal', ['current']),
-    opaque() {
-      return currentState.fullscreen
-    },
-  },
-  beforeCreate() {
-    // custom stylesheet
-    const stylesheet = hooks.storage.user.readSync('custom.css')
-    if (stylesheet) {
-      const element = document.createElement('style')
-      element.appendChild(document.createTextNode(stylesheet))
-      document.head.appendChild(element)
-    }
-  },
-  created() {
-    // prepare for hooks
-    hooks.core.dangerouslySetViewModel(this)
+  setup() {
+    const commas = __non_webpack_require__('../api/renderer')
+    const state = reactive({
+      isFullscreen: useFullscreen(),
+      isTabListEnabled: useIsTabListEnabled(),
+      terminal: useCurrentTerminal(),
+    })
+
+    loadAddons()
+    injectTheme()
+    handleFrameMessages()
+    handleShellMessages()
+    handleTerminalMessages()
+
     const index = process.argv.indexOf('--') + 1
     const args = index ? process.argv.slice(index) : []
-    const initialPath = args[0];
-    (async () => {
-      await this.$store.dispatch('settings/load')
-      hooks.events.emit('settings:loaded')
-      await this.$store.dispatch('theme/load')
-      this.$store.dispatch('terminal/spawn', { cwd: initialPath })
-      // Load addons
-      const addons = this.settings['terminal.addon.enabled']
-      for (const name of addons) {
-        const addon = require(`../addons/${name}`).default
-        hooks.addon.load(addon)
-      }
-    })()
-    this.$store.dispatch('settings/watch', async () => {
-      hooks.events.emit('settings:reloaded')
-      await this.$store.dispatch('theme/load')
-      this.$store.dispatch('terminal/refresh')
-    })
-    this.$store.dispatch('terminal/load')
-    this.$store.dispatch('launcher/load')
-    this.$store.dispatch('launcher/watch')
+    const initialPath = args[0]
+    createTerminalTab({ cwd: initialPath })
+
     ipcRenderer.on('uncaught-error', (event, error) => {
       console.error(`Uncaught error in main process: ${error}`)
     })
-    ipcRenderer.on('before-quit', (event, path) => {
-      this.$store.commit('shell/setQuiting', true)
+
+    ipcRenderer.on('open-tab', (event, args) => {
+      createTerminalTab(args)
     })
-    window.addEventListener('beforeunload', event => {
-      const state = this.$store.state
-      if (!state.shell.quiting && state.terminal.tabs.length > 1) {
+
+    const willQuitRef = useWillQuit()
+    ipcRenderer.on('before-quit', () => {
+      willQuitRef.value = true
+    })
+
+    const tabsRef = useTerminalTabs()
+    window.addEventListener('beforeunload', async event => {
+      const willQuit = unref(willQuitRef)
+      const tabs = unref(tabsRef)
+      if (!willQuit && tabs.length > 1) {
         event.returnValue = false
-        this.$store.dispatch('shell/closing')
+        confirmClosing()
       }
     })
-    ipcRenderer.on('open-path', (event, path) => {
-      this.$store.dispatch('terminal/spawn', { cwd: path })
+
+    onMounted(() => {
+      commas.app.events.emit('ready')
     })
-    ipcRenderer.on('command', (event, { command, args }) => {
-      hooks.command.exec(command, args)
-    })
-    // custom script
-    const initScript = hooks.storage.user.require('custom.js')
-    initScript && initScript(hooks)
+
+    return {
+      ...toRefs(state),
+    }
   },
 }
 </script>
@@ -112,6 +112,7 @@ export default {
 <style>
 body {
   margin: 0;
+  font-family: Fira Code, Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
   font-size: 14px;
   user-select: none;
   cursor: default;

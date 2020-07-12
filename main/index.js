@@ -1,15 +1,32 @@
 const { app } = require('electron')
-const { createWindow } = require('./lib/window')
-const { createApplicationMenu, createDockMenu } = require('./lib/menu')
-const { hasWindow, getLastWindow } = require('./lib/frame')
-const { transferInvoking } = require('./lib/transfer')
+const { handleMessages } = require('./lib/message')
+const { loadTranslation, handleI18NMessages } = require('./lib/i18n')
+const { createApplicationMenu, createDockMenu, handleMenuMessages } = require('./lib/menu')
 const { checkForUpdates } = require('./lib/updater')
-const { loadTranslation } = require('./build')
+const { createWindow, handleWindowMessages } = require('./lib/window')
+const { hasWindow, getLastWindow } = require('./lib/frame')
+const { handleSettingsMessages } = require('./lib/settings')
+const { handleThemeMessages } = require('./lib/theme')
+const { handleTerminalMessages } = require('./lib/terminal')
+const { handleLauncherMessages } = require('./lib/launcher')
+const { loadAddons, loadCustomJS } = require('./lib/addon')
+const commas = require('../api/main')
 
-transferInvoking()
+handleMessages()
+handleI18NMessages()
+handleMenuMessages()
+handleWindowMessages()
+handleSettingsMessages()
+handleThemeMessages()
+handleTerminalMessages()
+handleLauncherMessages()
 
 let cwd
-app.on('ready', () => {
+async function initialize() {
+  await loadAddons()
+  loadCustomJS()
+  await app.whenReady()
+  commas.app.events.emit('ready')
   loadTranslation(app.getLocale())
   if (process.platform === 'darwin') {
     createApplicationMenu()
@@ -17,7 +34,9 @@ app.on('ready', () => {
   }
   checkForUpdates()
   createWindow(cwd)
-})
+}
+
+initialize()
 
 app.on('activate', () => {
   if (!hasWindow() && app.isReady()) {
@@ -36,8 +55,8 @@ app.on('will-finish-launching', () => {
     if (!app.isReady()) {
       cwd = file
     } else if (hasWindow()) {
-      const last = getLastWindow()
-      last.webContents.send('open-path', file)
+      const frame = getLastWindow()
+      frame.webContents.send('open-tab', { cwd: file })
     } else {
       createWindow(file)
     }

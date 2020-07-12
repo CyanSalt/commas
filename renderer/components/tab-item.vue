@@ -2,8 +2,9 @@
   <div :class="['tab-item', { active: focused }]">
     <div class="tab-overview">
       <div class="tab-title">
-        <span v-if="icon" :class="['tab-icon', icon.icon]"></span>
-        <span class="tab-name">{{ title }}</span>
+        <span v-if="iconEntity" :class="['tab-icon', iconEntity.name]"></span>
+        <span v-if="pane" v-i18n class="tab-name">{{ pane.title }}</span>
+        <span v-else class="tab-name">{{ title }}</span>
       </div>
       <div class="right-side">
         <div v-if="idleState" :class="['idle-light', idleState]"></div>
@@ -20,9 +21,11 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
-import { getPrompt, getIcon } from '../utils/terminal'
-import { basename } from 'path'
+import { reactive, toRefs, computed, unref } from 'vue'
+import * as path from 'path'
+import { useSettings } from '../hooks/settings'
+import { useCurrentTerminal, closeTerminalTab } from '../hooks/terminal'
+import { getPrompt, getIconEntityByProcess } from '../utils/terminal'
 
 export default {
   name: 'TabItem',
@@ -33,37 +36,54 @@ export default {
     },
     tab: {
       type: Object,
-      default: null,
+      default: undefined,
     },
   },
-  computed: {
-    ...mapState('terminal', ['tabs', 'active']),
-    ...mapGetters('settings', ['settings']),
-    focused() {
-      return this.tabs[this.active] === this.tab
-    },
-    title() {
-      if (this.name) return this.name
-      if (process.platform !== 'win32' && this.tab.title) return this.tab.title
-      const expr = this.settings['terminal.tab.titleFormat']
-      return getPrompt(expr, this.tab) || this.tab.process
-    },
-    idleState() {
-      if (!this.tab || this.tab.internal) return ''
-      if (this.tab.process === basename(this.tab.shell)) return 'idle'
+  setup(props) {
+    const state = reactive({})
+
+    const terminalRef = useCurrentTerminal()
+    state.focused = computed(() => {
+      return Boolean(props.tab) && unref(terminalRef) === props.tab
+    })
+
+    state.pane = computed(() => {
+      if (!props.tab) return null
+      return props.tab.pane
+    })
+
+    state.iconEntity = computed(() => {
+      if (props.name || !props.tab) return null
+      if (state.pane) return state.pane.icon
+      return getIconEntityByProcess(props.tab.process)
+    })
+
+    const settingsRef = useSettings()
+    state.title = computed(() => {
+      if (props.name) return props.name
+      if (process.platform !== 'win32' && props.tab.title) {
+        return props.tab.title
+      }
+      const settings = unref(settingsRef)
+      const expr = settings['terminal.tab.titleFormat']
+      return getPrompt(expr, props.tab) || props.tab.process
+    })
+
+    state.idleState = computed(() => {
+      if (!props.tab || state.pane) return ''
+      if (props.tab.process === path.basename(props.tab.shell)) return 'idle'
       return 'busy'
-    },
-    icon() {
-      if (this.name || !this.tab) return null
-      if (this.tab.internal) return this.tab.internal
-      return getIcon(this.tab.process)
-    },
-  },
-  methods: {
-    close() {
-      if (!this.tab) return
-      this.$store.dispatch('terminal/close', this.tab)
-    },
+    })
+
+    function close() {
+      if (!props.tab) return
+      closeTerminalTab(props.tab)
+    }
+
+    return {
+      ...toRefs(state),
+      close,
+    }
   },
 }
 </script>

@@ -13,6 +13,10 @@ module.exports = {
     'plugin:vue/essential',
     'eslint:recommended',
   ],
+  globals: {
+    /* eslint-disable-next-line camelcase */
+    __non_webpack_require__: 'readonly',
+  },
   rules: {
     /** Possible Errors */
     'no-dupe-else-if': 'error',

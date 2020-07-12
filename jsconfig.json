@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@commas/hooks/*": ["src/renderer/hooks/*"]
-    }
-  },
-  "exclude": ["node_modules", "dist"]
-}

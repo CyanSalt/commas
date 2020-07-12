@@ -1,41 +1,32 @@
 const { app, autoUpdater, Notification, dialog } = require('electron')
-const { promises: fs } = require('fs')
-const { translate } = require('../build')
+const fs = require('fs')
+const { translate } = require('./i18n')
+const { getSettings, getSettingsEvents } = require('./settings')
 
 let autoUpdaterEnabled = true
-let autoUpdaterPrepared = false
-let autoUpdaterChecker
+let autoUpdaterTimer
 
 async function executeChecking() {
-  if (!autoUpdaterEnabled || !autoUpdaterPrepared) return
-  if (autoUpdaterChecker) clearTimeout(autoUpdaterChecker)
+  if (!autoUpdaterEnabled) return
+  if (autoUpdaterTimer) clearTimeout(autoUpdaterTimer)
   try {
-    await fs.access(app.getPath('exe'))
+    await fs.promises.access(app.getPath('exe'))
     autoUpdater.checkForUpdates()
   } catch {
     return
   }
   // Check for updates endlessly
-  autoUpdaterChecker = setTimeout(() => {
-    autoUpdaterChecker = null
+  autoUpdaterTimer = setTimeout(() => {
+    autoUpdaterTimer = null
     executeChecking()
   }, 3600 * 1e3)
 }
 
 /**
- * @param {boolean} value
- */
-function toggleAutoUpdater(value) {
-  autoUpdaterEnabled = value
-}
-
-/**
- * @typedef NotifyContext
- * @property {string} title
- * @property {string} body
- * @property {string[]} actions
- *
- * @param {NotifyContext} context
+ * @param {object} options
+ * @param {string} options.title
+ * @param {string} options.body
+ * @param {string[]} options.actions
  */
 async function notify({ title, body, actions }) {
   if (Notification.isSupported() && process.platform === 'darwin') {
@@ -66,7 +57,7 @@ async function notify({ title, body, actions }) {
 function checkForUpdates() {
   if (!app.isPackaged || !['darwin', 'win32'].includes(process.platform)) return
   autoUpdater.on('update-available', () => {
-    clearInterval(autoUpdaterChecker)
+    clearInterval(autoUpdaterTimer)
   })
   autoUpdater.on('update-downloaded', async (event, notes, name) => {
     const response = await notify({
@@ -88,11 +79,15 @@ function checkForUpdates() {
   } catch (err) {
     return
   }
-  autoUpdaterPrepared = true
+  const settings = getSettings()
+  autoUpdaterEnabled = settings['terminal.updater.enabled']
+  const events = getSettingsEvents()
+  events.on('updated', settings => {
+    autoUpdaterEnabled = settings['terminal.updater.enabled']
+  })
   executeChecking()
 }
 
 module.exports = {
-  toggleAutoUpdater,
   checkForUpdates,
 }

@@ -1,8 +1,8 @@
 <template>
   <div
     class="terminal-teletype"
-    @dragover.prevent="dragging"
-    @drop.prevent="drop"
+    @dragover.prevent="dragFileOver"
+    @drop.prevent="dropFile"
   >
     <div ref="terminal" class="terminal-content"></div>
     <scroll-bar v-if="viewport" :parent="viewport"></scroll-bar>
@@ -10,8 +10,10 @@
 </template>
 
 <script>
-import ScrollBar from './scroll-bar'
 import 'xterm/css/xterm.css'
+import { reactive, toRefs, onMounted, onActivated } from 'vue'
+import ScrollBar from './basic/scroll-bar.vue'
+import { mountTerminalTab, writeTerminalTab } from '../hooks/terminal'
 
 export default {
   name: 'TerminalTeletype',
@@ -19,45 +21,53 @@ export default {
     'scroll-bar': ScrollBar,
   },
   props: {
-    tab: Object,
+    tab: {
+      type: Object,
+      required: true,
+    },
   },
-  data() {
-    return {
+  setup(props) {
+    const state = reactive({
+      terminal: null,
       viewport: null,
-    }
-  },
-  mounted() {
-    this.$store.dispatch('terminal/mount', {
-      tab: this.tab,
-      element: this.$refs.terminal,
     })
-    new MutationObserver((mutations, observer) => {
-      this.bound()
-      observer.disconnect()
-    }).observe(this.$refs.terminal, { childList: true })
-  },
-  activated() {
-    // issue@xterm: fix bug after unmounted element updated
-    const xterm = this.tab.xterm
-    if (xterm._core.viewport) xterm._core.viewport.syncScrollArea()
-    xterm.scrollToBottom()
-  },
-  methods: {
-    bound() {
-      const xterm = this.tab.xterm
-      this.viewport = xterm._core._viewportElement
-    },
-    dragging(e) {
-      e.dataTransfer.dropEffect = 'copy'
-    },
-    drop(e) {
-      const files = e.dataTransfer.files
+
+    function dragFileOver(event) {
+      event.dataTransfer.dropEffect = 'copy'
+    }
+
+    function dropFile(event) {
+      const files = event.dataTransfer.files
       if (!files || !files.length) return
-      this.$store.dispatch('shell/drop', {
-        tab: this.tab,
-        files,
+      const paths = Array.from(files).map(({ path }) => {
+        if (path.indexOf(' ') !== -1) return `"${path}"`
+        return path
       })
-    },
+      writeTerminalTab(props.tab, paths.join(' '))
+    }
+
+    onMounted(() => {
+      mountTerminalTab(props.tab, state.terminal)
+      new MutationObserver((mutations, observer) => {
+        const xterm = props.tab.xterm
+        state.viewport = xterm._core._viewportElement
+        observer.disconnect()
+      }).observe(state.terminal, { childList: true })
+    })
+
+    onActivated(() => {
+      const xterm = props.tab.xterm
+      if (xterm._core.viewport) {
+        xterm._core.viewport.syncScrollArea()
+      }
+      xterm.scrollToBottom()
+    })
+
+    return {
+      ...toRefs(state),
+      dragFileOver,
+      dropFile,
+    }
   },
 }
 </script>

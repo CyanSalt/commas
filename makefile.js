@@ -1,26 +1,26 @@
 const packager = require('electron-packager')
 const png2icons = require('png2icons')
-const { promises: fs } = require('fs')
-const { exec } = require('child_process')
-const { promisify } = require('util')
+const fs = require('fs')
+const childProcess = require('child_process')
+const util = require('util')
 const app = require('./package.json')
 
-const execa = promisify(exec)
+const execa = util.promisify(childProcess.exec)
 
 async function generateAppIcon(input, icon, suffix) {
   // Check icon file
-  const iconPath = `${icon}${suffix}`
+  const iconPath = `${icon}.${suffix}`
   try {
-    await fs.access(iconPath)
+    await fs.promises.access(iconPath)
     return
   } catch {
     // ignore error
   }
   try {
-    console.log(`Generating ${suffix.toUpperCase()} icon for application...`)
+    console.info(`Generating ${suffix.toUpperCase()} icon for application...`)
     const builder = suffix === 'icns' ? png2icons.createICNS : png2icons.createICO
     const output = builder(input, png2icons.BICUBIC2, 0, false, true)
-    await fs.writeFile(iconPath, output)
+    await fs.promises.writeFile(iconPath, output)
   } catch {
     // ignore error
   }
@@ -33,10 +33,10 @@ const options = {
   out: 'dist/',
   overwrite: true,
   asar: true,
-  icon: 'assets/images/icon',
+  icon: 'resources/images/icon',
   ignore: [
-    '^/(?!assets|main|renderer|node_modules|package\\.json)',
-    '^/assets/.*\\.(ico|icns)$',
+    '^/(?!addons|api|main|node_modules|renderer|resources|package\\.json)',
+    '^/resources/.*\\.(ico|icns)$',
     '^/renderer/(?!build|index\\.html)$',
   ],
   appVersion: app.version,
@@ -62,9 +62,9 @@ async function getMacOSCodeSign(name) {
 
 async function copyWindowsManifest(dir) {
   try {
-    console.log(`Copying Visual Elements Manifest for Windows...`)
+    console.info(`Copying Visual Elements Manifest for Windows...`)
     const manifest = `${app.name}.VisualElementsManifest.xml`
-    await fs.copyFile(`assets/${manifest}`, `${dir}/${manifest}`)
+    await fs.promises.copyFile(`resources/${manifest}`, `${dir}/${manifest}`)
   } catch {
     // ignore error
   }
@@ -73,10 +73,10 @@ async function copyWindowsManifest(dir) {
 async function make() {
   // Generate icons
   const startedAt = Date.now()
-  const input = await fs.readFile(`${options.icon}.png`)
+  const input = await fs.promises.readFile(`${options.icon}.png`)
   await Promise.all([
-    generateAppIcon(input, options.icon, '.ico'),
-    generateAppIcon(input, options.icon, '.icns'),
+    generateAppIcon(input, options.icon, 'ico'),
+    generateAppIcon(input, options.icon, 'icns'),
   ])
   // Equivalent to {type: 'development'} for electron-osx-sign
   if (process.platform === 'darwin') {
@@ -98,6 +98,6 @@ async function make() {
 }
 
 make().then(
-  duration => console.log(`Build finished after ${duration / 1000}s.`),
+  duration => console.info(`Build finished after ${duration / 1000}s.`),
   err => console.error(err),
 )

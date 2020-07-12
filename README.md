@@ -1,6 +1,6 @@
 # Commas
 
-<img src="https://raw.githubusercontent.com/CyanSalt/commas/master/assets/images/icon.png" width="96">
+<img src="https://raw.githubusercontent.com/CyanSalt/commas/master/resources/images/icon.png" width="96">
 
 EN | [中文](https://github.com/CyanSalt/commas/blob/master/docs/README-zh.md)
 
@@ -21,7 +21,7 @@ You can also clone or download this repository and compile this app locally.
 
 ## Features
 
-* Mutiple terminal tabs
+* Multiple terminal tabs
 * Rapid command launchers
 * Proxy server for developers
 * Customizable theme (with 200+ downloadable)
@@ -31,11 +31,11 @@ You can also clone or download this repository and compile this app locally.
 
 * All of user data are stored in your **user data folder**, which is `~/Library/Application Support/Commas/` on macOS, `%localappdata%/Commas/` on Windows and `~/.config/Commas/` on Linux.
 
-* If this app has no internal translation for your language, you can add `translation.json` file to your user data folder. The content of the file could be part of entries in [the locale file](https://github.com/CyanSalt/commas/blob/master/assets/locales/zh-CN.json), or contain a pair of key-value like `"@use": "zh-CN"` to reference an existed translation file.
+* If this app has no built-in translation for your language, you can add `translation.json` file to your user data folder. The content of the file could be part of entries in [the locale file](https://github.com/CyanSalt/commas/blob/master/resources/locales/zh-CN.json), or contain a pair of key-value like `"@use": "zh-CN"` to reference an existed translation file.
 
-* Commas also supports you to add custom init script and stylesheet. Check out the example files at [here](https://github.com/CyanSalt/commas/tree/master/assets/examples). This directory also contains the example files which could help you to customize key bindings, application menu, and the launchers in the terminal sidebar.
+* Commas also supports you to add custom init script and stylesheet. Check out the example files at [here](https://github.com/CyanSalt/commas/tree/master/resource/examples). This directory also contains the example files which could help you to customize key bindings, application menu, and the launchers in the terminal sidebar.
 
-* A well-run [Hooks API](https://github.com/CyanSalt/commas/tree/master/renderer/hooks) for addons is built in Commas. Write your own addon like [various addons](https://github.com/CyanSalt/commas/tree/master/renderer/addons) with Commas itself.
+* A well-run [Hooks API](https://github.com/CyanSalt/commas/tree/master/api) for addons is built in Commas. Write your own addon like [various addons](https://github.com/CyanSalt/commas/tree/master/addons) with Commas itself.
 
 * You can put any of the files referenced above to your user data folder. JSON files will be treated as [JSON5](https://json5.org/) format (like the object literals in ECMAScript 5).
 

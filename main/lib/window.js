@@ -1,19 +1,20 @@
-const { app, BrowserWindow } = require('electron')
-const { format } = require('url')
-const { resolve } = require('path')
+const { app, BrowserWindow, ipcMain } = require('electron')
+const url = require('url')
+const path = require('path')
 const { hasWindow, getLastWindow, collectWindow } = require('./frame')
 const { createWindowMenu } = require('./menu')
-const { transferEvents } = require('./transfer')
+const { handleEvents } = require('./message')
+const { loadCustomCSS } = require('./addon')
 
 /**
  * @param {BrowserWindow} frame
  * @param {string} file
  */
 function loadHTMLFile(frame, file) {
-  frame.loadURL(format({
+  frame.loadURL(url.format({
     protocol: 'file',
     slashes: true,
-    pathname: resolve(__dirname, file),
+    pathname: path.resolve(__dirname, file),
   }))
 }
 
@@ -66,12 +67,21 @@ function createWindow(...args) {
   frame.once('ready-to-show', () => {
     frame.show()
   })
-  // these handler must be binded in main process
-  transferEvents(frame)
+  // insert custom css
+  loadCustomCSS(frame)
+  // these handler must be bound in main process
+  handleEvents(frame)
   // reference to avoid GC
   collectWindow(frame)
 }
 
+function handleWindowMessages() {
+  ipcMain.handle('open-window', () => {
+    createWindow()
+  })
+}
+
 module.exports = {
   createWindow,
+  handleWindowMessages,
 }

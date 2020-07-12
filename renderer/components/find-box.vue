@@ -1,14 +1,14 @@
 <template>
-  <div v-show="visible" class="find-box">
+  <div v-show="visible" ref="root" class="find-box">
     <input
-      ref="keyword"
+      ref="finder"
       v-model="keyword"
-      v-i18n
+      v-i18n:placeholder
       class="keyword"
       placeholder="Find#!6"
       autofocus
       @keyup.enter="find"
-      @keyup.esc="close"
+      @keyup.esc="cancel"
     >
     <div class="options">
       <div
@@ -29,73 +29,90 @@
     </div>
     <div class="buttons">
       <div class="button previous">
-        <span class="feather-icon icon-arrow-left" @click="previous"></span>
+        <span class="feather-icon icon-arrow-left" @click="findPrevious"></span>
       </div>
       <div class="button next">
-        <span class="feather-icon icon-arrow-right" @click="next"></span>
+        <span class="feather-icon icon-arrow-right" @click="findNext"></span>
       </div>
       <div class="button close">
-        <span class="feather-icon icon-x" @click="close"></span>
+        <span class="feather-icon icon-x" @click="cancel"></span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { reactive, computed, unref, onMounted, toRefs } from 'vue'
+import { useCurrentTerminal } from '../hooks/terminal'
+import { useIsFinding } from '../hooks/shell'
 
 export default {
   name: 'FindBox',
-  data() {
-    return {
+  setup() {
+    const state = reactive({
+      root: null,
+      finder: null,
       keyword: '',
       options: {
         caseSensitive: false,
         wholeWord: false,
         regex: false,
       },
+    })
+
+    const terminalRef = useCurrentTerminal()
+
+    const isFindingRef = useIsFinding()
+    state.visible = computed(() => {
+      const isFinding = unref(isFindingRef)
+      if (!isFinding) return false
+      const terminal = unref(terminalRef)
+      return Boolean(terminal) && !terminal.pane
+    })
+
+    onMounted(() => {
+      new IntersectionObserver(([{ isIntersecting }]) => {
+        if (isIntersecting) {
+          state.finder.focus()
+        } else {
+          const terminal = unref(terminalRef)
+          if (terminal && terminal.xterm) {
+            terminal.xterm.focus()
+          }
+        }
+      }).observe(state.root)
+    })
+
+    function findPrevious() {
+      const terminal = unref(terminalRef)
+      terminal.addons.search.findPrevious(state.keyword, state.options)
     }
-  },
-  computed: {
-    ...mapState('shell', ['finding']),
-    ...mapGetters('terminal', ['current']),
-    visible() {
-      return this.finding && this.current && !this.current.internal
-    },
-  },
-  mounted() {
-    new IntersectionObserver(([{ isIntersecting }]) => {
-      if (isIntersecting) {
-        this.$refs.keyword.focus()
-      } else {
-        const current = this.current
-        if (current && current.xterm) current.xterm.focus()
-      }
-    }).observe(this.$el)
-  },
-  methods: {
-    toggle(option) {
-      this.options[option] = !this.options[option]
-    },
-    find(e) {
-      return e.shiftKey ? this.previous() : this.next()
-    },
-    next() {
-      this.$store.dispatch('terminal/find', {
-        keyword: this.keyword,
-        options: this.options,
-      })
-    },
-    previous() {
-      this.$store.dispatch('terminal/find', {
-        keyword: this.keyword,
-        options: this.options,
-        back: true,
-      })
-    },
-    close() {
-      this.$store.commit('shell/setFinding', false)
-    },
+
+    function findNext() {
+      const terminal = unref(terminalRef)
+      terminal.addons.search.findNext(state.keyword, state.options)
+    }
+
+    function find(event) {
+      return event.shiftKey ? findPrevious() : findNext()
+    }
+
+    function cancel() {
+      isFindingRef.value = false
+    }
+
+    function toggle(key) {
+      state.options[key] = !state.options[key]
+    }
+
+    return {
+      ...toRefs(state),
+      find,
+      cancel,
+      toggle,
+      findPrevious,
+      findNext,
+    }
   },
 }
 </script>

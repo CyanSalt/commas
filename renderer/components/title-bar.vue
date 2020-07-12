@@ -1,5 +1,5 @@
 <template>
-  <div :class="['title-bar', { 'no-controls': platform === 'darwin' }]">
+  <div :class="['title-bar', { 'no-controls': !isCustomControlEnabled }]">
     <div class="git-branch">
       <template v-if="branch">
         <span class="branch-updater" @click="updateBranch">
@@ -15,16 +15,17 @@
       <div v-if="directory" class="shortcut open-directory" @click="open">
         <span class="feather-icon icon-folder"></span>
       </div>
-      <div class="title-text">{{ directory || title }}</div>
+      <div v-if="pane" v-i18n class="title-text">{{ pane.title }}</div>
+      <div v-else class="title-text">{{ title }}</div>
     </div>
     <div class="controls">
-      <template v-if="platform !== 'darwin'">
+      <template v-if="isCustomControlEnabled">
         <div class="minimize button" @click="minimize">
           <span class="feather-icon icon-minus"></span>
         </div>
         <div class="maximize button" @click="maximize">
           <span
-            :class="['feather-icon', currentState.maximized ?
+            :class="['feather-icon', isMaximized ?
               'icon-minimize-2' : 'icon-maximize-2']"
           ></span>
         </div>
@@ -37,84 +38,109 @@
 </template>
 
 <script>
-import { shell, ipcRenderer } from 'electron'
-import { mapState, mapGetters } from 'vuex'
-import { getPrompt, resolveHome, getGitBranch } from '../utils/terminal'
-import { currentState } from '../utils/frame'
-import { getTabLauncher } from '../utils/launcher'
-import hooks from '@commas/hooks'
+import { reactive, computed, watchEffect, toRefs, unref } from 'vue'
+import { ipcRenderer } from 'electron'
+import { useMinimized, useMaximized } from '../hooks/frame'
+import { useSettings } from '../hooks/settings'
+import { useCurrentTerminal } from '../hooks/terminal'
+import { getLauncherByTerminalTab } from '../hooks/launcher'
+import { getPrompt } from '../utils/terminal'
+import { openContextMenu } from '../utils/frame'
 
 export default {
   name: 'TitleBar',
-  data() {
-    return {
-      currentState,
-      platform: process.platform,
+  setup() {
+    const state = reactive({
+      isMaximized: useMaximized(),
       branch: '',
-    }
-  },
-  computed: {
-    ...mapState('launcher', ['launchers']),
-    ...mapGetters('settings', ['settings']),
-    ...mapGetters('terminal', ['current']),
-    directory() {
-      if (!this.current || this.current.internal) return ''
-      return getPrompt('\\w', this.current)
-    },
-    title() {
-      if (this.current && this.current.title) return this.current.title
-      const expr = this.settings['terminal.tab.titleFormat']
-      return getPrompt(expr, this.current)
-    },
-    launcher() {
-      if (this.current && this.current.launcher) {
-        return getTabLauncher(this.launchers, this.current)
+    })
+
+    state.isCustomControlEnabled = computed(() => {
+      return process.platform !== 'darwin'
+    })
+
+    const terminalRef = useCurrentTerminal()
+    state.directory = computed(() => {
+      const terminal = unref(terminalRef)
+      if (!terminal || terminal.pane) return ''
+      return getPrompt('\\w', terminal)
+    })
+
+    state.pane = computed(() => {
+      const terminal = unref(terminalRef)
+      if (!terminal) return null
+      return terminal.pane
+    })
+
+    const settingsRef = useSettings()
+    state.title = computed(() => {
+      if (state.directory) return state.directory
+      const terminal = unref(terminalRef)
+      if (terminal && terminal.title) return terminal.title
+      const settings = unref(settingsRef)
+      const expr = settings['terminal.tab.titleFormat']
+      return getPrompt(expr, terminal)
+    })
+
+    const launcherRef = computed(() => {
+      const terminal = unref(terminalRef)
+      if (!terminal) return null
+      return getLauncherByTerminalTab(terminal)
+    })
+    state.scripts = computed(() => {
+      const launcher = unref(launcherRef)
+      if (launcher && launcher.scripts) {
+        return launcher.scripts
       }
-      return null
-    },
-    scripts() {
-      if (this.launcher && this.launcher.scripts) return this.launcher.scripts
       return []
-    },
-  },
-  watch: {
-    title(value) {
-      document.title = value
-    },
-    directory() {
-      this.updateBranch()
-    },
-  },
-  methods: {
-    minimize() {
-      ipcRenderer.invoke('toggle-minimized')
-    },
-    maximize() {
-      ipcRenderer.invoke('toggle-maximized')
-    },
-    close() {
-      hooks.shell.closeWindow()
-    },
-    open() {
-      shell.openPath(resolveHome(this.directory))
-    },
-    runScript(event) {
-      hooks.shell.openContextByEvent(event, this.scripts.map((script, index) => ({
-        label: script.name || script.command,
-        command: 'run-script',
-        args: {
-          launcher: this.launcher,
-          index,
-        },
-      })))
-    },
-    async updateBranch() {
-      if (!this.directory) {
-        this.branch = ''
+    })
+
+    async function updateBranch() {
+      if (!state.directory) {
+        state.branch = ''
         return
       }
-      this.branch = await getGitBranch(this.directory)
-    },
+      state.branch = await ipcRenderer.invoke('get-git-branch', state.directory)
+    }
+
+    watchEffect(updateBranch)
+
+    function runScript(event) {
+      const launcher = unref(launcherRef)
+      openContextMenu(
+        state.scripts.map((script, index) => ({
+          label: script.name || script.command,
+          command: 'run-script',
+          args: {
+            launcher,
+            index,
+          },
+        })),
+        event,
+      )
+    }
+
+    const isMinimizedRef = useMinimized()
+    function minimize() {
+      isMinimizedRef.value = !isMinimizedRef.value
+    }
+
+    function maximize() {
+      state.isMaximized = !state.isMaximized
+    }
+
+    function close() {
+      window.close()
+    }
+
+    return {
+      ...toRefs(state),
+      updateBranch,
+      runScript,
+      minimize,
+      maximize,
+      close,
+    }
   },
 }
 </script>

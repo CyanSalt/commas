@@ -1,44 +1,39 @@
-const { app, Menu } = require('electron')
-const { userStorage, assetsStorage } = require('../build')
-const { execCommand } = require('./command')
+const { app, Menu, ipcMain, BrowserWindow } = require('electron')
+const memoize = require('lodash/memoize')
+const { resources, userData } = require('../utils/directory')
 
 /**
- * @typedef {import('electron').BrowserWindow} BrowserWindow
- *
- * @typedef KeyBinding
- * @property {Function} [click]
- * @property {string} [command]
- * @property {any} args
+ * @typedef {import('electron').MenuItemConstructorOptions} MenuItemConstructorOptions
  */
 
 /**
- * @type {KeyBinding[]}
+ * @type {MenuItemConstructorOptions[]}
  */
-const shared = assetsStorage.loadSync('menu.json')
+const shellMenuItems = resources.require('shell.menu.json')
 
 /**
- * @param {KeyBinding} binding
+ * @param {MenuItemConstructorOptions} binding
  */
 function resolveBindingCommand(binding) {
   if (binding.command) {
     binding.click = (self, frame) => {
-      execCommand(frame, binding.command, binding.args)
+      frame.webContents.send(binding.command, binding.args)
     }
   }
   return binding
 }
 
-function getSharedWindowMenu() {
-  return shared.map(resolveBindingCommand)
+function getShellMenuItems() {
+  return shellMenuItems.map(resolveBindingCommand)
 }
 
-function getUserCustomMenu() {
-  /** @type {KeyBinding[]} */
-  const keybindings = userStorage.loadSync('keybindings.json') || []
+const getCustomMenuItems = memoize(async () => {
+  /** @type {MenuItemConstructorOptions[]} */
+  const keybindings = await userData.load('keybindings.json') || []
   return keybindings.map(resolveBindingCommand)
-}
+})
 
-function createApplicationMenu() {
+async function createApplicationMenu() {
   const menu = Menu.buildFromTemplate([
     {
       label: app.name,
@@ -49,7 +44,7 @@ function createApplicationMenu() {
           label: 'Preferences...',
           accelerator: 'Command+,',
           click(self, frame) {
-            execCommand(frame, 'interact-settings')
+            frame.webContents.send('open-settings')
           },
         },
         { type: 'separator' },
@@ -64,13 +59,13 @@ function createApplicationMenu() {
     },
     {
       label: 'Shell',
-      submenu: getSharedWindowMenu(),
+      submenu: getShellMenuItems(),
     },
     { role: 'editMenu' },
     { role: 'windowMenu' },
     {
       label: 'User',
-      submenu: getUserCustomMenu(),
+      submenu: await getCustomMenuItems(),
     },
     {
       role: 'help',
@@ -92,17 +87,17 @@ function createApplicationMenu() {
 /**
  * @param {BrowserWindow} frame
  */
-function createWindowMenu(frame) {
+async function createWindowMenu(frame) {
   const menu = Menu.buildFromTemplate([
     {
       label: 'Shell',
-      submenu: getSharedWindowMenu(),
+      submenu: getShellMenuItems(),
     },
     { role: 'editMenu' },
     { role: 'windowMenu' },
     {
       label: 'User',
-      submenu: getUserCustomMenu(),
+      submenu: await getCustomMenuItems(),
     },
     {
       label: 'Help',
@@ -128,23 +123,30 @@ function createDockMenu() {
       label: 'New Window',
       accelerator: 'CmdOrCtrl+N',
       click(self, frame) {
-        execCommand(frame, 'open-window')
+        frame.webContents.send('open-window')
       },
     },
   ])
   app.dock.setMenu(menu)
 }
 
-/**
- * @param {KeyBinding[]} template
- */
-function createMenu(template) {
-  return Menu.buildFromTemplate(template.map(resolveBindingCommand))
+function handleMenuMessages() {
+  ipcMain.handle('contextmenu', (event, template, position) => {
+    const frame = BrowserWindow.fromWebContents(event.sender)
+    const menu = Menu.buildFromTemplate(
+      template.map(resolveBindingCommand)
+    )
+    menu.popup({
+      window: frame,
+      x: position.x,
+      y: position.y,
+    })
+  })
 }
 
 module.exports = {
   createApplicationMenu,
   createWindowMenu,
   createDockMenu,
-  createMenu,
+  handleMenuMessages,
 }

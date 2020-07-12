@@ -5,64 +5,64 @@
         <div class="scroll-area">
           <sortable-list
             v-slot="{ value }"
-            :value="running"
+            :value="standaloneTabs"
             class="processes"
             @change="sortTabs"
           >
             <tab-item
-              :key="value.id"
+              :key="value.pid"
               :tab="value"
-              @click.native="activate(value)"
+              @click.native="activateTerminalTab(value)"
             ></tab-item>
           </sortable-list>
           <div class="new-tab">
-            <div v-if="shells.length" class="select-shell anchor" @click="select">
+            <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
               <span class="feather-icon icon-chevron-down"></span>
             </div>
-            <div class="default-shell anchor" @click="spawn()">
+            <div class="default-shell anchor" @click="createTerminalTab()">
               <span class="feather-icon icon-plus"></span>
             </div>
           </div>
-          <div class="launcher-folder" @click="expandOrCollapse">
+          <div class="launcher-folder" @click="toggleCollapsing">
             <div v-i18n class="group-name">Launchers#!5</div>
             <div class="buttons">
               <div
-                :class="['button', 'find', { active: finding }]"
-                @click.stop="find"
+                :class="['button', 'find', { active: isFinding }]"
+                @click.stop="toggleFinding"
               >
                 <span class="feather-icon icon-search"></span>
               </div>
               <div class="button indicator">
-                <span v-if="collapsed" class="feather-icon icon-chevron-down"></span>
+                <span v-if="isCollapsed" class="feather-icon icon-chevron-down"></span>
                 <span v-else class="feather-icon icon-chevron-up"></span>
               </div>
             </div>
-            <div v-show="finding" class="find-launcher" @click.stop>
+            <div v-show="isFinding" class="find-launcher" @click.stop>
               <input
-                ref="keyword"
+                ref="searcher"
                 v-model="keyword"
-                v-i18n
+                v-i18n:placeholder
                 class="keyword"
-                placeholder="Find#!6"
+                placeholder="Find...#!6"
                 autofocus
-                @keyup.esc="find"
+                @keyup.esc="toggleFinding"
               >
             </div>
           </div>
           <div class="launchers">
             <tab-item
-              v-for="launcher in filtered"
-              v-show="!collapsed || getLauncherTab(launcher)"
+              v-for="launcher in filteredLaunchers"
+              v-show="!isCollapsed || getTerminalTabByLauncher(launcher)"
               :key="launcher.id"
-              :tab="getLauncherTab(launcher)"
+              :tab="getTerminalTabByLauncher(launcher)"
               :name="launcher.name"
-              @click.native="open(launcher)"
+              @click.native="openLauncher(launcher)"
             >
               <template #operations>
-                <div class="button launch" @click.stop="launch(launcher)">
+                <div class="button launch" @click.stop="startLauncher(launcher)">
                   <span class="feather-icon icon-play"></span>
                 </div>
-                <div class="button assign" @click.stop="assign(launcher)">
+                <div class="button launch-externally" @click.stop="startLauncherExternally(launcher)">
                   <span class="feather-icon icon-external-link"></span>
                 </div>
               </template>
@@ -88,13 +88,29 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
-import { basename } from 'path'
-import TabItem from './tab-item'
-import ScrollBar from './scroll-bar'
-import SortableList from './sortable-list'
-import { getLauncherTab } from '../utils/launcher'
-import hooks from '@commas/hooks'
+import { reactive, toRefs, computed, unref } from 'vue'
+import * as path from 'path'
+import TabItem from './tab-item.vue'
+import ScrollBar from './basic/scroll-bar.vue'
+import SortableList from './basic/sortable-list.vue'
+import {
+  useTerminalTabs,
+  useTerminalShells,
+  createTerminalTab,
+  moveTerminalTab,
+  activateTerminalTab,
+  getTerminalTabIndex,
+} from '../hooks/terminal'
+import {
+  useLaunchers,
+  getTerminalTabByLauncher,
+  openLauncher,
+  startLauncher,
+  startLauncherExternally,
+} from '../hooks/launcher'
+import { handleMousePressing } from '../utils/helper'
+import { openContextMenu } from '../utils/frame'
+import { ipcRenderer } from 'electron'
 
 export default {
   name: 'TabList',
@@ -103,78 +119,95 @@ export default {
     'scroll-bar': ScrollBar,
     'sortable-list': SortableList,
   },
-  data() {
-    return {
+  setup() {
+    const commas = __non_webpack_require__('../api/renderer')
+    const state = reactive({
+      shells: useTerminalShells(),
+      launchers: useLaunchers(),
+      anchors: commas.workspace.useAnchors(),
+      searcher: null,
       width: 176,
-      collapsed: true,
-      finding: false,
+      isCollapsed: true,
+      isFinding: false,
       keyword: '',
-      anchors: hooks.workspace.anchor.all(),
+    })
+
+    state.filteredLaunchers = computed(() => {
+      if (!state.keyword) {
+        return state.launchers
+      }
+      const keywords = state.keyword.toLowerCase().split(/\s+/)
+      return state.launchers.filter(
+        launcher => keywords.every(
+          keyword => Object.values(launcher).join(' ').toLowerCase().includes(keyword)
+        )
+      )
+    })
+
+    const tabsRef = useTerminalTabs()
+    state.standaloneTabs = computed(() => {
+      const tabs = unref(tabsRef)
+      return tabs.filter(tab => !tab.launcher)
+    })
+
+    function sortTabs(from, to) {
+      const toIndex = getTerminalTabIndex(state.standaloneTabs[to])
+      moveTerminalTab(state.standaloneTabs[from], toIndex)
     }
-  },
-  computed: {
-    ...mapState('terminal', ['tabs', 'shells']),
-    ...mapState('launcher', ['launchers']),
-    running() {
-      return this.tabs.filter(tab => !tab.launcher)
-    },
-    filtered() {
-      if (!this.keyword) return this.launchers
-      const keywords = this.keyword.toLowerCase().split(/\s+/)
-      return this.launchers.filter(launcher => keywords.every(keyword =>
-        Object.values(launcher).join(' ').toLowerCase().indexOf(keyword) !== -1))
-    },
-  },
-  methods: {
-    ...mapActions('terminal', ['spawn', 'activate']),
-    ...mapActions('launcher', ['open', 'launch', 'assign']),
-    getLauncherTab(launcher) {
-      return getLauncherTab(this.tabs, launcher)
-    },
-    expandOrCollapse() {
-      this.collapsed = !this.collapsed
-    },
-    resize(e) {
-      const original = this.width
-      const start = e.clientX
-      const max = document.body.clientWidth / 2
-      const handler = event => {
-        const width = original + event.clientX - start
-        this.width = Math.min(Math.max(width, 120), max)
-      }
-      const cancelation = () => {
-        window.removeEventListener('mousemove', handler)
-        window.removeEventListener('mouseup', cancelation)
-      }
-      window.addEventListener('mousemove', handler)
-      window.addEventListener('mouseup', cancelation)
-    },
-    find() {
-      if (this.finding) {
-        this.keyword = ''
-        this.$refs.keyword.blur()
-      }
-      this.finding = !this.finding
-    },
-    configure() {
-      hooks.command.exec('interact-settings')
-        || hooks.command.exec('open-settings')
-    },
-    select(event) {
-      hooks.shell.openContextByEvent(event, this.shells.map(shell => ({
-        label: basename(shell),
+
+    function selectShell(event) {
+      openContextMenu(state.shells.map(shell => ({
+        label: path.basename(shell),
         command: 'open-tab',
         args: {
           shell,
         },
-      })))
-    },
-    sortTabs(from, to) {
-      this.$store.commit('terminal/moveTab', [
-        this.running[from],
-        this.running[to],
-      ])
-    },
+      })), event)
+    }
+
+    function toggleCollapsing() {
+      state.isCollapsed = !state.isCollapsed
+    }
+
+    function toggleFinding() {
+      if (state.isFinding) {
+        state.keyword = ''
+        state.searcher.blur()
+      }
+      state.isFinding = !state.isFinding
+    }
+
+    function configure() {
+      ipcRenderer.invoke('open-settings')
+    }
+
+    function resize(startingEvent) {
+      const original = state.width
+      const start = startingEvent.clientX
+      const max = document.body.clientWidth / 2
+      handleMousePressing({
+        onMove(event) {
+          const width = original + event.clientX - start
+          state.width = Math.min(Math.max(width, 120), max)
+        },
+      })
+    }
+
+    return {
+      ...toRefs(state),
+      sortTabs,
+      activateTerminalTab,
+      selectShell,
+      createTerminalTab,
+      toggleCollapsing,
+      toggleFinding,
+      getTerminalTabByLauncher,
+      openLauncher,
+      startLauncher,
+      startLauncherExternally,
+      configure,
+      resize,
+    }
   },
 }
 </script>
@@ -317,7 +350,7 @@ export default {
 .tab-list .launch:hover {
   color: var(--design-green);
 }
-.tab-list .assign:hover {
+.tab-list .launch-externally:hover {
   color: var(--design-blue);
 }
 </style>
