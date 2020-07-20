@@ -35,7 +35,6 @@ function createWindow(...args) {
     affinity: 'default',
     webPreferences: {
       nodeIntegration: true,
-      enableRemoteModule: true,
       additionalArguments: [
         '--', ...args.filter(arg => arg !== undefined),
       ],
