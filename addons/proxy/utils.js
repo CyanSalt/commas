@@ -193,56 +193,10 @@ function rewriteProxy(when, target, rules) {
   }
 }
 
-/**
- * @param {ProxyRule[]} rules
- */
-function trackRuleTargets(rules) {
-  return getValidRules(rules).map(rule => {
-    rule.proxy._target = rule.proxy.target
-    return rule
-  })
-}
-
-/**
- * @param {ProxyRule[]} rules
- */
-function resolveRuleTargets(rules) {
-  rules = cloneDeep(rules)
-  rules.forEach(({ proxy }) => {
-    if (proxy._target) {
-      if (proxy.target !== proxy._target) {
-        if (!proxy.records) {
-          proxy.records = []
-        } else {
-          // Remove old record if exists
-          const index = proxy.records.indexOf(proxy._target)
-          if (index !== -1) proxy.records.splice(index, 1)
-        }
-        // Keep the recent record top
-        proxy.records.unshift(proxy._target)
-      }
-      delete proxy._target
-    }
-    if (proxy.records) {
-      // Remove current target
-      if (proxy.records.length) {
-        const index = proxy.records.indexOf(proxy.target)
-        if (index !== -1) proxy.records.splice(index, 1)
-      }
-      // Delete empty record array
-      if (!proxy.records.length) {
-        delete proxy.records
-      }
-    }
-  })
-  return rules
-}
-
 module.exports = {
+  getValidRules,
   extractProxyRules,
   getProxyServerOptions,
   getProxyRewritingRules,
   rewriteProxy,
-  trackRuleTargets,
-  resolveRuleTargets,
 }

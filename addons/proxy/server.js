@@ -5,7 +5,7 @@ const net = require('net')
 const memoize = require('lodash/memoize')
 const { getSettings, getSettingsEvents } = require('../../main/lib/settings')
 const { broadcast } = require('../../main/lib/frame')
-const { userData } = require('../../main/utils/directory')
+const { getProxyRulesEvents, getProxyRules } = require('./rules')
 const {
   extractProxyRules,
   getProxyServerOptions,
@@ -13,22 +13,10 @@ const {
   rewriteProxy,
 } = require('./utils')
 
-function loadProxyRules() {
-  return userData.fetch('proxy-rules.json')
-}
-
-const getRawProxyRules = memoize(() => {
-  userData.watch('proxy-rules.json', () => {
-    getRawProxyRules.cache.set(undefined, loadProxyRules())
-    reloadServer()
-  })
-  return loadProxyRules()
-})
-
 async function createServer() {
   const settings = await getSettings()
   const port = settings['terminal.proxyServer.port']
-  const proxyRules = await getRawProxyRules()
+  const proxyRules = await getProxyRules()
   const rules = extractProxyRules(proxyRules && proxyRules.data || [])
   // TODO: catch EADDRINUSE and notify error
   const proxyServer = createProxyServer()
@@ -62,8 +50,12 @@ async function createServer() {
 
 const startServer = memoize(() => {
   const server = createServer()
-  const events = getSettingsEvents()
-  events.on('updated', () => {
+  const settingsEvents = getSettingsEvents()
+  settingsEvents.on('updated', () => {
+    reloadServer()
+  })
+  const rulesEvents = getProxyRulesEvents()
+  rulesEvents.on('updated', () => {
     reloadServer()
   })
   return server

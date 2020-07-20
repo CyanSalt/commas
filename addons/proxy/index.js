@@ -3,9 +3,11 @@ module.exports = function (commas) {
 
     const { handleProxyServerMessages } = require('./server')
     const { handleSystemProxyMessages } = require('./system')
+    const { handleProxyRulesMessages } = require('./rules')
 
     handleProxyServerMessages()
     handleSystemProxyMessages()
+    handleProxyRulesMessages()
 
     commas.settings.addSpecs(require('./settings.spec.json'))
 

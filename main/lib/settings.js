@@ -75,8 +75,8 @@ function getDefaultSettings() {
 }
 
 async function getUserSettings() {
-  const settings = await getRawSettings()
-  return settings && settings.data
+  const result = await getRawSettings()
+  return result && result.data
 }
 
 async function getSettings() {
@@ -98,7 +98,6 @@ async function updateSettings() {
   broadcast('settings-updated', data)
   const events = getSettingsEvents()
   events.emit('updated', data)
-  return data
 }
 
 async function openSettings() {
@@ -158,10 +157,10 @@ function handleSettingsMessages() {
         ([key, value]) => !isEqual(value, defaultSettings[key])
       )
     )
-    const settings = await getRawSettings()
+    const result = await getRawSettings()
     return userData.update('settings.json', {
       data: simplified,
-      writer: settings && settings.writer,
+      writer: result && result.writer,
     })
   })
   ipcMain.handle('open-settings-file', () => {
