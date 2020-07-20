@@ -33,7 +33,7 @@ export default {
     })
 
     function dragFileOver(event) {
-      event.dataTransfer.dropEffect = 'copy'
+      event.dataTransfer.dropEffect = 'link'
     }
 
     function dropFile(event) {
@@ -48,11 +48,8 @@ export default {
 
     onMounted(() => {
       mountTerminalTab(props.tab, state.terminal)
-      new MutationObserver((mutations, observer) => {
-        const xterm = props.tab.xterm
-        state.viewport = xterm._core._viewportElement
-        observer.disconnect()
-      }).observe(state.terminal, { childList: true })
+      const xterm = props.tab.xterm
+      state.viewport = xterm._core._viewportElement
     })
 
     onActivated(() => {

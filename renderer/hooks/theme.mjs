@@ -58,11 +58,10 @@ export function injectTheme() {
   watchEffect((onInvalidate) => {
     const theme = unref(themeRef)
     const type = theme.type
-    document.body.classList.add(type)
+    document.body.dataset.themeType = type
     onInvalidate(() => {
-      document.body.classList.remove(type)
+      delete document.body.dataset.themeType
     })
-    // TODO: support dark mode
   })
   watchEffect((onInvalidate) => {
     const style = unref(themeStyleRef)
