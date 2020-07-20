@@ -36,7 +36,7 @@ export default {
         && Number.isInteger(toIndex)
     },
   },
-  setup(props, context) {
+  setup(props, { emit }) {
     const state = reactive({
       items: [],
       draggingIndex: -1,
@@ -123,7 +123,7 @@ export default {
       style.order = 2 * draggingIndex
       const { index } = getMovingTarget(event)
       if (index !== draggingIndex) {
-        context.emit('change', draggingIndex, index)
+        emit('change', draggingIndex, index)
       }
       state.draggingIndex = index
       setTimeout(() => {

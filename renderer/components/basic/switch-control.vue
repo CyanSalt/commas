@@ -27,9 +27,9 @@ export default {
       return typeof value === 'boolean'
     },
   },
-  setup(props, context) {
+  setup(props, { emit }) {
     function change(event) {
-      context.emit('update:modelValue', event.target.checked)
+      emit('update:modelValue', event.target.checked)
     }
     return {
       change,

@@ -59,7 +59,7 @@ export default {
       return true
     },
   },
-  setup(props, context) {
+  setup(props, { emit }) {
     const state = reactive({})
 
     state.placeholder = computed(() => {
@@ -74,7 +74,7 @@ export default {
         return stringify(props.modelValue)
       },
       set: (value) => {
-        context.emit('update:modelValue', parse(value))
+        emit('update:modelValue', parse(value))
       },
     })
 
