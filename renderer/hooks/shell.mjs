@@ -34,8 +34,8 @@ export async function confirmClosing() {
 }
 
 export function handleShellMessages() {
-  ipcRenderer.on('find', () => {
-    isFindingRef.value = true
+  ipcRenderer.on('toggle-finding', () => {
+    isFindingRef.value = !isFindingRef.value
   })
   ipcRenderer.on('toggle-tab-list', () => {
     isTabListEnabledRef.value = !isTabListEnabledRef.value

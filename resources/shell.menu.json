@@ -28,7 +28,7 @@
   {
     "label": "Find",
     "accelerator": "CmdOrCtrl+F",
-    "command": "find"
+    "command": "toggle-finding"
   },
   {
     "label": "Clear",
