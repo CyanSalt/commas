@@ -29,7 +29,8 @@ async function generateAppIcon(input, icon, suffix) {
 const options = {
   dir: '.',
   platform: 'all',
-  executableName: app.name,
+  executableName: process.platform === 'win32'
+    ? app.name : app.productName,
   out: 'dist/',
   overwrite: true,
   asar: true,
