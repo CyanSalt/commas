@@ -75,7 +75,7 @@ export default {
     'switch-control': SwitchControl,
   },
   setup() {
-    const commas = __non_webpack_require__('../api/renderer')
+    const commas = global.require('../api/renderer')
     const state = reactive({
       version: useAppVersion(),
     })

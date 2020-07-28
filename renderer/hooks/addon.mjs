@@ -2,7 +2,7 @@ import { watchEffect, unref } from 'vue'
 import { useSettings } from './settings'
 
 export function loadAddons() {
-  const commas = __non_webpack_require__('../api/renderer')
+  const commas = global.require('../api/renderer')
   const settingsRef = useSettings()
   watchEffect(() => {
     const settings = unref(settingsRef)

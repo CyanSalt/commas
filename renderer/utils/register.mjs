@@ -1,4 +1,4 @@
-const noConflictModule = __non_webpack_require__('../api/modules/module')
+const noConflictModule = global.require('../api/modules/module')
 
 const aliases = Object.create(null)
 Object.assign(aliases, {

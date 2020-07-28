@@ -120,7 +120,7 @@ export default {
     'sortable-list': SortableList,
   },
   setup() {
-    const commas = __non_webpack_require__('../api/renderer')
+    const commas = global.require('../api/renderer')
     const state = reactive({
       shells: useTerminalShells(),
       launchers: useLaunchers(),

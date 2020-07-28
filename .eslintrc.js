@@ -6,17 +6,13 @@ module.exports = {
     es6: true,
   },
   parserOptions: {
-    ecmaVersion: 2019,
+    ecmaVersion: 2020,
     sourceType: 'module',
   },
   extends: [
     'plugin:vue/essential',
     'eslint:recommended',
   ],
-  globals: {
-    /* eslint-disable-next-line camelcase */
-    __non_webpack_require__: 'readonly',
-  },
   rules: {
     /** Possible Errors */
     'no-dupe-else-if': 'error',
