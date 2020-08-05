@@ -10,7 +10,7 @@ export default [
   },
   {
     name: 'devicon devicon-vim',
-    context: ['vi', 'vim', 'neovim'],
+    context: ['vi', 'vim', 'nvim'],
     color: '#019733',
   },
   {

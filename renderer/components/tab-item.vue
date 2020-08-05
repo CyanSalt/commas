@@ -2,7 +2,11 @@
   <div :class="['tab-item', { active: focused }]">
     <div class="tab-overview">
       <div class="tab-title">
-        <span v-if="iconEntity" :class="['tab-icon', iconEntity.name]"></span>
+        <span
+          v-if="iconEntity"
+          :style="{ color: focused ? iconEntity.color : undefined }"
+          :class="['tab-icon', iconEntity.name]"
+        ></span>
         <span v-if="pane" v-i18n class="tab-name">{{ pane.title }}</span>
         <span v-else class="tab-name">{{ title }}</span>
       </div>
