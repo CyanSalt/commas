@@ -9,7 +9,7 @@ const generateID = createIDGenerator()
 
 function registerTabPane(name, pane) {
   tabs[name] = markRaw({
-    id: generateID(),
+    pid: generateID(),
     process: '',
     title: '',
     cwd: '',
