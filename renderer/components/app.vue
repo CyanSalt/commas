@@ -5,18 +5,20 @@
       <tab-list v-show="isTabListEnabled"></tab-list>
       <div class="interface">
         <find-box></find-box>
-        <keep-alive v-if="terminal">
-          <component
-            :is="terminal.pane.component"
-            v-if="terminal.pane"
-            :key="terminal.pid"
-          ></component>
-          <terminal-teletype
-            v-else
-            :key="terminal.pid"
-            :tab="terminal"
-          ></terminal-teletype>
-        </keep-alive>
+        <template v-if="terminal">
+          <keep-alive v-if="terminal.pane">
+            <component
+              :is="terminal.pane.component"
+              :key="terminal.pid"
+            ></component>
+          </keep-alive>
+          <keep-alive v-else>
+            <terminal-teletype
+              :key="terminal.pid"
+              :tab="terminal"
+            ></terminal-teletype>
+          </keep-alive>
+        </template>
       </div>
     </div>
   </div>

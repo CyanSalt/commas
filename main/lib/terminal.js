@@ -22,11 +22,14 @@ const getShells = memoize(async () => {
 const defaultShell = process.platform === 'win32'
   ? process.env.COMSPEC : process.env.SHELL
 
-const variables = {
-  LANG: app.getLocale().replace('-', '_') + '.UTF-8',
-  TERM_PROGRAM: app.name,
-  TERM_PROGRAM_VERSION: app.getVersion(),
-}
+const getVariables = memoize(async () => {
+  await app.whenReady()
+  return {
+    LANG: app.getLocale().replace('-', '_') + '.UTF-8',
+    TERM_PROGRAM: app.name,
+    TERM_PROGRAM_VERSION: app.getVersion(),
+  }
+})
 
 /**
  * @type Map<string, IPty>
@@ -42,10 +45,11 @@ const ptyProcessMap = new Map()
  */
 async function createTerminal(frameId, { shell, cwd }) {
   const settings = await getSettings()
+  const variables = await getVariables()
   const env = {
     ...process.env,
-    ...settings['terminal.shell.env'],
     ...variables,
+    ...settings['terminal.shell.env'],
   }
   // Fix NVM `npm_config_prefix` error in development environment
   if (!app.isPackaged && env.npm_config_prefix) {
