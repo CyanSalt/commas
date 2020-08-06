@@ -8,7 +8,9 @@ module.exports = function (commas) {
     commas.workspace.registerTabPane('user-settings', {
       title: 'User Settings#!user-settings.1',
       component: commas.module.require('internal/user-settings/user-settings-pane.vue').default,
-      icon: 'feather-icon icon-sliders',
+      icon: {
+        name: 'feather-icon icon-sliders',
+      },
     })
 
     commas.storage.shareArray('settings').push({
