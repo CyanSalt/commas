@@ -29,7 +29,9 @@ function createWindow(...args) {
     minWidth: (8 * 40) + (2 * 8) + 180,
     height: (17 * 25) + (2 * 4) + 36,
     frame: false,
-    titleBarStyle: 'hiddenInset',
+    // Similar to 'hiddenInset', but works well on fullscreen
+    titleBarStyle: 'hidden',
+    trafficLightPosition: { x: 12, y: 22 },
     transparent: true,
     /** {@link https://github.com/electron/electron/issues/10420} */
     backgroundColor: '#00000000',
