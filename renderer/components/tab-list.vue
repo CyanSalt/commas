@@ -274,13 +274,9 @@ export default {
 .tab-list .launcher-folder {
   display: flex;
   flex-wrap: wrap;
-  position: sticky;
-  top: 0;
-  z-index: 1;
   padding: 8px 16px;
   line-height: 16px;
   cursor: pointer;
-  background: var(--theme-background);
 }
 .tab-list .group-name {
   flex: auto;

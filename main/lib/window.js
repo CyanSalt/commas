@@ -31,6 +31,8 @@ function createWindow(...args) {
     frame: false,
     titleBarStyle: 'hiddenInset',
     transparent: true,
+    /** {@link https://github.com/electron/electron/issues/10420} */
+    backgroundColor: '#00000000',
     acceptFirstMouse: true,
     affinity: 'default',
     webPreferences: {
