@@ -6,17 +6,19 @@
       <div class="interface">
         <find-box></find-box>
         <template v-if="terminal">
-          <keep-alive v-if="terminal.pane">
-            <component
-              :is="terminal.pane.component"
-              :key="terminal.pid"
-            ></component>
-          </keep-alive>
-          <keep-alive v-else>
-            <terminal-teletype
-              :key="terminal.pid"
-              :tab="terminal"
-            ></terminal-teletype>
+          <keep-alive>
+            <template v-if="terminal.pane">
+              <component
+                :is="terminal.pane.component"
+                :key="terminal.pid"
+              ></component>
+            </template>
+            <template v-else>
+              <terminal-teletype
+                :key="terminal.pid"
+                :tab="terminal"
+              ></terminal-teletype>
+            </template>
           </keep-alive>
         </template>
       </div>

@@ -28,7 +28,7 @@
     <div class="scroll-area">
       <slot></slot>
     </div>
-    <scroll-bar></scroll-bar>
+    <scroll-bar keep-alive></scroll-bar>
   </div>
 </template>
 

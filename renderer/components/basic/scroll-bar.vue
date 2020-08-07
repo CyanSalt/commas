@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { reactive, toRefs, ref, computed, unref, onMounted, onBeforeUnmount } from 'vue'
+import { reactive, toRefs, ref, computed, unref, onMounted, onBeforeUnmount, onActivated } from 'vue'
 import { handleMousePressing } from '../../utils/helper'
 
 export default {
@@ -15,6 +15,10 @@ export default {
     parent: {
       type: HTMLElement,
       default: undefined,
+    },
+    keepAlive: {
+      type: Boolean,
+      default: false,
     },
   },
   setup(props) {
@@ -86,6 +90,7 @@ export default {
       const ratio = getIntersectionRatio()
       heightRef.value = Math.round(container.clientHeight * ratio)
       topRef.value = Math.round(container.scrollTop * ratio)
+      console.log(topRef.value)
     }
 
     function handleScroll() {
@@ -103,6 +108,14 @@ export default {
     onBeforeUnmount(() => {
       const container = unref(containerRef)
       container.removeEventListener('scroll', handleScroll)
+    })
+
+    onActivated(() => {
+      if (props.keepAlive) {
+        console.log(topRef.value)
+        const top = unref(topRef)
+        scrollTo(top)
+      }
     })
 
     return {
