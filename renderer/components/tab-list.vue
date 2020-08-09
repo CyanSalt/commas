@@ -23,27 +23,25 @@
               <span class="feather-icon icon-plus"></span>
             </div>
           </div>
-          <div class="launcher-folder" @click="toggleCollapsing">
-            <div v-i18n class="group-name">Launchers#!5</div>
+          <div class="launcher-folder">
+            <div :class="['group-name', { collapsed: isCollapsed }]" @click="toggleCollapsing">
+              <span class="feather-icon icon-grid"></span>
+            </div>
             <div class="buttons">
               <div
                 :class="['button', 'find', { active: isFinding }]"
-                @click.stop="toggleFinding"
+                @click="toggleFinding"
               >
-                <span class="feather-icon icon-search"></span>
-              </div>
-              <div class="button indicator">
-                <span v-if="isCollapsed" class="feather-icon icon-chevron-down"></span>
-                <span v-else class="feather-icon icon-chevron-up"></span>
+                <span class="feather-icon icon-filter"></span>
               </div>
             </div>
-            <div v-show="isFinding" class="find-launcher" @click.stop>
+            <div v-show="isFinding" class="find-launcher">
               <input
                 ref="searcher"
                 v-model="keyword"
                 v-i18n:placeholder
                 class="keyword"
-                placeholder="Find...#!6"
+                placeholder="Find...#!5"
                 autofocus
                 @keyup.esc="toggleFinding"
               >
@@ -280,7 +278,17 @@ export default {
 }
 .tab-list .group-name {
   flex: auto;
+  opacity: 1;
+  transition: opacity 0.2s, color 0.2s;
+}
+.tab-list .group-name.collapsed {
+  opacity: 0.5;
+}
+.tab-list .group-name:not(.collapsed) {
   color: var(--design-magenta);
+}
+.tab-list .group-name.collapsed:hover {
+  opacity: 1;
 }
 .tab-list .launcher-folder .buttons {
   flex: none;
@@ -290,13 +298,12 @@ export default {
   width: 18px;
   text-align: center;
   opacity: 0.5;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, color 0.2s;
 }
 .tab-list .launcher-folder .button + .button {
   margin-left: 3px;
 }
-.tab-list .launcher-folder .find:hover,
-.tab-list .launcher-folder:hover .indicator {
+.tab-list .launcher-folder .find:hover {
   opacity: 1;
 }
 .tab-list .find.active {
