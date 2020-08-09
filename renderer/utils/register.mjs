@@ -1,4 +1,4 @@
-const noConflictModule = global.require('../api/modules/module')
+const noConflictModule = globalThis.require('../api/modules/module')
 
 const aliases = Object.create(null)
 Object.assign(aliases, {

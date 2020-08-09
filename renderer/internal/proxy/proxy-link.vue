@@ -10,7 +10,7 @@ import { activateOrAddTerminalTab } from '../../hooks/terminal'
 export default {
   name: 'ProxyLink',
   setup() {
-    const commas = global.require('../api/renderer')
+    const commas = globalThis.require('../api/renderer')
     function configure() {
       const proxyTab = commas.workspace.getPaneTab('proxy')
       activateOrAddTerminalTab(proxyTab)

@@ -61,7 +61,7 @@ export default {
     'find-box': FindBox,
   },
   setup() {
-    const commas = global.require('../api/renderer')
+    const commas = globalThis.require('../api/renderer')
     const state = reactive({
       isFullscreen: useFullscreen(),
       isTabListEnabled: useIsTabListEnabled(),

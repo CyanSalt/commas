@@ -118,7 +118,7 @@ export default {
     'sortable-list': SortableList,
   },
   setup() {
-    const commas = global.require('../api/renderer')
+    const commas = globalThis.require('../api/renderer')
     const state = reactive({
       shells: useTerminalShells(),
       launchers: useLaunchers(),

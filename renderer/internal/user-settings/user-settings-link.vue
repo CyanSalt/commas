@@ -10,7 +10,7 @@ import { activateOrAddTerminalTab } from '../../hooks/terminal'
 export default {
   name: 'UserSettingsLink',
   setup() {
-    const commas = global.require('../api/renderer')
+    const commas = globalThis.require('../api/renderer')
     function configure() {
       const userSettingsTab = commas.workspace.getPaneTab('user-settings')
       activateOrAddTerminalTab(userSettingsTab)
