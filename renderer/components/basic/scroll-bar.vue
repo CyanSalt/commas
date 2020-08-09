@@ -90,7 +90,6 @@ export default {
       const ratio = getIntersectionRatio()
       heightRef.value = Math.round(container.clientHeight * ratio)
       topRef.value = Math.round(container.scrollTop * ratio)
-      console.log(topRef.value)
     }
 
     function handleScroll() {
@@ -112,7 +111,6 @@ export default {
 
     onActivated(() => {
       if (props.keepAlive) {
-        console.log(topRef.value)
         const top = unref(topRef)
         scrollTo(top)
       }
