@@ -1,7 +1,26 @@
 const childProcess = require('child_process')
 const util = require('util')
 
+/**
+ * @typedef {import('events')} EventEmitter
+ */
+
 const execa = util.promisify(childProcess.exec)
+
+/**
+ * @param {EventEmitter} emitter
+ * @param {string} finish
+ * @param {string} [error]
+ * @returns {Promise<any[]>}
+ */
+function emitting(emitter, finish, error) {
+  return new Promise((resolve, reject) => {
+    emitter.on(finish, (...args) => resolve(args))
+    if (error) {
+      emitter.on(error, (...args) => reject(args))
+    }
+  })
+}
 
 /**
  * @param {(id: number) => number} [iterator]
@@ -30,6 +49,7 @@ function createPattern(expression) {
 
 module.exports = {
   execa,
+  emitting,
   createIDGenerator,
   createPattern,
 }

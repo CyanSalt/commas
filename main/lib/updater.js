@@ -2,6 +2,7 @@ const { app, autoUpdater, Notification, dialog } = require('electron')
 const fs = require('fs')
 const { translate } = require('./i18n')
 const { getSettings, getSettingsEvents } = require('./settings')
+const { emitting } = require('../utils/helper')
 
 let autoUpdaterEnabled = true
 let autoUpdaterTimer
@@ -36,10 +37,10 @@ async function notify({ title, body, actions }) {
       silent: true,
       actions: actions.map(text => ({ type: 'button', text })),
     })
-    return new Promise(resolve => {
-      notification.on('action', (event, index) => resolve(index))
-      notification.show()
-    })
+    const response = emitting(notification, 'action')
+      .then(([event, index]) => index)
+    notification.show()
+    return response
   } else {
     const options = {
       type: 'info',

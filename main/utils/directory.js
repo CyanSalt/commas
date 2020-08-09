@@ -1,12 +1,10 @@
-const { app } = require('electron')
+const { app, net } = require('electron')
 const fs = require('fs')
 const path = require('path')
-const { URL } = require('url')
-const http = require('http')
-const https = require('https')
 const JSON5 = require('json5')
 const debounce = require('lodash/debounce')
 const Writer = require('./writer')
+const { emitting } = require('./helper')
 
 /**
  * @typedef {import('./writer').default} Writer
@@ -36,17 +34,21 @@ class Directory {
       return null
     }
   }
-  /**
-   * @param {string} basename
-   * @param {string} content
-   */
-  async write(basename, content) {
+  async mkdir(basename) {
     const file = this.file(basename)
     try {
       await fs.promises.mkdir(path.dirname(file))
     } catch {
       // ignore error
     }
+  }
+  /**
+   * @param {string} basename
+   * @param {string} content
+   */
+  async write(basename, content) {
+    await this.mkdir(basename)
+    const file = this.file(basename)
     return fs.promises.writeFile(file, content)
   }
   /**
@@ -100,26 +102,15 @@ class Directory {
       if (data) return data
     }
     const file = this.file(basename)
+    await this.mkdir(basename)
     const stream = fs.createWriteStream(file)
-    const client = new URL(url).protocol === 'https:' ? https : http
-    await new Promise((resolve, reject) => {
-      const request = client.get(url, response => {
-        response.pipe(stream)
-        stream.on('finish', () => {
-          stream.close(resolve)
-        })
-      })
-      request.on('error', async error => {
-        if (!force) {
-          try {
-            await fs.promises.unlink(file)
-          } catch {
-            // ignore error
-          }
-        }
-        reject(error)
-      })
-    })
+    await emitting(stream, 'open')
+    const request = net.request(url)
+    const sending = emitting(request, 'response', 'error')
+    request.end()
+    const [response] = await sending
+    response.pipe(stream)
+    await emitting(stream, 'finish')
     return this.load(basename)
   }
   /**
