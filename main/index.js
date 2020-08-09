@@ -33,6 +33,7 @@ async function initialize() {
     createDockMenu()
   }
   checkForUpdates()
+  app.setAsDefaultProtocolClient(app.name)
   createWindow(cwd)
 }
 
@@ -61,6 +62,11 @@ app.on('will-finish-launching', () => {
       createWindow(file)
     }
   })
+  // handle custom protocol
+  // app.on('open-url', (event, url) => {
+  //   event.preventDefault()
+  //   console.log(url)
+  // })
 })
 
 app.on('window-all-closed', () => {
