@@ -1,5 +1,5 @@
 <template>
-  <div :class="['title-bar', { 'no-controls': !isCustomControlEnabled }]">
+  <div :class="['title-bar', { 'no-controls': !isCustomControlEnabled }]" @dblclick="maximize">
     <div class="git-branch">
       <template v-if="branch">
         <span class="branch-updater" @click="updateBranch">
@@ -12,7 +12,7 @@
       <div v-if="scripts.length" class="shortcut run-script" @click="runScript">
         <span class="feather-icon icon-play"></span>
       </div>
-      <div v-if="directory" class="shortcut open-directory" @click="open">
+      <div v-if="directory" class="shortcut open-directory" @click="openDirectory">
         <span class="feather-icon icon-folder"></span>
       </div>
       <div v-if="pane" v-i18n class="title-text">{{ pane.title }}</div>
@@ -39,7 +39,7 @@
 
 <script>
 import { reactive, computed, watchEffect, toRefs, unref } from 'vue'
-import { ipcRenderer } from 'electron'
+import { ipcRenderer, shell } from 'electron'
 import { useMinimized, useMaximized } from '../hooks/frame'
 import { useSettings } from '../hooks/settings'
 import { useCurrentTerminal } from '../hooks/terminal'
@@ -120,6 +120,10 @@ export default {
       )
     }
 
+    function openDirectory() {
+      shell.openPath(state.directory)
+    }
+
     const isMinimizedRef = useMinimized()
     function minimize() {
       isMinimizedRef.value = !isMinimizedRef.value
@@ -137,6 +141,7 @@ export default {
       ...toRefs(state),
       updateBranch,
       runScript,
+      openDirectory,
       minimize,
       maximize,
       close,
