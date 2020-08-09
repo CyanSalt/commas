@@ -138,6 +138,7 @@ export function handleTerminalMessages() {
   ipcRenderer.on('input-terminal', (event, data) => {
     const tabs = unref(tabsRef)
     const tab = tabs.find(item => item.pid === data.pid)
+    if (!tab) return
     const xterm = tab.xterm
     xterm.write(data.data)
     // TODO: performance review
@@ -149,6 +150,7 @@ export function handleTerminalMessages() {
   ipcRenderer.on('exit-terminal', (event, data) => {
     const tabs = unref(tabsRef)
     const tab = tabs.find(item => item.pid === data.pid)
+    if (!tab) return
     const xterm = tab.xterm
     if (xterm.element) {
       const observer = createResizingObserver.cache.get()

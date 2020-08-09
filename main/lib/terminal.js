@@ -1,4 +1,4 @@
-const { app, ipcMain, BrowserWindow } = require('electron')
+const { app, ipcMain } = require('electron')
 const pty = require('node-pty')
 const memoize = require('lodash/memoize')
 const fs = require('fs')
@@ -7,6 +7,7 @@ const { getSettings } = require('./settings')
 
 /**
  * @typedef {import('node-pty').IPty} IPty
+ * @typedef {import('electron').WebContents} WebContents
  */
 
 const getShells = memoize(async () => {
@@ -39,11 +40,11 @@ const ptyProcessMap = new Map()
 /**
  *
  * @param {object} options
- * @param {number} frameId
+ * @param {WebContents} webContents
  * @param {string=} options.shell
  * @param {string=} options.cwd
  */
-async function createTerminal(frameId, { shell, cwd }) {
+async function createTerminal(webContents, { shell, cwd }) {
   const settings = await getSettings()
   const variables = await getVariables()
   const env = {
@@ -74,8 +75,7 @@ async function createTerminal(frameId, { shell, cwd }) {
   }
   const ptyProcess = pty.spawn(shell, args, options)
   ptyProcess.onData(data => {
-    const frame = BrowserWindow.fromId(frameId)
-    frame.webContents.send('input-terminal', {
+    webContents.send('input-terminal', {
       pid: ptyProcess.pid,
       process: ptyProcess.process,
       data,
@@ -83,8 +83,12 @@ async function createTerminal(frameId, { shell, cwd }) {
   })
   ptyProcess.onExit(data => {
     ptyProcessMap.delete(ptyProcess.pid)
-    const frame = BrowserWindow.fromId(frameId)
-    frame.webContents.send('exit-terminal', { pid: ptyProcess.pid, data })
+    if (!webContents.isDestroyed()) {
+      webContents.send('exit-terminal', { pid: ptyProcess.pid, data })
+    }
+  })
+  webContents.on('destroyed', () => {
+    ptyProcess.kill()
   })
   ptyProcessMap.set(ptyProcess.pid, ptyProcess)
   return {
@@ -97,7 +101,7 @@ async function createTerminal(frameId, { shell, cwd }) {
 
 function handleTerminalMessages() {
   ipcMain.handle('create-terminal', (event, data) => {
-    return createTerminal(event.frameId, data)
+    return createTerminal(event.sender, data)
   })
   ipcMain.handle('write-terminal', (event, pid, data) => {
     const ptyProcess = ptyProcessMap.get(pid)
