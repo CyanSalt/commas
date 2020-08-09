@@ -41,6 +41,7 @@
     "xterm-addon-web-links": "^0.4.0"
   },
   "dependencies": {
+    "color-rgba": "^2.1.1",
     "http-proxy": "^1.18.1",
     "json5": "^2.1.3",
     "lodash": "^4.17.19",
