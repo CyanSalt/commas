@@ -5,7 +5,7 @@
       v-model="keyword"
       v-i18n:placeholder
       class="keyword"
-      placeholder="Find#!6"
+      placeholder="Find#!5"
       autofocus
       @keyup.enter="find"
       @keyup.esc="cancel"

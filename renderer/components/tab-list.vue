@@ -322,6 +322,10 @@ export default {
   color: inherit;
   background: transparent;
 }
+.tab-list .find-launcher .keyword::placeholder {
+  color: inherit;
+  opacity: 0.5;
+}
 .tab-list .edit-launcher {
   text-align: center;
   font-size: 18px;
