@@ -1,5 +1,5 @@
 <template>
-  <div class="sortable-list">
+  <div ref="root" class="sortable-list">
     <div
       v-for="(item, index) in value"
       :key="index"
@@ -38,6 +38,7 @@ export default {
   },
   setup(props, { emit }) {
     const state = reactive({
+      root: null,
       items: [],
       draggingIndex: -1,
     })
@@ -158,6 +159,7 @@ export default {
 .sortable-list .sortable-item.dragging {
   position: relative;
   z-index: 3;
+  cursor: move;
 }
 .sortable-list .sortable-item:not(.dragging) {
   transition: transform 0.2s;
