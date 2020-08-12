@@ -159,6 +159,6 @@
     "comments": [
       "List of enabled addon name"
     ],
-    "default": ["settings", "proxy", "user-settings", "theme"]
+    "default": ["settings", "proxy", "user-settings", "theme", "sync"]
   }
 ]

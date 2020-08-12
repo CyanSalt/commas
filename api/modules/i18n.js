@@ -1,4 +1,4 @@
-const { addTranslation } = require('../../main/lib/i18n')
+const { translate, addTranslation } = require('../../main/lib/i18n')
 
 /**
  * @typedef {import('../../main/lib/i18n').Dictionary} Dictionary
@@ -13,5 +13,6 @@ function noConflictAddTranslation(locales, dictionary) {
 }
 
 module.exports = {
+  translate,
   addTranslation: noConflictAddTranslation,
 }

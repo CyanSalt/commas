@@ -19,7 +19,7 @@ export function useWillQuit() {
 
 export async function confirmClosing() {
   const args = {
-    type: 'info',
+    type: 'question',
     message: translate('Close Window?#!1'),
     detail: translate('All tabs in this window will be closed.#!2'),
     buttons: [

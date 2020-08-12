@@ -1,8 +1,8 @@
-const { app, autoUpdater, Notification, dialog } = require('electron')
+const { app, autoUpdater } = require('electron')
 const fs = require('fs')
 const { translate } = require('./i18n')
 const { getSettings, getSettingsEvents } = require('./settings')
-const { emitting } = require('../utils/helper')
+const { notify } = require('../utils/notification')
 
 let autoUpdaterEnabled = true
 let autoUpdaterTimer
@@ -21,38 +21,6 @@ async function executeChecking() {
     autoUpdaterTimer = null
     executeChecking()
   }, 3600 * 1e3)
-}
-
-/**
- * @param {object} options
- * @param {string} options.title
- * @param {string} options.body
- * @param {string[]} options.actions
- */
-async function notify({ title, body, actions }) {
-  if (Notification.isSupported() && process.platform === 'darwin') {
-    const notification = new Notification({
-      title,
-      body,
-      silent: true,
-      actions: actions.map(text => ({ type: 'button', text })),
-    })
-    const response = emitting(notification, 'action')
-      .then(([event, index]) => index)
-    notification.show()
-    return response
-  } else {
-    const options = {
-      type: 'info',
-      message: title,
-      detail: body,
-      buttons: actions,
-      defaultId: 0,
-      cancelId: 1,
-    }
-    const { response } = await dialog.showMessageBox(options)
-    return response
-  }
 }
 
 function checkForUpdates() {

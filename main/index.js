@@ -3,6 +3,7 @@ const { handleMessages } = require('./lib/message')
 const { loadTranslation, handleI18NMessages } = require('./lib/i18n')
 const { createApplicationMenu, createDockMenu, handleMenuMessages } = require('./lib/menu')
 const { checkForUpdates } = require('./lib/updater')
+const { startServingProtocol, handleProtocolRequest } = require('./lib/protocol')
 const { createWindow, handleWindowMessages } = require('./lib/window')
 const { hasWindow, getLastWindow } = require('./lib/frame')
 const { handleSettingsMessages } = require('./lib/settings')
@@ -33,7 +34,7 @@ async function initialize() {
     createDockMenu()
   }
   checkForUpdates()
-  app.setAsDefaultProtocolClient(app.name)
+  startServingProtocol()
   createWindow(cwd)
 }
 
@@ -63,10 +64,10 @@ app.on('will-finish-launching', () => {
     }
   })
   // handle custom protocol
-  // app.on('open-url', (event, url) => {
-  //   event.preventDefault()
-  //   console.log(url)
-  // })
+  app.on('open-url', (event, url) => {
+    event.preventDefault()
+    handleProtocolRequest(url)
+  })
 })
 
 app.on('window-all-closed', () => {
