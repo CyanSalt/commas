@@ -77,8 +77,8 @@ export default {
     function getMovingTarget(event) {
       const draggingElement = unref(draggingElementRef)
       const startingParentBounds = unref(startingParentBoundsRef)
-      const startingBounds = unref(startingEventRef)
-      const startingEvent = unref(startingBoundsRef)
+      const startingBounds = unref(startingBoundsRef)
+      const startingEvent = unref(startingEventRef)
       const min = startingParentBounds.top - startingBounds.top
       const max = startingParentBounds.bottom - startingBounds.bottom
       let distance = event.clientY - startingEvent.clientY
