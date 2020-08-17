@@ -56,9 +56,11 @@ function createWindow(...args) {
   // Fix shadow issue on macOS
   if (process.platform === 'darwin') {
     frame.setSize(options.width - 1, options.height - 1)
+    frame.setWindowButtonVisibility(false)
     frame.webContents.once('did-finish-load', () => {
       setTimeout(() => {
         frame.setSize(options.width, options.height)
+        frame.setWindowButtonVisibility(true)
       }, 500)
     })
   }
