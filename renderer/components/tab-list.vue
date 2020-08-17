@@ -244,7 +244,8 @@ export default {
   flex: none;
   width: 2px;
   margin: 4px 0;
-  border-right: 2px solid rgba(127, 127, 127, 0.1);
+  border-right: 2px solid var(--theme-foreground);
+  opacity: 0.05;
   cursor: col-resize;
 }
 .tab-list .invisible {

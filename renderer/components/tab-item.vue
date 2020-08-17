@@ -176,7 +176,8 @@ export default {
   color: var(--design-red);
 }
 .tab-item .divider {
-  border-bottom: 1px solid rgba(127, 127, 127, 0.1);
+  border-bottom: 1px solid var(--theme-foreground);
+  opacity: 0.05;
 }
 .sortable-item.dragging .tab-item .tab-overview::before {
   transform: scale(1);
