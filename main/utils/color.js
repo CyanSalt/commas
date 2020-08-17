@@ -31,6 +31,25 @@ function toCSSColor(rgba) {
 }
 
 /**
+ * @param {number} channel
+ */
+function toHex(channel) {
+  return channel.toString(16).toUpperCase().padStart(2, '0')
+}
+
+/**
+ * @param {RGBA} rgba
+ */
+function toElectronColor(rgba) {
+  return '#' + [
+    rgba.a < 1 ? toHex(Math.floor(256 * rgba.a)) : '',
+    toHex(rgba.r),
+    toHex(rgba.g),
+    toHex(rgba.b),
+  ].join('')
+}
+
+/**
  * @param {RGBA} rgba1
  * @param {RGBA} rgba2
  */
@@ -65,6 +84,7 @@ function mix(rgba1, rgba2, weight) {
 module.exports = {
   toRGBA,
   toCSSColor,
+  toElectronColor,
   distance,
   isDarkColor,
   mix,

@@ -1,10 +1,36 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const url = require('url')
 const path = require('path')
-const { hasWindow, getLastWindow, collectWindow } = require('./frame')
+const { hasWindow, getLastWindow, collectWindow, forEachWindow } = require('./frame')
 const { createWindowMenu } = require('./menu')
 const { handleEvents } = require('./message')
 const { loadCustomCSS } = require('./addon')
+
+/**
+ * @typedef BrowserWindowThemeOptions
+ * @property {string} [backgroundColor]
+ * @property {string} [vibrancy]
+ */
+
+/**
+ * @type {BrowserWindowThemeOptions}
+ */
+let themeOptions = {
+  /** {@link https://github.com/electron/electron/issues/10420} */
+  backgroundColor: '#00000000',
+  vibrancy: null,
+}
+
+/**
+ * @param {BrowserWindowThemeOptions} options
+ */
+function setThemeOptions(options) {
+  themeOptions = options
+  forEachWindow(frame => {
+    frame.setBackgroundColor(options.backgroundColor)
+    frame.setVibrancy(options.vibrancy)
+  })
+}
 
 /**
  * @param {BrowserWindow} frame
@@ -33,8 +59,7 @@ function createWindow(...args) {
     titleBarStyle: 'hidden',
     trafficLightPosition: { x: 12, y: 22 },
     transparent: true,
-    /** {@link https://github.com/electron/electron/issues/10420} */
-    backgroundColor: '#00000000',
+    ...themeOptions,
     acceptFirstMouse: true,
     affinity: 'default',
     webPreferences: {
@@ -87,6 +112,7 @@ function handleWindowMessages() {
 }
 
 module.exports = {
+  setThemeOptions,
   createWindow,
   handleWindowMessages,
 }

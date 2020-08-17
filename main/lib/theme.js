@@ -1,9 +1,10 @@
 const { ipcMain, nativeTheme } = require('electron')
 const memoize = require('lodash/memoize')
 const { resources, userData } = require('../utils/directory')
-const { toRGBA, toCSSColor, isDarkColor, mix } = require('../utils/color')
+const { toRGBA, toCSSColor, toElectronColor, isDarkColor, mix } = require('../utils/color')
 const { getSettings, getDefaultSettings, getSettingsEvents } = require('./settings')
 const { broadcast } = require('./frame')
+const { setThemeOptions } = require('./window')
 
 /**
  * @typedef {Record<string, string>} Theme
@@ -38,7 +39,7 @@ async function loadTheme() {
   const isDark = isDarkColor(backgroundRGBA)
   theme.type = isDark ? 'dark' : 'light'
   theme.background = toCSSColor({ ...backgroundRGBA, a: 1 })
-  theme.backdrop = opacity < 1 && opacity > 0 ? toCSSColor({
+  theme.backdrop = opacity < 1 ? toCSSColor({
     ...backgroundRGBA,
     a: opacity,
   }) : theme.background
@@ -52,6 +53,10 @@ async function loadTheme() {
   if (!theme.cursorAccent) {
     theme.cursorAccent = theme.background
   }
+  setThemeOptions({
+    backgroundColor: toElectronColor({ ...backgroundRGBA, a: 0 }),
+    vibrancy: opacity === 0 ? 'tooltip' : null,
+  })
   // Enable system dark mode
   nativeTheme.themeSource = theme.type
   return theme
