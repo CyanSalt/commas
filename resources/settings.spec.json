@@ -137,6 +137,7 @@
   {
     "key": "terminal.theme.name",
     "type": "string",
+    "recommendation": ["oceanic-next", "tomorrow"],
     "label": "Theme Name",
     "comments": [
       "File name of built-in theme or files in `themes/` folder",
@@ -167,6 +168,7 @@
     "key": "terminal.addon.includes",
     "type": "list",
     "paradigm": ["string"],
+    "recommendation": ["settings", "proxy", "user-settings", "theme", "sync"],
     "label": "Enabled Addons",
     "comments": [
       "List of enabled addon name"
