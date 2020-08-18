@@ -84,6 +84,18 @@
     "default": "Alt"
   },
   {
+    "key": "terminal.renderer.type",
+    "type": "enum",
+    "paradigm": ["dom", "canvas", "webgl"],
+    "label": "Renderer Type",
+    "comments": [
+      "Specify how to render the terminal",
+      "Options: 'dom', 'canvas' or 'webgl'",
+      "Notice that 'webgl' does not support opacity currently"
+    ],
+    "default": "canvas"
+  },
+  {
     "key": "terminal.style.opacity",
     "type": "number",
     "paradigm": [0, 1],

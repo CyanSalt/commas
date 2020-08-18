@@ -38,6 +38,7 @@ async function loadTheme() {
   const backgroundRGBA = toRGBA(theme.background)
   const isDark = isDarkColor(backgroundRGBA)
   theme.type = isDark ? 'dark' : 'light'
+  theme.opacity = opacity
   theme.background = toCSSColor({ ...backgroundRGBA, a: 1 })
   theme.backdrop = opacity < 1 ? toCSSColor({
     ...backgroundRGBA,

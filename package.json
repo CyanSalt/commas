@@ -38,7 +38,8 @@
     "xterm-addon-ligatures": "^0.3.0",
     "xterm-addon-search": "^0.7.0",
     "xterm-addon-unicode11": "^0.2.0",
-    "xterm-addon-web-links": "^0.4.0"
+    "xterm-addon-web-links": "^0.4.0",
+    "xterm-addon-webgl": "^0.8.0"
   },
   "dependencies": {
     "color-rgba": "^2.1.1",

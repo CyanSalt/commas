@@ -1,5 +1,5 @@
 import { ipcRenderer, shell } from 'electron'
-import { ref, computed, unref, markRaw, reactive, toRaw, watch, watchEffect } from 'vue'
+import { ref, computed, unref, markRaw, reactive, toRaw, watch } from 'vue'
 import { memoize, debounce } from 'lodash-es'
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
@@ -7,6 +7,7 @@ import { SearchAddon } from 'xterm-addon-search'
 import { WebLinksAddon } from 'xterm-addon-web-links'
 import { Unicode11Addon } from 'xterm-addon-unicode11'
 import { LigaturesAddon } from 'xterm-addon-ligatures'
+import { WebglAddon } from 'xterm-addon-webgl'
 import { useRemoteData } from './remote'
 import { useSettings } from './settings'
 import { useTheme } from './theme'
@@ -55,6 +56,21 @@ export const useTerminalShells = memoize(() => {
   })
 })
 
+const terminalOptionsRef = computed(() => {
+  const settingsRef = useSettings()
+  const themeRef = useTheme()
+  const settings = unref(settingsRef)
+  const theme = unref(themeRef)
+  return {
+    rendererType: settings['terminal.renderer.type'] === 'webgl'
+      ? 'canvas' : settings['terminal.renderer.type'],
+    fontSize: settings['terminal.style.fontSize'],
+    fontFamily: settings['terminal.style.fontFamily'],
+    allowTransparency: theme.opacity < 1,
+    theme,
+  }
+})
+
 /**
  * @param {object} [options]
  * @param {string=} options.cwd
@@ -63,12 +79,7 @@ export const useTerminalShells = memoize(() => {
  */
 export async function createTerminalTab({ cwd, shell, launcher } = {}) {
   const info = await ipcRenderer.invoke('create-terminal', { cwd, shell })
-  const themeRef = useTheme()
-  const theme = unref(themeRef)
-  const xterm = new Terminal({
-    allowTransparency: true,
-    theme,
-  })
+  const xterm = new Terminal(unref(terminalOptionsRef))
   const tab = reactive({
     ...info,
     title: '',
@@ -97,28 +108,16 @@ export async function createTerminalTab({ cwd, shell, launcher } = {}) {
       if (cwd) tab.cwd = cwd
     }
   }, 250)
-  xterm.onKey(({ key, domEvent }) => {
+  xterm.onKey(({ domEvent }) => {
     if (domEvent.key === 'Enter') updateCwd()
   })
-  watchEffect(() => {
-    const settingsRef = useSettings()
-    const settings = unref(settingsRef)
+  watch(terminalOptionsRef, (terminalOptions) => {
     if (tab.pane) return
     const xterm = tab.xterm
-    xterm.setOption('fontSize', settings['terminal.style.fontSize'])
-    xterm.setOption('fontFamily', settings['terminal.style.fontFamily'])
-    // TODO: unload when settings disabled
-    if (settings['terminal.style.fontLigatures']) {
-      if (xterm.element && !tab.addons.ligatures) {
-        tab.addons.ligatures = new LigaturesAddon()
-        xterm.loadAddon(tab.addons.ligatures)
-      }
+    for (const [key, value] of Object.entries(terminalOptions)) {
+      xterm.setOption(key, value)
     }
-  })
-  watch(themeRef, theme => {
-    if (tab.pane) return
-    const xterm = tab.xterm
-    xterm.setOption('theme', theme)
+    loadTerminalAddons(tab)
   })
   const tabs = unref(tabsRef)
   tabs.push(tab)
@@ -185,27 +184,62 @@ export function handleTerminalMessages() {
 
 /**
  * @param {TerminalTab} tab
+ */
+function loadTerminalAddons(tab) {
+  const xterm = tab.xterm
+  if (!xterm.element) return
+  const settings = unref(useSettings())
+  if (!tab.addons.fit) {
+    tab.addons.fit = new FitAddon()
+    xterm.loadAddon(tab.addons.fit)
+  }
+  if (!tab.addons.search) {
+    tab.addons.search = new SearchAddon()
+    xterm.loadAddon(tab.addons.search)
+  }
+  if (!tab.addons.weblinks) {
+    tab.addons.weblinks = new WebLinksAddon((event, uri) => {
+      const shouldOpen = settings['terminal.link.modifier'] === 'Alt' ? event.altKey
+        : (process.platform === 'darwin' ? event.metaKey : event.ctrlKey)
+      if (shouldOpen) shell.openExternal(uri)
+    })
+    xterm.loadAddon(tab.addons.weblinks)
+  }
+  if (!tab.addons.unicode11) {
+    tab.addons.unicode11 = new Unicode11Addon()
+    xterm.loadAddon(tab.addons.unicode11)
+    xterm.unicode.activeVersion = '11'
+  }
+  if (settings['terminal.style.fontLigatures']) {
+    if (!tab.addons.ligatures) {
+      tab.addons.ligatures = new LigaturesAddon()
+      xterm.loadAddon(tab.addons.ligatures)
+    }
+  } else {
+    if (tab.addons.ligatures) {
+      tab.addons.ligatures.dispose()
+    }
+  }
+  if (settings['terminal.renderer.type'] === 'webgl') {
+    if (!tab.addons.webgl) {
+      tab.addons.webgl = new WebglAddon()
+      xterm.loadAddon(tab.addons.webgl)
+    }
+  } else {
+    if (tab.addons.webgl) {
+      tab.addons.webgl.dispose()
+    }
+  }
+}
+
+/**
+ * @param {TerminalTab} tab
  * @param {HTMLElement} element
  */
 export function mountTerminalTab(tab, element) {
-  const settings = unref(useSettings())
   const xterm = tab.xterm
   xterm.open(element)
-  tab.addons.fit = new FitAddon()
-  xterm.loadAddon(tab.addons.fit)
-  tab.addons.search = new SearchAddon()
-  xterm.loadAddon(tab.addons.search)
-  xterm.loadAddon(new WebLinksAddon((event, uri) => {
-    const shouldOpen = settings['terminal.link.modifier'] === 'Alt' ? event.altKey
-      : (process.platform === 'darwin' ? event.metaKey : event.ctrlKey)
-    if (shouldOpen) shell.openExternal(uri)
-  }))
-  xterm.loadAddon(new Unicode11Addon())
-  xterm.unicode.activeVersion = '11'
-  if (settings['terminal.style.fontLigatures']) {
-    tab.addons.ligatures = new LigaturesAddon()
-    xterm.loadAddon(tab.addons.ligatures)
-  }
+  loadTerminalAddons(tab)
   const observer = createResizingObserver()
   observer.observe(element)
   tab.addons.fit.fit()
