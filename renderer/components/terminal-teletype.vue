@@ -86,8 +86,4 @@ export default {
   overflow-y: hidden;
   background-color: transparent !important;
 }
-/* issue@xterm: fix z-index of selection */
-.terminal-content .xterm-text-layer {
-  z-index: 2 !important;
-}
 </style>

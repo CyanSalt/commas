@@ -45,8 +45,7 @@ async function loadTheme() {
     a: opacity,
   }) : theme.background
   if (!theme.selection || toRGBA(theme.selection).a < 1) {
-    const weight = isDark ? 0.3 : 0.15
-    theme.selection = toCSSColor(mix(toRGBA(theme.foreground), backgroundRGBA, weight))
+    theme.selection = toCSSColor(mix(toRGBA(theme.foreground), backgroundRGBA, 0.5))
   }
   if (!theme.cursor) {
     theme.cursor = theme.foreground
