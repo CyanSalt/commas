@@ -92,6 +92,12 @@ export async function createTerminalTab({ cwd, shell, launcher } = {}) {
       writeTerminalTab(tab, String.fromCharCode(0x17))
       return false
     }
+    const cmdOrCtrl = process.platform === 'darwin'
+      ? event.metaKey : event.ctrlKey
+    if (event.type === 'keydown' && cmdOrCtrl && event.key === 'Backspace') {
+      writeTerminalTab(tab, String.fromCharCode(0x15))
+      return false
+    }
     return true
   })
   const pid = info.pid
