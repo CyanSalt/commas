@@ -87,6 +87,13 @@ export async function createTerminalTab({ cwd, shell, launcher } = {}) {
     addons: markRaw({}),
     launcher,
   })
+  xterm.attachCustomKeyEventHandler(event => {
+    if (event.type === 'keydown' && event.altKey && event.key === 'Backspace') {
+      writeTerminalTab(tab, String.fromCharCode(0x17))
+      return false
+    }
+    return true
+  })
   const pid = info.pid
   // Setup communication between xterm.js and node-pty
   xterm.onData(data => {
@@ -108,8 +115,8 @@ export async function createTerminalTab({ cwd, shell, launcher } = {}) {
       if (cwd) tab.cwd = cwd
     }
   }, 250)
-  xterm.onKey(({ domEvent }) => {
-    if (domEvent.key === 'Enter') updateCwd()
+  xterm.onLineFeed(() => {
+    updateCwd()
   })
   watch(terminalOptionsRef, (terminalOptions) => {
     if (tab.pane) return
