@@ -1,6 +1,7 @@
 import { computed, unref, watchEffect } from 'vue'
 import { memoize } from 'lodash-es'
 import { useRemoteData } from './remote'
+import { ipcRenderer } from 'electron'
 
 export const useTheme = memoize(() => {
   return useRemoteData({}, {
@@ -30,11 +31,9 @@ export function injectTheme() {
     const style = unref(themeStyleRef)
     const declarations = Object.entries(style)
       .map(([key, value]) => `${key}: ${value};`).join(' ')
-    const element = document.createElement('style')
-    element.appendChild(document.createTextNode(`#root { ${declarations} }`))
-    document.head.appendChild(element)
-    onInvalidate(() => {
-      element.remove()
+    const injection = ipcRenderer.invoke('inject-style', `#root { ${declarations} }`)
+    onInvalidate(async () => {
+      ipcRenderer.invoke('eject-style', await injection)
     })
   })
 }

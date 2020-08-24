@@ -56,6 +56,12 @@ function handleMessages() {
   ipcMain.handle('spawn-process', (event, command, args) => {
     childProcess.spawn(command, args)
   })
+  ipcMain.handle('inject-style', (event, style) => {
+    return event.sender.insertCSS(style)
+  })
+  ipcMain.handle('eject-style', (event, key) => {
+    return event.sender.removeInsertedCSS(key)
+  })
 }
 
 function handleEvents(frame) {
