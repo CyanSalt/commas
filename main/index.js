@@ -10,6 +10,7 @@ const { handleSettingsMessages } = require('./lib/settings')
 const { handleThemeMessages } = require('./lib/theme')
 const { handleTerminalMessages } = require('./lib/terminal')
 const { handleLauncherMessages } = require('./lib/launcher')
+const { handleKeyBindingMessages } = require('./lib/keybinding')
 const { loadAddons, loadCustomJS } = require('./lib/addon')
 const commas = require('../api/main')
 
@@ -21,6 +22,7 @@ handleSettingsMessages()
 handleThemeMessages()
 handleTerminalMessages()
 handleLauncherMessages()
+handleKeyBindingMessages()
 
 let cwd
 async function initialize() {

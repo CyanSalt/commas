@@ -1,6 +1,7 @@
 const { app, Menu, ipcMain, BrowserWindow } = require('electron')
 const memoize = require('lodash/memoize')
-const { resources, userData } = require('../utils/directory')
+const { getKeyBindings } = require('./keybinding')
+const { resources } = require('../utils/directory')
 
 /**
  * @typedef {import('electron').MenuItemConstructorOptions} MenuItemConstructorOptions
@@ -15,12 +16,13 @@ const shellMenuItems = resources.require('shell.menu.json')
  * @param {MenuItemConstructorOptions} binding
  */
 function resolveBindingCommand(binding) {
+  const result = { ...binding }
   if (binding.command) {
-    binding.click = (self, frame) => {
-      frame.webContents.send(binding.command, binding.args)
+    result.click = (self, frame) => {
+      frame.webContents.send(result.command, result.args)
     }
   }
-  return binding
+  return result
 }
 
 function getShellMenuItems() {
@@ -29,8 +31,10 @@ function getShellMenuItems() {
 
 const getCustomMenuItems = memoize(async () => {
   /** @type {MenuItemConstructorOptions[]} */
-  const keybindings = await userData.load('keybindings.json') || []
-  return keybindings.map(resolveBindingCommand)
+  const keybindings = await getKeyBindings()
+  return keybindings
+    .filter(item => item.command && !item.command.startsWith('xterm:'))
+    .map(resolveBindingCommand)
 })
 
 async function createApplicationMenu() {

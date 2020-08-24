@@ -1,6 +1,6 @@
 import { ipcRenderer, shell } from 'electron'
 import { ref, computed, unref, markRaw, reactive, toRaw, watch } from 'vue'
-import { memoize, debounce } from 'lodash-es'
+import { memoize, debounce, isMatch } from 'lodash-es'
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
 import { SearchAddon } from 'xterm-addon-search'
@@ -11,7 +11,9 @@ import { WebglAddon } from 'xterm-addon-webgl'
 import { useRemoteData } from './remote'
 import { useSettings } from './settings'
 import { useTheme } from './theme'
+import { useKeyBindings } from './keybinding'
 import { getWindowsProcessInfo } from '../utils/terminal'
+import { toKeyEventPattern } from '../utils/accelerator'
 
 /**
  * @typedef {import('../utils/terminal').TerminalTab} TerminalTab
@@ -71,6 +73,18 @@ const terminalOptionsRef = computed(() => {
   }
 })
 
+const keybindingsRef = computed(() => {
+  const keybindings = unref(useKeyBindings())
+  return keybindings.map(binding => ({
+    pattern: {
+      ...toKeyEventPattern(binding.accelerator),
+      type: binding.when || 'keydown',
+    },
+    command: binding.command,
+    args: binding.args,
+  }))
+})
+
 /**
  * @param {object} [options]
  * @param {string=} options.cwd
@@ -88,17 +102,21 @@ export async function createTerminalTab({ cwd, shell, launcher } = {}) {
     launcher,
   })
   xterm.attachCustomKeyEventHandler(event => {
-    if (event.type === 'keydown' && event.altKey && event.key === 'Backspace') {
-      writeTerminalTab(tab, String.fromCharCode(0x17))
-      return false
+    const keybindings = unref(keybindingsRef)
+    const matchedItem = keybindings.find(item => isMatch(event, item.pattern))
+    if (!matchedItem) return true
+    switch (matchedItem.command) {
+      case 'xterm:send': {
+        const data = matchedItem.args.map(value => {
+          return typeof value === 'number'
+            ? String.fromCharCode(value) : String(value)
+        })
+        writeTerminalTab(tab, data.join(''))
+        return false
+      }
+      default:
+        return true
     }
-    const cmdOrCtrl = process.platform === 'darwin'
-      ? event.metaKey : event.ctrlKey
-    if (event.type === 'keydown' && cmdOrCtrl && event.key === 'Backspace') {
-      writeTerminalTab(tab, String.fromCharCode(0x15))
-      return false
-    }
-    return true
   })
   const pid = info.pid
   // Setup communication between xterm.js and node-pty
