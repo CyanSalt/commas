@@ -198,13 +198,13 @@ export function handleTerminalMessages() {
     const tab = unref(useCurrentTerminal())
     closeTerminalTab(tab)
   })
-  ipcRenderer.on('activate-previous-tab', () => {
+  ipcRenderer.on('select-previous-tab', () => {
     const activeIndex = unref(activeIndexRef)
     if (activeIndex > 0) {
       activeIndexRef.value = activeIndex - 1
     }
   })
-  ipcRenderer.on('activate-next-tab', () => {
+  ipcRenderer.on('select-next-tab', () => {
     const activeIndex = unref(activeIndexRef)
     const tabs = unref(tabsRef)
     if (activeIndex < tabs.length - 1) {

@@ -1,6 +1,7 @@
 const { app, Menu, ipcMain, BrowserWindow } = require('electron')
 const memoize = require('lodash/memoize')
 const { getKeyBindings } = require('./keybinding')
+const { translate } = require('./i18n')
 const { resources } = require('../utils/directory')
 
 /**
@@ -17,6 +18,9 @@ const shellMenuItems = resources.require('shell.menu.json')
  */
 function resolveBindingCommand(binding) {
   const result = { ...binding }
+  if (binding.label) {
+    result.label = translate(binding.label)
+  }
   if (binding.command) {
     result.click = (self, frame) => {
       frame.webContents.send(result.command, result.args)
@@ -42,41 +46,42 @@ async function createApplicationMenu() {
     {
       label: app.name,
       submenu: [
-        { role: 'about' },
+        { role: 'about', label: translate('About %A#!menu.about', { A: app.name }) },
         { type: 'separator' },
         {
-          label: 'Preferences...',
+          label: translate('Preferences...#!menu.preference'),
           accelerator: 'Command+,',
           click(self, frame) {
             frame.webContents.send('open-settings')
           },
         },
         { type: 'separator' },
-        { role: 'services' },
+        { role: 'services', label: translate('Services#!menu.services') },
         { type: 'separator' },
-        { role: 'hide' },
-        { role: 'hideothers' },
-        { role: 'unhide' },
+        { role: 'hide', label: translate('Hide %A#!menu.hide', { A: app.name }) },
+        { role: 'hideothers', label: translate('Hide Others#!menu.hideothers') },
+        { role: 'unhide', label: translate('Show All#!menu.unhide') },
         { type: 'separator' },
-        { role: 'quit' },
+        { role: 'quit', label: translate('Quit %A#!menu.quit', { A: app.name }) },
       ],
     },
     {
-      label: 'Shell',
+      label: translate('Shell#!menu.shell'),
       submenu: getShellMenuItems(),
     },
-    { role: 'editMenu' },
-    { role: 'windowMenu' },
+    { role: 'editMenu', label: translate('Edit#!menu.edit') },
+    { role: 'windowMenu', label: translate('Window#!menu.window') },
     {
-      label: 'User',
+      label: translate('User#!menu.user'),
       submenu: await getCustomMenuItems(),
     },
     {
+      label: translate('Help#!menu.help'),
       role: 'help',
       submenu: [
-        { role: 'toggledevtools' },
+        { role: 'toggledevtools', label: translate('Toggle Developer Tools#!toggledevtools') },
         {
-          label: 'Relaunch App',
+          label: translate('Relaunch %A#!menu.relaunch', { A: app.name }),
           accelerator: 'CmdOrCtrl+Shift+R',
           click() {
             app.relaunch()
@@ -124,7 +129,7 @@ async function createWindowMenu(frame) {
 function createDockMenu() {
   const menu = Menu.buildFromTemplate([
     {
-      label: 'New Window',
+      label: translate('New Window#!menu.newwindow'),
       accelerator: 'CmdOrCtrl+N',
       click(self, frame) {
         frame.webContents.send('open-window')

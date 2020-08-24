@@ -29,8 +29,8 @@ async function initialize() {
   await loadAddons()
   loadCustomJS()
   await app.whenReady()
+  await loadTranslation(app.getLocale())
   commas.app.events.emit('ready')
-  loadTranslation(app.getLocale())
   if (process.platform === 'darwin') {
     createApplicationMenu()
     createDockMenu()

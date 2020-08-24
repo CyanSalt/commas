@@ -1,11 +1,11 @@
 [
   {
-    "label": "New Tab",
+    "label": "New Tab#!menu.newtab",
     "accelerator": "CmdOrCtrl+T",
     "command": "open-tab"
   },
   {
-    "label": "New Window",
+    "label": "New Window#!menu.newwindow",
     "accelerator": "CmdOrCtrl+N",
     "command": "open-window"
   },
@@ -13,30 +13,30 @@
     "type": "separator"
   },
   {
-    "label": "Activate Previous Tab",
+    "label": "Select Previous Tab#!menu.previoustab",
     "accelerator": "CmdOrCtrl+Shift+[",
-    "command": "activate-previous-tab"
+    "command": "select-previous-tab"
   },
   {
-    "label": "Activate Next Tab",
+    "label": "Select Next Tab#!menu.nexttab",
     "accelerator": "CmdOrCtrl+Shift+]",
-    "command": "activate-next-tab"
+    "command": "select-next-tab"
   },
   {
     "type": "separator"
   },
   {
-    "label": "Find",
+    "label": "Find#!menu.find",
     "accelerator": "CmdOrCtrl+F",
     "command": "toggle-finding"
   },
   {
-    "label": "Clear",
+    "label": "Clear#!menu.clear",
     "accelerator": "CmdOrCtrl+K",
     "command": "clear-terminal"
   },
   {
-    "label": "Toggle Tab List",
+    "label": "Toggle Tab List#!menu.toggletablist",
     "accelerator": "CmdOrCtrl+B",
     "command": "toggle-tab-list"
   },
@@ -44,12 +44,12 @@
     "type": "separator"
   },
   {
-    "label": "Close Tab",
+    "label": "Close Tab#!menu.closetab",
     "accelerator": "CmdOrCtrl+W",
     "command": "close-tab"
   },
   {
-    "label": "Close Window",
+    "label": "Close Window#!menu.closewindow",
     "accelerator": "CmdOrCtrl+Shift+W",
     "command": "close-window"
   }
