@@ -83,6 +83,10 @@ export default {
       console.error(`Uncaught error in main process: ${error}`)
     })
 
+    ipcRenderer.on('invoke', (event, command) => {
+      ipcRenderer.invoke(command)
+    })
+
     ipcRenderer.on('open-tab', (event, args) => {
       createTerminalTab(args)
     })

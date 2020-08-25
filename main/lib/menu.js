@@ -52,7 +52,7 @@ async function createApplicationMenu() {
           label: translate('Preferences...#!menu.preference'),
           accelerator: 'Command+,',
           click(self, frame) {
-            frame.webContents.send('open-settings')
+            frame.webContents.send('invoke', 'open-settings')
           },
         },
         { type: 'separator' },
