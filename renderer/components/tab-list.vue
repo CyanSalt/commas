@@ -25,7 +25,7 @@
           </div>
           <div class="launcher-folder">
             <div :class="['group-name', { collapsed: isCollapsed }]" @click="toggleCollapsing">
-              <span class="feather-icon icon-grid"></span>
+              <span class="feather-icon icon-list"></span>
             </div>
             <div class="buttons">
               <div
