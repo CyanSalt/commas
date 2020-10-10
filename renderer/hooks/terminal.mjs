@@ -1,19 +1,19 @@
 import { ipcRenderer, shell } from 'electron'
-import { ref, computed, unref, markRaw, reactive, toRaw, watch } from 'vue'
 import { memoize, debounce, isMatch } from 'lodash-es'
+import { ref, computed, unref, markRaw, reactive, toRaw, watch } from 'vue'
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
-import { SearchAddon } from 'xterm-addon-search'
-import { WebLinksAddon } from 'xterm-addon-web-links'
-import { Unicode11Addon } from 'xterm-addon-unicode11'
 import { LigaturesAddon } from 'xterm-addon-ligatures'
+import { SearchAddon } from 'xterm-addon-search'
+import { Unicode11Addon } from 'xterm-addon-unicode11'
+import { WebLinksAddon } from 'xterm-addon-web-links'
 import { WebglAddon } from 'xterm-addon-webgl'
+import { toKeyEventPattern } from '../utils/accelerator'
+import { getWindowsProcessInfo } from '../utils/terminal'
+import { useKeyBindings } from './keybinding'
 import { useRemoteData } from './remote'
 import { useSettings } from './settings'
 import { useTheme } from './theme'
-import { useKeyBindings } from './keybinding'
-import { getWindowsProcessInfo } from '../utils/terminal'
-import { toKeyEventPattern } from '../utils/accelerator'
 
 /**
  * @typedef {import('../utils/terminal').TerminalTab} TerminalTab
@@ -91,8 +91,8 @@ const keybindingsRef = computed(() => {
  * @param {string=} options.shell
  * @param {number=} options.launcher
  */
-export async function createTerminalTab({ cwd, shell, launcher } = {}) {
-  const info = await ipcRenderer.invoke('create-terminal', { cwd, shell })
+export async function createTerminalTab({ cwd, shell: shellPath, launcher } = {}) {
+  const info = await ipcRenderer.invoke('create-terminal', { cwd, shell: shellPath })
   const xterm = new Terminal(unref(terminalOptionsRef))
   const tab = reactive({
     ...info,
@@ -135,8 +135,8 @@ export async function createTerminalTab({ cwd, shell, launcher } = {}) {
   const updateCwd = debounce(async () => {
     const settings = unref(useSettings())
     if (settings['terminal.tab.liveCwd']) {
-      const cwd = await ipcRenderer.invoke('get-terminal-cwd', tab.pid)
-      if (cwd) tab.cwd = cwd
+      const latestCwd = await ipcRenderer.invoke('get-terminal-cwd', tab.pid)
+      if (latestCwd) tab.cwd = latestCwd
     }
   }, 250)
   xterm.onLineFeed(() => {
@@ -144,9 +144,9 @@ export async function createTerminalTab({ cwd, shell, launcher } = {}) {
   })
   watch(terminalOptionsRef, (terminalOptions) => {
     if (tab.pane) return
-    const xterm = tab.xterm
+    const latestXterm = tab.xterm
     for (const [key, value] of Object.entries(terminalOptions)) {
-      xterm.setOption(key, value)
+      latestXterm.setOption(key, value)
     }
     loadTerminalAddons(tab)
   })

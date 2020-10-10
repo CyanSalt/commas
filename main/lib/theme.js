@@ -1,9 +1,9 @@
 const { ipcMain, nativeTheme } = require('electron')
 const memoize = require('lodash/memoize')
-const { resources, userData } = require('../utils/directory')
 const { toRGBA, toCSSColor, toElectronColor, isDarkColor, mix } = require('../utils/color')
-const { getSettings, getDefaultSettings, getSettingsEvents } = require('./settings')
+const { resources, userData } = require('../utils/directory')
 const { broadcast } = require('./frame')
+const { getSettings, getDefaultSettings, getSettingsEvents } = require('./settings')
 const { setThemeOptions } = require('./window')
 
 /**

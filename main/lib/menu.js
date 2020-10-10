@@ -1,8 +1,8 @@
 const { app, Menu, ipcMain, BrowserWindow } = require('electron')
 const memoize = require('lodash/memoize')
-const { getKeyBindings } = require('./keybinding')
-const { translate } = require('./i18n')
 const { resources } = require('../utils/directory')
+const { translate } = require('./i18n')
+const { getKeyBindings } = require('./keybinding')
 
 /**
  * @typedef {import('electron').MenuItemConstructorOptions} MenuItemConstructorOptions

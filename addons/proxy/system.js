@@ -1,8 +1,8 @@
 const { ipcMain } = require('electron')
 const memoize = require('lodash/memoize')
-const { execa } = require('../../main/utils/helper')
-const { getSettings, getSettingsEvents } = require('../../main/lib/settings')
 const { broadcast } = require('../../main/lib/frame')
+const { getSettings, getSettingsEvents } = require('../../main/lib/settings')
+const { execa } = require('../../main/utils/helper')
 
 async function getMacOSCurrentNetworkService() {
   const networkInterface = 'route get default | grep interface | awk \'{print $2}\''

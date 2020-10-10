@@ -1,7 +1,7 @@
-const { app, ipcMain } = require('electron')
-const pty = require('node-pty')
-const memoize = require('lodash/memoize')
 const fs = require('fs')
+const { app, ipcMain } = require('electron')
+const memoize = require('lodash/memoize')
+const pty = require('node-pty')
 const { execa } = require('../utils/helper')
 const { getSettings } = require('./settings')
 
@@ -120,7 +120,7 @@ function handleTerminalMessages() {
       // TODO: no command supported on Windows
       if (process.platform === 'darwin') {
         const { stdout } = await execa(`lsof -p ${pid} | grep cwd`)
-        return stdout.substring(stdout.indexOf('/'), stdout.length - 1)
+        return stdout.slice(stdout.indexOf('/'), -1)
       } else if (process.platform === 'linux') {
         return fs.readlink(`/proc/${pid}/cwd`)
       }

@@ -1,7 +1,7 @@
 const { app, ipcMain } = require('electron')
 const memoize = require('lodash/memoize')
-const { userData, resources } = require('../utils/directory')
 const localeEntries = require('../../resources/locales/index.json')
+const { userData, resources } = require('../utils/directory')
 const { broadcast } = require('./frame')
 
 /**
@@ -57,7 +57,7 @@ function addTranslation(locales, dictionary, priority = Priority.custom) {
  * @param {string} locale
  */
 function loadBuiltinTranslation(locale) {
-  const entry = localeEntries.find(item => item => item.locales.includes(locale))
+  const entry = localeEntries.find(item => item.locales.includes(locale))
   if (!entry) return
   const data = resources.require(`locales/${entry.file}`)
   addTranslation(entry.locales, data, Priority.builtin)

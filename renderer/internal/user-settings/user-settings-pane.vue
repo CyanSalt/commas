@@ -21,11 +21,11 @@
 </template>
 
 <script>
-import { reactive, computed, unref, toRefs, watchEffect } from 'vue'
 import { cloneDeep, isEqual } from 'lodash-es'
+import { reactive, computed, unref, toRefs, watchEffect } from 'vue'
 import TerminalPane from '../../components/basic/terminal-pane.vue'
-import UserSettingsLine from './user-settings-line.vue'
 import { useUserSettings, useSettingsSpecs } from '../../hooks/settings'
+import UserSettingsLine from './user-settings-line.vue'
 
 export default {
   name: 'UserSettingsPane',

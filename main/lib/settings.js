@@ -1,13 +1,13 @@
-const { ipcMain, shell } = require('electron')
 const EventEmitter = require('events')
 const fs = require('fs')
-const path = require('path')
 const os = require('os')
+const path = require('path')
+const { ipcMain, shell } = require('electron')
+const cloneDeep = require('lodash/cloneDeep')
 const isEqual = require('lodash/isEqual')
 const memoize = require('lodash/memoize')
-const cloneDeep = require('lodash/cloneDeep')
-const { userData, resources } = require('../utils/directory')
 const defaultSpecs = require('../../resources/settings.spec.json')
+const { userData, resources } = require('../utils/directory')
 const { broadcast } = require('./frame')
 
 /**
@@ -102,13 +102,13 @@ async function updateSettings() {
 
 async function openSettings() {
   const name = 'settings.json'
-  const path = userData.file(name)
+  const file = userData.file(name)
   try {
-    await fs.promises.access(path)
+    await fs.promises.access(file)
   } catch {
     await userData.write(name, generateSettingsSource())
   }
-  return shell.openPath(path)
+  return shell.openPath(file)
 }
 
 async function openDefaultSettings() {

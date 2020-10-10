@@ -1,8 +1,8 @@
 const { ipcMain } = require('electron')
 const memoize = require('lodash/memoize')
-const { broadcast } = require('./frame')
 const { userData } = require('../utils/directory')
 const { createIDGenerator } = require('../utils/helper')
+const { broadcast } = require('./frame')
 
 const generateID = createIDGenerator()
 

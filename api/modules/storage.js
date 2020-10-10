@@ -1,4 +1,5 @@
 const { require: requireRenderer } = require('./module')
+
 const { shallowReactive } = requireRenderer('vue')
 
 const namespaces = shallowReactive({})

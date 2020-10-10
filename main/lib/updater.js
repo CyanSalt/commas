@@ -1,8 +1,8 @@
-const { app, autoUpdater } = require('electron')
 const fs = require('fs')
+const { app, autoUpdater } = require('electron')
+const { notify } = require('../utils/notification')
 const { translate } = require('./i18n')
 const { getSettings, getSettingsEvents } = require('./settings')
-const { notify } = require('../utils/notification')
 
 let autoUpdaterEnabled = true
 let autoUpdaterTimer
@@ -45,14 +45,14 @@ function checkForUpdates() {
   const feedURL = `${host}/${repo}/${process.platform}-${process.arch}/${app.getVersion()}`
   try {
     autoUpdater.setFeedURL(feedURL)
-  } catch (err) {
+  } catch {
     return
   }
   const settings = getSettings()
   autoUpdaterEnabled = settings['terminal.updater.enabled']
   const events = getSettingsEvents()
-  events.on('updated', settings => {
-    autoUpdaterEnabled = settings['terminal.updater.enabled']
+  events.on('updated', latestSettings => {
+    autoUpdaterEnabled = latestSettings['terminal.updater.enabled']
   })
   executeChecking()
 }

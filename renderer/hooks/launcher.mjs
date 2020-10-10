@@ -1,17 +1,17 @@
-import { shell, ipcRenderer } from 'electron'
-import { unref } from 'vue'
-import { memoize } from 'lodash-es'
 import * as os from 'os'
+import { shell, ipcRenderer } from 'electron'
+import { memoize } from 'lodash-es'
+import { unref } from 'vue'
+import { getLauncherCommand } from '../utils/launcher'
+import { resolveHome } from '../utils/terminal'
 import { useRemoteData } from './remote'
+import { useSettings } from './settings'
 import {
   useTerminalTabs,
   createTerminalTab,
   activateTerminalTab,
   writeTerminalTab,
 } from './terminal'
-import { useSettings } from './settings'
-import { resolveHome } from '../utils/terminal'
-import { getLauncherCommand } from '../utils/launcher'
 
 /**
  * @typedef {import('../utils/terminal').TerminalTab} TerminalTab

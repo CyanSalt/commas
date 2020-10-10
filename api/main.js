@@ -1,9 +1,9 @@
 const app = require('./modules/app')
-const i18n = require('./modules/i18n')
-const settings = require('./modules/settings')
-const frame = require('./modules/frame')
 const directory = require('./modules/directory')
+const frame = require('./modules/frame')
+const i18n = require('./modules/i18n')
 const protocol = require('./modules/protocol')
+const settings = require('./modules/settings')
 
 module.exports = {
   app,

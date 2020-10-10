@@ -1,8 +1,8 @@
+const childProcess = require('child_process')
+const fs = require('fs')
+const util = require('util')
 const packager = require('electron-packager')
 const png2icons = require('png2icons')
-const fs = require('fs')
-const childProcess = require('child_process')
-const util = require('util')
 const app = require('./package.json')
 
 const execa = util.promisify(childProcess.exec)

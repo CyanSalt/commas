@@ -1,6 +1,6 @@
-const { getSettings, getSettingsEvents } = require('./settings')
-const { userData } = require('../utils/directory')
 const commas = require('../../api/main')
+const { userData } = require('../utils/directory')
+const { getSettings, getSettingsEvents } = require('./settings')
 
 async function applyAddons() {
   const settings = await getSettings()

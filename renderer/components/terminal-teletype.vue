@@ -12,8 +12,8 @@
 <script>
 import 'xterm/css/xterm.css'
 import { reactive, toRefs, onMounted, onActivated } from 'vue'
-import ScrollBar from './basic/scroll-bar.vue'
 import { mountTerminalTab, writeTerminalTab } from '../hooks/terminal'
+import ScrollBar from './basic/scroll-bar.vue'
 
 export default {
   name: 'TerminalTeletype',
@@ -40,7 +40,7 @@ export default {
       const files = event.dataTransfer.files
       if (!files || !files.length) return
       const paths = Array.from(files).map(({ path }) => {
-        if (path.indexOf(' ') !== -1) return `"${path}"`
+        if (path.includes(' ')) return `"${path}"`
         return path
       })
       writeTerminalTab(props.tab, paths.join(' '))

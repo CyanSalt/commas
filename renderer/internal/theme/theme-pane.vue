@@ -31,8 +31,8 @@
 <script>
 import { shell, ipcRenderer } from 'electron'
 import { reactive, toRefs, unref, computed, watchEffect } from 'vue'
-import TerminalPane from '../../components/basic/terminal-pane.vue'
 import LoadingSpinner from '../../components/basic/loading-spinner.vue'
+import TerminalPane from '../../components/basic/terminal-pane.vue'
 import { useUserSettings } from '../../hooks/settings'
 import { fetchThemeList } from './utils'
 
@@ -59,7 +59,7 @@ export default {
 
     state.filteredList = computed(() => {
       if (!state.keyword) return state.list
-      return state.list.filter(item => item.name.indexOf(state.keyword) !== -1)
+      return state.list.filter(item => item.name.includes(state.keyword))
     })
 
     const userSettingsRef = useUserSettings()

@@ -64,8 +64,8 @@
 <script>
 import { ipcRenderer, shell } from 'electron'
 import { reactive, toRefs, computed } from 'vue'
-import TerminalPane from '../../components/basic/terminal-pane.vue'
 import SwitchControl from '../../components/basic/switch-control.vue'
+import TerminalPane from '../../components/basic/terminal-pane.vue'
 import { useAppVersion } from '../../hooks/frame'
 
 export default {

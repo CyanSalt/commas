@@ -1,10 +1,10 @@
-const { ipcMain } = require('electron')
-const { createProxyServer } = require('http-proxy')
 const http = require('http')
 const net = require('net')
+const { ipcMain } = require('electron')
+const { createProxyServer } = require('http-proxy')
 const memoize = require('lodash/memoize')
-const { getSettings, getSettingsEvents } = require('../../main/lib/settings')
 const { broadcast } = require('../../main/lib/frame')
+const { getSettings, getSettingsEvents } = require('../../main/lib/settings')
 const { getProxyRulesEvents, getProxyRules } = require('./rules')
 const {
   extractProxyRules,
@@ -32,9 +32,9 @@ async function createServer() {
   /** Inspired by {@link https://gist.github.com/tonygambone/2422322} */
   server.on('connect', (req, socket) => {
     const proxy = getProxyServerOptions(rules, 'https://' + req.url)
-    let { protocol, host, port } = new URL(proxy.target)
-    if (!port) port = protocol === 'http:' ? 80 : 443
-    const connection = net.connect(port, host, () => {
+    let { protocol, host, port: targetPort } = new URL(proxy.target)
+    if (!targetPort) targetPort = protocol === 'http:' ? 80 : 443
+    const connection = net.connect(targetPort, host, () => {
       socket.write('HTTP/1.1 200 OK\r\n\r\n')
       socket.pipe(connection)
       connection.pipe(socket)

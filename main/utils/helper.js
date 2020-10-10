@@ -38,6 +38,7 @@ function createIDGenerator(iterator) {
  * @param {string} expression
  */
 function createPattern(expression) {
+  /* eslint-disable-next-line unicorn/no-unsafe-regex */
   const matches = expression.match(/^s\/(.+)\/([a-z]+)?$/)
   if (!matches) return null
   try {

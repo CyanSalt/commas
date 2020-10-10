@@ -12,7 +12,7 @@
             <tab-item
               :key="value.pid"
               :tab="value"
-              @click.native="activateTerminalTab(value)"
+              @click="activateTerminalTab(value)"
             ></tab-item>
           </sortable-list>
           <div class="new-tab">
@@ -54,7 +54,7 @@
               :key="launcher.id"
               :tab="getTerminalTabByLauncher(launcher)"
               :name="launcher.name"
-              @click.native="openLauncher(launcher)"
+              @click="openLauncher(launcher)"
             >
               <template #operations>
                 <div class="button launch" @click.stop="startLauncher(launcher)">
@@ -86,11 +86,16 @@
 </template>
 
 <script>
-import { reactive, toRefs, computed, unref } from 'vue'
 import * as path from 'path'
-import TabItem from './tab-item.vue'
-import ScrollBar from './basic/scroll-bar.vue'
-import SortableList from './basic/sortable-list.vue'
+import { ipcRenderer } from 'electron'
+import { reactive, toRefs, computed, unref } from 'vue'
+import {
+  useLaunchers,
+  getTerminalTabByLauncher,
+  openLauncher,
+  startLauncher,
+  startLauncherExternally,
+} from '../hooks/launcher'
 import {
   useTerminalTabs,
   useTerminalShells,
@@ -99,16 +104,11 @@ import {
   activateTerminalTab,
   getTerminalTabIndex,
 } from '../hooks/terminal'
-import {
-  useLaunchers,
-  getTerminalTabByLauncher,
-  openLauncher,
-  startLauncher,
-  startLauncherExternally,
-} from '../hooks/launcher'
-import { handleMousePressing } from '../utils/helper'
 import { openContextMenu } from '../utils/frame'
-import { ipcRenderer } from 'electron'
+import { handleMousePressing } from '../utils/helper'
+import ScrollBar from './basic/scroll-bar.vue'
+import SortableList from './basic/sortable-list.vue'
+import TabItem from './tab-item.vue'
 
 export default {
   name: 'TabList',

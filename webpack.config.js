@@ -1,7 +1,7 @@
 const path = require('path')
-const webpack = require('webpack')
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
+const webpack = require('webpack')
 
 module.exports = {
   target: 'electron-renderer',
@@ -36,9 +36,25 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          MiniCSSExtractPlugin.loader,
-          'css-loader',
+        oneOf: [
+          {
+            resourceQuery: /\?vue/,
+            use: [
+              {
+                loader: MiniCSSExtractPlugin.loader,
+                options: {
+                  esModule: false,
+                },
+              },
+              'css-loader',
+            ],
+          },
+          {
+            use: [
+              MiniCSSExtractPlugin.loader,
+              'css-loader',
+            ],
+          },
         ],
       },
     ],

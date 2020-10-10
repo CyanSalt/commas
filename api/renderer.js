@@ -1,7 +1,7 @@
 const app = require('./modules/app')
-const workspace = require('./modules/workspace')
 const noConflictModule = require('./modules/module')
 const storage = require('./modules/storage')
+const workspace = require('./modules/workspace')
 
 module.exports = {
   app,

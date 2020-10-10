@@ -21,7 +21,7 @@
         </span>
       </div>
       <div class="proxy-table">
-        <div v-for="(rule, row) of table" :key="row" class="proxy-rule">
+        <div v-for="(rule, row) in table" :key="row" class="proxy-rule">
           <div v-for="(entry, index) in rule.context" :key="`entry:${index}`" class="rule-line">
             <span class="list-style">
               <span v-if="index === 0" class="link remove" @click="removeIndex(table, row)">
@@ -91,10 +91,10 @@
 
 <script>
 import { ipcRenderer } from 'electron'
-import { reactive, toRefs, computed, toRaw, watchEffect } from 'vue'
 import { isEqual, cloneDeep } from 'lodash-es'
-import TerminalPane from '../../components/basic/terminal-pane.vue'
+import { reactive, toRefs, computed, toRaw, watchEffect } from 'vue'
 import SwitchControl from '../../components/basic/switch-control.vue'
+import TerminalPane from '../../components/basic/terminal-pane.vue'
 import { useSystemProxyStatus, useProxyRules } from './hooks'
 
 export default {

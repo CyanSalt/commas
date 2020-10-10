@@ -1,7 +1,7 @@
-import { unref, computed } from 'vue'
 import { memoize } from 'lodash-es'
-import { useRemoteData } from './remote'
+import { unref, computed } from 'vue'
 import defaultKeyBindings from '../assets/keybindings'
+import { useRemoteData } from './remote'
 
 export const useUserKeyBindings = memoize(() => {
   return useRemoteData([], {

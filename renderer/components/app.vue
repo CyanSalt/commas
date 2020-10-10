@@ -29,10 +29,7 @@
 <script>
 import { ipcRenderer } from 'electron'
 import { reactive, toRefs, unref, onMounted } from 'vue'
-import TitleBar from './title-bar.vue'
-import TabList from './tab-list.vue'
-import FindBox from './find-box.vue'
-import TerminalTeletype from './terminal-teletype.vue'
+import { loadAddons } from '../hooks/addon'
 import {
   useFullscreen,
   handleFrameMessages,
@@ -50,7 +47,10 @@ import {
   createTerminalTab,
 } from '../hooks/terminal'
 import { injectTheme } from '../hooks/theme'
-import { loadAddons } from '../hooks/addon'
+import FindBox from './find-box.vue'
+import TabList from './tab-list.vue'
+import TerminalTeletype from './terminal-teletype.vue'
+import TitleBar from './title-bar.vue'
 
 export default {
   name: 'App',
@@ -87,8 +87,8 @@ export default {
       ipcRenderer.invoke(command)
     })
 
-    ipcRenderer.on('open-tab', (event, args) => {
-      createTerminalTab(args)
+    ipcRenderer.on('open-tab', (event, options) => {
+      createTerminalTab(options)
     })
 
     const willQuitRef = useWillQuit()

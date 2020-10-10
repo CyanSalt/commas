@@ -43,8 +43,8 @@
 
 <script>
 import { reactive, computed, unref, onMounted, toRefs } from 'vue'
-import { useCurrentTerminal } from '../hooks/terminal'
 import { useIsFinding } from '../hooks/shell'
+import { useCurrentTerminal } from '../hooks/terminal'
 
 export default {
   name: 'FindBox',

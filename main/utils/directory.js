@@ -1,10 +1,10 @@
-const { app, net } = require('electron')
 const fs = require('fs')
 const path = require('path')
+const { app, net } = require('electron')
 const JSON5 = require('json5')
 const debounce = require('lodash/debounce')
-const Writer = require('./writer')
 const { emitting } = require('./helper')
+const Writer = require('./writer')
 
 /**
  * @typedef {import('./writer').default} Writer
@@ -12,10 +12,10 @@ const { emitting } = require('./helper')
 
 class Directory {
   /**
-   * @param {string} path
+   * @param {string} dir
    */
-  constructor(path) {
-    this.path = path
+  constructor(dir) {
+    this.path = dir
   }
   /**
    * @param {string} basename

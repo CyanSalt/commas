@@ -1,10 +1,10 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
-const url = require('url')
 const path = require('path')
+const url = require('url')
+const { app, BrowserWindow, ipcMain } = require('electron')
+const { loadCustomCSS } = require('./addon')
 const { hasWindow, getLastWindow, collectWindow, forEachWindow } = require('./frame')
 const { createWindowMenu } = require('./menu')
 const { handleEvents } = require('./message')
-const { loadCustomCSS } = require('./addon')
 
 /**
  * @typedef BrowserWindowThemeOptions

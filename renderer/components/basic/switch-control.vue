@@ -13,6 +13,7 @@
 <script>
 export default {
   name: 'SwitchControl',
+  inheritAttrs: false,
   props: {
     modelValue: {
       type: Boolean,

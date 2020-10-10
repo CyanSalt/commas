@@ -35,7 +35,7 @@ module.exports = function (commas) {
       if (response === 0) {
         try {
           await commas.directory.userData.download(target, source, true)
-          const response = commas.frame.notify({
+          const notificationResponse = commas.frame.notify({
             title: target,
             body: commas.i18n.translate('Synchronization succeeded#!sync.3'),
             actions: [
@@ -43,7 +43,7 @@ module.exports = function (commas) {
               commas.i18n.translate('Later#!8'),
             ],
           })
-          if (response === 0) {
+          if (notificationResponse === 0) {
             shell.openPath(commas.directory.userData.file(target))
           }
         } catch {

@@ -25,8 +25,8 @@
 </template>
 
 <script>
-import { reactive, toRefs, computed, unref } from 'vue'
 import * as path from 'path'
+import { reactive, toRefs, computed, unref } from 'vue'
 import { useSettings } from '../hooks/settings'
 import { useCurrentTerminal, closeTerminalTab } from '../hooks/terminal'
 import { getPrompt, getIconEntityByProcess } from '../utils/terminal'

@@ -1,4 +1,5 @@
 const { require: requireRenderer } = require('./module')
+
 const { shallowReactive, shallowReadonly, markRaw } = requireRenderer('vue')
 const { createIDGenerator } = requireRenderer('utils/helper.mjs')
 

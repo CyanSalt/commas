@@ -25,8 +25,8 @@
         </div>
         <div class="maximize button" @click="maximize">
           <span
-            :class="['feather-icon', isMaximized ?
-              'icon-minimize-2' : 'icon-maximize-2']"
+            :class="['feather-icon', isMaximized
+              ? 'icon-minimize-2' : 'icon-maximize-2']"
           ></span>
         </div>
         <div class="close button" @click="close">
@@ -38,14 +38,14 @@
 </template>
 
 <script>
-import { reactive, computed, watchEffect, toRefs, unref } from 'vue'
 import { ipcRenderer, shell } from 'electron'
+import { reactive, computed, watchEffect, toRefs, unref } from 'vue'
 import { useMinimized, useMaximized } from '../hooks/frame'
+import { getLauncherByTerminalTab } from '../hooks/launcher'
 import { useSettings } from '../hooks/settings'
 import { useCurrentTerminal } from '../hooks/terminal'
-import { getLauncherByTerminalTab } from '../hooks/launcher'
-import { getPrompt } from '../utils/terminal'
 import { openContextMenu } from '../utils/frame'
+import { getPrompt } from '../utils/terminal'
 
 export default {
   name: 'TitleBar',

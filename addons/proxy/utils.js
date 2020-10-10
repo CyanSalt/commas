@@ -45,7 +45,7 @@ function parseRuleEntry(expression) {
     url = 'http:' + url
   } else if (expression.startsWith('/')) {
     url = 'http://localhost' + url
-  } else if (expression.indexOf('://') !== -1) {
+  } else if (expression.includes('://')) {
     matches.host = true
     matches.protocol = true
   } else {
@@ -66,10 +66,10 @@ function parseRuleEntry(expression) {
  */
 function extractProxyRules(rules) {
   return getValidRules(rules).reduce((collection, rule) => {
-    const entries = rule.context.reduce((entries, expression) => {
+    const entries = rule.context.reduce((allEntries, expression) => {
       const entry = parseRuleEntry(expression)
-      if (entry) entries.push(entry)
-      return entries
+      if (entry) allEntries.push(entry)
+      return allEntries
     }, [])
     if (entries.length) {
       rule.entries = entries
@@ -103,7 +103,7 @@ function getMatchedProxyRules(rules, url) {
 function getProxyServerOptions(rules, url) {
   url = new URL(url)
   const matched = getMatchedProxyRules(rules, url)
-  const rule = matched.find(rule => rule.proxy.target)
+  const rule = matched.find(item => item.proxy.target)
   return rule ? rule.proxy : { target: url.origin }
 }
 

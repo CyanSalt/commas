@@ -1,5 +1,5 @@
-const { app, ipcMain, BrowserWindow, dialog } = require('electron')
 const childProcess = require('child_process')
+const { app, ipcMain, BrowserWindow, dialog } = require('electron')
 const { broadcast } = require('./frame')
 
 function handleMessages() {

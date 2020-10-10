@@ -1,9 +1,9 @@
-const { ipcMain } = require('electron')
 const EventEmitter = require('events')
-const memoize = require('lodash/memoize')
+const { ipcMain } = require('electron')
 const cloneDeep = require('lodash/cloneDeep')
-const { userData } = require('../../main/utils/directory')
+const memoize = require('lodash/memoize')
 const { broadcast } = require('../../main/lib/frame')
+const { userData } = require('../../main/utils/directory')
 const { getValidRules } = require('./utils')
 
 /**
