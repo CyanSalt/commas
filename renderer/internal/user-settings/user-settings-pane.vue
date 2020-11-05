@@ -24,7 +24,7 @@
 import { cloneDeep, isEqual } from 'lodash-es'
 import { reactive, computed, unref, toRefs, watchEffect } from 'vue'
 import TerminalPane from '../../components/basic/terminal-pane.vue'
-import { useUserSettings, useSettingsSpecs } from '../../hooks/settings'
+import { useUserSettings, useSettingsSpecs } from '../../hooks/settings.mjs'
 import UserSettingsLine from './user-settings-line.vue'
 
 export default {

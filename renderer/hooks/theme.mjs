@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron'
 import { memoize } from 'lodash-es'
 import { computed, unref, watchEffect } from 'vue'
-import { useRemoteData } from './remote'
+import { useRemoteData } from './remote.mjs'
 
 export const useTheme = memoize(() => {
   return useRemoteData({}, {

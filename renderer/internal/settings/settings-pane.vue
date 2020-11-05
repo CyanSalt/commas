@@ -66,7 +66,7 @@ import { ipcRenderer, shell } from 'electron'
 import { reactive, toRefs, computed } from 'vue'
 import SwitchControl from '../../components/basic/switch-control.vue'
 import TerminalPane from '../../components/basic/terminal-pane.vue'
-import { useAppVersion } from '../../hooks/frame'
+import { useAppVersion } from '../../hooks/frame.mjs'
 
 export default {
   name: 'SettingsPane',

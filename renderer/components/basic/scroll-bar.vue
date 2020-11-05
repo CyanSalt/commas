@@ -7,7 +7,7 @@
 
 <script>
 import { reactive, toRefs, ref, computed, unref, onMounted, onBeforeUnmount, onActivated } from 'vue'
-import { handleMousePressing } from '../../utils/helper'
+import { handleMousePressing } from '../../utils/helper.mjs'
 
 export default {
   name: 'ScrollBar',

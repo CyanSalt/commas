@@ -40,12 +40,12 @@
 <script>
 import { ipcRenderer, shell } from 'electron'
 import { reactive, computed, watchEffect, toRefs, unref } from 'vue'
-import { useMinimized, useMaximized } from '../hooks/frame'
-import { getLauncherByTerminalTab } from '../hooks/launcher'
-import { useSettings } from '../hooks/settings'
-import { useCurrentTerminal } from '../hooks/terminal'
-import { openContextMenu } from '../utils/frame'
-import { getPrompt } from '../utils/terminal'
+import { useMinimized, useMaximized } from '../hooks/frame.mjs'
+import { getLauncherByTerminalTab } from '../hooks/launcher.mjs'
+import { useSettings } from '../hooks/settings.mjs'
+import { useCurrentTerminal } from '../hooks/terminal.mjs'
+import { openContextMenu } from '../utils/frame.mjs'
+import { getPrompt } from '../utils/terminal.mjs'
 
 export default {
   name: 'TitleBar',

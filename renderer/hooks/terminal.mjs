@@ -8,12 +8,12 @@ import { SearchAddon } from 'xterm-addon-search'
 import { Unicode11Addon } from 'xterm-addon-unicode11'
 import { WebLinksAddon } from 'xterm-addon-web-links'
 import { WebglAddon } from 'xterm-addon-webgl'
-import { toKeyEventPattern } from '../utils/accelerator'
-import { getWindowsProcessInfo } from '../utils/terminal'
-import { useKeyBindings } from './keybinding'
-import { useRemoteData } from './remote'
-import { useSettings } from './settings'
-import { useTheme } from './theme'
+import { toKeyEventPattern } from '../utils/accelerator.mjs'
+import { getWindowsProcessInfo } from '../utils/terminal.mjs'
+import { useKeyBindings } from './keybinding.mjs'
+import { useRemoteData } from './remote.mjs'
+import { useSettings } from './settings.mjs'
+import { useTheme } from './theme.mjs'
 
 /**
  * @typedef {import('../utils/terminal').TerminalTab} TerminalTab

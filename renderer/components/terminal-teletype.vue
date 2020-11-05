@@ -12,7 +12,7 @@
 <script>
 import 'xterm/css/xterm.css'
 import { reactive, toRefs, onMounted, onActivated } from 'vue'
-import { mountTerminalTab, writeTerminalTab } from '../hooks/terminal'
+import { mountTerminalTab, writeTerminalTab } from '../hooks/terminal.mjs'
 import ScrollBar from './basic/scroll-bar.vue'
 
 export default {

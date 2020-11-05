@@ -33,8 +33,8 @@ import { shell, ipcRenderer } from 'electron'
 import { reactive, toRefs, unref, computed, watchEffect } from 'vue'
 import LoadingSpinner from '../../components/basic/loading-spinner.vue'
 import TerminalPane from '../../components/basic/terminal-pane.vue'
-import { useUserSettings } from '../../hooks/settings'
-import { fetchThemeList } from './utils'
+import { useUserSettings } from '../../hooks/settings.mjs'
+import { fetchThemeList } from './utils.mjs'
 
 export default {
   name: 'ThemePane',

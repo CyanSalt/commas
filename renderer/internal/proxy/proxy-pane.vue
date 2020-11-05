@@ -95,7 +95,7 @@ import { isEqual, cloneDeep } from 'lodash-es'
 import { reactive, toRefs, computed, toRaw, watchEffect } from 'vue'
 import SwitchControl from '../../components/basic/switch-control.vue'
 import TerminalPane from '../../components/basic/terminal-pane.vue'
-import { useSystemProxyStatus, useProxyRules } from './hooks'
+import { useSystemProxyStatus, useProxyRules } from './hooks.mjs'
 
 export default {
   name: 'ProxyPane',

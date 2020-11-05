@@ -18,6 +18,7 @@ module.exports = {
     path: __dirname,
     filename: 'renderer/build/index.js',
     libraryTarget: 'commonjs2',
+    // module: true,
   },
   resolve: {
     alias: {
@@ -26,6 +27,7 @@ module.exports = {
   },
   module: {
     rules: [
+      // TODO: remove in webpack@5
       {
         test: /\.mjs$/,
         type: 'javascript/auto',
@@ -72,7 +74,11 @@ module.exports = {
   ],
   optimization: {
     minimize: false,
+    // moduleIds: 'named',
     namedModules: true,
     usedExports: false,
   },
+  // experiments: {
+  //   outputModule: true,
+  // },
 }

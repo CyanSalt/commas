@@ -1,7 +1,7 @@
-import './utils/register'
+import './utils/register.js'
 import { createApp } from 'vue'
 import App from './components/app.vue'
-import { translateElement } from './utils/i18n'
+import { translateElement } from './utils/i18n.mjs'
 
 createApp(App)
   .directive('i18n', translateElement)

@@ -1,6 +1,6 @@
 import { last } from 'lodash-es'
 import { computed, unref } from 'vue'
-import { useRemoteData } from '../hooks/remote'
+import { useRemoteData } from '../hooks/remote.mjs'
 
 /**
  * @typedef {Record<string, string>} Dictionary

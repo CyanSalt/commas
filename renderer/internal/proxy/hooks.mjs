@@ -1,5 +1,5 @@
 import { memoize } from 'lodash-es'
-import { useRemoteData } from '../../hooks/remote'
+import { useRemoteData } from '../../hooks/remote.mjs'
 
 export const useProxyServerStatus = memoize(() => {
   return useRemoteData(false, {

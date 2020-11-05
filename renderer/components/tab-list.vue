@@ -95,7 +95,7 @@ import {
   openLauncher,
   startLauncher,
   startLauncherExternally,
-} from '../hooks/launcher'
+} from '../hooks/launcher.mjs'
 import {
   useTerminalTabs,
   useTerminalShells,
@@ -103,9 +103,9 @@ import {
   moveTerminalTab,
   activateTerminalTab,
   getTerminalTabIndex,
-} from '../hooks/terminal'
-import { openContextMenu } from '../utils/frame'
-import { handleMousePressing } from '../utils/helper'
+} from '../hooks/terminal.mjs'
+import { openContextMenu } from '../utils/frame.mjs'
+import { handleMousePressing } from '../utils/helper.mjs'
 import ScrollBar from './basic/scroll-bar.vue'
 import SortableList from './basic/sortable-list.vue'
 import TabItem from './tab-item.vue'

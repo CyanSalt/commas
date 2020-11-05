@@ -1,6 +1,6 @@
 import * as os from 'os'
 import * as path from 'path'
-import icons from '../assets/icons'
+import icons from '../assets/icons.mjs'
 
 /**
  * @typedef IconEntity

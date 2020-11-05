@@ -1,4 +1,4 @@
-import mappings from './mappings'
+import mappings from './mappings.mjs'
 
 const rawFilePath = 'https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master'
 

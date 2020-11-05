@@ -1,5 +1,5 @@
 import { watchEffect, unref } from 'vue'
-import { useSettings } from './settings'
+import { useSettings } from './settings.mjs'
 
 export function loadAddons() {
   const commas = globalThis.require('../api/renderer')

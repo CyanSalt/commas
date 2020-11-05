@@ -1,5 +1,5 @@
 import { memoize } from 'lodash-es'
-import { useRemoteData } from './remote'
+import { useRemoteData } from './remote.mjs'
 
 export const useSettings = memoize(() => {
   return useRemoteData({}, {

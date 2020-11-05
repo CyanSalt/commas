@@ -28,7 +28,7 @@ function noConflictRequire(request) {
   const path = aliases[request] || `./renderer/${request}`
   const cachedModule = cache[path]
   if (!cachedModule) {
-    throw new Error(`Module not found at '${path}'.`)
+    throw new Error(`Cannot find module '${request}'.`)
   }
   return cachedModule.exports
 }

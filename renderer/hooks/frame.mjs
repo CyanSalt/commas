@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron'
 import { memoize } from 'lodash-es'
-import { useRemoteData } from './remote'
+import { useRemoteData } from './remote.mjs'
 
 export const useAppVersion = memoize(() => {
   return useRemoteData('', {

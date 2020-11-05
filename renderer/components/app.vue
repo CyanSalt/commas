@@ -29,24 +29,24 @@
 <script>
 import { ipcRenderer } from 'electron'
 import { reactive, toRefs, unref, onMounted } from 'vue'
-import { loadAddons } from '../hooks/addon'
+import { loadAddons } from '../hooks/addon.mjs'
 import {
   useFullscreen,
   handleFrameMessages,
-} from '../hooks/frame'
+} from '../hooks/frame.mjs'
 import {
   useIsTabListEnabled,
   useWillQuit,
   confirmClosing,
   handleShellMessages,
-} from '../hooks/shell'
+} from '../hooks/shell.mjs'
 import {
   useCurrentTerminal,
   useTerminalTabs,
   handleTerminalMessages,
   createTerminalTab,
-} from '../hooks/terminal'
-import { injectTheme } from '../hooks/theme'
+} from '../hooks/terminal.mjs'
+import { injectTheme } from '../hooks/theme.mjs'
 import FindBox from './find-box.vue'
 import TabList from './tab-list.vue'
 import TerminalTeletype from './terminal-teletype.vue'

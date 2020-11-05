@@ -7,8 +7,8 @@
 
 <script>
 import { reactive, toRefs, computed, unref } from 'vue'
-import { useSettings } from '../../hooks/settings'
-import { useProxyServerStatus } from './hooks'
+import { useSettings } from '../../hooks/settings.mjs'
+import { useProxyServerStatus } from './hooks.mjs'
 
 export default {
   name: 'ProxyAnchor',

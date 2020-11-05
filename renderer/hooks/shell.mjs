@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron'
 import { ref } from 'vue'
-import { translate } from '../utils/i18n'
+import { translate } from '../utils/i18n.mjs'
 
 export const isTabListEnabledRef = ref(true)
 export function useIsTabListEnabled() {

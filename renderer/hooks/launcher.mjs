@@ -2,16 +2,16 @@ import * as os from 'os'
 import { shell, ipcRenderer } from 'electron'
 import { memoize } from 'lodash-es'
 import { unref } from 'vue'
-import { getLauncherCommand } from '../utils/launcher'
-import { resolveHome } from '../utils/terminal'
-import { useRemoteData } from './remote'
-import { useSettings } from './settings'
+import { getLauncherCommand } from '../utils/launcher.mjs'
+import { resolveHome } from '../utils/terminal.mjs'
+import { useRemoteData } from './remote.mjs'
+import { useSettings } from './settings.mjs'
 import {
   useTerminalTabs,
   createTerminalTab,
   activateTerminalTab,
   writeTerminalTab,
-} from './terminal'
+} from './terminal.mjs'
 
 /**
  * @typedef {import('../utils/terminal').TerminalTab} TerminalTab

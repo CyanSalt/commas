@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { activateOrAddTerminalTab } from '../../hooks/terminal'
+import { activateOrAddTerminalTab } from '../../hooks/terminal.mjs'
 
 export default {
   name: 'ThemeLink',
