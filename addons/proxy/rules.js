@@ -23,7 +23,8 @@ function loadProxyRules() {
  */
 function resolveRuleTargets(rules) {
   rules = cloneDeep(rules)
-  rules.forEach(({ proxy }) => {
+  rules.forEach(rule => {
+    const { proxy } = rule
     if (proxy._target) {
       if (proxy.target !== proxy._target) {
         if (!proxy.records) {
@@ -36,8 +37,8 @@ function resolveRuleTargets(rules) {
         // Keep the recent record top
         proxy.records.unshift(proxy._target)
       }
-      delete proxy._target
     }
+    delete proxy._target
     if (proxy.records) {
       // Remove current target
       if (proxy.records.length) {
@@ -49,6 +50,15 @@ function resolveRuleTargets(rules) {
         delete proxy.records
       }
     }
+    if (!rule.title) {
+      delete rule.title
+    }
+    if (rule._enabled) {
+      delete rule.disabled
+    } else {
+      rule.disabled = true
+    }
+    delete rule._enabled
   })
   return rules
 }
@@ -66,6 +76,7 @@ async function getProxyRules() {
   const rules = result && result.data
   return getValidRules(rules).map(rule => {
     rule.proxy._target = rule.proxy.target
+    rule._enabled = !rule.disabled
     return rule
   })
 }

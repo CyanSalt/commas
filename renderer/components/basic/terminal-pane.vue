@@ -91,7 +91,7 @@ export default {
 .terminal-pane .link {
   cursor: pointer;
   opacity: 0.5;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, color 0.2s, transform 0.2s;
 }
 .terminal-pane .link.disabled {
   pointer-events: none;
@@ -151,6 +151,16 @@ export default {
 .terminal-pane input.form-control:read-only,
 .terminal-pane textarea.form-control:read-only {
   opacity: 0.5;
+}
+.terminal-pane input.immersive-control {
+  appearance: none;
+  padding: 0;
+  font: inherit;
+  line-height: inherit;
+  border: none;
+  outline: none;
+  color: inherit;
+  background: transparent;
 }
 .terminal-pane .form-action {
   margin-left: 8px;
