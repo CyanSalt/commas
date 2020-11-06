@@ -20,7 +20,7 @@
     "node": ">=10.0.0"
   },
   "devDependencies": {
-    "@cyansalt/eslint-config": "^0.1.2",
+    "@cyansalt/eslint-config": "^0.2.1",
     "@vue/compiler-sfc": "^3.0.2",
     "css-loader": "^5.0.1",
     "electron": "^10.1.5",
