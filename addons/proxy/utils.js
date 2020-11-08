@@ -84,7 +84,7 @@ function extractProxyRules(rules) {
  * @param {string} url
  */
 function getMatchedProxyRules(rules, url) {
-  return rules.filter(rule => rule.entries.some(entry => {
+  return rules.filter(rule => !rule.disabled && rule.entries.some(entry => {
     if (entry.pattern) return entry.pattern.test(url.href)
     if (entry.matches.host && entry.url.host !== url.host) return false
     if (entry.matches.protocol && entry.url.protocol !== url.protocol) return false
