@@ -24,72 +24,79 @@
         </span>
       </div>
       <div class="proxy-table">
-        <div v-for="(rule, row) in table" :key="row" class="proxy-rule">
-          <div :class="['rule-summary', 'rule-line', { collapsed: collapsedRuleIndexes.includes(row), disabled: !rule._enabled }]">
-            <span class="link tree-node" @click="toggleRule(row)">
-              <span class="feather-icon icon-chevron-down"></span>
-            </span>
-            <label class="rule-checkbox">
-              <input v-model="rule._enabled" type="checkbox">
-            </label>
-            <input
-              v-model="rule.title"
-              :placeholder="getRulePlaceholder(row)"
-              class="rule-title immersive-control"
-            >
-            <span class="link duplicate" @click="duplicateRule(row)">
-              <span class="feather-icon icon-copy"></span>
-            </span>
-            <span class="link remove" @click="removeRule(row)">
-              <span class="feather-icon icon-minus-circle"></span>
-            </span>
-          </div>
-          <div v-show="!collapsedRuleIndexes.includes(row)" class="rule-detail">
-            <div v-for="(entry, index) in rule.context" :key="`entry:${index}`" class="rule-line">
-              <span class="link remove" @click="removeContext(rule, index)">
-                <span class="feather-icon icon-minus"></span>
+        <sortable-list
+          v-slot="{ value: rule, index: row }"
+          :value="table"
+          class="rule-list"
+          @change="sortRules"
+        >
+          <div :key="row" class="proxy-rule">
+            <div :class="['rule-summary', 'rule-line', { collapsed: collapsedRuleIndexes.includes(row), disabled: !rule._enabled }]">
+              <span class="link tree-node" @click="toggleRule(row)">
+                <span class="feather-icon icon-chevron-down"></span>
               </span>
-              <input v-model="rule.context[index]" type="text" class="form-control">
-            </div>
-            <div class="rule-line">
-              <span class="link add" @click="addContext(rule)">
-                <span class="feather-icon icon-plus"></span>
-              </span>
-              <span
-                :class="['link', 'proxy-to', { active: isRecalling(rule), valid: rule.proxy.records }]"
-                @click="recall(rule)"
-              >
-                <span class="feather-icon icon-corner-down-right"></span>
-              </span>
+              <label class="rule-checkbox">
+                <input v-model="rule._enabled" type="checkbox">
+              </label>
               <input
-                v-model="rule.proxy.target"
-                v-i18n:placeholder
-                type="text"
-                :readonly="isRecalling(rule)"
-                placeholder="Proxy to...#!proxy.4"
-                class="form-control target"
+                v-model="rule.title"
+                :placeholder="getRulePlaceholder(row)"
+                class="rule-title immersive-control"
               >
-              <span v-if="rule.proxy.rewrite" class="link rewriting">
-                <span class="feather-icon icon-activity"></span>
+              <span class="link duplicate" @click="duplicateRule(row)">
+                <span class="feather-icon icon-copy"></span>
+              </span>
+              <span class="link remove" @click="removeRule(row)">
+                <span class="feather-icon icon-minus-circle"></span>
               </span>
             </div>
-            <template v-if="isRecalling(rule)">
-              <div
-                v-for="(record, index) in rule.proxy.records"
-                :key="`record:${index}`"
-                class="rule-line"
-              >
-                <span class="link record-action remove" @click="removeRecord(rule, index)">
-                  <span class="feather-icon icon-x"></span>
+            <div v-show="!collapsedRuleIndexes.includes(row)" class="rule-detail">
+              <div v-for="(entry, index) in rule.context" :key="`entry:${index}`" class="rule-line">
+                <span class="link remove" @click="removeContext(rule, index)">
+                  <span class="feather-icon icon-minus"></span>
                 </span>
-                <span class="link record-action confirm" @click="useRecord(rule, record)">
-                  <span class="feather-icon icon-check"></span>
-                </span>
-                <input type="text" :value="record" readonly class="form-control target">
+                <input v-model="rule.context[index]" type="text" class="form-control">
               </div>
-            </template>
+              <div class="rule-line">
+                <span class="link add" @click="addContext(rule)">
+                  <span class="feather-icon icon-plus"></span>
+                </span>
+                <span
+                  :class="['link', 'proxy-to', { active: isRecalling(rule), valid: rule.proxy.records }]"
+                  @click="recall(rule)"
+                >
+                  <span class="feather-icon icon-corner-down-right"></span>
+                </span>
+                <input
+                  v-model="rule.proxy.target"
+                  v-i18n:placeholder
+                  type="text"
+                  :readonly="isRecalling(rule)"
+                  placeholder="Proxy to...#!proxy.4"
+                  class="form-control target"
+                >
+                <span v-if="rule.proxy.rewrite" class="link rewriting">
+                  <span class="feather-icon icon-activity"></span>
+                </span>
+              </div>
+              <template v-if="isRecalling(rule)">
+                <div
+                  v-for="(record, index) in rule.proxy.records"
+                  :key="`record:${index}`"
+                  class="rule-line"
+                >
+                  <span class="link record-action remove" @click="removeRecord(rule, index)">
+                    <span class="feather-icon icon-x"></span>
+                  </span>
+                  <span class="link record-action confirm" @click="useRecord(rule, record)">
+                    <span class="feather-icon icon-check"></span>
+                  </span>
+                  <input type="text" :value="record" readonly class="form-control target">
+                </div>
+              </template>
+            </div>
           </div>
-        </div>
+        </sortable-list>
         <div class="rule-line">
           <span class="link add" @click="addRule">
             <span class="feather-icon icon-plus-circle"></span>
@@ -104,6 +111,7 @@
 import { ipcRenderer } from 'electron'
 import { isEqual, cloneDeep } from 'lodash-es'
 import { reactive, toRefs, computed, toRaw, watchEffect } from 'vue'
+import SortableList from '../../components/basic/sortable-list.vue'
 import SwitchControl from '../../components/basic/switch-control.vue'
 import TerminalPane from '../../components/basic/terminal-pane.vue'
 import { useSystemProxyStatus, useProxyRules } from './hooks.mjs'
@@ -113,6 +121,7 @@ export default {
   components: {
     'terminal-pane': TerminalPane,
     'switch-control': SwitchControl,
+    'sortable-list': SortableList,
   },
   setup() {
     const state = reactive({
@@ -219,6 +228,17 @@ export default {
       })
     }
 
+    function sortRules(from, to) {
+      const rule = state.table[from]
+      if (from < to) {
+        state.table.splice(to + 1, 0, rule)
+        state.table.splice(from, 1)
+      } else {
+        state.table.splice(from, 1)
+        state.table.splice(to, 0, rule)
+      }
+    }
+
     return {
       ...toRefs(state),
       openProxyRules,
@@ -235,6 +255,7 @@ export default {
       toggleAll,
       getRulePlaceholder,
       duplicateRule,
+      sortRules,
     }
   },
 }
