@@ -25,6 +25,10 @@ export default {
       type: Array,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: {
     /**
@@ -44,6 +48,7 @@ export default {
     })
 
     function startPressing(startingEvent, index) {
+      if (props.disabled) return
       let cancelPressing
       const cancelTimeout = createTimeout(() => {
         cancelPressing()

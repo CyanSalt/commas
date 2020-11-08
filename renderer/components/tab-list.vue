@@ -25,7 +25,7 @@
           </div>
           <div class="launcher-folder">
             <div :class="['group-name', { collapsed: isCollapsed }]" @click="toggleCollapsing">
-              <span class="feather-icon icon-list"></span>
+              <span class="feather-icon icon-chevrons-down"></span>
             </div>
             <div class="buttons">
               <div
@@ -125,7 +125,7 @@ export default {
       anchors: commas.workspace.useAnchors(),
       searcher: null,
       width: 176,
-      isCollapsed: true,
+      isCollapsed: false,
       isFinding: false,
       keyword: '',
     })
@@ -273,22 +273,21 @@ export default {
 .tab-list .launcher-folder {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
   padding: 8px 16px;
   line-height: 16px;
   cursor: pointer;
 }
 .tab-list .group-name {
-  flex: auto;
-  opacity: 1;
-  transition: opacity 0.2s, color 0.2s;
+  opacity: 0.5;
+  transition: opacity 0.2s, color 0.2s, transform 0.2s;
 }
 .tab-list .group-name.collapsed {
-  opacity: 0.5;
+  color: var(--design-yellow);
+  transform: rotate(-180deg);
+  opacity: 1;
 }
-.tab-list .group-name:not(.collapsed) {
-  color: var(--design-magenta);
-}
-.tab-list .group-name.collapsed:hover {
+.tab-list .group-name:not(.collapsed):hover {
   opacity: 1;
 }
 .tab-list .launcher-folder .buttons {
@@ -309,7 +308,7 @@ export default {
 }
 .tab-list .find.active {
   opacity: 1;
-  color: var(--design-blue);
+  color: var(--design-yellow);
 }
 .tab-list .find-launcher {
   flex-basis: 100%;
