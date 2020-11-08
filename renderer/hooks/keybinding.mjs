@@ -3,16 +3,16 @@ import { unref, computed } from 'vue'
 import defaultKeyBindings from '../assets/keybindings.mjs'
 import { useRemoteData } from './remote.mjs'
 
-export const useUserKeyBindings = memoize(() => {
+export const useAllKeyBindings = memoize(() => {
   return useRemoteData([], {
     getter: 'get-keybindings',
   })
 })
 
 const keybindingsRef = computed(() => {
-  const userKeyBindings = unref(useUserKeyBindings())
+  const allKeyBindings = unref(useAllKeyBindings())
   return [
-    ...userKeyBindings.filter(
+    ...allKeyBindings.filter(
       item => item.command && item.command.startsWith('xterm:')
     ),
     ...defaultKeyBindings,

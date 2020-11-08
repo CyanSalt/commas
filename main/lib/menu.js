@@ -2,7 +2,7 @@ const { app, Menu, ipcMain, BrowserWindow } = require('electron')
 const memoize = require('lodash/memoize')
 const { resources } = require('../utils/directory')
 const { translate } = require('./i18n')
-const { getKeyBindings } = require('./keybinding')
+const { getUserKeyBindings, getAddonKeyBindings } = require('./keybinding')
 
 /**
  * @typedef {import('electron').MenuItemConstructorOptions} MenuItemConstructorOptions
@@ -35,7 +35,15 @@ function getShellMenuItems() {
 
 const getCustomMenuItems = memoize(async () => {
   /** @type {MenuItemConstructorOptions[]} */
-  const keybindings = await getKeyBindings()
+  const keybindings = await getUserKeyBindings()
+  return keybindings
+    .filter(item => item.command && !item.command.startsWith('xterm:'))
+    .map(resolveBindingCommand)
+})
+
+const getAddonMenuItems = memoize(async () => {
+  /** @type {MenuItemConstructorOptions[]} */
+  const keybindings = await getAddonKeyBindings()
   return keybindings
     .filter(item => item.command && !item.command.startsWith('xterm:'))
     .map(resolveBindingCommand)
@@ -76,6 +84,10 @@ async function createApplicationMenu() {
       submenu: await getCustomMenuItems(),
     },
     {
+      label: translate('Addon#!menu.addon'),
+      submenu: await getAddonMenuItems(),
+    },
+    {
       label: translate('Help#!menu.help'),
       role: 'help',
       submenu: [
@@ -99,21 +111,25 @@ async function createApplicationMenu() {
 async function createWindowMenu(frame) {
   const menu = Menu.buildFromTemplate([
     {
-      label: 'Shell',
+      label: translate('Shell#!menu.shell'),
       submenu: getShellMenuItems(),
     },
     { role: 'editMenu' },
     { role: 'windowMenu' },
     {
-      label: 'User',
+      label: translate('User#!menu.user'),
       submenu: await getCustomMenuItems(),
     },
     {
-      label: 'Help',
+      label: translate('Addon#!menu.addon'),
+      submenu: await getAddonMenuItems(),
+    },
+    {
+      label: translate('Help#!menu.help'),
       submenu: [
         { role: 'toggledevtools' },
         {
-          label: 'Relaunch App',
+          label: translate('Relaunch %A#!menu.relaunch', { A: app.name }),
           accelerator: 'CmdOrCtrl+Shift+R',
           click() {
             app.relaunch()
