@@ -23,11 +23,11 @@
               <span class="feather-icon icon-plus"></span>
             </div>
           </div>
-          <div class="launcher-folder">
-            <div :class="['group-name', { collapsed: isCollapsed }]" @click="toggleCollapsing">
+          <div class="launcher-folder" @click="toggleCollapsing">
+            <div :class="['group-name', { collapsed: isCollapsed }]">
               <span class="feather-icon icon-chevrons-down"></span>
             </div>
-            <div class="buttons">
+            <div class="buttons" @click.stop>
               <div
                 :class="['button', 'find', { active: isFinding }]"
                 @click="toggleFinding"
@@ -47,9 +47,14 @@
               >
             </div>
           </div>
-          <div class="launchers">
+          <sortable-list
+            v-slot="{ value: launcher }"
+            :value="filteredLaunchers"
+            class="launchers"
+            :disabled="isLauncherSortingDisabled"
+            @change="sortLaunchers"
+          >
             <tab-item
-              v-for="launcher in filteredLaunchers"
               v-show="!isCollapsed || getTerminalTabByLauncher(launcher)"
               :key="launcher.id"
               :tab="getTerminalTabByLauncher(launcher)"
@@ -65,7 +70,7 @@
                 </div>
               </template>
             </tab-item>
-          </div>
+          </sortable-list>
         </div>
         <scroll-bar></scroll-bar>
       </div>
@@ -95,6 +100,7 @@ import {
   openLauncher,
   startLauncher,
   startLauncherExternally,
+  moveLauncher,
 } from '../hooks/launcher.mjs'
 import {
   useTerminalTabs,
@@ -131,15 +137,17 @@ export default {
     })
 
     state.filteredLaunchers = computed(() => {
-      if (!state.keyword) {
-        return state.launchers
-      }
+      if (!state.isFinding) return state.launchers
       const keywords = state.keyword.toLowerCase().split(/\s+/)
       return state.launchers.filter(
         launcher => keywords.every(
           keyword => Object.values(launcher).join(' ').toLowerCase().includes(keyword)
         )
       )
+    })
+
+    state.isLauncherSortingDisabled = computed(() => {
+      return state.isCollapsed || state.isFinding
     })
 
     const tabsRef = useTerminalTabs()
@@ -191,6 +199,10 @@ export default {
       })
     }
 
+    function sortLaunchers(from, to) {
+      moveLauncher(from, to)
+    }
+
     return {
       ...toRefs(state),
       sortTabs,
@@ -205,6 +217,7 @@ export default {
       startLauncherExternally,
       configure,
       resize,
+      sortLaunchers,
     }
   },
 }
@@ -284,7 +297,7 @@ export default {
 }
 .tab-list .group-name.collapsed {
   color: var(--design-yellow);
-  transform: rotate(-180deg);
+  transform: rotate(-90deg);
   opacity: 1;
 }
 .tab-list .group-name:not(.collapsed):hover {

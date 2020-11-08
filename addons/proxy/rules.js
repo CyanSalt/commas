@@ -73,7 +73,7 @@ const getRawProxyRules = memoize(() => {
 
 async function getProxyRules() {
   const result = await getRawProxyRules()
-  const rules = result && result.data
+  const rules = result && result.data || []
   return getValidRules(rules).map(rule => {
     rule.proxy._target = rule.proxy.target
     rule._enabled = !rule.disabled

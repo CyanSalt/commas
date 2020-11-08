@@ -24,6 +24,7 @@ import {
 export const useLaunchers = memoize(() => {
   return useRemoteData([], {
     getter: 'get-launchers',
+    setter: 'set-launchers',
     effect: 'launchers-updated',
   })
 })
@@ -86,4 +87,22 @@ export async function startLauncherExternally(launcher) {
   }
   const [command, ...args] = explorer
   return ipcRenderer.invoke('spawn-process', command, [...args, directory])
+}
+
+/**
+ * @param {number} from
+ * @param {number} to
+ */
+export function moveLauncher(from, to) {
+  const launchersRef = useLaunchers()
+  const launchers = [...unref(launchersRef)]
+  const rule = launchers[from]
+  if (from < to) {
+    launchers.splice(to + 1, 0, rule)
+    launchers.splice(from, 1)
+  } else {
+    launchers.splice(from, 1)
+    launchers.splice(to, 0, rule)
+  }
+  launchersRef.value = launchers
 }

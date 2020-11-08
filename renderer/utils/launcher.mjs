@@ -1,6 +1,7 @@
 /**
  * @typedef Launcher
  * @property {number} id
+ * @property {string} name
  * @property {string} command
  * @property {string} [directory]
  * @property {boolean} [login]

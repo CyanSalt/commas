@@ -6,22 +6,51 @@ const { broadcast } = require('./frame')
 
 const generateID = createIDGenerator()
 
-async function loadLaunchers() {
-  /** @type {any[]} */
-  const launchers = await userData.load('launchers.json') || []
-  return launchers.map(launcher => ({
-    ...launcher,
-    id: generateID(),
-  }))
+/**
+ * @param {any[]} launchers
+ * @param {any[]} [oldValues]
+ */
+function fillLauncherIDs(launchers, oldValues) {
+  oldValues = oldValues ? [...oldValues] : []
+  return launchers.map(launcher => {
+    const index = oldValues.findIndex(item => {
+      return item.name === launcher.name || item.remote === launcher.remote
+        && item.directory === launcher.directory
+        && item.command === launcher.command
+    })
+    let matched
+    if (index !== -1) {
+      matched = oldValues[index]
+      oldValues.splice(index, 1)
+    }
+    return {
+      ...launcher,
+      id: matched ? matched.id : generateID(),
+    }
+  })
 }
 
-const getLaunchers = memoize(() => {
-  userData.watch('launcher.json', () => {
-    getLaunchers.cache.set(undefined, loadLaunchers())
+const getRawLaunchers = memoize(() => {
+  userData.watch('launchers.json', async () => {
+    getRawLaunchers.cache.set(undefined, loadLaunchers())
     updateLaunchers()
   })
   return loadLaunchers()
 })
+
+async function loadLaunchers() {
+  const cache = await getRawLaunchers.cache.get()
+  const result = await userData.fetch('launchers.json')
+  if (result && result.data) {
+    result.data = fillLauncherIDs(result.data, cache && cache.data)
+  }
+  return result
+}
+
+async function getLaunchers() {
+  const result = await getRawLaunchers()
+  return result && result.data || []
+}
 
 async function updateLaunchers() {
   const launchers = await getLaunchers()
@@ -31,6 +60,13 @@ async function updateLaunchers() {
 function handleLauncherMessages() {
   ipcMain.handle('get-launchers', () => {
     return getLaunchers()
+  })
+  ipcMain.handle('set-launchers', async (event, launchers) => {
+    const result = await getRawLaunchers()
+    return userData.update('launchers.json', {
+      data: launchers.map(({ id, ...launcher }) => launcher),
+      writer: result && result.writer,
+    })
   })
 }
 
