@@ -27,36 +27,15 @@ module.exports = {
   },
   module: {
     rules: [
-      // TODO: remove in webpack@5
-      {
-        test: /\.mjs$/,
-        type: 'javascript/auto',
-      },
       {
         test: /\.vue$/,
         loader: 'vue-loader',
       },
       {
         test: /\.css$/,
-        oneOf: [
-          {
-            resourceQuery: /\?vue/,
-            use: [
-              {
-                loader: MiniCSSExtractPlugin.loader,
-                options: {
-                  esModule: false,
-                },
-              },
-              'css-loader',
-            ],
-          },
-          {
-            use: [
-              MiniCSSExtractPlugin.loader,
-              'css-loader',
-            ],
-          },
+        use: [
+          MiniCSSExtractPlugin.loader,
+          'css-loader',
         ],
       },
     ],
@@ -74,8 +53,7 @@ module.exports = {
   ],
   optimization: {
     minimize: false,
-    // moduleIds: 'named',
-    namedModules: true,
+    moduleIds: 'named',
     usedExports: false,
   },
   // experiments: {
