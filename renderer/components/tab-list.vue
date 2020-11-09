@@ -35,7 +35,7 @@
                 <span class="feather-icon icon-filter"></span>
               </div>
             </div>
-            <div v-show="isFinding" class="find-launcher">
+            <div v-show="isFinding" class="find-launcher" @click.stop>
               <input
                 ref="searcher"
                 v-model="keyword"
