@@ -38,7 +38,7 @@ const options = {
   ignore: [
     '^/(?!addons|api|main|node_modules|renderer|resources|package\\.json)',
     '^/resources/.*\\.(ico|icns)$',
-    '^/renderer/(?!build|index\\.html)$',
+    '^/renderer/(?!dist|index\\.html)$',
   ],
   appVersion: app.version,
   appCopyright: [
