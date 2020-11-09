@@ -47,7 +47,7 @@ import { useIsFinding } from '../hooks/shell.mjs'
 import { useCurrentTerminal } from '../hooks/terminal.mjs'
 
 export default {
-  name: 'FindBox',
+  name: 'find-box',
   setup() {
     const state = reactive({
       root: null,

@@ -69,7 +69,7 @@ import TerminalPane from '../../components/basic/terminal-pane.vue'
 import { useAppVersion } from '../../hooks/frame.mjs'
 
 export default {
-  name: 'SettingsPane',
+  name: 'settings-pane',
   components: {
     'terminal-pane': TerminalPane,
     'switch-control': SwitchControl,

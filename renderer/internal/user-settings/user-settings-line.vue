@@ -40,7 +40,7 @@ import { reactive, computed, toRefs } from 'vue'
 import SwitchControl from '../../components/basic/switch-control.vue'
 
 export default {
-  name: 'UserSettingsLine',
+  name: 'user-settings-line',
   components: {
     'switch-control': SwitchControl,
   },

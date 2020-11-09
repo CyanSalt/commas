@@ -37,7 +37,7 @@ import { useUserSettings } from '../../hooks/settings.mjs'
 import { fetchThemeList } from './utils.mjs'
 
 export default {
-  name: 'ThemePane',
+  name: 'theme-pane',
   components: {
     'terminal-pane': TerminalPane,
     'loading-spinner': LoadingSpinner,

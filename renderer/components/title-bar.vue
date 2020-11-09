@@ -48,7 +48,7 @@ import { openContextMenu } from '../utils/frame.mjs'
 import { getPrompt } from '../utils/terminal.mjs'
 
 export default {
-  name: 'TitleBar',
+  name: 'title-bar',
   setup() {
     const state = reactive({
       isMaximized: useMaximized(),

@@ -117,7 +117,7 @@ import TerminalPane from '../../components/basic/terminal-pane.vue'
 import { useSystemProxyStatus, useProxyRules } from './hooks.mjs'
 
 export default {
-  name: 'ProxyPane',
+  name: 'proxy-pane',
   components: {
     'terminal-pane': TerminalPane,
     'switch-control': SwitchControl,

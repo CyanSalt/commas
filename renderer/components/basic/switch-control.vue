@@ -12,7 +12,7 @@
 
 <script>
 export default {
-  name: 'SwitchControl',
+  name: 'switch-control',
   inheritAttrs: false,
   props: {
     modelValue: {

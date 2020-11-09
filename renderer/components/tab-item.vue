@@ -32,7 +32,7 @@ import { useCurrentTerminal, closeTerminalTab } from '../hooks/terminal.mjs'
 import { getPrompt, getIconEntityByProcess } from '../utils/terminal.mjs'
 
 export default {
-  name: 'TabItem',
+  name: 'tab-item',
   props: {
     name: {
       type: String,

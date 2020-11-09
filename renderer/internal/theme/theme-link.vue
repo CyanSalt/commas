@@ -8,7 +8,7 @@
 import { activateOrAddTerminalTab } from '../../hooks/terminal.mjs'
 
 export default {
-  name: 'ThemeLink',
+  name: 'theme-link',
   setup() {
     const commas = globalThis.require('../api/renderer')
     function configure() {

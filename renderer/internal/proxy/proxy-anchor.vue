@@ -11,7 +11,7 @@ import { useSettings } from '../../hooks/settings.mjs'
 import { useProxyServerStatus } from './hooks.mjs'
 
 export default {
-  name: 'ProxyAnchor',
+  name: 'proxy-anchor',
   setup() {
     const state = reactive({
       isActive: useProxyServerStatus(),

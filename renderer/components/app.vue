@@ -53,7 +53,7 @@ import TerminalTeletype from './terminal-teletype.vue'
 import TitleBar from './title-bar.vue'
 
 export default {
-  name: 'App',
+  name: 'app',
   components: {
     'title-bar': TitleBar,
     'tab-list': TabList,

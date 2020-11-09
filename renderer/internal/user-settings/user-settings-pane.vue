@@ -28,7 +28,7 @@ import { useUserSettings, useSettingsSpecs } from '../../hooks/settings.mjs'
 import UserSettingsLine from './user-settings-line.vue'
 
 export default {
-  name: 'UserSettingsPane',
+  name: 'user-settings-pane',
   components: {
     'terminal-pane': TerminalPane,
     'user-settings-line': UserSettingsLine,

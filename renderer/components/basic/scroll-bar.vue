@@ -10,7 +10,7 @@ import { reactive, toRefs, ref, computed, unref, onMounted, onBeforeUnmount, onA
 import { handleMousePressing } from '../../utils/helper.mjs'
 
 export default {
-  name: 'ScrollBar',
+  name: 'scroll-bar',
   props: {
     parent: {
       type: HTMLElement,

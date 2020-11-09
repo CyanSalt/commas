@@ -19,7 +19,7 @@ import { reactive, toRefs, ref, computed, unref, onBeforeUpdate } from 'vue'
 import { handleMousePressing, createTimeout } from '../../utils/helper.mjs'
 
 export default {
-  name: 'SortableList',
+  name: 'sortable-list',
   props: {
     value: {
       type: Array,
