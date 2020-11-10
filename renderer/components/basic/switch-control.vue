@@ -1,9 +1,9 @@
 <template>
   <label class="switch-control">
     <input
+      v-bind="$attrs"
       type="checkbox"
       :checked="modelValue"
-      v-bind="$attrs"
       @change="change"
     >
     <span class="switch-content"></span>
