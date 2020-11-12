@@ -30,7 +30,7 @@
           class="rule-list"
           @change="sortRules"
         >
-          <div :key="row" class="proxy-rule">
+          <div class="proxy-rule">
             <div :class="['rule-summary', 'rule-line', { collapsed: collapsedRuleIndexes.includes(row), disabled: !rule._enabled }]">
               <span class="link tree-node" @click="toggleRule(row)">
                 <span class="feather-icon icon-chevron-down"></span>

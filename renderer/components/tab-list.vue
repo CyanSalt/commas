@@ -6,11 +6,11 @@
           <sortable-list
             v-slot="{ value }"
             :value="standaloneTabs"
+            value-key="pid"
             class="processes"
             @change="sortTabs"
           >
             <tab-item
-              :key="value.pid"
               :tab="value"
               @click="activateTerminalTab(value)"
             ></tab-item>
@@ -50,13 +50,13 @@
           <sortable-list
             v-slot="{ value: launcher }"
             :value="filteredLaunchers"
+            value-key="id"
             class="launchers"
             :disabled="isLauncherSortingDisabled"
             @change="sortLaunchers"
           >
             <tab-item
               v-show="!isCollapsed || getTerminalTabByLauncher(launcher)"
-              :key="launcher.id"
               :tab="getTerminalTabByLauncher(launcher)"
               :name="launcher.name"
               @click="openLauncher(launcher)"

@@ -2,7 +2,7 @@
   <div ref="root" class="sortable-list">
     <div
       v-for="(item, index) in value"
-      :key="index"
+      :key="keys[index]"
       :ref="el => items[index] = el"
       :class="['sortable-item', { dragging: draggingIndex === index }]"
       :style="{ order: index * 2 }"
@@ -25,6 +25,10 @@ export default {
       type: Array,
       required: true,
     },
+    valueKey: {
+      type: [String, Function],
+      default: undefined,
+    },
     disabled: {
       type: Boolean,
       default: false,
@@ -45,6 +49,14 @@ export default {
       root: null,
       items: [],
       draggingIndex: -1,
+    })
+
+    state.keys = computed(() => {
+      return props.value.map((value, index) => {
+        if (props.valueKey === undefined) return index
+        if (typeof props.valueKey === 'function') return props.valueKey.call(undefined, value)
+        return value[props.valueKey]
+      })
     })
 
     function startPressing(startingEvent, index) {
