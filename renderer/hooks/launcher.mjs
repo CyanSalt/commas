@@ -74,6 +74,19 @@ export async function startLauncher(launcher) {
 /**
  * @param {Launcher} launcher
  */
+export async function runLauncherScript(launcher, index) {
+  await openLauncher(launcher)
+  const tab = getTerminalTabByLauncher(launcher)
+  const command = getLauncherCommand({
+    ...launcher,
+    ...launcher.scripts[index],
+  })
+  writeTerminalTab(tab, command + os.EOL)
+}
+
+/**
+ * @param {Launcher} launcher
+ */
 export async function startLauncherExternally(launcher) {
   if (!launcher.directory) return
   const directory = resolveHome(launcher.directory)

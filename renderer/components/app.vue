@@ -34,6 +34,7 @@ import {
   useFullscreen,
   handleFrameMessages,
 } from '../hooks/frame.mjs'
+import { runLauncherScript } from '../hooks/launcher.mjs'
 import {
   useIsTabListEnabled,
   useWillQuit,
@@ -89,6 +90,10 @@ export default {
 
     ipcRenderer.on('open-tab', (event, options) => {
       createTerminalTab(options)
+    })
+
+    ipcRenderer.on('run-script', (event, { launcher, index: scriptIndex }) => {
+      runLauncherScript(launcher, scriptIndex)
     })
 
     const willQuitRef = useWillQuit()
