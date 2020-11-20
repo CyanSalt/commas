@@ -108,12 +108,20 @@ export default {
   flex-wrap: wrap;
   align-items: center;
 }
+.terminal-pane .form-line.block {
+  display: block;
+  align-self: stretch;
+}
 .terminal-pane .form-line + .form-line {
   margin-top: 10px;
 }
 .terminal-pane .form-label {
   width: 14em;
   align-self: flex-start;
+}
+.terminal-pane .form-line.block .form-label {
+  display: block;
+  width: auto;
 }
 .terminal-pane .form-line-tip {
   flex-basis: 100%;
@@ -127,8 +135,8 @@ export default {
   margin-right: 1em;
 }
 .terminal-pane input.form-control,
-.terminal-pane input.form-control,
 .terminal-pane textarea.form-control {
+  width: 165px;
   padding: 2px 6px;
   line-height: 20px;
   border: none;
@@ -139,9 +147,12 @@ export default {
   background: rgba(127, 127, 127, 0.2);
 }
 .terminal-pane textarea.form-control {
-  width: 165px;
   height: 60px;
   resize: none;
+}
+.terminal-pane .form-line.block input.form-control,
+.terminal-pane .form-line.block textarea.form-control {
+  width: 495px;
 }
 .terminal-pane input.form-control::placeholder,
 .terminal-pane textarea.form-control::placeholder {
@@ -161,6 +172,22 @@ export default {
   outline: none;
   color: inherit;
   background: transparent;
+}
+.terminal-pane select.form-control {
+  padding: 2px 6px;
+  line-height: 20px;
+  height: 24px;
+  border-radius: 4px;
+  border: none;
+  outline: none;
+  background: rgba(127, 127, 127, 0.2);
+  color: var(--foreground-color);
+}
+.terminal-pane .form-tips {
+  margin: 8px 0;
+  line-height: 24px;
+  font-size: 12px;
+  opacity: 0.5;
 }
 .terminal-pane .form-action {
   margin-left: 8px;

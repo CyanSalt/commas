@@ -3,6 +3,9 @@
     <h2 v-i18n class="group-title">User Settings#!user-settings.1</h2>
     <div class="group">
       <div class="action-line">
+        <span :class="['link form-action toggle-all', { collapsed }]" @click="toggleAll">
+          <span class="feather-icon icon-chevrons-down"></span>
+        </span>
         <span :class="['link form-action revert', { disabled: !isChanged }]" @click="revert">
           <span class="feather-icon icon-rotate-ccw"></span>
         </span>
@@ -11,8 +14,9 @@
         </span>
       </div>
       <user-settings-line
-        v-for="row in rows"
+        v-for="(row, index) in rows"
         :key="row.key"
+        :ref="line => lines[index] = line"
         v-model="values[row.key]"
         :spec="row"
       ></user-settings-line>
@@ -22,7 +26,7 @@
 
 <script>
 import { cloneDeep, isEqual } from 'lodash-es'
-import { reactive, computed, unref, toRefs, watchEffect } from 'vue'
+import { reactive, computed, unref, toRefs, watchEffect, onBeforeUpdate } from 'vue'
 import TerminalPane from '../../components/basic/terminal-pane.vue'
 import { useUserSettings, useSettingsSpecs } from '../../hooks/settings.mjs'
 import UserSettingsLine from './user-settings-line.vue'
@@ -36,6 +40,7 @@ export default {
   setup() {
     const state = reactive({
       values: {},
+      lines: [],
     })
 
     const userSettingsRef = useUserSettings()
@@ -62,12 +67,32 @@ export default {
       userSettingsRef.value = state.values
     }
 
+    state.collapsed = computed({
+      get() {
+        return state.lines.every(line => line.collapsed)
+      },
+      set(value) {
+        state.lines.forEach(line => {
+          line.collapsed = value
+        })
+      },
+    })
+
+    function toggleAll() {
+      state.collapsed = !state.collapsed
+    }
+
     watchEffect(revert)
+
+    onBeforeUpdate(() => {
+      state.lines = []
+    })
 
     return {
       ...toRefs(state),
       revert,
       confirm,
+      toggleAll,
     }
   },
 }
@@ -76,6 +101,10 @@ export default {
 <style>
 .user-settings-pane .form-action {
   margin: 0;
+}
+.user-settings-pane .toggle-all.collapsed {
+  opacity: 1;
+  transform: rotate(-90deg);
 }
 .user-settings-pane .revert {
   color: var(--design-red);

@@ -1,37 +1,53 @@
 <template>
-  <div class="form-line">
-    <label v-i18n class="form-label">{{ spec.label }}#!user-settings.{{ spec.key }}</label>
-    <switch-control v-if="spec.type === 'boolean'" v-model="model"></switch-control>
-    <input
-      v-else-if="spec.type === 'number'"
-      v-model="model"
-      :placeholder="placeholder"
-      type="number"
-      class="form-control"
-    >
-    <input
-      v-else-if="spec.type === 'string'"
-      v-model="model"
-      :placeholder="placeholder"
-      type="text"
-      class="form-control"
-    >
-    <select
-      v-else-if="spec.type === 'enum'"
-      v-model="model"
-      class="form-control"
-    >
-      <option
-        v-for="option in spec.paradigm"
-        :key="option"
-      >{{ option }}</option>
-    </select>
-    <textarea
-      v-else
-      v-model="model"
-      :placeholder="placeholder"
-      class="form-control"
-    ></textarea>
+  <div :class="['user-setting-line', 'form-line', 'block', { collapsed }]">
+    <label class="form-label">
+      <span class="link tree-node" @click="toggle">
+        <span class="feather-icon icon-chevron-down"></span>
+      </span>
+      <span v-i18n class="item-label">{{ spec.label }}#!user-settings.label.{{ spec.key }}</span>
+      <span class="item-key">{{ spec.key }}</span>
+    </label>
+    <div class="setting-detail">
+      <div class="form-tips">
+        <div
+          v-for="(comment, index) in spec.comments"
+          :key="index"
+          v-i18n
+          class="form-tip-line"
+        >{{ comment }}#!user-settings.comments.{{ index }}.{{ spec.key }}</div>
+      </div>
+      <switch-control v-if="spec.type === 'boolean'" v-model="model"></switch-control>
+      <input
+        v-else-if="spec.type === 'number'"
+        v-model="model"
+        :placeholder="placeholder"
+        type="number"
+        class="form-control"
+      >
+      <input
+        v-else-if="spec.type === 'string'"
+        v-model="model"
+        :placeholder="placeholder"
+        type="text"
+        class="form-control"
+      >
+      <select
+        v-else-if="spec.type === 'enum'"
+        v-model="model"
+        class="form-control"
+      >
+        <option
+          v-for="option in spec.paradigm"
+          :key="option"
+        >{{ option }}</option>
+      </select>
+      <textarea
+        v-else
+        v-model="model"
+        :placeholder="placeholder"
+        class="form-control"
+      ></textarea>
+    </div>
   </div>
 </template>
 
@@ -60,7 +76,9 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const state = reactive({})
+    const state = reactive({
+      collapsed: false,
+    })
 
     state.placeholder = computed(() => {
       return stringify(props.spec.default)
@@ -130,9 +148,41 @@ export default {
       return value
     }
 
+    function toggle() {
+      state.collapsed = !state.collapsed
+    }
+
     return {
       ...toRefs(state),
+      toggle,
     }
   },
 }
 </script>
+
+<style>
+.user-setting-line.form-line.block .form-label {
+  display: flex;
+  align-items: center;
+}
+.user-setting-line .item-key {
+  margin-left: 16px;
+  font-size: 12px;
+  opacity: 0.5;
+}
+.user-setting-line .tree-node {
+  width: 24px;
+  text-align: center;
+  opacity: 1;
+  transition: transform 0.2s;
+}
+.user-setting-line.collapsed .tree-node {
+  transform: rotate(-90deg);
+}
+.user-setting-line .setting-detail {
+  padding-left: 24px;
+}
+.user-setting-line.collapsed .setting-detail {
+  display: none;
+}
+</style>

@@ -312,7 +312,7 @@ export default {
 .proxy-table .link.remove:hover {
   color: var(--design-red);
 }
-.proxy-table .form-control {
+.proxy-table input.form-control {
   margin-right: 4px;
   box-sizing: border-box;
   width: 320px;
