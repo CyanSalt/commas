@@ -1,5 +1,5 @@
 <template>
-  <div class="terminal-pane">
+  <article class="terminal-pane">
     <svg
       class="app-pattern"
       viewBox="0 0 144 144"
@@ -29,7 +29,7 @@
       <slot></slot>
     </div>
     <scroll-bar keep-alive></scroll-bar>
-  </div>
+  </article>
 </template>
 
 <script>

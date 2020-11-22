@@ -3,7 +3,7 @@
     <title-bar></title-bar>
     <div class="content">
       <tab-list v-show="isTabListEnabled"></tab-list>
-      <div class="interface">
+      <main class="interface">
         <find-box></find-box>
         <template v-if="terminal">
           <keep-alive>
@@ -21,7 +21,7 @@
             </template>
           </keep-alive>
         </template>
-      </div>
+      </main>
     </div>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <div :class="['title-bar', { 'no-controls': !isCustomControlEnabled }]" @dblclick="maximize">
+  <header :class="['title-bar', { 'no-controls': !isCustomControlEnabled }]" @dblclick="maximize">
     <div class="git-branch">
       <template v-if="branch">
         <span class="branch-updater" @click="updateBranch">
@@ -34,7 +34,7 @@
         </div>
       </template>
     </div>
-  </div>
+  </header>
 </template>
 
 <script>

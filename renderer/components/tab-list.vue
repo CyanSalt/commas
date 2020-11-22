@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-list">
+  <nav class="tab-list">
     <div class="list-column" :style="{ width: width + 'px' }">
       <div class="list">
         <div class="scroll-area">
@@ -87,7 +87,7 @@
       </div>
     </div>
     <div class="sash" @mousedown.left="resize"></div>
-  </div>
+  </nav>
 </template>
 
 <script>

@@ -1,12 +1,12 @@
 <template>
-  <div
+  <article
     class="terminal-teletype"
     @dragover.prevent="dragFileOver"
     @drop.prevent="dropFile"
   >
     <div ref="terminal" class="terminal-content"></div>
     <scroll-bar v-if="viewport" :parent="viewport"></scroll-bar>
-  </div>
+  </article>
 </template>
 
 <script>
