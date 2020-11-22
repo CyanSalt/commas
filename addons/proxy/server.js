@@ -15,7 +15,7 @@ const {
 
 async function createServer() {
   const settings = await getSettings()
-  const port = settings['terminal.proxyServer.port']
+  const port = settings['proxy.server.port']
   const proxyRules = await getProxyRules()
   const rules = extractProxyRules(proxyRules)
   // TODO: catch EADDRINUSE and notify error

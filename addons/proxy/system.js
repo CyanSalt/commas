@@ -49,7 +49,7 @@ async function setGlobalWebProxy(options) {
 
 async function loadSystemProxy() {
   const settings = await getSettings()
-  const port = settings['terminal.proxyServer.port']
+  const port = settings['proxy.server.port']
   const proxy = await getGlobalWebProxy()
   return proxy
     && proxy.Enabled === 'Yes'
@@ -72,7 +72,7 @@ function handleSystemProxyMessages() {
   })
   ipcMain.handle('set-system-proxy-status', async (event, value) => {
     const settings = await getSettings()
-    const port = settings['terminal.proxyServer.port']
+    const port = settings['proxy.server.port']
     const proxy = value ? { host: '127.0.0.1', port } : false
     await setGlobalWebProxy(proxy)
     broadcast('system-proxy-status-updated', value)

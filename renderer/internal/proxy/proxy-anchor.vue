@@ -19,7 +19,7 @@ export default {
 
     state.port = computed(() => {
       const settings = unref(useSettings())
-      return settings['terminal.proxyServer.port']
+      return settings['proxy.server.port']
     })
 
     function toggleProxyServer() {
