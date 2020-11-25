@@ -152,7 +152,14 @@ export default {
 }
 .terminal-pane .form-line.block input.form-control,
 .terminal-pane .form-line.block textarea.form-control {
-  width: 495px;
+  box-sizing: border-box;
+  width: 480px;
+}
+.terminal-pane .form-line.block .object-editor input.form-control {
+  width: 208px;
+}
+.terminal-pane .form-line.block .object-editor input.form-control:only-of-type {
+  width: 452px;
 }
 .terminal-pane input.form-control::placeholder,
 .terminal-pane textarea.form-control::placeholder {

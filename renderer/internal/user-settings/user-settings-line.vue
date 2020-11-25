@@ -17,6 +17,17 @@
         >{{ comment }}#!user-settings.comments.{{ index }}.{{ spec.key }}</div>
       </div>
       <switch-control v-if="spec.type === 'boolean'" v-model="model"></switch-control>
+      <object-editor
+        v-else-if="spec.type === 'list' || spec.type === 'map'"
+        v-model="model"
+        :with-keys="spec.type === 'map'"
+      >
+        <template #extra>
+          <span class="link reset" @click="reset">
+            <span class="feather-icon icon-rotate-ccw"></span>
+          </span>
+        </template>
+      </object-editor>
       <input
         v-else-if="spec.type === 'number'"
         v-model="model"
@@ -53,12 +64,14 @@
 
 <script>
 import { reactive, computed, toRefs } from 'vue'
+import ObjectEditor from '../../components/basic/object-editor.vue'
 import SwitchControl from '../../components/basic/switch-control.vue'
 
 export default {
   name: 'user-settings-line',
   components: {
     'switch-control': SwitchControl,
+    'object-editor': ObjectEditor,
   },
   props: {
     spec: {
@@ -86,8 +99,11 @@ export default {
 
     state.model = computed({
       get: () => {
-        if (props.modelValue === undefined && ['boolean', 'enum'].includes(props.spec.type)) {
-          return state.placeholder
+        if (props.modelValue === undefined && ['boolean', 'enum', 'list', 'map'].includes(props.spec.type)) {
+          return normalize(props.spec.default)
+        }
+        if (['list', 'map'].includes(props.spec.type)) {
+          return normalize(props.modelValue)
         }
         return stringify(props.modelValue)
       },
@@ -100,6 +116,19 @@ export default {
       return props.spec.type === type || (
         Array.isArray(props.spec.type) && props.spec.type.includes(type)
       )
+    }
+
+    function normalize(value) {
+      if (accepts('list') && Array.isArray(value)) {
+        return value
+      }
+      if (accepts('map') && typeof value === 'object') {
+        return value
+      }
+      if (value === undefined) {
+        return ''
+      }
+      return value
     }
 
     function stringify(value) {
@@ -152,9 +181,14 @@ export default {
       state.collapsed = !state.collapsed
     }
 
+    function reset() {
+      state.model = props.spec.default
+    }
+
     return {
       ...toRefs(state),
       toggle,
+      reset,
     }
   },
 }

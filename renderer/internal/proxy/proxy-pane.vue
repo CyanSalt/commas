@@ -51,34 +51,27 @@
               </span>
             </div>
             <div v-show="!collapsedRuleIndexes.includes(row)" class="rule-detail">
-              <div v-for="(entry, index) in rule.context" :key="`entry:${index}`" class="rule-line">
-                <span class="link remove" @click="removeContext(rule, index)">
-                  <span class="feather-icon icon-minus"></span>
-                </span>
-                <input v-model="rule.context[index]" type="text" class="form-control">
-              </div>
-              <div class="rule-line">
-                <span class="link add" @click="addContext(rule)">
-                  <span class="feather-icon icon-plus"></span>
-                </span>
-                <span
-                  :class="['link', 'proxy-to', { active: isRecalling(rule), valid: rule.proxy.records }]"
-                  @click="recall(rule)"
-                >
-                  <span class="feather-icon icon-corner-down-right"></span>
-                </span>
-                <input
-                  v-model="rule.proxy.target"
-                  v-i18n:placeholder
-                  type="text"
-                  :readonly="isRecalling(rule)"
-                  placeholder="Proxy to...#!proxy.4"
-                  class="form-control target"
-                >
-                <span v-if="rule.proxy.rewrite" class="link rewriting">
-                  <span class="feather-icon icon-activity"></span>
-                </span>
-              </div>
+              <object-editor v-model="rule.context">
+                <template #extra>
+                  <span
+                    :class="['link', 'proxy-to', { active: isRecalling(rule), valid: rule.proxy.records }]"
+                    @click="recall(rule)"
+                  >
+                    <span class="feather-icon icon-corner-down-right"></span>
+                  </span>
+                  <input
+                    v-model="rule.proxy.target"
+                    v-i18n:placeholder
+                    type="text"
+                    :readonly="isRecalling(rule)"
+                    placeholder="Proxy to...#!proxy.4"
+                    class="form-control target"
+                  >
+                  <span v-if="rule.proxy.rewrite" class="link rewriting">
+                    <span class="feather-icon icon-activity"></span>
+                  </span>
+                </template>
+              </object-editor>
               <template v-if="isRecalling(rule)">
                 <div
                   v-for="(record, index) in rule.proxy.records"
@@ -111,6 +104,7 @@
 import { ipcRenderer } from 'electron'
 import { isEqual, cloneDeep } from 'lodash-es'
 import { reactive, toRefs, computed, toRaw, watchEffect } from 'vue'
+import ObjectEditor from '../../components/basic/object-editor.vue'
 import SortableList from '../../components/basic/sortable-list.vue'
 import SwitchControl from '../../components/basic/switch-control.vue'
 import TerminalPane from '../../components/basic/terminal-pane.vue'
@@ -122,6 +116,7 @@ export default {
     'terminal-pane': TerminalPane,
     'switch-control': SwitchControl,
     'sortable-list': SortableList,
+    'object-editor': ObjectEditor,
   },
   setup() {
     const state = reactive({
@@ -169,10 +164,6 @@ export default {
       state.collapsedRuleIndexes.forEach((value, indexOfValue) => {
         if (value > index) state.collapsedRuleIndexes[indexOfValue] -= 1
       })
-    }
-
-    function removeContext(rule, index) {
-      rule.context.splice(index, 1)
     }
 
     function isRecalling(rule) {
@@ -246,7 +237,6 @@ export default {
       confirm,
       addRule,
       removeRule,
-      removeContext,
       isRecalling,
       recall,
       useRecord,
@@ -308,9 +298,6 @@ export default {
   color: var(--design-yellow);
   opacity: 1;
   cursor: default;
-}
-.proxy-table .link.remove:hover {
-  color: var(--design-red);
 }
 .proxy-table input.form-control {
   margin-right: 4px;
