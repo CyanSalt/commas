@@ -21,6 +21,7 @@
         v-else-if="spec.type === 'list' || spec.type === 'map'"
         v-model="model"
         :with-keys="spec.type === 'map'"
+        :pinned="spec.recommendations"
       >
         <template #extra>
           <span class="link reset" @click="reset">

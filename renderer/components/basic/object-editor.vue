@@ -1,16 +1,19 @@
 <template>
   <div class="object-editor">
-    <div v-for="(entry, index) in entries" :key="index" class="property-line">
-      <span class="link remove" @click="remove(index)">
+    <div v-for="entry in allEntries" :key="entry.id" class="property-line">
+      <label v-if="entry.pinned" class="pinned-checker">
+        <input :checked="entry.index !== -1" type="checkbox" @change="togglePinned(entry)">
+      </label>
+      <span v-else class="link remove" @click="remove(entry)">
         <span class="feather-icon icon-minus"></span>
       </span>
       <template v-if="withKeys">
-        <input v-model="entry.key" type="text" class="form-control">
+        <input v-model="entry.key" :readonly="entry.pinned" type="text" class="form-control">
         <span class="property-arrow">
           <span class="feather-icon icon-arrow-right"></span>
         </span>
       </template>
-      <input v-model="entry.value" type="text" class="form-control">
+      <input v-model="entry.value" :readonly="entry.pinned" type="text" class="form-control">
     </div>
     <div class="property-line extra-line">
       <span class="link add" @click="add">
@@ -36,6 +39,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    pinned: {
+      type: undefined,
+      default: undefined,
+    },
   },
   emits: {
     'update:modelValue': (value) => {
@@ -45,6 +52,37 @@ export default {
   setup(props, { emit }) {
     const state = reactive({
       entries: [],
+    })
+
+    function transform(object) {
+      if (!object) return []
+      return Object.entries(object).map(([key, value]) => ({ key, value }))
+    }
+
+    function isMatchedWithPinned(entry, pinned) {
+      if (props.withKeys && entry.key !== pinned.key) return false
+      return entry.value === pinned.value
+    }
+
+    state.allEntries = computed(() => {
+      const pinnedEntries = transform(props.pinned)
+      const allPinnedEntries = pinnedEntries.map(entry => ({
+        ...entry,
+        pinned: true,
+        index: state.entries.findIndex(item => isMatchedWithPinned(item, entry)),
+        id: `pinned:${props.withKeys ? entry.key : entry.value}`,
+      }))
+      const extraEntries = state.entries
+        .map((entry, index) => ({
+          ...entry,
+          index,
+          id: index,
+        }))
+        .filter(entry => !pinnedEntries.some(item => isMatchedWithPinned(entry, item)))
+      return [
+        ...allPinnedEntries,
+        ...extraEntries,
+      ]
     })
 
     const resultRef = computed(() => {
@@ -58,9 +96,7 @@ export default {
     watch(() => props.modelValue, modelValue => {
       const result = unref(resultRef)
       if (!isEqual(modelValue, result)) {
-        state.entries = props.modelValue
-          ? Object.entries(props.modelValue).map(([key, value]) => ({ key, value }))
-          : []
+        state.entries = transform(props.modelValue)
       }
     }, { immediate: true })
 
@@ -72,14 +108,27 @@ export default {
       state.entries.push({ key: '', value: '' })
     }
 
-    function remove(index) {
-      state.entries.splice(index, 1)
+    function remove(entry) {
+      console.log(state.entries, entry)
+      state.entries.splice(entry.index, 1)
+    }
+
+    function togglePinned(entry) {
+      if (entry.index === -1) {
+        state.entries.push({
+          key: entry.key,
+          value: entry.value,
+        })
+      } else {
+        remove(entry)
+      }
     }
 
     return {
       ...toRefs(state),
       add,
       remove,
+      togglePinned,
     }
   },
 }
@@ -103,5 +152,10 @@ export default {
 .object-editor .property-arrow {
   width: 36px;
   text-align: center;
+}
+.object-editor .pinned-checker {
+  width: 24px;
+  text-align: center;
+  margin-right: 4px;
 }
 </style>
