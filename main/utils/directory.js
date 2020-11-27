@@ -49,7 +49,7 @@ class Directory {
   async write(basename, content) {
     await this.mkdir(basename)
     const file = this.file(basename)
-    return fs.promises.writeFile(file, content)
+    return fs.promises.writeFile(file, content + '\n')
   }
   /**
    * @param {string} basename
