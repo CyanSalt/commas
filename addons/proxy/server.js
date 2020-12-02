@@ -1,6 +1,5 @@
 const http = require('http')
 const net = require('net')
-const { ipcMain } = require('electron')
 const { createProxyServer } = require('http-proxy')
 const memoize = require('lodash/memoize')
 const { broadcast } = require('../../main/lib/frame')
@@ -80,17 +79,20 @@ async function reloadServer() {
   }
 }
 
-function handleProxyServerMessages() {
-  ipcMain.handle('get-proxy-server-status', () => {
+function handleProxyServerMessages(commas) {
+  commas.ipcMain.handle('get-proxy-server-status', () => {
     return startServer.cache.has()
   })
-  ipcMain.handle('set-proxy-server-status', () => {
+  commas.ipcMain.handle('set-proxy-server-status', () => {
     const currentServer = startServer.cache.get()
     if (currentServer) {
       stopServer()
     } else {
       startServer()
     }
+  })
+  commas.app.onInvalidate(() => {
+    stopServer()
   })
 }
 

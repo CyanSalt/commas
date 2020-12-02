@@ -1,13 +1,19 @@
+const difference = require('lodash/difference')
 const commas = require('../../api/main')
 const { userData } = require('../utils/directory')
 const { getSettings, getSettingsEvents } = require('./settings')
 
+let loadedAddons = []
 async function applyAddons() {
   const settings = await getSettings()
   const addons = settings['terminal.addon.includes']
-  for (const addon of addons) {
+  difference(loadedAddons, addons).forEach(addon => {
+    commas.app.unloadAddon(addon)
+  })
+  difference(addons, loadedAddons).forEach(addon => {
     commas.app.loadAddon(addon, commas)
-  }
+  })
+  loadedAddons = [...addons]
 }
 
 function loadAddons() {

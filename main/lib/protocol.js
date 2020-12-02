@@ -9,7 +9,7 @@ const { app } = require('electron')
 /**
  * @type {Route[]}
  */
-const routes = []
+let routes = []
 
 /**
  * @param {string} name
@@ -17,6 +17,13 @@ const routes = []
  */
 function addRoute(name, handler) {
   routes.push({ name, handler })
+}
+
+/**
+ * @param {string} name
+ */
+function removeRoute(name) {
+  routes = routes.filter(route => route.name !== name)
 }
 
 function startServingProtocol() {
@@ -37,6 +44,7 @@ function handleProtocolRequest(url) {
 
 module.exports = {
   addRoute,
+  removeRoute,
   startServingProtocol,
   handleProtocolRequest,
 }

@@ -6,14 +6,19 @@ module.exports = function (commas) {
     commas.i18n.addTranslation(['zh', 'zh-CN'], require('./locales/zh-CN.json'))
 
     ipcMain.removeHandler('open-settings')
-    ipcMain.handle('open-settings', () => {
+
+    commas.ipcMain.handle('open-settings', () => {
       const frame = commas.frame.getFocusedWindow()
       frame.webContents.send('open-settings-pane')
     })
 
-  } else {
+    commas.app.onInvalidate(() => {
+      ipcMain.handle('open-settings', () => {
+        return commas.settings.openFile()
+      })
+    })
 
-    const { ipcRenderer } = require('electron')
+  } else {
 
     commas.workspace.registerTabPane('settings', {
       title: 'Settings#!settings.1',
@@ -23,7 +28,7 @@ module.exports = function (commas) {
       },
     })
 
-    ipcRenderer.on('open-settings-pane', () => {
+    commas.ipcRenderer.on('open-settings-pane', () => {
       const { activateOrAddTerminalTab } = commas.module.require('hooks/terminal.mjs')
       const settingsTab = commas.workspace.getPaneTab('settings')
       activateOrAddTerminalTab(settingsTab)

@@ -1,5 +1,4 @@
 const EventEmitter = require('events')
-const { ipcMain } = require('electron')
 const cloneDeep = require('lodash/cloneDeep')
 const memoize = require('lodash/memoize')
 const { broadcast } = require('../../main/lib/frame')
@@ -88,11 +87,11 @@ async function updateProxyRules() {
   events.emit('updated', rules)
 }
 
-function handleProxyRulesMessages() {
-  ipcMain.handle('get-proxy-rules', () => {
+function handleProxyRulesMessages(commas) {
+  commas.ipcMain.handle('get-proxy-rules', () => {
     return getProxyRules()
   })
-  ipcMain.handle('set-proxy-rules', async (event, rules) => {
+  commas.ipcMain.handle('set-proxy-rules', async (event, rules) => {
     const result = await getRawProxyRules()
     return userData.update('proxy-rules.json', {
       data: resolveRuleTargets(rules),

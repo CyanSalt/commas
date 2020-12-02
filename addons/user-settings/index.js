@@ -13,7 +13,7 @@ module.exports = function (commas) {
       },
     })
 
-    commas.storage.shareArray('settings').push({
+    commas.storage.shareDataIntoArray('settings', {
       component: commas.module.require('internal/user-settings/user-settings-link.vue').default,
       group: 'general',
     })

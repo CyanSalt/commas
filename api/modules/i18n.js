@@ -1,4 +1,4 @@
-const { translate, addTranslation } = require('../../main/lib/i18n')
+const { translate, addTranslation, removeTranslation } = require('../../main/lib/i18n')
 
 /**
  * @typedef {import('../../main/lib/i18n').Dictionary} Dictionary
@@ -10,6 +10,9 @@ const { translate, addTranslation } = require('../../main/lib/i18n')
  */
 function noConflictAddTranslation(locales, dictionary) {
   addTranslation(locales, dictionary)
+  this.$.app.onInvalidate(() => {
+    removeTranslation(locales, dictionary)
+  })
 }
 
 module.exports = {

@@ -12,6 +12,16 @@ function shareArray(name) {
   return namespaces[name]
 }
 
+function shareDataIntoArray(name, data) {
+  const sharedArray = shareArray(name)
+  sharedArray.push(data)
+  this.$.app.onInvalidate(() => {
+    const index = sharedArray.indexOf(data)
+    sharedArray.splice(index, 1)
+  })
+}
+
 module.exports = {
   shareArray,
+  shareDataIntoArray,
 }

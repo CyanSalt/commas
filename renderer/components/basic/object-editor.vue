@@ -109,7 +109,6 @@ export default {
     }
 
     function remove(entry) {
-      console.log(state.entries, entry)
       state.entries.splice(entry.index, 1)
     }
 

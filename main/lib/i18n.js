@@ -1,4 +1,5 @@
 const { app, ipcMain } = require('electron')
+const findIndex = require('lodash/findIndex')
 const memoize = require('lodash/memoize')
 const localeEntries = require('../../resources/locales/index.json')
 const { userData, resources } = require('../utils/directory')
@@ -42,6 +43,11 @@ const getDictionary = memoize(() => {
   return dictionary
 })
 
+function updateTranslation() {
+  getDictionary.cache.clear()
+  broadcast('dictionary-updated', getDictionary())
+}
+
 /**
  * @param {Translation['locales']} locales
  * @param {Translation['dictionary']} dictionary
@@ -49,8 +55,20 @@ const getDictionary = memoize(() => {
  */
 function addTranslation(locales, dictionary, priority = Priority.custom) {
   translations.push({ locales, dictionary, priority })
-  getDictionary.cache.clear()
-  broadcast('dictionary-updated', getDictionary())
+  updateTranslation()
+}
+
+/**
+ * @param {Translation['locales']} locales
+ * @param {Translation['dictionary']} dictionary
+ * @param {Translation['priority']} priority
+ */
+function removeTranslation(locales, dictionary, priority = Priority.custom) {
+  const index = findIndex(translations, { locales, dictionary, priority })
+  if (index !== -1) {
+    translations.splice(index, 1)
+    updateTranslation()
+  }
 }
 
 /**
@@ -103,5 +121,6 @@ module.exports = {
   loadTranslation,
   translate,
   addTranslation,
+  removeTranslation,
   handleI18NMessages,
 }

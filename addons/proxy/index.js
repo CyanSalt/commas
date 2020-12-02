@@ -5,9 +5,9 @@ module.exports = function (commas) {
     const { handleSystemProxyMessages } = require('./system')
     const { handleProxyRulesMessages } = require('./rules')
 
-    handleProxyServerMessages()
-    handleSystemProxyMessages()
-    handleProxyRulesMessages()
+    handleProxyServerMessages(commas)
+    handleSystemProxyMessages(commas)
+    handleProxyRulesMessages(commas)
 
     commas.settings.addSpecs(require('./settings.spec.json'))
 
@@ -27,7 +27,7 @@ module.exports = function (commas) {
       commas.module.require('internal/proxy/proxy-anchor.vue').default
     )
 
-    commas.storage.shareArray('settings').push({
+    commas.storage.shareDataIntoArray('settings', {
       component: commas.module.require('internal/proxy/proxy-link.vue').default,
       group: 'feature',
     })

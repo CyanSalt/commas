@@ -23,7 +23,7 @@ const { broadcast } = require('./frame')
 /**
  * @type {SettingSpec[]}
  */
-const currentSpecs = defaultSpecs
+let currentSpecs = defaultSpecs
 
 const getSettingsEvents = memoize(() => {
   return new EventEmitter()
@@ -31,6 +31,13 @@ const getSettingsEvents = memoize(() => {
 
 function addSettingsSpecs(specs) {
   currentSpecs.push(...specs)
+  broadcast('settings-specs-updated', currentSpecs)
+  updateSettings()
+}
+
+function removeSettingsSpecs(specs) {
+  currentSpecs = currentSpecs.filter(item => specs.some(spec => spec.key !== item.key))
+  broadcast('settings-specs-updated', currentSpecs)
   updateSettings()
 }
 
@@ -100,7 +107,7 @@ async function updateSettings() {
   events.emit('updated', data)
 }
 
-async function openSettings() {
+async function openSettingsFile() {
   const name = 'settings.json'
   const file = userData.file(name)
   try {
@@ -164,10 +171,10 @@ function handleSettingsMessages() {
     })
   })
   ipcMain.handle('open-settings-file', () => {
-    return openSettings()
+    return openSettingsFile()
   })
   ipcMain.handle('open-settings', () => {
-    return openSettings()
+    return openSettingsFile()
   })
   ipcMain.handle('open-default-settings', () => {
     return openDefaultSettings()
@@ -188,5 +195,7 @@ module.exports = {
   getDefaultSettings,
   getSettingsEvents,
   addSettingsSpecs,
+  removeSettingsSpecs,
+  openSettingsFile,
   handleSettingsMessages,
 }

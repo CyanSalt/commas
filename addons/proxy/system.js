@@ -1,4 +1,3 @@
-const { ipcMain } = require('electron')
 const memoize = require('lodash/memoize')
 const { broadcast } = require('../../main/lib/frame')
 const { getSettings, getSettingsEvents } = require('../../main/lib/settings')
@@ -66,16 +65,20 @@ const getSystemProxy = memoize(() => {
   return loadSystemProxy()
 })
 
-function handleSystemProxyMessages() {
-  ipcMain.handle('get-system-proxy-status', () => {
+function handleSystemProxyMessages(commas) {
+  commas.ipcMain.handle('get-system-proxy-status', () => {
     return getSystemProxy()
   })
-  ipcMain.handle('set-system-proxy-status', async (event, value) => {
+  commas.ipcMain.handle('set-system-proxy-status', async (event, value) => {
     const settings = await getSettings()
     const port = settings['proxy.server.port']
     const proxy = value ? { host: '127.0.0.1', port } : false
     await setGlobalWebProxy(proxy)
     broadcast('system-proxy-status-updated', value)
+  })
+  commas.app.onInvalidate(async () => {
+    await setGlobalWebProxy(false)
+    broadcast('system-proxy-status-updated', false)
   })
 }
 
