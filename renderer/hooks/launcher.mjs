@@ -96,7 +96,12 @@ export async function startLauncherExternally(launcher) {
     return shell.openPath(directory)
   }
   if (!Array.isArray(explorer)) {
-    explorer = [explorer]
+    // Use applications on macOS by default
+    if (process.platform === 'darwin') {
+      explorer = ['open', '-a', explorer]
+    } else {
+      explorer = [explorer]
+    }
   }
   const [command, ...args] = explorer
   return ipcRenderer.invoke('spawn-process', command, [...args, directory])

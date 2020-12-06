@@ -137,7 +137,7 @@ async function openUserFile(file) {
   try {
     await fs.promises.access(filePath)
   } catch {
-    const examplePath = resources.file(path.join('example', file))
+    const examplePath = resources.file(path.join('examples', file))
     await fs.promises.copyFile(examplePath, filePath)
   }
   return shell.openPath(filePath)
