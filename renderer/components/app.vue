@@ -107,7 +107,15 @@ export default {
       const tabs = unref(tabsRef)
       if (!willQuit && tabs.length > 1) {
         event.returnValue = false
-        confirmClosing()
+        const confirmed = await confirmClosing()
+        if (confirmed) {
+          commas.app.unloadAddons()
+          commas.app.events.emit('unload')
+          ipcRenderer.invoke('destroy')
+        }
+      } else {
+        commas.app.unloadAddons()
+        commas.app.events.emit('unload')
       }
     })
 

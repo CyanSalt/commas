@@ -30,7 +30,7 @@ export async function confirmClosing() {
     cancelId: 1,
   }
   const { response } = await ipcRenderer.invoke('message-box', args)
-  if (response === 0) ipcRenderer.invoke('destroy')
+  return response === 0
 }
 
 export function handleShellMessages() {

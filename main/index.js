@@ -77,3 +77,8 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
+
+app.on('will-quit', () => {
+  commas.app.unloadAddons()
+  commas.app.events.emit('unload')
+})

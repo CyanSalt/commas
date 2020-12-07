@@ -24,14 +24,13 @@ function cloneAPIModule(object, context) {
 }
 
 function cloneAPI(api, name) {
-  const proxy = new Proxy(api, {
+  return new Proxy(api, {
     get(target, property, receiver) {
-      const context = { $: proxy, addon: name }
+      const context = { $: receiver, addon: name }
       const value = Reflect.get(target, property, receiver)
       return value instanceof Object ? cloneAPIModule(value, context) : value
     },
   })
-  return proxy
 }
 
 let loadedAddons = []
@@ -50,6 +49,10 @@ function unloadAddon(name) {
   }
 }
 
+function unloadAddons() {
+  loadedAddons.forEach(unloadAddon)
+}
+
 function onInvalidate(callback) {
   events.once(`unload:${this.addon}`, callback)
 }
@@ -60,5 +63,6 @@ module.exports = {
   cloneAPI,
   loadAddon,
   unloadAddon,
+  unloadAddons,
   onInvalidate,
 }
