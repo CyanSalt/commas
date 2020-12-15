@@ -3,7 +3,7 @@ const { addSettingsSpecs, removeSettingsSpecs, openSettingsFile } = require('../
 function addSpecs(specs) {
   const validSpecs = specs.filter(spec => spec.key && spec.key.startsWith(`${this.addon}.`))
   addSettingsSpecs(validSpecs)
-  this.$.app.onInvalidate(() => {
+  this.$.app.onCleanup(() => {
     removeSettingsSpecs(validSpecs)
   })
 }

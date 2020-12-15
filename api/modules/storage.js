@@ -15,7 +15,7 @@ function shareArray(name) {
 function shareDataIntoArray(name, data) {
   const sharedArray = shareArray(name)
   sharedArray.push(data)
-  this.$.app.onInvalidate(() => {
+  this.$.app.onCleanup(() => {
     const index = sharedArray.indexOf(data)
     sharedArray.splice(index, 1)
   })

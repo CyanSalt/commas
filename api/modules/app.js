@@ -53,7 +53,7 @@ function unloadAddons() {
   loadedAddons.forEach(unloadAddon)
 }
 
-function onInvalidate(callback) {
+function onCleanup(callback) {
   events.once(`unload:${this.addon}`, callback)
 }
 
@@ -64,5 +64,5 @@ module.exports = {
   loadAddon,
   unloadAddon,
   unloadAddons,
-  onInvalidate,
+  onCleanup,
 }

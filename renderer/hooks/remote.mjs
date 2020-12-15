@@ -6,9 +6,9 @@ import { watchEffect, shallowRef, computed, unref, toRaw } from 'vue'
  * @param {(...args: any[]) => void} handler
  */
 export function watchRemoteEffect(event, handler) {
-  watchEffect((onInvalidate) => {
+  watchEffect((onCleanup) => {
     ipcRenderer.on(event, handler)
-    onInvalidate(() => {
+    onCleanup(() => {
       ipcRenderer.off(event, handler)
     })
   })

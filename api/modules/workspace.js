@@ -16,7 +16,7 @@ function registerTabPane(name, pane) {
     cwd: '',
     pane,
   })
-  this.$.app.onInvalidate(() => {
+  this.$.app.onCleanup(() => {
     delete tabs[name]
   })
 }
@@ -27,7 +27,7 @@ function getPaneTab(name) {
 
 function addAnchor(anchor) {
   anchors.push(anchor)
-  this.$.app.onInvalidate(() => {
+  this.$.app.onCleanup(() => {
     const index = anchors.indexOf(anchor)
     if (index !== -1) {
       anchors.splice(index, 1)

@@ -10,7 +10,7 @@ const { translate, addTranslation, removeTranslation } = require('../../main/lib
  */
 function noConflictAddTranslation(locales, dictionary) {
   addTranslation(locales, dictionary)
-  this.$.app.onInvalidate(() => {
+  this.$.app.onCleanup(() => {
     removeTranslation(locales, dictionary)
   })
 }

@@ -76,7 +76,7 @@ function handleSystemProxyMessages(commas) {
     await setGlobalWebProxy(proxy)
     broadcast('system-proxy-status-updated', value)
   })
-  commas.app.onInvalidate(async () => {
+  commas.app.onCleanup(async () => {
     await setGlobalWebProxy(false)
     broadcast('system-proxy-status-updated', false)
   })

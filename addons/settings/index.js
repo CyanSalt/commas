@@ -12,7 +12,7 @@ module.exports = function (commas) {
       frame.webContents.send('open-settings-pane')
     })
 
-    commas.app.onInvalidate(() => {
+    commas.app.onCleanup(() => {
       ipcMain.handle('open-settings', () => {
         return commas.settings.openFile()
       })

@@ -19,20 +19,20 @@ const themeStyleRef = computed(() => {
 })
 
 export function injectTheme() {
-  watchEffect((onInvalidate) => {
+  watchEffect((onCleanup) => {
     const theme = unref(useTheme())
     const type = theme.type
     document.body.dataset.themeType = type
-    onInvalidate(() => {
+    onCleanup(() => {
       delete document.body.dataset.themeType
     })
   })
-  watchEffect((onInvalidate) => {
+  watchEffect((onCleanup) => {
     const style = unref(themeStyleRef)
     const declarations = Object.entries(style)
       .map(([key, value]) => `${key}: ${value};`).join(' ')
     const injection = ipcRenderer.invoke('inject-style', `#root { ${declarations} }`)
-    onInvalidate(async () => {
+    onCleanup(async () => {
       ipcRenderer.invoke('eject-style', await injection)
     })
   })

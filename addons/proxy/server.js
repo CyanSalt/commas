@@ -91,7 +91,7 @@ function handleProxyServerMessages(commas) {
       startServer()
     }
   })
-  commas.app.onInvalidate(() => {
+  commas.app.onCleanup(() => {
     stopServer()
   })
 }
