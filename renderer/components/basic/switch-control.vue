@@ -79,7 +79,7 @@ export default {
   transition: transform 0.2s;
 }
 .switch-control input:checked + .switch-content::before {
-  background: var(--design-blue);
+  background: var(--system-accent);
   opacity: 1;
 }
 .switch-control input:checked + .switch-content::after {

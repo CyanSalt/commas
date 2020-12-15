@@ -1,4 +1,4 @@
-const { ipcMain, nativeTheme } = require('electron')
+const { ipcMain, nativeTheme, systemPreferences } = require('electron')
 const memoize = require('lodash/memoize')
 const { toRGBA, toCSSColor, toElectronColor, isDarkColor, mix } = require('../utils/color')
 const { resources, userData } = require('../utils/directory')
@@ -53,6 +53,8 @@ async function loadTheme() {
   if (!theme.cursorAccent) {
     theme.cursorAccent = theme.background
   }
+  const accentColor = systemPreferences.getAccentColor()
+  theme.systemAccent = accentColor ? `#${accentColor.slice(0, 6)}` : ''
   setThemeOptions({
     backgroundColor: toElectronColor({ ...backgroundRGBA, a: 0 }),
     vibrancy: opacity === 0 ? 'tooltip' : null,

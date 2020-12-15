@@ -158,6 +158,7 @@ body {
   color: var(--theme-foreground, transparent);
   background: var(--theme-backdrop);
   transition: background 0.2s;
+  --system-accent: var(--design-blue);
 }
 .app.opaque {
   background: var(--theme-background);

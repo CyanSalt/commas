@@ -11,10 +11,13 @@ export const useTheme = memoize(() => {
 })
 
 const themeStyleRef = computed(() => {
+  const property = {
+    systemAccent: '--system-accent',
+  }
   const theme = unref(useTheme())
   return Object.fromEntries(
     Object.entries(theme).filter(([key, value]) => value)
-      .map(([key, value]) => [`--theme-${key.toLowerCase()}`, value])
+      .map(([key, value]) => [property[key] ?? `--theme-${key.toLowerCase()}`, value])
   )
 })
 
