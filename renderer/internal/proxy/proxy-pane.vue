@@ -148,6 +148,8 @@ export default {
 
     function addRule() {
       state.table.push({
+        _enabled: true,
+        title: '',
         context: [''],
         proxy: {
           target: '',
