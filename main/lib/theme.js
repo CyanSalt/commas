@@ -57,7 +57,7 @@ async function loadTheme() {
   theme.systemAccent = accentColor ? `#${accentColor.slice(0, 6)}` : ''
   setThemeOptions({
     backgroundColor: toElectronColor({ ...backgroundRGBA, a: 0 }),
-    vibrancy: opacity === 0 ? 'tooltip' : null,
+    vibrancy: opacity === 0 ? 'sidebar' : null,
   })
   // Enable system dark mode
   nativeTheme.themeSource = theme.type
