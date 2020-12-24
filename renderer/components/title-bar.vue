@@ -159,6 +159,7 @@ export default {
   justify-content: space-between;
   text-align: center;
   -webkit-app-region: drag;
+  z-index: 1;
 }
 .title-bar .git-branch,
 .title-bar .controls {

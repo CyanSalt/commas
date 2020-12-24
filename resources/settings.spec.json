@@ -168,7 +168,7 @@
     "key": "terminal.addon.includes",
     "type": "list",
     "paradigm": ["string"],
-    "recommendations": ["settings", "proxy", "user-settings", "theme", "sync", "menu"],
+    "recommendations": ["settings", "proxy", "user-settings", "theme", "sync", "menu", "landscape"],
     "label": "Enabled Addons",
     "comments": [
       "List of enabled addon name"

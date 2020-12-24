@@ -23,6 +23,12 @@
         </template>
       </main>
     </div>
+    <component
+      :is="slot"
+      v-for="(slot, index) in slots"
+      :key="index"
+      class="slot"
+    ></component>
   </div>
 </template>
 
@@ -67,6 +73,7 @@ export default {
       isFullscreen: useFullscreen(),
       isTabListEnabled: useIsTabListEnabled(),
       terminal: useCurrentTerminal(),
+      slots: commas.workspace.useSlots(),
     })
 
     loadAddons()
@@ -168,6 +175,7 @@ body {
   width: 100vw;
   display: flex;
   overflow: hidden;
+  z-index: 1;
 }
 .app .interface {
   flex: auto;
