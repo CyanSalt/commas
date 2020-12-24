@@ -11,5 +11,9 @@ module.exports = function (commas) {
       commas.module.require('internal/landscape/landscape-slot.vue').default
     )
 
+    commas.workspace.addAnchor(
+      commas.module.require('internal/landscape/landscape-anchor.vue').default
+    )
+
   }
 }

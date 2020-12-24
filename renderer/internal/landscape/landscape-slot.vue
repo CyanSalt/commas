@@ -16,7 +16,7 @@
       </mask>
       <filter id="background-filter">
         <feComponentTransfer>
-          <feFuncA type="linear" slope="5" intercept="-4.7" />
+          <feFuncA type="linear" slope="0.3" />
         </feComponentTransfer>
       </filter>
     </defs>
@@ -35,12 +35,13 @@
 <script>
 import { computed, reactive, toRefs, unref } from 'vue'
 import { useSettings } from '../../hooks/settings.mjs'
+import { useNonce } from './hooks.mjs'
 
 export default {
   name: 'landscape-slot',
   setup() {
     const state = reactive({
-      nonce: Date.now(),
+      nonce: useNonce(),
     })
 
     const settingsRef = useSettings()
