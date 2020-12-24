@@ -11,7 +11,7 @@
           width="100vw"
           height="100vh"
           preserveAspectRatio="none slice"
-          xlink:href="http://picsum.photos/836/469?image="
+          :xlink:href="url"
         />
       </mask>
       <filter id="background-filter">
@@ -33,8 +33,27 @@
 </template>
 
 <script>
+import { computed, reactive, toRefs, unref } from 'vue'
+import { useSettings } from '../../hooks/settings.mjs'
+
 export default {
   name: 'landscape-slot',
+  setup() {
+    const state = reactive({
+      nonce: Date.now(),
+    })
+
+    const settingsRef = useSettings()
+
+    state.url = computed(() => {
+      const settings = unref(settingsRef)
+      return settings['landscape.background.url'].replace('<nonce>', state.nonce)
+    })
+
+    return {
+      ...toRefs(state),
+    }
+  },
 }
 </script>
 
