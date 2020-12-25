@@ -1,19 +1,19 @@
 <template>
   <div class="object-editor">
-    <div v-for="entry in allEntries" :key="entry.id" class="property-line">
-      <label v-if="entry.pinned" class="pinned-checker">
-        <input :checked="entry.index !== -1" type="checkbox" @change="togglePinned(entry)">
+    <div v-for="item in entryItems" :key="item.id" class="property-line">
+      <label v-if="item.pinned" class="pinned-checker">
+        <input :checked="item.index !== -1" type="checkbox" @change="togglePinned(item)">
       </label>
-      <span v-else class="link remove" @click="remove(entry)">
+      <span v-else class="link remove" @click="remove(item)">
         <span class="feather-icon icon-minus"></span>
       </span>
       <template v-if="withKeys">
-        <input v-model="entry.key" :readonly="entry.pinned" type="text" class="form-control">
+        <input v-model="item.entry.key" :readonly="item.pinned" type="text" class="form-control">
         <span class="property-arrow">
           <span class="feather-icon icon-arrow-right"></span>
         </span>
       </template>
-      <input v-model="entry.value" :readonly="entry.pinned" type="text" class="form-control">
+      <input v-model="item.entry.value" :readonly="item.pinned" type="text" class="form-control">
     </div>
     <div class="property-line extra-line">
       <span class="link add" @click="add">
@@ -64,24 +64,24 @@ export default {
       return entry.value === pinned.value
     }
 
-    state.allEntries = computed(() => {
+    state.entryItems = computed(() => {
       const pinnedEntries = transform(props.pinned)
-      const allPinnedEntries = pinnedEntries.map(entry => ({
-        ...entry,
+      const pinnedItems = pinnedEntries.map(entry => ({
+        entry,
         pinned: true,
         index: state.entries.findIndex(item => isMatchedWithPinned(item, entry)),
         id: `pinned:${props.withKeys ? entry.key : entry.value}`,
       }))
-      const extraEntries = state.entries
+      const extraItems = state.entries
         .map((entry, index) => ({
-          ...entry,
+          entry,
           index,
           id: index,
         }))
-        .filter(entry => !pinnedEntries.some(item => isMatchedWithPinned(entry, item)))
+        .filter(item => !pinnedItems.some(pinned => isMatchedWithPinned(item.entry, pinned.entry)))
       return [
-        ...allPinnedEntries,
-        ...extraEntries,
+        ...pinnedItems,
+        ...extraItems,
       ]
     })
 
@@ -108,18 +108,15 @@ export default {
       state.entries.push({ key: '', value: '' })
     }
 
-    function remove(entry) {
-      state.entries.splice(entry.index, 1)
+    function remove(item) {
+      state.entries.splice(item.index, 1)
     }
 
-    function togglePinned(entry) {
-      if (entry.index === -1) {
-        state.entries.push({
-          key: entry.key,
-          value: entry.value,
-        })
+    function togglePinned(item) {
+      if (item.index === -1) {
+        state.entries.push({ ...item.entry })
       } else {
-        remove(entry)
+        remove(item)
       }
     }
 
