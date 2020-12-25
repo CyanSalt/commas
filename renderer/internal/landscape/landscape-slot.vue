@@ -1,39 +1,42 @@
 <template>
-  <svg
-    version="1.1"
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    class="landscape-slot"
-  >
-    <defs>
-      <mask id="background-mask">
-        <image
-          width="100vw"
-          height="100vh"
-          preserveAspectRatio="none slice"
-          :xlink:href="url"
-        />
-      </mask>
-      <filter id="background-filter">
-        <feComponentTransfer>
-          <feFuncA type="linear" slope="0.3" />
-        </feComponentTransfer>
-      </filter>
-    </defs>
-    <rect
-      x="0"
-      y="0"
-      width="100vw"
-      height="100vh"
-      fill="var(--theme-foreground)"
-      mask="url(#background-mask)"
-      filter="url(#background-filter)"
-    />
-  </svg>
+  <transition name="landscape">
+    <svg
+      :key="lazyURL"
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      class="landscape-slot"
+    >
+      <defs>
+        <mask id="background-mask">
+          <image
+            width="100vw"
+            height="100vh"
+            preserveAspectRatio="none slice"
+            :xlink:href="lazyURL"
+          />
+        </mask>
+        <filter id="background-filter">
+          <feComponentTransfer>
+            <feFuncA type="linear" slope="0.3" />
+          </feComponentTransfer>
+        </filter>
+      </defs>
+      <rect
+        x="0"
+        y="0"
+        width="100vw"
+        height="100vh"
+        fill="var(--theme-foreground)"
+        mask="url(#background-mask)"
+        filter="url(#background-filter)"
+      />
+    </svg>
+  </transition>
 </template>
 
 <script>
-import { computed, reactive, toRefs, unref } from 'vue'
+import { computed, reactive, toRefs, unref, watchEffect } from 'vue'
 import { useSettings } from '../../hooks/settings.mjs'
 import { useNonce } from './hooks.mjs'
 
@@ -42,13 +45,21 @@ export default {
   setup() {
     const state = reactive({
       nonce: useNonce(),
+      lazyURL: '',
     })
 
     const settingsRef = useSettings()
-
-    state.url = computed(() => {
+    const urlRef = computed(() => {
       const settings = unref(settingsRef)
       return settings['landscape.background.url'].replace('<nonce>', state.nonce)
+    })
+
+    watchEffect(() => {
+      const image = new Image()
+      image.src = unref(urlRef)
+      image.addEventListener('load', () => {
+        state.lazyURL = image.src
+      })
     })
 
     return {
@@ -65,5 +76,16 @@ export default {
   left: 0;
   width: 100vw;
   height: 100vh;
+}
+.landscape-slot.landscape-enter-active {
+  transition: opacity 0.5s;
+}
+.landscape-slot.landscape-enter-from,
+.landscape-slot.landscape-leave-to {
+  opacity: 0;
+}
+.landscape-slot.landscape-enter-to,
+.landscape-slot.landscape-leave-from {
+  opacity: 1;
 }
 </style>
