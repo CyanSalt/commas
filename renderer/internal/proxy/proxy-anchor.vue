@@ -17,8 +17,9 @@ export default {
       isActive: useProxyServerStatus(),
     })
 
+    const settingsRef = useSettings()
     state.port = computed(() => {
-      const settings = unref(useSettings())
+      const settings = unref(settingsRef)
       return settings['proxy.server.port']
     })
 
