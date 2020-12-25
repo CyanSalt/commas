@@ -1,10 +1,8 @@
 const EventEmitter = require('events')
+const { userData } = require('../../main/utils/directory')
+const { isMainProcess, isPackaged } = require('../../main/utils/env')
 
 const events = new EventEmitter()
-
-function isMainProcess() {
-  return process.type === 'browser'
-}
 
 function cloneAPIMethod(method, context) {
   return new Proxy(method, {
@@ -36,8 +34,11 @@ function cloneAPI(api, name) {
 let loadedAddons = []
 function loadAddon(name, api) {
   if (loadedAddons.includes(name)) return
-  // TODO: support userland addons
-  require(`../../addons/${name}`)(cloneAPI(api, name))
+  const addon = userData.require(`addons/${name}`) || require(`../../addons/${name}`)
+  if (!addon) {
+    throw new Error(`Cannot find addon '${name}'.`)
+  }
+  addon(cloneAPI(api, name))
   loadedAddons.push(name)
 }
 
@@ -60,6 +61,7 @@ function onCleanup(callback) {
 module.exports = {
   events,
   isMainProcess,
+  isPackaged,
   cloneAPI,
   loadAddon,
   unloadAddon,

@@ -1,5 +1,6 @@
 const fs = require('fs')
 const { app, autoUpdater } = require('electron')
+const { isPackaged } = require('../utils/env')
 const { notify } = require('../utils/notification')
 const { translate } = require('./i18n')
 const { getSettings, getSettingsEvents } = require('./settings')
@@ -24,7 +25,7 @@ async function executeChecking() {
 }
 
 function checkForUpdates() {
-  if (!app.isPackaged || !['darwin', 'win32'].includes(process.platform)) return
+  if (!isPackaged() || !['darwin', 'win32'].includes(process.platform)) return
   autoUpdater.on('update-available', () => {
     clearInterval(autoUpdaterTimer)
   })
