@@ -2,7 +2,6 @@ const fs = require('fs')
 const { app, ipcMain } = require('electron')
 const memoize = require('lodash/memoize')
 const pty = require('node-pty')
-const { isPackaged } = require('../utils/env')
 const { execa } = require('../utils/helper')
 const { getSettings } = require('./settings')
 
@@ -54,7 +53,7 @@ async function createTerminal(webContents, { shell, cwd }) {
     ...settings['terminal.shell.env'],
   }
   // Fix NVM `npm_config_prefix` error in development environment
-  if (!isPackaged() && env.npm_config_prefix) {
+  if (!app.isPackaged && env.npm_config_prefix) {
     delete env.npm_config_prefix
   }
   if (!shell) {

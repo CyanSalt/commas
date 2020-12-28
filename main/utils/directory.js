@@ -3,7 +3,6 @@ const path = require('path')
 const { app, net } = require('electron')
 const JSON5 = require('json5')
 const debounce = require('lodash/debounce')
-const { isPackaged } = require('./env')
 const { emitting } = require('./helper')
 const Writer = require('./writer')
 
@@ -144,7 +143,7 @@ class Directory {
 
 const rootDir = path.join(__dirname, '../../')
 
-const userDataDir = isPackaged()
+const userDataDir = app.isPackaged
   ? app.getPath('userData') : path.join(rootDir, 'userdata/')
 const resourcesDir = path.join(rootDir, 'resources/')
 

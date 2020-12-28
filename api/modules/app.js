@@ -1,8 +1,24 @@
 const EventEmitter = require('events')
-const { userData } = require('../../main/utils/directory')
-const { isMainProcess, isPackaged } = require('../../main/utils/env')
+const path = require('path')
+const { app, ipcRenderer } = require('electron')
 
 const events = new EventEmitter()
+
+function isMainProcess() {
+  return process.type === 'browser'
+}
+
+function isPackaged() {
+  return isMainProcess()
+    ? app.isPackaged
+    : process.argv.some(arg => arg.startsWith('--app-path=') && arg.endsWith('app.asar'))
+}
+
+function getPath(name) {
+  return isMainProcess()
+    ? app.getPath(name)
+    : ipcRenderer.sendSync('get-path', name)
+}
 
 function cloneAPIMethod(method, context) {
   return new Proxy(method, {
@@ -34,9 +50,11 @@ function cloneAPI(api, name) {
 let loadedAddons = []
 function loadAddon(name, api) {
   if (loadedAddons.includes(name)) return
-  const addon = userData.require(`addons/${name}`) || require(`../../addons/${name}`)
-  if (!addon) {
-    throw new Error(`Cannot find addon '${name}'.`)
+  let addon
+  try {
+    addon = require(path.join(getPath('userData'), 'addons', name))
+  } catch {
+    addon = require(`../../addons/${name}`)
   }
   addon(cloneAPI(api, name))
   loadedAddons.push(name)

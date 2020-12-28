@@ -10,6 +10,9 @@ function handleMessages() {
   app.on('before-quit', () => {
     broadcast('before-quit')
   })
+  ipcMain.on('get-path', (event, name) => {
+    event.returnValue = app.getPath(name)
+  })
   ipcMain.handle('get-app-version', (event) => {
     return app.getVersion()
   })
