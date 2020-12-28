@@ -78,16 +78,6 @@ async function getMacOSCodeSign(name) {
   return stdout.toString().trim()
 }
 
-async function copyWindowsManifest(dir) {
-  try {
-    logger.info(`Copying Visual Elements Manifest for Windows...`)
-    const manifest = `${app.name}.VisualElementsManifest.xml`
-    await fs.promises.copyFile(`resources/${manifest}`, `${dir}/${manifest}`)
-  } catch {
-    // ignore error
-  }
-}
-
 async function compressPackage(dir) {
   logger.info(`Packing ${path.basename(dir)}...`)
   try {
@@ -116,12 +106,7 @@ async function make() {
   // Run electron-packager
   const appPaths = await packager(options)
   await Promise.all(
-    appPaths.map(async dir => {
-      if (dir.includes('win32')) {
-        await copyWindowsManifest(dir)
-      }
-      return compressPackage(dir)
-    })
+    appPaths.map(dir => compressPackage(dir))
   )
   return Date.now() - startedAt
 }
