@@ -19,3 +19,8 @@ export function loadAddons() {
     loadedAddons = [...addons]
   })
 }
+
+export function loadCustomJS() {
+  const commas = globalThis.require('../api/renderer')
+  commas.app.loadAddon('custom.js', commas)
+}

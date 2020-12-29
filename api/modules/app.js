@@ -47,16 +47,26 @@ function cloneAPI(api, name) {
   })
 }
 
-const userDataPath = getPath('userData')
+const userDataPath = isPackaged()
+  ? getPath('userData')
+  : path.resolve(__dirname, '../../userData')
 
 let loadedAddons = []
 function loadAddon(name, api) {
   if (loadedAddons.includes(name)) return
   let addon
-  try {
-    addon = require(path.join(userDataPath, 'addons', name))
-  } catch {
-    addon = require(`../../addons/${name}`)
+  if (name === 'custom.js') {
+    try {
+      addon = require(path.join(userDataPath, name))
+    } catch {
+      // ignore error
+    }
+  } else {
+    try {
+      addon = require(path.join(userDataPath, 'addons', name))
+    } catch {
+      addon = require(`../../addons/${name}`)
+    }
   }
   addon(cloneAPI(api, name))
   loadedAddons.push(name)

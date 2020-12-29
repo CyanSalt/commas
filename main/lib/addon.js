@@ -25,8 +25,7 @@ function loadAddons() {
 }
 
 function loadCustomJS() {
-  const script = userData.require('custom.js')
-  if (script) script(commas.app.cloneAPI(commas, 'custom.js'))
+  commas.app.loadAddon('custom.js', commas)
 }
 
 function loadCustomCSS(frame) {

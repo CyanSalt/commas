@@ -35,7 +35,7 @@
 <script>
 import { ipcRenderer } from 'electron'
 import { reactive, toRefs, unref, onMounted } from 'vue'
-import { loadAddons } from '../hooks/addon.mjs'
+import { loadAddons, loadCustomJS } from '../hooks/addon.mjs'
 import {
   useFullscreen,
   handleFrameMessages,
@@ -77,6 +77,7 @@ export default {
     })
 
     loadAddons()
+    loadCustomJS()
     injectTheme()
     handleFrameMessages()
     handleShellMessages()
