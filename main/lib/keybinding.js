@@ -28,6 +28,16 @@ function addKeyBinding(item) {
   addonKeyBindings.push(item)
 }
 
+/**
+ * @param {MenuItemConstructorOptions} item
+ */
+function removeKeyBinding(item) {
+  const index = addonKeyBindings.indexOf(item)
+  if (index !== -1) {
+    addonKeyBindings.splice(index, 1)
+  }
+}
+
 async function getKeyBindings() {
   const userKeyBindings = await getUserKeyBindings()
   return [
@@ -47,5 +57,6 @@ module.exports = {
   getUserKeyBindings,
   getAddonKeyBindings,
   addKeyBinding,
+  removeKeyBinding,
   handleKeyBindingMessages,
 }
