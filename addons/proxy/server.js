@@ -39,15 +39,17 @@ async function createServer() {
       connection.pipe(socket)
     })
   })
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
+    server.once('error', reject)
     server.listen(port, () => {
+      server.removeListener('error', reject)
       broadcast('proxy-server-status-updated', true)
       resolve(server)
     })
   })
 }
 
-const startServer = memoize(() => {
+const startServer = memoize(async () => {
   const server = createServer()
   const settingsEvents = getSettingsEvents()
   settingsEvents.on('updated', () => {
@@ -57,7 +59,12 @@ const startServer = memoize(() => {
   rulesEvents.on('updated', () => {
     reloadServer()
   })
-  return server
+  try {
+    return await server
+  } catch (err) {
+    startServer.cache.clear()
+    throw err
+  }
 })
 
 async function stopServer() {
