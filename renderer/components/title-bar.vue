@@ -17,6 +17,9 @@
       </div>
       <div v-if="pane" v-i18n class="title-text">{{ pane.title }}</div>
       <div v-else class="title-text">{{ title }}</div>
+      <div class="tab-index-indicator" @click="toggleTabList">
+        [{{ activeIndex + 1 }}/{{ tabs.length }}]
+      </div>
     </div>
     <div class="controls">
       <template v-if="isCustomControlEnabled">
@@ -43,7 +46,8 @@ import { reactive, computed, watchEffect, toRefs, unref } from 'vue'
 import { useMinimized, useMaximized } from '../hooks/frame.mjs'
 import { getLauncherByTerminalTab } from '../hooks/launcher.mjs'
 import { useSettings } from '../hooks/settings.mjs'
-import { useCurrentTerminal } from '../hooks/terminal.mjs'
+import { useIsTabListEnabled } from '../hooks/shell.mjs'
+import { useCurrentTerminal, useTerminalActiveIndex, useTerminalTabs } from '../hooks/terminal.mjs'
 import { openContextMenu } from '../utils/frame.mjs'
 import { getPrompt } from '../utils/terminal.mjs'
 
@@ -52,6 +56,9 @@ export default {
   setup() {
     const state = reactive({
       isMaximized: useMaximized(),
+      isTabListEnabled: useIsTabListEnabled(),
+      tabs: useTerminalTabs(),
+      activeIndex: useTerminalActiveIndex(),
       branch: '',
     })
 
@@ -137,6 +144,10 @@ export default {
       window.close()
     }
 
+    function toggleTabList() {
+      state.isTabListEnabled = !state.isTabListEnabled
+    }
+
     return {
       ...toRefs(state),
       updateBranch,
@@ -145,6 +156,7 @@ export default {
       minimize,
       maximize,
       close,
+      toggleTabList,
     }
   },
 }
@@ -227,6 +239,13 @@ export default {
 }
 .title-bar.no-controls .controls {
   order: -1;
+}
+.title-bar .tab-index-indicator {
+  margin-left: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+  opacity: 0.5;
 }
 .title-bar .controls .button {
   width: 36px;
