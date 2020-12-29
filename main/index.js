@@ -1,11 +1,11 @@
 const { app } = require('electron')
 const commas = require('../api/main')
 const { loadAddons, loadCustomJS } = require('./lib/addon')
-const { hasWindow, getLastWindow } = require('./lib/frame')
-const { loadTranslation, handleI18NMessages } = require('./lib/i18n')
+const { hasWindow, getLastWindow, forEachWindow } = require('./lib/frame')
+const { loadTranslation, handleI18NMessages, getI18NEvents } = require('./lib/i18n')
 const { handleKeyBindingMessages } = require('./lib/keybinding')
 const { handleLauncherMessages } = require('./lib/launcher')
-const { createApplicationMenu, createDockMenu, handleMenuMessages } = require('./lib/menu')
+const { createApplicationMenu, createDockMenu, handleMenuMessages, createWindowMenu } = require('./lib/menu')
 const { handleMessages } = require('./lib/message')
 const { startServingProtocol, handleProtocolRequest } = require('./lib/protocol')
 const { handleSettingsMessages } = require('./lib/settings')
@@ -38,6 +38,16 @@ async function initialize() {
   checkForUpdates()
   startServingProtocol()
   createWindow(cwd)
+  // Refresh menu when dictionary updated
+  const events = getI18NEvents()
+  events.on('updated', () => {
+    if (process.platform === 'darwin') {
+      createApplicationMenu()
+      createDockMenu()
+    } else {
+      forEachWindow(createWindowMenu)
+    }
+  })
 }
 
 initialize()

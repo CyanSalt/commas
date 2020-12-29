@@ -1,3 +1,4 @@
+const EventEmitter = require('events')
 const { app, ipcMain } = require('electron')
 const findIndex = require('lodash/findIndex')
 const memoize = require('lodash/memoize')
@@ -13,6 +14,10 @@ const { broadcast } = require('./frame')
  * @property {Dictionary} dictionary
  * @property {Priority} priority
  */
+
+const getI18NEvents = memoize(() => {
+  return new EventEmitter()
+})
 
 /**
  * @enum {number}
@@ -45,7 +50,10 @@ const getDictionary = memoize(() => {
 
 function updateTranslation() {
   getDictionary.cache.clear()
-  broadcast('dictionary-updated', getDictionary())
+  const dictionary = getDictionary()
+  broadcast('dictionary-updated', dictionary)
+  const events = getI18NEvents()
+  events.emit('updated', dictionary)
 }
 
 /**
@@ -123,4 +131,5 @@ module.exports = {
   addTranslation,
   removeTranslation,
   handleI18NMessages,
+  getI18NEvents,
 }
