@@ -47,12 +47,14 @@ function cloneAPI(api, name) {
   })
 }
 
+const userDataPath = getPath('userData')
+
 let loadedAddons = []
 function loadAddon(name, api) {
   if (loadedAddons.includes(name)) return
   let addon
   try {
-    addon = require(path.join(getPath('userData'), 'addons', name))
+    addon = require(path.join(userDataPath, 'addons', name))
   } catch {
     addon = require(`../../addons/${name}`)
   }
