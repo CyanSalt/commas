@@ -194,6 +194,7 @@ export default {
   margin: 8px 0;
   line-height: 24px;
   font-size: 12px;
+  user-select: text;
   opacity: 0.5;
 }
 .terminal-pane .form-action {
