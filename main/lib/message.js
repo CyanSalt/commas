@@ -7,6 +7,10 @@ function handleMessages() {
     console.error(error)
     broadcast('uncaught-error', String(error))
   })
+  process.on('unhandledRejection', error => {
+    console.error(error)
+    broadcast('uncaught-error', String(error))
+  })
   app.on('before-quit', () => {
     broadcast('before-quit')
   })
