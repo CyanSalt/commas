@@ -26,6 +26,9 @@ function resolveBindingCommand(binding) {
       frame.webContents.send(result.command, result.args)
     }
   }
+  if (binding.submenu) {
+    binding.submenu = binding.submenu.map(resolveBindingCommand)
+  }
   return result
 }
 
