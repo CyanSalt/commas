@@ -77,6 +77,7 @@ export default {
   position: relative;
 }
 .terminal-content {
+  width: 0;
   flex: auto;
   padding: 4px 8px;
   /* issue@xterm: fix bug of `xterm.fit()` */
