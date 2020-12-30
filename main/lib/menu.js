@@ -159,15 +159,14 @@ function createDockMenu() {
 }
 
 function handleMenuMessages() {
-  ipcMain.handle('contextmenu', (event, template, position) => {
+  ipcMain.handle('contextmenu', (event, template, options) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     const menu = Menu.buildFromTemplate(
       template.map(resolveBindingCommand)
     )
     menu.popup({
+      ...options,
       window: frame,
-      x: position.x,
-      y: position.y,
     })
   })
 }

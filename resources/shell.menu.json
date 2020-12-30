@@ -13,6 +13,11 @@
     "type": "separator"
   },
   {
+    "label": "Show Tab Options#!menu.showtaboptions",
+    "accelerator": "CmdOrCtrl+S",
+    "command": "show-tab-options"
+  },
+  {
     "label": "Select Previous Tab#!menu.previoustab",
     "accelerator": "CmdOrCtrl+[",
     "command": "select-previous-tab"

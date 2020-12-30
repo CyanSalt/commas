@@ -9,6 +9,7 @@
   "Shell#!menu.shell": "外壳",
   "New Tab#!menu.newtab": "新建标签页",
   "New Window#!menu.newwindow": "新建窗口",
+  "Show Tab Options#!menu.showtaboptions": "展示标签页选项",
   "Select Previous Tab#!menu.previoustab": "选择上一个标签页",
   "Select Next Tab#!menu.nexttab": "选择下一个标签页",
   "Find#!menu.find": "查找",

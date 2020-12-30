@@ -6,11 +6,14 @@ import { ipcRenderer } from 'electron'
 
 /**
  * @param {MenuItemConstructorOptions[]} template
- * @param {Event} event
+ * @param {[number, number] | MouseEvent} position
  */
-export function openContextMenu(template, event) {
+export function openContextMenu(template, position, defaultIndex = -1) {
+  const coords = Array.isArray(position)
+    ? { x: position[0], y: position[1] }
+    : { x: position.clientX, y: position.clientY }
   return ipcRenderer.invoke('contextmenu', template, {
-    x: event.clientX,
-    y: event.clientY,
+    positioningItem: defaultIndex,
+    ...coords,
   })
 }

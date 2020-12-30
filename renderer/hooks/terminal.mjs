@@ -9,8 +9,10 @@ import { Unicode11Addon } from 'xterm-addon-unicode11'
 import { WebLinksAddon } from 'xterm-addon-web-links'
 import { WebglAddon } from 'xterm-addon-webgl'
 import { toKeyEventPattern } from '../utils/accelerator.mjs'
-import { getWindowsProcessInfo } from '../utils/terminal.mjs'
+import { openContextMenu } from '../utils/frame.mjs'
+import { getPrompt, getWindowsProcessInfo } from '../utils/terminal.mjs'
 import { useKeyBindings } from './keybinding.mjs'
+import { getLauncherByTerminalTab } from './launcher.mjs'
 import { useRemoteData } from './remote.mjs'
 import { useSettings } from './settings.mjs'
 import { useTheme } from './theme.mjs'
@@ -164,6 +166,23 @@ const createResizingObserver = memoize(() => {
   }, 250))
 })
 
+function getTerminalTabTitle(tab) {
+  if (tab.pane) {
+    return tab.pane.title
+  }
+  const launcher = getLauncherByTerminalTab(tab)
+  if (launcher) {
+    return launcher.name
+  }
+  if (process.platform !== 'win32' && tab.title) {
+    return tab.title
+  }
+  const settingsRef = useSettings()
+  const settings = unref(settingsRef)
+  const expr = settings['terminal.tab.titleFormat']
+  return getPrompt(expr, tab) || tab.process
+}
+
 export function handleTerminalMessages() {
   ipcRenderer.on('input-terminal', (event, data) => {
     const tabs = unref(tabsRef)
@@ -198,6 +217,9 @@ export function handleTerminalMessages() {
     const tab = unref(useCurrentTerminal())
     closeTerminalTab(tab)
   })
+  ipcRenderer.on('select-tab', (event, args) => {
+    activeIndexRef.value = args.index
+  })
   ipcRenderer.on('select-previous-tab', () => {
     const activeIndex = unref(activeIndexRef)
     if (activeIndex > 0) {
@@ -210,6 +232,21 @@ export function handleTerminalMessages() {
     if (activeIndex < tabs.length - 1) {
       activeIndexRef.value = activeIndex + 1
     }
+  })
+  ipcRenderer.on('show-tab-options', () => {
+    const tabs = unref(tabsRef)
+    const activeIndex = unref(activeIndexRef)
+    openContextMenu(tabs.map((tab, index) => {
+      const number = index + 1
+      return {
+        label: getTerminalTabTitle(tab),
+        command: 'select-tab',
+        accelerator: number < 10 ? String(number) : undefined,
+        args: {
+          index,
+        },
+      }
+    }), [0, 36], activeIndex)
   })
 }
 
