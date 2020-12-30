@@ -11,7 +11,7 @@ const { startServingProtocol, handleProtocolRequest } = require('./lib/protocol'
 const { handleSettingsMessages } = require('./lib/settings')
 const { handleTerminalMessages } = require('./lib/terminal')
 const { handleThemeMessages } = require('./lib/theme')
-const { checkForUpdates } = require('./lib/updater')
+const { setupAutoUpdater } = require('./lib/updater')
 const { createWindow, handleWindowMessages } = require('./lib/window')
 
 handleMessages()
@@ -35,7 +35,7 @@ async function initialize() {
     createApplicationMenu()
     createDockMenu()
   }
-  checkForUpdates()
+  setupAutoUpdater()
   startServingProtocol()
   createWindow(cwd)
   // Refresh menu when dictionary updated

@@ -7,23 +7,26 @@ const { getSettings, getSettingsEvents } = require('./settings')
 let autoUpdaterEnabled = true
 let autoUpdaterTimer
 
-async function executeChecking() {
-  if (!autoUpdaterEnabled) return
-  if (autoUpdaterTimer) clearTimeout(autoUpdaterTimer)
-  try {
-    await fs.promises.access(app.getPath('exe'))
-    autoUpdater.checkForUpdates()
-  } catch {
-    return
+async function checkForUpdates() {
+  if (autoUpdaterTimer) {
+    clearTimeout(autoUpdaterTimer)
+  }
+  if (autoUpdaterEnabled) {
+    try {
+      await fs.promises.access(app.getPath('exe'))
+      autoUpdater.checkForUpdates()
+    } catch {
+      // ignore error
+    }
   }
   // Check for updates endlessly
   autoUpdaterTimer = setTimeout(() => {
     autoUpdaterTimer = null
-    executeChecking()
+    checkForUpdates()
   }, 3600 * 1e3)
 }
 
-function checkForUpdates() {
+function setupAutoUpdater() {
   if (!app.isPackaged || !['darwin', 'win32'].includes(process.platform)) return
   autoUpdater.on('update-available', () => {
     clearInterval(autoUpdaterTimer)
@@ -54,9 +57,9 @@ function checkForUpdates() {
   events.on('updated', latestSettings => {
     autoUpdaterEnabled = latestSettings['terminal.updater.enabled']
   })
-  executeChecking()
+  checkForUpdates()
 }
 
 module.exports = {
-  checkForUpdates,
+  setupAutoUpdater,
 }
