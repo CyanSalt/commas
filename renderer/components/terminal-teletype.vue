@@ -58,6 +58,7 @@ export default {
         xterm._core.viewport.syncScrollArea()
       }
       xterm.scrollToBottom()
+      xterm.focus()
     })
 
     return {
