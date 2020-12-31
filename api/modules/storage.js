@@ -1,4 +1,4 @@
-const { require: requireRenderer } = require('./module')
+const { require: requireRenderer } = require('./bundler')
 
 const { shallowReactive } = requireRenderer('vue')
 

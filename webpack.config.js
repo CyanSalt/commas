@@ -10,13 +10,10 @@ module.exports = {
     modules: false,
     entrypoints: false,
   },
-  node: {
-    __dirname: false,
-  },
   entry: path.resolve(__dirname, 'renderer/main.mjs'),
   output: {
-    path: __dirname,
-    filename: 'renderer/dist/index.js',
+    path: path.resolve(__dirname, 'renderer/dist'),
+    filename: 'index.js',
     libraryTarget: 'commonjs2',
     // module: true,
   },
@@ -42,7 +39,7 @@ module.exports = {
   },
   plugins: [
     new MiniCSSExtractPlugin({
-      filename: 'renderer/dist/index.css',
+      filename: 'index.css',
     }),
     new VueLoaderPlugin(),
     new webpack.ProgressPlugin(),

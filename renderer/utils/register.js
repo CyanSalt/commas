@@ -1,13 +1,13 @@
-const noConflictModule = globalThis.require('../api/modules/module')
+const bundler = globalThis.require('../api/modules/bundler')
 
 const aliases = Object.create(null)
 Object.assign(aliases, {
   vue: './node_modules/vue/dist/vue.esm-bundler.js',
   'lodash-es': './node_modules/lodash-es/lodash.js',
 })
-noConflictModule.setAliases(aliases)
+bundler.setAliases(aliases)
 
 const importAll = request => request.keys().forEach(request)
 importAll(require.context('../internal/', true, /\.(mjs|css|vue)$/))
 
-noConflictModule.setCache(require.cache)
+bundler.setCache(require.cache)

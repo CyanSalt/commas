@@ -17,18 +17,18 @@ module.exports = function (commas) {
 
     commas.workspace.registerTabPane('proxy', {
       title: 'Proxy Rules#!proxy.1',
-      component: commas.module.require('internal/proxy/proxy-pane.vue').default,
+      component: commas.bundler.require('internal/proxy/proxy-pane.vue').default,
       icon: {
         name: 'feather-icon icon-navigation',
       },
     })
 
     commas.workspace.addAnchor(
-      commas.module.require('internal/proxy/proxy-anchor.vue').default
+      commas.bundler.require('internal/proxy/proxy-anchor.vue').default
     )
 
     commas.storage.shareDataIntoArray('settings', {
-      component: commas.module.require('internal/proxy/proxy-link.vue').default,
+      component: commas.bundler.require('internal/proxy/proxy-link.vue').default,
       group: 'feature',
     })
 

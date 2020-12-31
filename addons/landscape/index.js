@@ -8,11 +8,11 @@ module.exports = function (commas) {
   } else {
 
     commas.workspace.addSlot(
-      commas.module.require('internal/landscape/landscape-slot.vue').default
+      commas.bundler.require('internal/landscape/landscape-slot.vue').default
     )
 
     commas.workspace.addAnchor(
-      commas.module.require('internal/landscape/landscape-anchor.vue').default
+      commas.bundler.require('internal/landscape/landscape-anchor.vue').default
     )
 
   }

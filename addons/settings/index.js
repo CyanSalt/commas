@@ -22,14 +22,14 @@ module.exports = function (commas) {
 
     commas.workspace.registerTabPane('settings', {
       title: 'Settings#!settings.1',
-      component: commas.module.require('internal/settings/settings-pane.vue').default,
+      component: commas.bundler.require('internal/settings/settings-pane.vue').default,
       icon: {
         name: 'feather-icon icon-settings',
       },
     })
 
     commas.ipcRenderer.on('open-settings-pane', () => {
-      const { activateOrAddTerminalTab } = commas.module.require('hooks/terminal.mjs')
+      const { activateOrAddTerminalTab } = commas.bundler.require('hooks/terminal.mjs')
       const settingsTab = commas.workspace.getPaneTab('settings')
       activateOrAddTerminalTab(settingsTab)
     })
