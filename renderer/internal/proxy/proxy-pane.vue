@@ -100,7 +100,7 @@
   </terminal-pane>
 </template>
 
-<script>
+<script lang="ts">
 import { ipcRenderer } from 'electron'
 import { isEqual, cloneDeep } from 'lodash-es'
 import { reactive, toRefs, computed, toRaw, watchEffect } from 'vue'
@@ -108,7 +108,8 @@ import ObjectEditor from '../../components/basic/object-editor.vue'
 import SortableList from '../../components/basic/sortable-list.vue'
 import SwitchControl from '../../components/basic/switch-control.vue'
 import TerminalPane from '../../components/basic/terminal-pane.vue'
-import { useSystemProxyStatus, useProxyRules } from './hooks.mjs'
+import type { ProxyRule } from './hooks'
+import { useSystemProxyStatus, useProxyRules } from './hooks'
 
 export default {
   name: 'proxy-pane',
@@ -123,12 +124,12 @@ export default {
       supportsSystemProxy: process.platform === 'darwin',
       isSystemProxyEnabled: useSystemProxyStatus(),
       rules: useProxyRules(),
-      table: [],
-      recallingRule: null,
-      collapsedRuleIndexes: [],
+      table: [] as ProxyRule[],
+      recallingRule: null as ProxyRule | null,
+      collapsedRuleIndexes: [] as number[],
     })
 
-    state.isChanged = computed(() => {
+    const isChangedRef = computed(() => {
       return !isEqual(state.rules, state.table)
     })
 
@@ -157,7 +158,7 @@ export default {
       })
     }
 
-    function removeRule(index) {
+    function removeRule(index: number) {
       state.table.splice(index, 1)
       const indexOfIndex = state.collapsedRuleIndexes.indexOf(index)
       if (indexOfIndex !== -1) {
@@ -168,25 +169,26 @@ export default {
       })
     }
 
-    function isRecalling(rule) {
+    function isRecalling(rule: ProxyRule) {
       return toRaw(state.recallingRule) === toRaw(rule)
     }
 
-    function recall(rule) {
+    function recall(rule: ProxyRule) {
       if (!rule.proxy.records) return
       state.recallingRule = isRecalling(rule) ? null : rule
     }
 
-    function useRecord(rule, record) {
+    function useRecord(rule: ProxyRule, record: string) {
       rule.proxy.target = record
       state.recallingRule = null
     }
 
-    function removeRecord(rule, index) {
+    function removeRecord(rule: ProxyRule, index: number) {
+      if (!rule.proxy.records) return
       rule.proxy.records.splice(index, 1)
     }
 
-    function toggleRule(index) {
+    function toggleRule(index: number) {
       const indexOfIndex = state.collapsedRuleIndexes.indexOf(index)
       if (indexOfIndex === -1) {
         state.collapsedRuleIndexes.push(index)
@@ -203,7 +205,7 @@ export default {
       }
     }
 
-    function getRulePlaceholder(index) {
+    function getRulePlaceholder(index: number) {
       const rule = state.table[index]
       let identifier = `#${index + 1}`
       const context = rule.context.filter(Boolean)
@@ -213,7 +215,7 @@ export default {
       return identifier
     }
 
-    function duplicateRule(index) {
+    function duplicateRule(index: number) {
       const rule = state.table[index]
       state.table.splice(index, 0, cloneDeep(rule))
       state.collapsedRuleIndexes.forEach((value, indexOfValue) => {
@@ -221,7 +223,7 @@ export default {
       })
     }
 
-    function sortRules(from, to) {
+    function sortRules(from: number, to: number) {
       const rule = state.table[from]
       if (from < to) {
         state.table.splice(to + 1, 0, rule)
@@ -234,6 +236,7 @@ export default {
 
     return {
       ...toRefs(state),
+      isChanged: isChangedRef,
       openProxyRules,
       revert,
       confirm,

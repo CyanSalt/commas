@@ -90,10 +90,11 @@
   </nav>
 </template>
 
-<script>
+<script lang="ts">
 import * as path from 'path'
 import { ipcRenderer } from 'electron'
 import { reactive, toRefs, computed, unref } from 'vue'
+import * as commas from '../../api/renderer'
 import {
   useLaunchers,
   getTerminalTabByLauncher,
@@ -101,7 +102,7 @@ import {
   startLauncher,
   startLauncherExternally,
   moveLauncher,
-} from '../hooks/launcher.mjs'
+} from '../hooks/launcher'
 import {
   useTerminalTabs,
   useTerminalShells,
@@ -109,9 +110,9 @@ import {
   moveTerminalTab,
   activateTerminalTab,
   getTerminalTabIndex,
-} from '../hooks/terminal.mjs'
-import { openContextMenu } from '../utils/frame.mjs'
-import { handleMousePressing } from '../utils/helper.mjs'
+} from '../hooks/terminal'
+import { openContextMenu } from '../utils/frame'
+import { handleMousePressing } from '../utils/helper'
 import ScrollBar from './basic/scroll-bar.vue'
 import SortableList from './basic/sortable-list.vue'
 import TabItem from './tab-item.vue'
@@ -124,19 +125,18 @@ export default {
     'sortable-list': SortableList,
   },
   setup() {
-    const commas = globalThis.require('../api/renderer')
     const state = reactive({
       shells: useTerminalShells(),
       launchers: useLaunchers(),
       anchors: commas.workspace.useAnchors(),
-      searcher: null,
+      searcher: null as HTMLInputElement | null,
       width: 176,
       isCollapsed: false,
       isFinding: false,
       keyword: '',
     })
 
-    state.filteredLaunchers = computed(() => {
+    const filteredLaunchersRef = computed(() => {
       if (!state.isFinding) return state.launchers
       const keywords = state.keyword.toLowerCase().split(/\s+/)
       return state.launchers.filter(
@@ -146,22 +146,23 @@ export default {
       )
     })
 
-    state.isLauncherSortingDisabled = computed(() => {
+    const isLauncherSortingDisabledRef = computed(() => {
       return state.isCollapsed || state.isFinding
     })
 
     const tabsRef = useTerminalTabs()
-    state.standaloneTabs = computed(() => {
+    const standaloneTabsRef = computed(() => {
       const tabs = unref(tabsRef)
       return tabs.filter(tab => !tab.launcher)
     })
 
-    function sortTabs(from, to) {
-      const toIndex = getTerminalTabIndex(state.standaloneTabs[to])
-      moveTerminalTab(state.standaloneTabs[from], toIndex)
+    function sortTabs(from: number, to: number) {
+      const standaloneTabs = unref(standaloneTabsRef)
+      const toIndex = getTerminalTabIndex(standaloneTabs[to])
+      moveTerminalTab(standaloneTabs[from], toIndex)
     }
 
-    function selectShell(event) {
+    function selectShell(event: MouseEvent) {
       openContextMenu(state.shells.map(shell => ({
         label: path.basename(shell),
         command: 'open-tab',
@@ -178,7 +179,7 @@ export default {
     function toggleFinding() {
       if (state.isFinding) {
         state.keyword = ''
-        state.searcher.blur()
+        state.searcher?.blur()
       }
       state.isFinding = !state.isFinding
     }
@@ -187,7 +188,7 @@ export default {
       ipcRenderer.invoke('open-settings')
     }
 
-    function resize(startingEvent) {
+    function resize(startingEvent: MouseEvent) {
       const original = state.width
       const start = startingEvent.clientX
       const max = document.body.clientWidth / 2
@@ -199,12 +200,15 @@ export default {
       })
     }
 
-    function sortLaunchers(from, to) {
+    function sortLaunchers(from: number, to: number) {
       moveLauncher(from, to)
     }
 
     return {
       ...toRefs(state),
+      filteredLaunchers: filteredLaunchersRef,
+      isLauncherSortingDisabled: isLauncherSortingDisabledRef,
+      standaloneTabs: standaloneTabsRef,
       sortTabs,
       activateTerminalTab,
       selectShell,

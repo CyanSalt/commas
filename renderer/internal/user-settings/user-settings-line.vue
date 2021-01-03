@@ -63,8 +63,10 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import type { PropType } from 'vue'
 import { reactive, computed, toRefs } from 'vue'
+import type { SettingsSpec } from '../../../typings/settings'
 import ObjectEditor from '../../components/basic/object-editor.vue'
 import SwitchControl from '../../components/basic/switch-control.vue'
 
@@ -76,7 +78,7 @@ export default {
   },
   props: {
     spec: {
-      type: Object,
+      type: Object as PropType<SettingsSpec>,
       required: true,
     },
     modelValue: {
@@ -85,7 +87,7 @@ export default {
     },
   },
   emits: {
-    'update:modelValue': (value) => {
+    'update:modelValue': (value: any) => {
       return true
     },
   },
@@ -94,11 +96,11 @@ export default {
       collapsed: false,
     })
 
-    state.placeholder = computed(() => {
+    const placeholderRef = computed(() => {
       return stringify(props.spec.default)
     })
 
-    state.model = computed({
+    const modelRef = computed({
       get: () => {
         if (props.modelValue === undefined && ['boolean', 'enum', 'list', 'map'].includes(props.spec.type)) {
           return normalize(props.spec.default)
@@ -113,7 +115,7 @@ export default {
       },
     })
 
-    function accepts(type) {
+    function accepts(type: string) {
       return props.spec.type === type || (
         Array.isArray(props.spec.type) && props.spec.type.includes(type)
       )
@@ -142,7 +144,7 @@ export default {
       if (value === undefined) {
         return ''
       }
-      return value
+      return value as string | number | boolean
     }
 
     function parseJSON(value) {
@@ -183,11 +185,13 @@ export default {
     }
 
     function reset() {
-      state.model = props.spec.default
+      modelRef.value = props.spec.default
     }
 
     return {
       ...toRefs(state),
+      placeholder: placeholderRef,
+      model: modelRef,
       toggle,
       reset,
     }

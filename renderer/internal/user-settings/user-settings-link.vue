@@ -4,13 +4,13 @@
   </span>
 </template>
 
-<script>
-import { activateOrAddTerminalTab } from '../../hooks/terminal.mjs'
+<script lang="ts">
+import * as commas from '../../../api/renderer'
+import { activateOrAddTerminalTab } from '../../hooks/terminal'
 
 export default {
   name: 'user-settings-link',
   setup() {
-    const commas = globalThis.require('../api/renderer')
     function configure() {
       const userSettingsTab = commas.workspace.getPaneTab('user-settings')
       activateOrAddTerminalTab(userSettingsTab)

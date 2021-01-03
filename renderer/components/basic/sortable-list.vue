@@ -14,19 +14,20 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import type { PropType } from 'vue'
 import { reactive, toRefs, ref, computed, unref, onBeforeUpdate } from 'vue'
-import { handleMousePressing, createTimeout } from '../../utils/helper.mjs'
+import { handleMousePressing, createTimeout } from '../../utils/helper'
 
 export default {
   name: 'sortable-list',
   props: {
     value: {
-      type: Array,
+      type: Array as PropType<any[]>,
       required: true,
     },
     valueKey: {
-      type: [String, Function],
+      type: [String, Function] as PropType<string | ((value: any) => any) | undefined>,
       default: undefined,
     },
     disabled: {
@@ -35,23 +36,19 @@ export default {
     },
   },
   emits: {
-    /**
-     * @param {number} fromIndex
-     * @param {number} toIndex
-     */
-    change: (fromIndex, toIndex) => {
+    change: (fromIndex: number, toIndex: number) => {
       return Number.isInteger(fromIndex)
         && Number.isInteger(toIndex)
     },
   },
   setup(props, { emit }) {
     const state = reactive({
-      root: null,
-      items: [],
+      root: null as HTMLElement | null,
+      items: [] as HTMLElement[],
       draggingIndex: -1,
     })
 
-    state.keys = computed(() => {
+    const keysRef = computed(() => {
       return props.value.map((value, index) => {
         if (props.valueKey === undefined) return index
         if (typeof props.valueKey === 'function') return props.valueKey.call(undefined, value)
@@ -59,7 +56,7 @@ export default {
       })
     })
 
-    function startPressing(startingEvent, index) {
+    function startPressing(startingEvent: MouseEvent, index: number) {
       if (props.disabled) return
       let cancelPressing
       const cancelTimeout = createTimeout(() => {
@@ -71,9 +68,9 @@ export default {
       })
     }
 
-    const startingBoundsRef = ref(null)
-    const startingEventRef = ref(null)
-    const startingParentBoundsRef = ref(null)
+    const startingBoundsRef = ref<DOMRect | null>(null)
+    const startingEventRef = ref<MouseEvent | null>(null)
+    const startingParentBoundsRef = ref<DOMRect | null>(null)
 
     const draggingElementRef = computed(() => {
       return state.items[state.draggingIndex]
@@ -88,14 +85,14 @@ export default {
       const draggingElement = unref(draggingElementRef)
       startingBoundsRef.value = draggingElement.getBoundingClientRect()
       startingEventRef.value = event
-      startingParentBoundsRef.value = state.root.getBoundingClientRect()
+      startingParentBoundsRef.value = (state.root as HTMLElement).getBoundingClientRect()
     }
 
     function getMovingTarget(event) {
       const draggingElement = unref(draggingElementRef)
-      const startingParentBounds = unref(startingParentBoundsRef)
-      const startingBounds = unref(startingBoundsRef)
-      const startingEvent = unref(startingEventRef)
+      const startingParentBounds = unref(startingParentBoundsRef)!
+      const startingBounds = unref(startingBoundsRef)!
+      const startingEvent = unref(startingEventRef)!
       const min = startingParentBounds.top - startingBounds.top
       const max = startingParentBounds.bottom - startingBounds.bottom
       let distance = event.clientY - startingEvent.clientY
@@ -122,12 +119,12 @@ export default {
       if (draggingIndex === -1) return
       const { style } = unref(draggingElementRef)
       style.transform = ''
-      style.order = 2 * draggingIndex
+      style.order = String(2 * draggingIndex)
       let { offset, index, target } = getMovingTarget(event)
       if (index !== draggingIndex) {
         const currentBounds = target.getBoundingClientRect()
-        style.order = index * 2 + (offset > 0 ? 1 : -1)
-        const startingBounds = unref(startingBoundsRef)
+        style.order = String(index * 2 + (offset > 0 ? 1 : -1))
+        const startingBounds = unref(startingBoundsRef)!
         offset -= currentBounds.top - startingBounds.top
       }
       style.transform = `translateY(${offset}px)`
@@ -138,7 +135,7 @@ export default {
       if (draggingIndex === -1) return
       const { style } = unref(draggingElementRef)
       style.transform = ''
-      style.order = 2 * draggingIndex
+      style.order = String(2 * draggingIndex)
       const { index } = getMovingTarget(event)
       if (index !== draggingIndex) {
         emit('change', draggingIndex, index)
@@ -161,6 +158,7 @@ export default {
 
     return {
       ...toRefs(state),
+      keys: keysRef,
       startPressing,
       click,
     }

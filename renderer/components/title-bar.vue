@@ -40,16 +40,16 @@
   </header>
 </template>
 
-<script>
+<script lang="ts">
 import { ipcRenderer, shell } from 'electron'
 import { reactive, computed, watchEffect, toRefs, unref } from 'vue'
-import { useMinimized, useMaximized } from '../hooks/frame.mjs'
-import { getLauncherByTerminalTab } from '../hooks/launcher.mjs'
-import { useSettings } from '../hooks/settings.mjs'
-import { useIsTabListEnabled } from '../hooks/shell.mjs'
-import { useCurrentTerminal, useTerminalActiveIndex, useTerminalTabs } from '../hooks/terminal.mjs'
-import { openContextMenu } from '../utils/frame.mjs'
-import { getPrompt } from '../utils/terminal.mjs'
+import { useMinimized, useMaximized } from '../hooks/frame'
+import { getLauncherByTerminalTab } from '../hooks/launcher'
+import { useSettings } from '../hooks/settings'
+import { useIsTabListEnabled } from '../hooks/shell'
+import { useCurrentTerminal, useTerminalActiveIndex, useTerminalTabs } from '../hooks/terminal'
+import { openContextMenu } from '../utils/frame'
+import { getPrompt } from '../utils/terminal'
 
 export default {
   name: 'title-bar',
@@ -57,33 +57,34 @@ export default {
     const state = reactive({
       isMaximized: useMaximized(),
       isTabListEnabled: useIsTabListEnabled(),
+      isCustomControlEnabled: computed(() => {
+        return process.platform !== 'darwin'
+      }),
       tabs: useTerminalTabs(),
       activeIndex: useTerminalActiveIndex(),
       branch: '',
     })
 
-    state.isCustomControlEnabled = computed(() => {
-      return process.platform !== 'darwin'
-    })
-
     const terminalRef = useCurrentTerminal()
-    state.directory = computed(() => {
+    const directoryRef = computed(() => {
       const terminal = unref(terminalRef)
       if (!terminal || terminal.pane) return ''
       return getPrompt('\\w', terminal)
     })
 
-    state.pane = computed(() => {
+    const paneRef = computed(() => {
       const terminal = unref(terminalRef)
       if (!terminal) return null
       return terminal.pane
     })
 
     const settingsRef = useSettings()
-    state.title = computed(() => {
-      if (state.directory) return state.directory
+    const titleRef = computed(() => {
+      const directory = unref(directoryRef)
+      if (directory) return directory
       const terminal = unref(terminalRef)
-      if (terminal && terminal.title) return terminal.title
+      if (!terminal) return ''
+      if (terminal.title) return terminal.title
       const settings = unref(settingsRef)
       const expr = settings['terminal.tab.titleFormat']
       return getPrompt(expr, terminal)
@@ -94,28 +95,30 @@ export default {
       if (!terminal) return null
       return getLauncherByTerminalTab(terminal)
     })
-    state.scripts = computed(() => {
+    const scriptsRef = computed(() => {
       const launcher = unref(launcherRef)
-      if (launcher && launcher.scripts) {
+      if (launcher?.scripts) {
         return launcher.scripts
       }
       return []
     })
 
     async function updateBranch() {
-      if (!state.directory) {
+      const directory = unref(directoryRef)
+      if (!directory) {
         state.branch = ''
         return
       }
-      state.branch = await ipcRenderer.invoke('get-git-branch', state.directory)
+      state.branch = await ipcRenderer.invoke('get-git-branch', directory)
     }
 
     watchEffect(updateBranch)
 
-    function runScript(event) {
+    function runScript(event: MouseEvent) {
       const launcher = unref(launcherRef)
+      const scripts = unref(scriptsRef)
       openContextMenu(
-        state.scripts.map((script, index) => ({
+        scripts.map((script, index) => ({
           label: script.name || script.command,
           command: 'run-script',
           args: {
@@ -128,7 +131,8 @@ export default {
     }
 
     function openDirectory() {
-      shell.openPath(state.directory)
+      const directory = unref(directoryRef)
+      shell.openPath(directory)
     }
 
     const isMinimizedRef = useMinimized()
@@ -150,6 +154,10 @@ export default {
 
     return {
       ...toRefs(state),
+      directory: directoryRef,
+      pane: paneRef,
+      title: titleRef,
+      scripts: scriptsRef,
       updateBranch,
       runScript,
       openDirectory,

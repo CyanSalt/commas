@@ -4,13 +4,13 @@
   </span>
 </template>
 
-<script>
-import { activateOrAddTerminalTab } from '../../hooks/terminal.mjs'
+<script lang="ts">
+import * as commas from '../../../api/renderer'
+import { activateOrAddTerminalTab } from '../../hooks/terminal'
 
 export default {
   name: 'proxy-link',
   setup() {
-    const commas = globalThis.require('../api/renderer')
     function configure() {
       const proxyTab = commas.workspace.getPaneTab('proxy')
       activateOrAddTerminalTab(proxyTab)

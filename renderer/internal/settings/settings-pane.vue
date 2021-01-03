@@ -61,12 +61,20 @@
   </terminal-pane>
 </template>
 
-<script>
+<script lang="ts">
 import { ipcRenderer, shell } from 'electron'
+import type { Component } from 'vue'
 import { reactive, toRefs, computed } from 'vue'
+import * as commas from '../../../api/renderer'
 import SwitchControl from '../../components/basic/switch-control.vue'
 import TerminalPane from '../../components/basic/terminal-pane.vue'
-import { useAppVersion } from '../../hooks/frame.mjs'
+import { useAppVersion } from '../../hooks/frame'
+
+interface SettingsItem {
+  component: Component,
+  group: string,
+  priority?: number,
+}
 
 export default {
   name: 'settings-pane',
@@ -75,21 +83,20 @@ export default {
     'switch-control': SwitchControl,
   },
   setup() {
-    const commas = globalThis.require('../api/renderer')
+    const settingsItems: SettingsItem[] = commas.storage.shareArray('settings')
+
+    function getItems(group: string) {
+      const list = settingsItems.filter(item => item.group === group)
+      return list.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0))
+    }
+
     const state = reactive({
       version: useAppVersion(),
+      generalItems: computed(() => getItems('general')),
+      featureItems: computed(() => getItems('feature')),
+      customizationItems: computed(() => getItems('customization')),
+      aboutItems: computed(() => getItems('about')),
     })
-
-    const settingsItems = commas.storage.shareArray('settings')
-
-    function getItems(group) {
-      const list = settingsItems.filter(item => item.group === group)
-      return list.sort((a, b) => (a.priority || 0) - (b.priority || 0))
-    }
-    state.generalItems = computed(() => getItems('general'))
-    state.featureItems = computed(() => getItems('feature'))
-    state.customizationItems = computed(() => getItems('customization'))
-    state.aboutItems = computed(() => getItems('about'))
 
     function openUserDirectory() {
       ipcRenderer.invoke('open-user-directory')

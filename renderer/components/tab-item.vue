@@ -1,11 +1,11 @@
 <template>
-  <div :class="['tab-item', { active: focused }]">
+  <div :class="['tab-item', { active: isFocused }]">
     <div class="tab-overview">
       <div class="tab-title">
         <span
-          v-if="iconEntity"
-          :style="{ color: focused ? iconEntity.color : undefined }"
-          :class="['tab-icon', iconEntity.name]"
+          v-if="iconEntry"
+          :style="{ color: isFocused ? iconEntry.color : undefined }"
+          :class="['tab-icon', iconEntry.name]"
         ></span>
         <span v-if="pane" v-i18n class="tab-name">{{ pane.title }}</span>
         <span v-else class="tab-name">{{ title }}</span>
@@ -24,12 +24,14 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import * as path from 'path'
+import type { PropType } from 'vue'
 import { reactive, toRefs, computed, unref } from 'vue'
-import { useSettings } from '../hooks/settings.mjs'
-import { useCurrentTerminal, closeTerminalTab } from '../hooks/terminal.mjs'
-import { getPrompt, getIconEntityByProcess } from '../utils/terminal.mjs'
+import type { TerminalTab } from '../../typings/terminal'
+import { useSettings } from '../hooks/settings'
+import { useCurrentTerminal, closeTerminalTab } from '../hooks/terminal'
+import { getPrompt, getIconEntryByProcess } from '../utils/terminal'
 
 export default {
   name: 'tab-item',
@@ -39,7 +41,7 @@ export default {
       default: '',
     },
     tab: {
-      type: Object,
+      type: Object as PropType<TerminalTab | undefined>,
       default: undefined,
     },
   },
@@ -47,24 +49,26 @@ export default {
     const state = reactive({})
 
     const terminalRef = useCurrentTerminal()
-    state.focused = computed(() => {
+    const isFocusedRef = computed(() => {
       return Boolean(props.tab) && unref(terminalRef) === props.tab
     })
 
-    state.pane = computed(() => {
+    const paneRef = computed(() => {
       if (!props.tab) return null
       return props.tab.pane
     })
 
-    state.iconEntity = computed(() => {
+    const iconEntryRef = computed(() => {
       if (props.name || !props.tab) return null
-      if (state.pane) return state.pane.icon
-      return getIconEntityByProcess(props.tab.process)
+      const pane = unref(paneRef)
+      if (pane) return pane.icon
+      return getIconEntryByProcess(props.tab.process)
     })
 
     const settingsRef = useSettings()
-    state.title = computed(() => {
+    const titleRef = computed(() => {
       if (props.name) return props.name
+      if (!props.tab) return ''
       if (process.platform !== 'win32' && props.tab.title) {
         return props.tab.title
       }
@@ -73,8 +77,8 @@ export default {
       return getPrompt(expr, props.tab) || props.tab.process
     })
 
-    state.idleState = computed(() => {
-      if (!props.tab || state.pane) return ''
+    const idleStateRef = computed(() => {
+      if (!props.tab || unref(paneRef)) return ''
       if (props.tab.process === path.basename(props.tab.shell)) return 'idle'
       return 'busy'
     })
@@ -86,6 +90,11 @@ export default {
 
     return {
       ...toRefs(state),
+      isFocused: isFocusedRef,
+      pane: paneRef,
+      iconEntry: iconEntryRef,
+      title: titleRef,
+      idleState: idleStateRef,
       close,
     }
   },

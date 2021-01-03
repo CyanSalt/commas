@@ -10,7 +10,7 @@
   </label>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   name: 'switch-control',
   inheritAttrs: false,
@@ -21,10 +21,7 @@ export default {
     },
   },
   emits: {
-    /**
-     * @param {boolean} value
-     */
-    'update:modelValue': (value) => {
+    'update:modelValue': (value: boolean) => {
       return typeof value === 'boolean'
     },
   },

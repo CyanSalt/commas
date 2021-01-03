@@ -5,10 +5,10 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { reactive, toRefs, computed, unref } from 'vue'
-import { useSettings } from '../../hooks/settings.mjs'
-import { useProxyServerStatus } from './hooks.mjs'
+import { useSettings } from '../../hooks/settings'
+import { useProxyServerStatus } from './hooks'
 
 export default {
   name: 'proxy-anchor',
@@ -18,7 +18,7 @@ export default {
     })
 
     const settingsRef = useSettings()
-    state.port = computed(() => {
+    const portRef = computed<number>(() => {
       const settings = unref(settingsRef)
       return settings['proxy.server.port']
     })
@@ -29,6 +29,7 @@ export default {
 
     return {
       ...toRefs(state),
+      port: portRef,
       toggleProxyServer,
     }
   },

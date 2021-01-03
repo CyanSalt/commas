@@ -35,10 +35,10 @@
   </transition>
 </template>
 
-<script>
+<script lang="ts">
 import { computed, reactive, toRefs, unref, watchEffect } from 'vue'
-import { useSettings } from '../../hooks/settings.mjs'
-import { useNonce } from './hooks.mjs'
+import { useSettings } from '../../hooks/settings'
+import { useNonce } from './hooks'
 
 export default {
   name: 'landscape-slot',
@@ -51,8 +51,8 @@ export default {
     const settingsRef = useSettings()
     const urlRef = computed(() => {
       const settings = unref(settingsRef)
-      const url = settings['landscape.background.url']
-      return url ? url.replace('<nonce>', state.nonce) : ''
+      const url: string = settings['landscape.background.url']
+      return url ? url.replace('<nonce>', String(state.nonce)) : ''
     })
 
     watchEffect(() => {

@@ -28,13 +28,14 @@
   </terminal-pane>
 </template>
 
-<script>
+<script lang="ts">
 import { shell, ipcRenderer } from 'electron'
 import { reactive, toRefs, unref, computed, watchEffect } from 'vue'
 import LoadingSpinner from '../../components/basic/loading-spinner.vue'
 import TerminalPane from '../../components/basic/terminal-pane.vue'
-import { useUserSettings } from '../../hooks/settings.mjs'
-import { fetchThemeList } from './utils.mjs'
+import { useUserSettings } from '../../hooks/settings'
+import type { ThemeEntry } from './utils'
+import { fetchThemeList } from './utils'
 
 export default {
   name: 'theme-pane',
@@ -44,9 +45,9 @@ export default {
   },
   setup() {
     const state = reactive({
-      loading: false,
+      loading: false as string | false,
       keyword: '',
-      list: [],
+      list: [] as ThemeEntry[],
     })
 
     watchEffect(async () => {
@@ -57,18 +58,18 @@ export default {
       }
     })
 
-    state.filteredList = computed(() => {
+    const filteredListRef = computed(() => {
       if (!state.keyword) return state.list
       return state.list.filter(item => item.name.includes(state.keyword))
     })
 
     const userSettingsRef = useUserSettings()
-    state.currentTheme = computed(() => {
+    const currentThemeRef = computed<string>(() => {
       const settings = unref(userSettingsRef)
       return settings['terminal.theme.name']
     })
 
-    function updateTheme(name) {
+    function updateTheme(name: string) {
       const userSettings = unref(userSettingsRef)
       userSettingsRef.value = {
         ...userSettings,
@@ -77,14 +78,14 @@ export default {
     }
 
     function reset() {
-      return updateTheme('oceanic-next')
+      updateTheme('oceanic-next')
     }
 
     function openMarketplace() {
       shell.openExternal('https://github.com/mbadolato/iTerm2-Color-Schemes/tree/master/windowsterminal')
     }
 
-    async function applyItem(item) {
+    async function applyItem(item: ThemeEntry) {
       if (state.loading) return
       state.loading = item.name
       const result = await ipcRenderer.invoke(
@@ -100,6 +101,8 @@ export default {
 
     return {
       ...toRefs(state),
+      filteredList: filteredListRef,
+      currentTheme: currentThemeRef,
       reset,
       openMarketplace,
       applyItem,

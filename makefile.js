@@ -53,9 +53,10 @@ const options = {
   asar: true,
   icon: 'resources/images/icon',
   ignore: [
-    '^/(?!addons|api|main|node_modules|renderer|resources|package\\.json)',
-    '^/resources/.*\\.(ico|icns)$',
+    '^/(?!addons|main|node_modules|renderer|resources|package\\.json)',
+    '^/main/(?!dist)$',
     '^/renderer/(?!dist|index\\.html)$',
+    '^/resources/.*\\.(ico|icns)$',
   ],
   appVersion: app.version,
   appCopyright: [
@@ -112,6 +113,10 @@ async function make() {
 }
 
 make().then(
-  duration => logger.done(`Build finished after ${duration / 1000}s.`),
-  err => logger.error(err),
+  duration => {
+    logger.done(`Build finished after ${duration / 1000}s.`)
+  },
+  err => {
+    logger.error(err)
+  },
 )

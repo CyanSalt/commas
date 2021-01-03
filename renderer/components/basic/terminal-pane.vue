@@ -32,7 +32,7 @@
   </article>
 </template>
 
-<script>
+<script lang="ts">
 import ScrollBar from './scroll-bar.vue'
 
 export default {

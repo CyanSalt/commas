@@ -5,9 +5,9 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { reactive, toRefs, ref, computed, unref, onMounted, onBeforeUnmount, onActivated } from 'vue'
-import { handleMousePressing } from '../../utils/helper.mjs'
+import { handleMousePressing } from '../../utils/helper'
 
 export default {
   name: 'scroll-bar',
@@ -23,7 +23,7 @@ export default {
   },
   setup(props) {
     const state = reactive({
-      root: null,
+      root: null as HTMLElement | null,
       isScrolling: false,
     })
 
@@ -31,13 +31,13 @@ export default {
     const maxHeightRef = ref(0)
     const topRef = ref(0)
 
-    state.isOverflowed = computed(() => {
+    const isOverflowedRef = computed(() => {
       const height = unref(heightRef)
       if (!height) return false
       return height !== unref(maxHeightRef)
     })
 
-    state.thumbStyle = computed(() => {
+    const thumbStyleRef = computed<Partial<CSSStyleDeclaration>>(() => {
       return {
         height: unref(heightRef) + 'px',
         top: unref(topRef) + 'px',
@@ -51,27 +51,28 @@ export default {
     })
 
     function getIntersectionRatio() {
-      const container = unref(containerRef)
+      const container = unref(containerRef)!
       const maxHeight = unref(maxHeightRef)
       return maxHeight / container.scrollHeight
     }
 
-    function scrollTo(position) {
+    function scrollTo(position: number) {
       const container = unref(containerRef)
+      if (!container) return
       position = Math.min(Math.max(position, 0), container.scrollHeight)
       const ratio = getIntersectionRatio()
       container.scrollTop = Math.round(position / ratio)
     }
 
-    function jump(event) {
+    function jump(event: MouseEvent) {
       requestAnimationFrame(() => {
         const height = unref(heightRef)
         scrollTo(event.offsetY - (height / 2))
       })
     }
 
-    function startScrolling(startingEvent) {
-      state.scrolling = true
+    function startScrolling(startingEvent: MouseEvent) {
+      state.isScrolling = true
       const startingTop = unref(topRef)
       handleMousePressing({
         onMove(event) {
@@ -79,14 +80,15 @@ export default {
             scrollTo(startingTop + event.clientY - startingEvent.clientY)
           })
         },
-        onEnd(event) {
-          state.scrolling = false
+        onEnd() {
+          state.isScrolling = false
         },
       })
     }
 
     function syncScrolling() {
       const container = unref(containerRef)
+      if (!container) return
       const ratio = getIntersectionRatio()
       heightRef.value = Math.round(container.clientHeight * ratio)
       topRef.value = Math.round(container.scrollTop * ratio)
@@ -99,14 +101,14 @@ export default {
     }
 
     onMounted(() => {
-      maxHeightRef.value = state.root.parentElement.clientHeight
-      const container = unref(containerRef)
+      maxHeightRef.value = state.root!.parentElement!.clientHeight
+      const container = unref(containerRef)!
       container.addEventListener('scroll', handleScroll, { passive: true })
     })
 
     onBeforeUnmount(() => {
       const container = unref(containerRef)
-      container.removeEventListener('scroll', handleScroll)
+      container?.removeEventListener('scroll', handleScroll)
     })
 
     onActivated(() => {
@@ -118,6 +120,8 @@ export default {
 
     return {
       ...toRefs(state),
+      isOverflowed: isOverflowedRef,
+      thumbStyle: thumbStyleRef,
       jump,
       startScrolling,
     }

@@ -1,5 +1,5 @@
 <template>
-  <div v-show="visible" ref="root" class="find-box">
+  <div v-show="isVisible" ref="root" class="find-box">
     <input
       ref="finder"
       v-model="keyword"
@@ -41,17 +41,17 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { reactive, computed, unref, onMounted, toRefs } from 'vue'
-import { useIsFinding } from '../hooks/shell.mjs'
-import { useCurrentTerminal } from '../hooks/terminal.mjs'
+import { useIsFinding } from '../hooks/shell'
+import { useCurrentTerminal } from '../hooks/terminal'
 
 export default {
   name: 'find-box',
   setup() {
     const state = reactive({
-      root: null,
-      finder: null,
+      root: null as HTMLElement | null,
+      finder: null as HTMLInputElement | null,
       keyword: '',
       options: {
         caseSensitive: false,
@@ -63,37 +63,39 @@ export default {
     const terminalRef = useCurrentTerminal()
 
     const isFindingRef = useIsFinding()
-    state.visible = computed(() => {
+    const isVisibleRef = computed(() => {
       const isFinding = unref(isFindingRef)
       if (!isFinding) return false
       const terminal = unref(terminalRef)
-      return Boolean(terminal) && !terminal.pane
+      return Boolean(terminal && !terminal.pane)
     })
 
     onMounted(() => {
       new IntersectionObserver(([{ isIntersecting }]) => {
         if (isIntersecting) {
-          state.finder.focus()
+          state.finder?.focus()
         } else {
           const terminal = unref(terminalRef)
-          if (terminal && terminal.xterm) {
+          if (terminal?.xterm) {
             terminal.xterm.focus()
           }
         }
-      }).observe(state.root)
+      }).observe(state.root!)
     })
 
     function findPrevious() {
       const terminal = unref(terminalRef)
-      terminal.addons.search.findPrevious(state.keyword, state.options)
+      if (!terminal) return
+      return terminal.addons.search.findPrevious(state.keyword, state.options)
     }
 
     function findNext() {
       const terminal = unref(terminalRef)
-      terminal.addons.search.findNext(state.keyword, state.options)
+      if (!terminal) return
+      return terminal.addons.search.findNext(state.keyword, state.options)
     }
 
-    function find(event) {
+    function find(event: KeyboardEvent) {
       return event.shiftKey ? findPrevious() : findNext()
     }
 
@@ -101,12 +103,13 @@ export default {
       isFindingRef.value = false
     }
 
-    function toggle(key) {
+    function toggle(key: keyof typeof state.options) {
       state.options[key] = !state.options[key]
     }
 
     return {
       ...toRefs(state),
+      isVisible: isVisibleRef,
       find,
       cancel,
       toggle,

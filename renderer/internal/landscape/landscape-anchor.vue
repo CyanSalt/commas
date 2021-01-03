@@ -4,17 +4,13 @@
   </div>
 </template>
 
-<script>
-import { reactive, toRefs } from 'vue'
-import { refreshLandscapeBackground } from './hooks.mjs'
+<script lang="ts">
+import { refreshLandscapeBackground } from './hooks'
 
 export default {
   name: 'landscape-anchor',
   setup() {
-    const state = reactive({})
-
     return {
-      ...toRefs(state),
       refresh: refreshLandscapeBackground,
     }
   },

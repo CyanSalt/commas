@@ -32,28 +32,31 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { ipcRenderer } from 'electron'
 import { reactive, toRefs, unref, onMounted } from 'vue'
-import { loadAddons, loadCustomJS } from '../hooks/addon.mjs'
+import * as commas from '../../api/renderer'
+import type { Launcher } from '../../typings/launcher'
+import { loadAddons, loadCustomJS } from '../hooks/addon'
 import {
   useFullscreen,
   handleFrameMessages,
-} from '../hooks/frame.mjs'
-import { runLauncherScript } from '../hooks/launcher.mjs'
+} from '../hooks/frame'
+import { runLauncherScript } from '../hooks/launcher'
 import {
   useIsTabListEnabled,
   useWillQuit,
   confirmClosing,
   handleShellMessages,
-} from '../hooks/shell.mjs'
+} from '../hooks/shell'
+import type { CreateTerminalTabOptions } from '../hooks/terminal'
 import {
   useCurrentTerminal,
   useTerminalTabs,
   handleTerminalMessages,
   createTerminalTab,
-} from '../hooks/terminal.mjs'
-import { injectTheme } from '../hooks/theme.mjs'
+} from '../hooks/terminal'
+import { injectTheme } from '../hooks/theme'
 import FindBox from './find-box.vue'
 import TabList from './tab-list.vue'
 import TerminalTeletype from './terminal-teletype.vue'
@@ -68,7 +71,6 @@ export default {
     'find-box': FindBox,
   },
   setup() {
-    const commas = globalThis.require('../api/renderer')
     const state = reactive({
       isFullscreen: useFullscreen(),
       isTabListEnabled: useIsTabListEnabled(),
@@ -88,19 +90,19 @@ export default {
     const initialPath = args[0]
     createTerminalTab({ cwd: initialPath })
 
-    ipcRenderer.on('uncaught-error', (event, error) => {
-      console.error(`Uncaught error in main process: ${error}`)
+    ipcRenderer.on('uncaught-error', (event, error: Error) => {
+      console.error(`Uncaught error in main process: ${String(error)}`)
     })
 
-    ipcRenderer.on('invoke', (event, command) => {
-      ipcRenderer.invoke(command)
+    ipcRenderer.on('invoke', (event, command: string, extra?: any) => {
+      ipcRenderer.invoke(command, extra)
     })
 
-    ipcRenderer.on('open-tab', (event, options) => {
+    ipcRenderer.on('open-tab', (event, options: CreateTerminalTabOptions) => {
       createTerminalTab(options)
     })
 
-    ipcRenderer.on('run-script', (event, { launcher, index: scriptIndex }) => {
+    ipcRenderer.on('run-script', (event, { launcher, index: scriptIndex }: { launcher: Launcher, index: number }) => {
       runLauncherScript(launcher, scriptIndex)
     })
 

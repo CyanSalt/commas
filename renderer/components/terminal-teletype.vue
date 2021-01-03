@@ -9,10 +9,12 @@
   </article>
 </template>
 
-<script>
+<script lang="ts">
 import 'xterm/css/xterm.css'
+import type { PropType } from 'vue'
 import { reactive, toRefs, onMounted, onActivated } from 'vue'
-import { mountTerminalTab, writeTerminalTab } from '../hooks/terminal.mjs'
+import type { TerminalTab } from '../../typings/terminal'
+import { mountTerminalTab, writeTerminalTab } from '../hooks/terminal'
 import ScrollBar from './basic/scroll-bar.vue'
 
 export default {
@@ -22,22 +24,24 @@ export default {
   },
   props: {
     tab: {
-      type: Object,
+      type: Object as PropType<TerminalTab>,
       required: true,
     },
   },
   setup(props) {
     const state = reactive({
-      terminal: null,
-      viewport: null,
+      terminal: null as HTMLElement | null,
+      viewport: null as HTMLElement | null,
     })
 
-    function dragFileOver(event) {
-      event.dataTransfer.dropEffect = 'link'
+    function dragFileOver(event: DragEvent) {
+      if (event.dataTransfer) {
+        event.dataTransfer.dropEffect = 'link'
+      }
     }
 
-    function dropFile(event) {
-      const files = event.dataTransfer.files
+    function dropFile(event: DragEvent) {
+      const files = event.dataTransfer?.files
       if (!files || !files.length) return
       const paths = Array.from(files).map(({ path }) => {
         if (path.includes(' ')) return `"${path}"`
@@ -47,15 +51,15 @@ export default {
     }
 
     onMounted(() => {
-      mountTerminalTab(props.tab, state.terminal)
+      mountTerminalTab(props.tab, state.terminal!)
       const xterm = props.tab.xterm
-      state.viewport = xterm._core._viewportElement
+      state.viewport = xterm['_core']._viewportElement
     })
 
     onActivated(() => {
       const xterm = props.tab.xterm
-      if (xterm._core.viewport) {
-        xterm._core.viewport.syncScrollArea()
+      if (xterm['_core'].viewport) {
+        xterm['_core'].viewport.syncScrollArea()
       }
       xterm.scrollToBottom()
       xterm.focus()

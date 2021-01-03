@@ -7,14 +7,14 @@ module.exports = function (commas) {
 
     commas.workspace.registerTabPane('theme', {
       title: 'Theme#!theme.1',
-      component: commas.bundler.require('internal/theme/theme-pane.vue').default,
+      component: commas.bundler.extract('theme/theme-pane.vue').default,
       icon: {
         name: 'feather-icon icon-feather',
       },
     })
 
     commas.storage.shareDataIntoArray('settings', {
-      component: commas.bundler.require('internal/theme/theme-link.vue').default,
+      component: commas.bundler.extract('theme/theme-link.vue').default,
       group: 'general',
     })
 

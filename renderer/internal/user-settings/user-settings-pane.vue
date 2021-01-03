@@ -3,7 +3,7 @@
     <h2 v-i18n class="group-title">User Settings#!user-settings.1</h2>
     <div class="group">
       <div class="action-line">
-        <span :class="['link form-action toggle-all', { collapsed }]" @click="toggleAll">
+        <span :class="['link form-action toggle-all', { collapsed: isCollapsed }]" @click="toggleAll">
           <span class="feather-icon icon-chevrons-down"></span>
         </span>
         <span :class="['link form-action revert', { disabled: !isChanged }]" @click="revert">
@@ -24,11 +24,11 @@
   </terminal-pane>
 </template>
 
-<script>
+<script lang="ts">
 import { cloneDeep, isEqual } from 'lodash-es'
 import { reactive, computed, unref, toRefs, watchEffect, onBeforeUpdate } from 'vue'
 import TerminalPane from '../../components/basic/terminal-pane.vue'
-import { useUserSettings, useSettingsSpecs } from '../../hooks/settings.mjs'
+import { useUserSettings, useSettingsSpecs } from '../../hooks/settings'
 import UserSettingsLine from './user-settings-line.vue'
 
 export default {
@@ -40,17 +40,17 @@ export default {
   setup() {
     const state = reactive({
       values: {},
-      lines: [],
+      lines: [] as { collapsed: boolean }[],
     })
 
     const userSettingsRef = useUserSettings()
-    state.isChanged = computed(() => {
+    const isChangedRef = computed(() => {
       const userSettings = unref(userSettingsRef)
       return !isEqual(userSettings, state.values)
     })
 
     const specsRef = useSettingsSpecs()
-    state.rows = computed(() => {
+    const rowsRef = computed(() => {
       const specs = unref(specsRef)
       return specs.filter((item) => {
         return !Array.isArray(item.configurable)
@@ -67,7 +67,7 @@ export default {
       userSettingsRef.value = state.values
     }
 
-    state.collapsed = computed({
+    const isCollapsedRef = computed<boolean>({
       get() {
         return state.lines.every(line => line.collapsed)
       },
@@ -79,7 +79,8 @@ export default {
     })
 
     function toggleAll() {
-      state.collapsed = !state.collapsed
+      const isCollapsed = unref(isCollapsedRef)
+      isCollapsedRef.value = !isCollapsed
     }
 
     watchEffect(revert)
@@ -90,6 +91,9 @@ export default {
 
     return {
       ...toRefs(state),
+      isChanged: isChangedRef,
+      rows: rowsRef,
+      isCollapsed: isCollapsedRef,
       revert,
       confirm,
       toggleAll,
