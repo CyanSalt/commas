@@ -6,14 +6,12 @@
 
 <script lang="ts">
 import * as commas from '../../../api/renderer'
-import { activateOrAddTerminalTab } from '../../hooks/terminal'
 
 export default {
   name: 'proxy-link',
   setup() {
     function configure() {
-      const proxyTab = commas.workspace.getPaneTab('proxy')
-      activateOrAddTerminalTab(proxyTab)
+      commas.workspace.openPaneTab('proxy')
     }
 
     return {

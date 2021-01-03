@@ -6,14 +6,12 @@
 
 <script lang="ts">
 import * as commas from '../../../api/renderer'
-import { activateOrAddTerminalTab } from '../../hooks/terminal'
 
 export default {
   name: 'theme-link',
   setup() {
     function configure() {
-      const userSettingsTab = commas.workspace.getPaneTab('theme')
-      activateOrAddTerminalTab(userSettingsTab)
+      commas.workspace.openPaneTab('theme')
     }
 
     return {

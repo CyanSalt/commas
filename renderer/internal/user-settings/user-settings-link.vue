@@ -6,14 +6,12 @@
 
 <script lang="ts">
 import * as commas from '../../../api/renderer'
-import { activateOrAddTerminalTab } from '../../hooks/terminal'
 
 export default {
   name: 'user-settings-link',
   setup() {
     function configure() {
-      const userSettingsTab = commas.workspace.getPaneTab('user-settings')
-      activateOrAddTerminalTab(userSettingsTab)
+      commas.workspace.openPaneTab('user-settings')
     }
 
     return {

@@ -29,9 +29,7 @@ module.exports = function (commas) {
     })
 
     commas.ipcRenderer.on('open-settings-pane', () => {
-      const { activateOrAddTerminalTab } = commas.bundler.extract('settings/hooks.ts')
-      const settingsTab = commas.workspace.getPaneTab('settings')
-      activateOrAddTerminalTab(settingsTab)
+      commas.workspace.openPaneTab('settings')
     })
 
   }

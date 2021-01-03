@@ -1,4 +1,4 @@
-import { addSettingsSpecs, removeSettingsSpecs, openSettingsFile } from '../../main/lib/settings'
+import { addSettingsSpecs, getSettings, getSettingsEvents, openSettingsFile, removeSettingsSpecs } from '../../main/lib/settings'
 import type { SettingsSpec } from '../../typings/settings'
 
 function addSpecs(specs: SettingsSpec[]) {
@@ -11,5 +11,7 @@ function addSpecs(specs: SettingsSpec[]) {
 
 export {
   addSpecs,
+  getSettings,
+  getSettingsEvents as getEvents,
   openSettingsFile as openFile,
 }

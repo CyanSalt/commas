@@ -1,5 +1,6 @@
 import type { Component } from 'vue'
 import { shallowReactive, shallowReadonly, markRaw } from 'vue'
+import { activateOrAddTerminalTab } from '../../renderer/hooks/terminal'
 import { createIDGenerator } from '../../renderer/utils/helper'
 import type { TerminalTab, TerminalTabPane } from '../../typings/terminal'
 
@@ -21,6 +22,10 @@ function registerTabPane(name: string, pane: TerminalTabPane) {
 
 function getPaneTab(name: string) {
   return tabs[name]
+}
+
+function openPaneTab(name: string) {
+  activateOrAddTerminalTab(getPaneTab(name))
 }
 
 const anchors = shallowReactive<Component[]>([])
@@ -58,6 +63,7 @@ function useSlots() {
 export {
   registerTabPane,
   getPaneTab,
+  openPaneTab,
   addAnchor,
   useAnchors,
   addSlot,
