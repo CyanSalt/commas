@@ -1,8 +1,8 @@
 @font-face {
-	font-family: 'Devicon';
+  font-family: 'Devicon';
   src: url('devicon.woff') format('woff');
-	font-weight: normal;
-	font-style: normal;
+  font-weight: normal;
+  font-style: normal;
 }
 
 .devicon {
