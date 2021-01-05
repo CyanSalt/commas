@@ -50,10 +50,10 @@ module.exports = [
       modules: false,
       entrypoints: false,
     },
-    entry: path.resolve(__dirname, 'renderer/main.ts'),
+    entry: path.resolve(__dirname, 'renderer/app.ts'),
     output: {
       path: path.resolve(__dirname, 'renderer/dist'),
-      filename: 'index.js',
+      filename: 'app.js',
       libraryTarget: 'commonjs2',
       // module: true,
     },
@@ -91,7 +91,7 @@ module.exports = [
     },
     plugins: [
       new MiniCSSExtractPlugin({
-        filename: 'index.css',
+        filename: 'app.css',
       }),
       new VueLoaderPlugin(),
       new webpack.ProgressPlugin(),
