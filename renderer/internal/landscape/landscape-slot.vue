@@ -70,23 +70,23 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .landscape-slot {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-}
-.landscape-slot.landscape-enter-active {
-  transition: opacity 0.5s;
-}
-.landscape-slot.landscape-enter-from,
-.landscape-slot.landscape-leave-to {
-  opacity: 0;
-}
-.landscape-slot.landscape-enter-to,
-.landscape-slot.landscape-leave-from {
-  opacity: 1;
+  &.landscape-enter-active {
+    transition: opacity 0.5s;
+  }
+  &.landscape-enter-from,
+  &.landscape-leave-to {
+    opacity: 0;
+  }
+  &.landscape-enter-to,
+  &.landscape-leave-from {
+    opacity: 1;
+  }
 }
 </style>

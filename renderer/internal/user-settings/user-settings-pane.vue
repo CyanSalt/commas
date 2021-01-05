@@ -102,23 +102,25 @@ export default {
 }
 </script>
 
-<style>
-.user-settings-pane .form-action {
-  margin: 0;
-}
-.user-settings-pane .toggle-all.collapsed {
-  opacity: 1;
-  transform: rotate(-90deg);
-}
-.user-settings-pane .revert {
-  color: var(--design-red);
-}
-.user-settings-pane .confirm {
-  color: var(--design-green);
-}
-.user-settings-pane .revert.disabled,
-.user-settings-pane .confirm.disabled {
-  color: inherit;
-  opacity: 0.5;
+<style lang="scss">
+.user-settings-pane {
+  .form-action {
+    margin: 0;
+  }
+  .toggle-all.collapsed {
+    opacity: 1;
+    transform: rotate(-90deg);
+  }
+  .revert {
+    color: var(--design-red);
+  }
+  .confirm {
+    color: var(--design-green);
+  }
+  .revert.disabled,
+  .confirm.disabled {
+    color: inherit;
+    opacity: 0.5;
+  }
 }
 </style>

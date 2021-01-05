@@ -227,154 +227,151 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .tab-list {
   flex: none;
   display: flex;
   font-size: 14px;
   --tab-height: 46px;
-}
-.tab-list .list-column {
-  flex: auto;
-  width: 176px;
-  display: flex;
-  flex-direction: column;
-}
-.tab-list .list {
-  flex: auto;
-  height: 0;
-  position: relative;
-}
-.tab-list .scroll-area {
-  height: 100%;
-  overflow-y: auto;
-  box-sizing: border-box;
-}
-.tab-list .scroll-area::-webkit-scrollbar {
-  width: 0px;
-}
-.tab-list .scroll-bar {
-  width: 8px;
-  right: 2px;
-}
-.tab-list .sash {
-  flex: none;
-  width: 2px;
-  margin: 4px 0;
-  border-right: 2px solid var(--theme-foreground);
-  opacity: 0.05;
-  cursor: col-resize;
-}
-.tab-list .invisible {
-  visibility: hidden;
-}
-.tab-list .new-tab {
-  padding: 0 16px;
-  display: flex;
-  height: var(--tab-height);
-  line-height: var(--tab-height);
-  text-align: center;
-}
-.tab-list .new-tab .select-shell {
-  flex: none;
-  width: 18px;
-}
-.tab-list .new-tab .default-shell {
-  flex: auto;
-  font-size: 21px;
-}
-.tab-list .new-tab .select-shell + .default-shell {
-  order: -1;
-  padding-left: 18px;
-}
-.tab-list .launcher-folder {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  padding: 8px 16px;
-  line-height: 16px;
-  cursor: pointer;
-}
-.tab-list .group-name {
-  opacity: 0.5;
-  transition: opacity 0.2s, color 0.2s, transform 0.2s;
-}
-.tab-list .group-name.collapsed {
-  color: var(--design-yellow);
-  transform: rotate(-90deg);
-  opacity: 1;
-}
-.tab-list .group-name:not(.collapsed):hover {
-  opacity: 1;
-}
-.tab-list .launcher-folder .buttons {
-  flex: none;
-  display: flex;
-}
-.tab-list .launcher-folder .button {
-  width: 18px;
-  text-align: center;
-  opacity: 0.5;
-  transition: opacity 0.2s, color 0.2s;
-}
-.tab-list .launcher-folder .button + .button {
-  margin-left: 3px;
-}
-.tab-list .launcher-folder .find:hover {
-  opacity: 1;
-}
-.tab-list .find.active {
-  opacity: 1;
-  color: var(--design-yellow);
-}
-.tab-list .find-launcher {
-  flex-basis: 100%;
-  margin-top: 8px;
-}
-.tab-list .find-launcher .keyword {
-  padding: 0;
-  border: none;
-  outline: none;
-  font: inherit;
-  color: inherit;
-  background: transparent;
-}
-.tab-list .find-launcher .keyword::placeholder {
-  color: inherit;
-  opacity: 0.5;
-}
-.tab-list .edit-launcher {
-  text-align: center;
-  font-size: 18px;
-  line-height: 26px;
-  margin-bottom: 8px;
-}
-.tab-list .bottom-actions {
-  flex: none;
-  display: flex;
-  padding: 8px 16px;
-  line-height: 16px;
-  height: 16px;
-}
-.tab-list .bottom-actions .anchor {
-  margin-right: 8px;
-}
-.tab-list .server-port {
-  vertical-align: 1px;
-}
-.tab-list .anchor {
-  cursor: pointer;
-  opacity: 0.5;
-  transition: opacity 0.2s;
-}
-.tab-list .anchor:hover,
-.tab-list .anchor.active {
-  opacity: 1;
-}
-.tab-list .launch:hover {
-  color: var(--design-green);
-}
-.tab-list .launch-externally:hover {
-  color: var(--design-blue);
+  .list-column {
+    flex: auto;
+    width: 176px;
+    display: flex;
+    flex-direction: column;
+  }
+  .list {
+    flex: auto;
+    height: 0;
+    position: relative;
+  }
+  .scroll-area {
+    height: 100%;
+    overflow-y: auto;
+    box-sizing: border-box;
+    &::-webkit-scrollbar {
+      width: 0px;
+    }
+  }
+  .scroll-bar {
+    width: 8px;
+    right: 2px;
+  }
+  .sash {
+    flex: none;
+    width: 2px;
+    margin: 4px 0;
+    border-right: 2px solid var(--theme-foreground);
+    opacity: 0.05;
+    cursor: col-resize;
+  }
+  .invisible {
+    visibility: hidden;
+  }
+  .new-tab {
+    padding: 0 16px;
+    display: flex;
+    height: var(--tab-height);
+    line-height: var(--tab-height);
+    text-align: center;
+    .select-shell {
+      flex: none;
+      width: 18px;
+    }
+    .default-shell {
+      flex: auto;
+      font-size: 21px;
+    }
+    .select-shell + .default-shell {
+      order: -1;
+      padding-left: 18px;
+    }
+  }
+  .launcher-folder {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 8px 16px;
+    line-height: 16px;
+    cursor: pointer;
+    .buttons {
+      flex: none;
+      display: flex;
+    }
+    .button {
+      width: 18px;
+      text-align: center;
+      opacity: 0.5;
+      transition: opacity 0.2s, color 0.2s;
+    }
+    .button + .button {
+      margin-left: 3px;
+    }
+    .find:hover {
+      opacity: 1;
+    }
+  }
+  .group-name {
+    opacity: 0.5;
+    transition: opacity 0.2s, color 0.2s, transform 0.2s;
+    &.collapsed {
+      color: var(--design-yellow);
+      transform: rotate(-90deg);
+      opacity: 1;
+    }
+    &:not(.collapsed):hover {
+      opacity: 1;
+    }
+  }
+  .find.active {
+    opacity: 1;
+    color: var(--design-yellow);
+  }
+  .find-launcher {
+    flex-basis: 100%;
+    margin-top: 8px;
+    .keyword {
+      padding: 0;
+      border: none;
+      outline: none;
+      font: inherit;
+      color: inherit;
+      background: transparent;
+      &::placeholder {
+        color: inherit;
+        opacity: 0.5;
+      }
+    }
+  }
+  .edit-launcher {
+    text-align: center;
+    font-size: 18px;
+    line-height: 26px;
+    margin-bottom: 8px;
+  }
+  .bottom-actions {
+    flex: none;
+    display: flex;
+    padding: 8px 16px;
+    line-height: 16px;
+    height: 16px;
+    .anchor {
+      margin-right: 8px;
+    }
+  }
+  .anchor {
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    &:hover,
+    &.active {
+      opacity: 1;
+    }
+  }
+  .launch:hover {
+    color: var(--design-green);
+  }
+  .launch-externally:hover {
+    color: var(--design-blue);
+  }
 }
 </style>

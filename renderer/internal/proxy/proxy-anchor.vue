@@ -36,8 +36,13 @@ export default {
 }
 </script>
 
-<style>
-.proxy-anchor.active {
-  color: var(--design-cyan);
+<style lang="scss">
+.proxy-anchor {
+  &.active {
+    color: var(--design-cyan);
+  }
+  .server-port {
+    vertical-align: 1px;
+  }
 }
 </style>

@@ -256,85 +256,91 @@ export default {
 }
 </script>
 
-<style>
-.proxy-pane .form-action {
-  margin: 0;
+<style lang="scss">
+.proxy-pane {
+  .form-action {
+    margin: 0;
+  }
+  .toggle-all.collapsed {
+    opacity: 1;
+    transform: rotate(-90deg);
+  }
+  .revert {
+    color: var(--design-red);
+  }
+  .confirm {
+    color: var(--design-green);
+  }
+  .revert.disabled,
+  .confirm.disabled {
+    color: inherit;
+    opacity: 0.5;
+  }
 }
-.proxy-pane .toggle-all.collapsed {
-  opacity: 1;
-  transform: rotate(-90deg);
-}
-.proxy-pane .revert {
-  color: var(--design-red);
-}
-.proxy-pane .confirm {
-  color: var(--design-green);
-}
-.proxy-pane .revert.disabled,
-.proxy-pane .confirm.disabled {
-  color: inherit;
-  opacity: 0.5;
-}
-.proxy-table .rule-line {
-  display: flex;
-  align-items: center;
-}
-.proxy-table .link {
-  width: 24px;
-  text-align: center;
-}
-.proxy-table .proxy-to {
-  width: 36px;
-  opacity: 1;
-  cursor: default;
-}
-.proxy-table .proxy-to.active {
-  color: var(--design-yellow);
-  transform: rotate(90deg);
-}
-.proxy-table .proxy-to.valid {
-  color: var(--design-yellow);
-  cursor: pointer;
-}
-.proxy-table .rule-line .link:first-child {
-  margin-right: 4px;
-}
-.proxy-table .rewriting {
-  color: var(--design-yellow);
-  opacity: 1;
-  cursor: default;
-}
-.proxy-table input.form-control {
-  margin-right: 4px;
-  box-sizing: border-box;
-  width: 320px;
-}
-.proxy-table .form-control.target {
-  width: 284px; /* 320 - 36px */
-}
-.proxy-table .record-action.confirm {
-  width: 36px;
-}
-.proxy-table .link.tree-node {
-  opacity: 1;
-  transition: transform 0.2s;
-}
-.proxy-table .rule-summary.collapsed .link.tree-node {
-  transform: rotate(-90deg);
-}
-.proxy-table .rule-summary.disabled .rule-title,
-.proxy-table .rule-summary.disabled .rule-title::placeholder {
-  text-decoration: line-through;
-}
-.proxy-table .rule-checkbox {
-  margin-top: -3px;
-  width: 36px;
-  display: inline-flex;
-  justify-content: center;
-}
-.proxy-table .rule-title {
-  margin-right: 4px;
-  width: 284px;
-  text-overflow: ellipsis;
+.proxy-table {
+  .rule-line {
+    display: flex;
+    align-items: center;
+    .link:first-child {
+      margin-right: 4px;
+    }
+  }
+  .link {
+    width: 24px;
+    text-align: center;
+    &.tree-node {
+      opacity: 1;
+      transition: transform 0.2s;
+    }
+  }
+  .proxy-to {
+    width: 36px;
+    opacity: 1;
+    cursor: default;
+    &.active {
+      color: var(--design-yellow);
+      transform: rotate(90deg);
+    }
+    &.valid {
+      color: var(--design-yellow);
+      cursor: pointer;
+    }
+  }
+  .rewriting {
+    color: var(--design-yellow);
+    opacity: 1;
+    cursor: default;
+  }
+  input.form-control {
+    margin-right: 4px;
+    box-sizing: border-box;
+    width: 320px;
+  }
+  .form-control.target {
+    width: 284px; /* 320 - 36px */
+  }
+  .record-action.confirm {
+    width: 36px;
+  }
+  .rule-summary {
+    &.collapsed .link.tree-node {
+      transform: rotate(-90deg);
+    }
+    &.disabled .rule-title,
+    &.disabled .rule-title::placeholder {
+      text-decoration: line-through;
+    }
+  }
+  .rule-checkbox {
+    margin-top: -3px;
+    width: 36px;
+    display: inline-flex;
+    justify-content: center;
+  }
+  .rule-title {
+    margin-right: 4px;
+    width: 284px;
+    text-overflow: ellipsis;
+  }
 }
 </style>

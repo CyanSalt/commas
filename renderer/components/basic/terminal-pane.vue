@@ -43,164 +43,162 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .terminal-pane {
   position: relative;
   padding: 4px 24px;
   height: 100%;
   box-sizing: border-box;
   z-index: 0;
-}
-.terminal-pane .app-pattern {
-  position: absolute;
-  width: 144px;
-  height: 144px;
-  bottom: 12px;
-  right: 12px;
-  color: var(--theme-background);
-  opacity: 0.1;
-  pointer-events: none;
-  z-index: -1;
-}
-.terminal-pane .app-pattern rect {
-  fill: var(--theme-foreground);
-}
-.terminal-pane .scroll-area {
-  height: 100%;
-  overflow: auto;
-}
-.terminal-pane .scroll-area::-webkit-scrollbar {
-  width: 0px;
-}
-.terminal-pane .scroll-area > :last-child {
-  margin-bottom: 16px;
-}
-.terminal-pane .group-title {
-  margin-top: 0;
-  margin-bottom: 8px;
-  font-size: 18px;
-  line-height: 24px;
-}
-.terminal-pane .group {
-  margin-bottom: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  line-height: 32px;
-}
-.terminal-pane .link {
-  cursor: pointer;
-  opacity: 0.5;
-  transition: opacity 0.2s, color 0.2s, transform 0.2s;
-}
-.terminal-pane .link.disabled {
-  pointer-events: none;
-}
-.terminal-pane .link:hover {
-  opacity: 1;
-}
-.terminal-pane .text {
-  line-height: 32px;
-}
-.terminal-pane .form-line,
-.terminal-pane .action-line {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.terminal-pane .form-line.block {
-  display: block;
-  align-self: stretch;
-}
-.terminal-pane .form-line + .form-line {
-  margin-top: 10px;
-}
-.terminal-pane .form-label {
-  width: 14em;
-  align-self: flex-start;
-}
-.terminal-pane .form-line.block .form-label {
-  display: block;
-  width: auto;
-}
-.terminal-pane .form-line-tip {
-  flex-basis: 100%;
-  margin-bottom: 8px;
-  font-size: 12px;
-  font-style: italic;
-  line-height: 24px;
-}
-.terminal-pane .form-line-tip::before {
-  content: '*';
-  margin-right: 1em;
-}
-.terminal-pane input.form-control,
-.terminal-pane textarea.form-control {
-  width: 165px;
-  padding: 2px 6px;
-  line-height: 20px;
-  border: none;
-  outline: none;
-  color: inherit;
-  font-size: inherit;
-  font-family: inherit;
-  background: rgba(127, 127, 127, 0.2);
-}
-.terminal-pane textarea.form-control {
-  height: 60px;
-  resize: none;
-}
-.terminal-pane .form-line.block input.form-control,
-.terminal-pane .form-line.block textarea.form-control {
-  box-sizing: border-box;
-  width: 480px;
-}
-.terminal-pane .form-line.block .object-editor input.form-control {
-  width: 208px;
-}
-.terminal-pane .form-line.block .object-editor input.form-control:only-of-type {
-  width: 452px;
-}
-.terminal-pane input.form-control::placeholder,
-.terminal-pane textarea.form-control::placeholder {
-  color: var(--theme-foreground);
-  opacity: 0.25;
-}
-.terminal-pane input.form-control:read-only,
-.terminal-pane textarea.form-control:read-only {
-  opacity: 0.5;
-}
-.terminal-pane input.immersive-control {
-  appearance: none;
-  padding: 0;
-  font: inherit;
-  line-height: inherit;
-  border: none;
-  outline: none;
-  color: inherit;
-  background: transparent;
-}
-.terminal-pane select.form-control {
-  padding: 2px 6px;
-  line-height: 20px;
-  height: 24px;
-  border-radius: 4px;
-  border: none;
-  outline: none;
-  background: rgba(127, 127, 127, 0.2);
-  color: var(--foreground-color);
-}
-.terminal-pane .form-tips {
-  margin: 8px 0;
-  line-height: 24px;
-  font-size: 12px;
-  user-select: text;
-  opacity: 0.5;
-}
-.terminal-pane .form-action {
-  margin-left: 8px;
-  font-size: 16px;
-  width: 24px;
-  text-align: center;
+  .app-pattern {
+    position: absolute;
+    width: 144px;
+    height: 144px;
+    bottom: 12px;
+    right: 12px;
+    color: var(--theme-background);
+    opacity: 0.1;
+    pointer-events: none;
+    z-index: -1;
+    rect {
+      fill: var(--theme-foreground);
+    }
+  }
+  .scroll-area {
+    height: 100%;
+    overflow: auto;
+    &::-webkit-scrollbar {
+      width: 0px;
+    }
+    & > :last-child {
+      margin-bottom: 16px;
+    }
+  }
+  .group-title {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 18px;
+    line-height: 24px;
+  }
+  .group {
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 32px;
+  }
+  .link {
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s, color 0.2s, transform 0.2s;
+    &.disabled {
+      pointer-events: none;
+    }
+    &:hover {
+      opacity: 1;
+    }
+  }
+  .text {
+    line-height: 32px;
+  }
+  .form-line,
+  .action-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .form-line.block {
+    display: block;
+    align-self: stretch;
+    .form-label {
+      display: block;
+      width: auto;
+    }
+    input.form-control,
+    textarea.form-control {
+      box-sizing: border-box;
+      width: 480px;
+    }
+    .object-editor input.form-control {
+      width: 208px;
+      &:only-of-type {
+        width: 452px;
+      }
+    }
+  }
+  .form-line + .form-line {
+    margin-top: 10px;
+  }
+  .form-label {
+    width: 14em;
+    align-self: flex-start;
+  }
+  .form-line-tip {
+    flex-basis: 100%;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-style: italic;
+    line-height: 24px;
+    &::before {
+      content: '*';
+      margin-right: 1em;
+    }
+  }
+  input.form-control,
+  textarea.form-control {
+    width: 165px;
+    padding: 2px 6px;
+    line-height: 20px;
+    border: none;
+    outline: none;
+    color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    background: rgba(127, 127, 127, 0.2);
+    &::placeholder {
+      color: var(--theme-foreground);
+      opacity: 0.25;
+    }
+    &:read-only {
+      opacity: 0.5;
+    }
+  }
+  textarea.form-control {
+    height: 60px;
+    resize: none;
+  }
+  input.immersive-control {
+    appearance: none;
+    padding: 0;
+    font: inherit;
+    line-height: inherit;
+    border: none;
+    outline: none;
+    color: inherit;
+    background: transparent;
+  }
+  select.form-control {
+    padding: 2px 6px;
+    line-height: 20px;
+    height: 24px;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+    background: rgba(127, 127, 127, 0.2);
+    color: var(--foreground-color);
+  }
+  .form-tips {
+    margin: 8px 0;
+    line-height: 24px;
+    font-size: 12px;
+    user-select: text;
+    opacity: 0.5;
+  }
+  .form-action {
+    margin-left: 8px;
+    font-size: 16px;
+    width: 24px;
+    text-align: center;
+  }
 }
 </style>

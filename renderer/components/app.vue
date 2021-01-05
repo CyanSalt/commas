@@ -140,7 +140,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 body {
   margin: 0;
   font-family: Fira Code, Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
@@ -169,21 +169,21 @@ body {
   background: var(--theme-backdrop);
   transition: background 0.2s;
   --system-accent: var(--design-blue);
-}
-.app.opaque {
-  background: var(--theme-background);
-}
-.app .content {
-  flex: auto;
-  width: 100vw;
-  display: flex;
-  overflow: hidden;
-  z-index: 1;
-}
-.app .interface {
-  flex: auto;
-  width: 0;
-  display: flex;
-  flex-direction: column;
+  &.opaque {
+    background: var(--theme-background);
+  }
+  .content {
+    flex: auto;
+    width: 100vw;
+    display: flex;
+    overflow: hidden;
+    z-index: 1;
+  }
+  .interface {
+    flex: auto;
+    width: 0;
+    display: flex;
+    flex-direction: column;
+  }
 }
 </style>

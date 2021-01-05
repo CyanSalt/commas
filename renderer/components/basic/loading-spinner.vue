@@ -10,8 +10,8 @@ export default {
 }
 </script>
 
-<style>
-@keyframes rotate {
+<style lang="scss">
+@keyframes spinner-rotate {
   from {
     transform: rotate(0);
   }
@@ -26,6 +26,6 @@ export default {
   border-radius: 50%;
   border: 0.1em solid;
   border-left-color: transparent;
-  animation: rotate 0.6s linear infinite;
+  animation: spinner-rotate 0.6s linear infinite;
 }
 </style>

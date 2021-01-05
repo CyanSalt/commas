@@ -145,28 +145,30 @@ export default {
 }
 </script>
 
-<style>
-.object-editor .property-line {
-  display: flex;
-  align-items: center;
-}
-.object-editor .property-line .link {
-  width: 24px;
-  text-align: center;
-}
-.object-editor .property-line .link:first-child {
-  margin-right: 4px;
-}
-.object-editor .property-line .link.remove:hover {
-  color: var(--design-red);
-}
-.object-editor .property-arrow {
-  width: 36px;
-  text-align: center;
-}
-.object-editor .pinned-checker {
-  width: 24px;
-  text-align: center;
-  margin-right: 4px;
+<style lang="scss">
+.object-editor {
+  .property-line {
+    display: flex;
+    align-items: center;
+    .link {
+      width: 24px;
+      text-align: center;
+      &:first-child {
+        margin-right: 4px;
+      }
+      &.remove:hover {
+        color: var(--design-red);
+      }
+    }
+  }
+  .property-arrow {
+    width: 36px;
+    text-align: center;
+  }
+  .pinned-checker {
+    width: 24px;
+    text-align: center;
+    margin-right: 4px;
+  }
 }
 </style>

@@ -170,7 +170,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .title-bar {
   flex: none;
   height: 36px;
@@ -180,95 +180,99 @@ export default {
   text-align: center;
   -webkit-app-region: drag;
   z-index: 1;
-}
-.title-bar .git-branch,
-.title-bar .controls {
-  flex: 1 0 auto;
-  display: flex;
-  width: 108px;
-}
-.title-bar .title-wrapper {
-  padding: 0 8px;
-  max-width: calc(100vw - 216px);
-  box-sizing: border-box;
-  flex: 2 0 auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.title-bar .title-wrapper .shortcut {
-  flex: none;
-  margin-right: 8px;
-  cursor: pointer;
-  transition: color 0.2s;
-  -webkit-app-region: no-drag;
-}
-.title-bar .title-wrapper .open-directory:hover {
-  color: var(--design-blue);
-}
-.title-bar .title-wrapper .run-script:hover {
-  color: var(--design-green);
-}
-.title-bar .title-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  /* Show ellipsis on left */
-  direction: rtl;
-  unicode-bidi: plaintext;
-}
-.title-bar .git-branch {
-  padding-left: 16px;
-  box-sizing: border-box;
-}
-.title-bar .branch-updater {
-  margin-right: 4px;
-  cursor: pointer;
-  opacity: 0.5;
-  transition: opacity 0.2s;
-  -webkit-app-region: no-drag;
-}
-.title-bar .branch-updater:hover {
-  opacity: 1;
-}
-.title-bar .branch-name {
-  opacity: 0.5;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.title-bar .controls {
-  justify-content: flex-end;
-}
-.title-bar.no-controls .git-branch {
-  order: 1;
-  padding-left: 0;
-  padding-right: 16px;
-  justify-content: flex-end;
-}
-.title-bar.no-controls .controls {
-  order: -1;
-}
-.title-bar .tab-index-indicator {
-  margin-left: 8px;
-  font-size: 12px;
-  cursor: pointer;
-  -webkit-app-region: no-drag;
-  opacity: 0.5;
-}
-.title-bar .controls .button {
-  width: 36px;
-  height: 36px;
-  cursor: pointer;
-  transition: color 0.2s;
-  -webkit-app-region: no-drag;
-}
-.title-bar .button.minimize:hover {
-  color: var(--design-green);
-}
-.title-bar .button.maximize:hover {
-  color: var(--design-yellow);
-}
-.title-bar .button.close:hover {
-  color: var(--design-red);
+  &.no-controls {
+    .git-branch {
+      order: 1;
+      padding-left: 0;
+      padding-right: 16px;
+      justify-content: flex-end;
+    }
+    .controls {
+      order: -1;
+    }
+  }
+  .git-branch,
+  .controls {
+    flex: 1 0 auto;
+    display: flex;
+    width: 108px;
+  }
+  .title-wrapper {
+    padding: 0 8px;
+    max-width: calc(100vw - 216px);
+    box-sizing: border-box;
+    flex: 2 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .shortcut {
+      flex: none;
+      margin-right: 8px;
+      cursor: pointer;
+      transition: color 0.2s;
+      -webkit-app-region: no-drag;
+    }
+    .open-directory:hover {
+      color: var(--design-blue);
+    }
+    .run-script:hover {
+      color: var(--design-green);
+    }
+  }
+  .title-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    /* Show ellipsis on left */
+    direction: rtl;
+    unicode-bidi: plaintext;
+  }
+  .git-branch {
+    padding-left: 16px;
+    box-sizing: border-box;
+  }
+  .branch-updater {
+    margin-right: 4px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    -webkit-app-region: no-drag;
+    &:hover {
+      opacity: 1;
+    }
+  }
+  .branch-name {
+    opacity: 0.5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .controls {
+    justify-content: flex-end;
+    .button {
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      transition: color 0.2s;
+      -webkit-app-region: no-drag;
+    }
+  }
+  .tab-index-indicator {
+    margin-left: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
+    opacity: 0.5;
+  }
+  .button {
+    &.minimize:hover {
+      color: var(--design-green);
+    }
+    &.maximize:hover {
+      color: var(--design-yellow);
+    }
+    &.close:hover {
+      color: var(--design-red);
+    }
+  }
 }
 </style>

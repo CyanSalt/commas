@@ -16,9 +16,3 @@ export default {
   },
 }
 </script>
-
-<style>
-.proxy-anchor.active {
-  color: var(--design-cyan);
-}
-</style>
