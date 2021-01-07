@@ -82,7 +82,7 @@ export async function startLauncherExternally(launcher: Launcher) {
   if (explorer.includes('$_')) {
     explorer = explorer.map(item => (item === '$_' ? directory : item))
   } else {
-    explorer.push(directory)
+    explorer = [...explorer, directory]
   }
   const [command, ...args] = explorer
   return ipcRenderer.invoke('spawn-process', command, args)
