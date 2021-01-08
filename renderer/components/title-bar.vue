@@ -69,7 +69,7 @@ export default {
     const directoryRef = computed(() => {
       const terminal = unref(terminalRef)
       if (!terminal || terminal.pane) return ''
-      return getPrompt('\\w', terminal)
+      return terminal.cwd
     })
 
     const paneRef = computed(() => {
@@ -80,10 +80,10 @@ export default {
 
     const settingsRef = useSettings()
     const titleRef = computed(() => {
-      const directory = unref(directoryRef)
-      if (directory) return directory
       const terminal = unref(terminalRef)
       if (!terminal) return ''
+      const directory = unref(directoryRef)
+      if (directory) return getPrompt('\\w', terminal)
       if (terminal.title) return terminal.title
       const settings = unref(settingsRef)
       const expr = settings['terminal.tab.titleFormat']
