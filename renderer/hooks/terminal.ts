@@ -140,7 +140,6 @@ export async function createTerminalTab({ cwd, shell: shellPath, launcher }: Cre
     updateCwd()
   })
   watch(terminalOptionsRef, (terminalOptions) => {
-    if (tab.pane) return
     const latestXterm = tab.xterm
     for (const [key, value] of Object.entries(terminalOptions)) {
       latestXterm.setOption(key, value)

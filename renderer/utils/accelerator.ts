@@ -23,7 +23,11 @@ export function toKeyEventPattern(accelerator: string) {
         break
       case 'CmdOrCtrl':
       case 'CommandOrCtrl':
-        pattern.metaKey = true
+        if (process.platform === 'darwin') {
+          pattern.metaKey = true
+        } else {
+          pattern.ctrlKey = true
+        }
         break
       default:
         pattern.key = key.length === 1 ? key.toLowerCase() : key
