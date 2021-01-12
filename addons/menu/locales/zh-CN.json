@@ -6,7 +6,7 @@
   "Hide Others#!menu.hideothers": "隐藏其他",
   "Show All#!menu.unhide": "全部显示",
   "Quit %A#!menu.quit": "退出 %A",
-  "Shell#!menu.shell": "外壳",
+  "Terminal#!menu.terminal": "终端",
   "New Tab#!menu.newtab": "新建标签页",
   "New Window#!menu.newwindow": "新建窗口",
   "Show Tab Options#!menu.showtaboptions": "展示标签页选项",

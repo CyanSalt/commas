@@ -6,7 +6,7 @@ import { resources } from '../utils/directory'
 import { translate } from './i18n'
 import { getUserKeyBindings, getAddonKeyBindings } from './keybinding'
 
-const shellMenuItems = resources.require<KeyBinding[]>('shell.menu.json')!
+const terminalMenuItems = resources.require<KeyBinding[]>('terminal.menu.json')!
 
 function resolveBindingCommand(binding: KeyBinding) {
   const result: MenuItemConstructorOptions = { ...binding }
@@ -24,8 +24,8 @@ function resolveBindingCommand(binding: KeyBinding) {
   return result
 }
 
-function getShellMenuItems() {
-  return shellMenuItems.map(resolveBindingCommand)
+function getTerminalMenuItems() {
+  return terminalMenuItems.map(resolveBindingCommand)
 }
 
 const getCustomMenuItems = memoize(async () => {
@@ -67,8 +67,8 @@ async function createApplicationMenu() {
       ],
     },
     {
-      label: translate('Shell#!menu.shell'),
-      submenu: getShellMenuItems(),
+      label: translate('Terminal#!menu.terminal'),
+      submenu: getTerminalMenuItems(),
     },
     { role: 'editMenu', label: translate('Edit#!menu.edit') },
     { role: 'windowMenu', label: translate('Window#!menu.window') },
@@ -101,8 +101,8 @@ async function createApplicationMenu() {
 async function createWindowMenu(frame: BrowserWindow) {
   const menu = Menu.buildFromTemplate([
     {
-      label: translate('Shell#!menu.shell'),
-      submenu: getShellMenuItems(),
+      label: translate('Terminal#!menu.terminal'),
+      submenu: getTerminalMenuItems(),
     },
     { role: 'editMenu' },
     { role: 'windowMenu' },
