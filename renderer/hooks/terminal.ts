@@ -64,6 +64,10 @@ const terminalOptionsRef = computed<Partial<ITerminalOptions>>(() => {
   }
 })
 
+export function useTerminalOptions() {
+  return terminalOptionsRef
+}
+
 interface RendererKeyBinding {
   pattern: Partial<KeyboardEvent>,
   command: string,
@@ -247,7 +251,7 @@ export function handleTerminalMessages() {
   })
 }
 
-function loadTerminalAddons(tab: TerminalTab) {
+export function loadTerminalAddons(tab: TerminalTab) {
   const xterm = tab.xterm
   if (!xterm.element) return
   const settings = unref(useSettings())

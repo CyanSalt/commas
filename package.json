@@ -30,6 +30,7 @@
     "@types/lodash": "^4.14.167",
     "@types/lodash-es": "^4.17.4",
     "@types/webpack-env": "^1.16.0",
+    "@types/yargs-parser": "^20.2.0",
     "@typescript-eslint/eslint-plugin": "^4.11.1",
     "@typescript-eslint/parser": "^4.11.1",
     "@vue/compiler-sfc": "^3.0.5",
@@ -58,7 +59,8 @@
     "xterm-addon-search": "^0.7.0",
     "xterm-addon-unicode11": "^0.2.0",
     "xterm-addon-web-links": "^0.4.0",
-    "xterm-addon-webgl": "^0.9.0"
+    "xterm-addon-webgl": "^0.9.0",
+    "yargs-parser": "^20.2.4"
   },
   "dependencies": {
     "color-rgba": "^2.2.3",
