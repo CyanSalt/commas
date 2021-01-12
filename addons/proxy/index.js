@@ -58,7 +58,7 @@ module.exports = function (commas) {
       commas.bundler.extract('proxy/proxy-anchor.vue').default
     )
 
-    commas.storage.shareDataIntoArray('settings', {
+    commas.reactive.shareDataIntoArray('settings', {
       component: commas.bundler.extract('proxy/proxy-link.vue').default,
       group: 'feature',
     })

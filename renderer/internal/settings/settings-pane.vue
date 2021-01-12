@@ -83,7 +83,7 @@ export default {
     'switch-control': SwitchControl,
   },
   setup() {
-    const settingsItems: SettingsItem[] = commas.storage.shareArray('settings')
+    const settingsItems: SettingsItem[] = commas.reactive.shareArray('settings')
 
     function getItems(group: string) {
       const list = settingsItems.filter(item => item.group === group)

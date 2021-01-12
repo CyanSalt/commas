@@ -13,7 +13,7 @@ module.exports = function (commas) {
       },
     })
 
-    commas.storage.shareDataIntoArray('settings', {
+    commas.reactive.shareDataIntoArray('settings', {
       component: commas.bundler.extract('theme/theme-link.vue').default,
       group: 'general',
     })
