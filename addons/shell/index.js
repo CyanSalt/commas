@@ -38,11 +38,21 @@ module.exports = function (commas) {
       loadExternalURLCommands()
     })
 
+    commas.keybinding.add({
+      label: 'Open shell#!shell.2',
+      accelerator: 'CmdOrCtrl+P',
+      command: 'open-shell-pane',
+    })
+
     commas.settings.addSpecs(require('./settings.spec.json'))
 
     commas.i18n.addTranslation(['zh', 'zh-CN'], require('./locales/zh-CN.json'))
 
   } else {
+
+    commas.ipcRenderer.on('open-shell-pane', () => {
+      commas.workspace.openPaneTab('shell')
+    })
 
     commas.workspace.registerTabPane('shell', {
       title: 'Shell#!shell.1',
