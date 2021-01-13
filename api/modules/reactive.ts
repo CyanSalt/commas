@@ -11,18 +11,22 @@ function shareArray(name: string) {
   return namespaces[name]
 }
 
-function removeDataFromArray(name: string, data: any) {
+function removeDataFromArray(name: string, ...data: any[]) {
   const sharedArray = shareArray(name)
-  const index = sharedArray.indexOf(data)
-  sharedArray.splice(index, 1)
+  for (const item of data) {
+    const index = sharedArray.indexOf(item)
+    sharedArray.splice(index, 1)
+  }
 }
 
-function shareDataIntoArray(name: string, data: any) {
+function shareDataIntoArray(name: string, ...data: any[]) {
   const sharedArray = shareArray(name)
-  sharedArray.push(data)
-  this.$.app.onCleanup(() => {
-    removeDataFromArray(name, data)
-  })
+  sharedArray.push(...data)
+  if (data.length) {
+    this.$.app.onCleanup(() => {
+      removeDataFromArray(name, ...data)
+    })
+  }
 }
 
 export {

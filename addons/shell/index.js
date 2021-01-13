@@ -1,6 +1,7 @@
 module.exports = function (commas) {
   if (commas.app.isMainProcess()) {
 
+    const util = require('util')
     const { executeCommand, getExternalURLCommands } = commas.bundler.extract('shell/command.ts')
 
     commas.ipcMain.handle('execute-shell-command', async (event, line) => {
@@ -15,19 +16,19 @@ module.exports = function (commas) {
         const vm = require('vm')
         const context = {}
         vm.createContext(context)
-        return vm.runInContext(argv, context)
+        return util.inspect(vm.runInContext(argv, context), {
+          showHidden: true,
+          showProxy: true,
+          colors: true,
+        })
       },
     })
 
     let loadedCommands = []
     const loadExternalURLCommands = async () => {
       const commands = await getExternalURLCommands()
-      loadedCommands.forEach(command => {
-        commas.context.removeDataFromArray('shell', command)
-      })
-      commands.forEach(command => {
-        commas.context.shareDataIntoArray('shell', command)
-      })
+      commas.context.removeDataFromArray('shell', ...loadedCommands)
+      commas.context.shareDataIntoArray('shell', ...commands)
       loadedCommands = commands
     }
 

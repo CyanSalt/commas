@@ -1,3 +1,4 @@
+import * as util from 'util'
 import { shell } from 'electron'
 import yargsParser from 'yargs-parser'
 import { getSettings } from '../../lib/settings'
@@ -39,7 +40,7 @@ export async function getExternalURLCommands(): Promise<CommandModule[]> {
       command,
       raw: true,
       handler(argv: string) {
-        const finalURL = url.replace('%s', encodeURIComponent(argv))
+        const finalURL = util.format(url, encodeURIComponent(argv))
         shell.openExternal(finalURL)
         return finalURL
       },
