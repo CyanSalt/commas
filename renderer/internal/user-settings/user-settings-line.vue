@@ -18,7 +18,7 @@
       </div>
       <switch-control v-if="spec.type === 'boolean'" v-model="model"></switch-control>
       <object-editor
-        v-else-if="spec.type === 'list' || spec.type === 'map'"
+        v-else-if="isSimpleObject"
         v-model="model"
         :with-keys="spec.type === 'map'"
         :pinned="spec.recommendations"
@@ -65,7 +65,7 @@
 
 <script lang="ts">
 import type { PropType } from 'vue'
-import { reactive, computed, toRefs } from 'vue'
+import { reactive, computed, toRefs, unref } from 'vue'
 import type { SettingsSpec } from '../../../typings/settings'
 import ObjectEditor from '../../components/basic/object-editor.vue'
 import SwitchControl from '../../components/basic/switch-control.vue'
@@ -96,6 +96,11 @@ export default {
       collapsed: false,
     })
 
+    const isSimpleObjectRef = computed(() => {
+      return ['list', 'map'].includes(props.spec.type)
+        && !['list', 'map'].includes(props.spec.paradigm?.[0])
+    })
+
     const placeholderRef = computed(() => {
       return stringify(props.spec.default)
     })
@@ -105,7 +110,8 @@ export default {
         if (props.modelValue === undefined && ['boolean', 'enum', 'list', 'map'].includes(props.spec.type)) {
           return normalize(props.spec.default)
         }
-        if (['list', 'map'].includes(props.spec.type)) {
+        const isSimpleObject = unref(isSimpleObjectRef)
+        if (isSimpleObject) {
           return normalize(props.modelValue)
         }
         return stringify(props.modelValue)
@@ -136,10 +142,10 @@ export default {
 
     function stringify(value) {
       if (accepts('list') && Array.isArray(value)) {
-        return JSON.stringify(value)
+        return JSON.stringify(value, null, 2)
       }
       if (accepts('map') && typeof value === 'object') {
-        return JSON.stringify(value)
+        return JSON.stringify(value, null, 2)
       }
       if (value === undefined) {
         return ''
@@ -190,6 +196,7 @@ export default {
 
     return {
       ...toRefs(state),
+      isSimpleObject: isSimpleObjectRef,
       placeholder: placeholderRef,
       model: modelRef,
       toggle,

@@ -1,0 +1,12 @@
+[
+  {
+    "key": "shell.command.externalURLs",
+    "type": "list",
+    "paradigm": ["map"],
+    "label": "External URL Commands",
+    "comments": [
+      "Shortcut commands for external URLs"
+    ],
+    "default": 16383
+  }
+]

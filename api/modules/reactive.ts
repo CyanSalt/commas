@@ -11,16 +11,22 @@ function shareArray(name: string) {
   return namespaces[name]
 }
 
+function removeDataFromArray(name: string, data: any) {
+  const sharedArray = shareArray(name)
+  const index = sharedArray.indexOf(data)
+  sharedArray.splice(index, 1)
+}
+
 function shareDataIntoArray(name: string, data: any) {
   const sharedArray = shareArray(name)
   sharedArray.push(data)
   this.$.app.onCleanup(() => {
-    const index = sharedArray.indexOf(data)
-    sharedArray.splice(index, 1)
+    removeDataFromArray(name, data)
   })
 }
 
 export {
   shareArray,
   shareDataIntoArray,
+  removeDataFromArray,
 }

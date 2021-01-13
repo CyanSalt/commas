@@ -1,7 +1,6 @@
 import { ipcRenderer } from 'electron'
 import { unref, watch } from 'vue'
 import { Terminal } from 'xterm'
-import yargsParser from 'yargs-parser'
 import type { TerminalTab } from '../../../typings/terminal'
 import { loadTerminalAddons, useTerminalOptions } from '../../hooks/terminal'
 
@@ -58,8 +57,7 @@ export function initializeShellTerminal(tab: TerminalTab) {
     if (feed === 'enter') {
       const lines = buffer.trim().split(/;|[\r\n]+/).filter(Boolean)
       for (const line of lines) {
-        const [command, ...args] = line.trim().split(/\s+/)
-        const output = await ipcRenderer.invoke('execute-shell-command', command, yargsParser(args))
+        const output = await ipcRenderer.invoke('execute-shell-command', line.trim())
         if (output.code) {
           xterm.writeln(output.stderr)
         } else if (output.stdout) {
