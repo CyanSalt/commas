@@ -20,7 +20,7 @@ export async function executeCommand(line: string, commands: CommandModule[]) {
     if (controller) {
       const argv = line.slice(command.length).trim()
       const stdout = await controller.handler(
-        controller.raw ? argv : yargsParser(argv.split(/\s+/))
+        controller.raw ? argv : yargsParser(argv)
       )
       return { code: 0, stdout: String(stdout) }
     } else {
