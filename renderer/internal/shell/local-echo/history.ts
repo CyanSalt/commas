@@ -1,5 +1,5 @@
 /**
- * The history controller provides an ring-buffer
+ * Shell history for localEcho
  */
 export class History {
 
@@ -13,43 +13,27 @@ export class History {
     this.cursor = 0
   }
 
-  /**
-   * Push an entry and maintain ring buffer size
-   */
   push(entry: string) {
-    // Skip empty entries
-    if (entry.trim() === '') return
-    // Skip duplicate entries
-    const lastEntry = this.entries[this.entries.length - 1]
-    if (entry === lastEntry) return
-    // Keep track of entries
+    entry = entry.trim()
+    if (!entry) return
     this.entries.push(entry)
     if (this.entries.length > this.size) {
-      this.entries.pop()
+      this.entries.shift()
     }
-    this.cursor = this.entries.length
+    this.rewind()
   }
 
-  /**
-   * Rewind history cursor on the last entry
-   */
   rewind() {
     this.cursor = this.entries.length
   }
 
-  /**
-   * Returns the previous entry
-   */
-  getPrevious() {
+  back() {
     const idx = Math.max(0, this.cursor - 1)
     this.cursor = idx
     return this.entries[idx]
   }
 
-  /**
-   * Returns the next entry
-   */
-  getNext() {
+  forward() {
     const idx = Math.min(this.entries.length, this.cursor + 1)
     this.cursor = idx
     return this.entries[idx]

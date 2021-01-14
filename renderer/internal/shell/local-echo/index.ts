@@ -74,24 +74,22 @@ export class LocalEchoAddon {
 
   activate(term: Terminal) {
     this.term = term
-    this._disposables.push(this.term.onData(this.handleTermData.bind(this)))
-    this._disposables.push(this.term.onResize(this.handleTermResize.bind(this)))
     this._termSize = {
       cols: this.term.cols,
       rows: this.term.rows,
     }
+    this._disposables.push(this.term.onData(this.handleTermData.bind(this)))
+    this._disposables.push(this.term.onResize(this.handleTermResize.bind(this)))
   }
 
   dispose() {
-    this._disposables.forEach(d => {
-      d.dispose()
+    this._disposables.forEach(disposable => {
+      disposable.dispose()
     })
     this._disposables = []
   }
 
-  /// //////////////////////////////////////////////////////////////////////////
-  // User-Facing API
-  /// //////////////////////////////////////////////////////////////////////////
+  /** @expose */
 
   /**
    * Register a handler that will be called to satisfy auto-completion
@@ -221,9 +219,7 @@ export class LocalEchoAddon {
     }
   }
 
-  /// //////////////////////////////////////////////////////////////////////////
-  // Internal API
-  /// //////////////////////////////////////////////////////////////////////////
+  /** @private */
 
   /**
    * Apply prompts to the given input
@@ -482,7 +478,7 @@ export class LocalEchoAddon {
     if (ord === 0x1b) {
       switch (data.slice(1)) {
         case '[A': { // Up arrow
-          const value = this.history.getPrevious()
+          const value = this.history.back()
           if (value) {
             this.setInput(value)
             this.setCursor(value.length)
@@ -490,7 +486,7 @@ export class LocalEchoAddon {
           break
         }
         case '[B': { // Down arrow
-          let value = this.history.getNext()
+          let value = this.history.forward()
           if (!value) value = ''
           this.setInput(value)
           this.setCursor(value.length)
