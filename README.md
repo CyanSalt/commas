@@ -41,6 +41,11 @@ You can also clone or download this repository and compile this app locally.
 
 * Press <kbd>&#8984;</kbd> / <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> to open devtools of Commas to inspect the HTML elements of UI, just like what you do in Chrome!
 
+## Credits
+
+- [node-pty](https://github.com/microsoft/node-pty)
+- [xterm](https://github.com/xtermjs/xterm.js)
+
 ## License
 
 MIT &copy; [CyanSalt](https://github.com/CyanSalt)

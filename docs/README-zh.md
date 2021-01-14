@@ -41,6 +41,11 @@
 
 * 你可以通过快捷键 <kbd>&#8984;</kbd> / <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> 打开 Commas 的开发者工具，检查 UI 中的 HTML 元素，就像在 Chrome 里一样！
 
+## 鸣谢
+
+- [node-pty](https://github.com/microsoft/node-pty)
+- [xterm](https://github.com/xtermjs/xterm.js)
+
 ## 许可
 
 MIT &copy; [CyanSalt](https://github.com/CyanSalt)
