@@ -9,6 +9,7 @@ import { SearchAddon } from 'xterm-addon-search'
 import { Unicode11Addon } from 'xterm-addon-unicode11'
 import { WebLinksAddon } from 'xterm-addon-web-links'
 import { WebglAddon } from 'xterm-addon-webgl'
+import * as commas from '../../api/renderer'
 import type { TerminalInfo, TerminalTab } from '../../typings/terminal'
 import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
@@ -155,7 +156,7 @@ export async function createTerminalTab({ cwd, shell: shellPath, launcher }: Cre
   activeIndexRef.value = tabs.length - 1
 }
 
-const createResizingObserver = memoize(() => {
+const createResizeObserver = memoize(() => {
   return new ResizeObserver(debounce(() => {
     const tab = unref(useCurrentTerminal())
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -201,7 +202,7 @@ export function handleTerminalMessages() {
     if (!tab) return
     const xterm = tab.xterm
     if (xterm.element) {
-      const observer: ReturnType<typeof createResizingObserver> | undefined = createResizingObserver.cache.get(undefined)
+      const observer: ReturnType<typeof createResizeObserver> | undefined = createResizeObserver.cache.get(undefined)
       if (observer) observer.unobserve(xterm.element)
     }
     xterm.dispose()
@@ -302,10 +303,11 @@ export function mountTerminalTab(tab: TerminalTab, element: HTMLElement) {
   const xterm = tab.xterm
   xterm.open(element)
   loadTerminalAddons(tab)
-  const observer = createResizingObserver()
+  const observer = createResizeObserver()
   observer.observe(element)
   tab.addons.fit.fit()
   xterm.focus()
+  commas.app.events.emit('terminal-tab-mounted', tab)
 }
 
 export function writeTerminalTab(tab: TerminalTab, data: string) {
