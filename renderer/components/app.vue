@@ -36,20 +36,18 @@
 import { ipcRenderer } from 'electron'
 import { reactive, toRefs, unref, onMounted } from 'vue'
 import * as commas from '../../api/renderer'
-import type { Launcher } from '../../typings/launcher'
 import { loadAddons, loadCustomJS } from '../hooks/addon'
 import {
   useFullscreen,
   handleFrameMessages,
 } from '../hooks/frame'
-import { runLauncherScript } from '../hooks/launcher'
+import { handleLauncherMessages } from '../hooks/launcher'
 import {
   useIsTabListEnabled,
   useWillQuit,
   confirmClosing,
   handleShellMessages,
 } from '../hooks/shell'
-import type { CreateTerminalTabOptions } from '../hooks/terminal'
 import {
   useCurrentTerminal,
   useTerminalTabs,
@@ -84,6 +82,7 @@ export default {
     handleFrameMessages()
     handleShellMessages()
     handleTerminalMessages()
+    handleLauncherMessages()
 
     const index = process.argv.indexOf('--') + 1
     const args = index ? process.argv.slice(index) : []
@@ -98,22 +97,9 @@ export default {
       ipcRenderer.invoke(command, extra)
     })
 
-    ipcRenderer.on('open-tab', (event, options: CreateTerminalTabOptions) => {
-      createTerminalTab(options)
-    })
-
-    ipcRenderer.on('run-script', (event, { launcher, index: scriptIndex }: { launcher: Launcher, index: number }) => {
-      runLauncherScript(launcher, scriptIndex)
-    })
-
-    const willQuitRef = useWillQuit()
-    ipcRenderer.on('before-quit', () => {
-      willQuitRef.value = true
-    })
-
     const tabsRef = useTerminalTabs()
     window.addEventListener('beforeunload', async event => {
-      const willQuit = unref(willQuitRef)
+      const willQuit = unref(useWillQuit())
       const tabs = unref(tabsRef)
       if (!willQuit && tabs.length > 1) {
         event.returnValue = false

@@ -40,4 +40,7 @@ export function handleShellMessages() {
   ipcRenderer.on('toggle-tab-list', () => {
     isTabListEnabledRef.value = !isTabListEnabledRef.value
   })
+  ipcRenderer.on('before-quit', () => {
+    willQuitRef.value = true
+  })
 }

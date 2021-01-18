@@ -184,6 +184,15 @@ function getTerminalTabTitle(tab: TerminalTab) {
 }
 
 export function handleTerminalMessages() {
+  ipcRenderer.on('open-tab', (event, options: CreateTerminalTabOptions) => {
+    createTerminalTab(options)
+  })
+  ipcRenderer.on('close-tab', () => {
+    const currentTerminal = unref(useCurrentTerminal())
+    if (currentTerminal) {
+      closeTerminalTab(currentTerminal)
+    }
+  })
   ipcRenderer.on('input-terminal', (event, data: Pick<TerminalTab, 'pid' | 'process'> & { data: string }) => {
     const tabs = unref(tabsRef)
     const tab = tabs.find(item => item.pid === data.pid)

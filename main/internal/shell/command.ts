@@ -24,7 +24,7 @@ export async function executeCommand(event: IpcMainInvokeEvent, line: string, co
         controller.raw ? argv : yargsParser(argv),
         event
       )
-      return { code: 0, stdout: String(stdout) }
+      return { code: 0, stdout: String(stdout ?? '') }
     } else {
       throw new Error(`command not found: ${command}`)
     }
