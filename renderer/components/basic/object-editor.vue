@@ -169,6 +169,9 @@ export default {
     width: 24px;
     text-align: center;
     margin-right: 4px;
+    input[type='checkbox'] {
+      vertical-align: middle;
+    }
   }
 }
 </style>

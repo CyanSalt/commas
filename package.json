@@ -9,8 +9,8 @@
     "postinstall": "node post-install.js",
     "build": "webpack --mode=production && node makefile.js",
     "dev": "webpack --mode=development && electron .",
-    "lint:script": "eslint --ignore-path .gitignore --ext .js,.ts,.vue --fix .",
-    "lint:style": "stylelint --ignore-path .gitignore --fix ./**/*.{css,vue}",
+    "lint:script": "eslint --ignore-path .gitignore --ext .js,.ts,.vue --cache --fix .",
+    "lint:style": "stylelint --ignore-path .gitignore --cache --fix ./**/*.{css,vue}",
     "lint": "npm run lint:script && npm run lint:style"
   },
   "repository": {
@@ -49,6 +49,7 @@
     "sass-loader": "^10.1.0",
     "shell-quote": "^1.7.2",
     "stylelint": "^13.8.0",
+    "stylelint-scss": "^3.18.0",
     "ts-loader": "^8.0.13",
     "typescript": "^4.1.3",
     "vue": "^3.0.5",
