@@ -6,7 +6,7 @@ module.exports = function (commas) {
 
     commas.ipcMain.handle('execute-shell-command', async (event, line) => {
       const commands = commas.context.shareArray('shell')
-      return executeCommand(line, commands)
+      return executeCommand(event, line, commands)
     })
 
     commas.context.shareDataIntoArray('shell', {
