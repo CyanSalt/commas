@@ -1,4 +1,4 @@
-import EventEmitter from 'events'
+import { EventEmitter } from 'events'
 import { app, ipcMain } from 'electron'
 import findIndex from 'lodash/findIndex'
 import memoize from 'lodash/memoize'

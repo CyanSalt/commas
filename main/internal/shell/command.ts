@@ -21,7 +21,11 @@ export async function executeCommand(event: IpcMainInvokeEvent, line: string, co
     if (controller) {
       const argv = line.slice(command.length).trim()
       const stdout = await controller.handler(
-        controller.raw ? argv : yargsParser(argv),
+        controller.raw ? argv : yargsParser(argv, {
+          configuration: {
+            'parse-numbers': false,
+          },
+        }),
         event
       )
       return { code: 0, stdout: String(stdout ?? '') }

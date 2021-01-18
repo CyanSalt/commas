@@ -103,9 +103,7 @@ function getProxyServerOptions(rules: ProxyRule[], href: string) {
 function getProxyRewritingRules(rules: ProxyRule[], href: string) {
   const url = new URL(href)
   const matched = getMatchedProxyRules(rules, url)
-  return ([] as RewritingRule[]).concat(
-    ...(matched.map(rule => rule.proxy.rewrite).filter(Boolean) as RewritingRule[][])
-  )
+  return matched.flatMap(rule => rule.proxy.rewrite ?? [])
 }
 
 function getRewritingContent(when: 'request' | 'response', target: ClientRequest | ServerResponse, rule: RewritingRule) {

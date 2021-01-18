@@ -1,4 +1,4 @@
-import EventEmitter from 'events'
+import { EventEmitter } from 'events'
 import * as path from 'path'
 import { app, ipcRenderer } from 'electron'
 

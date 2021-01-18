@@ -6,6 +6,10 @@ import { loadTerminalAddons, useTerminalOptions } from '../../hooks/terminal'
 import { LocalEchoAddon } from './local-echo'
 
 async function listenLocalEcho(xterm: Terminal, localEcho: LocalEchoAddon) {
+  let commands: string[] = await ipcRenderer.invoke('get-shell-commands')
+  localEcho.addAutocompleteHandler(index => {
+    return index === 0 ? commands : []
+  })
   for await (const line of localEcho.listen('> ', '· ')) {
     const output = await ipcRenderer.invoke('execute-shell-command', line.trim())
     if (output.code) {
@@ -13,6 +17,7 @@ async function listenLocalEcho(xterm: Terminal, localEcho: LocalEchoAddon) {
     } else if (output.stdout) {
       xterm.writeln(output.stdout)
     }
+    commands = await ipcRenderer.invoke('get-shell-commands')
   }
 }
 

@@ -4,6 +4,11 @@ module.exports = function (commas) {
     const util = require('util')
     const { executeCommand, getExternalURLCommands } = commas.bundler.extract('shell/command.ts')
 
+    commas.ipcMain.handle('get-shell-commands', async () => {
+      const commands = commas.context.shareArray('shell')
+      return commands.flatMap(item => item.command)
+    })
+
     commas.ipcMain.handle('execute-shell-command', async (event, line) => {
       const commands = commas.context.shareArray('shell')
       return executeCommand(event, line, commands)

@@ -1,4 +1,4 @@
-import EventEmitter from 'events'
+import { EventEmitter } from 'events'
 import cloneDeep from 'lodash/cloneDeep'
 import memoize from 'lodash/memoize'
 import { broadcast } from '../../lib/frame'
