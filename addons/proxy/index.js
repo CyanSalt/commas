@@ -63,5 +63,10 @@ module.exports = function (commas) {
       group: 'feature',
     })
 
+    commas.reactive.shareDataIntoArray('user-settings:terminal.addon.includes', {
+      value: 'proxy',
+      note: 'Open a local proxy server with custom rules for development#!proxy.5',
+    })
+
   }
 }

@@ -1,7 +1,7 @@
 module.exports = function (commas) {
   if (commas.app.isMainProcess()) {
 
-    // pass
+    commas.i18n.addTranslation(['zh', 'zh-CN'], require('./locales/zh-CN.json'))
 
   } else {
 
@@ -21,6 +21,11 @@ module.exports = function (commas) {
       instances.forEach(instance => {
         instance.dispose()
       })
+    })
+
+    commas.reactive.shareDataIntoArray('user-settings:terminal.addon.includes', {
+      value: 'power-mode',
+      note: 'Turn on power mode#!power-mode.1',
     })
 
   }

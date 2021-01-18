@@ -32,5 +32,10 @@ module.exports = function (commas) {
       commas.workspace.openPaneTab('settings')
     })
 
+    commas.reactive.shareDataIntoArray('user-settings:terminal.addon.includes', {
+      value: 'settings',
+      note: 'Provide entries for all features#!settings.13',
+    })
+
   }
 }

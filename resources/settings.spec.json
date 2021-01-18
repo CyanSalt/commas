@@ -168,11 +168,11 @@
     "key": "terminal.addon.includes",
     "type": "list",
     "paradigm": ["string"],
-    "recommendations": ["shell", "settings", "proxy", "user-settings", "theme", "sync", "menu", "landscape", "power-mode"],
+    "recommendations": ["shell", "settings", "proxy", "user-settings", "theme", "menu", "sync", "landscape", "power-mode"],
     "label": "Enabled Addons",
     "comments": [
       "List of enabled addon name"
     ],
-    "default": ["shell", "settings", "proxy", "user-settings", "theme", "sync", "menu"]
+    "default": ["shell", "settings", "proxy", "user-settings", "theme", "menu"]
   }
 ]

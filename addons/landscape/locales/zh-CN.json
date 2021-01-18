@@ -1,4 +1,5 @@
 {
   "Background URL#!user-settings.label.landscape.background.url": "背景图片 URL",
-  "URL of landscape background image#!user-settings.comments.0.landscape.background.url": "Landscape 背景图片的 URL"
+  "URL of landscape background image#!user-settings.comments.0.landscape.background.url": "Landscape 背景图片的 URL",
+  "Add background image for each terminal tab#!landscape.1": "为每个终端标签页添加背景图片"
 }

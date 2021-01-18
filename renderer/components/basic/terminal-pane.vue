@@ -188,7 +188,7 @@ export default {
     color: var(--foreground-color);
   }
   .form-tips {
-    margin: 8px 0;
+    margin: 4px 0;
     line-height: 24px;
     font-size: 12px;
     user-select: text;

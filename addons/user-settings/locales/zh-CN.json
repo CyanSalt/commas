@@ -36,7 +36,7 @@
   "Enable font ligatures (if specified font family supports, like Fira Code or Iosevka)#!user-settings.comments.0.terminal.style.fontLigatures": "启用字体连字 (需要指定的字体族支持，例如 Fira Code 或 Iosevka)",
   "Theme Name#!user-settings.label.terminal.theme.name": "主题名称",
   "File name of built-in theme or files in `themes/` folder#!user-settings.comments.0.terminal.theme.name": "内置主题或 themes/ 文件夹下的文件名称",
-  "Support `oceanic-next`, `tomorrow` or `high-contrast` by default#!user-settings.comments.1.terminal.theme.name": "默认支持 `oceanic-next`, `tomorrow` 或 `high-contrast`",
+  "Support `oceanic-next`, `tomorrow` by default#!user-settings.comments.1.terminal.theme.name": "默认支持 `oceanic-next`, `tomorrow`",
   "Custom Theme Colors#!user-settings.label.terminal.theme.customization": "自定义主题颜色",
   "Overwrite colors in the theme file#!user-settings.comments.0.terminal.theme.customization": "覆盖主题文件中的颜色",
   "Enable Auto Updating#!user-settings.label.terminal.updater.enabled": "启用自动更新",
@@ -44,5 +44,6 @@
   "Enabled Addons#!user-settings.label.terminal.addon.includes": "启用的组件",
   "List of enabled addon name#!user-settings.comments.0.terminal.addon.includes": "启用的组件名称列表",
   "User Settings#!user-settings.1": "用户设置",
-  "Configure User Settings#!user-settings.2": "配置用户设置"
+  "Configure User Settings#!user-settings.2": "配置用户设置",
+  "User interface for user settings#!user-settings.3": "用户设置的界面"
 }

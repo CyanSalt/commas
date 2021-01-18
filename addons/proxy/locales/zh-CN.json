@@ -3,6 +3,7 @@
   "Configure proxy rules#!proxy.2": "配置代理规则",
   "Enable system proxy#!proxy.3": "启用系统代理",
   "Proxy to...#!proxy.4": "代理至...",
+  "Open a local proxy server with custom rules for development#!proxy.5": "启动一个自定义规则的开发用本地代理服务器",
   "Proxy Server Port#!user-settings.label.proxy.server.port": "代理服务器端口",
   "Specify HTTP port for development proxy server#!user-settings.comments.0.proxy.server.port": "为开发代理服务器指定 HTTP 端口"
 }

@@ -1,20 +1,23 @@
 <template>
   <div class="object-editor">
-    <div v-for="item in entryItems" :key="item.id" class="property-line">
-      <label v-if="item.pinned" class="pinned-checker">
-        <input :checked="item.index !== -1" type="checkbox" @change="togglePinned(item)">
-      </label>
-      <span v-else class="link remove" @click="remove(item)">
-        <span class="feather-icon icon-minus"></span>
-      </span>
-      <template v-if="withKeys">
-        <input v-model="item.entry.key" :readonly="item.pinned" type="text" class="form-control">
-        <span class="property-arrow">
-          <span class="feather-icon icon-arrow-right"></span>
+    <template v-for="(item, index) in entryItems" :key="item.id">
+      <div class="property-line">
+        <label v-if="item.pinned" class="pinned-checker">
+          <input :checked="item.index !== -1" type="checkbox" @change="togglePinned(item)">
+        </label>
+        <span v-else class="link remove" @click="remove(item)">
+          <span class="feather-icon icon-minus"></span>
         </span>
-      </template>
-      <input v-model="item.entry.value" :readonly="item.pinned" type="text" class="form-control">
-    </div>
+        <template v-if="withKeys">
+          <input v-model="item.entry.key" :readonly="item.pinned" type="text" class="form-control">
+          <span class="property-arrow">
+            <span class="feather-icon icon-arrow-right"></span>
+          </span>
+        </template>
+        <input v-model="item.entry.value" :readonly="item.pinned" type="text" class="form-control">
+      </div>
+      <slot name="note" :item="item" :index="index"></slot>
+    </template>
     <div class="property-line extra-line">
       <span class="link add" @click="add">
         <span class="feather-icon icon-plus"></span>
@@ -159,6 +162,9 @@ export default {
       &.remove:hover {
         color: var(--design-red);
       }
+    }
+    & + .form-tips {
+      padding-left: 28px;
     }
   }
   .property-arrow {

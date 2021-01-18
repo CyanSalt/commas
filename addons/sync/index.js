@@ -5,8 +5,6 @@ module.exports = function (commas) {
 
     const path = require('path')
 
-    commas.i18n.addTranslation(['zh', 'zh-CN'], require('./locales/zh-CN.json'))
-
     commas.protocol.addRoute('sync-remote', async url => {
       const source = url.searchParams.get('from')
       let target = url.searchParams.get('to')
@@ -53,6 +51,15 @@ module.exports = function (commas) {
           })
         }
       }
+    })
+
+    commas.i18n.addTranslation(['zh', 'zh-CN'], require('./locales/zh-CN.json'))
+
+  } else {
+
+    commas.reactive.shareDataIntoArray('user-settings:terminal.addon.includes', {
+      value: 'sync',
+      note: '(EXPERIMENTAL) Sync any user files from commas://sync-remote#!sync.6',
     })
 
   }
