@@ -15,6 +15,8 @@ export class PowerMode {
   xterm: Terminal
   _canvas: HTMLCanvasElement
   _canvasContext: CanvasRenderingContext2D
+  _animation: number | null
+  _particles: Particle[]
   _disposables: IDisposable[]
 
   constructor() {
@@ -74,41 +76,48 @@ export class PowerMode {
     this.xterm['_core'].screenElement.append(canvas)
     this._canvas = canvas
     this._canvasContext = canvas.getContext('2d')!
+    this._particles = []
   }
 
   spawnParticles() {
-    const theme = this.xterm.getOption('theme')
     const dimensions = this.xterm['_core']._renderService.dimensions
     const { cursorX, cursorY } = this.xterm.buffer.active
     const x = (cursorX + 0.5) * dimensions.actualCellWidth
     const y = (cursorY + 0.5) * dimensions.actualCellHeight
-    let particles: Particle[] = []
-    const count = 10 + Math.round(Math.random() * 10)
+    const count = 5 + Math.round(Math.random() * 5)
     for (let i = 0; i < count; i++) {
       const velocity = {
         x: -1.5 + Math.random() * 3,
         y: -3.5 + Math.random() * 2,
       }
-      particles.push({ x, y, alpha: 1, velocity })
+      this._particles.push({ x, y, alpha: 1, velocity })
     }
-    const drawFrame = () => {
-      this._canvasContext.clearRect(0, 0, this._canvas.width, this._canvas.height)
-      particles.forEach(particle => {
-        particle.velocity.y += 0.075 // gravity
-        particle.x += particle.velocity.x
-        particle.y += particle.velocity.y
-        particle.alpha *= 0.96 // fadeout
-        this._canvasContext.globalAlpha = particle.alpha
-        this._canvasContext.fillStyle = theme.foreground
-        this._canvasContext.fillRect(Math.round(particle.x - 1), Math.round(particle.y - 1), 3, 3)
-      })
-      const length = particles.length
-      particles = particles.filter(particle => particle.alpha > 0.1)
-      if (length) {
-        requestAnimationFrame(drawFrame)
-      }
+    if (!this._animation) {
+      this._animation = requestAnimationFrame(this.drawFrame.bind(this))
     }
-    requestAnimationFrame(drawFrame)
+  }
+
+  drawFrame() {
+    this._canvasContext.clearRect(0, 0, this._canvas.width, this._canvas.height)
+    const theme = this.xterm.getOption('theme')
+    this._particles.forEach(particle => {
+      particle.velocity.y += 0.075 // gravity
+      particle.x += particle.velocity.x
+      particle.y += particle.velocity.y
+      particle.alpha *= 0.96 // fadeout
+      this._canvasContext.globalAlpha = particle.alpha
+      this._canvasContext.fillStyle = theme.foreground
+      this._canvasContext.fillRect(Math.round(particle.x - 1), Math.round(particle.y - 1), 3, 3)
+    })
+    const length = this._particles.length
+    this._particles = this._particles.filter(particle => particle.alpha > 0.1)
+    if (this._animation) {
+      cancelAnimationFrame(this._animation)
+      this._animation = null
+    }
+    if (length) {
+      this._animation = requestAnimationFrame(this.drawFrame.bind(this))
+    }
   }
 
 }
