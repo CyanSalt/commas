@@ -69,6 +69,15 @@ module.exports = [
         {
           test: /\.vue$/,
           loader: 'vue-loader',
+          options: {
+            transformAssetUrls: {
+              video: [],
+              source: [],
+              img: [],
+              image: [],
+              use: [],
+            },
+          },
         },
         {
           test: /\.ts$/,
@@ -88,6 +97,7 @@ module.exports = [
             {
               loader: 'css-loader',
               options: {
+                url: false,
                 importLoaders: 1,
               },
             },
@@ -103,7 +113,12 @@ module.exports = [
           test: /\.css$/,
           use: [
             MiniCSSExtractPlugin.loader,
-            'css-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                url: false,
+              },
+            },
           ],
         },
       ],
