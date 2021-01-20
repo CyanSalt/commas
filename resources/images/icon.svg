@@ -1,18 +1,61 @@
 <svg width="512" height="512" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <filter id="a" x="39" y="44.5" width="434" height="434" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
-      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
-      <feOffset dy="5.5"/>
-      <feGaussianBlur stdDeviation="5.5"/>
-      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.28 0"/>
-      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
-      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+      <feOffset dy="5.5" />
+      <feGaussianBlur stdDeviation="5.5" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.28 0" />
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow" />
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape" />
     </filter>
+    <filter id="c" x="128" y="141.5" width="256" height="259" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+      <feOffset dy=".456597" />
+      <feGaussianBlur stdDeviation=".18679" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.0253031 0" />
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow" />
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+      <feOffset dy="1.09727" />
+      <feGaussianBlur stdDeviation=".448882" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.0363503 0" />
+      <feBlend mode="normal" in2="effect1_dropShadow" result="effect2_dropShadow" />
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+      <feOffset dy="2.06606" />
+      <feGaussianBlur stdDeviation=".845205" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.045 0" />
+      <feBlend mode="normal" in2="effect2_dropShadow" result="effect3_dropShadow" />
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+      <feOffset dy="3.68549" />
+      <feGaussianBlur stdDeviation="1.5077" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.0536497 0" />
+      <feBlend mode="normal" in2="effect3_dropShadow" result="effect4_dropShadow" />
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+      <feOffset dy="6.89331" />
+      <feGaussianBlur stdDeviation="2.81999" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.0646969 0" />
+      <feBlend mode="normal" in2="effect4_dropShadow" result="effect5_dropShadow" />
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+      <feOffset dy="16.5" />
+      <feGaussianBlur stdDeviation="6.75" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.09 0" />
+      <feBlend mode="normal" in2="effect5_dropShadow" result="effect6_dropShadow" />
+      <feBlend mode="normal" in="SourceGraphic" in2="effect6_dropShadow" result="shape" />
+    </filter>
+    <linearGradient id="b" x1="256" y1="50" x2="256" y2="462" gradientUnits="userSpaceOnUse">
+      <stop stop-opacity=".1" stop-color="#fff" />
+      <stop offset="1" stop-opacity="0" stop-color="#fff" />
+    </linearGradient>
   </defs>
   <g filter="url(#a)">
-    <rect x="50" y="50" width="412" height="412" rx="92" fill="#282c34"/>
-    <path d="M220.5 276.5h84" stroke="#ff8e80" stroke-width="21" stroke-linecap="round" fill="none"/>
-    <path d="M169.82 145.95a38.92 38.92 0 100 77.805 36.295 36.295 0 008.75-1.12 1.96 1.96 0 012.205 2.905 53.795 53.795 0 01-46.305 27.755 9.835 9.835 0 000 19.67 76.475 76.475 0 0074.27-78.33v-9.8a38.955 38.955 0 00-38.92-38.885z" fill="#fff"/>
+    <rect x="50" y="50" width="412" height="412" rx="92" fill="#282c34" />
+    <rect x="50" y="50" width="412" height="412" rx="92" fill="url(#b)" />
+    <g filter="url(#c)">
+      <path d="M220.5 276.5h84" stroke="#ff8e80" stroke-width="24" stroke-linecap="round" fill="none" />
+      <path
+        d="M169.82 145.95a38.92 38.92 0 100 77.805 36.295 36.295 0 008.75-1.12 1.96 1.96 0 012.205 2.905 53.795 53.795 0 01-46.305 27.755 9.835 9.835 0 000 19.67 76.475 76.475 0 0074.27-78.33v-9.8a38.955 38.955 0 00-38.92-38.885z"
+        fill="#fff" />
+    </g>
   </g>
 </svg>
