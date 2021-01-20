@@ -20,7 +20,7 @@ const logger = {
     console.log(chalk.inverse(chalk.yellow(' WARN ')) + ' ' + chalk.yellow(message))
   },
   error(message) {
-    console.log(chalk.inverse(chalk.red(' ERROR ')) + ' ' + chalk.red(message))
+    console.error(chalk.inverse(chalk.red(' ERROR ')) + ' ' + chalk.red(message))
   },
 }
 
