@@ -39,8 +39,8 @@ export async function executeCommand(event: IpcMainInvokeEvent, line: string, co
 
 export async function getExternalURLCommands(): Promise<CommandModule[]> {
   const settings = await getSettings()
-  const entries: ({ command: string | string[], url: string })[] = settings['shell.command.externalURLs']
-  return entries.map(entry => {
+  const entries: ({ command: string | string[], url: string })[] | undefined = settings['shell.command.externalURLs']
+  return entries ? entries.map(entry => {
     const { url, command } = entry
     return {
       command,
@@ -51,5 +51,5 @@ export async function getExternalURLCommands(): Promise<CommandModule[]> {
         return finalURL
       },
     }
-  })
+  }) : []
 }

@@ -9,13 +9,18 @@ module.exports = function (commas) {
 
     const instances = []
 
-    commas.app.events.on('terminal-tab-mounted', tab => {
+    const openPowerMode = tab => {
       const xterm = tab.xterm
+      if (!xterm) return
       const powerMode = new PowerMode()
       tab.addons.powerMode = powerMode
       xterm.loadAddon(powerMode)
       instances.push(powerMode)
-    })
+    }
+
+    commas.hooks.useTerminalTabs().value.forEach(openPowerMode)
+
+    commas.app.events.on('terminal-tab-mounted', openPowerMode)
 
     commas.app.onCleanup(() => {
       instances.forEach(instance => {
