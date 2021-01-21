@@ -23,7 +23,7 @@ module.exports = function (commas) {
       })
     })
 
-    commas.reactive.shareDataIntoArray('user-settings:terminal.addon.includes', {
+    commas.reactive.provide('user-settings:terminal.addon.includes', {
       value: 'power-mode',
       note: 'Turn on power mode#!power-mode.1',
     })

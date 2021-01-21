@@ -23,20 +23,20 @@ const themeStyleRef = computed<Partial<CSSStyleDeclaration>>(() => {
 })
 
 export function injectTheme() {
-  watchEffect((onCleanup) => {
+  watchEffect((onInvalidate) => {
     const theme = unref(useTheme())
     const type = theme.type
     document.body.dataset.themeType = type
-    onCleanup(() => {
+    onInvalidate(() => {
       delete document.body.dataset.themeType
     })
   })
-  watchEffect((onCleanup) => {
+  watchEffect((onInvalidate) => {
     const style = unref(themeStyleRef)
     const declarations = Object.entries(style)
       .map(([key, value]) => `${key}: ${value};`).join(' ')
     const injection: Promise<string> = ipcRenderer.invoke('inject-style', `#root { ${declarations} }`)
-    onCleanup(async () => {
+    onInvalidate(async () => {
       ipcRenderer.invoke('eject-style', await injection)
     })
   })

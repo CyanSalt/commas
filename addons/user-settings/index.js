@@ -13,12 +13,12 @@ module.exports = function (commas) {
       },
     })
 
-    commas.reactive.shareDataIntoArray('settings', {
+    commas.reactive.provide('settings', {
       component: commas.bundler.extract('user-settings/user-settings-link.vue').default,
       group: 'general',
     })
 
-    commas.reactive.shareDataIntoArray('user-settings:terminal.addon.includes', {
+    commas.reactive.provide('user-settings:terminal.addon.includes', {
       value: 'user-settings',
       note: 'User interface for user settings#!user-settings.3',
     })

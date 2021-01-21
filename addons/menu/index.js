@@ -5,7 +5,7 @@ module.exports = function (commas) {
 
   } else {
 
-    commas.reactive.shareDataIntoArray('user-settings:terminal.addon.includes', {
+    commas.reactive.provide('user-settings:terminal.addon.includes', {
       value: 'menu',
       note: 'Provide translations for the application menu on macOS#!menu.1',
     })

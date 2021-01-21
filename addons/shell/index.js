@@ -5,16 +5,16 @@ module.exports = function (commas) {
     const { executeCommand, getExternalURLCommands } = commas.bundler.extract('shell/command.ts')
 
     commas.ipcMain.handle('get-shell-commands', async () => {
-      const commands = commas.context.shareArray('shell')
+      const commands = commas.context.getCollection('shell')
       return commands.flatMap(item => item.command)
     })
 
     commas.ipcMain.handle('execute-shell-command', async (event, line) => {
-      const commands = commas.context.shareArray('shell')
+      const commands = commas.context.getCollection('shell')
       return executeCommand(event, line, commands)
     })
 
-    commas.context.shareDataIntoArray('shell', {
+    commas.context.provide('shell', {
       command: ['javascript', 'js'],
       raw: true,
       handler(argv) {
@@ -32,8 +32,8 @@ module.exports = function (commas) {
     let loadedCommands = []
     const loadExternalURLCommands = async () => {
       const commands = await getExternalURLCommands()
-      commas.context.removeDataFromArray('shell', ...loadedCommands)
-      commas.context.shareDataIntoArray('shell', ...commands)
+      commas.context.cancelProviding('shell', ...loadedCommands)
+      commas.context.provide('shell', ...commands)
       loadedCommands = commands
     }
 
@@ -67,12 +67,12 @@ module.exports = function (commas) {
       },
     })
 
-    commas.reactive.shareDataIntoArray('settings', {
+    commas.reactive.provide('settings', {
       component: commas.bundler.extract('shell/shell-link.vue').default,
       group: 'feature',
     })
 
-    commas.reactive.shareDataIntoArray('user-settings:terminal.addon.includes', {
+    commas.reactive.provide('user-settings:terminal.addon.includes', {
       value: 'shell',
       note: 'Built-in command runner#!shell.3',
     })

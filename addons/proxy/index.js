@@ -58,12 +58,12 @@ module.exports = function (commas) {
       commas.bundler.extract('proxy/proxy-anchor.vue').default
     )
 
-    commas.reactive.shareDataIntoArray('settings', {
+    commas.reactive.provide('settings', {
       component: commas.bundler.extract('proxy/proxy-link.vue').default,
       group: 'feature',
     })
 
-    commas.reactive.shareDataIntoArray('user-settings:terminal.addon.includes', {
+    commas.reactive.provide('user-settings:terminal.addon.includes', {
       value: 'proxy',
       note: 'Open a local proxy server with custom rules for development#!proxy.5',
     })

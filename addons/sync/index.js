@@ -57,7 +57,7 @@ module.exports = function (commas) {
 
   } else {
 
-    commas.reactive.shareDataIntoArray('user-settings:terminal.addon.includes', {
+    commas.reactive.provide('user-settings:terminal.addon.includes', {
       value: 'sync',
       note: '(EXPERIMENTAL) Sync any user files from commas://sync-remote#!sync.6',
     })

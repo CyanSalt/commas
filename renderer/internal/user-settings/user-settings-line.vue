@@ -129,7 +129,7 @@ export default {
 
     const notesRef = computed<(string | undefined)[]>(() => {
       if (!props.spec.recommendations) return []
-      const injections = commas.reactive.shareArray(`user-settings:${props.spec.key}`)
+      const injections = commas.reactive.getCollection(`user-settings:${props.spec.key}`)
       return props.spec.recommendations.map(value => injections.find(item => item.value === value)?.note)
     })
 

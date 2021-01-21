@@ -2,9 +2,9 @@ import { ipcRenderer } from 'electron'
 import { watchEffect, shallowRef, computed, unref, toRaw } from 'vue'
 
 export function watchRemoteEffect(event: string, handler: (...args: any[]) => void) {
-  watchEffect((onCleanup) => {
+  watchEffect((onInvalidate) => {
     ipcRenderer.on(event, handler)
-    onCleanup(() => {
+    onInvalidate(() => {
       ipcRenderer.off(event, handler)
     })
   })

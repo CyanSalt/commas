@@ -15,7 +15,7 @@ module.exports = function (commas) {
       commas.bundler.extract('landscape/landscape-anchor.vue').default
     )
 
-    commas.reactive.shareDataIntoArray('user-settings:terminal.addon.includes', {
+    commas.reactive.provide('user-settings:terminal.addon.includes', {
       value: 'landscape',
       note: 'Add background image for each terminal tab#!landscape.1',
     })
