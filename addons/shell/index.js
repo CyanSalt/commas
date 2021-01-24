@@ -14,13 +14,21 @@ module.exports = function (commas) {
       return executeCommand(event, line, commands)
     })
 
+    let context
+
     commas.context.provide('shell', {
       command: ['javascript', 'js'],
       raw: true,
       handler(argv) {
         const vm = require('vm')
-        const context = {}
-        vm.createContext(context)
+        if (argv === 'reset') {
+          context = undefined
+          return ''
+        }
+        if (!context) {
+          context = {}
+          vm.createContext(context)
+        }
         return util.inspect(vm.runInContext(argv, context), {
           showHidden: true,
           showProxy: true,
