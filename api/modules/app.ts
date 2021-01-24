@@ -40,7 +40,8 @@ function cloneAPIModule(object: object, context: {} | undefined) {
 function cloneAPI(api: Object, name: string) {
   return new Proxy(api, {
     get(target, property, receiver) {
-      const context = { $: receiver, addon: name }
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const context = { $: receiver, __name__: name }
       const value = Reflect.get(target, property, receiver)
       return value instanceof Object ? cloneAPIModule(value, context) : value
     },
@@ -87,7 +88,7 @@ function unloadAddons() {
 }
 
 function onCleanup(callback: () => void) {
-  events.once(`unload:${this.addon}`, callback)
+  events.once(`unload:${this.__name__}`, callback)
 }
 
 export {

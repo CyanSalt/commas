@@ -2,7 +2,7 @@ import { addSettingsSpecs, getSettings, getSettingsEvents, openSettingsFile, rem
 import type { SettingsSpec } from '../../typings/settings'
 
 function addSpecs(specs: SettingsSpec[]) {
-  const validSpecs = specs.filter(spec => spec.key.startsWith(`${this.addon}.`))
+  const validSpecs = specs.filter(spec => spec.key.startsWith(`${this.__name__}.`))
   addSettingsSpecs(validSpecs)
   this.$.app.onCleanup(() => {
     removeSettingsSpecs(validSpecs)
