@@ -13,9 +13,9 @@ async function listenLocalEcho(xterm: Terminal, localEcho: LocalEchoAddon) {
   for await (const line of localEcho.listen('> ', '· ')) {
     const output = await ipcRenderer.invoke('execute-shell-command', line.trim())
     if (output.code) {
-      xterm.writeln(output.stderr)
+      xterm.writeln(output.stderr.replace(/(?<!\r)\n/g, '\r\n'))
     } else if (output.stdout) {
-      xterm.writeln(output.stdout)
+      xterm.writeln(output.stdout.replace(/(?<!\r)\n/g, '\r\n'))
     }
     commands = await ipcRenderer.invoke('get-shell-commands')
   }

@@ -1,7 +1,10 @@
 module.exports = function (commas) {
   if (commas.app.isMainProcess()) {
 
+    const childProcess = require('child_process')
     const util = require('util')
+    const { app } = require('electron')
+    const random = require('lodash/random')
     const { executeCommand, getExternalURLCommands } = commas.bundler.extract('shell/command.ts')
 
     commas.ipcMain.handle('get-shell-commands', async () => {
@@ -12,6 +15,29 @@ module.exports = function (commas) {
     commas.ipcMain.handle('execute-shell-command', async (event, line) => {
       const commands = commas.context.getCollection('shell')
       return executeCommand(event, line, commands)
+    })
+
+    commas.context.provide('shell', {
+      command: ['commas'],
+      handler() {
+        return app.getVersion()
+      },
+    })
+
+    const execa = util.promisify(childProcess.exec)
+
+    commas.context.provide('shell', {
+      command: ['exec'],
+      raw: true,
+      async handler(argv) {
+        try {
+          const { stdout } = await execa(argv)
+          return stdout.trim()
+        } catch (err) {
+          const { stderr } = err
+          throw new Error(stderr.trim())
+        }
+      },
     })
 
     let context
@@ -34,6 +60,26 @@ module.exports = function (commas) {
           showProxy: true,
           colors: true,
         })
+      },
+    })
+
+    commas.context.provide('shell', {
+      command: ['roll'],
+      handler(argv) {
+        const roll = args => {
+          switch (args.length) {
+            case 0:
+              return random(1, 100)
+            case 1:
+              if (args[0] === '1') return random(0, args[0], true)
+              return random(1, args[0])
+            default:
+              return random(args[0], args[1])
+          }
+        }
+        return argv.r
+          ? Array.from({ length: argv.r }).map(() => roll(argv._)).join('\n')
+          : roll(argv._)
       },
     })
 
