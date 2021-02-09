@@ -53,9 +53,7 @@ module.exports = function (commas) {
       }
     })
 
-    commas.i18n.addTranslations([
-      { locale: 'zh-CN', file: require.resolve('./locales/zh-CN.json') },
-    ])
+    commas.i18n.addTranslationDirectory(path.join(__dirname, 'locales'))
 
   } else {
 

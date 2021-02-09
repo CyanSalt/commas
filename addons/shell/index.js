@@ -2,6 +2,7 @@ module.exports = function (commas) {
   if (commas.app.isMainProcess()) {
 
     const childProcess = require('child_process')
+    const path = require('path')
     const util = require('util')
     const { app } = require('electron')
     const random = require('lodash/random')
@@ -105,9 +106,7 @@ module.exports = function (commas) {
 
     commas.settings.addSpecs(require('./settings.spec.json'))
 
-    commas.i18n.addTranslations([
-      { locale: 'zh-CN', file: require.resolve('./locales/zh-CN.json') },
-    ])
+    commas.i18n.addTranslationDirectory(path.join(__dirname, 'locales'))
 
   } else {
 

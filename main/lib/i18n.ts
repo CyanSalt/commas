@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events'
+import * as fs from 'fs'
 import * as path from 'path'
 import { app, ipcMain } from 'electron'
 import memoize from 'lodash/memoize'
@@ -78,21 +79,21 @@ async function addTranslations(entries: TranslationFileEntry[], priority: Priori
   return matched
 }
 
+async function addTranslationDirectory(directory: string, priority: Priority) {
+  const files = await fs.promises.readdir(directory)
+  const entries = files.map(file => ({
+    locale: path.basename(file, '.json'),
+    file: path.join(directory, file),
+  }))
+  return addTranslations(entries, priority)
+}
+
 function removeTranslation(entry: TranslationFileEntry) {
   const index = translations.findIndex(item => item.file === entry.file)
   if (index !== -1) {
     translations.splice(index, 1)
     updateDictionary()
   }
-}
-
-async function loadBuiltinTranslations() {
-  const locales = await resources.entries('locales')
-  const entries = locales.map(file => ({
-    locale: path.basename(file, '.json'),
-    file: resources.file(`locales/${file}`),
-  }))
-  addTranslations(entries, Priority.builtin)
 }
 
 async function loadTranslations() {
@@ -103,7 +104,8 @@ async function loadTranslations() {
     await app.whenReady()
     resolveLanguage(app.getLocale())
   }
-  await loadBuiltinTranslations()
+  // Built-in
+  await addTranslationDirectory(resources.file('locales'), Priority.builtin)
   // Custom translation
   translations.push({
     file: userData.file('translation.json'),
@@ -139,6 +141,7 @@ export {
   loadTranslations,
   translate,
   addTranslations,
+  addTranslationDirectory,
   removeTranslation,
   handleI18NMessages,
   getI18NEvents,
