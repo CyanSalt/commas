@@ -44,6 +44,5 @@
   "Enabled Addons#!user-settings.label.terminal.addon.includes": "启用的组件",
   "List of enabled addon name#!user-settings.comments.0.terminal.addon.includes": "启用的组件名称列表",
   "User Settings#!user-settings.1": "用户设置",
-  "Configure User Settings#!user-settings.2": "配置用户设置",
-  "User interface for user settings#!user-settings.3": "用户设置的界面"
+  "Configure User Settings#!user-settings.2": "配置用户设置"
 }

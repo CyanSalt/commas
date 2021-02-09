@@ -3,6 +3,5 @@
   "The file '%T' will be synchronized from %F .#!sync.2": "即将从 %F 同步文件“%T”。",
   "Synchronization succeeded#!sync.3": "同步成功",
   "Synchronization failed#!sync.4": "同步失败",
-  "View#!sync.5": "查看",
-  "(EXPERIMENTAL) Sync any user files from commas://sync-remote#!sync.6": "(实验性) 从 commas://sync-remote 同步任意用户文件"
+  "View#!sync.5": "查看"
 }

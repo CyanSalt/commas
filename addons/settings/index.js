@@ -33,10 +33,5 @@ module.exports = function (commas) {
       commas.workspace.openPaneTab('settings')
     })
 
-    commas.reactive.provide('user-settings:terminal.addon.includes', {
-      value: 'settings',
-      note: 'Provide entries for all features#!settings.13',
-    })
-
   }
 }

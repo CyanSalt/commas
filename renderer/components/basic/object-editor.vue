@@ -1,6 +1,6 @@
 <template>
   <div class="object-editor">
-    <template v-for="(item, index) in entryItems" :key="item.id">
+    <template v-for="item in entryItems" :key="item.id">
       <div class="property-line">
         <label v-if="item.pinned" class="pinned-checker">
           <input :checked="item.index !== -1" type="checkbox" @change="togglePinned(item)">
@@ -16,7 +16,6 @@
         </template>
         <input v-model="item.entry.value" :readonly="item.pinned" type="text" class="form-control">
       </div>
-      <slot name="note" :item="item" :index="index"></slot>
     </template>
     <div class="property-line extra-line">
       <span class="link add" @click="add">

@@ -20,10 +20,5 @@ module.exports = function (commas) {
       group: 'general',
     })
 
-    commas.reactive.provide('user-settings:terminal.addon.includes', {
-      value: 'theme',
-      note: 'Download theme from GitHub#!theme.4',
-    })
-
   }
 }

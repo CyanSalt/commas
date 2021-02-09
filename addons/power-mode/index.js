@@ -1,9 +1,7 @@
 module.exports = function (commas) {
   if (commas.app.isMainProcess()) {
 
-    const path = require('path')
-
-    commas.i18n.addTranslationDirectory(path.join(__dirname, 'locales'))
+    // pass
 
   } else {
 
@@ -28,11 +26,6 @@ module.exports = function (commas) {
       instances.forEach(instance => {
         instance.dispose()
       })
-    })
-
-    commas.reactive.provide('user-settings:terminal.addon.includes', {
-      value: 'power-mode',
-      note: 'Turn on power mode#!power-mode.1',
     })
 
   }

@@ -20,10 +20,5 @@ module.exports = function (commas) {
       group: 'general',
     })
 
-    commas.reactive.provide('user-settings:terminal.addon.includes', {
-      value: 'user-settings',
-      note: 'User interface for user settings#!user-settings.3',
-    })
-
   }
 }

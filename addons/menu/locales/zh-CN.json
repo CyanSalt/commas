@@ -23,6 +23,5 @@
   "Addon#!menu.addon": "插件",
   "Help#!menu.help": "帮助",
   "Toggle Developer Tools#!toggledevtools": "切换开发人员工具",
-  "Relaunch %A#!menu.relaunch": "重新启动 %A",
-  "Provide translations for the application menu on macOS#!menu.1": "为 macOS 的应用菜单提供翻译"
+  "Relaunch %A#!menu.relaunch": "重新启动 %A"
 }

@@ -127,11 +127,6 @@ module.exports = function (commas) {
       group: 'feature',
     })
 
-    commas.reactive.provide('user-settings:terminal.addon.includes', {
-      value: 'shell',
-      note: 'Built-in command runner#!shell.3',
-    })
-
     const tab = commas.workspace.getPaneTab('shell')
     const { initializeShellTerminal } = commas.bundler.extract('shell/terminal.ts')
     initializeShellTerminal(tab)

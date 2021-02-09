@@ -23,11 +23,6 @@
         :with-keys="spec.type === 'map'"
         :pinned="spec.recommendations"
       >
-        <template #note="{ item, index }">
-          <template v-if="item.pinned">
-            <div v-i18n class="form-tips">{{ notes[index] }}</div>
-          </template>
-        </template>
         <template #extra>
           <span class="link reset" @click="reset">
             <span class="feather-icon icon-rotate-ccw"></span>
@@ -71,7 +66,6 @@
 <script lang="ts">
 import type { PropType } from 'vue'
 import { reactive, computed, toRefs, unref } from 'vue'
-import * as commas from '../../../api/renderer'
 import type { SettingsSpec } from '../../../typings/settings'
 import ObjectEditor from '../../components/basic/object-editor.vue'
 import SwitchControl from '../../components/basic/switch-control.vue'
@@ -125,12 +119,6 @@ export default {
       set: (value) => {
         emit('update:modelValue', parse(value))
       },
-    })
-
-    const notesRef = computed<(string | undefined)[]>(() => {
-      if (!props.spec.recommendations) return []
-      const injections = commas.reactive.getCollection(`user-settings:${props.spec.key}`)
-      return props.spec.recommendations.map(value => injections.find(item => item.value === value)?.note)
     })
 
     function accepts(type: string) {
@@ -211,7 +199,6 @@ export default {
       isSimpleObject: isSimpleObjectRef,
       placeholder: placeholderRef,
       model: modelRef,
-      notes: notesRef,
       toggle,
       reset,
     }
