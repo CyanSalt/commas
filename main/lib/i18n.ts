@@ -6,13 +6,6 @@ import type { Dictionary, TranslationVariables } from '../../typings/i18n'
 import { userData, resources } from '../utils/directory'
 import { broadcast } from './frame'
 
-const localeEntries: LocaleEntry[] = require('../../resources/locales/index.json')
-
-interface LocaleEntry {
-  locales: string[],
-  file: string,
-}
-
 interface Translation {
   locales: string[],
   dictionary: Dictionary,
@@ -66,18 +59,29 @@ function removeTranslation(locales: string[], dictionary: Dictionary, priority =
   }
 }
 
-function loadBuiltinTranslation(locale: string) {
-  const entry = localeEntries.find(item => item.locales.includes(locale))
-  if (!entry) return
-  const data = resources.require<Dictionary>(`locales/${entry.file}`)!
-  addTranslation(entry.locales, data, Priority.builtin)
+async function loadBuiltinTranslation(locale: string) {
+  const locales = await resources.entries('locales')
+  let data: Dictionary | undefined
+  if (locales.includes(`${locale}.json`)) {
+    data = resources.require<Dictionary>(`locales/${locale}.json`)!
+  } else {
+    const sepIndex = locale.indexOf('-')
+    const lang = sepIndex !== -1 ? locale.slice(0, sepIndex) : locale
+    const dialect = locales.find(item => item.startsWith(`${lang}-`))
+    if (dialect) {
+      data = resources.require<Dictionary>(`locales/${dialect}`)!
+    }
+  }
+  if (data) {
+    addTranslation([locale], data, Priority.builtin)
+  }
 }
 
 async function loadTranslation() {
   const custom = (await userData.load<Dictionary>('translation.json')) ?? {}
   if (custom['@use']) language = custom['@use']
   else language = app.getLocale()
-  loadBuiltinTranslation(language)
+  await loadBuiltinTranslation(language)
   addTranslation([language], custom, Priority.custom)
 }
 

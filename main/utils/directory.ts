@@ -66,6 +66,10 @@ class Directory {
     }
   }
 
+  async entries(basename: string) {
+    return fs.promises.readdir(this.file(basename))
+  }
+
   require<T>(basename: string) {
     const file = this.file(basename)
     try {
