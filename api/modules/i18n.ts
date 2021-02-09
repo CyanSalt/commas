@@ -1,14 +1,16 @@
-import { translate, addTranslation, removeTranslation } from '../../main/lib/i18n'
-import type { Dictionary } from '../../typings/i18n'
+import type { TranslationFileEntry } from '../../main/lib/i18n'
+import { addTranslations, Priority, removeTranslation, translate } from '../../main/lib/i18n'
 
-function noConflictAddTranslation(locales: string[], dictionary: Dictionary) {
-  addTranslation(locales, dictionary)
-  this.$.app.onCleanup(() => {
-    removeTranslation(locales, dictionary)
-  })
+async function noConflictAddTranslations(entries: TranslationFileEntry[]) {
+  const translation = await addTranslations(entries, Priority.addon)
+  if (translation) {
+    this.$.app.onCleanup(() => {
+      removeTranslation(translation)
+    })
+  }
 }
 
 export {
   translate,
-  noConflictAddTranslation as addTranslation,
+  noConflictAddTranslations as addTranslations,
 }

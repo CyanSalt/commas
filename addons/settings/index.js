@@ -3,7 +3,9 @@ module.exports = function (commas) {
 
     const { ipcMain } = require('electron')
 
-    commas.i18n.addTranslation(['zh', 'zh-CN'], require('./locales/zh-CN.json'))
+    commas.i18n.addTranslations([
+      { locale: 'zh-CN', file: require.resolve('./locales/zh-CN.json') },
+    ])
 
     ipcMain.removeHandler('open-settings')
 

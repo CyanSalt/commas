@@ -3,7 +3,7 @@ import { app } from 'electron'
 import * as commas from '../api/main'
 import { loadAddons, loadCustomJS } from './lib/addon'
 import { hasWindow, getLastWindow, forEachWindow } from './lib/frame'
-import { loadTranslation, handleI18NMessages, getI18NEvents } from './lib/i18n'
+import { loadTranslations, handleI18NMessages, getI18NEvents } from './lib/i18n'
 import { handleKeyBindingMessages } from './lib/keybinding'
 import { handleLauncherMessages } from './lib/launcher'
 import { createApplicationMenu, createDockMenu, handleMenuMessages, createWindowMenu } from './lib/menu'
@@ -29,8 +29,8 @@ let cwd
 async function initialize() {
   await loadAddons()
   loadCustomJS()
+  await loadTranslations()
   await app.whenReady()
-  await loadTranslation()
   commas.app.events.emit('ready')
   if (process.platform === 'darwin') {
     createApplicationMenu()

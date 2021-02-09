@@ -1,7 +1,9 @@
 module.exports = function (commas) {
   if (commas.app.isMainProcess()) {
 
-    commas.i18n.addTranslation(['zh', 'zh-CN'], require('./locales/zh-CN.json'))
+    commas.i18n.addTranslations([
+      { locale: 'zh-CN', file: require.resolve('./locales/zh-CN.json') },
+    ])
 
   } else {
 

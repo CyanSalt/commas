@@ -1,13 +1,24 @@
 import { EventEmitter } from 'events'
+import * as path from 'path'
 import { app, ipcMain } from 'electron'
-import findIndex from 'lodash/findIndex'
 import memoize from 'lodash/memoize'
 import type { Dictionary, TranslationVariables } from '../../typings/i18n'
 import { userData, resources } from '../utils/directory'
 import { broadcast } from './frame'
 
+export interface TranslationFileEntry {
+  locale: string,
+  file: string,
+}
+
+export enum Priority {
+  custom = 0,
+  addon = 1,
+  builtin = 2
+}
+
 interface Translation {
-  locales: string[],
+  file: string,
   dictionary: Dictionary,
   priority: Priority,
 }
@@ -16,29 +27,29 @@ const getI18NEvents = memoize(() => {
   return new EventEmitter()
 })
 
-enum Priority {
-  custom = 0,
-  addon = 1,
-  builtin = 2
-}
-
 const DELIMITER = '#!'
 
-let language = ''
+let resolveLanguage: (value: string) => void
+
+const languagePromise = new Promise<string>((resolve) => {
+  resolveLanguage = resolve
+})
+
+function getLanguage() {
+  return languagePromise
+}
 
 const translations: Translation[] = []
 
 const getDictionary = memoize(() => {
-  const availableTranslations = translations.filter(
-    item => item.locales.includes(language)
-  )
-  availableTranslations.sort((a, b) => a.priority - b.priority)
-  const sources = availableTranslations.map(item => item.dictionary)
+  const sources = [...translations]
+    .sort((a, b) => a.priority - b.priority)
+    .map(item => item.dictionary)
   const dictionary: Dictionary = Object.assign({}, ...sources)
   return dictionary
 })
 
-function updateTranslation() {
+function updateDictionary() {
   getDictionary.cache.clear?.()
   const dictionary = getDictionary()
   broadcast('dictionary-updated', dictionary)
@@ -46,43 +57,60 @@ function updateTranslation() {
   events.emit('updated', dictionary)
 }
 
-function addTranslation(locales: string[], dictionary: Dictionary, priority = Priority.custom) {
-  translations.push({ locales, dictionary, priority })
-  updateTranslation()
+function loadDictionary(entry: TranslationFileEntry, priority: Priority) {
+  const file = entry.file
+  const dictionary = __non_webpack_require__(file) as Dictionary
+  translations.push({ file, dictionary, priority })
+  updateDictionary()
 }
 
-function removeTranslation(locales: string[], dictionary: Dictionary, priority = Priority.custom) {
-  const index = findIndex(translations, { locales, dictionary, priority })
+async function addTranslations(entries: TranslationFileEntry[], priority: Priority) {
+  const language = await getLanguage()
+  let matched = entries.find(item => item.locale === language)
+  if (!matched) {
+    const sepIndex = language.indexOf('-')
+    const lang = sepIndex !== -1 ? language.slice(0, sepIndex) : language
+    matched = entries.find(item => item.locale.startsWith(`${lang}-`))
+  }
+  if (matched) {
+    loadDictionary(matched, priority)
+  }
+  return matched
+}
+
+function removeTranslation(entry: TranslationFileEntry) {
+  const index = translations.findIndex(item => item.file === entry.file)
   if (index !== -1) {
     translations.splice(index, 1)
-    updateTranslation()
+    updateDictionary()
   }
 }
 
-async function loadBuiltinTranslation(locale: string) {
+async function loadBuiltinTranslations() {
   const locales = await resources.entries('locales')
-  let data: Dictionary | undefined
-  if (locales.includes(`${locale}.json`)) {
-    data = resources.require<Dictionary>(`locales/${locale}.json`)!
-  } else {
-    const sepIndex = locale.indexOf('-')
-    const lang = sepIndex !== -1 ? locale.slice(0, sepIndex) : locale
-    const dialect = locales.find(item => item.startsWith(`${lang}-`))
-    if (dialect) {
-      data = resources.require<Dictionary>(`locales/${dialect}`)!
-    }
-  }
-  if (data) {
-    addTranslation([locale], data, Priority.builtin)
-  }
+  const entries = locales.map(file => ({
+    locale: path.basename(file, '.json'),
+    file: resources.file(`locales/${file}`),
+  }))
+  addTranslations(entries, Priority.builtin)
 }
 
-async function loadTranslation() {
+async function loadTranslations() {
   const custom = (await userData.load<Dictionary>('translation.json')) ?? {}
-  if (custom['@use']) language = custom['@use']
-  else language = app.getLocale()
-  await loadBuiltinTranslation(language)
-  addTranslation([language], custom, Priority.custom)
+  if (custom['@use']) {
+    resolveLanguage(custom['@use'])
+  } else {
+    await app.whenReady()
+    resolveLanguage(app.getLocale())
+  }
+  await loadBuiltinTranslations()
+  // Custom translation
+  translations.push({
+    file: userData.file('translation.json'),
+    dictionary: custom,
+    priority: Priority.custom,
+  })
+  updateDictionary()
 }
 
 function translateText(text: string) {
@@ -107,9 +135,10 @@ function handleI18NMessages() {
 }
 
 export {
-  loadTranslation,
+  getLanguage,
+  loadTranslations,
   translate,
-  addTranslation,
+  addTranslations,
   removeTranslation,
   handleI18NMessages,
   getI18NEvents,
