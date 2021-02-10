@@ -115,7 +115,7 @@ export default {
     color: inherit;
     font-size: inherit;
     font-family: inherit;
-    background: rgba(127, 127, 127, 0.2);
+    background: rgb(127 127 127 / 0.2);
     &::placeholder {
       color: var(--theme-foreground);
       opacity: 0.25;
@@ -145,7 +145,7 @@ export default {
     border-radius: 4px;
     border: none;
     outline: none;
-    background: rgba(127, 127, 127, 0.2);
+    background: rgb(127 127 127 / 0.2);
     color: var(--foreground-color);
   }
   .form-tips {

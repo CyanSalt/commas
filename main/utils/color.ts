@@ -18,8 +18,7 @@ function toRGBA(color: string): RGBA {
 }
 
 function toCSSColor(rgba: RGBA) {
-  return rgba.a < 1 ? `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`
-    : `rgb(${rgba.r}, ${rgba.g}, ${rgba.b})`
+  return `rgb(${rgba.r} ${rgba.g} ${rgba.b} / ${rgba.a})`
 }
 
 function toHex(channel: number) {
