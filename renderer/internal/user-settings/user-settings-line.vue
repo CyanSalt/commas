@@ -23,6 +23,11 @@
         :with-keys="spec.type === 'map'"
         :pinned="spec.recommendations"
       >
+        <template #note="{ item }">
+          <template v-if="hasNotes">
+            <div v-i18n class="form-tips">{{ getNote(item) }}</div>
+          </template>
+        </template>
         <template #extra>
           <span class="link reset" @click="reset">
             <span class="feather-icon icon-rotate-ccw"></span>
@@ -66,7 +71,9 @@
 <script lang="ts">
 import type { PropType } from 'vue'
 import { reactive, computed, toRefs, unref } from 'vue'
+import * as commas from '../../../api/renderer'
 import type { SettingsSpec } from '../../../typings/settings'
+import type { EditorEntryItem } from '../../components/basic/object-editor.vue'
 import ObjectEditor from '../../components/basic/object-editor.vue'
 import SwitchControl from '../../components/basic/switch-control.vue'
 
@@ -120,6 +127,18 @@ export default {
         emit('update:modelValue', parse(value))
       },
     })
+
+    const hasNotesRef = computed(() => {
+      return props.spec.key === 'terminal.addon.includes'
+    })
+
+    function getNote(item: EditorEntryItem) {
+      if (props.spec.key === 'terminal.addon.includes') {
+        const { manifest } = commas.app.getAddonInfo(item.entry.value)
+        return manifest ? manifest.description : ''
+      }
+      return undefined
+    }
 
     function accepts(type: string) {
       return props.spec.type === type || (
@@ -199,6 +218,8 @@ export default {
       isSimpleObject: isSimpleObjectRef,
       placeholder: placeholderRef,
       model: modelRef,
+      hasNotes: hasNotesRef,
+      getNote,
       toggle,
       reset,
     }

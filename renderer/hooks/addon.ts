@@ -3,7 +3,8 @@ import { watchEffect, unref } from 'vue'
 import * as commas from '../../api/renderer'
 import { useSettings } from './settings'
 
-export function loadAddons() {
+export async function loadAddons() {
+  await commas.app.discoverAddons()
   const settingsRef = useSettings()
   let loadedAddons: string[] = []
   watchEffect(() => {

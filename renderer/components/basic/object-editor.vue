@@ -16,6 +16,7 @@
         </template>
         <input v-model="item.entry.value" :readonly="item.pinned" type="text" class="form-control">
       </div>
+      <slot name="note" :item="item"></slot>
     </template>
     <div class="property-line extra-line">
       <span class="link add" @click="add">
@@ -36,7 +37,7 @@ interface EditorEntry {
   value: any,
 }
 
-interface EditorEntryItem {
+export interface EditorEntryItem {
   entry: EditorEntry,
   index: number,
   id: string | number,

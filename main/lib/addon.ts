@@ -17,7 +17,8 @@ async function applyAddons() {
   loadedAddons = [...addons]
 }
 
-function loadAddons() {
+async function loadAddons() {
+  await commas.app.discoverAddons()
   const events = getSettingsEvents()
   events.on('updated', () => {
     applyAddons()

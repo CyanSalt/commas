@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events'
+import * as fs from 'fs'
 import * as path from 'path'
 import { app, ipcRenderer } from 'electron'
 
@@ -52,6 +53,45 @@ const userDataPath = isPackaged()
   ? getPath('userData')
   : path.resolve(__dirname, '../../userData')
 
+interface AddonInfo {
+  entry: string,
+  manifest: any,
+}
+
+const discoveredAddons: Record<string, AddonInfo> = {}
+async function discoverAddons() {
+  const paths = [
+    path.join(userDataPath, 'addons'),
+    path.join(__dirname, isMainProcess() ? '../../addons' : '../addons'),
+  ]
+  for (const basePath of paths) {
+    let dirents: fs.Dirent[] = []
+    try {
+      dirents = await fs.promises.readdir(basePath, { withFileTypes: true })
+    } catch {
+      // ignore
+    }
+    const directories = dirents
+      .filter(dirent => dirent.isDirectory())
+      .map(dirent => dirent.name)
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      .filter(name => !discoveredAddons[name])
+    for (const name of directories) {
+      try {
+        const manifest = __non_webpack_require__(path.join(basePath, name, 'commas.json'))
+        const entry = path.join(basePath, name, 'index.js')
+        discoveredAddons[name] = { entry, manifest }
+      } catch {
+        // continue
+      }
+    }
+  }
+}
+
+function getAddonInfo(name: string) {
+  return discoveredAddons[name]
+}
+
 const loadedAddons: string[] = []
 function loadAddon(name: string, api: object) {
   if (loadedAddons.includes(name)) return
@@ -63,13 +103,7 @@ function loadAddon(name: string, api: object) {
       addon = () => {/* noop */}
     }
   } else {
-    try {
-      addon = __non_webpack_require__(path.join(userDataPath, 'addons', name))
-    } catch {
-      addon = isMainProcess()
-        ? __non_webpack_require__(`../../addons/${name}`)
-        : __non_webpack_require__(`../addons/${name}`)
-    }
+    addon = __non_webpack_require__(discoveredAddons[name].entry)
   }
   addon(cloneAPI(api, name))
   loadedAddons.push(name)
@@ -96,6 +130,8 @@ export {
   isMainProcess,
   isPackaged,
   cloneAPI,
+  discoverAddons,
+  getAddonInfo,
   loadAddon,
   unloadAddon,
   unloadAddons,
