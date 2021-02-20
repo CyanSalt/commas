@@ -41,17 +41,17 @@ export interface PromptEntry {
  */
 export class LocalEchoAddon {
 
-  term: Terminal
-  history: History
-  maxAutocompleteEntries: number
-  _disposables: IDisposable[]
-  _autocompleteHandlers: AutocompleteCallbackEntry[]
-  _active: boolean
-  _input: string
-  _cursor: number
-  _activePrompt: PromptEntry | null
-  _activeCharPrompt: PromptEntry | null
-  _termSize: { cols: number, rows: number }
+  declare term: Terminal
+  declare history: History
+  declare maxAutocompleteEntries: number
+  declare _disposables: IDisposable[]
+  declare _autocompleteHandlers: AutocompleteCallbackEntry[]
+  declare _active: boolean
+  declare _input: string
+  declare _cursor: number
+  declare _activePrompt: PromptEntry | null
+  declare _activeCharPrompt: PromptEntry | null
+  declare _termSize: { cols: number, rows: number }
 
   constructor(options: LocalEchoOptions = {}) {
 

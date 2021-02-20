@@ -1,17 +1,13 @@
 {
+  "extends": "@cyansalt/tsconfig",
   "compilerOptions": {
-    "noEmit": true,
+    "declaration": false,
     "target": "ESNext",
-    "moduleResolution": "Node",
-    "allowSyntheticDefaultImports": true,
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strictNullChecks": true,
     "sourceMap": true,
   },
   "exclude": [
-    "**/examples",
     "**/dist",
+    "**/examples",
     "**/node_modules"
   ]
 }

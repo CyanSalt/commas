@@ -12,12 +12,12 @@ interface Particle {
 
 export class PowerMode {
 
-  xterm: Terminal
-  _canvas: HTMLCanvasElement
-  _canvasContext: CanvasRenderingContext2D
-  _animation: number | null
-  _particles: Particle[]
-  _disposables: IDisposable[]
+  declare xterm: Terminal
+  declare _canvas: HTMLCanvasElement
+  declare _canvasContext: CanvasRenderingContext2D
+  declare _animation: number | null
+  declare _particles: Particle[]
+  declare _disposables: IDisposable[]
 
   constructor() {
     this._disposables = []

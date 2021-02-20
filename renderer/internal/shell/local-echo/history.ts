@@ -3,9 +3,9 @@
  */
 export class History {
 
-  size: number
-  entries: string[]
-  cursor: number
+  declare size: number
+  declare entries: string[]
+  declare cursor: number
 
   constructor(size: number) {
     this.size = size
