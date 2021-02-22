@@ -50,7 +50,7 @@ export async function startLauncher(launcher: Launcher) {
   await openLauncher(launcher)
   const tab = getTerminalTabByLauncher(launcher)!
   const command = getLauncherCommand(launcher)
-  writeTerminalTab(tab, command + os.EOL)
+  writeTerminalTab(tab, '\x03' + command + os.EOL)
 }
 
 export async function runLauncherScript(launcher: Launcher, index: number) {
@@ -60,7 +60,7 @@ export async function runLauncherScript(launcher: Launcher, index: number) {
     ...launcher,
     ...launcher.scripts![index],
   })
-  writeTerminalTab(tab, command + os.EOL)
+  writeTerminalTab(tab, '\x03' + command + os.EOL)
 }
 
 export async function startLauncherExternally(launcher: Launcher) {
