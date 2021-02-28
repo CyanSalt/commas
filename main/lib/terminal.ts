@@ -54,6 +54,13 @@ async function createTerminal(webContents: WebContents, { shell, cwd }: CreateTe
   if (!shell) {
     shell = settings['terminal.shell.path'] || defaultShell
   }
+  if (cwd) {
+    try {
+      await fs.promises.access(cwd)
+    } catch {
+      cwd = undefined
+    }
+  }
   if (!cwd) {
     cwd = os.homedir()
   }
