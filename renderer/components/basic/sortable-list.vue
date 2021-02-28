@@ -62,7 +62,7 @@ export default {
       const cancelTimeout = createTimeout(() => {
         cancelPressing()
         startDragging(startingEvent, index)
-      }, 500)
+      }, 250)
       cancelPressing = handleMousePressing({
         onEnd: cancelTimeout,
       })
