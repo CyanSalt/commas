@@ -5,6 +5,11 @@
     "command": "open-tab"
   },
   {
+    "label": "Duplicate Tab#!menu.duplicatetab",
+    "accelerator": "CmdOrCtrl+Shift+D",
+    "command": "duplicate-tab"
+  },
+  {
     "label": "New Window#!menu.newwindow",
     "accelerator": "CmdOrCtrl+N",
     "command": "open-window"

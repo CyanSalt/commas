@@ -8,6 +8,7 @@
   "Quit %A#!menu.quit": "退出 %A",
   "Terminal#!menu.terminal": "终端",
   "New Tab#!menu.newtab": "新建标签页",
+  "Duplicate Tab#!menu.duplicatetab": "复制标签页",
   "New Window#!menu.newwindow": "新建窗口",
   "Show Tab Options#!menu.showtaboptions": "展示标签页选项",
   "Select Previous Tab#!menu.previoustab": "选择上一个标签页",

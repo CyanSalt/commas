@@ -187,6 +187,15 @@ export function handleTerminalMessages() {
   ipcRenderer.on('open-tab', (event, options: CreateTerminalTabOptions) => {
     createTerminalTab(options)
   })
+  ipcRenderer.on('duplicate-tab', event => {
+    const currentTerminal = unref(useCurrentTerminal())
+    if (currentTerminal) {
+      createTerminalTab({
+        cwd: currentTerminal.cwd,
+        shell: currentTerminal.shell,
+      })
+    }
+  })
   ipcRenderer.on('close-tab', () => {
     const currentTerminal = unref(useCurrentTerminal())
     if (currentTerminal) {
