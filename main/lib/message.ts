@@ -1,6 +1,6 @@
-import * as childProcess from 'child_process'
 import type { MessageBoxOptions } from 'electron'
 import { app, ipcMain, BrowserWindow, dialog } from 'electron'
+import { execa } from '../utils/helper'
 import { broadcast } from './frame'
 
 function handleMessages() {
@@ -69,8 +69,8 @@ function handleMessages() {
     if (!frame) return
     frame.destroy()
   })
-  ipcMain.handle('spawn-process', (event, command, args) => {
-    childProcess.spawn(command, args)
+  ipcMain.handle('execute', (event, command, args) => {
+    return execa(command, args)
   })
   ipcMain.handle('inject-style', (event, style: string) => {
     return event.sender.insertCSS(style)

@@ -1,6 +1,7 @@
 import * as os from 'os'
 import { shell, ipcRenderer } from 'electron'
 import { memoize } from 'lodash-es'
+import { quote } from 'shell-quote'
 import { unref } from 'vue'
 import type { Launcher } from '../../typings/launcher'
 import type { TerminalTab } from '../../typings/terminal'
@@ -84,8 +85,7 @@ export async function startLauncherExternally(launcher: Launcher) {
   } else {
     explorer = [...explorer, directory]
   }
-  const [command, ...args] = explorer
-  return ipcRenderer.invoke('spawn-process', command, args)
+  return ipcRenderer.invoke('execute', quote(explorer))
 }
 
 export function moveLauncher(from: number, to: number) {
