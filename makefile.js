@@ -101,7 +101,7 @@ async function make() {
   if (process.platform === 'darwin') {
     options.osxSign = {
       identity: await getMacOSCodeSign('Apple Development'),
-      timestamp: 'none',
+      'gatekeeper-assess': false,
     }
   }
   // Run electron-packager
