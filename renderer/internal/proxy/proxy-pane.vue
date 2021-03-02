@@ -256,91 +256,85 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.proxy-pane {
-  .form-action {
-    margin: 0;
-  }
-  .toggle-all.collapsed {
-    opacity: 1;
-    transform: rotate(-90deg);
-  }
-  .revert {
-    color: var(--design-red);
-  }
-  .confirm {
-    color: var(--design-green);
-  }
-  .revert.disabled,
-  .confirm.disabled {
-    color: inherit;
-    opacity: 0.5;
+<style lang="scss" scoped>
+.form-action {
+  margin: 0;
+}
+.toggle-all.collapsed {
+  opacity: 1;
+  transform: rotate(-90deg);
+}
+.revert {
+  color: var(--design-red);
+}
+.confirm {
+  color: var(--design-green);
+}
+.revert.disabled,
+.confirm.disabled {
+  color: inherit;
+  opacity: 0.5;
+}
+.rule-line {
+  display: flex;
+  align-items: center;
+  .link:first-child {
+    margin-right: 4px;
   }
 }
-.proxy-table {
-  .rule-line {
-    display: flex;
-    align-items: center;
-    .link:first-child {
-      margin-right: 4px;
-    }
-  }
-  .link {
-    width: 24px;
-    text-align: center;
-    &.tree-node {
-      opacity: 1;
-      transition: transform 0.2s;
-    }
-  }
-  .proxy-to {
-    width: 36px;
-    opacity: 1;
-    cursor: default;
-    &.active {
-      color: var(--design-yellow);
-      transform: rotate(90deg);
-    }
-    &.valid {
-      color: var(--design-yellow);
-      cursor: pointer;
-    }
-  }
-  .rewriting {
+.proxy-table .link {
+  width: 24px;
+  text-align: center;
+}
+.proxy-table .proxy-to {
+  width: 36px;
+  opacity: 1;
+  cursor: default;
+  &.active {
     color: var(--design-yellow);
-    opacity: 1;
-    cursor: default;
+    transform: rotate(90deg);
   }
-  input.form-control {
-    margin-right: 4px;
-    box-sizing: border-box;
-    width: 320px;
+  &.valid {
+    color: var(--design-yellow);
+    cursor: pointer;
   }
-  .form-control.target {
-    width: 284px; /* 320 - 36px */
+}
+.proxy-table :deep(input.form-control) {
+  margin-right: 4px;
+  box-sizing: border-box;
+  width: 320px;
+  &.target {
+    width: 320 - 36px;
   }
-  .record-action.confirm {
-    width: 36px;
+}
+.tree-node {
+  opacity: 1;
+  transition: transform 0.2s;
+  .rule-summary.collapsed & {
+    transform: rotate(-90deg);
   }
-  .rule-summary {
-    &.collapsed .link.tree-node {
-      transform: rotate(-90deg);
-    }
-    &.disabled .rule-title,
-    &.disabled .rule-title::placeholder {
-      text-decoration: line-through;
-    }
-  }
-  .rule-checkbox {
-    margin-top: -3px;
-    width: 36px;
-    display: inline-flex;
-    justify-content: center;
-  }
-  .rule-title {
-    margin-right: 4px;
-    width: 284px;
-    text-overflow: ellipsis;
+}
+.rewriting {
+  color: var(--design-yellow);
+  opacity: 1;
+  cursor: default;
+}
+.record-action.confirm {
+  width: 36px;
+}
+.rule-checkbox {
+  margin-top: -3px;
+  width: 36px;
+  display: inline-flex;
+  justify-content: center;
+}
+.rule-title {
+  margin-right: 4px;
+  width: 284px;
+  text-overflow: ellipsis;
+  .rule-summary.disabled &,
+  .rule-summary.disabled &::placeholder {
+    text-decoration: line-through;
   }
 }
 </style>

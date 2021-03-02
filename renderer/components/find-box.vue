@@ -120,50 +120,50 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .find-box {
   flex: none;
   display: flex;
   padding: 4px 8px;
   height: 26px;
   line-height: 26px;
-  .keyword {
-    flex: auto;
-    border: none;
-    outline: none;
-    font: inherit;
+}
+.keyword {
+  flex: auto;
+  border: none;
+  outline: none;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  &::placeholder {
     color: inherit;
-    background: transparent;
-    &::placeholder {
-      color: inherit;
-      opacity: 0.5;
-    }
-  }
-  .options {
-    flex: none;
-    display: flex;
-  }
-  .option {
-    display: inline-block;
-    width: 28px;
-    font-size: 12px;
-    text-align: center;
-    cursor: pointer;
     opacity: 0.5;
-    transition: opacity 0.2s;
-    &.selected {
-      opacity: 1;
-    }
   }
-  .buttons {
-    flex: none;
-    display: flex;
+}
+.options {
+  flex: none;
+  display: flex;
+}
+.option {
+  display: inline-block;
+  width: 28px;
+  font-size: 12px;
+  text-align: center;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  &.selected {
+    opacity: 1;
   }
-  .button {
-    display: inline-block;
-    width: 28px;
-    text-align: center;
-    cursor: pointer;
-  }
+}
+.buttons {
+  flex: none;
+  display: flex;
+}
+.button {
+  display: inline-block;
+  width: 28px;
+  text-align: center;
+  cursor: pointer;
 }
 </style>

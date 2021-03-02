@@ -4,6 +4,7 @@
       v-bind="$attrs"
       type="checkbox"
       :checked="modelValue"
+      class="switch-checkbox"
       @change="change"
     >
     <span class="switch-content"></span>
@@ -36,49 +37,49 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .switch-control {
   display: inline-flex;
-  input {
-    display: none;
-    &:checked + .switch-content::before {
+}
+.switch-checkbox {
+  display: none;
+}
+.switch-content {
+  position: relative;
+  display: inline-block;
+  padding: 1px;
+  width: 2em;
+  height: 1em;
+  &::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    content: '';
+    display: inline-block;
+    border-radius: 0.5em;
+    background: currentColor;
+    opacity: 0.25;
+    transition: opacity 0.2s, background 0.2s;
+    .switch-checkbox:checked + & {
       background: var(--system-accent);
       opacity: 1;
     }
-    &:checked + .switch-content::after {
-      transform: translateX(100%);
-    }
   }
-  .switch-content {
-    position: relative;
+  &::after {
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    content: '';
     display: inline-block;
-    padding: 1px;
-    width: 2em;
+    width: 1em;
     height: 1em;
-    &::before {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      content: '';
-      display: inline-block;
-      border-radius: 0.5em;
-      background: currentColor;
-      opacity: 0.25;
-      transition: opacity 0.2s, background 0.2s;
-    }
-    &::after {
-      position: absolute;
-      top: 1px;
-      left: 1px;
-      content: '';
-      display: inline-block;
-      width: 1em;
-      height: 1em;
-      border-radius: 0.5em;
-      background: white;
-      transition: transform 0.2s;
+    border-radius: 0.5em;
+    background: white;
+    transition: transform 0.2s;
+    .switch-checkbox:checked + & {
+      transform: translateX(100%);
     }
   }
 }

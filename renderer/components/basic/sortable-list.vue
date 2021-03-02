@@ -166,19 +166,19 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .sortable-list {
   display: flex;
   flex-direction: column;
-  .sortable-item {
-    &.dragging {
-      position: relative;
-      z-index: 3;
-      cursor: move;
-    }
-    &:not(.dragging) {
-      transition: transform 0.2s;
-    }
+}
+.sortable-item {
+  &.dragging {
+    position: relative;
+    z-index: 3;
+    cursor: move;
+  }
+  &:not(.dragging) {
+    transition: transform 0.2s;
   }
 }
 </style>

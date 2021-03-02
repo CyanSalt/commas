@@ -74,7 +74,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .terminal-teletype {
   flex: auto;
   height: 0;
@@ -87,7 +87,7 @@ export default {
   padding: 4px 8px;
   /* issue@xterm: fix bug of `xterm.fit()` */
   box-sizing: border-box;
-  .xterm-viewport {
+  :deep(.xterm-viewport) {
     overflow-y: hidden;
     background-color: transparent !important;
   }

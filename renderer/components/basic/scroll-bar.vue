@@ -129,7 +129,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .scroll-bar {
   position: absolute;
   top: 0;
@@ -137,25 +137,28 @@ export default {
   right: 0;
   width: 16px;
   z-index: 4;
-  .scroll-track,
-  .scroll-thumb {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    top: 0;
-    background: var(--theme-foreground);
-    opacity: 0;
-    transition: opacity 0.5s;
+}
+.scroll-track,
+.scroll-thumb {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  top: 0;
+  background: var(--theme-foreground);
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.scroll-track {
+  .scroll-bar:hover &,
+  .scroll-bar.is-scrolling & {
+    opacity: 0.1;
   }
-  &:hover,
-  &.is-scrolling {
-    .scroll-track {
-      opacity: 0.1;
-    }
-    .scroll-thumb {
-      opacity: 0.2;
-    }
+}
+.scroll-thumb {
+  .scroll-bar:hover &,
+  .scroll-bar.is-scrolling & {
+    opacity: 0.2;
   }
 }
 </style>

@@ -3,7 +3,7 @@
     <template v-for="item in entryItems" :key="item.id">
       <div class="property-line">
         <label v-if="item.pinned" class="pinned-checker">
-          <input :checked="item.index !== -1" type="checkbox" @change="togglePinned(item)">
+          <input :checked="item.index !== -1" type="checkbox" class="pinned-control" @change="togglePinned(item)">
         </label>
         <span v-else class="link remove" @click="remove(item)">
           <span class="feather-icon icon-minus"></span>
@@ -148,36 +148,35 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.object-editor {
-  .property-line {
-    display: flex;
-    align-items: center;
-    .link {
-      width: 24px;
-      text-align: center;
-      &:first-child {
-        margin-right: 4px;
-      }
-      &.remove:hover {
-        color: var(--design-red);
-      }
-    }
-    & + .form-tips {
-      padding-left: 28px;
-    }
+<style lang="scss" scoped>
+.property-line {
+  display: flex;
+  align-items: center;
+  // eslint-disable-next-line vue-scoped-css/no-unused-selector
+  & + .form-tips {
+    padding-left: 28px;
   }
-  .property-arrow {
-    width: 36px;
-    text-align: center;
-  }
-  .pinned-checker {
-    width: 24px;
-    text-align: center;
+}
+.link {
+  width: 24px;
+  text-align: center;
+  &:first-child {
     margin-right: 4px;
-    input[type='checkbox'] {
-      vertical-align: middle;
-    }
   }
+  &.remove:hover {
+    color: var(--design-red);
+  }
+}
+.property-arrow {
+  width: 36px;
+  text-align: center;
+}
+.pinned-checker {
+  width: 24px;
+  text-align: center;
+  margin-right: 4px;
+}
+.pinned-control {
+  vertical-align: middle;
 }
 </style>

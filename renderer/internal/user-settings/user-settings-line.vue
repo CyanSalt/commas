@@ -227,33 +227,31 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .user-setting-line {
   &.form-line.block .form-label {
     display: flex;
     align-items: center;
   }
-  &.collapsed {
-    .tree-node {
-      transform: rotate(-90deg);
-    }
-    .setting-detail {
-      display: none;
-    }
+}
+.item-key {
+  margin-left: 16px;
+  font-size: 12px;
+  opacity: 0.5;
+}
+.tree-node {
+  width: 24px;
+  text-align: center;
+  opacity: 1;
+  transition: transform 0.2s;
+  .user-setting-line.collapsed & {
+    transform: rotate(-90deg);
   }
-  .item-key {
-    margin-left: 16px;
-    font-size: 12px;
-    opacity: 0.5;
-  }
-  .tree-node {
-    width: 24px;
-    text-align: center;
-    opacity: 1;
-    transition: transform 0.2s;
-  }
-  .setting-detail {
-    padding-left: 24px;
+}
+.setting-detail {
+  padding-left: 24px;
+  .user-setting-line.collapsed & {
+    display: none;
   }
 }
 </style>

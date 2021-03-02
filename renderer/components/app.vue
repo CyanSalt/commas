@@ -1,5 +1,5 @@
 <template>
-  <div id="root" :class="['app', { opaque: isFullscreen }]">
+  <div :class="['app', { opaque: isFullscreen }]">
     <title-bar></title-bar>
     <div class="content">
       <tab-list v-show="isTabListEnabled"></tab-list>
@@ -126,22 +126,23 @@ export default {
 }
 </script>
 
-<style lang="scss">
-body {
-  margin: 0;
-  font-family: Fira Code, Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
-  font-size: 14px;
-  user-select: none;
-  cursor: default;
-  -webkit-tap-highlight-color: transparent;
-}
-#root {
+<style lang="scss" scoped>
+:global(:root) {
   --design-green: #28c941;
   --design-yellow: #ffbd2e;
   --design-red: #ff6159;
   --design-blue: #2f88ff;
   --design-magenta: #cf96fd;
   --design-cyan: #00c8d2;
+  --system-accent: var(--design-blue);
+}
+:global(body) {
+  margin: 0;
+  font-family: Fira Code, Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
+  font-size: 14px;
+  user-select: none;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
 }
 .app {
   display: flex;
@@ -154,22 +155,21 @@ body {
   color: var(--theme-foreground, transparent);
   background: var(--theme-backdrop);
   transition: background 0.2s;
-  --system-accent: var(--design-blue);
   &.opaque {
     background: var(--theme-background);
   }
-  .content {
-    flex: auto;
-    width: 100vw;
-    display: flex;
-    overflow: hidden;
-    z-index: 1;
-  }
-  .interface {
-    flex: auto;
-    width: 0;
-    display: flex;
-    flex-direction: column;
-  }
+}
+.content {
+  flex: auto;
+  width: 100vw;
+  display: flex;
+  overflow: hidden;
+  z-index: 1;
+}
+.interface {
+  flex: auto;
+  width: 0;
+  display: flex;
+  flex-direction: column;
 }
 </style>

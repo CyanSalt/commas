@@ -70,7 +70,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .landscape-slot {
   position: fixed;
   top: 0;

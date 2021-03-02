@@ -227,151 +227,145 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .tab-list {
   flex: none;
   display: flex;
   font-size: 14px;
   --tab-height: 46px;
-  .list-column {
-    flex: auto;
-    width: 176px;
-    display: flex;
-    flex-direction: column;
+}
+.list-column {
+  flex: auto;
+  width: 176px;
+  display: flex;
+  flex-direction: column;
+}
+.list {
+  flex: auto;
+  height: 0;
+  position: relative;
+}
+.scroll-area {
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+  &::-webkit-scrollbar {
+    width: 0px;
   }
-  .list {
-    flex: auto;
-    height: 0;
-    position: relative;
+}
+:deep(.scroll-bar) {
+  width: 8px;
+  right: 2px;
+}
+.sash {
+  flex: none;
+  width: 2px;
+  margin: 4px 0;
+  border-right: 2px solid var(--theme-foreground);
+  opacity: 0.05;
+  cursor: col-resize;
+}
+.new-tab {
+  padding: 0 16px;
+  display: flex;
+  height: var(--tab-height);
+  line-height: var(--tab-height);
+  text-align: center;
+}
+.select-shell {
+  flex: none;
+  width: 18px;
+}
+.default-shell {
+  flex: auto;
+  font-size: 21px;
+}
+.select-shell + .default-shell {
+  order: -1;
+  padding-left: 18px;
+}
+.launcher-folder {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 8px 16px;
+  line-height: 16px;
+  cursor: pointer;
+}
+.buttons {
+  flex: none;
+  display: flex;
+}
+.button {
+  width: 18px;
+  text-align: center;
+  opacity: 0.5;
+  transition: opacity 0.2s, color 0.2s;
+  & + & {
+    margin-left: 3px;
   }
-  .scroll-area {
-    height: 100%;
-    overflow-y: auto;
-    box-sizing: border-box;
-    &::-webkit-scrollbar {
-      width: 0px;
-    }
+}
+.find {
+  &:hover {
+    opacity: 1;
   }
-  .scroll-bar {
-    width: 8px;
-    right: 2px;
-  }
-  .sash {
-    flex: none;
-    width: 2px;
-    margin: 4px 0;
-    border-right: 2px solid var(--theme-foreground);
-    opacity: 0.05;
-    cursor: col-resize;
-  }
-  .invisible {
-    visibility: hidden;
-  }
-  .new-tab {
-    padding: 0 16px;
-    display: flex;
-    height: var(--tab-height);
-    line-height: var(--tab-height);
-    text-align: center;
-    .select-shell {
-      flex: none;
-      width: 18px;
-    }
-    .default-shell {
-      flex: auto;
-      font-size: 21px;
-    }
-    .select-shell + .default-shell {
-      order: -1;
-      padding-left: 18px;
-    }
-  }
-  .launcher-folder {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 8px 16px;
-    line-height: 16px;
-    cursor: pointer;
-    .buttons {
-      flex: none;
-      display: flex;
-    }
-    .button {
-      width: 18px;
-      text-align: center;
-      opacity: 0.5;
-      transition: opacity 0.2s, color 0.2s;
-    }
-    .button + .button {
-      margin-left: 3px;
-    }
-    .find:hover {
-      opacity: 1;
-    }
-  }
-  .group-name {
-    opacity: 0.5;
-    transition: opacity 0.2s, color 0.2s, transform 0.2s;
-    &.collapsed {
-      color: var(--design-yellow);
-      transform: rotate(-90deg);
-      opacity: 1;
-    }
-    &:not(.collapsed):hover {
-      opacity: 1;
-    }
-  }
-  .find.active {
+  &.active {
     opacity: 1;
     color: var(--design-yellow);
   }
-  .find-launcher {
-    flex-basis: 100%;
-    margin-top: 8px;
-    .keyword {
-      padding: 0;
-      border: none;
-      outline: none;
-      font: inherit;
-      color: inherit;
-      background: transparent;
-      &::placeholder {
-        color: inherit;
-        opacity: 0.5;
-      }
-    }
+}
+.group-name {
+  opacity: 0.5;
+  transition: opacity 0.2s, color 0.2s, transform 0.2s;
+  &.collapsed {
+    color: var(--design-yellow);
+    transform: rotate(-90deg);
+    opacity: 1;
   }
-  .edit-launcher {
-    text-align: center;
-    font-size: 18px;
-    line-height: 26px;
-    margin-bottom: 8px;
+  &:not(.collapsed):hover {
+    opacity: 1;
   }
-  .bottom-actions {
-    flex: none;
-    display: flex;
-    padding: 8px 16px;
-    line-height: 16px;
-    height: 16px;
-    .anchor {
-      margin-right: 8px;
-    }
-  }
-  .anchor {
-    cursor: pointer;
+}
+.find-launcher {
+  flex-basis: 100%;
+  margin-top: 8px;
+}
+.keyword {
+  padding: 0;
+  border: none;
+  outline: none;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  &::placeholder {
+    color: inherit;
     opacity: 0.5;
-    transition: opacity 0.2s;
-    &:hover,
-    &.active {
-      opacity: 1;
-    }
   }
-  .launch:hover {
-    color: var(--design-green);
+}
+.bottom-actions {
+  flex: none;
+  display: flex;
+  padding: 8px 16px;
+  line-height: 16px;
+  height: 16px;
+  .anchor {
+    margin-right: 8px;
   }
-  .launch-externally:hover {
-    color: var(--design-blue);
+}
+// eslint-disable-next-line vue-scoped-css/no-unused-selector
+.anchor {
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  &:hover,
+  &.active {
+    opacity: 1;
   }
+}
+.launch:hover {
+  color: var(--design-green);
+}
+.launch-externally:hover {
+  color: var(--design-blue);
 }
 </style>

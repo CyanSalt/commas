@@ -111,47 +111,45 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.theme-pane {
-  .theme-list {
-    padding: 12px 0;
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(90px, 1fr));
-    grid-gap: 24px;
+<style lang="scss" scoped>
+.theme-list {
+  padding: 12px 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(90px, 1fr));
+  grid-gap: 24px;
+}
+.theme-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  overflow: hidden;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: var(--theme-foreground);
+    opacity: 0.1;
+    z-index: -1;
   }
-  .theme-item {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    border-radius: 4px;
-    overflow: hidden;
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      background: var(--theme-foreground);
-      opacity: 0.1;
-      z-index: -1;
-    }
-  }
-  .theme-screenshot {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-  }
-  .theme-action {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 12px;
-    height: 48px;
-  }
-  .theme-loading {
-    margin: 12px 0;
-  }
+}
+.theme-screenshot {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+.theme-action {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px;
+  height: 48px;
+}
+.theme-loading {
+  margin: 12px 0;
 }
 </style>

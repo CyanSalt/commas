@@ -101,104 +101,96 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .tab-item {
   padding: 0 16px;
-  &.active {
-    .tab-title {
-      opacity: 1;
-    }
-    .tab-overview::before {
+}
+.tab-title {
+  flex: auto;
+  width: 0;
+  display: flex;
+  align-items: center;
+  opacity: 0.5;
+  .tab-item.active &,
+  .sortable-item.dragging & {
+    opacity: 1;
+  }
+}
+.tab-icon {
+  flex: none;
+  display: inline-block;
+  margin-right: 6px;
+  &.feather-icon {
+    margin-top: -2px;
+  }
+}
+.tab-name {
+  flex: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tab-overview {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: var(--tab-height);
+  &::before {
+    content: '';
+    position: absolute;
+    top: 11px;
+    bottom: 11px;
+    transform: scale(0);
+    left: -16px;
+    border-left: 5px solid var(--design-blue);
+    transition: transform 0.15s, border-color 0.2s;
+    .tab-item.active & {
       transform: scale(1);
     }
-  }
-  &:hover {
-    .idle-light {
-      display: none;
-    }
-    .operations {
-      display: flex;
-    }
-  }
-  .sortable-item.dragging & {
-    .tab-overview::before {
+    .sortable-item.dragging & {
       transform: scale(1);
       border-left-color: var(--design-yellow);
     }
-    .tab-item .tab-title {
-      opacity: 1;
-    }
   }
-  .tab-title {
-    flex: auto;
-    width: 0;
-    display: flex;
-    align-items: center;
-    opacity: 0.5;
+}
+.right-side {
+  flex: none;
+}
+.idle-light {
+  display: inline-block;
+  margin: 0 6px;
+  width: 6px;
+  height: 6px;
+  vertical-align: 1px;
+  border-radius: 50%;
+  background: currentColor;
+  transition: color 0.2s;
+  &.busy {
+    color: var(--design-green);
   }
-  .tab-icon {
-    flex: none;
-    display: inline-block;
-    margin-right: 6px;
-    &.feather-icon {
-      margin-top: -2px;
-    }
-  }
-  .tab-name {
-    flex: auto;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .tab-overview {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: var(--tab-height);
-    &::before {
-      content: '';
-      position: absolute;
-      top: 11px;
-      bottom: 11px;
-      transform: scale(0);
-      left: -16px;
-      border-left: 5px solid var(--design-blue);
-      transition: transform 0.15s, border-color 0.2s;
-    }
-  }
-  .right-side {
-    flex: none;
-  }
-  .idle-light {
-    display: inline-block;
-    margin: 0 6px;
-    width: 6px;
-    height: 6px;
-    vertical-align: 1px;
-    border-radius: 50%;
-    background: currentColor;
-    transition: color 0.2s;
-    &.busy {
-      color: var(--design-green);
-    }
-  }
-  .operations {
+  .tab-item:hover & {
     display: none;
-    text-align: center;
-    font-size: 14px;
   }
-  .operations .button {
-    width: 18px;
-    cursor: pointer;
-    transition: color 0.2s;
+}
+.operations {
+  display: none;
+  text-align: center;
+  font-size: 14px;
+  .tab-item:hover & {
+    display: flex;
   }
-  .close:hover {
-    color: var(--design-red);
-  }
-  .divider {
-    border-bottom: 1px solid var(--theme-foreground);
-    opacity: 0.05;
-  }
+}
+.button {
+  width: 18px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.close:hover {
+  color: var(--design-red);
+}
+.divider {
+  border-bottom: 1px solid var(--theme-foreground);
+  opacity: 0.05;
 }
 </style>

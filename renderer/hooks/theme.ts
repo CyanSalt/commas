@@ -35,7 +35,7 @@ export function injectTheme() {
     const style = unref(themeStyleRef)
     const declarations = Object.entries(style)
       .map(([key, value]) => `${key}: ${value};`).join(' ')
-    const injection: Promise<string> = ipcRenderer.invoke('inject-style', `#root { ${declarations} }`)
+    const injection: Promise<string> = ipcRenderer.invoke('inject-style', `:root[data-commas] { ${declarations} }`)
     onInvalidate(async () => {
       ipcRenderer.invoke('eject-style', await injection)
     })
