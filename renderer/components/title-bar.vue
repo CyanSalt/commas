@@ -1,5 +1,9 @@
 <template>
-  <header :class="['title-bar', { 'no-controls': !isCustomControlEnabled }]" @dblclick="maximize">
+  <header
+    v-if="!shouldUseSystemFrame"
+    :class="['title-bar', { 'no-controls': !isCustomControlEnabled }]"
+    @dblclick="maximize"
+  >
     <div class="git-branch">
       <template v-if="branch">
         <span class="branch-updater" @click="updateBranch">
@@ -49,6 +53,7 @@ import { useSettings } from '../hooks/settings'
 import { useIsTabListEnabled } from '../hooks/shell'
 import { useCurrentTerminal, useTerminalActiveIndex, useTerminalTabs } from '../hooks/terminal'
 import { openContextMenu } from '../utils/frame'
+import { translate } from '../utils/i18n'
 import { getPrompt } from '../utils/terminal'
 
 export default {
@@ -88,6 +93,11 @@ export default {
       const settings = unref(settingsRef)
       const expr = settings['terminal.tab.titleFormat']
       return getPrompt(expr, terminal)
+    })
+
+    const shouldUseSystemFrameRef = computed(() => {
+      const settings = unref(settingsRef)
+      return settings['terminal.style.frame'] === 'system'
     })
 
     const launcherRef = computed(() => {
@@ -152,12 +162,23 @@ export default {
       state.isTabListEnabled = !state.isTabListEnabled
     }
 
+    watchEffect(() => {
+      const pane = unref(paneRef)
+      const title = unref(titleRef)
+      const directory = unref(directoryRef)
+      ipcRenderer.invoke('update-window', {
+        title: `${pane ? translate(pane.title) : title}`,
+        directory,
+      })
+    })
+
     return {
       ...toRefs(state),
       directory: directoryRef,
       pane: paneRef,
       title: titleRef,
       scripts: scriptsRef,
+      shouldUseSystemFrame: shouldUseSystemFrameRef,
       updateBranch,
       runScript,
       openDirectory,

@@ -78,6 +78,12 @@ function handleMessages() {
   ipcMain.handle('eject-style', (event, key: string) => {
     return event.sender.removeInsertedCSS(key)
   })
+  ipcMain.handle('update-window', (event, data: { title: string, directory: string }) => {
+    const frame = BrowserWindow.fromWebContents(event.sender)
+    if (!frame) return false
+    frame.title = data.title
+    frame.representedFilename = data.directory
+  })
 }
 
 function handleEvents(frame: BrowserWindow) {

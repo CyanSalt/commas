@@ -6,6 +6,7 @@ import { loadCustomCSS } from './addon'
 import { hasWindow, getLastWindow, collectWindow, forEachWindow } from './frame'
 import { createWindowMenu } from './menu'
 import { handleEvents } from './message'
+import { getSettings } from './settings'
 
 interface BrowserWindowThemeOptions {
   backgroundColor: string,
@@ -30,18 +31,18 @@ function loadHTMLFile(frame: BrowserWindow, file: string) {
   frame.loadURL(url.pathToFileURL(path.resolve(__dirname, file)).href)
 }
 
-function createWindow(...args: string[]) {
+async function createWindow(...args: string[]) {
+  const settings = await getSettings()
+  const shouldUseSystemFrame = settings['terminal.style.frame'] === 'system'
   const options = {
     show: false,
     title: app.name,
     width: (8 * 80) + (2 * 8) + 180,
     minWidth: (8 * 40) + (2 * 8) + 180,
     height: (17 * 25) + (2 * 4) + 36,
-    frame: false,
-    // Similar to 'hiddenInset', but works well on fullscreen
-    titleBarStyle: 'hidden' as const,
-    trafficLightPosition: { x: 12, y: 22 },
-    transparent: true,
+    frame: shouldUseSystemFrame,
+    titleBarStyle: shouldUseSystemFrame ? 'default' as const : 'hiddenInset' as const,
+    transparent: !shouldUseSystemFrame,
     ...themeOptions,
     acceptFirstMouse: true,
     webPreferences: {
@@ -90,7 +91,7 @@ function createWindow(...args: string[]) {
 
 function handleWindowMessages() {
   ipcMain.handle('open-window', () => {
-    createWindow()
+    return createWindow()
   })
 }
 
