@@ -27,11 +27,7 @@ function setThemeOptions(options: BrowserWindowThemeOptions) {
 }
 
 function loadHTMLFile(frame: BrowserWindow, file: string) {
-  frame.loadURL(url.format({
-    protocol: 'file',
-    slashes: true,
-    pathname: path.resolve(__dirname, file),
-  }))
+  frame.loadURL(url.pathToFileURL(path.resolve(__dirname, file)).href)
 }
 
 function createWindow(...args: string[]) {

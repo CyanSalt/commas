@@ -141,6 +141,7 @@ export default {
 }
 :deep(select.form-control) {
   padding: 2px 6px;
+  font: inherit;
   line-height: 20px;
   height: 24px;
   border-radius: 4px;
