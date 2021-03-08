@@ -38,30 +38,32 @@ export async function openLauncher(launcher: Launcher) {
   const tab = getTerminalTabByLauncher(launcher)
   if (tab) {
     activateTerminalTab(tab)
+    return false
   } else {
     const directory = launcher.remote ? undefined : launcher.directory
     await createTerminalTab({
       cwd: directory && resolveHome(directory),
       launcher: launcher.id,
     })
+    return true
   }
 }
 
 export async function startLauncher(launcher: Launcher) {
-  await openLauncher(launcher)
+  const isCreating = await openLauncher(launcher)
   const tab = getTerminalTabByLauncher(launcher)!
   const command = getLauncherCommand(launcher)
-  writeTerminalTab(tab, '\x03' + command + os.EOL)
+  writeTerminalTab(tab, (isCreating ? '' : '\x03') + command + os.EOL)
 }
 
 export async function runLauncherScript(launcher: Launcher, index: number) {
-  await openLauncher(launcher)
+  const isCreating = await openLauncher(launcher)
   const tab = getTerminalTabByLauncher(launcher)!
   const command = getLauncherCommand({
     ...launcher,
     ...launcher.scripts![index],
   })
-  writeTerminalTab(tab, '\x03' + command + os.EOL)
+  writeTerminalTab(tab, (isCreating ? '' : '\x03') + command + os.EOL)
 }
 
 export async function startLauncherExternally(launcher: Launcher) {
