@@ -1,7 +1,6 @@
 {
   "extends": "@cyansalt/tsconfig",
   "compilerOptions": {
-    "declaration": false,
     "target": "ESNext",
     "sourceMap": true,
   },

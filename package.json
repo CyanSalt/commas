@@ -24,7 +24,7 @@
   "devDependencies": {
     "@cyansalt/eslint-config": "^1.0.0",
     "@cyansalt/stylelint-config": "^1.1.0",
-    "@cyansalt/tsconfig": "^1.0.0",
+    "@cyansalt/tsconfig": "^1.1.1",
     "@types/color-rgba": "^2.1.0",
     "@types/http-proxy": "^1.17.5",
     "@types/json5": "^2.2.0",
