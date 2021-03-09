@@ -4,7 +4,7 @@ import type { Readable } from 'stream'
 import { app, net } from 'electron'
 import * as JSON5 from 'json5'
 import debounce from 'lodash/debounce'
-import { emitting } from './helper'
+import { oncea } from './helper'
 import { Writer } from './writer'
 
 class Directory {
@@ -87,13 +87,13 @@ class Directory {
     await this.ensure(basename)
     const file = this.file(basename)
     const stream = fs.createWriteStream(file)
-    await emitting(stream, 'open')
+    await oncea(stream, 'open')
     const request = net.request(url)
-    const sending = emitting(request, 'response', 'error') as Promise<[Readable]>
+    const sending = oncea(request, 'response', 'error')
     request.end()
-    const [response] = await sending
-    response.pipe(stream)
-    await emitting(stream, 'finish')
+    const [response] = await sending;
+    (response as unknown as Readable).pipe(stream)
+    await oncea(stream, 'finish')
     return this.load(basename) as Promise<T>
   }
 

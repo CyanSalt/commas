@@ -4,19 +4,22 @@ import * as util from 'util'
 
 const execa = util.promisify(childProcess.exec)
 
-function emitting(emitter: EventEmitter, finish: string, error?: string) {
-  return new Promise<any[]>((resolve, reject) => {
-    emitter.on(finish, (...args) => {
+interface OnceEmitter<T extends string, U extends any[]> {
+  once(name: T, listener: (...args: U) => unknown): this,
+}
+
+function oncea<T extends EventEmitter, U extends string>(emitter: T, finish: U, error?: string) {
+  return new Promise<T extends OnceEmitter<U, infer V> ? V : unknown[]>((resolve, reject) => {
+    emitter.once(finish, (...args: any) => {
       resolve(args)
     })
     if (error) {
-      emitter.on(error, (...args) => {
+      emitter.once(error, (...args) => {
         reject(args)
       })
     }
   })
 }
-
 
 type IDIterator = (id: number) => number
 
@@ -42,7 +45,7 @@ function createPattern(expression: string) {
 
 export {
   execa,
-  emitting,
+  oncea,
   createIDGenerator,
   createPattern,
 }

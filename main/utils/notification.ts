@@ -1,5 +1,5 @@
 import { dialog, Notification } from 'electron'
-import { emitting } from './helper'
+import { oncea } from './helper'
 
 interface NotifyOptions {
   title: string,
@@ -15,8 +15,8 @@ async function notify({ title, body, actions }: NotifyOptions) {
       silent: true,
       actions: actions.map(text => ({ type: 'button', text })),
     })
-    const response: Promise<number> = emitting(notification, 'action')
-      .then(([event, index]) => index)
+    const response = oncea(notification, 'action')
+      .then(([event, index]: any[]) => index as number)
     notification.show()
     return response
   } else {
