@@ -4,7 +4,7 @@
       <span class="link tree-node" @click="toggle">
         <span class="feather-icon icon-chevron-down"></span>
       </span>
-      <span v-i18n class="item-label">{{ spec.label }}#!user-settings.label.{{ spec.key }}</span>
+      <span v-i18n class="item-label">{{ spec.label }}#!settings.label.{{ spec.key }}</span>
       <span class="item-key">{{ spec.key }}</span>
     </label>
     <div class="setting-detail">
@@ -14,7 +14,7 @@
           :key="index"
           v-i18n
           class="form-tip-line"
-        >{{ comment }}#!user-settings.comments.{{ index }}.{{ spec.key }}</div>
+        >{{ comment }}#!settings.comments.{{ index }}.{{ spec.key }}</div>
       </div>
       <switch-control v-if="spec.type === 'boolean'" v-model="model"></switch-control>
       <object-editor
@@ -78,7 +78,7 @@ import ObjectEditor from '../../components/basic/object-editor.vue'
 import SwitchControl from '../../components/basic/switch-control.vue'
 
 export default {
-  name: 'user-settings-line',
+  name: 'settings-line',
   components: {
     'switch-control': SwitchControl,
     'object-editor': ObjectEditor,

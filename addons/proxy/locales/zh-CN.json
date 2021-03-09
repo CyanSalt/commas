@@ -3,6 +3,6 @@
   "Configure proxy rules#!proxy.2": "配置代理规则",
   "Enable system proxy#!proxy.3": "启用系统代理",
   "Proxy to...#!proxy.4": "代理至...",
-  "Proxy Server Port#!user-settings.label.proxy.server.port": "代理服务器端口",
-  "Specify HTTP port for development proxy server#!user-settings.comments.0.proxy.server.port": "为开发代理服务器指定 HTTP 端口"
+  "Proxy Server Port#!settings.label.proxy.server.port": "代理服务器端口",
+  "Specify HTTP port for development proxy server#!settings.comments.0.proxy.server.port": "为开发代理服务器指定 HTTP 端口"
 }

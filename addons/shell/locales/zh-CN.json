@@ -1,6 +1,6 @@
 {
   "Shell#!shell.1": "Shell",
   "Open shell#!shell.2": "打开 Shell",
-  "External URL Commands#!user-settings.label.shell.command.externalURLs": "外部网址命令",
-  "Shortcut commands for external URLs#!user-settings.comments.0.shell.command.externalURLs": "外部网址的快捷命令"
+  "External URL Commands#!settings.label.shell.command.externalURLs": "外部网址命令",
+  "Shortcut commands for external URLs#!settings.comments.0.shell.command.externalURLs": "外部网址的快捷命令"
 }

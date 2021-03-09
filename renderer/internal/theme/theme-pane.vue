@@ -2,9 +2,9 @@
   <terminal-pane class="theme-pane">
     <h2 v-i18n class="group-title">Configure theme#!theme.2</h2>
     <div class="group">
-      <span v-i18n class="link" @click="reset">Reset to default#!settings.12</span>
+      <span v-i18n class="link" @click="reset">Reset to default#!preference.12</span>
       <div class="form-line">
-        <label v-i18n class="form-label">Search#!settings.11</label>
+        <label v-i18n class="form-label">Search#!preference.11</label>
         <input v-model="keyword" type="text" class="form-control">
         <div class="form-line-tip">
           <span v-i18n>Theme will be downloaded from#!theme.3</span>

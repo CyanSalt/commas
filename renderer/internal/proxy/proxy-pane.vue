@@ -1,13 +1,13 @@
 <template>
   <terminal-pane class="proxy-pane">
-    <h2 v-i18n class="group-title">General#!settings.2</h2>
+    <h2 v-i18n class="group-title">General#!preference.2</h2>
     <div class="group">
       <div v-if="supportsSystemProxy" class="form-line">
         <label v-i18n class="form-label">Enable system proxy#!proxy.3</label>
         <switch-control v-model="isSystemProxyEnabled"></switch-control>
       </div>
       <span class="link" @click="openProxyRules">
-        <span v-i18n="{ F: 'proxy-rules.json' }">Edit %F#!settings.8</span>
+        <span v-i18n="{ F: 'proxy-rules.json' }">Edit %F#!preference.8</span>
       </span>
     </div>
     <h2 v-i18n class="group-title">Proxy Rules#!proxy.1</h2>

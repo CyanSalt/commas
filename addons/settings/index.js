@@ -2,22 +2,8 @@ module.exports = function (commas) {
   if (commas.app.isMainProcess()) {
 
     const path = require('path')
-    const { ipcMain } = require('electron')
 
     commas.i18n.addTranslationDirectory(path.join(__dirname, 'locales'))
-
-    ipcMain.removeHandler('open-settings')
-
-    commas.ipcMain.handle('open-settings', () => {
-      const frame = commas.frame.getFocusedWindow()
-      frame.webContents.send('open-settings-pane')
-    })
-
-    commas.app.onCleanup(() => {
-      ipcMain.handle('open-settings', () => {
-        return commas.settings.openFile()
-      })
-    })
 
   } else {
 
@@ -25,12 +11,13 @@ module.exports = function (commas) {
       title: 'Settings#!settings.1',
       component: commas.bundler.extract('settings/settings-pane.vue').default,
       icon: {
-        name: 'feather-icon icon-settings',
+        name: 'feather-icon icon-sliders',
       },
     })
 
-    commas.ipcRenderer.on('open-settings-pane', () => {
-      commas.workspace.openPaneTab('settings')
+    commas.reactive.provide('preference', {
+      component: commas.bundler.extract('settings/settings-link.vue').default,
+      group: 'general',
     })
 
   }
