@@ -37,7 +37,7 @@
     "@typescript-eslint/parser": "^4.17.0",
     "@vue/compiler-sfc": "^3.0.7",
     "css-loader": "^5.1.1",
-    "electron": "^11.3.0",
+    "electron": "^12.0.0",
     "electron-packager": "^15.2.0",
     "eslint": "^7.21.0",
     "eslint-plugin-galaxy": "^1.1.0",

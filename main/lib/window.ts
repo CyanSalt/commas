@@ -47,6 +47,7 @@ async function createWindow(...args: string[]) {
     acceptFirstMouse: true,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       additionalArguments: [
         '--',
         ...args.filter(arg => (arg as string | undefined) !== undefined),
