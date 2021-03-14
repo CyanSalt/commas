@@ -5,6 +5,7 @@ import type { KeyBinding } from '../../typings/keybinding'
 import { resources } from '../utils/directory'
 import { translate } from './i18n'
 import { getUserKeyBindings, getAddonKeyBindings } from './keybinding'
+import { createWindow } from './window'
 
 const terminalMenuItems = resources.require<KeyBinding[]>('terminal.menu.json')!
 
@@ -137,8 +138,8 @@ function createDockMenu() {
     {
       label: translate('New Window#!menu.newwindow'),
       accelerator: 'CmdOrCtrl+N',
-      click(self, frame: BrowserWindow) {
-        frame.webContents.send('open-window')
+      click() {
+        createWindow()
       },
     },
   ])
