@@ -1,6 +1,5 @@
 <template>
   <header
-    v-if="!shouldUseSystemFrame"
     :class="['title-bar', { 'no-controls': !isCustomControlEnabled }]"
     @dblclick="maximize"
   >
@@ -95,11 +94,6 @@ export default {
       return getPrompt(expr, terminal)
     })
 
-    const shouldUseSystemFrameRef = computed(() => {
-      const settings = unref(settingsRef)
-      return settings['terminal.style.frame'] === 'system'
-    })
-
     const launcherRef = computed(() => {
       const terminal = unref(terminalRef)
       if (!terminal) return null
@@ -178,7 +172,6 @@ export default {
       pane: paneRef,
       title: titleRef,
       scripts: scriptsRef,
-      shouldUseSystemFrame: shouldUseSystemFrameRef,
       updateBranch,
       runScript,
       openDirectory,

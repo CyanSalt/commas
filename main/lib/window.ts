@@ -6,7 +6,6 @@ import { loadCustomCSS } from './addon'
 import { hasWindow, getLastWindow, collectWindow, forEachWindow } from './frame'
 import { createWindowMenu } from './menu'
 import { handleEvents } from './message'
-import { getSettings } from './settings'
 
 interface BrowserWindowThemeOptions {
   backgroundColor: string,
@@ -31,18 +30,16 @@ function loadHTMLFile(frame: BrowserWindow, file: string) {
   frame.loadURL(url.pathToFileURL(path.resolve(__dirname, file)).href)
 }
 
-async function createWindow(...args: string[]) {
-  const settings = await getSettings()
-  const shouldUseSystemFrame = settings['terminal.style.frame'] === 'system'
+function createWindow(...args: string[]) {
   const options = {
     show: false,
     title: app.name,
     width: (8 * 80) + (2 * 8) + 180,
     minWidth: (8 * 40) + (2 * 8) + 180,
     height: (17 * 25) + (2 * 4) + 36,
-    frame: shouldUseSystemFrame,
-    titleBarStyle: shouldUseSystemFrame ? 'default' as const : 'hiddenInset' as const,
-    transparent: !shouldUseSystemFrame,
+    frame: false,
+    titleBarStyle: 'hiddenInset' as const,
+    transparent: true,
     ...themeOptions,
     acceptFirstMouse: true,
     webPreferences: {
@@ -92,7 +89,7 @@ async function createWindow(...args: string[]) {
 
 function handleWindowMessages() {
   ipcMain.handle('open-window', () => {
-    return createWindow()
+    createWindow()
   })
 }
 

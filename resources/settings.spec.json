@@ -135,17 +135,6 @@
     "default": false
   },
   {
-    "key": "terminal.style.frame",
-    "type": "enum",
-    "paradigm": ["system", "commas"],
-    "label": "Window Frame Type",
-    "comments": [
-      "Specify the frame type for all windows of application",
-      "Options: 'system' or 'commas'"
-    ],
-    "default": "commas"
-  },
-  {
     "key": "terminal.theme.name",
     "type": "string",
     "recommendations": ["oceanic-next", "tomorrow"],
