@@ -2,7 +2,7 @@ import { last } from 'lodash-es'
 import type { DirectiveBinding } from 'vue'
 import { computed, unref } from 'vue'
 import type { Dictionary, TranslationVariables } from '../../typings/i18n'
-import { useRemoteData } from '../hooks/remote'
+import { injectIPC } from './hooks'
 
 const DELIMITER = '#!'
 
@@ -10,10 +10,7 @@ function getTextSequence(text: string, readable?: boolean) {
   return readable ? text.split(DELIMITER)[0] : last(text.split(DELIMITER))!
 }
 
-const dictionaryRef = useRemoteData<Dictionary>({}, {
-  getter: 'get-dictionary',
-  effect: 'dictionary-updated',
-})
+const dictionaryRef = injectIPC<Dictionary>('dictionary', {})
 
 const databaseRef = computed(() => {
   const dictionary = unref(dictionaryRef)

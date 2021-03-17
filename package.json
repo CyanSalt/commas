@@ -68,6 +68,7 @@
     "xterm-addon-webgl": "^0.9.0"
   },
   "dependencies": {
+    "@vue/reactivity": "^3.0.7",
     "color-rgba": "^2.2.3",
     "http-proxy": "^1.18.1",
     "json5": "^2.2.0",

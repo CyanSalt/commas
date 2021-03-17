@@ -1,11 +1,10 @@
-import { EventEmitter } from 'events'
 import * as fs from 'fs'
 import * as path from 'path'
-import { app, ipcMain } from 'electron'
-import memoize from 'lodash/memoize'
+import { computed, ref, unref } from '@vue/reactivity'
+import { app } from 'electron'
 import type { Dictionary, TranslationVariables } from '../../typings/i18n'
 import { userData, resources } from '../utils/directory'
-import { broadcast } from './frame'
+import { provideIPC } from '../utils/hooks'
 
 export interface TranslationFileEntry {
   locale: string,
@@ -24,10 +23,6 @@ interface Translation {
   priority: Priority,
 }
 
-const getI18NEvents = memoize(() => {
-  return new EventEmitter()
-})
-
 const DELIMITER = '#!'
 
 let resolveLanguage: (value: string) => void
@@ -40,9 +35,10 @@ function getLanguage() {
   return languagePromise
 }
 
-const translations: Translation[] = []
+const translationsRef = ref<Translation[]>([])
 
-const getDictionary = memoize(() => {
+const dictionaryRef = computed(() => {
+  const translations = unref(translationsRef)
   const sources = [...translations]
     .sort((a, b) => a.priority - b.priority)
     .map(item => item.dictionary)
@@ -50,19 +46,11 @@ const getDictionary = memoize(() => {
   return dictionary
 })
 
-function updateDictionary() {
-  getDictionary.cache.clear?.()
-  const dictionary = getDictionary()
-  broadcast('dictionary-updated', dictionary)
-  const events = getI18NEvents()
-  events.emit('updated', dictionary)
-}
-
 function loadDictionary(entry: TranslationFileEntry, priority: Priority) {
   const file = entry.file
   const dictionary = __non_webpack_require__(file) as Dictionary
+  const translations = unref(translationsRef)
   translations.push({ file, dictionary, priority })
-  updateDictionary()
 }
 
 async function addTranslations(entries: TranslationFileEntry[], priority: Priority) {
@@ -89,10 +77,11 @@ async function addTranslationDirectory(directory: string, priority: Priority) {
 }
 
 function removeTranslation(entry: TranslationFileEntry) {
+  const translations = [...unref(translationsRef)]
   const index = translations.findIndex(item => item.file === entry.file)
   if (index !== -1) {
     translations.splice(index, 1)
-    updateDictionary()
+    translationsRef.value = translations
   }
 }
 
@@ -107,17 +96,17 @@ async function loadTranslations() {
   // Built-in
   await addTranslationDirectory(resources.file('locales'), Priority.builtin)
   // Custom translation
+  const translations = unref(translationsRef)
   translations.push({
     file: userData.file('translation.json'),
     dictionary: custom,
     priority: Priority.custom,
   })
-  updateDictionary()
 }
 
 function translateText(text: string) {
   if (!text) return text
-  const dictionary = getDictionary()
+  const dictionary = unref(dictionaryRef)
   if (dictionary[text]) return dictionary[text]
   return text.split(DELIMITER)[0]
 }
@@ -131,9 +120,7 @@ function translate(text: string, variables?: TranslationVariables) {
 }
 
 function handleI18NMessages() {
-  ipcMain.handle('get-dictionary', () => {
-    return getDictionary()
-  })
+  provideIPC('dictionary', dictionaryRef)
 }
 
 export {
@@ -144,5 +131,4 @@ export {
   addTranslationDirectory,
   removeTranslation,
   handleI18NMessages,
-  getI18NEvents,
 }

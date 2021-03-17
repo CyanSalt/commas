@@ -1,9 +1,10 @@
 import './internal/connect'
+import { effect } from '@vue/reactivity'
 import { app } from 'electron'
 import * as commas from '../api/main'
 import { loadAddons, loadCustomJS } from './lib/addon'
 import { hasWindow, getLastWindow, forEachWindow } from './lib/frame'
-import { loadTranslations, handleI18NMessages, getI18NEvents } from './lib/i18n'
+import { loadTranslations, handleI18NMessages } from './lib/i18n'
 import { handleKeyBindingMessages } from './lib/keybinding'
 import { handleLauncherMessages } from './lib/launcher'
 import { createApplicationMenu, createDockMenu, handleMenuMessages, createWindowMenu } from './lib/menu'
@@ -32,16 +33,7 @@ async function initialize() {
   await loadTranslations()
   await app.whenReady()
   commas.app.events.emit('ready')
-  if (process.platform === 'darwin') {
-    createApplicationMenu()
-    createDockMenu()
-  }
-  setupAutoUpdater()
-  startServingProtocol()
-  createWindow(cwd)
-  // Refresh menu when dictionary updated
-  const events = getI18NEvents()
-  events.on('updated', () => {
+  effect(() => {
     if (process.platform === 'darwin') {
       createApplicationMenu()
       createDockMenu()
@@ -49,6 +41,9 @@ async function initialize() {
       forEachWindow(createWindowMenu)
     }
   })
+  setupAutoUpdater()
+  startServingProtocol()
+  createWindow(cwd)
 }
 
 initialize()
