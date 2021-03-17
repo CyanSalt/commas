@@ -1,7 +1,8 @@
 import type { TranslationFileEntry } from '../../main/lib/i18n'
 import { addTranslationDirectory, addTranslations, Priority, removeTranslation, translate } from '../../main/lib/i18n'
+import type { CommasContext } from '../types'
 
-async function noConflictAddTranslations(entries: TranslationFileEntry[]) {
+async function noConflictAddTranslations(this: CommasContext, entries: TranslationFileEntry[]) {
   const translation = await addTranslations(entries, Priority.addon)
   if (translation) {
     this.$.app.onCleanup(() => {
@@ -10,7 +11,7 @@ async function noConflictAddTranslations(entries: TranslationFileEntry[]) {
   }
 }
 
-async function noConflictAddTranslationDirectory(directory: string) {
+async function noConflictAddTranslationDirectory(this: CommasContext, directory: string) {
   const translation = await addTranslationDirectory(directory, Priority.addon)
   if (translation) {
     this.$.app.onCleanup(() => {

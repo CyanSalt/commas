@@ -1,7 +1,8 @@
 import type { IpcRendererEvent } from 'electron'
 import { ipcRenderer } from 'electron'
+import type { CommasContext } from '../types'
 
-function on(channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) {
+function on(this: CommasContext, channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) {
   ipcRenderer.on(channel, listener)
   this.$.app.onCleanup(() => {
     ipcRenderer.removeListener(channel, listener)

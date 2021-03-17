@@ -2,6 +2,7 @@ import { EventEmitter } from 'events'
 import * as fs from 'fs'
 import * as path from 'path'
 import { app, ipcRenderer } from 'electron'
+import type { CommasContext } from '../types'
 
 const events = new EventEmitter()
 
@@ -121,7 +122,7 @@ function unloadAddons() {
   loadedAddons.forEach(unloadAddon)
 }
 
-function onCleanup(callback: () => void) {
+function onCleanup(this: CommasContext, callback: () => void) {
   events.once(`unload:${this.__name__}`, callback)
 }
 

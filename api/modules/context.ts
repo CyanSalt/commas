@@ -1,3 +1,5 @@
+import type { CommasContext } from '../types'
+
 const namespaces: Record<string, any[]> = {}
 
 function getCollection(name: string) {
@@ -17,7 +19,7 @@ function cancelProviding(name: string, ...data: any[]) {
   }
 }
 
-function provide(name: string, ...data: any[]) {
+function provide(this: CommasContext, name: string, ...data: any[]) {
   const collection = getCollection(name)
   collection.push(...data)
   if (data.length) {
