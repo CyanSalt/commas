@@ -24,12 +24,12 @@
   },
   {
     "label": "Select Previous Tab#!menu.previoustab",
-    "accelerator": "CmdOrCtrl+[",
+    "accelerator": "CmdOrCtrl+Alt+Left",
     "command": "select-previous-tab"
   },
   {
     "label": "Select Next Tab#!menu.nexttab",
-    "accelerator": "CmdOrCtrl+]",
+    "accelerator": "CmdOrCtrl+Alt+Right",
     "command": "select-next-tab"
   },
   {
