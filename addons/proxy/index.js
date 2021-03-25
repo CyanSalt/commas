@@ -60,7 +60,7 @@ module.exports = function (commas) {
       commas.bundler.extract('proxy/proxy-anchor.vue').default
     )
 
-    commas.reactive.provide('preference', {
+    commas.context.provide('preference', {
       component: commas.bundler.extract('proxy/proxy-link.vue').default,
       group: 'feature',
     })

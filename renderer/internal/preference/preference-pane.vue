@@ -83,7 +83,7 @@ export default {
     'switch-control': SwitchControl,
   },
   setup() {
-    const preferenceItems: PreferenceItem[] = commas.reactive.getCollection('preference')
+    const preferenceItems: PreferenceItem[] = commas.context.getCollection('preference')
 
     function getItems(group: string) {
       const list = preferenceItems.filter(item => item.group === group)

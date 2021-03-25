@@ -1,13 +1,14 @@
+import { shallowReactive } from '@vue/reactivity'
 import type { CommasContext } from '../types'
 
-const namespaces: Record<string, any[]> = {}
+const namespaces = shallowReactive<Record<string, any[]>>({})
 
 function getCollection(name: string) {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (namespaces[name]) {
     return namespaces[name]
   }
-  namespaces[name] = []
+  namespaces[name] = shallowReactive([])
   return namespaces[name]
 }
 

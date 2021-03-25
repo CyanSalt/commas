@@ -15,7 +15,7 @@ module.exports = function (commas) {
       },
     })
 
-    commas.reactive.provide('preference', {
+    commas.context.provide('preference', {
       component: commas.bundler.extract('theme/theme-link.vue').default,
       group: 'general',
     })
