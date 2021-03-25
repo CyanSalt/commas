@@ -6,20 +6,24 @@ module.exports = function (commas) {
     const util = require('util')
     const { app } = require('electron')
     const random = require('lodash/random')
-    const { executeCommand, getExternalURLCommands } = commas.bundler.extract('shell/command.ts')
+    const { executeCommand, getExternalURLCommands, resolveCommandAliases } = commas.bundler.extract('shell/command.ts')
 
     commas.ipcMain.handle('get-shell-commands', async () => {
+      const settings = await commas.settings.getSettings()
+      const aliases = settings['shell.command.aliases']
       const commands = commas.context.getCollection('shell')
-      return commands.flatMap(item => item.command)
+      return [...Object.keys(aliases), ...commands.map(item => item.command)]
     })
 
     commas.ipcMain.handle('execute-shell-command', async (event, line) => {
+      const settings = await commas.settings.getSettings()
+      const aliases = settings['shell.command.aliases']
       const commands = commas.context.getCollection('shell')
-      return executeCommand(event, line, commands)
+      return executeCommand(event, resolveCommandAliases(line, aliases), commands)
     })
 
     commas.context.provide('shell', {
-      command: ['commas'],
+      command: 'commas',
       handler() {
         return app.getVersion()
       },
@@ -28,7 +32,7 @@ module.exports = function (commas) {
     const execa = util.promisify(childProcess.exec)
 
     commas.context.provide('shell', {
-      command: ['exec'],
+      command: 'exec',
       raw: true,
       async handler(argv) {
         try {
@@ -42,7 +46,7 @@ module.exports = function (commas) {
     })
 
     commas.context.provide('shell', {
-      command: ['open'],
+      command: 'open',
       raw: true,
       handler(argv) {
         const frame = commas.frame.getFocusedWindow()
@@ -53,7 +57,7 @@ module.exports = function (commas) {
     })
 
     commas.context.provide('shell', {
-      command: ['select'],
+      command: 'select',
       raw: true,
       handler(argv) {
         const index = Number.parseInt(argv)
@@ -67,7 +71,7 @@ module.exports = function (commas) {
     let context
 
     commas.context.provide('shell', {
-      command: ['javascript', 'js'],
+      command: 'eval',
       raw: true,
       handler(argv) {
         const vm = require('vm')
@@ -88,7 +92,7 @@ module.exports = function (commas) {
     })
 
     commas.context.provide('shell', {
-      command: ['roll'],
+      command: 'roll',
       handler(argv) {
         const roll = args => {
           switch (args.length) {

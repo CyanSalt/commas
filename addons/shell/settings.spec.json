@@ -8,5 +8,15 @@
       "Shortcut commands for external URLs"
     ],
     "default": []
+  },
+  {
+    "key": "shell.command.aliases",
+    "type": "map",
+    "paradigm": ["string", "string"],
+    "label": "Commands Aliases",
+    "comments": [
+      "Commands aliases in the shell"
+    ],
+    "default": {}
   }
 ]

@@ -5,33 +5,37 @@ import yargsParser from 'yargs-parser'
 import { getSettings } from '../../lib/settings'
 
 export interface CommandModule {
-  command: string | string[],
+  command: string,
   raw?: boolean,
   handler: (argv: string | Record<string, any>, event: IpcMainInvokeEvent) => any,
 }
 
+export function resolveCommandAliases(line: string, aliases: Record<string, string>) {
+  const result = /\s+/.exec(line)
+  if (!result) return line
+  const command = line.slice(0, result.index)
+  return aliases[command]
+    ? resolveCommandAliases(aliases[command].trim() + ' ' + line.slice(result.index + result[0].length), aliases)
+    : line
+}
+
 export async function executeCommand(event: IpcMainInvokeEvent, line: string, commands: CommandModule[]) {
   const [command] = line.split(/\s+/, 1)
-  const controller = commands.find(item => {
-    return Array.isArray(item.command)
-      ? item.command.includes(command)
-      : item.command === command
-  })
+  const controller = commands.find(item => item.command === command)
   try {
-    if (controller) {
-      const argv = line.slice(command.length).trim()
-      const stdout = await controller.handler(
-        controller.raw ? argv : yargsParser(argv, {
-          configuration: {
-            'parse-numbers': false,
-          },
-        }),
-        event
-      )
-      return { code: 0, stdout: String(stdout ?? '') }
-    } else {
+    if (!controller) {
       throw new Error(`command not found: ${command}`)
     }
+    const argv = line.slice(command.length).trim()
+    const stdout = await controller.handler(
+      controller.raw ? argv : yargsParser(argv, {
+        configuration: {
+          'parse-numbers': false,
+        },
+      }),
+      event
+    )
+    return { code: 0, stdout: String(stdout ?? '') }
   } catch (err) {
     return { code: 1, stderr: String(err) }
   }
@@ -39,7 +43,7 @@ export async function executeCommand(event: IpcMainInvokeEvent, line: string, co
 
 export async function getExternalURLCommands(): Promise<CommandModule[]> {
   const settings = await getSettings()
-  const entries: ({ command: string | string[], url: string })[] | undefined = settings['shell.command.externalURLs']
+  const entries: ({ command: string, url: string })[] | undefined = settings['shell.command.externalURLs']
   return entries ? entries.map(entry => {
     const { url, command } = entry
     return {

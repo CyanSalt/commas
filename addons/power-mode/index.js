@@ -2,7 +2,7 @@ module.exports = function (commas) {
   if (commas.app.isMainProcess()) {
 
     commas.context.provide('shell', {
-      command: ['power'],
+      command: 'power',
       async handler(argv) {
         const [status] = argv._
         const frame = commas.frame.getFocusedWindow()
