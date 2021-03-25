@@ -1,4 +1,3 @@
-import * as os from 'os'
 import { shell, ipcRenderer } from 'electron'
 import { memoize } from 'lodash-es'
 import { quote } from 'shell-quote'
@@ -13,7 +12,7 @@ import {
   useTerminalTabs,
   createTerminalTab,
   activateTerminalTab,
-  writeTerminalTab,
+  executeTerminalTab,
 } from './terminal'
 
 export const useLaunchers = memoize(() => {
@@ -34,36 +33,40 @@ export function getLauncherByTerminalTab(tab: TerminalTab) {
   return launchers.find(launcher => tab.launcher === launcher.id)
 }
 
-export async function openLauncher(launcher: Launcher) {
+interface OpenLauncherOptions {
+  command?: string,
+}
+
+export async function openLauncher(launcher: Launcher, { command }: OpenLauncherOptions = {}) {
   const tab = getTerminalTabByLauncher(launcher)
   if (tab) {
     activateTerminalTab(tab)
-    return false
+    if (command) {
+      executeTerminalTab(tab, command, true)
+    }
   } else {
     const directory = launcher.remote ? undefined : launcher.directory
     await createTerminalTab({
       cwd: directory && resolveHome(directory),
       launcher: launcher.id,
+      command,
     })
-    return true
   }
 }
 
 export async function startLauncher(launcher: Launcher) {
-  const isCreating = await openLauncher(launcher)
-  const tab = getTerminalTabByLauncher(launcher)!
-  const command = getLauncherCommand(launcher)
-  writeTerminalTab(tab, (isCreating ? '' : '\x03') + command + os.EOL)
+  return openLauncher(launcher, {
+    command: getLauncherCommand(launcher),
+  })
 }
 
 export async function runLauncherScript(launcher: Launcher, index: number) {
-  const isCreating = await openLauncher(launcher)
-  const tab = getTerminalTabByLauncher(launcher)!
-  const command = getLauncherCommand({
-    ...launcher,
-    ...launcher.scripts![index],
+  return openLauncher(launcher, {
+    command: getLauncherCommand({
+      ...launcher,
+      ...launcher.scripts![index],
+    }),
   })
-  writeTerminalTab(tab, (isCreating ? '' : '\x03') + command + os.EOL)
 }
 
 export async function startLauncherExternally(launcher: Launcher) {

@@ -41,6 +41,17 @@ module.exports = function (commas) {
       },
     })
 
+    commas.context.provide('shell', {
+      command: ['open'],
+      raw: true,
+      handler(argv) {
+        const frame = commas.frame.getFocusedWindow()
+        frame.webContents.send('open-tab', {
+          command: argv,
+        })
+      },
+    })
+
     let context
 
     commas.context.provide('shell', {

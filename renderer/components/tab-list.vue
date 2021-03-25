@@ -299,13 +299,11 @@ export default {
 .button {
   width: 18px;
   text-align: center;
-  opacity: 0.5;
   transition: opacity 0.2s, color 0.2s;
-  & + & {
-    margin-left: 3px;
-  }
+  cursor: pointer;
 }
 .find {
+  opacity: 0.5;
   &:hover {
     opacity: 1;
   }

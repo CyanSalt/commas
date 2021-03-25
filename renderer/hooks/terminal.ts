@@ -1,3 +1,4 @@
+import * as os from 'os'
 import { ipcRenderer, shell } from 'electron'
 import { memoize, debounce, isMatch } from 'lodash-es'
 import { ref, computed, unref, markRaw, reactive, toRaw, watch } from 'vue'
@@ -91,9 +92,10 @@ export interface CreateTerminalTabOptions {
   cwd?: string,
   shell?: string,
   launcher?: number,
+  command?: string,
 }
 
-export async function createTerminalTab({ cwd, shell: shellPath, launcher }: CreateTerminalTabOptions = {}) {
+export async function createTerminalTab({ cwd, shell: shellPath, command, launcher }: CreateTerminalTabOptions = {}) {
   const info: TerminalInfo = await ipcRenderer.invoke('create-terminal', { cwd, shell: shellPath })
   const xterm = new Terminal(unref(terminalOptionsRef))
   const tab = reactive<TerminalTab>({
@@ -151,6 +153,9 @@ export async function createTerminalTab({ cwd, shell: shellPath, launcher }: Cre
     }
     loadTerminalAddons(tab)
   })
+  if (command) {
+    executeTerminalTab(tab, command)
+  }
   const tabs = unref(tabsRef)
   tabs.push(tab)
   activeIndexRef.value = tabs.length - 1
@@ -330,6 +335,10 @@ export function mountTerminalTab(tab: TerminalTab, element: HTMLElement) {
 
 export function writeTerminalTab(tab: TerminalTab, data: string) {
   return ipcRenderer.invoke('write-terminal', tab.pid, data)
+}
+
+export function executeTerminalTab(tab: TerminalTab, command: string, restart?: boolean) {
+  return writeTerminalTab(tab, (restart ? '\x03' : '') + command + os.EOL)
 }
 
 export function closeTerminalTab(tab: TerminalTab) {
