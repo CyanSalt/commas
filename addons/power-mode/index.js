@@ -1,7 +1,14 @@
 module.exports = function (commas) {
   if (commas.app.isMainProcess()) {
 
-    // pass
+    commas.context.provide('shell', {
+      command: ['power'],
+      async handler(argv) {
+        const [status] = argv._
+        const frame = commas.frame.getFocusedWindow()
+        frame.webContents.send('toggle-power-mode', status !== 'off')
+      },
+    })
 
   } else {
 
@@ -18,14 +25,32 @@ module.exports = function (commas) {
       instances.push(powerMode)
     }
 
-    commas.hooks.useTerminalTabs().value.forEach(openPowerMode)
+    const enable = () => {
+      commas.hooks.useTerminalTabs().value.forEach(openPowerMode)
+      commas.app.events.on('terminal-tab-mounted', openPowerMode)
+    }
 
-    commas.app.events.on('terminal-tab-mounted', openPowerMode)
-
-    commas.app.onCleanup(() => {
+    const disable = () => {
       instances.forEach(instance => {
         instance.dispose()
       })
+      commas.app.events.off('terminal-tab-mounted', openPowerMode)
+    }
+
+    commas.app.onCleanup(() => {
+      disable()
+    })
+
+    let enabled = false
+
+    commas.ipcRenderer.on('toggle-power-mode', (event, active) => {
+      if (enabled && !active) {
+        enabled = false
+        disable()
+      } else if (!enabled && active) {
+        enabled = true
+        enable()
+      }
     })
 
   }
