@@ -5,6 +5,7 @@ import { app, ipcRenderer } from 'electron'
 import type { CommasContext } from '../types'
 
 const events = new EventEmitter()
+events.setMaxListeners(0)
 
 function isMainProcess() {
   return process.type === 'browser'
