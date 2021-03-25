@@ -18,6 +18,16 @@
     "type": "separator"
   },
   {
+    "label": "Go Back#!menu.goback",
+    "accelerator": "CmdOrCtrl+[",
+    "command": "go-back"
+  },
+  {
+    "label": "Go Forward#!menu.goforward",
+    "accelerator": "CmdOrCtrl+]",
+    "command": "go-forward"
+  },
+  {
     "label": "Show Tab Options#!menu.showtaboptions",
     "accelerator": "CmdOrCtrl+S",
     "command": "show-tab-options"

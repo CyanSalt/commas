@@ -31,18 +31,55 @@ export function useTerminalActiveIndex() {
   return activeIndexRef
 }
 
+const currentTerminalRef = computed(() => {
+  const activeIndex = unref(activeIndexRef)
+  if (activeIndex === -1) return null
+  const tabs = unref(tabsRef)
+  return tabs[activeIndex]
+})
 export function useCurrentTerminal() {
-  return computed(() => {
-    const activeIndex = unref(activeIndexRef)
-    if (activeIndex === -1) return null
-    const tabs = unref(tabsRef)
-    return tabs[activeIndex]
-  })
+  return currentTerminalRef
 }
 
 export function getTerminalTabIndex(tab: TerminalTab) {
   const tabs = unref(tabsRef)
   return tabs.indexOf(toRaw(tab))
+}
+
+const historyRef = ref<TerminalTab[]>([])
+const historyIndexRef = ref(-1)
+const historyStateRef = computed(() => {
+  const history = unref(historyRef)
+  const historyIndex = unref(historyIndexRef)
+  return history[historyIndex]
+})
+
+watch(currentTerminalRef, (value, oldValue) => {
+  if (!value) return
+  const historyState = unref(historyStateRef)
+  if (oldValue && historyState !== oldValue) return
+  const history = unref(historyRef)
+  const historyIndex = unref(historyIndexRef)
+  // TODO: max stack size
+  historyRef.value = [...history.slice(0, historyIndex + 1), value]
+  historyIndexRef.value += 1
+})
+
+export function travelInTerminalHistory(step: number) {
+  const history = unref(historyRef)
+  if (!history.length) return
+  const historyIndex = unref(historyIndexRef)
+  const index = Math.min(Math.max(historyIndex + step, 0), history.length - 1)
+  const state = history[index]
+  const tabIndex = getTerminalTabIndex(state)
+  if (tabIndex === -1) {
+    history.splice(index, 1)
+    travelInTerminalHistory(step)
+  } else {
+    // Must change tab index before history index changed
+    activeIndexRef.value = tabIndex
+    historyIndexRef.value = index
+  }
 }
 
 export const useTerminalShells = memoize(() => {
@@ -163,7 +200,7 @@ export async function createTerminalTab({ cwd, shell: shellPath, command, launch
 
 const createResizeObserver = memoize(() => {
   return new ResizeObserver(debounce(() => {
-    const tab = unref(useCurrentTerminal())
+    const tab = unref(currentTerminalRef)
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (tab?.xterm?.element) {
       tab.addons.fit.fit()
@@ -193,7 +230,7 @@ export function handleTerminalMessages() {
     createTerminalTab(options)
   })
   ipcRenderer.on('duplicate-tab', event => {
-    const currentTerminal = unref(useCurrentTerminal())
+    const currentTerminal = unref(currentTerminalRef)
     if (currentTerminal) {
       createTerminalTab({
         cwd: currentTerminal.cwd,
@@ -202,7 +239,7 @@ export function handleTerminalMessages() {
     }
   })
   ipcRenderer.on('close-tab', () => {
-    const currentTerminal = unref(useCurrentTerminal())
+    const currentTerminal = unref(currentTerminalRef)
     if (currentTerminal) {
       closeTerminalTab(currentTerminal)
     }
@@ -232,13 +269,13 @@ export function handleTerminalMessages() {
     removeTerminalTab(tab)
   })
   ipcRenderer.on('clear-terminal', () => {
-    const tab = unref(useCurrentTerminal())
+    const tab = unref(currentTerminalRef)
     if (!tab) return
     const xterm = tab.xterm
     xterm.clear()
   })
   ipcRenderer.on('close-terminal', () => {
-    const tab = unref(useCurrentTerminal())
+    const tab = unref(currentTerminalRef)
     if (!tab) return
     closeTerminalTab(tab)
   })
@@ -261,6 +298,12 @@ export function handleTerminalMessages() {
     if (activeIndex < tabs.length - 1) {
       activeIndexRef.value = activeIndex + 1
     }
+  })
+  ipcRenderer.on('go-back', () => {
+    travelInTerminalHistory(-1)
+  })
+  ipcRenderer.on('go-forward', () => {
+    travelInTerminalHistory(1)
   })
   ipcRenderer.on('show-tab-options', () => {
     const tabs = unref(tabsRef)
