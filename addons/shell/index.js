@@ -52,6 +52,18 @@ module.exports = function (commas) {
       },
     })
 
+    commas.context.provide('shell', {
+      command: ['select'],
+      raw: true,
+      handler(argv) {
+        const index = Number.parseInt(argv)
+        if (!Number.isNaN(index)) {
+          const frame = commas.frame.getFocusedWindow()
+          frame.webContents.send('select-tab', { index })
+        }
+      },
+    })
+
     let context
 
     commas.context.provide('shell', {
