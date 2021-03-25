@@ -93,7 +93,7 @@
 <script lang="ts">
 import * as path from 'path'
 import { ipcRenderer } from 'electron'
-import { reactive, toRefs, computed, unref } from 'vue'
+import { reactive, toRefs, computed, unref, nextTick } from 'vue'
 import * as commas from '../../api/renderer'
 import {
   useLaunchers,
@@ -176,12 +176,16 @@ export default {
       state.isCollapsed = !state.isCollapsed
     }
 
-    function toggleFinding() {
-      if (state.isFinding) {
+    async function toggleFinding() {
+      const isFinding = state.isFinding
+      state.isFinding = !isFinding
+      if (isFinding) {
         state.keyword = ''
         state.searcher?.blur()
+      } else {
+        await nextTick()
+        state.searcher?.focus()
       }
-      state.isFinding = !state.isFinding
     }
 
     function configure() {
@@ -329,6 +333,7 @@ export default {
   margin-top: 8px;
 }
 .keyword {
+  width: 100%;
   padding: 0;
   border: none;
   outline: none;
