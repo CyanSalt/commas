@@ -93,7 +93,7 @@
 <script lang="ts">
 import * as path from 'path'
 import { ipcRenderer } from 'electron'
-import { reactive, toRefs, computed, unref, nextTick } from 'vue'
+import { reactive, toRefs, computed, unref, nextTick, watchEffect } from 'vue'
 import * as commas from '../../api/renderer'
 import {
   useLaunchers,
@@ -105,7 +105,6 @@ import {
 } from '../hooks/launcher'
 import {
   useTerminalTabs,
-  useTerminalShells,
   createTerminalTab,
   moveTerminalTab,
   activateTerminalTab,
@@ -113,6 +112,7 @@ import {
 } from '../hooks/terminal'
 import { openContextMenu } from '../utils/frame'
 import { handleMousePressing } from '../utils/helper'
+import { getShells } from '../utils/terminal'
 import ScrollBar from './basic/scroll-bar.vue'
 import SortableList from './basic/sortable-list.vue'
 import TabItem from './tab-item.vue'
@@ -126,7 +126,7 @@ export default {
   },
   setup() {
     const state = reactive({
-      shells: useTerminalShells(),
+      shells: [],
       launchers: useLaunchers(),
       anchors: commas.workspace.useAnchors(),
       searcher: null as HTMLInputElement | null,
@@ -154,6 +154,10 @@ export default {
     const standaloneTabsRef = computed(() => {
       const tabs = unref(tabsRef)
       return tabs.filter(tab => !tab.launcher)
+    })
+
+    watchEffect(async () => {
+      state.shells = await getShells()
     })
 
     function sortTabs(from: number, to: number) {

@@ -14,7 +14,6 @@ import * as commas from '../../api/renderer'
 import type { TerminalInfo, TerminalTab } from '../../typings/terminal'
 import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
-import { injectIPC } from '../utils/hooks'
 import { getPrompt, getWindowsProcessInfo } from '../utils/terminal'
 import { useKeyBindings } from './keybinding'
 import { getLauncherByTerminalTab } from './launcher'
@@ -81,10 +80,6 @@ export function travelInTerminalHistory(step: number) {
     historyIndexRef.value = index
   }
 }
-
-export const useTerminalShells = memoize(() => {
-  return injectIPC<string[]>('shells', [])
-})
 
 const terminalOptionsRef = computed<Partial<ITerminalOptions>>(() => {
   const settingsRef = useSettings()

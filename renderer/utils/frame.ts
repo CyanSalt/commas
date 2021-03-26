@@ -1,5 +1,10 @@
 import type { MenuItemConstructorOptions } from 'electron'
 import { ipcRenderer } from 'electron'
+import { memoize } from 'lodash-es'
+
+export const getAppVersion = memoize(() => {
+  return ipcRenderer.invoke('get-app-version')
+})
 
 export function openContextMenu(template: MenuItemConstructorOptions[], position: [number, number] | MouseEvent, defaultIndex = -1): Promise<void> {
   const coords = Array.isArray(position)

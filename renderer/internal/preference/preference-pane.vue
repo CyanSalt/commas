@@ -64,11 +64,11 @@
 <script lang="ts">
 import { ipcRenderer, shell } from 'electron'
 import type { Component } from 'vue'
-import { reactive, toRefs, computed } from 'vue'
+import { computed, reactive, toRefs, watchEffect } from 'vue'
 import * as commas from '../../../api/renderer'
 import SwitchControl from '../../components/basic/switch-control.vue'
 import TerminalPane from '../../components/basic/terminal-pane.vue'
-import { useAppVersion } from '../../hooks/frame'
+import { getAppVersion } from '../../utils/frame'
 
 interface PreferenceItem {
   component: Component,
@@ -91,11 +91,15 @@ export default {
     }
 
     const state = reactive({
-      version: useAppVersion(),
+      version: '',
       generalItems: computed(() => getItems('general')),
       featureItems: computed(() => getItems('feature')),
       customizationItems: computed(() => getItems('customization')),
       aboutItems: computed(() => getItems('about')),
+    })
+
+    watchEffect(async () => {
+      state.version = await getAppVersion()
     })
 
     function openUserDirectory() {

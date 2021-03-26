@@ -1,11 +1,6 @@
 import { ipcRenderer } from 'electron'
 import { memoize } from 'lodash-es'
-import { injectIPC } from '../utils/hooks'
 import { useRemoteData } from './remote'
-
-export const useAppVersion = memoize(() => {
-  return injectIPC('app-version', '')
-})
 
 export const useMinimized = memoize(() => {
   return useRemoteData(false, {

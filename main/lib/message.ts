@@ -1,8 +1,6 @@
-import { computed } from '@vue/reactivity'
 import type { MessageBoxOptions } from 'electron'
 import { app, ipcMain, BrowserWindow, dialog } from 'electron'
 import { execa } from '../utils/helper'
-import { provideIPC } from '../utils/hooks'
 import { broadcast } from './frame'
 
 function handleMessages() {
@@ -20,7 +18,9 @@ function handleMessages() {
   ipcMain.on('get-path', (event, name: Parameters<typeof app['getPath']>[0]) => {
     event.returnValue = app.getPath(name)
   })
-  provideIPC('app-version', computed(() => app.getVersion()))
+  ipcMain.handle('get-app-version', () => {
+    return app.getVersion()
+  })
   ipcMain.handle('get-minimized', (event) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     if (!frame) return false
