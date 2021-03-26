@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import * as os from 'os'
+import { shallowRef } from '@vue/reactivity'
 import type { WebContents } from 'electron'
 import { app, ipcMain } from 'electron'
 import memoize from 'lodash/memoize'
@@ -7,9 +8,10 @@ import type { IPty, IPtyForkOptions } from 'node-pty'
 import * as pty from 'node-pty'
 import type { TerminalInfo } from '../../typings/terminal'
 import { execa } from '../utils/helper'
+import { provideIPC } from '../utils/hooks'
 import { getSettings } from './settings'
 
-const getShells = memoize(async () => {
+async function getShells() {
   if (process.platform === 'win32') return []
   try {
     const { stdout } = await execa('grep "^/" /etc/shells')
@@ -17,7 +19,9 @@ const getShells = memoize(async () => {
   } catch {
     return []
   }
-})
+}
+
+const shellsRef = shallowRef(getShells())
 
 const defaultShell = process.platform === 'win32'
   ? process.env.COMSPEC : process.env.SHELL
@@ -142,9 +146,7 @@ function handleTerminalMessages() {
       return ''
     }
   })
-  ipcMain.handle('get-shells', () => {
-    return getShells()
-  })
+  provideIPC('shells', shellsRef)
 }
 
 export {

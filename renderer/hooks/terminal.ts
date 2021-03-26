@@ -14,10 +14,10 @@ import * as commas from '../../api/renderer'
 import type { TerminalInfo, TerminalTab } from '../../typings/terminal'
 import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
+import { injectIPC } from '../utils/hooks'
 import { getPrompt, getWindowsProcessInfo } from '../utils/terminal'
 import { useKeyBindings } from './keybinding'
 import { getLauncherByTerminalTab } from './launcher'
-import { useRemoteData } from './remote'
 import { useSettings } from './settings'
 import { useTheme } from './theme'
 
@@ -83,9 +83,7 @@ export function travelInTerminalHistory(step: number) {
 }
 
 export const useTerminalShells = memoize(() => {
-  return useRemoteData<string[]>([], {
-    getter: 'get-shells',
-  })
+  return injectIPC<string[]>('shells', [])
 })
 
 const terminalOptionsRef = computed<Partial<ITerminalOptions>>(() => {
