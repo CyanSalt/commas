@@ -1,29 +1,17 @@
 import { ipcRenderer } from 'electron'
 import { memoize } from 'lodash-es'
-import { useRemoteData } from './remote'
+import { injectIPC } from '../utils/hooks'
 
 export const useMinimized = memoize(() => {
-  return useRemoteData(false, {
-    getter: 'get-minimized',
-    setter: 'set-minimized',
-    effect: 'minimized-changed',
-  })
+  return injectIPC('minimized', false)
 })
 
 export const useMaximized = memoize(() => {
-  return useRemoteData(false, {
-    getter: 'get-maximized',
-    setter: 'set-maximized',
-    effect: 'maximized-changed',
-  })
+  return injectIPC('maximized', false)
 })
 
 export const useFullscreen = memoize(() => {
-  return useRemoteData(false, {
-    getter: 'get-fullscreen',
-    setter: 'set-fullscreen',
-    effect: 'fullscreen-changed',
-  })
+  return injectIPC('fullscreen', false)
 })
 
 export function handleFrameMessages() {

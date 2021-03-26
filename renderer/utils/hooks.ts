@@ -1,26 +1,30 @@
 import { ipcRenderer } from 'electron'
-import { computed, shallowRef, toRaw, unref, watchEffect } from 'vue'
+import { customRef, toRaw, watchEffect } from 'vue'
 
 export function injectIPC<T>(key: string, defaultValue: T) {
-  const dataRef = shallowRef(defaultValue)
-  watchEffect(async () => {
-    dataRef.value = await ipcRenderer.invoke(`get-ref:${key}`)
-  })
-  watchEffect((onInvalidate) => {
-    const handler = (event, value: T) => {
-      dataRef.value = value
-    }
-    ipcRenderer.on(`update-ref:${key}`, handler)
-    onInvalidate(() => {
-      ipcRenderer.off(`update-ref:${key}`, handler)
+  return customRef<T>((track, trigger) => {
+    let value = defaultValue
+    ipcRenderer.invoke(`get-ref:${key}`).then((newValue: T) => {
+      value = newValue
+      trigger()
     })
-  })
-  return computed<T>({
-    get: () => {
-      return unref(dataRef)
-    },
-    set: value => {
-      ipcRenderer.invoke(`set-ref:${key}`, toRaw(value))
-    },
+    watchEffect((onInvalidate) => {
+      const handler = (event, newValue: T) => {
+        value = newValue
+      }
+      ipcRenderer.on(`update-ref:${key}`, handler)
+      onInvalidate(() => {
+        ipcRenderer.off(`update-ref:${key}`, handler)
+      })
+    })
+    return {
+      get() {
+        track()
+        return value
+      },
+      set(newValue) {
+        ipcRenderer.invoke(`set-ref:${key}`, toRaw(newValue))
+      },
+    }
   })
 }

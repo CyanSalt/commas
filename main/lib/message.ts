@@ -21,12 +21,12 @@ function handleMessages() {
   ipcMain.handle('get-app-version', () => {
     return app.getVersion()
   })
-  ipcMain.handle('get-minimized', (event) => {
+  ipcMain.handle('get-ref:minimized', (event) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     if (!frame) return false
     return frame.isMinimized()
   })
-  ipcMain.handle('set-minimized', (event, value: boolean) => {
+  ipcMain.handle('set-ref:minimized', (event, value: boolean) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     if (!frame) return
     if (value) {
@@ -35,12 +35,12 @@ function handleMessages() {
       frame.restore()
     }
   })
-  ipcMain.handle('get-maximized', (event) => {
+  ipcMain.handle('get-ref:maximized', (event) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     if (!frame) return false
     return frame.isMaximized()
   })
-  ipcMain.handle('set-maximized', (event, value: boolean) => {
+  ipcMain.handle('set-ref:maximized', (event, value: boolean) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     if (!frame) return
     if (value) {
@@ -49,12 +49,12 @@ function handleMessages() {
       frame.unmaximize()
     }
   })
-  ipcMain.handle('get-fullscreen', (event) => {
+  ipcMain.handle('get-ref:fullscreen', (event) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     if (!frame) return false
     return frame.isFullScreen()
   })
-  ipcMain.handle('set-fullscreen', (event, value: boolean) => {
+  ipcMain.handle('set-ref:fullscreen', (event, value: boolean) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     if (!frame) return
     frame.setFullScreen(value)
@@ -88,22 +88,22 @@ function handleMessages() {
 
 function handleEvents(frame: BrowserWindow) {
   frame.on('minimize', () => {
-    frame.webContents.send('minimized-changed', true)
+    frame.webContents.send('update-ref:minimized', true)
   })
   frame.on('restore', () => {
-    frame.webContents.send('minimized-changed', false)
+    frame.webContents.send('update-ref:minimized', false)
   })
   frame.on('maximize', () => {
-    frame.webContents.send('maximized-changed', true)
+    frame.webContents.send('update-ref:maximized', true)
   })
   frame.on('unmaximize', () => {
-    frame.webContents.send('maximized-changed', false)
+    frame.webContents.send('update-ref:maximized', false)
   })
   frame.on('enter-full-screen', () => {
-    frame.webContents.send('fullscreen-changed', true)
+    frame.webContents.send('update-ref:fullscreen', true)
   })
   frame.on('leave-full-screen', () => {
-    frame.webContents.send('fullscreen-changed', false)
+    frame.webContents.send('update-ref:fullscreen', false)
   })
 }
 
