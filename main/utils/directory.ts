@@ -1,6 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import type { Readable } from 'stream'
+import { customRef, effect } from '@vue/reactivity'
 import { app, net } from 'electron'
 import * as JSON5 from 'json5'
 import debounce from 'lodash/debounce'
@@ -116,6 +117,38 @@ class Directory {
     } else {
       return this.save(basename, data)
     }
+  }
+
+  use<T>(basename: string, formatter?: (value: T | null) => T | null) {
+    return customRef<Promise<T | null>>((track, trigger) => {
+      let data: Promise<T | null>
+      let writer: Writer
+      const reactiveEffect = effect(() => {
+        data = this.fetch<T>(basename).then(result => {
+          if (result) {
+            writer = result.writer
+            return result.data
+          } else {
+            return null
+          }
+        })
+        trigger()
+      })
+      this.watch(basename, () => {
+        reactiveEffect()
+      })
+      return {
+        get: () => {
+          track()
+          return data
+        },
+        set: async newValue => {
+          let value = await newValue
+          if (formatter) value = formatter(value)
+          this.update(basename, { data: value, writer })
+        },
+      }
+    })
   }
 
 }

@@ -9,8 +9,8 @@ export function provideIPC<T>(key: string, valueRef: Ref<T>) {
     valueRef.value = value
   })
   const reactiveEffect = effect(async () => {
-    broadcast(`update-ref:${key}`, await toRaw(unref(valueRef)))
-  }, { lazy: true })
+    broadcast(`update-ref:${key}`, await unref(valueRef))
+  })
   return () => {
     ipcMain.removeHandler(`get-ref:${key}`)
     ipcMain.removeHandler(`set-ref:${key}`)

@@ -1,26 +1,15 @@
 import { memoize } from 'lodash-es'
 import type { Settings, SettingsSpec } from '../../typings/settings'
-import { useRemoteData } from './remote'
+import { injectIPC } from '../utils/hooks'
 
 export const useSettings = memoize(() => {
-  return useRemoteData<Settings>({}, {
-    getter: 'get-settings',
-    setter: 'set-settings',
-    effect: 'settings-updated',
-  })
+  return injectIPC<Settings>('settings', {})
 })
 
 export const useUserSettings = memoize(() => {
-  return useRemoteData<Settings>({}, {
-    getter: 'get-user-settings',
-    setter: 'set-settings',
-    effect: 'user-settings-updated',
-  })
+  return injectIPC<Settings>('user-settings', {})
 })
 
 export const useSettingsSpecs = memoize(() => {
-  return useRemoteData<SettingsSpec[]>([], {
-    getter: 'get-settings-specs',
-    effect: 'settings-specs-updated',
-  })
+  return injectIPC<SettingsSpec[]>('settings-specs', [])
 })

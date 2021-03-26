@@ -11,6 +11,7 @@ export function injectIPC<T>(key: string, defaultValue: T) {
     watchEffect((onInvalidate) => {
       const handler = (event, newValue: T) => {
         value = newValue
+        trigger()
       }
       ipcRenderer.on(`update-ref:${key}`, handler)
       onInvalidate(() => {

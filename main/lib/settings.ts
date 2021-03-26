@@ -2,35 +2,35 @@ import { EventEmitter } from 'events'
 import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
+import { computed, effect, markRaw, ref, unref } from '@vue/reactivity'
 import { ipcMain, shell } from 'electron'
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
 import memoize from 'lodash/memoize'
 import type { Settings, SettingsSpec } from '../../typings/settings'
 import { userData, resources } from '../utils/directory'
-import { broadcast } from './frame'
+import { provideIPC } from '../utils/hooks'
 
 const defaultSpecs: SettingsSpec[] = require('../../resources/settings.spec.json')
 
-let currentSpecs = defaultSpecs
+const specsRef = ref(defaultSpecs)
 
 const getSettingsEvents = memoize(() => {
   return new EventEmitter()
 })
 
 function addSettingsSpecs(specs: SettingsSpec[]) {
-  currentSpecs.push(...specs)
-  broadcast('settings-specs-updated', currentSpecs)
-  updateSettings()
+  const currentSpecs = unref(specsRef)
+  currentSpecs.push(...specs.map(markRaw))
 }
 
 function removeSettingsSpecs(specs: SettingsSpec[]) {
-  currentSpecs = currentSpecs.filter(item => specs.some(spec => spec.key !== item.key))
-  broadcast('settings-specs-updated', currentSpecs)
-  updateSettings()
+  const currentSpecs = unref(specsRef)
+  specsRef.value = currentSpecs.filter(item => specs.some(spec => spec.key !== item.key))
 }
 
 function generateSettingsSource() {
+  const currentSpecs = unref(specsRef)
   const sources: string[] = []
   for (const spec of currentSpecs) {
     if (sources.length) {
@@ -53,48 +53,49 @@ function generateSettingsSource() {
     .join('\n')
 }
 
-function loadSettings() {
-  return userData.fetch<Settings>('settings.json')
-}
-
-const getRawSettings = memoize(() => {
-  userData.watch('settings.json', () => {
-    getRawSettings.cache.set(undefined, loadSettings())
-    updateUserSettings()
-    updateSettings()
-  })
-  return loadSettings()
+const defaultSettingsRef = computed<Settings>(() => {
+  const currentSpecs = unref(specsRef)
+  return Object.fromEntries(currentSpecs.map(spec => [spec.key, spec.default]))
 })
 
-function getDefaultSettings(): Settings {
-  return Object.fromEntries(currentSpecs.map(spec => [spec.key, spec.default]))
+function getDefaultSettings() {
+  return unref(defaultSettingsRef)
 }
 
-async function getUserSettings() {
-  const result = await getRawSettings()
-  return result?.data
+const userSettingsRef = userData.use<Settings>('settings.json', data => {
+  const defaultSettings = unref(defaultSettingsRef)
+  // TODO: better data merging logic
+  return data ? Object.fromEntries(
+    Object.entries(data).filter(
+      ([key, value]) => !isEqual(value, defaultSettings[key])
+    )
+  ) as Settings : data
+})
+
+const settingsRef = computed<Promise<Settings>>({
+  async get() {
+    const defaultSettings = unref(defaultSettingsRef)
+    const userSettings = await unref(userSettingsRef)
+    return cloneDeep({
+      ...defaultSettings,
+      ...userSettings,
+    })
+  },
+  set(value) {
+    userSettingsRef.value = value
+  },
+})
+
+function getSettings() {
+  return unref(settingsRef)
 }
 
-async function getSettings() {
-  const defaultSettings = getDefaultSettings()
-  const userSettings = await getUserSettings()
-  return cloneDeep({
-    ...defaultSettings,
-    ...userSettings,
-  })
-}
-
-async function updateUserSettings() {
-  const data = await getUserSettings()
-  broadcast('user-settings-updated', data)
-}
-
-async function updateSettings() {
+// TODO: remove
+effect(async () => {
   const data = await getSettings()
-  broadcast('settings-updated', data)
   const events = getSettingsEvents()
   events.emit('updated', data)
-}
+})
 
 async function openSettingsFile() {
   const name = 'settings.json'
@@ -130,32 +131,9 @@ async function openUserFile(file: string) {
 }
 
 function handleSettingsMessages() {
-  ipcMain.handle('get-settings-specs', () => {
-    return currentSpecs
-  })
-  ipcMain.handle('get-user-settings', () => {
-    return getUserSettings()
-  })
-  ipcMain.handle('get-settings', () => {
-    return getSettings()
-  })
-  ipcMain.handle('set-settings', async (event, data: Settings) => {
-    // Filter default values on saving
-    const defaultSettings: Settings = Object.fromEntries(
-      currentSpecs.map(spec => [spec.key, spec.default])
-    )
-    // TODO: better data merging logic
-    const simplified: Settings = Object.fromEntries(
-      Object.entries(data).filter(
-        ([key, value]) => !isEqual(value, defaultSettings[key])
-      )
-    )
-    const result = await getRawSettings()
-    return userData.update('settings.json', {
-      data: simplified,
-      writer: result?.writer,
-    })
-  })
+  provideIPC('settings-specs', specsRef)
+  provideIPC('user-settings', userSettingsRef)
+  provideIPC('settings', settingsRef)
   ipcMain.handle('open-settings-file', () => {
     return openSettingsFile()
   })
