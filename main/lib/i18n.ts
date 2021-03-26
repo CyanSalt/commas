@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { computed, ref, unref } from '@vue/reactivity'
+import { computed, markRaw, ref, unref } from '@vue/reactivity'
 import { app } from 'electron'
 import type { Dictionary, TranslationVariables } from '../../typings/i18n'
 import { userData, resources } from '../utils/directory'
@@ -77,11 +77,10 @@ async function addTranslationDirectory(directory: string, priority: Priority) {
 }
 
 function removeTranslation(entry: TranslationFileEntry) {
-  const translations = [...unref(translationsRef)]
+  const translations = unref(translationsRef)
   const index = translations.findIndex(item => item.file === entry.file)
   if (index !== -1) {
     translations.splice(index, 1)
-    translationsRef.value = translations
   }
 }
 
@@ -97,11 +96,11 @@ async function loadTranslations() {
   await addTranslationDirectory(resources.file('locales'), Priority.builtin)
   // Custom translation
   const translations = unref(translationsRef)
-  translations.push({
+  translations.push(markRaw({
     file: userData.file('translation.json'),
     dictionary: custom,
     priority: Priority.custom,
-  })
+  }))
 }
 
 function translateText(text: string) {

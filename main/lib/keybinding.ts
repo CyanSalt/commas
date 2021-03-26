@@ -1,49 +1,51 @@
-import { ipcMain } from 'electron'
-import memoize from 'lodash/memoize'
+import { computed, markRaw, ref, unref } from '@vue/reactivity'
 import type { KeyBinding } from '../../typings/keybinding'
 import { userData } from '../utils/directory'
+import { provideIPC } from '../utils/hooks'
 
 async function loadKeyBindings() {
-  return (await userData.load<KeyBinding[]>('keybindings.json')) ?? []
+  const result = await userData.load<KeyBinding[]>('keybindings.json')
+  return result ?? []
 }
 
-const getUserKeyBindings = memoize(() => {
-  return loadKeyBindings()
-})
+const userKeyBindingsRef = ref(loadKeyBindings())
+const addonKeyBindingsRef = ref<KeyBinding[]>([])
 
-const addonKeyBindings: KeyBinding[] = []
+function getUserKeyBindings() {
+  return unref(userKeyBindingsRef)
+}
 
 function getAddonKeyBindings() {
-  return addonKeyBindings
+  return unref(addonKeyBindingsRef)
 }
 
 function addKeyBinding(item: KeyBinding) {
-  addonKeyBindings.push(item)
+  const addonKeyBindings = unref(addonKeyBindingsRef)
+  addonKeyBindings.push(markRaw(item))
 }
 
 function removeKeyBinding(item: KeyBinding) {
+  const addonKeyBindings = unref(addonKeyBindingsRef)
   const index = addonKeyBindings.indexOf(item)
   if (index !== -1) {
     addonKeyBindings.splice(index, 1)
   }
 }
 
-async function getKeyBindings() {
-  const userKeyBindings = await getUserKeyBindings()
+const keyBindingsRef = computed(async () => {
+  const userKeyBindings = unref(userKeyBindingsRef)
+  const addonKeyBindings = unref(addonKeyBindingsRef)
   return [
-    ...userKeyBindings,
+    ...(await userKeyBindings),
     ...addonKeyBindings,
   ]
-}
+})
 
 function handleKeyBindingMessages() {
-  ipcMain.handle('get-keybindings', () => {
-    return getKeyBindings()
-  })
+  provideIPC('keybindings', keyBindingsRef)
 }
 
 export {
-  getKeyBindings,
   getUserKeyBindings,
   getAddonKeyBindings,
   addKeyBinding,
