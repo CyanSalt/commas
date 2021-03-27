@@ -1,15 +1,15 @@
-import { ipcMain, nativeTheme, systemPreferences } from 'electron'
-import memoize from 'lodash/memoize'
+import { computed, effect, unref } from '@vue/reactivity'
+import { nativeTheme, systemPreferences } from 'electron'
 import type { Theme } from '../../typings/theme'
 import { toRGBA, toCSSColor, toElectronColor, isDarkColor, mix } from '../utils/color'
 import { resources, userData } from '../utils/directory'
-import { broadcast } from './frame'
-import { getSettings, getDefaultSettings, getSettingsEvents } from './settings'
+import { provideIPC } from '../utils/hooks'
+import { getSettings, getDefaultSettings } from './settings'
 import { setThemeOptions } from './window'
 
 const defaultTheme = resources.require<Theme>('themes/oceanic-next.json')!
 
-async function loadTheme() {
+const themeRef = computed(async () => {
   let originalTheme = defaultTheme
   const settings = await getSettings()
   const defaultSettings = getDefaultSettings()
@@ -48,33 +48,21 @@ async function loadTheme() {
   }
   const accentColor = systemPreferences.getAccentColor()
   theme.systemAccent = accentColor ? `#${accentColor.slice(0, 6)}` : ''
-  setThemeOptions({
-    backgroundColor: toElectronColor({ ...backgroundRGBA, a: 0 }),
-    vibrancy: opacity === 0 ? 'sidebar' : undefined,
-  })
-  // Enable system dark mode
-  nativeTheme.themeSource = theme.type
   return theme
-}
-
-const getTheme = memoize(() => {
-  const events = getSettingsEvents()
-  events.on('updated', () => {
-    getTheme.cache.set(undefined, loadTheme())
-    updateTheme()
-  })
-  return loadTheme()
 })
 
-async function updateTheme() {
-  const theme = await getTheme()
-  broadcast('theme-updated', theme)
-}
-
 function handleThemeMessages() {
-  ipcMain.handle('get-theme', () => {
-    return getTheme()
+  effect(async () => {
+    const theme = await unref(themeRef)
+    const backgroundRGBA = toRGBA(theme.background!)
+    setThemeOptions({
+      backgroundColor: toElectronColor({ ...backgroundRGBA, a: 0 }),
+      vibrancy: theme.opacity === 0 ? 'sidebar' : undefined,
+    })
+    // Enable system dark mode
+    nativeTheme.themeSource = theme.type
   })
+  provideIPC('theme', themeRef)
 }
 
 export {

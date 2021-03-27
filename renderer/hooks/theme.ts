@@ -2,13 +2,10 @@ import { ipcRenderer } from 'electron'
 import { memoize } from 'lodash-es'
 import { computed, unref, watchEffect } from 'vue'
 import type { Theme } from '../../typings/theme'
-import { useRemoteData } from './remote'
+import { injectIPC } from '../utils/hooks'
 
 export const useTheme = memoize(() => {
-  return useRemoteData({} as Theme, {
-    getter: 'get-theme',
-    effect: 'theme-updated',
-  })
+  return injectIPC('theme', {} as Theme)
 })
 
 const themeStyleRef = computed<Partial<CSSStyleDeclaration>>(() => {
