@@ -1,6 +1,5 @@
-import memoize from 'lodash/memoize'
-import { broadcast } from '../../lib/frame'
-import { getSettings, getSettingsEvents } from '../../lib/settings'
+import { computed, unref } from '@vue/reactivity'
+import { useSettings } from '../../lib/settings'
 import { execa } from '../../utils/helper'
 
 async function getMacOSCurrentNetworkService() {
@@ -52,7 +51,8 @@ async function setGlobalWebProxy(options?: GlobalWebProxy) {
 }
 
 async function loadSystemProxy() {
-  const settings = await getSettings()
+  const settingsRef = useSettings()
+  const settings = await unref(settingsRef)
   const port: number = settings['proxy.server.port']
   const proxy = await getGlobalWebProxy()
   return Boolean(
@@ -63,27 +63,30 @@ async function loadSystemProxy() {
   )
 }
 
-
-const getSystemProxy = memoize(() => {
-  const events = getSettingsEvents()
-  events.on('updated', () => {
-    getSystemProxy.cache.set(undefined, loadSystemProxy())
-  })
-  return loadSystemProxy()
-})
-
 async function setSystemProxy(value: boolean) {
   let proxy: GlobalWebProxy | undefined
   if (value) {
-    const settings = await getSettings()
+    const settingsRef = useSettings()
+    const settings = await unref(settingsRef)
     const port: number = settings['proxy.server.port']
     proxy = { host: '127.0.0.1', port }
   }
-  await setGlobalWebProxy(proxy)
-  broadcast('system-proxy-status-updated', value)
+  return setGlobalWebProxy(proxy)
+}
+
+const systemStatusRef = computed<Promise<boolean>>({
+  get() {
+    return loadSystemProxy()
+  },
+  async set(value) {
+    setSystemProxy(await value)
+  },
+})
+
+function useSystemProxyStatus() {
+  return systemStatusRef
 }
 
 export {
-  getSystemProxy,
-  setSystemProxy,
+  useSystemProxyStatus,
 }

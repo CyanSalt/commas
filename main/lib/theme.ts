@@ -4,14 +4,15 @@ import type { Theme } from '../../typings/theme'
 import { toRGBA, toCSSColor, toElectronColor, isDarkColor, mix } from '../utils/color'
 import { resources, userData } from '../utils/directory'
 import { provideIPC } from '../utils/hooks'
-import { getSettings, getDefaultSettings } from './settings'
+import { getDefaultSettings, useSettings } from './settings'
 import { setThemeOptions } from './window'
 
 const defaultTheme = resources.require<Theme>('themes/oceanic-next.json')!
 
 const themeRef = computed(async () => {
+  const settingsRef = useSettings()
   let originalTheme = defaultTheme
-  const settings = await getSettings()
+  const settings = await unref(settingsRef)
   const defaultSettings = getDefaultSettings()
   const name: string = settings['terminal.theme.name']
     || defaultSettings['terminal.theme.name']

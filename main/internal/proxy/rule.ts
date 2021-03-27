@@ -1,18 +1,7 @@
-import { EventEmitter } from 'events'
 import cloneDeep from 'lodash/cloneDeep'
-import memoize from 'lodash/memoize'
-import { broadcast } from '../../lib/frame'
 import { userData } from '../../utils/directory'
 import type { ProxyRule } from './utils'
 import { getValidRules } from './utils'
-
-const getProxyRulesEvents = memoize(() => {
-  return new EventEmitter()
-})
-
-function loadProxyRules() {
-  return userData.fetch<ProxyRule[]>('proxy-rules.json')
-}
 
 function resolveRuleTargets(rules: ProxyRule[]) {
   rules = cloneDeep(rules)
@@ -56,41 +45,23 @@ function resolveRuleTargets(rules: ProxyRule[]) {
   return rules
 }
 
-const getRawProxyRules = memoize(() => {
-  userData.watch('proxy-rules.json', () => {
-    getRawProxyRules.cache.set(undefined, loadProxyRules())
-    updateProxyRules()
-  })
-  return loadProxyRules()
+const proxyRulesRef = userData.use<ProxyRule[], ProxyRule[]>('proxy-rules.json', {
+  get(value) {
+    return getValidRules(value ?? []).map(rule => {
+      rule.proxy._target = rule.proxy.target
+      rule._enabled = !rule.disabled
+      return rule
+    })
+  },
+  set(value) {
+    return resolveRuleTargets(value)
+  },
 })
 
-async function getProxyRules() {
-  const result = await getRawProxyRules()
-  const rules = result?.data ?? []
-  return getValidRules(rules).map(rule => {
-    rule.proxy._target = rule.proxy.target
-    rule._enabled = !rule.disabled
-    return rule
-  })
-}
-
-async function updateProxyRules() {
-  const rules = await getProxyRules()
-  broadcast('proxy-rules-updated', rules)
-  const events = getProxyRulesEvents()
-  events.emit('updated', rules)
-}
-
-async function setProxyRules(rules: ProxyRule[]) {
-  const result = await getRawProxyRules()
-  return userData.update('proxy-rules.json', {
-    data: resolveRuleTargets(rules),
-    writer: result?.writer,
-  })
+function useProxyRules() {
+  return proxyRulesRef
 }
 
 export {
-  getProxyRulesEvents,
-  getProxyRules,
-  setProxyRules,
+  useProxyRules,
 }

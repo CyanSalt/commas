@@ -119,25 +119,20 @@ class Directory {
     }
   }
 
-  use<T>(basename: string, { get, set }: {
-    get?: (value: T | null, oldValue: T | null) => T | null,
-    set?: (data: T | null) => T | null,
+  use<T, U = T | null>(basename: string, { get, set }: {
+    get?: (value: T | null, oldValue: U) => U,
+    set?: (data: U) => T | null,
   } = {}) {
-    return customRef<Promise<T | null>>((track, trigger) => {
-      let promise: Promise<T | null>
-      let data: T | null
+    return customRef<Promise<U>>((track, trigger) => {
+      let promise: Promise<U>
+      let data: U
       let writer: Writer | undefined
       const reactiveEffect = effect(() => {
         promise = (async () => {
           const result = await this.fetch<T>(basename)
-          if (result) {
-            writer = result.writer
-            if (get) data = get(result.data, data)
-            else data = result.data
-          } else {
-            writer = undefined
-            data = null
-          }
+          const value = result ? result.data : null
+          writer = result?.writer
+          data = get ? get(value, data) : (value as unknown as U)
           return data
         })()
         trigger()
@@ -151,9 +146,11 @@ class Directory {
           return promise
         },
         set: async newValue => {
-          let value = await newValue
-          if (set) value = set(value)
-          this.update(basename, { data: value, writer })
+          const value = await newValue
+          this.update(basename, {
+            data: set ? set(value) : (value as unknown as T | null),
+            writer,
+          })
         },
       }
     })

@@ -3,44 +3,26 @@ module.exports = function (commas) {
 
     const path = require('path')
 
-    const { startServer, stopServer } = commas.bundler.extract('proxy/server.ts')
-    const { getSystemProxy, setSystemProxy } = commas.bundler.extract('proxy/system.ts')
-    const { getProxyRules, setProxyRules } = commas.bundler.extract('proxy/rule.ts')
+    const { useProxyServerStatus } = commas.bundler.extract('proxy/server.ts')
+    const { useSystemProxyStatus } = commas.bundler.extract('proxy/system.ts')
+    const { useProxyRules } = commas.bundler.extract('proxy/rule.ts')
 
     // Server
-    commas.ipcMain.handle('get-proxy-server-status', () => {
-      return startServer.cache.has()
-    })
-    commas.ipcMain.handle('set-proxy-server-status', () => {
-      const currentServer = startServer.cache.get()
-      if (currentServer) {
-        stopServer()
-      } else {
-        startServer()
-      }
-    })
+    const serverStatusRef = useProxyServerStatus()
+    commas.ipcMain.provide('proxy-server-status', serverStatusRef)
     commas.app.onCleanup(() => {
-      stopServer()
+      serverStatusRef.value = false
     })
 
     // System
-    commas.ipcMain.handle('get-system-proxy-status', () => {
-      return getSystemProxy()
-    })
-    commas.ipcMain.handle('set-system-proxy-status', async (event, value) => {
-      return setSystemProxy(value)
-    })
+    const systemStatusRef = useSystemProxyStatus()
+    commas.ipcMain.provide('system-proxy-status', systemStatusRef)
     commas.app.onCleanup(() => {
-      setSystemProxy(false)
+      systemStatusRef.value = false
     })
 
     // Rules
-    commas.ipcMain.handle('get-proxy-rules', () => {
-      return getProxyRules()
-    })
-    commas.ipcMain.handle('set-proxy-rules', (event, rules) => {
-      return setProxyRules(rules)
-    })
+    commas.ipcMain.provide('proxy-rules', useProxyRules())
 
     commas.settings.addSpecs(require('./settings.spec.json'))
 

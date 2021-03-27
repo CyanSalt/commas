@@ -1,11 +1,12 @@
 import type { Server } from 'http'
 import * as http from 'http'
 import * as net from 'net'
+import type { ReactiveEffect } from '@vue/reactivity'
+import { customRef, stop, unref } from '@vue/reactivity'
 import { createProxyServer } from 'http-proxy'
-import memoize from 'lodash/memoize'
-import { broadcast } from '../../lib/frame'
-import { getSettings, getSettingsEvents } from '../../lib/settings'
-import { getProxyRulesEvents, getProxyRules } from './rule'
+import { useSettings } from '../../lib/settings'
+import { useEffect } from '../../utils/hooks'
+import { useProxyRules } from './rule'
 import {
   extractProxyRules,
   getProxyServerOptions,
@@ -13,10 +14,12 @@ import {
   rewriteProxy,
 } from './utils'
 
-async function createServer() {
-  const settings = await getSettings()
+async function createServer(cancelation?: Promise<void>) {
+  const proxyRulesRef = useProxyRules()
+  const settingsRef = useSettings()
+  const settings = await unref(settingsRef)
   const port: number = settings['proxy.server.port']
-  const proxyRules = await getProxyRules()
+  const proxyRules = await unref(proxyRulesRef)
   const rules = extractProxyRules(proxyRules)
   // TODO: catch EADDRINUSE and notify error
   const proxyServer = createProxyServer()
@@ -40,54 +43,60 @@ async function createServer() {
       connection.pipe(socket)
     })
   })
+  if (cancelation) await cancelation
   return new Promise<Server>((resolve, reject) => {
     server.once('error', reject)
     server.listen(port, () => {
       server.removeListener('error', reject)
-      broadcast('proxy-server-status-updated', true)
       resolve(server)
     })
   })
 }
 
-const startServer = memoize(async () => {
-  const server = createServer()
-  const settingsEvents = getSettingsEvents()
-  settingsEvents.on('updated', () => {
-    reloadServer()
+async function closeServer(promise: Promise<Server>) {
+  const server = await promise
+  return new Promise<void>((resolve, reject) => {
+    server.close(err => {
+      if (err) reject(err)
+      else resolve()
+    })
   })
-  const rulesEvents = getProxyRulesEvents()
-  rulesEvents.on('updated', () => {
-    reloadServer()
+}
+
+const serverStatusRef = customRef<boolean>((track, trigger) => {
+  let status = false
+  let cancelation: Promise<void> | undefined
+  let serverEffect: ReactiveEffect<void>
+  const createEffect = () => useEffect((onInvalidate) => {
+    // TODO: after rejected
+    const currentServer = createServer(cancelation)
+    status = true
+    onInvalidate(() => {
+      cancelation = closeServer(currentServer)
+      status = false
+    })
   })
-  try {
-    return await server
-  } catch (err) {
-    startServer.cache.clear?.()
-    throw err
+  return {
+    get() {
+      track()
+      return status
+    },
+    set(value) {
+      if (status === value) return
+      if (value) {
+        serverEffect = createEffect()
+      } else {
+        stop(serverEffect)
+      }
+      trigger()
+    },
   }
 })
 
-async function stopServer() {
-  const currentServer: ReturnType<typeof startServer> | undefined = startServer.cache.get(undefined)
-  if (currentServer) {
-    const server = await currentServer
-    server.close()
-    startServer.cache.clear?.()
-    broadcast('proxy-server-status-updated', false)
-  }
-}
-
-async function reloadServer() {
-  const currentServer: ReturnType<typeof startServer> | undefined = startServer.cache.get(undefined)
-  if (currentServer) {
-    const server = await currentServer
-    server.close()
-    startServer.cache.set(undefined, createServer())
-  }
+function useProxyServerStatus() {
+  return serverStatusRef
 }
 
 export {
-  startServer,
-  stopServer,
+  useProxyServerStatus,
 }

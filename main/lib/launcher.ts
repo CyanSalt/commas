@@ -5,7 +5,7 @@ import { provideIPC } from '../utils/hooks'
 
 const generateID = createIDGenerator()
 
-function fillLauncherIDs(launchers: Launcher[], old: Launcher[] | null) {
+function fillLauncherIDs(launchers: Omit<Launcher, 'id'>[], old: Launcher[] | null) {
   const oldValues = old ? [...old] : []
   return launchers.map<Launcher>(launcher => {
     const index = oldValues.findIndex(item => {
@@ -25,7 +25,7 @@ function fillLauncherIDs(launchers: Launcher[], old: Launcher[] | null) {
   })
 }
 
-const launchersRef = userData.use<Launcher[]>('launchers.json', {
+const launchersRef = userData.use<Omit<Launcher, 'id'>[], Launcher[] | null>('launchers.json', {
   get(value, oldValue) {
     return value ? fillLauncherIDs(value, oldValue) : value
   },

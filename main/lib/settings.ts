@@ -88,13 +88,17 @@ const settingsRef = computed<Promise<Settings>>({
   },
 })
 
+function useSettings() {
+  return settingsRef
+}
+
 function getSettings() {
   return unref(settingsRef)
 }
 
 // TODO: remove
 effect(async () => {
-  const data = await getSettings()
+  const data = await unref(settingsRef)
   const events = getSettingsEvents()
   events.emit('updated', data)
 })
@@ -157,6 +161,7 @@ function handleSettingsMessages() {
 }
 
 export {
+  useSettings,
   getSettings,
   getDefaultSettings,
   getSettingsEvents,
