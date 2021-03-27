@@ -62,14 +62,16 @@ function getDefaultSettings() {
   return unref(defaultSettingsRef)
 }
 
-const userSettingsRef = userData.use<Settings>('settings.json', data => {
-  const defaultSettings = unref(defaultSettingsRef)
-  // TODO: better data merging logic
-  return data ? Object.fromEntries(
-    Object.entries(data).filter(
-      ([key, value]) => !isEqual(value, defaultSettings[key])
-    )
-  ) as Settings : data
+const userSettingsRef = userData.use<Settings>('settings.json', {
+  set(data) {
+    const defaultSettings = unref(defaultSettingsRef)
+    // TODO: better data merging logic
+    return data ? Object.fromEntries(
+      Object.entries(data).filter(
+        ([key, value]) => !isEqual(value, defaultSettings[key])
+      )
+    ) as Settings : data
+  },
 })
 
 const settingsRef = computed<Promise<Settings>>({

@@ -1,13 +1,11 @@
-import { ipcMain } from 'electron'
-import memoize from 'lodash/memoize'
 import type { Launcher } from '../../typings/launcher'
 import { userData } from '../utils/directory'
 import { createIDGenerator } from '../utils/helper'
-import { broadcast } from './frame'
+import { provideIPC } from '../utils/hooks'
 
 const generateID = createIDGenerator()
 
-function fillLauncherIDs(launchers: Launcher[], old: Launcher[] | undefined) {
+function fillLauncherIDs(launchers: Launcher[], old: Launcher[] | null) {
   const oldValues = old ? [...old] : []
   return launchers.map<Launcher>(launcher => {
     const index = oldValues.findIndex(item => {
@@ -27,44 +25,17 @@ function fillLauncherIDs(launchers: Launcher[], old: Launcher[] | undefined) {
   })
 }
 
-const getRawLaunchers = memoize(() => {
-  userData.watch('launchers.json', async () => {
-    getRawLaunchers.cache.set(undefined, loadLaunchers())
-    updateLaunchers()
-  })
-  return loadLaunchers()
+const launchersRef = userData.use<Launcher[]>('launchers.json', {
+  get(value, oldValue) {
+    return value ? fillLauncherIDs(value, oldValue) : value
+  },
+  set(value) {
+    return value ? value.map(({ id, ...launcher }) => launcher as Launcher) : value
+  },
 })
 
-async function loadLaunchers() {
-  const cache = await (getRawLaunchers.cache.get(undefined) as ReturnType<typeof getRawLaunchers> | undefined)
-  const result = await userData.fetch<Launcher[]>('launchers.json')
-  if (result?.data) {
-    result.data = fillLauncherIDs(result.data, cache?.data)
-  }
-  return result
-}
-
-async function getLaunchers() {
-  const result = await getRawLaunchers()
-  return result?.data ?? []
-}
-
-async function updateLaunchers() {
-  const launchers = await getLaunchers()
-  broadcast('launchers-updated', launchers)
-}
-
 function handleLauncherMessages() {
-  ipcMain.handle('get-launchers', () => {
-    return getLaunchers()
-  })
-  ipcMain.handle('set-launchers', async (event, launchers: Launcher[]) => {
-    const result = await getRawLaunchers()
-    return userData.update('launchers.json', {
-      data: launchers.map(({ id, ...launcher }) => launcher),
-      writer: result?.writer,
-    })
-  })
+  provideIPC('launchers', launchersRef)
 }
 
 export {

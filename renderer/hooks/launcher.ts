@@ -4,9 +4,9 @@ import { quote } from 'shell-quote'
 import { unref } from 'vue'
 import type { Launcher } from '../../typings/launcher'
 import type { TerminalTab } from '../../typings/terminal'
+import { injectIPC } from '../utils/hooks'
 import { getLauncherCommand } from '../utils/launcher'
 import { resolveHome } from '../utils/terminal'
-import { useRemoteData } from './remote'
 import { useSettings } from './settings'
 import {
   useTerminalTabs,
@@ -16,11 +16,7 @@ import {
 } from './terminal'
 
 export const useLaunchers = memoize(() => {
-  return useRemoteData<Launcher[]>([], {
-    getter: 'get-launchers',
-    setter: 'set-launchers',
-    effect: 'launchers-updated',
-  })
+  return injectIPC<Launcher[]>('launchers', [])
 })
 
 export function getTerminalTabByLauncher(launcher: Launcher) {

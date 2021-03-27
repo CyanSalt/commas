@@ -119,19 +119,27 @@ class Directory {
     }
   }
 
-  use<T>(basename: string, formatter?: (value: T | null) => T | null) {
+  use<T>(basename: string, { get, set }: {
+    get?: (value: T | null, oldValue: T | null) => T | null,
+    set?: (data: T | null) => T | null,
+  } = {}) {
     return customRef<Promise<T | null>>((track, trigger) => {
-      let data: Promise<T | null>
-      let writer: Writer
+      let promise: Promise<T | null>
+      let data: T | null
+      let writer: Writer | undefined
       const reactiveEffect = effect(() => {
-        data = this.fetch<T>(basename).then(result => {
+        promise = (async () => {
+          const result = await this.fetch<T>(basename)
           if (result) {
             writer = result.writer
-            return result.data
+            if (get) data = get(result.data, data)
+            else data = result.data
           } else {
-            return null
+            writer = undefined
+            data = null
           }
-        })
+          return data
+        })()
         trigger()
       })
       this.watch(basename, () => {
@@ -140,11 +148,11 @@ class Directory {
       return {
         get: () => {
           track()
-          return data
+          return promise
         },
         set: async newValue => {
           let value = await newValue
-          if (formatter) value = formatter(value)
+          if (set) value = set(value)
           this.update(basename, { data: value, writer })
         },
       }
