@@ -29,7 +29,7 @@ module.exports = function (commas) {
     }
 
     const enable = () => {
-      commas.hooks.useTerminalTabs().value.forEach(openPowerMode)
+      commas.workspace.getTerminalTabs().forEach(openPowerMode)
       commas.app.events.on('terminal-tab-mounted', openPowerMode)
     }
 
