@@ -6,10 +6,9 @@ module.exports = function (commas) {
 
     commas.context.provide('shell', {
       command: 'power',
-      async handler(argv) {
+      async handler(argv, event) {
         const [status] = argv._
-        const frame = commas.frame.getFocusedWindow()
-        frame.webContents.send('toggle-power-mode', status !== 'off')
+        event.sender.send('toggle-power-mode', status !== 'off')
       },
     })
 

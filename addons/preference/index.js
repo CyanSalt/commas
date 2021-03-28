@@ -11,9 +11,8 @@ module.exports = function (commas) {
 
     ipcMain.removeHandler('open-settings')
 
-    commas.ipcMain.handle('open-settings', () => {
-      const frame = commas.frame.getFocusedWindow()
-      frame.webContents.send('open-preference-pane')
+    commas.ipcMain.handle('open-settings', event => {
+      event.sender.send('open-preference-pane')
     })
 
     commas.app.onCleanup(() => {

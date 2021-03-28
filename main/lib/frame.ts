@@ -15,18 +15,8 @@ function broadcast(event: string, ...args: any[]) {
   })
 }
 
-function getFocusedWindow() {
-  let frame = BrowserWindow.getFocusedWindow()
-  if (!frame) {
-    frame = getLastWindow()
-    frame.focus()
-  }
-  return frame
-}
-
 export {
   hasWindow,
   getLastWindow,
   broadcast,
-  getFocusedWindow,
 }

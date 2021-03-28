@@ -52,9 +52,8 @@ module.exports = function (commas) {
     commas.context.provide('shell', {
       command: 'open',
       raw: true,
-      handler(argv) {
-        const frame = commas.frame.getFocusedWindow()
-        frame.webContents.send('open-tab', {
+      handler(argv, event) {
+        event.sender.send('open-tab', {
           command: argv,
         })
       },
@@ -63,11 +62,10 @@ module.exports = function (commas) {
     commas.context.provide('shell', {
       command: 'select',
       raw: true,
-      handler(argv) {
+      handler(argv, event) {
         const index = Number.parseInt(argv)
         if (!Number.isNaN(index)) {
-          const frame = commas.frame.getFocusedWindow()
-          frame.webContents.send('select-tab', { index })
+          event.sender.send('select-tab', { index })
         }
       },
     })
