@@ -1,3 +1,5 @@
+import { computed } from '@vue/reactivity'
+import { unref } from '@vue/runtime-core'
 import cloneDeep from 'lodash/cloneDeep'
 import { userData } from '../../utils/directory'
 import type { ProxyRule } from './utils'
@@ -45,16 +47,19 @@ function resolveRuleTargets(rules: ProxyRule[]) {
   return rules
 }
 
-const proxyRulesRef = userData.use<ProxyRule[], ProxyRule[]>('proxy-rules.json', {
-  get(value) {
-    return getValidRules(value ?? []).map(rule => {
+const rawProxyRulesRef = userData.use<ProxyRule[]>('proxy-rules.json', [])
+
+const proxyRulesRef = computed<ProxyRule[]>({
+  get() {
+    const rules = unref(rawProxyRulesRef)
+    return getValidRules(rules).map(rule => {
       rule.proxy._target = rule.proxy.target
       rule._enabled = !rule.disabled
       return rule
     })
   },
   set(value) {
-    return resolveRuleTargets(value)
+    rawProxyRulesRef.value = resolveRuleTargets(value)
   },
 })
 

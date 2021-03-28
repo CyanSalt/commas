@@ -50,30 +50,34 @@ function useDefaultSettings() {
   return defaultSettingsRef
 }
 
-const userSettingsRef = userData.use<Settings>('settings.json', {
-  set(data) {
-    const defaultSettings = unref(defaultSettingsRef)
-    // TODO: better data merging logic
-    return data ? Object.fromEntries(
-      Object.entries(data).filter(
-        ([key, value]) => !isEqual(value, defaultSettings[key])
-      )
-    ) as Settings : data
-  },
+let resolveWhenReady: (() => void) | undefined
+const whenReadyPromise = new Promise<void>(resolve => {
+  resolveWhenReady = resolve
 })
 
-const settingsRef = computed<Promise<Settings>>({
-  async get() {
+function whenSettingsReady() {
+  return whenReadyPromise
+}
+
+const userSettingsRef = userData.use<Settings>('settings.json', {}, resolveWhenReady)
+
+const settingsRef = computed<Settings>({
+  get() {
     const defaultSettings = unref(defaultSettingsRef)
-    const loadingUserSettings = unref(userSettingsRef)
-    const userSettings = await loadingUserSettings
+    const userSettings = unref(userSettingsRef)
     return cloneDeep({
       ...defaultSettings,
       ...userSettings,
     })
   },
-  set(value) {
-    userSettingsRef.value = value
+  set(data) {
+    const defaultSettings = unref(defaultSettingsRef)
+    // TODO: better data merging logic
+    return Object.fromEntries(
+      Object.entries(data).filter(
+        ([key, value]) => !isEqual(value, defaultSettings[key])
+      )
+    )
   },
 })
 
@@ -139,6 +143,7 @@ function handleSettingsMessages() {
 }
 
 export {
+  whenSettingsReady,
   useSettings,
   useDefaultSettings,
   useSettingsSpecs,

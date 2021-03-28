@@ -52,9 +52,8 @@ function setupAutoUpdater() {
   } catch {
     return
   }
-  effect(async () => {
-    const loadingSettings = unref(useSettings())
-    const settings = await loadingSettings
+  effect(() => {
+    const settings = unref(useSettings())
     autoUpdaterEnabled = settings['terminal.updater.enabled']
     checkForUpdates()
   })

@@ -14,7 +14,7 @@ function registerTabPane(this: CommasContext, name: string, pane: TerminalTabPan
     title: '',
     cwd: '',
     pane,
-  }) as unknown as TerminalTab
+  } as TerminalTab)
   this.$.app.onCleanup(() => {
     delete tabs[name]
   })

@@ -1,3 +1,4 @@
+import { computed, unref } from '@vue/reactivity'
 import type { Launcher } from '../../typings/launcher'
 import { userData } from '../utils/directory'
 import { createIDGenerator } from '../utils/helper'
@@ -25,13 +26,14 @@ function fillLauncherIDs(launchers: Omit<Launcher, 'id'>[], old: Launcher[] | nu
   })
 }
 
-const launchersRef = userData.use<Omit<Launcher, 'id'>[], Launcher[] | null>('launchers.json', {
-  get(value, oldValue) {
-    return value ? fillLauncherIDs(value, oldValue) : value
-  },
-  set(value) {
-    return value ? value.map(({ id, ...launcher }) => launcher as Launcher) : value
-  },
+const rawLaunchersRef = userData.use<Omit<Launcher, 'id'>[]>('launchers.json', [])
+
+let oldValue: Launcher[]
+const launchersRef = computed(() => {
+  const value = unref(rawLaunchersRef)
+  const launchers = fillLauncherIDs(value, oldValue)
+  oldValue = launchers
+  return launchers
 })
 
 function handleLauncherMessages() {

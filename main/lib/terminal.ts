@@ -8,7 +8,7 @@ import type { IPty, IPtyForkOptions } from 'node-pty'
 import * as pty from 'node-pty'
 import type { TerminalInfo } from '../../typings/terminal'
 import { execa } from '../utils/helper'
-import { useSettings } from './settings'
+import { useSettings, whenSettingsReady } from './settings'
 
 const defaultShell = process.platform === 'win32'
   ? process.env.COMSPEC : process.env.SHELL
@@ -31,8 +31,9 @@ interface CreateTerminalOptions {
 }
 
 async function createTerminal(webContents: WebContents, { shell, cwd }: CreateTerminalOptions): Promise<TerminalInfo> {
-  const loadingSettings = unref(useSettings())
-  const settings = await loadingSettings
+  const settingsRef = useSettings()
+  await whenSettingsReady()
+  const settings = unref(settingsRef)
   const variables = await getVariables()
   const env: Record<string, string> = {
     ...process.env,

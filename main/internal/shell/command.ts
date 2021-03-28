@@ -1,5 +1,5 @@
 import * as util from 'util'
-import { unref } from '@vue/reactivity'
+import { computed, unref } from '@vue/reactivity'
 import { shell } from 'electron'
 import type { IpcMainInvokeEvent } from 'electron'
 import yargsParser from 'yargs-parser'
@@ -42,9 +42,8 @@ export async function executeCommand(event: IpcMainInvokeEvent, line: string, co
   }
 }
 
-export async function getExternalURLCommands(): Promise<CommandModule[]> {
-  const loadSettings = unref(useSettings())
-  const settings = await loadSettings
+const externalURLCommandsRef = computed<CommandModule[]>(() => {
+  const settings = unref(useSettings())
   const entries: ({ command: string, url: string })[] | undefined = settings['shell.command.externalURLs']
   return entries ? entries.map(entry => {
     const { url, command } = entry
@@ -58,4 +57,8 @@ export async function getExternalURLCommands(): Promise<CommandModule[]> {
       },
     }
   }) : []
+})
+
+export function useExternalURLCommands() {
+  return externalURLCommandsRef
 }

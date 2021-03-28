@@ -15,11 +15,9 @@ import {
 } from './utils'
 
 async function createServer(cancelation?: Promise<void>) {
-  const loadingSettings = unref(useSettings())
-  const loadingProxyRules = unref(useProxyRules())
-  const settings = await loadingSettings
+  const settings = unref(useSettings())
+  const proxyRules = unref(useProxyRules())
   const port: number = settings['proxy.server.port']
-  const proxyRules = await loadingProxyRules
   const rules = extractProxyRules(proxyRules)
   // TODO: catch EADDRINUSE and notify error
   const proxyServer = createProxyServer()

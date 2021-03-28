@@ -9,8 +9,8 @@ module.exports = function (commas) {
     const util = require('util')
     const { app } = require('electron')
     const random = require('lodash/random')
-    const { effect, stop } = require('@vue/reactivity')
-    const { executeCommand, getExternalURLCommands, resolveCommandAliases } = commas.bundler.extract('shell/command.ts')
+    const { effect, stop, unref } = require('@vue/reactivity')
+    const { executeCommand, resolveCommandAliases, useExternalURLCommands } = commas.bundler.extract('shell/command.ts')
 
     commas.ipcMain.handle('get-shell-commands', async () => {
       const settings = await commas.settings.getSettings()
@@ -116,15 +116,11 @@ module.exports = function (commas) {
     })
 
     let loadedCommands = []
-    const loadExternalURLCommands = async () => {
-      const commands = await getExternalURLCommands()
+    const reactiveEffect = effect(() => {
+      const commands = unref(useExternalURLCommands())
       commas.context.cancelProviding('shell', ...loadedCommands)
       commas.context.provide('shell', ...commands)
       loadedCommands = commands
-    }
-
-    const reactiveEffect = effect(() => {
-      loadExternalURLCommands()
     })
     commas.app.onCleanup(() => {
       stop(reactiveEffect)

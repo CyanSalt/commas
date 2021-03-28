@@ -15,14 +15,14 @@ interface BrowserWindowThemeOptions {
 const defaultTheme = resources.require<Theme>('themes/oceanic-next.json')!
 
 const themeRef = computed(async () => {
-  const loadingSettings = unref(useSettings())
+  const settings = unref(useSettings())
   const defaultSettings = unref(useDefaultSettings())
   let originalTheme = defaultTheme
-  const settings = await loadingSettings
   const name: string = settings['terminal.theme.name']
     || defaultSettings['terminal.theme.name']
   if (name !== defaultSettings['terminal.theme.name']) {
     const path = `themes/${name}.json`
+    // TODO: memoize
     let source = resources.require<Theme>(path)
     if (!source) source = await userData.load<Theme>(path)
     if (source) originalTheme = source

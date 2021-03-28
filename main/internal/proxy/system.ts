@@ -51,8 +51,7 @@ async function setGlobalWebProxy(options?: GlobalWebProxy) {
 }
 
 async function loadSystemProxy() {
-  const loadingSettings = unref(useSettings())
-  const settings = await loadingSettings
+  const settings = unref(useSettings())
   const port: number = settings['proxy.server.port']
   const proxy = await getGlobalWebProxy()
   return Boolean(
@@ -66,8 +65,7 @@ async function loadSystemProxy() {
 async function setSystemProxy(value: boolean) {
   let proxy: GlobalWebProxy | undefined
   if (value) {
-    const loadingSettings = unref(useSettings())
-    const settings = await loadingSettings
+    const settings = unref(useSettings())
     const port: number = settings['proxy.server.port']
     proxy = { host: '127.0.0.1', port }
   }

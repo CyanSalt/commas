@@ -6,9 +6,8 @@ import { userData } from '../utils/directory'
 import { useSettings } from './settings'
 
 let loadedAddons: string[] = []
-async function applyAddons() {
-  const loadingSettings = unref(useSettings())
-  const settings = await loadingSettings
+function applyAddons() {
+  const settings = unref(useSettings())
   const addons: string[] = settings['terminal.addon.includes']
   difference(loadedAddons, addons).forEach(addon => {
     commas.app.unloadAddon(addon)
@@ -21,7 +20,9 @@ async function applyAddons() {
 
 async function loadAddons() {
   await commas.app.discoverAddons()
-  return effect(() => applyAddons())
+  return effect(() => {
+    applyAddons()
+  })
 }
 
 function loadCustomJS() {
