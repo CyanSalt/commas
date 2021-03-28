@@ -23,7 +23,7 @@ const themeRef = computed(async () => {
     || defaultSettings['terminal.theme.name']
   if (name !== defaultSettings['terminal.theme.name']) {
     const path = `themes/${name}.json`
-    let source = await resources.load<Theme>(path)
+    let source = resources.require<Theme>(path)
     if (!source) source = await userData.load<Theme>(path)
     if (source) originalTheme = source
   }
