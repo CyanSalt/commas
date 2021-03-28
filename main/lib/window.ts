@@ -73,6 +73,7 @@ function createWindow(...args: string[]) {
   frame.on('closed', () => {
     stop(reactiveEffect)
   })
+  return frame
 }
 
 function handleWindowMessages() {

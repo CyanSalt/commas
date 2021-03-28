@@ -3,6 +3,7 @@ import type { MenuItemConstructorOptions, PopupOptions } from 'electron'
 import { app, Menu, ipcMain, BrowserWindow } from 'electron'
 import type { KeyBinding } from '../../typings/keybinding'
 import { resources } from '../utils/directory'
+import { useFocusedWindow } from './frame'
 import { translate } from './i18n'
 import { useAddonKeyBindings, useUserKeyBindings } from './keybinding'
 import { createWindow } from './window'
@@ -10,6 +11,7 @@ import { createWindow } from './window'
 const terminalMenuItems = resources.require<KeyBinding[]>('terminal.menu.json')!
 
 function resolveBindingCommand(binding: KeyBinding) {
+  const focusedWindow = unref(useFocusedWindow())
   const result: MenuItemConstructorOptions = { ...binding }
   if (binding.label) {
     result.label = translate(binding.label)
@@ -18,6 +20,7 @@ function resolveBindingCommand(binding: KeyBinding) {
     result.click = (self, frame: BrowserWindow) => {
       frame.webContents.send(binding.command!, binding.args)
     }
+    result.enabled = Boolean(focusedWindow)
   }
   if (binding.submenu) {
     result.submenu = binding.submenu.map(resolveBindingCommand)
@@ -30,6 +33,7 @@ function getTerminalMenuItems() {
 }
 
 const customMenuItemsRef = computed(async () => {
+  // Implicitly depends on `useFocusedWindow()`
   const loadingUserKeyBindings = unref(useUserKeyBindings())
   const userKeyBindings = await loadingUserKeyBindings
   return userKeyBindings
@@ -38,6 +42,7 @@ const customMenuItemsRef = computed(async () => {
 })
 
 const addonMenuItemsRef = computed(async () => {
+  // Implicitly depends on `useFocusedWindow()`
   const addonKeyBindings = unref(useAddonKeyBindings())
   return addonKeyBindings
     .filter(item => item.command && !item.command.startsWith('xterm:'))
@@ -47,6 +52,7 @@ const addonMenuItemsRef = computed(async () => {
 async function createApplicationMenu() {
   const loadingCustomMenuItems = unref(customMenuItemsRef)
   const loadingAddonMenuItems = unref(addonMenuItemsRef)
+  const focusedWindow = unref(useFocusedWindow())
   const menu = Menu.buildFromTemplate([
     {
       label: app.name,
@@ -55,6 +61,7 @@ async function createApplicationMenu() {
         { type: 'separator' },
         {
           label: translate('Preferences...#!menu.preference'),
+          enabled: Boolean(focusedWindow),
           accelerator: 'Command+,',
           click(self, frame: BrowserWindow) {
             frame.webContents.send('invoke', 'open-settings')
