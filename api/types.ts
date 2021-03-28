@@ -5,9 +5,11 @@ type MixValues<T, U> = {
   [K in keyof T]: T[K] & U
 }
 
+export type Commas = typeof Main & typeof Renderer
+
 export interface CommasContext<T = unknown> {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __name__: string,
-  $: MixValues<typeof Main & typeof Renderer, CommasContext>,
+  $: MixValues<Commas, CommasContext>,
   _: T,
 }

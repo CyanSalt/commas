@@ -1,5 +1,6 @@
 import * as path from 'path'
 import * as url from 'url'
+import { effect, stop } from '@vue/reactivity'
 import type { BrowserWindowConstructorOptions } from 'electron'
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { loadCustomCSS } from './addon'
@@ -73,7 +74,12 @@ function createWindow(...args: string[]) {
   }
   loadHTMLFile(frame, '../../renderer/index.html')
   if (process.platform !== 'darwin') {
-    createWindowMenu(frame)
+    const reactiveEffect = effect(() => {
+      createWindowMenu(frame)
+    })
+    frame.on('closed', () => {
+      stop(reactiveEffect)
+    })
   }
   // gracefully show window
   frame.once('ready-to-show', () => {

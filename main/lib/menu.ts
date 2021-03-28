@@ -1,10 +1,10 @@
+import { computed, unref } from '@vue/reactivity'
 import type { MenuItemConstructorOptions, PopupOptions } from 'electron'
 import { app, Menu, ipcMain, BrowserWindow } from 'electron'
-import memoize from 'lodash/memoize'
 import type { KeyBinding } from '../../typings/keybinding'
 import { resources } from '../utils/directory'
 import { translate } from './i18n'
-import { getUserKeyBindings, getAddonKeyBindings } from './keybinding'
+import { useAddonKeyBindings, useUserKeyBindings } from './keybinding'
 import { createWindow } from './window'
 
 const terminalMenuItems = resources.require<KeyBinding[]>('terminal.menu.json')!
@@ -29,21 +29,24 @@ function getTerminalMenuItems() {
   return terminalMenuItems.map(resolveBindingCommand)
 }
 
-const getCustomMenuItems = memoize(async () => {
-  const keybindings = await getUserKeyBindings()
-  return keybindings
+const customMenuItemsRef = computed(async () => {
+  const loadingUserKeyBindings = unref(useUserKeyBindings())
+  const userKeyBindings = await loadingUserKeyBindings
+  return userKeyBindings
     .filter(item => item.command && !item.command.startsWith('xterm:'))
     .map(resolveBindingCommand)
 })
 
-const getAddonMenuItems = memoize(async () => {
-  const keybindings = await getAddonKeyBindings()
-  return keybindings
+const addonMenuItemsRef = computed(async () => {
+  const addonKeyBindings = unref(useAddonKeyBindings())
+  return addonKeyBindings
     .filter(item => item.command && !item.command.startsWith('xterm:'))
     .map(resolveBindingCommand)
 })
 
 async function createApplicationMenu() {
+  const loadingCustomMenuItems = unref(customMenuItemsRef)
+  const loadingAddonMenuItems = unref(addonMenuItemsRef)
   const menu = Menu.buildFromTemplate([
     {
       label: app.name,
@@ -75,11 +78,11 @@ async function createApplicationMenu() {
     { role: 'windowMenu', label: translate('Window#!menu.window') },
     {
       label: translate('User#!menu.user'),
-      submenu: await getCustomMenuItems(),
+      submenu: await loadingCustomMenuItems,
     },
     {
       label: translate('Addon#!menu.addon'),
-      submenu: await getAddonMenuItems(),
+      submenu: await loadingAddonMenuItems,
     },
     {
       label: translate('Help#!menu.help'),
@@ -100,6 +103,8 @@ async function createApplicationMenu() {
 }
 
 async function createWindowMenu(frame: BrowserWindow) {
+  const loadingCustomMenuItems = unref(customMenuItemsRef)
+  const loadingAddonMenuItems = unref(addonMenuItemsRef)
   const menu = Menu.buildFromTemplate([
     {
       label: translate('Terminal#!menu.terminal'),
@@ -109,11 +114,11 @@ async function createWindowMenu(frame: BrowserWindow) {
     { role: 'windowMenu' },
     {
       label: translate('User#!menu.user'),
-      submenu: await getCustomMenuItems(),
+      submenu: await loadingCustomMenuItems,
     },
     {
       label: translate('Addon#!menu.addon'),
-      submenu: await getAddonMenuItems(),
+      submenu: await loadingAddonMenuItems,
     },
     {
       label: translate('Help#!menu.help'),

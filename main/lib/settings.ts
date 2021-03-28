@@ -1,12 +1,10 @@
-import { EventEmitter } from 'events'
 import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
-import { computed, effect, markRaw, ref, unref } from '@vue/reactivity'
+import { computed, ref, unref } from '@vue/reactivity'
 import { ipcMain, shell } from 'electron'
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
-import memoize from 'lodash/memoize'
 import type { Settings, SettingsSpec } from '../../typings/settings'
 import { userData, resources } from '../utils/directory'
 import { provideIPC } from '../utils/hooks'
@@ -15,18 +13,8 @@ const defaultSpecs: SettingsSpec[] = require('../../resources/settings.spec.json
 
 const specsRef = ref(defaultSpecs)
 
-const getSettingsEvents = memoize(() => {
-  return new EventEmitter()
-})
-
-function addSettingsSpecs(specs: SettingsSpec[]) {
-  const currentSpecs = unref(specsRef)
-  currentSpecs.push(...specs.map(markRaw))
-}
-
-function removeSettingsSpecs(specs: SettingsSpec[]) {
-  const currentSpecs = unref(specsRef)
-  specsRef.value = currentSpecs.filter(item => specs.some(spec => spec.key !== item.key))
+function useSettingsSpecs() {
+  return specsRef
 }
 
 function generateSettingsSource() {
@@ -58,8 +46,8 @@ const defaultSettingsRef = computed<Settings>(() => {
   return Object.fromEntries(currentSpecs.map(spec => [spec.key, spec.default]))
 })
 
-function getDefaultSettings() {
-  return unref(defaultSettingsRef)
+function useDefaultSettings() {
+  return defaultSettingsRef
 }
 
 const userSettingsRef = userData.use<Settings>('settings.json', {
@@ -77,7 +65,8 @@ const userSettingsRef = userData.use<Settings>('settings.json', {
 const settingsRef = computed<Promise<Settings>>({
   async get() {
     const defaultSettings = unref(defaultSettingsRef)
-    const userSettings = await unref(userSettingsRef)
+    const loadingUserSettings = unref(userSettingsRef)
+    const userSettings = await loadingUserSettings
     return cloneDeep({
       ...defaultSettings,
       ...userSettings,
@@ -91,17 +80,6 @@ const settingsRef = computed<Promise<Settings>>({
 function useSettings() {
   return settingsRef
 }
-
-function getSettings() {
-  return unref(settingsRef)
-}
-
-// TODO: remove
-effect(async () => {
-  const data = await unref(settingsRef)
-  const events = getSettingsEvents()
-  events.emit('updated', data)
-})
 
 async function openSettingsFile() {
   const name = 'settings.json'
@@ -162,11 +140,8 @@ function handleSettingsMessages() {
 
 export {
   useSettings,
-  getSettings,
-  getDefaultSettings,
-  getSettingsEvents,
-  addSettingsSpecs,
-  removeSettingsSpecs,
+  useDefaultSettings,
+  useSettingsSpecs,
   openSettingsFile,
   handleSettingsMessages,
 }

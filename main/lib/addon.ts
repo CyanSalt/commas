@@ -1,12 +1,14 @@
+import { effect, unref } from '@vue/reactivity'
 import type { BrowserWindow } from 'electron'
 import difference from 'lodash/difference'
 import * as commas from '../../api/main'
 import { userData } from '../utils/directory'
-import { getSettings, getSettingsEvents } from './settings'
+import { useSettings } from './settings'
 
 let loadedAddons: string[] = []
 async function applyAddons() {
-  const settings = await getSettings()
+  const loadingSettings = unref(useSettings())
+  const settings = await loadingSettings
   const addons: string[] = settings['terminal.addon.includes']
   difference(loadedAddons, addons).forEach(addon => {
     commas.app.unloadAddon(addon)
@@ -19,11 +21,7 @@ async function applyAddons() {
 
 async function loadAddons() {
   await commas.app.discoverAddons()
-  const events = getSettingsEvents()
-  events.on('updated', () => {
-    applyAddons()
-  })
-  return applyAddons()
+  return effect(() => applyAddons())
 }
 
 function loadCustomJS() {

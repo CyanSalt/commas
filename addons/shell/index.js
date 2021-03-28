@@ -1,3 +1,6 @@
+/**
+ * @param {import('../../api/types').Commas} commas
+ */
 module.exports = function (commas) {
   if (commas.app.isMainProcess()) {
 
@@ -6,6 +9,7 @@ module.exports = function (commas) {
     const util = require('util')
     const { app } = require('electron')
     const random = require('lodash/random')
+    const { effect, stop } = require('@vue/reactivity')
     const { executeCommand, getExternalURLCommands, resolveCommandAliases } = commas.bundler.extract('shell/command.ts')
 
     commas.ipcMain.handle('get-shell-commands', async () => {
@@ -119,10 +123,11 @@ module.exports = function (commas) {
       loadedCommands = commands
     }
 
-    loadExternalURLCommands()
-    const events = commas.settings.getEvents()
-    events.on('updated', () => {
+    const reactiveEffect = effect(() => {
       loadExternalURLCommands()
+    })
+    commas.app.onCleanup(() => {
+      stop(reactiveEffect)
     })
 
     commas.keybinding.add({

@@ -50,7 +50,7 @@ function loadDictionary(entry: TranslationFileEntry, priority: Priority) {
   const file = entry.file
   const dictionary = __non_webpack_require__(file) as Dictionary
   const translations = unref(translationsRef)
-  translations.push({ file, dictionary, priority })
+  translations.push(markRaw({ file, dictionary, priority }))
 }
 
 async function addTranslations(entries: TranslationFileEntry[], priority: Priority) {

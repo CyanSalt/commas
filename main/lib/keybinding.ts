@@ -1,4 +1,4 @@
-import { computed, markRaw, ref, unref } from '@vue/reactivity'
+import { computed, ref, unref } from '@vue/reactivity'
 import type { KeyBinding } from '../../typings/keybinding'
 import { userData } from '../utils/directory'
 import { provideIPC } from '../utils/hooks'
@@ -11,32 +11,20 @@ async function loadKeyBindings() {
 const userKeyBindingsRef = ref(loadKeyBindings())
 const addonKeyBindingsRef = ref<KeyBinding[]>([])
 
-function getUserKeyBindings() {
-  return unref(userKeyBindingsRef)
+function useUserKeyBindings() {
+  return userKeyBindingsRef
 }
 
-function getAddonKeyBindings() {
-  return unref(addonKeyBindingsRef)
-}
-
-function addKeyBinding(item: KeyBinding) {
-  const addonKeyBindings = unref(addonKeyBindingsRef)
-  addonKeyBindings.push(markRaw(item))
-}
-
-function removeKeyBinding(item: KeyBinding) {
-  const addonKeyBindings = unref(addonKeyBindingsRef)
-  const index = addonKeyBindings.indexOf(item)
-  if (index !== -1) {
-    addonKeyBindings.splice(index, 1)
-  }
+function useAddonKeyBindings() {
+  return addonKeyBindingsRef
 }
 
 const keyBindingsRef = computed(async () => {
-  const userKeyBindings = unref(userKeyBindingsRef)
+  const loadingUserKeyBindings = unref(userKeyBindingsRef)
   const addonKeyBindings = unref(addonKeyBindingsRef)
+  const userKeyBindings = await loadingUserKeyBindings
   return [
-    ...(await userKeyBindings),
+    ...userKeyBindings,
     ...addonKeyBindings,
   ]
 })
@@ -46,9 +34,7 @@ function handleKeyBindingMessages() {
 }
 
 export {
-  getUserKeyBindings,
-  getAddonKeyBindings,
-  addKeyBinding,
-  removeKeyBinding,
+  useUserKeyBindings,
+  useAddonKeyBindings,
   handleKeyBindingMessages,
 }

@@ -4,16 +4,16 @@ import type { Theme } from '../../typings/theme'
 import { toRGBA, toCSSColor, toElectronColor, isDarkColor, mix } from '../utils/color'
 import { resources, userData } from '../utils/directory'
 import { provideIPC } from '../utils/hooks'
-import { getDefaultSettings, useSettings } from './settings'
+import { useDefaultSettings, useSettings } from './settings'
 import { setThemeOptions } from './window'
 
 const defaultTheme = resources.require<Theme>('themes/oceanic-next.json')!
 
 const themeRef = computed(async () => {
-  const settingsRef = useSettings()
+  const loadingSettings = unref(useSettings())
+  const defaultSettings = unref(useDefaultSettings())
   let originalTheme = defaultTheme
-  const settings = await unref(settingsRef)
-  const defaultSettings = getDefaultSettings()
+  const settings = await loadingSettings
   const name: string = settings['terminal.theme.name']
     || defaultSettings['terminal.theme.name']
   if (name !== defaultSettings['terminal.theme.name']) {
@@ -54,7 +54,8 @@ const themeRef = computed(async () => {
 
 function handleThemeMessages() {
   effect(async () => {
-    const theme = await unref(themeRef)
+    const loadingTheme = unref(themeRef)
+    const theme = await loadingTheme
     const backgroundRGBA = toRGBA(theme.background!)
     setThemeOptions({
       backgroundColor: toElectronColor({ ...backgroundRGBA, a: 0 }),

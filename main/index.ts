@@ -3,11 +3,11 @@ import { effect } from '@vue/reactivity'
 import { app } from 'electron'
 import * as commas from '../api/main'
 import { loadAddons, loadCustomJS } from './lib/addon'
-import { hasWindow, getLastWindow, forEachWindow } from './lib/frame'
+import { hasWindow, getLastWindow } from './lib/frame'
 import { loadTranslations, handleI18NMessages } from './lib/i18n'
 import { handleKeyBindingMessages } from './lib/keybinding'
 import { handleLauncherMessages } from './lib/launcher'
-import { createApplicationMenu, createDockMenu, handleMenuMessages, createWindowMenu } from './lib/menu'
+import { createApplicationMenu, createDockMenu, handleMenuMessages } from './lib/menu'
 import { handleMessages } from './lib/message'
 import { startServingProtocol, handleProtocolRequest } from './lib/protocol'
 import { handleSettingsMessages } from './lib/settings'
@@ -33,14 +33,12 @@ async function initialize() {
   await loadTranslations()
   await app.whenReady()
   commas.app.events.emit('ready')
-  effect(() => {
-    if (process.platform === 'darwin') {
+  if (process.platform === 'darwin') {
+    effect(() => {
       createApplicationMenu()
       createDockMenu()
-    } else {
-      forEachWindow(createWindowMenu)
-    }
-  })
+    })
+  }
   setupAutoUpdater()
   startServingProtocol()
   createWindow(cwd)

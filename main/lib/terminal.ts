@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import * as os from 'os'
+import { unref } from '@vue/reactivity'
 import type { WebContents } from 'electron'
 import { app, ipcMain } from 'electron'
 import memoize from 'lodash/memoize'
@@ -7,7 +8,7 @@ import type { IPty, IPtyForkOptions } from 'node-pty'
 import * as pty from 'node-pty'
 import type { TerminalInfo } from '../../typings/terminal'
 import { execa } from '../utils/helper'
-import { getSettings } from './settings'
+import { useSettings } from './settings'
 
 const defaultShell = process.platform === 'win32'
   ? process.env.COMSPEC : process.env.SHELL
@@ -30,7 +31,8 @@ interface CreateTerminalOptions {
 }
 
 async function createTerminal(webContents: WebContents, { shell, cwd }: CreateTerminalOptions): Promise<TerminalInfo> {
-  const settings = await getSettings()
+  const loadingSettings = unref(useSettings())
+  const settings = await loadingSettings
   const variables = await getVariables()
   const env: Record<string, string> = {
     ...process.env,

@@ -28,7 +28,8 @@ export function provideIPC<T>(key: string, valueRef: Ref<T>) {
     valueRef.value = value
   })
   const reactiveEffect = effect(async () => {
-    broadcast(`update-ref:${key}`, await unref(valueRef))
+    const value = unref(valueRef)
+    broadcast(`update-ref:${key}`, await value)
   })
   return () => {
     ipcMain.removeHandler(`get-ref:${key}`)

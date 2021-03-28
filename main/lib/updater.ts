@@ -1,8 +1,9 @@
 import * as fs from 'fs'
+import { effect, unref } from '@vue/reactivity'
 import { app, autoUpdater } from 'electron'
 import { notify } from '../utils/notification'
 import { translate } from './i18n'
-import { getSettings, getSettingsEvents } from './settings'
+import { useSettings } from './settings'
 
 let autoUpdaterEnabled = true
 let autoUpdaterTimer: ReturnType<typeof setTimeout> | null = null
@@ -51,13 +52,12 @@ function setupAutoUpdater() {
   } catch {
     return
   }
-  const settings = getSettings()
-  autoUpdaterEnabled = settings['terminal.updater.enabled']
-  const events = getSettingsEvents()
-  events.on('updated', latestSettings => {
-    autoUpdaterEnabled = latestSettings['terminal.updater.enabled']
+  effect(async () => {
+    const loadingSettings = unref(useSettings())
+    const settings = await loadingSettings
+    autoUpdaterEnabled = settings['terminal.updater.enabled']
+    checkForUpdates()
   })
-  checkForUpdates()
 }
 
 export {
