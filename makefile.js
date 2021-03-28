@@ -64,6 +64,15 @@ const options = {
   ].join(' '),
   appCategoryType: 'public.app-category.developer-tools',
   extendInfo: {
+    CFBundleDocumentTypes: [
+      {
+        CFBundleTypeIconFile: [],
+        CFBundleTypeName: 'directory',
+        CFBundleTypeRole: 'Shell',
+        LSHandlerRank: 'Alternate',
+        LSItemContentTypes: ['public.folder'],
+      },
+    ],
     NSUserNotificationAlertStyle: 'alert',
   },
   win32metadata: {
