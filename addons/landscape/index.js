@@ -12,11 +12,13 @@ module.exports = function (commas) {
 
   } else {
 
-    commas.workspace.addSlot(
+    commas.context.provide(
+      '@slot',
       commas.bundler.extract('landscape/landscape-slot.vue').default
     )
 
-    commas.workspace.addAnchor(
+    commas.context.provide(
+      '@anchor',
       commas.bundler.extract('landscape/landscape-anchor.vue').default
     )
 

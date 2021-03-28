@@ -128,7 +128,7 @@ export default {
     const state = reactive({
       shells: [],
       launchers: useLaunchers(),
-      anchors: commas.workspace.useAnchors(),
+      anchors: commas.context.getCollection('@anchor'),
       searcher: null as HTMLInputElement | null,
       width: 176,
       isCollapsed: false,

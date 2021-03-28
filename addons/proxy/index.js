@@ -13,14 +13,13 @@ module.exports = function (commas) {
     // Server
     const serverStatusRef = useProxyServerStatus()
     commas.ipcMain.provide('proxy-server-status', serverStatusRef)
-    commas.app.onCleanup(() => {
-      serverStatusRef.value = false
-    })
 
     // System
     const systemStatusRef = useSystemProxyStatus()
     commas.ipcMain.provide('system-proxy-status', systemStatusRef)
+
     commas.app.onCleanup(() => {
+      serverStatusRef.value = false
       systemStatusRef.value = false
     })
 
@@ -41,7 +40,8 @@ module.exports = function (commas) {
       },
     })
 
-    commas.workspace.addAnchor(
+    commas.context.provide(
+      '@anchor',
       commas.bundler.extract('proxy/proxy-anchor.vue').default
     )
 

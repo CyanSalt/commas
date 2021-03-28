@@ -73,7 +73,7 @@ export default {
       isFullscreen: useFullscreen(),
       isTabListEnabled: useIsTabListEnabled(),
       terminal: useCurrentTerminal(),
-      slots: commas.workspace.useSlots(),
+      slots: commas.context.getCollection('@slot'),
     })
 
     loadAddons()
