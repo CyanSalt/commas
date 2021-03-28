@@ -1,31 +1,12 @@
 import * as path from 'path'
 import * as url from 'url'
-import { effect, stop } from '@vue/reactivity'
-import type { BrowserWindowConstructorOptions } from 'electron'
+import { effect, stop, unref } from '@vue/reactivity'
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { loadCustomCSS } from './addon'
-import { hasWindow, getLastWindow, collectWindow, forEachWindow } from './frame'
+import { hasWindow, getLastWindow } from './frame'
 import { createWindowMenu } from './menu'
 import { handleEvents } from './message'
-
-interface BrowserWindowThemeOptions {
-  backgroundColor: string,
-  vibrancy: BrowserWindowConstructorOptions['vibrancy'],
-}
-
-let themeOptions: BrowserWindowThemeOptions = {
-  /** {@link https://github.com/electron/electron/issues/10420} */
-  backgroundColor: '#00000000',
-  vibrancy: undefined,
-}
-
-function setThemeOptions(options: BrowserWindowThemeOptions) {
-  themeOptions = options
-  forEachWindow(frame => {
-    frame.setBackgroundColor(options.backgroundColor)
-    frame.setVibrancy(options.vibrancy ?? null)
-  })
-}
+import { useThemeOptions } from './theme'
 
 function loadHTMLFile(frame: BrowserWindow, file: string) {
   frame.loadURL(url.pathToFileURL(path.resolve(__dirname, file)).href)
@@ -41,7 +22,6 @@ function createWindow(...args: string[]) {
     frame: false,
     titleBarStyle: 'hiddenInset' as const,
     transparent: true,
-    ...themeOptions,
     acceptFirstMouse: true,
     webPreferences: {
       nodeIntegration: true,
@@ -73,14 +53,6 @@ function createWindow(...args: string[]) {
     })
   }
   loadHTMLFile(frame, '../../renderer/index.html')
-  if (process.platform !== 'darwin') {
-    const reactiveEffect = effect(() => {
-      createWindowMenu(frame)
-    })
-    frame.on('closed', () => {
-      stop(reactiveEffect)
-    })
-  }
   // gracefully show window
   frame.once('ready-to-show', () => {
     frame.show()
@@ -89,8 +61,18 @@ function createWindow(...args: string[]) {
   loadCustomCSS(frame)
   // these handler must be bound in main process
   handleEvents(frame)
-  // reference to avoid GC
-  collectWindow(frame)
+  // reactive effects
+  const reactiveEffect = effect(() => {
+    const themeOptions = unref(useThemeOptions())
+    if (process.platform !== 'darwin') {
+      createWindowMenu(frame)
+    }
+    frame.setBackgroundColor(themeOptions.backgroundColor)
+    frame.setVibrancy(themeOptions.vibrancy ?? null)
+  })
+  frame.on('closed', () => {
+    stop(reactiveEffect)
+  })
 }
 
 function handleWindowMessages() {
@@ -100,7 +82,6 @@ function handleWindowMessages() {
 }
 
 export {
-  setThemeOptions,
   createWindow,
   handleWindowMessages,
 }

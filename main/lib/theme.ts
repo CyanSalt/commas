@@ -1,11 +1,16 @@
-import { computed, effect, unref } from '@vue/reactivity'
+import { computed, effect, ref, unref } from '@vue/reactivity'
+import type { BrowserWindowConstructorOptions } from 'electron'
 import { nativeTheme, systemPreferences } from 'electron'
 import type { Theme } from '../../typings/theme'
 import { toRGBA, toCSSColor, toElectronColor, isDarkColor, mix } from '../utils/color'
 import { resources, userData } from '../utils/directory'
 import { provideIPC } from '../utils/hooks'
 import { useDefaultSettings, useSettings } from './settings'
-import { setThemeOptions } from './window'
+
+interface BrowserWindowThemeOptions {
+  backgroundColor: string,
+  vibrancy: BrowserWindowConstructorOptions['vibrancy'],
+}
 
 const defaultTheme = resources.require<Theme>('themes/oceanic-next.json')!
 
@@ -52,15 +57,25 @@ const themeRef = computed(async () => {
   return theme
 })
 
+const themeOptionsRef = ref<BrowserWindowThemeOptions>({
+  /** {@link https://github.com/electron/electron/issues/10420} */
+  backgroundColor: '#00000000',
+  vibrancy: undefined,
+})
+
+function useThemeOptions() {
+  return themeOptionsRef
+}
+
 function handleThemeMessages() {
   effect(async () => {
     const loadingTheme = unref(themeRef)
     const theme = await loadingTheme
     const backgroundRGBA = toRGBA(theme.background!)
-    setThemeOptions({
+    themeOptionsRef.value = {
       backgroundColor: toElectronColor({ ...backgroundRGBA, a: 0 }),
       vibrancy: theme.opacity === 0 ? 'sidebar' : undefined,
-    })
+    }
     // Enable system dark mode
     nativeTheme.themeSource = theme.type
   })
@@ -68,5 +83,6 @@ function handleThemeMessages() {
 }
 
 export {
+  useThemeOptions,
   handleThemeMessages,
 }
