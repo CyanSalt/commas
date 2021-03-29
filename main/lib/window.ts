@@ -2,6 +2,7 @@ import * as path from 'path'
 import * as url from 'url'
 import { effect, stop, unref } from '@vue/reactivity'
 import { app, BrowserWindow, ipcMain } from 'electron'
+import { globalHandler } from '../utils/handler'
 import { loadCustomCSS } from './addon'
 import { hasWindow, getLastWindow } from './frame'
 import { createWindowMenu } from './menu'
@@ -78,6 +79,9 @@ function createWindow(...args: string[]) {
 
 function handleWindowMessages() {
   ipcMain.handle('open-window', () => {
+    createWindow()
+  })
+  globalHandler.handle('global:open-window', () => {
     createWindow()
   })
 }

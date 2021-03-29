@@ -93,10 +93,6 @@ export default {
       console.error(`Uncaught error in main process: ${String(error)}`)
     })
 
-    ipcRenderer.on('invoke', (event, command: string, extra?: any) => {
-      ipcRenderer.invoke(command, extra)
-    })
-
     const tabsRef = useTerminalTabs()
     window.addEventListener('beforeunload', async event => {
       const willQuit = unref(useWillQuit())

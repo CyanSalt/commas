@@ -3,6 +3,7 @@ import type { MenuItemConstructorOptions, PopupOptions } from 'electron'
 import { app, Menu, ipcMain, BrowserWindow } from 'electron'
 import type { KeyBinding } from '../../typings/keybinding'
 import { resources } from '../utils/directory'
+import { globalHandler } from '../utils/handler'
 import { useFocusedWindow } from './frame'
 import { translate } from './i18n'
 import { useAddonKeyBindings, useUserKeyBindings } from './keybinding'
@@ -17,10 +18,16 @@ function resolveBindingCommand(binding: KeyBinding) {
     result.label = translate(binding.label)
   }
   if (binding.command) {
-    result.click = (self, frame: BrowserWindow) => {
-      frame.webContents.send(binding.command!, binding.args)
+    if (binding.command.startsWith('global:')) {
+      result.click = () => {
+        globalHandler.invoke(binding.command!, ...(binding.args ?? []))
+      }
+    } else {
+      result.click = (self, frame: BrowserWindow) => {
+        frame.webContents.send(binding.command!, binding.args)
+      }
+      result.enabled = Boolean(focusedWindow)
     }
-    result.enabled = Boolean(focusedWindow)
   }
   if (binding.submenu) {
     result.submenu = binding.submenu.map(resolveBindingCommand)
@@ -50,9 +57,9 @@ const addonMenuItemsRef = computed(async () => {
 })
 
 async function createApplicationMenu() {
+  unref(useFocusedWindow()) // collect dependencies
   const loadingCustomMenuItems = unref(customMenuItemsRef)
   const loadingAddonMenuItems = unref(addonMenuItemsRef)
-  const focusedWindow = unref(useFocusedWindow())
   const menu = Menu.buildFromTemplate([
     {
       label: app.name,
@@ -61,10 +68,9 @@ async function createApplicationMenu() {
         { type: 'separator' },
         {
           label: translate('Preferences...#!menu.preference'),
-          enabled: Boolean(focusedWindow),
           accelerator: 'Command+,',
-          click(self, frame: BrowserWindow) {
-            frame.webContents.send('invoke', 'open-settings')
+          click() {
+            globalHandler.invoke('global:open-settings')
           },
         },
         { type: 'separator' },

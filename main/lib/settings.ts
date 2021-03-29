@@ -7,6 +7,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
 import type { Settings, SettingsSpec } from '../../typings/settings'
 import { userData, resources } from '../utils/directory'
+import { globalHandler } from '../utils/handler'
 import { provideIPC } from '../utils/hooks'
 
 const defaultSpecs: SettingsSpec[] = require('../../resources/settings.spec.json')
@@ -126,6 +127,9 @@ function handleSettingsMessages() {
     return openSettingsFile()
   })
   ipcMain.handle('open-settings', () => {
+    return openSettingsFile()
+  })
+  globalHandler.handle('global:open-settings', () => {
     return openSettingsFile()
   })
   ipcMain.handle('open-default-settings', () => {

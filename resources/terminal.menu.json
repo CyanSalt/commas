@@ -12,7 +12,7 @@
   {
     "label": "New Window#!menu.newwindow",
     "accelerator": "CmdOrCtrl+N",
-    "command": "open-window"
+    "command": "global:open-window"
   },
   {
     "type": "separator"
