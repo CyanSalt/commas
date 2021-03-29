@@ -43,6 +43,7 @@ You can also clone or download this repository and compile this app locally.
 
 ## Credits
 
+- [@vue/reactivity](https://github.com/vuejs/vue-next/tree/master/packages/reactivity)
 - [node-pty](https://github.com/microsoft/node-pty)
 - [xterm](https://github.com/xtermjs/xterm.js)
 

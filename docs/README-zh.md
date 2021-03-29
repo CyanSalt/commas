@@ -43,6 +43,7 @@
 
 ## 鸣谢
 
+- [@vue/reactivity](https://github.com/vuejs/vue-next/tree/master/packages/reactivity)
 - [node-pty](https://github.com/microsoft/node-pty)
 - [xterm](https://github.com/xtermjs/xterm.js)
 
