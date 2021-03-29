@@ -1,7 +1,12 @@
 <template>
   <div v-show="isOverflowed" ref="root" :class="['scroll-bar', { 'is-scrolling': isScrolling }]">
     <div class="scroll-track" @click.self="jump"></div>
-    <div class="scroll-thumb" :style="thumbStyle" @mousedown="startScrolling"></div>
+    <div
+      draggable="true"
+      class="scroll-thumb"
+      :style="thumbStyle"
+      @dragstart.prevent="startScrolling"
+    ></div>
   </div>
 </template>
 
@@ -71,7 +76,7 @@ export default {
       })
     }
 
-    function startScrolling(startingEvent: MouseEvent) {
+    function startScrolling(startingEvent: DragEvent) {
       state.isScrolling = true
       const startingTop = unref(topRef)
       handleMousePressing({

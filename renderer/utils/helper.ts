@@ -31,16 +31,3 @@ export function handleMousePressing({ onMove, onEnd }: MousePressingOptions) {
   window.addEventListener('mouseup', cancel)
   return cancel
 }
-
-export function createTimeout(fn: () => void, timeout: number) {
-  let timer: ReturnType<typeof setTimeout> | null = setTimeout(() => {
-    timer = null
-    fn()
-  }, timeout)
-  return function () {
-    if (timer) {
-      clearTimeout(timer)
-      timer = null
-    }
-  }
-}

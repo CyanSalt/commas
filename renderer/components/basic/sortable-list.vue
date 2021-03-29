@@ -4,10 +4,10 @@
       v-for="(item, index) in value"
       :key="keys[index]"
       :ref="el => items[index] = el"
+      draggable="true"
       :class="['sortable-item', { dragging: draggingIndex === index }]"
       :style="{ order: index * 2 }"
-      @mousedown="startPressing($event, index)"
-      @click.capture="click"
+      @dragstart.prevent="startDragging($event, index)"
     >
       <slot :value="item" :index="index"></slot>
     </div>
@@ -17,7 +17,7 @@
 <script lang="ts">
 import type { PropType } from 'vue'
 import { reactive, toRefs, ref, computed, unref, onBeforeUpdate } from 'vue'
-import { handleMousePressing, createTimeout } from '../../utils/helper'
+import { handleMousePressing } from '../../utils/helper'
 
 export default {
   name: 'sortable-list',
@@ -56,18 +56,6 @@ export default {
       })
     })
 
-    function startPressing(startingEvent: MouseEvent, index: number) {
-      if (props.disabled) return
-      let cancelPressing
-      const cancelTimeout = createTimeout(() => {
-        cancelPressing()
-        startDragging(startingEvent, index)
-      }, 250)
-      cancelPressing = handleMousePressing({
-        onEnd: cancelTimeout,
-      })
-    }
-
     const startingBoundsRef = ref<DOMRect | null>(null)
     const startingEventRef = ref<MouseEvent | null>(null)
     const startingParentBoundsRef = ref<DOMRect | null>(null)
@@ -76,7 +64,8 @@ export default {
       return state.items[state.draggingIndex]
     })
 
-    function startDragging(event, index) {
+    function startDragging(event: DragEvent, index: number) {
+      if (props.disabled) return
       handleMousePressing({
         onMove: handleDraggingMove,
         onEnd: handleDraggingEnd,
@@ -88,7 +77,7 @@ export default {
       startingParentBoundsRef.value = (state.root as HTMLElement).getBoundingClientRect()
     }
 
-    function getMovingTarget(event) {
+    function getMovingTarget(event: MouseEvent) {
       const draggingElement = unref(draggingElementRef)
       const startingParentBounds = unref(startingParentBoundsRef)!
       const startingBounds = unref(startingBoundsRef)!
@@ -114,7 +103,7 @@ export default {
       }
     }
 
-    function handleDraggingMove(event) {
+    function handleDraggingMove(event: MouseEvent) {
       const draggingIndex = state.draggingIndex
       if (draggingIndex === -1) return
       const { style } = unref(draggingElementRef)
@@ -130,7 +119,7 @@ export default {
       style.transform = `translateY(${offset}px)`
     }
 
-    function handleDraggingEnd(event) {
+    function handleDraggingEnd(event: MouseEvent) {
       const draggingIndex = state.draggingIndex
       if (draggingIndex === -1) return
       const { style } = unref(draggingElementRef)
@@ -146,12 +135,6 @@ export default {
       })
     }
 
-    function click(event) {
-      if (state.draggingIndex !== -1) {
-        event.stopPropagation()
-      }
-    }
-
     onBeforeUpdate(() => {
       state.items = []
     })
@@ -159,8 +142,7 @@ export default {
     return {
       ...toRefs(state),
       keys: keysRef,
-      startPressing,
-      click,
+      startDragging,
     }
   },
 }

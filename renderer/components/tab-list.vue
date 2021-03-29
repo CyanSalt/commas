@@ -86,7 +86,7 @@
         ></component>
       </div>
     </div>
-    <div class="sash" @mousedown.left="resize"></div>
+    <div draggable="true" class="sash" @dragstart.prevent="resize"></div>
   </nav>
 </template>
 
@@ -196,7 +196,7 @@ export default {
       ipcRenderer.invoke('open-settings')
     }
 
-    function resize(startingEvent: MouseEvent) {
+    function resize(startingEvent: DragEvent) {
       const original = state.width
       const start = startingEvent.clientX
       const max = document.body.clientWidth / 2
