@@ -73,7 +73,6 @@ const settingsRef = computed<Settings>({
   },
   set(data) {
     const defaultSettings = unref(defaultSettingsRef)
-    // TODO: better data merging logic
     return Object.fromEntries(
       Object.entries(data).filter(
         ([key, value]) => !isEqual(value, defaultSettings[key])

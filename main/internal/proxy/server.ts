@@ -65,14 +65,21 @@ const serverStatusRef = customRef<boolean>((track, trigger) => {
   let status = false
   let cancelation: Promise<void> | undefined
   let serverEffect: ReactiveEffect<void>
-  const createEffect = () => useEffect((onInvalidate) => {
-    // TODO: after rejected
-    const currentServer = createServer(cancelation)
-    status = true
-    onInvalidate(() => {
-      cancelation = closeServer(currentServer)
+  const createEffect = () => useEffect(async (onInvalidate) => {
+    const server = createServer(cancelation)
+    onInvalidate(async () => {
+      cancelation = closeServer(server)
+      await cancelation
       status = false
+      trigger()
     })
+    try {
+      await server
+      status = true
+      trigger()
+    } catch {
+      // ignore error
+    }
   })
   return {
     get() {
@@ -86,7 +93,6 @@ const serverStatusRef = customRef<boolean>((track, trigger) => {
       } else {
         stop(serverEffect)
       }
-      trigger()
     },
   }
 })

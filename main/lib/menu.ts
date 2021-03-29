@@ -24,6 +24,7 @@ function resolveBindingCommand(binding: KeyBinding) {
       }
     } else {
       result.click = (self, frame: BrowserWindow) => {
+        // TODO: make args always array
         frame.webContents.send(binding.command!, binding.args)
       }
       result.enabled = Boolean(focusedWindow)

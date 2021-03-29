@@ -112,12 +112,14 @@ function handleTerminalMessages() {
   })
   ipcMain.handle('get-terminal-cwd', async (event, pid: number) => {
     try {
-      // TODO: no command supported on Windows
       if (process.platform === 'darwin') {
         const { stdout } = await execa(`lsof -p ${pid} | grep cwd`)
         return stdout.slice(stdout.indexOf('/'), -1)
       } else if (process.platform === 'linux') {
         return fs.promises.readlink(`/proc/${pid}/cwd`)
+      } else {
+        // TODO: no command supported on Windows
+        throw new Error('Cannot get working directory on Windows')
       }
     } catch {
       return ''
