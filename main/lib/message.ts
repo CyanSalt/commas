@@ -1,5 +1,5 @@
-import type { MessageBoxOptions } from 'electron'
-import { app, ipcMain, BrowserWindow, dialog } from 'electron'
+import type { MessageBoxOptions, NativeImage } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain, nativeImage } from 'electron'
 import { execa } from '../utils/helper'
 import { broadcast } from './frame'
 
@@ -85,10 +85,14 @@ function handleMessages() {
     frame.representedFilename = data.directory
   })
   ipcMain.handle('drag-file', async (event, path: string) => {
-    event.sender.startDrag({
-      file: path,
-      icon: await app.getFileIcon(path, { size: 'small' }),
-    })
+    let icon: NativeImage
+    if (process.platform === 'darwin') {
+      icon = nativeImage.createFromNamedImage('NSImageNameFolder')
+        .resize({ width: 16 })
+    } else {
+      icon = await app.getFileIcon(path, { size: 'small' })
+    }
+    event.sender.startDrag({ file: path, icon })
   })
 }
 

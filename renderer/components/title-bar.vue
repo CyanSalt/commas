@@ -22,7 +22,8 @@
         @click="openDirectory"
         @dragstart.prevent="startDraggingDirectory"
       >
-        <span class="feather-icon icon-folder"></span>
+        <img v-if="icon" class="directory-icon" :src="icon">
+        <span v-else class="feather-icon icon-folder"></span>
       </div>
       <div v-if="pane" v-i18n class="title-text">{{ pane.title }}</div>
       <div v-else class="title-text">{{ title }}</div>
@@ -50,7 +51,7 @@
 </template>
 
 <script lang="ts">
-import { ipcRenderer, shell } from 'electron'
+import { ipcRenderer, nativeImage, shell } from 'electron'
 import { reactive, computed, watchEffect, toRefs, unref } from 'vue'
 import { useMinimized, useMaximized } from '../hooks/frame'
 import { getLauncherByTerminalTab } from '../hooks/launcher'
@@ -98,6 +99,16 @@ export default {
       const settings = unref(settingsRef)
       const expr = settings['terminal.tab.titleFormat']
       return getPrompt(expr, terminal)
+    })
+
+    const iconRef = computed(() => {
+      if (process.platform === 'darwin') {
+        const icon = nativeImage.createFromNamedImage('NSImageNameFolder')
+          .toPNG()
+        const blob = new Blob([icon], { type: 'image/png' })
+        return URL.createObjectURL(blob)
+      }
+      return null
     })
 
     const launcherRef = computed(() => {
@@ -183,6 +194,7 @@ export default {
       pane: paneRef,
       title: titleRef,
       scripts: scriptsRef,
+      icon: iconRef,
       updateBranch,
       runScript,
       openDirectory,
@@ -234,6 +246,10 @@ export default {
 }
 .run-script:hover {
   color: var(--design-green);
+}
+.directory-icon {
+  width: 16px;
+  vertical-align: -2.5px;
 }
 .title-text {
   overflow: hidden;
