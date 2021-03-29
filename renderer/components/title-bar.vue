@@ -15,7 +15,13 @@
       <div v-if="scripts.length" class="shortcut run-script" @click="runScript">
         <span class="feather-icon icon-play"></span>
       </div>
-      <div v-if="directory" class="shortcut open-directory" @click="openDirectory">
+      <div
+        v-if="directory"
+        draggable="true"
+        class="shortcut open-directory"
+        @click="openDirectory"
+        @dragstart.prevent="startDraggingDirectory"
+      >
         <span class="feather-icon icon-folder"></span>
       </div>
       <div v-if="pane" v-i18n class="title-text">{{ pane.title }}</div>
@@ -139,6 +145,11 @@ export default {
       shell.openPath(directory)
     }
 
+    function startDraggingDirectory() {
+      const directory = unref(directoryRef)
+      ipcRenderer.invoke('drag-file', directory)
+    }
+
     const isMinimizedRef = useMinimized()
     function minimize() {
       isMinimizedRef.value = !isMinimizedRef.value
@@ -175,6 +186,7 @@ export default {
       updateBranch,
       runScript,
       openDirectory,
+      startDraggingDirectory,
       minimize,
       maximize,
       close,

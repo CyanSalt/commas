@@ -84,6 +84,12 @@ function handleMessages() {
     frame.title = data.title
     frame.representedFilename = data.directory
   })
+  ipcMain.handle('drag-file', async (event, path: string) => {
+    event.sender.startDrag({
+      file: path,
+      icon: await app.getFileIcon(path, { size: 'small' }),
+    })
+  })
 }
 
 function handleEvents(frame: BrowserWindow) {

@@ -1,5 +1,4 @@
 import * as path from 'path'
-import * as url from 'url'
 import { effect, stop, unref } from '@vue/reactivity'
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { globalHandler } from '../utils/handler'
@@ -8,10 +7,6 @@ import { hasWindow, getLastWindow } from './frame'
 import { createWindowMenu } from './menu'
 import { handleEvents } from './message'
 import { useThemeOptions } from './theme'
-
-function loadHTMLFile(frame: BrowserWindow, file: string) {
-  frame.loadURL(url.pathToFileURL(path.resolve(__dirname, file)).href)
-}
 
 function createWindow(...args: string[]) {
   const options = {
@@ -53,7 +48,7 @@ function createWindow(...args: string[]) {
       }, 500)
     })
   }
-  loadHTMLFile(frame, '../../renderer/index.html')
+  frame.loadFile(path.resolve(__dirname, '../../renderer/index.html'))
   // gracefully show window
   frame.once('ready-to-show', () => {
     frame.show()
