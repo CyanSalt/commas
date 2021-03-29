@@ -3,12 +3,7 @@ import type { KeyBinding } from '../../typings/keybinding'
 import { userData } from '../utils/directory'
 import { provideIPC } from '../utils/hooks'
 
-async function loadKeyBindings() {
-  const result = await userData.load<KeyBinding[]>('keybindings.json')
-  return result ?? []
-}
-
-const userKeyBindingsRef = ref(loadKeyBindings())
+const userKeyBindingsRef = userData.use<KeyBinding[]>('keybindings.json', [])
 const addonKeyBindingsRef = ref<KeyBinding[]>([])
 
 function useUserKeyBindings() {
@@ -19,10 +14,9 @@ function useAddonKeyBindings() {
   return addonKeyBindingsRef
 }
 
-const keyBindingsRef = computed(async () => {
-  const loadingUserKeyBindings = unref(userKeyBindingsRef)
+const keyBindingsRef = computed(() => {
+  const userKeyBindings = unref(userKeyBindingsRef)
   const addonKeyBindings = unref(addonKeyBindingsRef)
-  const userKeyBindings = await loadingUserKeyBindings
   return [
     ...userKeyBindings,
     ...addonKeyBindings,

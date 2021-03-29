@@ -7,7 +7,6 @@ import { globalHandler } from '../utils/handler'
 import { useFocusedWindow } from './frame'
 import { translate } from './i18n'
 import { useAddonKeyBindings, useUserKeyBindings } from './keybinding'
-import { createWindow } from './window'
 
 const terminalMenuItems = resources.require<KeyBinding[]>('terminal.menu.json')!
 
@@ -40,17 +39,14 @@ function getTerminalMenuItems() {
   return terminalMenuItems.map(resolveBindingCommand)
 }
 
-const customMenuItemsRef = computed(async () => {
-  // Implicitly depends on `useFocusedWindow()`
-  const loadingUserKeyBindings = unref(useUserKeyBindings())
-  const userKeyBindings = await loadingUserKeyBindings
+const customMenuItemsRef = computed(() => {
+  const userKeyBindings = unref(useUserKeyBindings())
   return userKeyBindings
     .filter(item => item.command && !item.command.startsWith('xterm:'))
     .map(resolveBindingCommand)
 })
 
-const addonMenuItemsRef = computed(async () => {
-  // Implicitly depends on `useFocusedWindow()`
+const addonMenuItemsRef = computed(() => {
   const addonKeyBindings = unref(useAddonKeyBindings())
   return addonKeyBindings
     .filter(item => item.command && !item.command.startsWith('xterm:'))
@@ -58,7 +54,6 @@ const addonMenuItemsRef = computed(async () => {
 })
 
 async function createApplicationMenu() {
-  unref(useFocusedWindow()) // collect dependencies
   const loadingCustomMenuItems = unref(customMenuItemsRef)
   const loadingAddonMenuItems = unref(addonMenuItemsRef)
   const menu = Menu.buildFromTemplate([
@@ -158,7 +153,7 @@ function createDockMenu() {
       label: translate('New Window#!menu.newwindow'),
       accelerator: 'CmdOrCtrl+N',
       click() {
-        createWindow()
+        globalHandler.invoke('global:open-window')
       },
     },
   ])
