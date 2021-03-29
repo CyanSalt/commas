@@ -41,6 +41,17 @@
     "default": {}
   },
   {
+    "key": "terminal.external.openPathIn",
+    "type": "enum",
+    "paradigm": ["new-tab", "new-window"],
+    "label": "Open External Path In",
+    "comments": [
+      "Specify how to open external paths",
+      "Options: 'new-tab' or 'new-window'"
+    ],
+    "default": "new-tab"
+  },
+  {
     "key": "terminal.external.explorer",
     "type": ["string", "list"],
     "label": "External Explorer",

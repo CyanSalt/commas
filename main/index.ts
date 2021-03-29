@@ -1,5 +1,5 @@
 import './internal/connect'
-import { effect } from '@vue/reactivity'
+import { effect, unref } from '@vue/reactivity'
 import { app } from 'electron'
 import * as commas from '../api/main'
 import { loadAddons, loadCustomJS } from './lib/addon'
@@ -10,7 +10,7 @@ import { handleLauncherMessages } from './lib/launcher'
 import { createApplicationMenu, createDockMenu, handleMenuMessages } from './lib/menu'
 import { handleMessages } from './lib/message'
 import { startServingProtocol, handleProtocolRequest } from './lib/protocol'
-import { handleSettingsMessages } from './lib/settings'
+import { handleSettingsMessages, useSettings, whenSettingsReady } from './lib/settings'
 import { handleTerminalMessages } from './lib/terminal'
 import { handleThemeMessages } from './lib/theme'
 import { setupAutoUpdater } from './lib/updater'
@@ -54,20 +54,25 @@ app.on('activate', () => {
 
 app.on('will-finish-launching', () => {
   // handle opening outside
-  app.on('open-file', (event, file) => {
+  app.on('open-file', async (event, file) => {
     event.preventDefault()
+    const settingsRef = useSettings()
+    await whenSettingsReady()
+    const settings = unref(settingsRef)
     // for Windows
     if (!file) {
       file = process.argv[process.argv.length - 1]
     }
     if (!app.isReady()) {
       cwd = file
-    } else if (hasWindow()) {
-      const frame = getLastWindow()
-      frame.webContents.send('open-tab', { cwd: file })
-    } else {
-      createWindow(file)
+      return
     }
+    if (settings['terminal.external.openPathIn'] === 'new-window' || !hasWindow()) {
+      createWindow(file)
+      return
+    }
+    const frame = getLastWindow()
+    frame.webContents.send('open-tab', { cwd: file })
   })
   // handle custom protocol
   app.on('open-url', (event, url) => {
