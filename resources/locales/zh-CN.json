@@ -1,10 +1,10 @@
 {
-  "Close Window?#!1": "关闭窗口？",
-  "All tabs in this window will be closed.#!2": "当前窗口的全部标签都将被关闭。",
-  "Confirm#!3": "确认",
-  "Cancel#!4": "取消",
-  "Find...#!5": "查找...",
-  "A new version has been downloaded. Restart the application to apply the updates.#!6": "新版本已下载完毕，重启以应用更新。",
-  "Restart#!7": "立即重启",
-  "Later#!8": "稍后再说"
+  "Close Window?#!terminal.1": "关闭窗口？",
+  "All tabs in this window will be closed.#!terminal.2": "当前窗口的全部标签都将被关闭。",
+  "Confirm#!terminal.3": "确认",
+  "Cancel#!terminal.4": "取消",
+  "Find...#!terminal.5": "查找...",
+  "A new version has been downloaded. Restart the application to apply the updates.#!terminal.6": "新版本已下载完毕，重启以应用更新。",
+  "Restart#!terminal.7": "立即重启",
+  "Later#!terminal.8": "稍后再说"
 }

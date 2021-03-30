@@ -35,10 +35,10 @@ function setupAutoUpdater() {
   autoUpdater.on('update-downloaded', async (event, notes, name) => {
     const response = await notify({
       title: name,
-      body: translate('A new version has been downloaded. Restart the application to apply the updates.#!6'),
+      body: translate('A new version has been downloaded. Restart the application to apply the updates.#!terminal.6'),
       actions: [
-        translate('Restart#!7'),
-        translate('Later#!8'),
+        translate('Restart#!terminal.7'),
+        translate('Later#!terminal.8'),
       ],
     })
     if (response === 0) autoUpdater.quitAndInstall()

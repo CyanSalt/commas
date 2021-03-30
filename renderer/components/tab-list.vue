@@ -41,7 +41,7 @@
                 v-model="keyword"
                 v-i18n:placeholder
                 class="keyword"
-                placeholder="Find...#!5"
+                placeholder="Find...#!terminal.5"
                 autofocus
                 @keyup.esc="toggleFinding"
               >

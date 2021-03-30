@@ -26,8 +26,8 @@ module.exports = function (commas) {
           T: target,
         }),
         buttons: [
-          commas.i18n.translate('Confirm#!3'),
-          commas.i18n.translate('Cancel#!4'),
+          commas.i18n.translate('Confirm#!terminal.3'),
+          commas.i18n.translate('Cancel#!terminal.4'),
         ],
         defaultId: 0,
         cancelId: 1,
@@ -41,7 +41,7 @@ module.exports = function (commas) {
             body: commas.i18n.translate('Synchronization succeeded#!sync.3'),
             actions: [
               commas.i18n.translate('View#!sync.5'),
-              commas.i18n.translate('Later#!8'),
+              commas.i18n.translate('Later#!terminal.8'),
             ],
           })
           if (notificationResponse === 0) {

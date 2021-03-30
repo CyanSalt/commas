@@ -96,7 +96,8 @@ function getAddonInfo(name: string) {
 
 const loadedAddons: string[] = []
 function loadAddon(name: string, api: object) {
-  if (loadedAddons.includes(name)) return
+  // Reserved names
+  if (loadedAddons.includes(name) || name === 'terminal') return
   let addon
   if (name === 'custom.js') {
     try {

@@ -3,5 +3,5 @@
   // "@use": "zh-CN",
 
   // Or add translations for specific text
-  // "Close Window?#!1": "fermer cette fenêtre?",
+  // "Close Window?#!terminal.1": "fermer cette fenêtre?",
 }
