@@ -22,9 +22,9 @@ function resolveBindingCommand(binding: KeyBinding) {
         globalHandler.invoke(binding.command!, ...(binding.args ?? []))
       }
     } else {
-      result.click = (self, frame: BrowserWindow) => {
+      result.click = (event, frame) => {
         // TODO: make args always array
-        frame.webContents.send(binding.command!, binding.args)
+        frame?.webContents.send(binding.command!, binding.args)
       }
       result.enabled = Boolean(focusedWindow)
     }
