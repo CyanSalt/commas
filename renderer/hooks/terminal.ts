@@ -304,6 +304,8 @@ export function handleTerminalMessages() {
     openContextMenu(tabs.map((tab, index) => {
       const number = index + 1
       return {
+        type: 'radio',
+        checked: index === activeIndex,
         label: getTerminalTabTitle(tab),
         command: 'select-tab',
         accelerator: number < 10 ? String(number) : undefined,
