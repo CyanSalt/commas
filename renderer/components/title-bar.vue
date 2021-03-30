@@ -15,7 +15,7 @@
       <div v-if="scripts.length" class="shortcut run-script" @click="runScript">
         <span class="feather-icon icon-play"></span>
       </div>
-      <div
+      <a
         v-if="directory"
         draggable="true"
         class="shortcut open-directory"
@@ -24,7 +24,7 @@
       >
         <img v-if="icon" class="directory-icon" :src="icon">
         <span v-else class="feather-icon icon-folder"></span>
-      </div>
+      </a>
       <div v-if="pane" v-i18n class="title-text">{{ pane.title }}</div>
       <div v-else class="title-text">{{ title }}</div>
       <div class="tab-index-indicator" @click="toggleTabList">
@@ -250,6 +250,10 @@ export default {
 .directory-icon {
   width: 16px;
   vertical-align: -2.5px;
+  transition: opacity 0.2s;
+  .open-directory:active & {
+    opacity: 0.5;
+  }
 }
 .title-text {
   overflow: hidden;
