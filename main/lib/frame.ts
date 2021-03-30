@@ -1,4 +1,4 @@
-import { customRef } from '@vue/runtime-core'
+import { customRef } from '@vue/reactivity'
 import { app, BrowserWindow } from 'electron'
 
 function hasWindow() {
