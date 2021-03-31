@@ -29,9 +29,8 @@ import * as path from 'path'
 import type { PropType } from 'vue'
 import { reactive, toRefs, computed, unref } from 'vue'
 import type { TerminalTab } from '../../typings/terminal'
-import { useSettings } from '../hooks/settings'
-import { useCurrentTerminal, closeTerminalTab } from '../hooks/terminal'
-import { getPrompt, getIconEntryByProcess } from '../utils/terminal'
+import { getTerminalTabTitle, useCurrentTerminal, closeTerminalTab } from '../hooks/terminal'
+import { getIconEntryByProcess } from '../utils/terminal'
 
 export default {
   name: 'tab-item',
@@ -65,16 +64,9 @@ export default {
       return getIconEntryByProcess(props.tab.process)
     })
 
-    const settingsRef = useSettings()
     const titleRef = computed(() => {
       if (props.name) return props.name
-      if (!props.tab) return ''
-      if (process.platform !== 'win32' && props.tab.title) {
-        return props.tab.title
-      }
-      const settings = unref(settingsRef)
-      const expr = settings['terminal.tab.titleFormat']
-      return getPrompt(expr, props.tab) || props.tab.process
+      return props.tab ? getTerminalTabTitle(props.tab) : ''
     })
 
     const idleStateRef = computed(() => {

@@ -1,6 +1,7 @@
 import * as os from 'os'
+import type { MenuItemConstructorOptions } from 'electron'
 import { ipcRenderer, shell } from 'electron'
-import { memoize, debounce, isMatch } from 'lodash-es'
+import { memoize, debounce, isMatch, sortBy, groupBy } from 'lodash-es'
 import { ref, computed, unref, markRaw, reactive, toRaw, watch } from 'vue'
 import type { ITerminalOptions } from 'xterm'
 import { Terminal } from 'xterm'
@@ -16,7 +17,7 @@ import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
 import { getPrompt, getWindowsProcessInfo } from '../utils/terminal'
 import { useKeyBindings } from './keybinding'
-import { getLauncherByTerminalTab } from './launcher'
+import { getLauncherByTerminalTab, useLaunchers } from './launcher'
 import { useSettings } from './settings'
 import { useTheme } from './theme'
 
@@ -201,13 +202,9 @@ const createResizeObserver = memoize(() => {
   }, 250))
 })
 
-function getTerminalTabTitle(tab: TerminalTab) {
+export function getTerminalTabTitle(tab: TerminalTab) {
   if (tab.pane) {
     return tab.pane.title
-  }
-  const launcher = getLauncherByTerminalTab(tab)
-  if (launcher) {
-    return launcher.name
   }
   if (process.platform !== 'win32' && tab.title) {
     return tab.title
@@ -301,19 +298,34 @@ export function handleTerminalMessages() {
   ipcRenderer.on('show-tab-options', () => {
     const tabs = unref(tabsRef)
     const activeIndex = unref(activeIndexRef)
-    openContextMenu(tabs.map((tab, index) => {
+    const entries = tabs.map((tab, index) => {
+      const launcher = getLauncherByTerminalTab(tab)
+      return { tab, launcher, index }
+    })
+    const groups = groupBy(entries, entry => Boolean(entry.launcher)) as Partial<Record<'true' | 'false', typeof entries>>
+    const normalTabs = (groups.false ?? []).map(({ tab, index }) => ({
+      label: getTerminalTabTitle(tab),
+      args: { index },
+    }))
+    const launcherTabs = sortBy(
+      groups.true ?? [],
+      ({ launcher }) => unref(useLaunchers()).findIndex(item => item.id === launcher!.id)
+    ).map(({ launcher, index }) => ({
+      label: launcher!.name,
+      args: { index },
+    }))
+    const options = [...normalTabs, ...launcherTabs].map<MenuItemConstructorOptions & { args?: { index: number } }>((item, index) => {
       const number = index + 1
       return {
-        type: 'radio',
-        checked: index === activeIndex,
-        label: getTerminalTabTitle(tab),
+        ...item,
         command: 'select-tab',
         accelerator: number < 10 ? String(number) : undefined,
-        args: {
-          index,
-        },
       }
-    }), [0, 36], activeIndex)
+    })
+    if (groups.false && groups.true) {
+      options.splice(groups.false.length, 0, { type: 'separator' })
+    }
+    openContextMenu(options, [0, 36], options.findIndex(item => item.args?.index === activeIndex))
   })
 }
 
