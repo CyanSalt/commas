@@ -2,44 +2,53 @@
 
 <img src="https://raw.githubusercontent.com/CyanSalt/commas/master/resources/images/icon.png" width="96">
 
-EN | [中文](https://github.com/CyanSalt/commas/blob/master/docs/README-zh.md)
+EN | [中文](docs/README-zh.md)
 
-A hackable terminal and command runner. **Commas** means **Com**mand **Mas**ter.
+**Commas** is a hackable, pluggable terminal, and also a command runner. The name comes from **Com**mand **Mas**ter.
 
 ![Screenshot](https://user-images.githubusercontent.com/5101076/74102057-fb27bc00-4b7a-11ea-9222-51753bac1e14.png)
 
-## Install
+## Installation
+
+### Prebuilt version
 
 [Download the latest version](https://github.com/CyanSalt/commas/releases)
 
 ### Build manually
 
-You can also clone or download this repository and compile this app locally.
-  - After downloading the source code, enter the directory in command line and execute the installation script. Make sure that Node.js with version >= 10.0.0 is installed on your device.
-  - Run `npm install` to install all dependencies
-  - Run `npm run build` to generate a portable version of the application after the dependencies installed successfully
+You can clone or download the repository and build Commas locally.
+  - Make sure you have the latest LTS version of Node.js installed on your device.
+  - Download the source code and enter the directory through the command line.
+  - Run `npm install` to install dependencies
+  - Run `npm run build` to generate portable versions of this application.
 
 ## Features
 
-* Multiple terminal tabs
-* Rapid command launchers
-* Proxy server for developers
-* Customizable theme (with 200+ downloadable)
-* Hackable and pluggable
+- Optional multi-tabs support
+- Customizable rapid command launchers
+- Various built-in addons
+  - Visual settings editor
+  - Built-in shell with custom commands supporting
+  - Easy-to-configure proxy server
+  - Customizable theme (200 + downloadable)
+- Internationalization support
+- User scripts and third-party addons
 
 ## Customization
 
-* All of user data are stored in your **user data folder**, which is `~/Library/Application Support/Commas/` on macOS, `%localappdata%/Commas/` on Windows and `~/.config/Commas/` on Linux.
+- All of user data are stored in a separate **user data folder**, which is `~/Library/Application Support/Commas/` on macOS, `%localappdata%/Commas/` on Windows and `~/.config/Commas/` on Linux. You can configure and back up personal data by editing / copying files in the user data folder.
 
-* If this app has no built-in translation for your language, you can add `translation.json` file to your user data folder. The content of the file could be part of entries in [the locale file](https://github.com/CyanSalt/commas/blob/master/resources/locales/zh-CN.json), or contain a pair of key-value like `"@use": "zh-CN"` to reference an existed translation file.
+- Commas has several useful / interesting built-in [addons](https://github.com/CyanSalt/commas/tree/master/addons). You can also download / write third-party addons, place them in the `addons` directory of the user data folder, and manage the addons you want to enable through settings.
 
-* Commas also supports you to add custom init script and stylesheet. Check out the example files at [here](https://github.com/CyanSalt/commas/tree/master/resource/examples). This directory also contains the example files which could help you to customize key bindings, application menu, and the launchers in the terminal sidebar.
+- Commas also supports adding custom scripts and stylesheets. You can see the sample files [here](https://github.com/CyanSalt/commas/tree/master/resources/examples). This directory also contains the example files which could help you to customize shortcut keys, command launchers, and proxy rules.
 
-* A well-run [Hooks API](https://github.com/CyanSalt/commas/tree/master/api) for addons is built in Commas. Write your own addon like [various addons](https://github.com/CyanSalt/commas/tree/master/addons) with Commas itself.
+- If there is no translation for the language you want in the application, you can add / modify the `translation.json` file in the user data folder. The content of the file can be similar to part of [the translation file](https://github.com/CyanSalt/commas/blob/master/resources/locales/zh-CN.json). You can also use key-value pairs like `"@use": "zh-CN"` to refer to an existing translation file.
 
-* You can put any of the files referenced above to your user data folder. JSON files will be treated as [JSON5](https://json5.org/) format (like the object literals in ECMAScript 5).
+- You can place any of the files mentioned above in the user data folder. All JSON files will be treated as [JSON5](https://json5.org/) format (like the literal objects in ECMAScript 5).
 
-* Press <kbd>&#8984;</kbd> / <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> to open devtools of Commas to inspect the HTML elements of UI, just like what you do in Chrome!
+- Commas has a rich set of built-in [hook API](https://github.com/CyanSalt/commas/tree/master/api). You can read the built-in addons for reference in writing your own addons.
+
+- In addition, you can also use the shortcut key <kbd>&#8984;/Ctrl</kbd> <kbd>Shift</kbd> <kbd>I</kbd> to open the developer tool of Commas and inspect the HTML elements of UI, just like what you do in the browser!
 
 ## Credits
 
