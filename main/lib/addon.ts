@@ -3,25 +3,21 @@ import type { BrowserWindow } from 'electron'
 import difference from 'lodash/difference'
 import * as commas from '../../api/main'
 import { userData } from '../utils/directory'
-import { useSettings } from './settings'
-
-let loadedAddons: string[] = []
-function applyAddons() {
-  const settings = unref(useSettings())
-  const addons: string[] = settings['terminal.addon.includes']
-  difference(loadedAddons, addons).forEach(addon => {
-    commas.app.unloadAddon(addon)
-  })
-  difference(addons, loadedAddons).forEach(addon => {
-    commas.app.loadAddon(addon, commas)
-  })
-  loadedAddons = [...addons]
-}
+import { useAddons } from './settings'
 
 async function loadAddons() {
   await commas.app.discoverAddons()
+  const addonsRef = useAddons()
+  let loadedAddons: string[] = []
   return effect(() => {
-    applyAddons()
+    const addons = unref(addonsRef)
+    difference(loadedAddons, addons).forEach(addon => {
+      commas.app.unloadAddon(addon)
+    })
+    difference(addons, loadedAddons).forEach(addon => {
+      commas.app.loadAddon(addon, commas)
+    })
+    loadedAddons = [...addons]
   })
 }
 

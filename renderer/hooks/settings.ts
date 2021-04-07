@@ -13,3 +13,7 @@ export const useUserSettings = memoize(() => {
 export const useSettingsSpecs = memoize(() => {
   return injectIPC<SettingsSpec[]>('settings-specs', [])
 })
+
+export const useAddons = memoize(() => {
+  return injectIPC<string[]>('addons', [])
+})

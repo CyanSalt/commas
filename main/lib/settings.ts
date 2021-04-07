@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
-import { computed, ref, unref } from '@vue/reactivity'
+import { computed, customRef, effect, ref, unref } from '@vue/reactivity'
 import { ipcMain, shell } from 'electron'
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
@@ -73,7 +73,7 @@ const settingsRef = computed<Settings>({
   },
   set(data) {
     const defaultSettings = unref(defaultSettingsRef)
-    return Object.fromEntries(
+    userSettingsRef.value = Object.fromEntries(
       Object.entries(data).filter(
         ([key, value]) => !isEqual(value, defaultSettings[key])
       )
@@ -81,8 +81,33 @@ const settingsRef = computed<Settings>({
   },
 })
 
+const addonsRef = customRef<string[]>((track, trigger) => {
+  let addons: string[] = []
+  whenSettingsReady().then(() => {
+    effect(() => {
+      const settings = unref(settingsRef)
+      addons = settings['terminal.addon.includes']
+      trigger()
+    })
+  })
+  return {
+    get() {
+      track()
+      return addons
+    },
+    set(value) {
+      const settings = unref(settingsRef)
+      settings['terminal.addon.includes'] = value
+    },
+  }
+})
+
 function useSettings() {
   return settingsRef
+}
+
+function useAddons() {
+  return addonsRef
 }
 
 async function openSettingsFile() {
@@ -122,6 +147,7 @@ function handleSettingsMessages() {
   provideIPC('settings-specs', specsRef)
   provideIPC('user-settings', userSettingsRef)
   provideIPC('settings', settingsRef)
+  provideIPC('addons', addonsRef)
   ipcMain.handle('open-settings-file', () => {
     return openSettingsFile()
   })
@@ -150,6 +176,7 @@ export {
   useSettings,
   useDefaultSettings,
   useSettingsSpecs,
+  useAddons,
   openSettingsFile,
   handleSettingsMessages,
 }

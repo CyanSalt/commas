@@ -1,16 +1,14 @@
 import { difference } from 'lodash-es'
 import { watchEffect, unref } from 'vue'
 import * as commas from '../../api/renderer'
-import { useSettings } from './settings'
+import { useAddons } from './settings'
 
 export async function loadAddons() {
   await commas.app.discoverAddons()
-  const settingsRef = useSettings()
+  const addonsRef = useAddons()
   let loadedAddons: string[] = []
   watchEffect(() => {
-    const settings = unref(settingsRef)
-    const addons: string[] | undefined = settings['terminal.addon.includes']
-    if (!addons) return
+    const addons = unref(addonsRef)
     difference(loadedAddons, addons).forEach(addon => {
       commas.app.unloadAddon(addon)
     })
