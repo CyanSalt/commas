@@ -4,6 +4,7 @@ import * as net from 'net'
 import type { ReactiveEffect } from '@vue/reactivity'
 import { customRef, stop, unref } from '@vue/reactivity'
 import { createProxyServer } from 'http-proxy'
+import * as commas from '../../../api/main'
 import { useSettings } from '../../lib/settings'
 import { useEffect } from '../../utils/hooks'
 import { useProxyRules } from './rule'
@@ -22,10 +23,12 @@ async function createServer(cancelation?: Promise<void>) {
   // TODO: catch EADDRINUSE and notify error
   const proxyServer = createProxyServer()
   proxyServer.on('proxyReq', (proxyReq, req, res) => {
-    rewriteProxy('request', proxyReq, getProxyRewritingRules(rules, req.url!))
+    rewriteProxy('request', proxyReq, req, getProxyRewritingRules(rules, req.url!))
+    commas.app.events.emit('proxy-server-request', proxyReq, req, res)
   })
   proxyServer.on('proxyRes', (proxyRes, req, res) => {
-    rewriteProxy('response', res, getProxyRewritingRules(rules, req.url!))
+    rewriteProxy('response', res, proxyRes, getProxyRewritingRules(rules, req.url!))
+    commas.app.events.emit('proxy-server-response', proxyRes, req, res)
   })
   const server = http.createServer((req, res) => {
     proxyServer.web(req, res, getProxyServerOptions(rules, req.url!))

@@ -1,4 +1,4 @@
-import type { ClientRequest, ServerResponse } from 'http'
+import type { ClientRequest, IncomingMessage, ServerResponse, OutgoingMessage } from 'http'
 import type { ServerOptions } from 'http-proxy'
 import cloneDeep from 'lodash/cloneDeep'
 import { createPattern } from '../../utils/helper'
@@ -106,22 +106,23 @@ function getProxyRewritingRules(rules: ProxyRule[], href: string) {
   return matched.flatMap(rule => rule.proxy.rewrite ?? [])
 }
 
-function getRewritingContent(when: 'request' | 'response', target: ClientRequest | ServerResponse, rule: RewritingRule) {
+function getRewritingContent(when: 'request' | 'response', source: IncomingMessage, rule: RewritingRule) {
   switch (rule.type) {
     case 'header':
       if (when === 'request') {
-        if (rule.name === ':method') return (target as ClientRequest).method
-        if (rule.name === ':path') return (target as ClientRequest).path
+        if (rule.name === ':method') return source.method
+        // TODO: resolve :scheme, :authority and :path from source.url
       } else {
-        if (rule.name === ':status') return (target as ServerResponse).statusCode
+        if (rule.name === ':status') return source.statusCode
       }
-      return rule.name && target.getHeader(rule.name) || ''
-    default:
+      return rule.name && source.headers[rule.name] || ''
+    case 'body':
+      // TODO: get body from request or response
       return ''
   }
 }
 
-function rewriteContent(when: 'request' | 'response', target: ClientRequest | ServerResponse, rule: RewritingRule, content: any) {
+function rewriteContent(when: 'request' | 'response', target: OutgoingMessage, rule: RewritingRule, content: any) {
   switch (rule.type) {
     case 'header':
       if (content === null) {
@@ -142,10 +143,10 @@ function rewriteContent(when: 'request' | 'response', target: ClientRequest | Se
   }
 }
 
-function rewriteProxy(when: 'request' | 'response', target: ClientRequest | ServerResponse, rules: RewritingRule[]) {
+function rewriteProxy(when: 'request' | 'response', target: OutgoingMessage, source: IncomingMessage, rules: RewritingRule[]) {
   rules = rules.filter(item => item.when === when)
   for (const rule of rules) {
-    const original = getRewritingContent(when, target, rule)
+    const original = getRewritingContent(when, source, rule)
     let matched = true
     let content = rule.content
     if (rule.from) {
