@@ -2,7 +2,7 @@ import type { Server } from 'http'
 import * as http from 'http'
 import * as net from 'net'
 import type { ReactiveEffect } from '@vue/reactivity'
-import { customRef, stop, unref } from '@vue/reactivity'
+import { computed, customRef, stop, unref } from '@vue/reactivity'
 import { createProxyServer } from 'http-proxy'
 import * as commas from '../../../api/main'
 import { useSettings } from '../../lib/settings'
@@ -15,26 +15,33 @@ import {
   rewriteProxy,
 } from './utils'
 
+const extractedProxyRulesRef = computed(() => {
+  const proxyRules = unref(useProxyRules())
+  return extractProxyRules(proxyRules)
+})
+
 async function createServer(cancelation?: Promise<void>) {
   const settings = unref(useSettings())
-  const proxyRules = unref(useProxyRules())
   const port: number = settings['proxy.server.port']
-  const rules = extractProxyRules(proxyRules)
   // TODO: catch EADDRINUSE and notify error
   const proxyServer = createProxyServer()
   proxyServer.on('proxyReq', (proxyReq, req, res) => {
+    const rules = unref(extractedProxyRulesRef)
     rewriteProxy('request', proxyReq, req, getProxyRewritingRules(rules, req.url!))
     commas.app.events.emit('proxy-server-request', proxyReq, req, res)
   })
   proxyServer.on('proxyRes', (proxyRes, req, res) => {
+    const rules = unref(extractedProxyRulesRef)
     rewriteProxy('response', res, proxyRes, getProxyRewritingRules(rules, req.url!))
     commas.app.events.emit('proxy-server-response', proxyRes, req, res)
   })
   const server = http.createServer((req, res) => {
+    const rules = unref(extractedProxyRulesRef)
     proxyServer.web(req, res, getProxyServerOptions(rules, req.url!))
   })
   /** Inspired by {@link https://gist.github.com/tonygambone/2422322} */
   server.on('connect', (req, socket) => {
+    const rules = unref(extractedProxyRulesRef)
     const proxy = getProxyServerOptions(rules, 'https://' + req.url)
     const { protocol, host, port: proxyPort } = new URL(proxy.target)
     const targetPort = proxyPort || protocol === 'http:' ? 80 : 443
@@ -43,6 +50,9 @@ async function createServer(cancelation?: Promise<void>) {
       socket.pipe(connection)
       connection.pipe(socket)
     })
+  })
+  server.on('close', () => {
+    proxyServer.close()
   })
   if (cancelation) await cancelation
   return new Promise<Server>((resolve, reject) => {
@@ -57,6 +67,7 @@ async function createServer(cancelation?: Promise<void>) {
 async function closeServer(promise: Promise<Server>) {
   const server = await promise
   return new Promise<void>((resolve, reject) => {
+    setTimeout(resolve, 1000)
     server.close(err => {
       if (err) reject(err)
       else resolve()
