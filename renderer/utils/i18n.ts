@@ -52,8 +52,11 @@ export function translate(text: string, variables?: TranslationVariables) {
 export function translateElement(el: HTMLElement, { arg, value }: DirectiveBinding<TranslationVariables>) {
   const attr = arg ?? 'textContent'
   const originalAttr = `i18n:${attr}(original)`
-  if (el[originalAttr] === undefined) {
+  const replacedAttr = `i18n:${attr}`
+  if (el[attr] !== el[replacedAttr] || el[originalAttr] === undefined) {
     el[originalAttr] = el[attr]
   }
-  el[attr] = translate(el[originalAttr], value)
+  const content = translate(el[originalAttr], value)
+  el[attr] = content
+  el[replacedAttr] = content
 }
