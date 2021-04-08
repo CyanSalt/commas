@@ -65,7 +65,7 @@ export default {
     })
 
     function startDragging(event: DragEvent, index: number) {
-      if (props.disabled) return
+      if (props.disabled || state.items[index].contains(document.activeElement)) return
       handleMousePressing({
         onMove: handleDraggingMove,
         onEnd: handleDraggingEnd,
