@@ -278,8 +278,13 @@ export default {
 .rule-line {
   display: flex;
   align-items: center;
-  .link:first-child {
-    margin-right: 4px;
+  .link {
+    &:first-child {
+      margin-right: 4px;
+    }
+    &.remove:hover {
+      color: var(--design-red);
+    }
   }
 }
 .proxy-table .link {
