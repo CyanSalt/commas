@@ -11,6 +11,7 @@
 
 <script lang="ts">
 import 'xterm/css/xterm.css'
+import { quote } from 'shell-quote'
 import type { PropType } from 'vue'
 import { reactive, toRefs, onMounted, onActivated } from 'vue'
 import type { TerminalTab } from '../../typings/terminal'
@@ -43,11 +44,8 @@ export default {
     function dropFile(event: DragEvent) {
       const files = event.dataTransfer?.files
       if (!files || !files.length) return
-      const paths = Array.from(files).map(({ path }) => {
-        if (path.includes(' ')) return `"${path}"`
-        return path
-      })
-      writeTerminalTab(props.tab, paths.join(' '))
+      const paths = Array.from(files).map(({ path }) => path)
+      writeTerminalTab(props.tab, quote(paths))
     }
 
     onMounted(() => {
