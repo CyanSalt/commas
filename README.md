@@ -29,7 +29,7 @@ You can clone or download the repository and build Commas locally.
 - Various built-in addons
   - Visual settings editor
   - Built-in shell with custom commands supporting
-  - Easy-to-configure proxy server
+  - Integration with [Whistle](https://github.com/avwo/whistle) proxy
   - Customizable theme (200 + downloadable)
 - Internationalization support
 - User scripts and third-party addons
@@ -40,7 +40,7 @@ You can clone or download the repository and build Commas locally.
 
 - Commas has several useful / interesting built-in [addons](https://github.com/CyanSalt/commas/tree/master/addons). You can also download / write third-party addons, place them in the `addons` directory of the user data folder, and manage the addons you want to enable through settings.
 
-- Commas also supports adding custom scripts and stylesheets. You can see the sample files [here](https://github.com/CyanSalt/commas/tree/master/resources/examples). This directory also contains the example files which could help you to customize shortcut keys, command launchers, and proxy rules.
+- Commas also supports adding custom scripts and stylesheets. You can see the sample files [here](https://github.com/CyanSalt/commas/tree/master/resources/examples). This directory also contains the example files which could help you to customize shortcut keys or command launchers.
 
 - If there is no translation for the language you want in the application, you can add / modify the `translation.json` file in the user data folder. The content of the file can be similar to part of [the translation file](https://github.com/CyanSalt/commas/blob/master/resources/locales/zh-CN.json). You can also use key-value pairs like `"@use": "zh-CN"` to refer to an existing translation file.
 

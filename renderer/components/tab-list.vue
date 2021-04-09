@@ -364,7 +364,7 @@ export default {
   cursor: pointer;
   opacity: 0.5;
   transition: opacity 0.2s;
-  &:hover,
+  &:hover:not(.disabled),
   &.active {
     opacity: 1;
   }

@@ -29,7 +29,7 @@
 - 内置多种插件
   - 可视化配置编辑器
   - 支持自定义命令的内置 Shell
-  - 易于配置的代理服务器
+  - 集成 [Whistle](https://github.com/avwo/whistle) 代理
   - 可定制主题 (200+ 可下载)
 - 多语言支持
 - 支持用户脚本和第三方插件
@@ -40,7 +40,7 @@
 
 - Commas 内置了数个有用/有趣的[插件](https://github.com/CyanSalt/commas/tree/master/addons)，你也可以下载/编写第三方插件放置在用户数据文件夹的 `addons` 目录下，并通过设置来管理期望启用的插件。
 
-- Commas 也支持添加自定义脚本和样式表。你可以查看这里的[示例文件](https://github.com/CyanSalt/commas/tree/master/resources/examples)。这个目录下也包含了辅助你自定义快捷键、命令启动项和代理规则等的示例文件。
+- Commas 也支持添加自定义脚本和样式表。你可以查看这里的[示例文件](https://github.com/CyanSalt/commas/tree/master/resources/examples)。这个目录下也包含了辅助你自定义快捷键或是命令启动项的示例文件。
 
 - 如果应用内没有你想要语言的翻译，你可以在用户数据文件夹下添加/修改 `translation.json` 文件。文件内容可以是类似于这个[翻译文件](https://github.com/CyanSalt/commas/blob/master/resources/locales/zh-CN.json)的一部分。你也可以通过 `"@use": "zh-CN"` 这样的键值对来引用已有的翻译文件。
 

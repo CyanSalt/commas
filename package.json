@@ -26,7 +26,6 @@
     "@cyansalt/stylelint-config": "^1.3.1",
     "@cyansalt/tsconfig": "^1.1.1",
     "@types/color-rgba": "^2.1.0",
-    "@types/http-proxy": "^1.17.5",
     "@types/json5": "^2.2.0",
     "@types/lodash": "^4.14.168",
     "@types/lodash-es": "^4.17.4",
@@ -70,7 +69,6 @@
   "dependencies": {
     "@vue/reactivity": "^3.0.11",
     "color-rgba": "^2.2.3",
-    "http-proxy": "^1.18.1",
     "json5": "^2.2.0",
     "lodash": "^4.17.21",
     "node-pty": "^0.10.0",

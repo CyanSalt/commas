@@ -1,7 +1,8 @@
 <template>
-  <div :class="['proxy-anchor', { active: isActive }]" @click="toggleProxyServer">
-    <span class="feather-icon icon-navigation"></span>
-    <span v-if="isActive" class="server-port">{{ port }}</span>
+  <div :class="['proxy-anchor', { active: status, disabled: status === undefined }]" @click="toggle">
+    <span v-if="status === undefined" class="feather-icon icon-more-horizontal"></span>
+    <span v-else class="feather-icon icon-navigation"></span>
+    <span v-if="status" class="server-port">{{ port }}</span>
   </div>
 </template>
 
@@ -14,7 +15,7 @@ export default {
   name: 'proxy-anchor',
   setup() {
     const state = reactive({
-      isActive: useProxyServerStatus(),
+      status: useProxyServerStatus(),
     })
 
     const settingsRef = useSettings()
@@ -23,14 +24,16 @@ export default {
       return settings['proxy.server.port']
     })
 
-    function toggleProxyServer() {
-      state.isActive = !state.isActive
+    function toggle() {
+      if (state.status !== undefined) {
+        state.status = !state.status
+      }
     }
 
     return {
       ...toRefs(state),
       port: portRef,
-      toggleProxyServer,
+      toggle,
     }
   },
 }
@@ -43,6 +46,7 @@ export default {
   }
 }
 .server-port {
+  margin-left: 2px;
   vertical-align: 1px;
 }
 </style>

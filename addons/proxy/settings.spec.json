@@ -5,8 +5,8 @@
     "paradigm": [0, 65535],
     "label": "Proxy Server Port",
     "comments": [
-      "Specify HTTP port for development proxy server"
+      "Specify HTTP port for proxy server"
     ],
-    "default": 16383
+    "default": 8899
   }
 ]
