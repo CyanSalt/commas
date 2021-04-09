@@ -8,10 +8,8 @@ import type { IPty, IPtyForkOptions } from 'node-pty'
 import * as pty from 'node-pty'
 import type { TerminalInfo } from '../../typings/terminal'
 import { execa } from '../utils/helper'
+import { defaultEnv, defaultShell } from '../utils/shell'
 import { useSettings, whenSettingsReady } from './settings'
-
-const defaultShell = process.platform === 'win32'
-  ? process.env.COMSPEC : process.env.SHELL
 
 const getVariables = memoize(async () => {
   await app.whenReady()
@@ -36,13 +34,9 @@ async function createTerminal(webContents: WebContents, { shell, cwd }: CreateTe
   const settings = unref(settingsRef)
   const variables = await getVariables()
   const env: Record<string, string> = {
-    ...process.env,
+    ...defaultEnv,
     ...variables,
     ...settings['terminal.shell.env'],
-  }
-  // Fix NVM `npm_config_prefix` error in development environment
-  if (!app.isPackaged && env.npm_config_prefix) {
-    delete env.npm_config_prefix
   }
   if (!shell) {
     shell = settings['terminal.shell.path'] || defaultShell

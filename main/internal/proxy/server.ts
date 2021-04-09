@@ -3,16 +3,21 @@ import { customRef, stop, unref } from '@vue/reactivity'
 import { useSettings } from '../../lib/settings'
 import { execa } from '../../utils/helper'
 import { useEffect } from '../../utils/hooks'
+import { defaultEnv, defaultShell } from '../../utils/shell'
+
+function execute(command: string) {
+  return execa(`${defaultShell} -lic '${command}'`, { env: defaultEnv })
+}
 
 async function createServer(cancelation?: Promise<unknown>) {
   const settings = unref(useSettings())
   const port: number = settings['proxy.server.port']
   if (cancelation) await cancelation
-  return execa(`whistle start -p ${port}`)
+  return execute(`whistle start -p ${port}`)
 }
 
 async function closeServer() {
-  return execa('whistle stop')
+  return execute('whistle stop')
 }
 
 const serverStatusRef = customRef<boolean | undefined>((track, trigger) => {
