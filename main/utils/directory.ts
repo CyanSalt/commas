@@ -1,11 +1,10 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import type { Readable } from 'stream'
 import { customRef, effect } from '@vue/reactivity'
-import { app, net } from 'electron'
+import { app } from 'electron'
 import * as JSON5 from 'json5'
 import debounce from 'lodash/debounce'
-import { oncea } from './helper'
+import { downloadFile } from './net'
 import { Writer } from './writer'
 
 class Directory {
@@ -87,14 +86,7 @@ class Directory {
     }
     await this.ensure(basename)
     const file = this.file(basename)
-    const stream = fs.createWriteStream(file)
-    await oncea(stream, 'open')
-    const request = net.request(url)
-    const sending = oncea(request, 'response', 'error')
-    request.end()
-    const [response] = await sending;
-    (response as unknown as Readable).pipe(stream)
-    await oncea(stream, 'finish')
+    await downloadFile(url, file)
     return this.load(basename) as Promise<T>
   }
 

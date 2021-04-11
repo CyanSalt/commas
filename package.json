@@ -73,6 +73,7 @@
     "lodash": "^4.17.21",
     "node-pty": "^0.10.0",
     "recast": "^0.20.3",
+    "sudo-prompt": "^9.2.1",
     "yargs-parser": "^20.2.7"
   }
 }

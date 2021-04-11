@@ -1,23 +1,27 @@
 import type { ReactiveEffect } from '@vue/reactivity'
 import { customRef, stop, unref } from '@vue/reactivity'
 import { useSettings } from '../../lib/settings'
-import { execa } from '../../utils/helper'
 import { useEffect } from '../../utils/hooks'
-import { defaultEnv, defaultShell } from '../../utils/shell'
-
-function execute(command: string) {
-  return execa(`${defaultShell} -lic '${command}'`, { env: defaultEnv })
-}
+import { loginExecute } from '../../utils/shell'
 
 async function createServer(cancelation?: Promise<unknown>) {
   const settings = unref(useSettings())
   const port: number = settings['proxy.server.port']
   if (cancelation) await cancelation
-  return execute(`whistle start -p ${port}`)
+  return loginExecute(`whistle start -p ${port}`)
 }
 
-async function closeServer() {
-  return execute('whistle stop')
+function closeServer() {
+  return loginExecute('whistle stop')
+}
+
+async function getProxyServerVersion() {
+  try {
+    const { stdout } = await loginExecute('whistle -V')
+    return stdout.trim()
+  } catch {
+    return 'N/A'
+  }
 }
 
 const serverStatusRef = customRef<boolean | undefined>((track, trigger) => {
@@ -74,4 +78,5 @@ function useProxyServerStatus() {
 
 export {
   useProxyServerStatus,
+  getProxyServerVersion,
 }

@@ -1,6 +1,9 @@
 {
-  "Edit proxy rules#!proxy.1": "编辑代理规则",
+  "Proxy Configurations#!proxy.1": "代理配置",
   "Enable system proxy#!proxy.2": "启用系统代理",
+  "Edit proxy rules#!proxy.3": "编辑代理规则",
+  "Install Root Cerification#!proxy.4": "安装根证书",
+  "Open Keychain Access#!proxy.5": "打开钥匙串访问",
   "Proxy Server Port#!settings.label.proxy.server.port": "代理服务器端口",
   "Specify HTTP port for proxy server#!settings.comments.0.proxy.server.port": "为代理服务器指定 HTTP 端口"
 }
