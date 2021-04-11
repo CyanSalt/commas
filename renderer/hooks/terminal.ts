@@ -46,42 +46,6 @@ export function getTerminalTabIndex(tab: TerminalTab) {
   return tabs.indexOf(toRaw(tab))
 }
 
-const historyRef = ref<TerminalTab[]>([])
-const historyIndexRef = ref(-1)
-const historyStateRef = computed(() => {
-  const history = unref(historyRef)
-  const historyIndex = unref(historyIndexRef)
-  return history[historyIndex]
-})
-
-watch(currentTerminalRef, (value, oldValue) => {
-  if (!value) return
-  const historyState = unref(historyStateRef)
-  if (oldValue && historyState !== oldValue) return
-  const history = unref(historyRef)
-  const historyIndex = unref(historyIndexRef)
-  // TODO: max stack size
-  historyRef.value = [...history.slice(0, historyIndex + 1), value]
-  historyIndexRef.value += 1
-})
-
-export function travelInTerminalHistory(step: number) {
-  const history = unref(historyRef)
-  if (!history.length) return
-  const historyIndex = unref(historyIndexRef)
-  const index = Math.min(Math.max(historyIndex + step, 0), history.length - 1)
-  const state = history[index]
-  const tabIndex = getTerminalTabIndex(state)
-  if (tabIndex === -1) {
-    history.splice(index, 1)
-    travelInTerminalHistory(step)
-  } else {
-    // Must change tab index before history index changed
-    activeIndexRef.value = tabIndex
-    historyIndexRef.value = index
-  }
-}
-
 const terminalOptionsRef = computed<Partial<ITerminalOptions>>(() => {
   const settingsRef = useSettings()
   const themeRef = useTheme()
@@ -215,7 +179,33 @@ export function getTerminalTabTitle(tab: TerminalTab) {
   return getPrompt(expr, tab) || tab.process
 }
 
+function handleTerminalTabHistory() {
+  let navigating: number | null = null
+  window.addEventListener('popstate', event => {
+    if (!event.state) return
+    const tabs = unref(tabsRef)
+    const targetIndex = tabs.findIndex(item => item.pid === event.state.pid)
+    if (targetIndex !== -1) {
+      navigating = event.state.pid
+      activeIndexRef.value = targetIndex
+    }
+  })
+  watch(currentTerminalRef, (value, oldValue) => {
+    if (value && navigating === value.pid) {
+      navigating = null
+      return
+    }
+    const state = value ? { pid: value.pid } : null
+    if (oldValue && getTerminalTabIndex(oldValue) !== -1) {
+      history.pushState(state, '')
+    } else {
+      history.replaceState(state, '')
+    }
+  })
+}
+
 export function handleTerminalMessages() {
+  handleTerminalTabHistory()
   ipcRenderer.on('open-tab', (event, options: CreateTerminalTabOptions) => {
     createTerminalTab(options)
   })
@@ -290,10 +280,10 @@ export function handleTerminalMessages() {
     }
   })
   ipcRenderer.on('go-back', () => {
-    travelInTerminalHistory(-1)
+    history.back()
   })
   ipcRenderer.on('go-forward', () => {
-    travelInTerminalHistory(1)
+    history.forward()
   })
   ipcRenderer.on('show-tab-options', () => {
     const tabs = unref(tabsRef)
