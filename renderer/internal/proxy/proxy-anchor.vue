@@ -1,5 +1,8 @@
 <template>
-  <div :class="['proxy-anchor', { active: status, disabled: status === undefined }]" @click="toggle">
+  <div
+    :class="['proxy-anchor', { active: status, disabled: status === undefined, system: systemStatus }]"
+    @click="toggle"
+  >
     <span v-if="status === undefined" class="feather-icon icon-more-horizontal"></span>
     <span v-else class="feather-icon icon-navigation"></span>
     <span v-if="status" class="server-port">{{ port }}</span>
@@ -9,13 +12,14 @@
 <script lang="ts">
 import { reactive, toRefs, computed, unref } from 'vue'
 import { useSettings } from '../../hooks/settings'
-import { useProxyServerStatus } from './hooks'
+import { useProxyServerStatus, useSystemProxyStatus } from './hooks'
 
 export default {
   name: 'proxy-anchor',
   setup() {
     const state = reactive({
       status: useProxyServerStatus(),
+      systemStatus: useSystemProxyStatus(),
     })
 
     const settingsRef = useSettings()
@@ -43,6 +47,9 @@ export default {
 .proxy-anchor {
   &.active {
     color: var(--design-cyan);
+    &.system {
+      color: var(--design-magenta);
+    }
   }
 }
 .server-port {

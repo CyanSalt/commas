@@ -1,4 +1,4 @@
-import { computed, unref } from '@vue/reactivity'
+import { customRef, effect, unref } from '@vue/reactivity'
 import { useSettings } from '../../lib/settings'
 import { execa } from '../../utils/helper'
 
@@ -72,13 +72,22 @@ async function setSystemProxy(value: boolean) {
   return setGlobalWebProxy(proxy)
 }
 
-const systemStatusRef = computed<Promise<boolean>>({
-  get() {
-    return loadSystemProxy()
-  },
-  async set(value) {
-    setSystemProxy(await value)
-  },
+const systemStatusRef = customRef<boolean>((track, trigger) => {
+  let value = false
+  const reactiveEffect = effect(async () => {
+    value = await loadSystemProxy()
+    trigger()
+  })
+  return {
+    get() {
+      track()
+      return value
+    },
+    async set(newValue) {
+      await setSystemProxy(newValue)
+      reactiveEffect()
+    },
+  }
 })
 
 function useSystemProxyStatus() {
