@@ -3,22 +3,12 @@ import * as os from 'os'
 import { unref } from '@vue/reactivity'
 import type { WebContents } from 'electron'
 import { app, ipcMain } from 'electron'
-import memoize from 'lodash/memoize'
 import type { IPty, IPtyForkOptions } from 'node-pty'
 import * as pty from 'node-pty'
 import type { TerminalInfo } from '../../typings/terminal'
 import { execa } from '../utils/helper'
-import { defaultEnv, defaultShell } from '../utils/shell'
+import { getDefaultEnv, getDefaultShell } from '../utils/shell'
 import { useSettings, whenSettingsReady } from './settings'
-
-const getVariables = memoize(async () => {
-  await app.whenReady()
-  return {
-    LANG: app.getLocale().replace('-', '_') + '.UTF-8',
-    TERM_PROGRAM: app.name,
-    TERM_PROGRAM_VERSION: app.getVersion(),
-  }
-})
 
 const ptyProcessMap = new Map<number, IPty>()
 
@@ -32,14 +22,13 @@ async function createTerminal(webContents: WebContents, { shell, cwd }: CreateTe
   const settingsRef = useSettings()
   await whenSettingsReady()
   const settings = unref(settingsRef)
-  const variables = await getVariables()
+  await app.whenReady()
   const env: Record<string, string> = {
-    ...defaultEnv,
-    ...variables,
+    ...getDefaultEnv(),
     ...settings['terminal.shell.env'],
   }
   if (!shell) {
-    shell = settings['terminal.shell.path'] || defaultShell
+    shell = settings['terminal.shell.path'] || getDefaultShell()
   }
   if (cwd) {
     try {
