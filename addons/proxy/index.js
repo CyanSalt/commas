@@ -8,15 +8,26 @@ module.exports = function (commas) {
     const { effect, ref, stop } = require('@vue/reactivity')
 
     const { checkRootCA, installRootCA, uninstallRootCA } = commas.bundler.extract('proxy/cert.ts')
-    const { useProxyServerStatus, getProxyServerVersion } = commas.bundler.extract('proxy/server.ts')
+    const { getLatestProxyServerVersion, getProxyServerVersion, installProxyServer, useProxyServerStatus } = commas.bundler.extract('proxy/server.ts')
     const { useSystemProxyStatus } = commas.bundler.extract('proxy/system.ts')
 
     // Server
     const serverStatusRef = useProxyServerStatus()
     commas.ipcMain.provide('proxy-server-status', serverStatusRef)
 
-    commas.ipcMain.handle('get-proxy-server-version', () => {
-      return getProxyServerVersion()
+    commas.ipcMain.handle('get-latest-proxy-server-version', async () => {
+      return getLatestProxyServerVersion()
+    })
+
+    const serverVersionRef = ref(undefined)
+    const serverVersionEffect = effect(async () => {
+      serverVersionRef.value = await getProxyServerVersion()
+    })
+    commas.ipcMain.provide('proxy-server-version', serverVersionRef)
+
+    commas.ipcMain.handle('install-proxy-server', async () => {
+      await installProxyServer()
+      return serverVersionEffect()
     })
 
     // System
@@ -31,15 +42,16 @@ module.exports = function (commas) {
 
     commas.ipcMain.handle('install-proxy-root-ca', async () => {
       await installRootCA()
-      rootCAEffect()
+      return rootCAEffect()
     })
 
     commas.ipcMain.handle('uninstall-proxy-root-ca', async () => {
       await uninstallRootCA()
-      rootCAEffect()
+      return rootCAEffect()
     })
 
     commas.app.onCleanup(() => {
+      stop(serverVersionEffect)
       stop(rootCAEffect)
       serverStatusRef.value = false
       systemStatusRef.value = false

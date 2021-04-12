@@ -20,8 +20,21 @@ async function getProxyServerVersion() {
     const { stdout } = await loginExecute('whistle -V')
     return stdout.trim()
   } catch {
-    return 'N/A'
+    return null
   }
+}
+
+async function getLatestProxyServerVersion() {
+  try {
+    const { stdout } = await loginExecute('npm view whistle version')
+    return stdout.trim()
+  } catch {
+    return null
+  }
+}
+
+function installProxyServer() {
+  return loginExecute('npm install -g whistle')
 }
 
 const serverStatusRef = customRef<boolean | undefined>((track, trigger) => {
@@ -79,4 +92,6 @@ function useProxyServerStatus() {
 export {
   useProxyServerStatus,
   getProxyServerVersion,
+  getLatestProxyServerVersion,
+  installProxyServer,
 }

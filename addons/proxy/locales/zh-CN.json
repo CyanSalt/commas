@@ -5,9 +5,8 @@
   "Install Root Certification#!proxy.4": "安装根证书",
   "Open Keychain Access#!proxy.5": "打开钥匙串访问",
   "HTTPS Proxy#!proxy.6": "HTTPS 代理",
-  "Whistle#!proxy.7": "Whistle",
+  "Uninstall Root Certification#!proxy.7": "卸载根证书",
   "Certification installed#!proxy.8": "证书已安装",
-  "Uninstall Root Certification#!proxy.9": "卸载根证书",
   "Proxy Server Port#!settings.label.proxy.server.port": "代理服务器端口",
   "Specify HTTP port for proxy server#!settings.comments.0.proxy.server.port": "为代理服务器指定 HTTP 端口"
 }

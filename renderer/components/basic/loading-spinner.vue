@@ -19,6 +19,10 @@ export default {
     transform: rotate(1turn);
   }
 }
+.loading-spinner {
+  display: inline-block;
+  vertical-align: -0.15em;
+}
 .spinner {
   width: 1em;
   height: 1em;
