@@ -5,10 +5,11 @@ module.exports = function (commas) {
   if (commas.app.isMainProcess()) {
 
     const path = require('path')
+    const { effect, ref, stop } = require('@vue/reactivity')
 
+    const { checkRootCA, installRootCA, uninstallRootCA } = commas.bundler.extract('proxy/cert.ts')
     const { useProxyServerStatus, getProxyServerVersion } = commas.bundler.extract('proxy/server.ts')
     const { useSystemProxyStatus } = commas.bundler.extract('proxy/system.ts')
-    const { installRootCA } = commas.bundler.extract('proxy/utils.ts')
 
     // Server
     const serverStatusRef = useProxyServerStatus()
@@ -22,11 +23,24 @@ module.exports = function (commas) {
     const systemStatusRef = useSystemProxyStatus()
     commas.ipcMain.provide('system-proxy-status', systemStatusRef)
 
-    commas.ipcMain.handle('install-proxy-root-ca', () => {
-      return installRootCA()
+    const rootCAStatusRef = ref(false)
+    const rootCAEffect = effect(async () => {
+      rootCAStatusRef.value = await checkRootCA()
+    })
+    commas.ipcMain.provide('proxy-root-ca-status', rootCAStatusRef)
+
+    commas.ipcMain.handle('install-proxy-root-ca', async () => {
+      await installRootCA()
+      rootCAEffect()
+    })
+
+    commas.ipcMain.handle('uninstall-proxy-root-ca', async () => {
+      await uninstallRootCA()
+      rootCAEffect()
     })
 
     commas.app.onCleanup(() => {
+      stop(rootCAEffect)
       serverStatusRef.value = false
       systemStatusRef.value = false
     })

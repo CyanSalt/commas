@@ -3,6 +3,7 @@ import os from 'os'
 import path from 'path'
 import { unref } from '@vue/reactivity'
 import { useSettings } from '../../lib/settings'
+import { execa } from '../../utils/helper'
 import { downloadFile } from '../../utils/net'
 import { sudo } from '../../utils/privilige'
 
@@ -15,6 +16,21 @@ async function installRootCA() {
   await fs.promises.unlink(cert)
 }
 
+function uninstallRootCA() {
+  return sudo('security delete-certificate -c whistle.')
+}
+
+async function checkRootCA() {
+  try {
+    await execa('security find-certificate -c whistle.')
+    return true
+  } catch {
+    return false
+  }
+}
+
 export {
   installRootCA,
+  uninstallRootCA,
+  checkRootCA,
 }

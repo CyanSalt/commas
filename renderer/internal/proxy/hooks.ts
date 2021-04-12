@@ -8,3 +8,7 @@ export const useProxyServerStatus = memoize(() => {
 export const useSystemProxyStatus = memoize(() => {
   return injectIPC<boolean>('system-proxy-status', false)
 })
+
+export const useProxyRootCAStatus = memoize(() => {
+  return injectIPC<boolean>('proxy-root-ca-status', false)
+})
