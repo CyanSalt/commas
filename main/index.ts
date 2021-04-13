@@ -46,8 +46,8 @@ async function initialize() {
 
 initialize()
 
-app.on('activate', () => {
-  if (!hasWindow() && app.isReady()) {
+app.on('activate', (event, hasVisibleWindows) => {
+  if (!hasVisibleWindows && app.isReady()) {
     createWindow()
   }
 })
