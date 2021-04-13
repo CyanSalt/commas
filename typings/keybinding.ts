@@ -3,6 +3,6 @@ export interface KeyBinding {
   accelerator: string,
   when?: 'keydown' | 'keyup',
   command?: string,
-  args?: any,
+  args?: any[],
   submenu?: KeyBinding[],
 }

@@ -104,7 +104,7 @@ export function moveLauncher(from: number, to: number) {
 }
 
 export function handleLauncherMessages() {
-  ipcRenderer.on('run-script', (event, { launcher, index: scriptIndex }: { launcher: Launcher, index: number }) => {
-    runLauncherScript(launcher, scriptIndex)
+  ipcRenderer.on('run-script', (event, launcher: Launcher, index: number) => {
+    runLauncherScript(launcher, index)
   })
 }

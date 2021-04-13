@@ -142,10 +142,7 @@ export default {
         scripts.map((script, index) => ({
           label: script.name || script.command,
           command: 'run-script',
-          args: {
-            launcher,
-            index,
-          },
+          args: [launcher, index],
         })),
         event,
       )

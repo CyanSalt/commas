@@ -65,7 +65,7 @@ module.exports = function (commas) {
       handler(argv, event) {
         const index = Number.parseInt(argv)
         if (!Number.isNaN(index)) {
-          event.sender.send('select-tab', { index })
+          event.sender.send('select-tab', index)
         }
       },
     })

@@ -259,12 +259,12 @@ export function handleTerminalMessages() {
     if (!tab) return
     closeTerminalTab(tab)
   })
-  ipcRenderer.on('select-tab', (event, args: { index: number }) => {
+  ipcRenderer.on('select-tab', (event, index: number) => {
     const tabs = unref(tabsRef)
     if (!tabs.length) return
-    let index = args.index % tabs.length
-    if (index < 0) index += tabs.length
-    activeIndexRef.value = index
+    let targetIndex = index % tabs.length
+    if (targetIndex < 0) targetIndex += tabs.length
+    activeIndexRef.value = targetIndex
   })
   ipcRenderer.on('select-previous-tab', () => {
     const activeIndex = unref(activeIndexRef)
@@ -295,16 +295,16 @@ export function handleTerminalMessages() {
     const groups = groupBy(entries, entry => Boolean(entry.launcher)) as Partial<Record<'true' | 'false', typeof entries>>
     const normalTabs = (groups.false ?? []).map(({ tab, index }) => ({
       label: getTerminalTabTitle(tab),
-      args: { index },
+      args: [index],
     }))
     const launcherTabs = sortBy(
       groups.true ?? [],
       ({ launcher }) => unref(useLaunchers()).findIndex(item => item.id === launcher!.id)
     ).map(({ launcher, index }) => ({
       label: launcher!.name,
-      args: { index },
+      args: [index],
     }))
-    const options = [...normalTabs, ...launcherTabs].map<MenuItemConstructorOptions & { args?: { index: number } }>((item, index) => {
+    const options = [...normalTabs, ...launcherTabs].map<MenuItemConstructorOptions & { args?: any[] }>((item, index) => {
       const number = index + 1
       return {
         ...item,
@@ -315,7 +315,7 @@ export function handleTerminalMessages() {
     if (groups.false && groups.true) {
       options.splice(groups.false.length, 0, { type: 'separator' })
     }
-    openContextMenu(options, [0, 36], options.findIndex(item => item.args?.index === activeIndex))
+    openContextMenu(options, [0, 36], options.findIndex(item => item.args?.[0] === activeIndex))
   })
 }
 

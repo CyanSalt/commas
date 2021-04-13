@@ -170,9 +170,7 @@ export default {
       openContextMenu(state.shells.map(shell => ({
         label: path.basename(shell),
         command: 'open-tab',
-        args: {
-          shell,
-        },
+        args: [{ shell }],
       })), event)
     }
 
