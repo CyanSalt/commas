@@ -7,22 +7,23 @@ module.exports = function (commas) {
     const childProcess = require('child_process')
     const path = require('path')
     const util = require('util')
+    const { computed } = require('@vue/reactivity')
     const { app } = require('electron')
     const random = require('lodash/random')
     const { effect, stop, unref } = require('@vue/reactivity')
     const { executeCommand, resolveCommandAliases, useExternalURLCommands } = commas.bundler.extract('shell/command.ts')
 
-    commas.ipcMain.handle('get-shell-commands', async () => {
-      const settings = await commas.settings.getSettings()
+    const commands = commas.context.getCollection('shell')
+    const shellCommandsRef = computed(() => {
+      const settings = commas.settings.getSettings()
       const aliases = settings['shell.command.aliases']
-      const commands = commas.context.getCollection('shell')
       return [...Object.keys(aliases), ...commands.map(item => item.command)]
     })
+    commas.ipcMain.provide('shell-commands', shellCommandsRef)
 
-    commas.ipcMain.handle('execute-shell-command', async (event, line) => {
-      const settings = await commas.settings.getSettings()
+    commas.ipcMain.handle('execute-shell-command', (event, line) => {
+      const settings = commas.settings.getSettings()
       const aliases = settings['shell.command.aliases']
-      const commands = commas.context.getCollection('shell')
       return executeCommand(event, resolveCommandAliases(line, aliases), commands)
     })
 
@@ -113,12 +114,12 @@ module.exports = function (commas) {
       },
     })
 
-    let loadedCommands = []
+    let loadedExternalURLCommands = []
     const reactiveEffect = effect(() => {
-      const commands = unref(useExternalURLCommands())
-      commas.context.cancelProviding('shell', ...loadedCommands)
-      commas.context.provide('shell', ...commands)
-      loadedCommands = commands
+      const externalURLCommands = unref(useExternalURLCommands())
+      commas.context.cancelProviding('shell', ...loadedExternalURLCommands)
+      commas.context.provide('shell', ...externalURLCommands)
+      loadedExternalURLCommands = externalURLCommands
     })
     commas.app.onCleanup(() => {
       stop(reactiveEffect)
