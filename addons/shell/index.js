@@ -114,9 +114,10 @@ module.exports = function (commas) {
       },
     })
 
+    const externalURLCommandsRef = useExternalURLCommands()
     let loadedExternalURLCommands = []
     const reactiveEffect = effect(() => {
-      const externalURLCommands = unref(useExternalURLCommands())
+      const externalURLCommands = unref(externalURLCommandsRef)
       commas.context.cancelProviding('shell', ...loadedExternalURLCommands)
       commas.context.provide('shell', ...externalURLCommands)
       loadedExternalURLCommands = externalURLCommands

@@ -94,8 +94,9 @@ export default {
     })
 
     const tabsRef = useTerminalTabs()
+    const willQuitRef = useWillQuit()
     window.addEventListener('beforeunload', async event => {
-      const willQuit = unref(useWillQuit())
+      const willQuit = unref(willQuitRef)
       const tabs = unref(tabsRef)
       if (!willQuit && tabs.length > 1) {
         event.returnValue = false

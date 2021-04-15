@@ -58,8 +58,9 @@ function createWindow(...args: string[]) {
   // these handler must be bound in main process
   handleEvents(frame)
   // reactive effects
+  const themeOptionsRef = useThemeOptions()
   const reactiveEffect = effect(() => {
-    const themeOptions = unref(useThemeOptions())
+    const themeOptions = unref(themeOptionsRef)
     if (process.platform !== 'darwin') {
       createWindowMenu(frame)
     }

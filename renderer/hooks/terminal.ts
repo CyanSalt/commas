@@ -297,9 +297,10 @@ export function handleTerminalMessages() {
       label: getTerminalTabTitle(tab),
       args: [index],
     }))
+    const launchers = unref(useLaunchers())
     const launcherTabs = sortBy(
       groups.true ?? [],
-      ({ launcher }) => unref(useLaunchers()).findIndex(item => item.id === launcher!.id)
+      ({ launcher }) => launchers.findIndex(item => item.id === launcher!.id)
     ).map(({ launcher, index }) => ({
       label: launcher!.name,
       args: [index],

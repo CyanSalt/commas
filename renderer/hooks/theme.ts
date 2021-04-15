@@ -20,8 +20,9 @@ const themeStyleRef = computed<Partial<CSSStyleDeclaration>>(() => {
 })
 
 export function injectTheme() {
+  const themeRef = useTheme()
   watchEffect((onInvalidate) => {
-    const theme = unref(useTheme())
+    const theme = unref(themeRef)
     const type = theme.type
     document.body.dataset.themeType = type
     onInvalidate(() => {
