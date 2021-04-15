@@ -64,7 +64,7 @@ module.exports = function (commas) {
   } else {
 
     commas.workspace.registerTabPane('proxy', {
-      title: 'Proxy Configurations#!proxy.1',
+      title: 'Proxy#!proxy.1',
       component: commas.bundler.extract('proxy/proxy-pane.vue').default,
       icon: {
         name: 'feather-icon icon-navigation',

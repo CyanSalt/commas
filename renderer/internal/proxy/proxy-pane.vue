@@ -1,12 +1,12 @@
 <template>
   <terminal-pane class="proxy-pane">
-    <h2 v-i18n class="group-title">Proxy Configurations#!proxy.1</h2>
+    <h2 v-i18n class="group-title">Proxy#!proxy.1</h2>
     <div class="group">
       <div v-if="supportsSystemProxy" class="form-line">
-        <label v-i18n class="form-label">Enable system proxy#!proxy.2</label>
+        <label v-i18n class="form-label">Enable system proxy#!proxy.3</label>
         <switch-control v-model="isSystemProxyEnabled"></switch-control>
       </div>
-      <span v-i18n class="link" @click="openEditor">Edit proxy rules#!proxy.1</span>
+      <span v-i18n class="link" @click="openEditor">Edit proxy rules#!proxy.4</span>
       <div class="form-line">
         <span v-i18n="{ V: version ?? '--' }" class="text">Current version: %V#!preference.9</span>
         <span v-if="isInstalling" class="form-action" @click="install">
@@ -18,15 +18,15 @@
       </div>
     </div>
     <template v-if="supportsKeyChain">
-      <h2 v-i18n class="group-title">HTTPS Proxy#!proxy.6</h2>
+      <h2 v-i18n class="group-title">HTTPS Proxy#!proxy.5</h2>
       <div class="group">
         <span v-if="isCertInstalled" class="cert-status">
           <span class="feather-icon icon-check"></span>
           <span v-i18n>Certification installed#!proxy.8</span>
         </span>
         <span v-if="isCertInstalled" v-i18n class="link" @click="uninstallRootCA">Uninstall Root Certification#!proxy.7</span>
-        <span v-else v-i18n class="link" @click="installRootCA">Install Root Certification#!proxy.4</span>
-        <span v-i18n class="link" @click="openKeychainAccess">Open Keychain Access#!proxy.5</span>
+        <span v-else v-i18n class="link" @click="installRootCA">Install Root Certification#!proxy.6</span>
+        <span v-i18n class="link" @click="openKeychainAccess">Open Keychain Access#!proxy.9</span>
       </div>
     </template>
   </terminal-pane>

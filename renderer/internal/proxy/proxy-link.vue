@@ -1,6 +1,6 @@
 <template>
   <span class="link proxy-link" @click="configure">
-    <span v-i18n>Proxy Configurations#!proxy.1</span>
+    <span v-i18n>Configure Proxy#!proxy.2</span>
   </span>
 </template>
 

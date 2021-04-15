@@ -1,12 +1,13 @@
 {
-  "Proxy Configurations#!proxy.1": "代理配置",
-  "Enable system proxy#!proxy.2": "启用系统代理",
-  "Edit proxy rules#!proxy.3": "编辑代理规则",
-  "Install Root Certification#!proxy.4": "安装根证书",
-  "Open Keychain Access#!proxy.5": "打开钥匙串访问",
-  "HTTPS Proxy#!proxy.6": "HTTPS 代理",
+  "Proxy#!proxy.1": "代理",
+  "Configure Proxy#!proxy.2": "配置代理",
+  "Enable system proxy#!proxy.3": "启用系统代理",
+  "Edit proxy rules#!proxy.4": "编辑代理规则",
+  "HTTPS Proxy#!proxy.5": "HTTPS 代理",
+  "Install Root Certification#!proxy.6": "安装根证书",
   "Uninstall Root Certification#!proxy.7": "卸载根证书",
   "Certification installed#!proxy.8": "证书已安装",
+  "Open Keychain Access#!proxy.9": "打开钥匙串访问",
   "Proxy Server Port#!settings.label.proxy.server.port": "代理服务器端口",
   "Specify HTTP port for proxy server#!settings.comments.0.proxy.server.port": "为代理服务器指定 HTTP 端口"
 }
