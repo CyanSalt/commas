@@ -63,7 +63,7 @@ export default {
     opacity: 0.25;
     transition: opacity 0.2s, background 0.2s;
     .switch-checkbox:checked + & {
-      background: var(--system-accent);
+      background: rgb(var(--system-accent));
       opacity: 1;
     }
   }

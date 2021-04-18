@@ -239,10 +239,10 @@ export default {
   -webkit-app-region: no-drag;
 }
 .open-directory:hover {
-  color: var(--design-blue);
+  color: rgb(var(--design-blue));
 }
 .run-script:hover {
-  color: var(--design-green);
+  color: rgb(var(--design-green));
 }
 .directory-icon {
   width: 16px;
@@ -296,7 +296,7 @@ export default {
   font-size: 12px;
   cursor: pointer;
   -webkit-app-region: no-drag;
-  opacity: 0.5;
+  color: rgb(var(--theme-foreground) / 0.5);
 }
 .button {
   width: 36px;
@@ -305,13 +305,13 @@ export default {
   transition: color 0.2s;
   -webkit-app-region: no-drag;
   &.minimize:hover {
-    color: var(--design-green);
+    color: rgb(var(--design-green));
   }
   &.maximize:hover {
-    color: var(--design-yellow);
+    color: rgb(var(--design-yellow));
   }
   &.close:hover {
-    color: var(--design-red);
+    color: rgb(var(--design-red));
   }
 }
 </style>

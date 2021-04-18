@@ -116,6 +116,6 @@ export default {
 <style lang="scss" scoped>
 .cert-status .feather-icon {
   margin-right: 8px;
-  color: var(--design-green);
+  color: rgb(var(--design-green));
 }
 </style>

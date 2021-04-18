@@ -118,7 +118,7 @@ export default {
   font-family: inherit;
   background: rgb(127 127 127 / 0.2);
   &::placeholder {
-    color: var(--theme-foreground);
+    color: rgb(var(--theme-foreground));
     opacity: 0.25;
   }
   &:read-only {

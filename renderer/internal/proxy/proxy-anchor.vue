@@ -46,9 +46,9 @@ export default {
 <style lang="scss" scoped>
 .proxy-anchor {
   &.active {
-    color: var(--design-cyan);
+    color: rgb(var(--design-cyan));
     &.system {
-      color: var(--design-magenta);
+      color: rgb(var(--design-magenta));
     }
   }
 }

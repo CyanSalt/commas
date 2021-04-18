@@ -20,7 +20,6 @@
         </div>
       </div>
     </div>
-    <div class="divider"></div>
   </div>
 </template>
 
@@ -128,6 +127,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   height: var(--tab-height);
+  border-bottom: 1px solid rgb(var(--theme-foreground) / 0.05);
   &::before {
     content: '';
     position: absolute;
@@ -135,14 +135,14 @@ export default {
     bottom: 11px;
     transform: scale(0);
     left: -16px;
-    border-left: 5px solid var(--design-blue);
+    border-left: 5px solid rgb(var(--design-blue));
     transition: transform 0.15s, border-color 0.2s;
     .tab-item.active & {
       transform: scale(1);
     }
     .sortable-item.dragging & {
       transform: scale(1);
-      border-left-color: var(--design-yellow);
+      border-left-color: rgb(var(--design-yellow));
     }
   }
 }
@@ -159,7 +159,7 @@ export default {
   background: currentColor;
   transition: color 0.2s;
   &.busy {
-    color: var(--design-green);
+    color: rgb(var(--design-green));
   }
   .tab-item:hover & {
     display: none;
@@ -179,10 +179,6 @@ export default {
   transition: color 0.2s;
 }
 .close:hover {
-  color: var(--design-red);
-}
-.divider {
-  border-bottom: 1px solid var(--theme-foreground);
-  opacity: 0.05;
+  color: rgb(var(--design-red));
 }
 </style>

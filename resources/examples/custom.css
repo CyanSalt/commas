@@ -5,6 +5,6 @@
 /* an example to customize your software */
 /*
 .title-bar {
-  background: var(--theme-background);
+  background: rgb(var(--theme-background));
 }
 */

@@ -12,6 +12,37 @@ interface BrowserWindowThemeOptions {
   vibrancy: BrowserWindowConstructorOptions['vibrancy'],
 }
 
+const CSS_COLORS = {
+  // xterm
+  foreground: '--theme-foreground',
+  background: '--theme-background',
+  black: '--theme-black',
+  red: '--theme-red',
+  green: '--theme-green',
+  yellow: '--theme-yellow',
+  blue: '--theme-blue',
+  magenta: '--theme-magenta',
+  cyan: '--theme-cyan',
+  white: '--theme-white',
+  brightBlack: '--theme-brightblack',
+  brightRed: '--theme-brightred',
+  brightGreen: '--theme-brightgreen',
+  brightYellow: '--theme-brightyellow',
+  brightBlue: '--theme-brightblue',
+  brightMagenta: '--theme-brightmagenta',
+  brightCyan: '--theme-brightcyan',
+  brightWhite: '--theme-brightwhite',
+  // extensions
+  systemAccent: '--system-accent',
+}
+
+const CSS_PROPERTIES = {
+  // xterm
+  selection: '--theme-selection',
+  // extensions
+  opacity: '--theme-opacity',
+}
+
 const defaultTheme = resources.require<Theme>('themes/oceanic-next.json')!
 
 const themeRef = computed(async () => {
@@ -39,10 +70,6 @@ const themeRef = computed(async () => {
   theme.type = isDark ? 'dark' : 'light'
   theme.opacity = opacity
   theme.background = toCSSColor({ ...backgroundRGBA, a: 1 })
-  theme.backdrop = opacity < 1 ? toCSSColor({
-    ...backgroundRGBA,
-    a: opacity,
-  }) : theme.background
   if (!theme.selection || toRGBA(theme.selection).a < 1) {
     theme.selection = toCSSColor(mix(toRGBA(theme.foreground!), backgroundRGBA, 0.5))
   }
@@ -54,6 +81,17 @@ const themeRef = computed(async () => {
   }
   const accentColor = systemPreferences.getAccentColor()
   theme.systemAccent = accentColor ? `#${accentColor.slice(0, 6)}` : ''
+  theme.variables = Object.fromEntries([
+    ...Object.entries(CSS_COLORS).map(([key, attr]) => {
+      let value = theme[key]
+      if (value) {
+        const rgba = toRGBA(theme[key])
+        value = `${rgba.r} ${rgba.g} ${rgba.b}`
+      }
+      return [attr, value]
+    }),
+    ...Object.entries(CSS_PROPERTIES).map(([key, attr]) => [attr, theme[key]]),
+  ].filter(([key, value]) => value !== undefined))
   return theme
 })
 

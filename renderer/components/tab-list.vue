@@ -267,8 +267,7 @@ export default {
   flex: none;
   width: 2px;
   margin: 4px 0;
-  border-right: 2px solid var(--theme-foreground);
-  opacity: 0.05;
+  border-right: 2px solid rgb(var(--theme-foreground) / 0.05);
   cursor: col-resize;
 }
 .new-tab {
@@ -315,14 +314,14 @@ export default {
   }
   &.active {
     opacity: 1;
-    color: var(--design-yellow);
+    color: rgb(var(--design-yellow));
   }
 }
 .group-name {
   opacity: 0.5;
   transition: opacity 0.2s, color 0.2s, transform 0.2s;
   &.collapsed {
-    color: var(--design-yellow);
+    color: rgb(var(--design-yellow));
     transform: rotate(-90deg);
     opacity: 1;
   }
@@ -368,9 +367,9 @@ export default {
   }
 }
 .launch:hover {
-  color: var(--design-green);
+  color: rgb(var(--design-green));
 }
 .launch-externally:hover {
-  color: var(--design-blue);
+  color: rgb(var(--design-blue));
 }
 </style>

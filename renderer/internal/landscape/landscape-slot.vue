@@ -27,7 +27,7 @@
         y="0"
         width="100vw"
         height="100vh"
-        fill="var(--theme-foreground)"
+        fill="rgb(var(--theme-foreground))"
         mask="url(#background-mask)"
         filter="url(#background-filter)"
       />

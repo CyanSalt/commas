@@ -164,7 +164,7 @@ export default {
     margin-right: 4px;
   }
   &.remove:hover {
-    color: var(--design-red);
+    color: rgb(var(--design-red));
   }
 }
 .property-arrow {

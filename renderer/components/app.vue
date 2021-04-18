@@ -125,12 +125,12 @@ export default {
 
 <style lang="scss" scoped>
 :global(:root) {
-  --design-green: #28c941;
-  --design-yellow: #ffbd2e;
-  --design-red: #ff6159;
-  --design-blue: #2f88ff;
-  --design-magenta: #cf96fd;
-  --design-cyan: #00c8d2;
+  --design-green: 40 201 65;
+  --design-yellow: 255 189 46;
+  --design-red: 255 97 89;
+  --design-blue: 47 136 255;
+  --design-magenta: 207 150 253;
+  --design-cyan: 0 200 210;
   --system-accent: var(--design-blue);
 }
 :global(::selection) {
@@ -152,11 +152,11 @@ export default {
   overflow: hidden;
   /* Default line height of xterm.js */
   line-height: 1.2;
-  color: var(--theme-foreground, transparent);
-  background: var(--theme-backdrop);
+  color: rgb(var(--theme-foreground));
+  background: rgb(var(--theme-background) / var(--theme-opacity));
   transition: background 0.2s;
   &.opaque {
-    background: var(--theme-background);
+    background: rgb(var(--theme-background));
   }
 }
 .content {

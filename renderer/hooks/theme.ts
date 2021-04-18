@@ -1,22 +1,11 @@
 import { ipcRenderer } from 'electron'
 import { memoize } from 'lodash-es'
-import { computed, unref, watchEffect } from 'vue'
+import { unref, watchEffect } from 'vue'
 import type { Theme } from '../../typings/theme'
 import { injectIPC } from '../utils/hooks'
 
 export const useTheme = memoize(() => {
-  return injectIPC('theme', {} as Theme)
-})
-
-const themeStyleRef = computed<Partial<CSSStyleDeclaration>>(() => {
-  const property = {
-    systemAccent: '--system-accent',
-  }
-  const theme = unref(useTheme())
-  return Object.fromEntries(
-    Object.entries(theme).filter(([key, value]) => value)
-      .map(([key, value]) => [property[key] ?? `--theme-${key.toLowerCase()}`, value])
-  )
+  return injectIPC('theme', { variables: {} } as Theme)
 })
 
 export function injectTheme() {
@@ -30,8 +19,8 @@ export function injectTheme() {
     })
   })
   watchEffect((onInvalidate) => {
-    const style = unref(themeStyleRef)
-    const declarations = Object.entries(style)
+    const theme = unref(themeRef)
+    const declarations = Object.entries(theme.variables)
       .map(([key, value]) => `${key}: ${value};`).join(' ')
     const injection: Promise<string> = ipcRenderer.invoke('inject-style', `:root[data-commas] { ${declarations} }`)
     onInvalidate(async () => {

@@ -110,10 +110,10 @@ export default {
   transform: rotate(-90deg);
 }
 .revert {
-  color: var(--design-red);
+  color: rgb(var(--design-red));
 }
 .confirm {
-  color: var(--design-green);
+  color: rgb(var(--design-green));
 }
 .revert.disabled,
 .confirm.disabled {

@@ -252,7 +252,7 @@ export default {
       font-style: italic;
     }
     &.changed {
-      color: var(--design-yellow);
+      color: rgb(var(--design-yellow));
     }
   }
 }
