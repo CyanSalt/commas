@@ -133,6 +133,9 @@ export default {
   --design-cyan: #00c8d2;
   --system-accent: var(--design-blue);
 }
+:global(::selection) {
+  background: var(--theme-selection);
+}
 :global(body) {
   margin: 0;
   font-family: Fira Code, Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
