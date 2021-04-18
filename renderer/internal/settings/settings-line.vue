@@ -1,6 +1,6 @@
 <template>
   <div :class="['user-setting-line', 'form-line', 'block', { collapsed }]">
-    <label class="form-label">
+    <label :class="['form-label', { customized: isCustomized, changed: isChanged }]">
       <span class="link tree-node" @click="toggle">
         <span class="feather-icon icon-chevron-down"></span>
       </span>
@@ -69,6 +69,7 @@
 </template>
 
 <script lang="ts">
+import { isEqual } from 'lodash-es'
 import type { PropType } from 'vue'
 import { reactive, computed, toRefs, unref } from 'vue'
 import * as commas from '../../../api/renderer'
@@ -89,6 +90,10 @@ export default {
       required: true,
     },
     modelValue: {
+      type: undefined,
+      required: true,
+    },
+    currentValue: {
       type: undefined,
       required: true,
     },
@@ -126,6 +131,15 @@ export default {
       set: (value) => {
         emit('update:modelValue', parse(value))
       },
+    })
+
+    const isCustomizedRef = computed(() => {
+      if (props.modelValue === undefined) return false
+      return !isEqual(props.modelValue, props.spec.default)
+    })
+
+    const isChangedRef = computed(() => {
+      return !isEqual(props.modelValue, props.currentValue)
     })
 
     const hasNotesRef = computed(() => {
@@ -218,6 +232,8 @@ export default {
       isSimpleObject: isSimpleObjectRef,
       placeholder: placeholderRef,
       model: modelRef,
+      isCustomized: isCustomizedRef,
+      isChanged: isChangedRef,
       hasNotes: hasNotesRef,
       getNote,
       toggle,
@@ -232,6 +248,12 @@ export default {
   &.form-line.block .form-label {
     display: flex;
     align-items: center;
+    &.customized {
+      font-style: italic;
+    }
+    &.changed {
+      color: var(--design-yellow);
+    }
   }
 }
 .item-key {

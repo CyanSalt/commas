@@ -19,6 +19,7 @@
         :ref="line => lines[index] = line"
         v-model="values[row.key]"
         :spec="row"
+        :current-value="settings[row.key]"
       ></settings-line>
     </div>
   </terminal-pane>
@@ -39,14 +40,13 @@ export default {
   },
   setup() {
     const state = reactive({
+      settings: useUserSettings(),
       values: {},
       lines: [] as { collapsed: boolean }[],
     })
 
-    const userSettingsRef = useUserSettings()
     const isChangedRef = computed(() => {
-      const userSettings = unref(userSettingsRef)
-      return !isEqual(userSettings, state.values)
+      return !isEqual(state.settings, state.values)
     })
 
     const specsRef = useSettingsSpecs()
@@ -59,12 +59,11 @@ export default {
     })
 
     function revert() {
-      const userSettings = unref(userSettingsRef)
-      state.values = cloneDeep(userSettings)
+      state.values = cloneDeep(state.settings)
     }
 
     function confirm() {
-      userSettingsRef.value = state.values
+      state.settings = state.values
     }
 
     const isCollapsedRef = computed<boolean>({
