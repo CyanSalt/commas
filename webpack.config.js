@@ -23,7 +23,6 @@ module.exports = [
     },
     externals: [
       /^(?!\.|\/)/,
-      /\/resources\//,
     ],
     module: {
       rules: [

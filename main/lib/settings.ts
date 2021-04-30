@@ -10,7 +10,7 @@ import { userData, resources } from '../utils/directory'
 import { globalHandler } from '../utils/handler'
 import { provideIPC } from '../utils/hooks'
 
-const defaultSpecs: SettingsSpec[] = require('../../resources/settings.spec.json')
+const defaultSpecs = resources.require<SettingsSpec[]>('settings.spec.json')!
 
 const specsRef = ref(defaultSpecs)
 
