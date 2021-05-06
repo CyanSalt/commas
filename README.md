@@ -28,7 +28,7 @@ You can clone or download the repository and build Commas locally.
 - Customizable rapid command launchers
 - Various built-in addons
   - Visual settings editor
-  - Built-in shell with custom commands supporting
+  - CLI with custom commands supporting
   - Integration with [Whistle](https://github.com/avwo/whistle) proxy
   - Customizable theme (200 + downloadable)
 - Internationalization support

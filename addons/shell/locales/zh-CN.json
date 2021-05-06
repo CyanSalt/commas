@@ -1,8 +1,0 @@
-{
-  "Shell#!shell.1": "Shell",
-  "Open shell#!shell.2": "打开 Shell",
-  "External URL Commands#!settings.label.shell.command.externalURLs": "外部网址命令",
-  "Shortcut commands for external URLs#!settings.comments.0.shell.command.externalURLs": "外部网址的快捷命令",
-  "Commands Aliases#!settings.label.shell.command.aliases": "命令别名",
-  "Commands aliases in the shell#!settings.comments.0.shell.command.aliases": "Shell 中的命令别名"
-}

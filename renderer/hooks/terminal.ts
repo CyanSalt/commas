@@ -106,11 +106,7 @@ export async function createTerminalTab({ cwd, shell: shellPath, command, launch
     if (!matchedItem) return true
     switch (matchedItem.command) {
       case 'xterm:send': {
-        const data = matchedItem.args ? matchedItem.args.map(value => {
-          return typeof value === 'number'
-            ? String.fromCharCode(value) : String(value)
-        }) : []
-        writeTerminalTab(tab, data.join(''))
+        writeTerminalTab(tab, matchedItem.args ? matchedItem.args.join('') : '')
         return false
       }
       default:
@@ -140,6 +136,26 @@ export async function createTerminalTab({ cwd, shell: shellPath, command, launch
   }, 250)
   xterm.onLineFeed(() => {
     updateCwd()
+  })
+  xterm.parser.registerOscHandler(539, data => {
+    let argv
+    try {
+      argv = JSON.parse(data)
+    } catch {
+      return false
+    }
+    switch (argv[0]) {
+      case 'cli':
+        ipcRenderer.invoke('cli', argv.slice(1)).then(result => {
+          const output = result.code === 0 ? result.stdout : result.stderr
+          if (typeof output === 'string') {
+            xterm.write('\u001b[1K\r' + output.replace(/(?<!\r)\n/g, '\r\n'))
+            writeTerminalTab(tab, '\u0003')
+          }
+        })
+        return true
+    }
+    return false
   })
   watch(terminalOptionsRef, (terminalOptions) => {
     const latestXterm = tab.xterm
@@ -383,7 +399,7 @@ export function writeTerminalTab(tab: TerminalTab, data: string) {
 }
 
 export function executeTerminalTab(tab: TerminalTab, command: string, restart?: boolean) {
-  return writeTerminalTab(tab, (restart ? '\x03' : '') + command + os.EOL)
+  return writeTerminalTab(tab, (restart ? '\u0003' : '') + command + os.EOL)
 }
 
 export function closeTerminalTab(tab: TerminalTab) {

@@ -17,6 +17,7 @@ function getDefaultEnv() {
     LANG: app.getLocale().replace('-', '_') + '.UTF-8',
     TERM_PROGRAM: app.name,
     TERM_PROGRAM_VERSION: app.getVersion(),
+    TERM_PROGRAM_BIN: app.getPath('exe'),
     PATH: process.env.PATH ? `${process.env.PATH}:${BIN_PATH}` : BIN_PATH,
   }
   // Fix NVM `npm_config_prefix` error in development environment

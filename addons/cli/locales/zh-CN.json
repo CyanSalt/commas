@@ -1,0 +1,6 @@
+{
+  "External URL Commands#!settings.label.cli.command.externalURLs": "外部网址命令",
+  "Shortcut commands for external URLs#!settings.comments.0.cli.command.externalURLs": "外部网址的快捷命令",
+  "Commands Aliases#!settings.label.cli.command.aliases": "命令别名",
+  "Commands aliases in the CLI#!settings.comments.0.cli.command.aliases": "CLI 中的命令别名"
+}

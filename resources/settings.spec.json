@@ -179,11 +179,11 @@
     "key": "terminal.addon.includes",
     "type": "list",
     "paradigm": ["string"],
-    "recommendations": ["shell", "preference", "proxy", "settings", "theme", "menu", "power-mode", "sync", "landscape"],
+    "recommendations": ["cli", "preference", "proxy", "settings", "theme", "menu", "power-mode", "sync", "landscape"],
     "label": "Enabled Addons",
     "comments": [
       "List of enabled addon name"
     ],
-    "default": ["shell", "preference", "proxy", "settings", "theme", "menu", "power-mode"]
+    "default": ["cli", "preference", "proxy", "settings", "theme", "menu", "power-mode"]
   }
 ]

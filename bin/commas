@@ -1,3 +1,4 @@
 #!/bin/sh
 
-echo 'I am here.'
+payload=$(ELECTRON_RUN_AS_NODE=1 ${TERM_PROGRAM_BIN:-node} $(dirname $0)/_argv.js cli "$@")
+echo "\x1b]539;$payload"
