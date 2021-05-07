@@ -41,7 +41,9 @@ const dictionaryRef = computed(() => {
   const translations = unref(translationsRef)
   const sources = [...translations]
     .sort((a, b) => a.priority - b.priority)
-    .map(item => item.dictionary)
+    // Strange issue: Cannot read property 'dictionary' of undefined
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    .map(item => item?.dictionary)
   const dictionary: Dictionary = Object.assign({}, ...sources)
   return dictionary
 })
