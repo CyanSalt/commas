@@ -1,0 +1,3 @@
+#!/bin/sh
+
+ELECTRON_RUN_AS_NODE=1 ${TERM_PROGRAM_BIN:-node} "$@"

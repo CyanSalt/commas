@@ -22,12 +22,12 @@ export async function executeCommand(event: IpcMainInvokeEvent, args: string[], 
   const controller = commands.find(item => item.command === command)
   try {
     if (!controller) {
-      throw new Error(`command not found: ${command}`)
+      throw new Error(`commas: command not found: ${command}`)
     }
     const stdout = await controller.handler(argv, event)
     return { code: 0, stdout: typeof stdout === 'string' ? stdout : undefined }
   } catch (err) {
-    return { code: 1, stderr: String(err) }
+    return { code: 1, stderr: err.message }
   }
 }
 
