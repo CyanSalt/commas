@@ -9,7 +9,7 @@ module.exports = function (commas) {
     const { app } = require('electron')
     const random = require('lodash/random')
     const { effect, stop, unref } = require('@vue/reactivity')
-    const { executeCommand, resolveCommandAliases, useExternalURLCommands } = commas.bundler.extract('cli/command.ts')
+    const { executeCommand, resolveCommandAliases, useExternalURLCommands } = commas.bundler.extract('cli/main/command.ts')
 
     const commands = commas.context.getCollection('cli')
     commas.ipcMain.handle('cli', (event, args) => {

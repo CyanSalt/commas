@@ -14,7 +14,7 @@ module.exports = function (commas) {
 
   } else {
 
-    const { PowerMode } = commas.bundler.extract('power-mode/xterm.ts')
+    const { PowerMode } = commas.bundler.extract('power-mode/renderer/xterm.ts')
 
     const instances = []
 

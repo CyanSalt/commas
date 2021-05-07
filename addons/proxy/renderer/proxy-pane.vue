@@ -35,10 +35,10 @@
 <script lang="ts">
 import { ipcRenderer, shell } from 'electron'
 import { computed, reactive, toRefs, unref, watchEffect } from 'vue'
-import LoadingSpinner from '../../components/basic/loading-spinner.vue'
-import SwitchControl from '../../components/basic/switch-control.vue'
-import TerminalPane from '../../components/basic/terminal-pane.vue'
-import { useSettings } from '../../hooks/settings'
+import LoadingSpinner from '../../../renderer/components/basic/loading-spinner.vue'
+import SwitchControl from '../../../renderer/components/basic/switch-control.vue'
+import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
+import { useSettings } from '../../../renderer/hooks/settings'
 import { useProxyRootCAStatus, useProxyServerVersion, useSystemProxyStatus } from './hooks'
 
 export default {

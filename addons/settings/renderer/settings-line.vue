@@ -73,10 +73,10 @@ import { isEqual } from 'lodash-es'
 import type { PropType } from 'vue'
 import { reactive, computed, toRefs, unref } from 'vue'
 import * as commas from '../../../api/renderer'
+import type { EditorEntryItem } from '../../../renderer/components/basic/object-editor.vue'
+import ObjectEditor from '../../../renderer/components/basic/object-editor.vue'
+import SwitchControl from '../../../renderer/components/basic/switch-control.vue'
 import type { SettingsSpec } from '../../../typings/settings'
-import type { EditorEntryItem } from '../../components/basic/object-editor.vue'
-import ObjectEditor from '../../components/basic/object-editor.vue'
-import SwitchControl from '../../components/basic/switch-control.vue'
 
 export default {
   name: 'settings-line',

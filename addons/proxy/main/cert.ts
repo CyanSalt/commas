@@ -2,10 +2,10 @@ import fs from 'fs'
 import os from 'os'
 import path from 'path'
 import { unref } from '@vue/reactivity'
-import { useSettings } from '../../lib/settings'
-import { execa } from '../../utils/helper'
-import { downloadFile } from '../../utils/net'
-import { sudo } from '../../utils/privilige'
+import { useSettings } from '../../../main/lib/settings'
+import { execa } from '../../../main/utils/helper'
+import { downloadFile } from '../../../main/utils/net'
+import { sudo } from '../../../main/utils/privilege'
 
 async function installRootCA() {
   const settings = unref(useSettings())

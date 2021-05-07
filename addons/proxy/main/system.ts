@@ -1,6 +1,6 @@
 import { customRef, effect, unref } from '@vue/reactivity'
-import { useSettings } from '../../lib/settings'
-import { execa } from '../../utils/helper'
+import { useSettings } from '../../../main/lib/settings'
+import { execa } from '../../../main/utils/helper'
 
 async function getMacOSCurrentNetworkService() {
   const networkInterface = 'route get default | grep interface | awk \'{print $2}\''

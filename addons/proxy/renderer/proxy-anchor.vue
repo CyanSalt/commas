@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import { reactive, toRefs, computed, unref } from 'vue'
-import { useSettings } from '../../hooks/settings'
+import { useSettings } from '../../../renderer/hooks/settings'
 import { useProxyServerStatus, useSystemProxyStatus } from './hooks'
 
 export default {

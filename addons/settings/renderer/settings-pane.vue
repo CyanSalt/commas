@@ -28,8 +28,8 @@
 <script lang="ts">
 import { cloneDeep, isEqual } from 'lodash-es'
 import { reactive, computed, unref, toRefs, watchEffect, onBeforeUpdate } from 'vue'
-import TerminalPane from '../../components/basic/terminal-pane.vue'
-import { useUserSettings, useSettingsSpecs } from '../../hooks/settings'
+import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
+import { useUserSettings, useSettingsSpecs } from '../../../renderer/hooks/settings'
 import SettingsLine from './settings-line.vue'
 
 export default {

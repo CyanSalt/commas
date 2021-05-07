@@ -1,5 +1,5 @@
 import { memoize } from 'lodash-es'
-import { injectIPC } from '../../utils/hooks'
+import { injectIPC } from '../../../renderer/utils/hooks'
 
 export const useProxyServerStatus = memoize(() => {
   return injectIPC<boolean | undefined>('proxy-server-status', undefined)

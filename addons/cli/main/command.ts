@@ -2,7 +2,7 @@ import * as util from 'util'
 import { computed, unref } from '@vue/reactivity'
 import { shell } from 'electron'
 import type { IpcMainInvokeEvent } from 'electron'
-import { useSettings } from '../../lib/settings'
+import { useSettings } from '../../../main/lib/settings'
 
 export interface CommandModule {
   command: string,

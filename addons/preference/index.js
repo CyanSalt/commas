@@ -25,7 +25,7 @@ module.exports = function (commas) {
 
     commas.workspace.registerTabPane('preference', {
       title: 'Preferences#!preference.1',
-      component: commas.bundler.extract('preference/preference-pane.vue').default,
+      component: commas.bundler.extract('preference/renderer/preference-pane.vue').default,
       icon: {
         name: 'feather-icon icon-settings',
       },

@@ -37,7 +37,7 @@
 
 <script lang="ts">
 import { computed, reactive, toRefs, unref, watchEffect } from 'vue'
-import { useSettings } from '../../hooks/settings'
+import { useSettings } from '../../../renderer/hooks/settings'
 import { useNonce } from './hooks'
 
 export default {

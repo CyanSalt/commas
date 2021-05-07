@@ -1,4 +1,4 @@
-import './internal/connect'
+import './utils/connect'
 import { createApp } from 'vue'
 import App from './components/app.vue'
 import { translateElement } from './utils/i18n'

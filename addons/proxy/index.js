@@ -7,9 +7,9 @@ module.exports = function (commas) {
     const path = require('path')
     const { effect, ref, stop } = require('@vue/reactivity')
 
-    const { checkRootCA, installRootCA, uninstallRootCA } = commas.bundler.extract('proxy/cert.ts')
-    const { getLatestProxyServerVersion, getProxyServerVersion, installProxyServer, useProxyServerStatus } = commas.bundler.extract('proxy/server.ts')
-    const { useSystemProxyStatus } = commas.bundler.extract('proxy/system.ts')
+    const { checkRootCA, installRootCA, uninstallRootCA } = commas.bundler.extract('proxy/main/cert.ts')
+    const { getLatestProxyServerVersion, getProxyServerVersion, installProxyServer, useProxyServerStatus } = commas.bundler.extract('proxy/main/server.ts')
+    const { useSystemProxyStatus } = commas.bundler.extract('proxy/main/system.ts')
 
     // Server
     const serverStatusRef = useProxyServerStatus()
@@ -65,7 +65,7 @@ module.exports = function (commas) {
 
     commas.workspace.registerTabPane('proxy', {
       title: 'Proxy#!proxy.1',
-      component: commas.bundler.extract('proxy/proxy-pane.vue').default,
+      component: commas.bundler.extract('proxy/renderer/proxy-pane.vue').default,
       icon: {
         name: 'feather-icon icon-navigation',
       },
@@ -73,11 +73,11 @@ module.exports = function (commas) {
 
     commas.context.provide(
       '@anchor',
-      commas.bundler.extract('proxy/proxy-anchor.vue').default
+      commas.bundler.extract('proxy/renderer/proxy-anchor.vue').default
     )
 
     commas.context.provide('preference', {
-      component: commas.bundler.extract('proxy/proxy-link.vue').default,
+      component: commas.bundler.extract('proxy/renderer/proxy-link.vue').default,
       group: 'feature',
     })
 
