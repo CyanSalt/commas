@@ -20,15 +20,11 @@ export function resolveCommandAliases(args: string[], aliases: Record<string, st
 export async function executeCommand(event: IpcMainInvokeEvent, args: string[], commands: CommandModule[]) {
   const [command, ...argv] = args
   const controller = commands.find(item => item.command === command)
-  try {
-    if (!controller) {
-      throw new Error(`commas: command not found: ${command}`)
-    }
-    const stdout = await controller.handler(argv, event)
-    return { code: 0, stdout: typeof stdout === 'string' ? stdout : undefined }
-  } catch (err) {
-    return { code: 1, stderr: err.message }
+  if (!controller) {
+    return executeCommand(event, ['help'], commands)
   }
+  const stdout = await controller.handler(argv, event)
+  return typeof stdout === 'string' ? stdout : undefined
 }
 
 const externalURLCommandsRef = computed<CommandModule[]>(() => {

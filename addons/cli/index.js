@@ -8,7 +8,7 @@ module.exports = function (commas) {
     const util = require('util')
     const { app } = require('electron')
     const random = require('lodash/random')
-    const { effect, stop, unref } = require('@vue/reactivity')
+    const { computed, effect, stop, unref } = require('@vue/reactivity')
     const { executeCommand, resolveCommandAliases, useExternalURLCommands } = commas.bundler.extract('cli/main/command.ts')
 
     const commands = commas.context.getCollection('cli')
@@ -16,6 +16,44 @@ module.exports = function (commas) {
       const settings = commas.settings.getSettings()
       const aliases = settings['cli.command.aliases'] ?? {}
       return executeCommand(event, resolveCommandAliases(args, aliases), commands)
+    })
+
+    /** {@link https://github.com/npm/cli/blob/latest/lib/utils/npm-usage.js#L39-L55} */
+    const wrap = (arr) => {
+      const out = ['']
+      const line = process.stdout.columns
+        ? Math.min(60, Math.max(process.stdout.columns - 16, 24))
+        : 60
+      let l = 0
+      for (const c of arr.sort((a, b) => (a < b ? -1 : 1))) {
+        if (out[l].length + c.length + 2 < line) {
+          out[l] += ', ' + c
+        } else {
+          out[l++] += ','
+          out[l] = c
+        }
+      }
+      return out.join('\n    ').slice(2)
+    }
+
+    const commandListRef = computed(() => {
+      const settings = commas.settings.getSettings()
+      const aliases = settings['cli.command.aliases'] ?? {}
+      return [
+        ...commands.map(item => item.command),
+        ...Object.keys(aliases),
+      ]
+    })
+
+    commas.context.provide('cli', {
+      command: 'help',
+      handler() {
+        return [
+          '\nUsage: commas <command>\n',
+          '\nwhere <command> is one of:',
+          '\n    ' + wrap(unref(commandListRef)) + '\n',
+        ].join('')
+      },
     })
 
     commas.context.provide('cli', {
