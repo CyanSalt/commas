@@ -4,10 +4,10 @@
 module.exports = function (commas) {
   if (commas.app.isMainProcess()) {
 
-    commas.context.provide('shell', {
+    commas.context.provide('cli', {
       command: 'power',
       async handler(argv, event) {
-        const [status] = argv._
+        const [status] = argv
         event.sender.send('toggle-power-mode', status !== 'off')
       },
     })
