@@ -20,7 +20,7 @@
     "default": ["--login"]
   },
   {
-    "key": "terminal.shell.args.windows",
+    "key": "terminal.shell.windowsArgs",
     "type": "list",
     "paradigm": ["string"],
     "configurable": ["win32"],

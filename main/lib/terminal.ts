@@ -47,7 +47,7 @@ async function createTerminal(webContents: WebContents, { shell, cwd }: CreateTe
   }
   let args: string[] = settings['terminal.shell.args']
   if (process.platform === 'win32') {
-    args = settings['terminal.shell.args.windows']
+    args = settings['terminal.shell.windowsArgs']
   } else {
     options.encoding = 'utf8'
   }
