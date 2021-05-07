@@ -14,7 +14,7 @@ module.exports = function (commas) {
     const commands = commas.context.getCollection('cli')
     commas.ipcMain.handle('cli', (event, args) => {
       const settings = commas.settings.getSettings()
-      const aliases = settings['cli.command.aliases']
+      const aliases = settings['cli.command.aliases'] ?? {}
       return executeCommand(event, resolveCommandAliases(args, aliases), commands)
     })
 
