@@ -7,9 +7,11 @@ module.exports = function (commas) {
     const path = require('path')
     const { stop } = require('@vue/reactivity')
     const { app, autoUpdater } = require('electron')
-    const { setupAutoUpdater, useAutoUpdaterEffect } = commas.bundler.extract('updater/main/updater.ts')
+    const { checkForUpdates, setupAutoUpdater, useAutoUpdaterEffect } = commas.bundler.extract('updater/main/updater.ts')
 
-    if (app.isPackaged && ['darwin', 'win32'].includes(process.platform)) {
+    const supportsAutoUpdater = app.isPackaged && ['darwin', 'win32'].includes(process.platform)
+
+    if (supportsAutoUpdater) {
       // Notification
       autoUpdater.on('update-downloaded', async (event, notes, name) => {
         const response = await commas.frame.notify({
@@ -31,13 +33,20 @@ module.exports = function (commas) {
       })
     }
 
+    commas.ipcMain.handle('check-for-updates', () => {
+      if (supportsAutoUpdater) checkForUpdates()
+    })
+
     commas.settings.addSpecs(require('./settings.spec.json'))
 
     commas.i18n.addTranslationDirectory(path.join(__dirname, 'locales'))
 
   } else {
 
-    // pass
+    commas.context.provide('preference', {
+      component: commas.bundler.extract('updater/renderer/updater-link.vue').default,
+      group: 'about',
+    })
 
   }
 }
