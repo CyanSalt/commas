@@ -13,7 +13,6 @@ import { startServingProtocol, handleProtocolRequest } from './lib/protocol'
 import { handleSettingsMessages, useSettings, whenSettingsReady } from './lib/settings'
 import { handleTerminalMessages } from './lib/terminal'
 import { handleThemeMessages } from './lib/theme'
-import { setupAutoUpdater } from './lib/updater'
 import { createWindow, handleWindowMessages } from './lib/window'
 
 handleMessages()
@@ -39,7 +38,6 @@ async function initialize() {
       createDockMenu()
     })
   }
-  setupAutoUpdater()
   startServingProtocol()
   createWindow(cwd)
 }

@@ -1,0 +1,12 @@
+[
+  {
+    "key": "updater.polling.interval",
+    "type": "number",
+    "label": "Update Check Interval",
+    "comments": [
+      "Check interval for automatic updates in minutes",
+      "Set to 0 to check only at startup"
+    ],
+    "default": 60
+  }
+]

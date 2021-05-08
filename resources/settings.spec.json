@@ -167,23 +167,14 @@
     "default": {}
   },
   {
-    "key": "terminal.updater.enabled",
-    "type": "boolean",
-    "label": "Enable Auto Updating",
-    "comments": [
-      "Check for updates automatically"
-    ],
-    "default": true
-  },
-  {
     "key": "terminal.addon.includes",
     "type": "list",
     "paradigm": ["string"],
-    "recommendations": ["cli", "preference", "proxy", "settings", "theme", "menu", "power-mode", "sync", "landscape"],
+    "recommendations": ["cli", "updater", "preference", "proxy", "settings", "theme", "menu", "power-mode", "sync", "landscape"],
     "label": "Enabled Addons",
     "comments": [
       "List of enabled addon name"
     ],
-    "default": ["cli", "preference", "proxy", "settings", "theme", "menu", "power-mode"]
+    "default": ["cli", "updater", "preference", "proxy", "settings", "theme", "menu", "power-mode"]
   }
 ]

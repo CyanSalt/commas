@@ -41,7 +41,7 @@ module.exports = function (commas) {
             body: commas.i18n.translate('Synchronization succeeded#!sync.3'),
             actions: [
               commas.i18n.translate('View#!sync.5'),
-              commas.i18n.translate('Later#!terminal.8'),
+              commas.i18n.translate('Later#!sync.6'),
             ],
           })
           if (notificationResponse === 0) {
