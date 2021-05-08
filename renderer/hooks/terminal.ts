@@ -148,7 +148,8 @@ export async function createTerminalTab({ cwd, shell: shellPath, command, launch
       case 'cli':
         ipcRenderer.invoke('cli', argv.slice(1)).then(result => {
           if (typeof result === 'string') {
-            xterm.write('\u001b[1K\r' + result.replace(/(?<!\r)\n/g, '\r\n'))
+            xterm.write('\x1b[u\u001b[J')
+            xterm.write(result.replace(/(?<!\r)\n/g, '\r\n'))
             writeTerminalTab(tab, '\u0003')
           }
         })
