@@ -53,6 +53,10 @@ async function createTerminal(webContents: WebContents, { shell, cwd }: CreateTe
   }
   const ptyProcess = pty.spawn(shell!, args, options)
   ptyProcess.onData(data => {
+    // Custom flow control
+    if (data.includes('\u001b]539;')) {
+      ptyProcess.pause()
+    }
     webContents.send('input-terminal', {
       pid: ptyProcess.pid,
       process: ptyProcess.process,
@@ -92,6 +96,10 @@ function handleTerminalMessages() {
   ipcMain.handle('close-terminal', (event, pid: number) => {
     const ptyProcess = ptyProcessMap.get(pid)
     ptyProcess?.kill()
+  })
+  ipcMain.handle('resume-terminal', (event, pid: number) => {
+    const ptyProcess = ptyProcessMap.get(pid)
+    ptyProcess?.resume()
   })
   ipcMain.handle('get-terminal-cwd', async (event, pid: number) => {
     try {
