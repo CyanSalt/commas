@@ -146,6 +146,7 @@ export async function createTerminalTab({ cwd, shell: shellPath, command, launch
             if (typeof result === 'string') {
               xterm.writeln(result.replace(/(?<!\r)\n/g, '\r\n'))
             }
+          }).finally(() => {
             ipcRenderer.invoke('resume-terminal', tab.pid)
           })
           return true
