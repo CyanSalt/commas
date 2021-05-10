@@ -64,7 +64,7 @@ module.exports = function (commas) {
     })
 
     commas.context.provide('cli', {
-      command: 'open',
+      command: 'run',
       handler(argv, event) {
         event.sender.send('open-tab', {
           command: argv.join(' '),
