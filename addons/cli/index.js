@@ -87,7 +87,7 @@ module.exports = function (commas) {
     commas.context.provide('cli', {
       command: 'eval',
       handler(argv) {
-        const script = argv.join(' ')
+        const script = argv[0]
         const vm = require('vm')
         if (script === 'reset') {
           context = undefined
