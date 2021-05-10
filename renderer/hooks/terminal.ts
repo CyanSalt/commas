@@ -138,22 +138,22 @@ export async function createTerminalTab({ cwd, shell: shellPath, command, launch
     updateCwd()
   })
   xterm.parser.registerOscHandler(539, data => {
-    let argv
     try {
-      argv = JSON.parse(data)
+      const argv = JSON.parse(data)
+      switch (argv[0]) {
+        case 'cli':
+          ipcRenderer.invoke('cli', argv.slice(1)).then(result => {
+            if (typeof result === 'string') {
+              xterm.writeln(result.replace(/(?<!\r)\n/g, '\r\n'))
+            }
+            ipcRenderer.invoke('resume-terminal', tab.pid)
+          })
+          return true
+      }
     } catch {
-      return false
+      // ignore error
     }
-    switch (argv[0]) {
-      case 'cli':
-        ipcRenderer.invoke('cli', argv.slice(1)).then(result => {
-          if (typeof result === 'string') {
-            xterm.writeln(result.replace(/(?<!\r)\n/g, '\r\n'))
-          }
-          ipcRenderer.invoke('resume-terminal', tab.pid)
-        })
-        return true
-    }
+    ipcRenderer.invoke('resume-terminal', tab.pid)
     return false
   })
   watch(terminalOptionsRef, (terminalOptions) => {
