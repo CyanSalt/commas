@@ -98,6 +98,7 @@ export async function createTerminalTab({ cwd, shell: shellPath, command, launch
     title: '',
     xterm: markRaw(xterm),
     addons: markRaw({}),
+    alerting: false,
     launcher,
   })
   xterm.attachCustomKeyEventHandler(event => {
@@ -116,6 +117,7 @@ export async function createTerminalTab({ cwd, shell: shellPath, command, launch
   const pid = info.pid
   // Setup communication between xterm.js and node-pty
   xterm.onData(data => {
+    if (tab.alerting) tab.alerting = false
     writeTerminalTab(tab, data)
   })
   xterm.onResize(({ cols, rows }) => {
@@ -136,6 +138,9 @@ export async function createTerminalTab({ cwd, shell: shellPath, command, launch
   }, 250)
   xterm.onLineFeed(() => {
     updateCwd()
+  })
+  xterm.onBell(() => {
+    tab.alerting = true
   })
   xterm.parser.registerOscHandler(539, data => {
     try {

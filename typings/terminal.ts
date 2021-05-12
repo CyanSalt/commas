@@ -17,6 +17,7 @@ export interface TerminalTab extends TerminalInfo {
   title: string,
   xterm: Terminal,
   addons: Record<string, any>, // Record<string, ITerminalAddon>
+  alerting?: boolean,
   launcher?: number,
   pane?: TerminalTabPane,
 }

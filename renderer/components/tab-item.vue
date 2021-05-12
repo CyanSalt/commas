@@ -70,6 +70,7 @@ export default {
 
     const idleStateRef = computed(() => {
       if (!props.tab || unref(paneRef)) return ''
+      if (props.tab.alerting) return 'alerting'
       if (props.tab.process === path.basename(props.tab.shell)) return 'idle'
       return 'busy'
     })
@@ -160,6 +161,9 @@ export default {
   transition: color 0.2s;
   &.busy {
     color: rgb(var(--design-green));
+  }
+  &.alerting {
+    color: rgb(var(--design-yellow));
   }
   .tab-item:hover & {
     display: none;
