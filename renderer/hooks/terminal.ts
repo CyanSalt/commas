@@ -2,7 +2,7 @@ import * as os from 'os'
 import type { MenuItemConstructorOptions } from 'electron'
 import { ipcRenderer, shell } from 'electron'
 import { memoize, debounce, isMatch, sortBy, groupBy } from 'lodash-es'
-import { ref, computed, unref, markRaw, reactive, toRaw, watch } from 'vue'
+import { ref, computed, unref, markRaw, reactive, toRaw, watch, watchEffect } from 'vue'
 import type { ITerminalOptions } from 'xterm'
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
@@ -15,6 +15,7 @@ import * as commas from '../../api/renderer'
 import type { TerminalInfo, TerminalTab } from '../../typings/terminal'
 import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
+import { translate } from '../utils/i18n'
 import { getPrompt, getWindowsProcessInfo } from '../utils/terminal'
 import { useKeyBindings } from './keybinding'
 import { getLauncherByTerminalTab, useLaunchers } from './launcher'
@@ -225,8 +226,46 @@ function handleTerminalTabHistory() {
   })
 }
 
+const tabOptionsRef = computed(() => {
+  const tabs = unref(tabsRef)
+  const entries = tabs.map((tab, index) => {
+    const launcher = getLauncherByTerminalTab(tab)
+    return { tab, launcher, index }
+  })
+  const groups = groupBy(entries, entry => Boolean(entry.launcher)) as Partial<Record<'true' | 'false', typeof entries>>
+  const normalTabs = (groups.false ?? []).map(({ tab, index }) => ({
+    label: translate(getTerminalTabTitle(tab)),
+    args: [index],
+  }))
+  const launchers = unref(useLaunchers())
+  const launcherTabs = sortBy(
+    groups.true ?? [],
+    ({ launcher }) => launchers.findIndex(item => item.id === launcher!.id)
+  ).map(({ launcher, index }) => ({
+    label: launcher!.name,
+    args: [index],
+  }))
+  const options = [...normalTabs, ...launcherTabs].map<MenuItemConstructorOptions & { args?: any[] }>((item, index) => {
+    const number = index + 1
+    return {
+      ...item,
+      command: 'select-tab',
+      accelerator: number < 10 ? String(number) : undefined,
+    }
+  })
+  if (groups.false && groups.true) {
+    options.splice(groups.false.length, 0, { type: 'separator' })
+  }
+  return options
+})
+
 export function handleTerminalMessages() {
   handleTerminalTabHistory()
+  watchEffect(() => {
+    const options = unref(tabOptionsRef)
+    const activeIndex = unref(activeIndexRef)
+    ipcRenderer.invoke('touch-bar', options, activeIndex)
+  })
   ipcRenderer.on('open-tab', (event, options: CreateTerminalTabOptions) => {
     createTerminalTab(options)
   })
@@ -307,36 +346,8 @@ export function handleTerminalMessages() {
     history.forward()
   })
   ipcRenderer.on('show-tab-options', () => {
-    const tabs = unref(tabsRef)
+    const options = unref(tabOptionsRef)
     const activeIndex = unref(activeIndexRef)
-    const entries = tabs.map((tab, index) => {
-      const launcher = getLauncherByTerminalTab(tab)
-      return { tab, launcher, index }
-    })
-    const groups = groupBy(entries, entry => Boolean(entry.launcher)) as Partial<Record<'true' | 'false', typeof entries>>
-    const normalTabs = (groups.false ?? []).map(({ tab, index }) => ({
-      label: getTerminalTabTitle(tab),
-      args: [index],
-    }))
-    const launchers = unref(useLaunchers())
-    const launcherTabs = sortBy(
-      groups.true ?? [],
-      ({ launcher }) => launchers.findIndex(item => item.id === launcher!.id)
-    ).map(({ launcher, index }) => ({
-      label: launcher!.name,
-      args: [index],
-    }))
-    const options = [...normalTabs, ...launcherTabs].map<MenuItemConstructorOptions & { args?: any[] }>((item, index) => {
-      const number = index + 1
-      return {
-        ...item,
-        command: 'select-tab',
-        accelerator: number < 10 ? String(number) : undefined,
-      }
-    })
-    if (groups.false && groups.true) {
-      options.splice(groups.false.length, 0, { type: 'separator' })
-    }
     openContextMenu(options, [0, 36], options.findIndex(item => item.args?.[0] === activeIndex))
   })
 }

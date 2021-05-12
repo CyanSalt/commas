@@ -1,6 +1,6 @@
 import { computed, unref } from '@vue/reactivity'
 import type { MenuItemConstructorOptions, PopupOptions } from 'electron'
-import { app, Menu, ipcMain, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain, Menu, TouchBar } from 'electron'
 import type { KeyBinding } from '../../typings/keybinding'
 import { resources } from '../utils/directory'
 import { globalHandler } from '../utils/handler'
@@ -22,7 +22,7 @@ function resolveBindingCommand(binding: KeyBinding) {
         globalHandler.invoke(binding.command!, ...(binding.args ?? []))
       }
     } else {
-      result.click = (event, frame) => {
+      result.click = (self, frame) => {
         frame?.webContents.send(binding.command!, ...(binding.args ?? []))
       }
       result.enabled = Boolean(focusedWindow)
@@ -169,6 +169,32 @@ function handleMenuMessages() {
       ...options,
       window: frame ?? undefined,
     })
+  })
+  ipcMain.handle('touch-bar', (event, template: KeyBinding[], activeIndex: number) => {
+    const { TouchBarSegmentedControl } = TouchBar
+    const frame = BrowserWindow.fromWebContents(event.sender)
+    if (!frame) return
+    const controls = template.reduce<KeyBinding[][]>((collection, item) => {
+      if (item.type === 'separator') {
+        collection.push([])
+      } else {
+        collection[collection.length - 1].push(item)
+      }
+      return collection
+    }, [[]])
+    const touchBar = new TouchBar({
+      items: controls.map(group => {
+        return new TouchBarSegmentedControl({
+          segments: group.map(item => ({ label: item.label })),
+          selectedIndex: group.findIndex(item => item.args?.[0] === activeIndex),
+          change(selectedIndex) {
+            const binding = group[selectedIndex]
+            frame.webContents.send(binding.command!, ...(binding.args ?? []))
+          },
+        })
+      }),
+    })
+    frame.setTouchBar(touchBar)
   })
 }
 
