@@ -9,13 +9,13 @@ module.exports = function (commas) {
     const { app } = require('electron')
     const random = require('lodash/random')
     const { computed, effect, stop, unref } = require('@vue/reactivity')
-    const { executeCommand, resolveCommandAliases, useExternalURLCommands } = commas.bundler.extract('cli/main/command.ts')
+    const { executeCommand, useExternalURLCommands } = commas.bundler.extract('cli/main/command.ts')
 
     const commands = commas.context.getCollection('cli')
-    commas.ipcMain.handle('cli', (event, args) => {
+    commas.ipcMain.handle('cli', (event, context) => {
       const settings = commas.settings.getSettings()
       const aliases = settings['cli.command.aliases'] ?? {}
-      return executeCommand(event, resolveCommandAliases(args, aliases), commands)
+      return executeCommand(event, context, commands, aliases)
     })
 
     /** {@link https://github.com/npm/cli/blob/latest/lib/utils/npm-usage.js#L39-L55} */
@@ -65,7 +65,7 @@ module.exports = function (commas) {
 
     commas.context.provide('cli', {
       command: 'run',
-      handler(argv, event) {
+      handler({ argv }, event) {
         event.sender.send('open-tab', {
           command: argv.join(' '),
         })
@@ -74,7 +74,7 @@ module.exports = function (commas) {
 
     commas.context.provide('cli', {
       command: 'select',
-      handler(argv, event) {
+      handler({ argv }, event) {
         const index = Number.parseInt(argv[0])
         if (!Number.isNaN(index)) {
           event.sender.send('select-tab', index)
@@ -86,7 +86,7 @@ module.exports = function (commas) {
 
     commas.context.provide('cli', {
       command: 'eval',
-      handler(argv) {
+      handler({ argv }) {
         const script = argv[0]
         const vm = require('vm')
         if (script === 'reset') {
@@ -107,7 +107,7 @@ module.exports = function (commas) {
 
     commas.context.provide('cli', {
       command: 'roll',
-      handler(argv) {
+      handler({ argv }) {
         let length = Number.parseInt(argv[0])
         if (Number.isNaN(length)) length = 1
         return Array.from({ length })

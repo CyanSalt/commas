@@ -4,37 +4,40 @@ import { shell } from 'electron'
 import type { IpcMainInvokeEvent } from 'electron'
 import { useSettings } from '../../../main/lib/settings'
 
-export interface CommandModule {
-  command: string,
-  handler: (argv: string[], event: IpcMainInvokeEvent) => any,
+export interface CommandContext {
+  argv: string[],
+  cwd: string,
+  stdin?: string,
 }
 
-export function resolveCommandAliases(args: string[], aliases: Record<string, string>) {
-  let command = args[0]
+export interface CommandModule {
+  command: string,
+  handler: (context: CommandContext, event: IpcMainInvokeEvent) => any,
+}
+
+export async function executeCommand(event: IpcMainInvokeEvent, inputContext: CommandContext, commands: CommandModule[], aliases: Record<string, string>) {
+  const [subcommand, ...argv] = inputContext.argv
+  let command = subcommand
   while (aliases[command]) {
     command = aliases[command].trim()
   }
-  return [command, ...args.slice(1)]
-}
-
-export async function executeCommand(event: IpcMainInvokeEvent, args: string[], commands: CommandModule[]) {
-  const [command, ...argv] = args
   const controller = commands.find(item => item.command === command)
   if (!controller) {
-    return executeCommand(event, ['help'], commands)
+    return executeCommand(event, { ...inputContext, argv: ['help'] }, commands, {})
   }
-  const stdout = await controller.handler(argv, event)
+  const context = { ...inputContext, argv }
+  const stdout = await controller.handler(context, event)
   return typeof stdout === 'string' ? stdout : undefined
 }
 
-const externalURLCommandsRef = computed<CommandModule[]>(() => {
+const externalURLCommandsRef = computed(() => {
   const settings = unref(useSettings())
   const entries: ({ command: string, url: string })[] | undefined = settings['shell.command.externalURLs']
-  return entries ? entries.map(entry => {
+  return entries ? entries.map<CommandModule>(entry => {
     const { url, command } = entry
     return {
       command,
-      handler(argv: string[]) {
+      handler({ argv }) {
         const finalURL = util.format(url, encodeURIComponent(argv.join(' ')))
         shell.openExternal(finalURL)
         return finalURL

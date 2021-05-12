@@ -1,4 +1,4 @@
 #!/bin/sh
 
-payload=$(ELECTRON_RUN_AS_NODE=1 ${TERM_PROGRAM_BIN:-node} $(dirname $0)/_argv.js cli "$@")
+payload=$(ELECTRON_RUN_AS_NODE=1 ${TERM_PROGRAM_BIN:-node} $(dirname $0)/_context.js cli "$@")
 printf '\x1b]539;%s\x1b\\' "$payload"

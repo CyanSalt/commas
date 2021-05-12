@@ -90,8 +90,8 @@ export interface CreateTerminalTabOptions {
   command?: string,
 }
 
-export async function createTerminalTab({ cwd, shell: shellPath, command, launcher }: CreateTerminalTabOptions = {}) {
-  const info: TerminalInfo = await ipcRenderer.invoke('create-terminal', { cwd, shell: shellPath })
+export async function createTerminalTab({ cwd: workingDirectory, shell: shellPath, command, launcher }: CreateTerminalTabOptions = {}) {
+  const info: TerminalInfo = await ipcRenderer.invoke('create-terminal', { cwd: workingDirectory, shell: shellPath })
   const xterm = new Terminal(unref(terminalOptionsRef))
   const tab = reactive<TerminalTab>({
     ...info,
@@ -144,10 +144,10 @@ export async function createTerminalTab({ cwd, shell: shellPath, command, launch
   })
   xterm.parser.registerOscHandler(539, data => {
     try {
-      const argv = JSON.parse(data)
+      const { argv, cwd, stdin } = JSON.parse(data)
       switch (argv[0]) {
         case 'cli':
-          ipcRenderer.invoke('cli', argv.slice(1)).then(result => {
+          ipcRenderer.invoke('cli', { argv: argv.slice(1), cwd, stdin }).then(result => {
             if (typeof result === 'string') {
               xterm.writeln(result.replace(/(?<!\r)\n/g, '\r\n'))
             }
