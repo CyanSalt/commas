@@ -4,7 +4,7 @@ import { app, BrowserWindow, ipcMain } from 'electron'
 import { globalHandler } from '../utils/handler'
 import { loadCustomCSS } from './addon'
 import { hasWindow, getLastWindow } from './frame'
-import { createWindowMenu } from './menu'
+import { createTouchBar, createWindowMenu } from './menu'
 import { handleEvents } from './message'
 import { useThemeOptions } from './theme'
 
@@ -61,7 +61,9 @@ function createWindow(...args: string[]) {
   const themeOptionsRef = useThemeOptions()
   const reactiveEffect = effect(() => {
     const themeOptions = unref(themeOptionsRef)
-    if (process.platform !== 'darwin') {
+    if (process.platform === 'darwin') {
+      createTouchBar(frame)
+    } else {
       createWindowMenu(frame)
     }
     frame.setBackgroundColor(themeOptions.backgroundColor)

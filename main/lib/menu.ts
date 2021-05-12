@@ -1,6 +1,6 @@
 import { computed, unref } from '@vue/reactivity'
 import type { MenuItemConstructorOptions, PopupOptions } from 'electron'
-import { app, BrowserWindow, ipcMain, Menu, TouchBar } from 'electron'
+import { app, BrowserWindow, ipcMain, Menu, nativeImage, TouchBar } from 'electron'
 import type { KeyBinding } from '../../typings/keybinding'
 import { resources } from '../utils/directory'
 import { globalHandler } from '../utils/handler'
@@ -146,6 +146,24 @@ async function createWindowMenu(frame: BrowserWindow) {
   frame.setMenuBarVisibility(false)
 }
 
+async function createTouchBar(frame: BrowserWindow) {
+  const menu = [
+    { icon: 'NSImageNameTouchBarListViewTemplate', command: 'show-tab-options' },
+    { icon: 'NSImageNameTouchBarSidebarTemplate', command: 'toggle-tab-list' },
+    { icon: 'NSImageNameTouchBarAddTemplate', command: 'open-tab' },
+  ]
+  const { TouchBarButton } = TouchBar
+  const touchBar = new TouchBar({
+    items: menu.map(item => new TouchBarButton({
+      icon: nativeImage.createFromNamedImage(item.icon, [-1, 0, 1]).resize({ height: 16 }),
+      click() {
+        frame.webContents.send(item.command)
+      },
+    })),
+  })
+  frame.setTouchBar(touchBar)
+}
+
 function createDockMenu() {
   const menu = Menu.buildFromTemplate([
     {
@@ -170,37 +188,12 @@ function handleMenuMessages() {
       window: frame ?? undefined,
     })
   })
-  ipcMain.handle('touch-bar', (event, template: KeyBinding[], activeIndex: number) => {
-    const { TouchBarSegmentedControl } = TouchBar
-    const frame = BrowserWindow.fromWebContents(event.sender)
-    if (!frame) return
-    const controls = template.reduce<KeyBinding[][]>((collection, item) => {
-      if (item.type === 'separator') {
-        collection.push([])
-      } else {
-        collection[collection.length - 1].push(item)
-      }
-      return collection
-    }, [[]])
-    const touchBar = new TouchBar({
-      items: controls.map(group => {
-        return new TouchBarSegmentedControl({
-          segments: group.map(item => ({ label: item.label })),
-          selectedIndex: group.findIndex(item => item.args?.[0] === activeIndex),
-          change(selectedIndex) {
-            const binding = group[selectedIndex]
-            frame.webContents.send(binding.command!, ...(binding.args ?? []))
-          },
-        })
-      }),
-    })
-    frame.setTouchBar(touchBar)
-  })
 }
 
 export {
   createApplicationMenu,
   createWindowMenu,
   createDockMenu,
+  createTouchBar,
   handleMenuMessages,
 }
