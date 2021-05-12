@@ -1,5 +1,5 @@
 import type { MessageBoxOptions, NativeImage } from 'electron'
-import { app, BrowserWindow, dialog, ipcMain, nativeImage } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain, nativeImage, shell } from 'electron'
 import { execa } from '../utils/helper'
 import { broadcast } from './frame'
 
@@ -93,6 +93,9 @@ function handleMessages() {
       icon = await app.getFileIcon(path, { size: 'small' })
     }
     event.sender.startDrag({ file: path, icon })
+  })
+  ipcMain.handle('beep', () => {
+    shell.beep()
   })
 }
 

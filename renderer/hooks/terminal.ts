@@ -141,6 +141,7 @@ export async function createTerminalTab({ cwd: workingDirectory, shell: shellPat
   })
   xterm.onBell(() => {
     tab.alerting = true
+    ipcRenderer.invoke('beep')
   })
   xterm.parser.registerOscHandler(539, data => {
     try {
