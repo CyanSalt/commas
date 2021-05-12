@@ -119,7 +119,7 @@ module.exports = function (commas) {
       command: 'preview',
       handler({ argv, cwd }, event) {
         const file = argv[0] ? path.resolve(cwd, argv[0]) : cwd
-        BrowserWindow.fromWebContents(event.sender).previewFile(file)
+        BrowserWindow.fromWebContents(event.sender).previewFile(file, argv[0] || file)
       },
     })
 
