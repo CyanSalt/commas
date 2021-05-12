@@ -6,7 +6,7 @@ module.exports = function (commas) {
 
     const path = require('path')
     const util = require('util')
-    const { app } = require('electron')
+    const { app, BrowserWindow } = require('electron')
     const random = require('lodash/random')
     const { computed, effect, stop, unref } = require('@vue/reactivity')
     const { executeCommand, useExternalURLCommands } = commas.bundler.extract('cli/main/command.ts')
@@ -112,6 +112,14 @@ module.exports = function (commas) {
         if (Number.isNaN(length)) length = 1
         return Array.from({ length })
           .map(() => random(1, 100)).join('\n')
+      },
+    })
+
+    commas.context.provide('cli', {
+      command: 'preview',
+      handler({ argv, cwd }, event) {
+        const file = argv[0] ? path.resolve(cwd, argv[0]) : cwd
+        BrowserWindow.fromWebContents(event.sender).previewFile(file)
       },
     })
 
