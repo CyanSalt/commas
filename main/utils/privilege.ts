@@ -10,8 +10,11 @@ const sudoExeca = (command: string) => {
         ? path.join(app.getPath('exe'), '../../Resources/electron.icns')
         : undefined,
     }, (err, stdout, stderr) => {
-      if (err) reject(Object.assign(err, { stdout, stderr }))
-      else resolve({ stdout, stderr })
+      if (err) {
+        reject(Object.assign(err, { stdout, stderr }))
+      } else {
+        resolve({ stdout, stderr })
+      }
     })
   })
 }
