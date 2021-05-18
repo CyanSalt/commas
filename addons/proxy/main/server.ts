@@ -1,8 +1,8 @@
-import type { ReactiveEffect } from '@vue/reactivity'
 import { customRef, stop, unref } from '@vue/reactivity'
 import { useSettings } from '../../../main/lib/settings'
 import { useEffect } from '../../../main/utils/hooks'
 import { loginExecute } from '../../../main/utils/shell'
+import type { ReactiveEffect } from '@vue/reactivity'
 
 async function createServer(cancelation?: Promise<unknown>) {
   const settings = unref(useSettings())

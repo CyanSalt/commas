@@ -63,12 +63,12 @@
 
 <script lang="ts">
 import { ipcRenderer, shell } from 'electron'
-import type { Component } from 'vue'
 import { computed, reactive, toRefs, watchEffect } from 'vue'
 import * as commas from '../../../api/renderer'
 import SwitchControl from '../../../renderer/components/basic/switch-control.vue'
 import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
 import { getAppVersion } from '../../../renderer/utils/frame'
+import type { Component } from 'vue'
 
 interface PreferenceItem {
   component: Component,

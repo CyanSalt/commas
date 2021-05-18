@@ -5,10 +5,10 @@ import { computed, customRef, effect, ref, unref } from '@vue/reactivity'
 import { ipcMain, shell } from 'electron'
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
-import type { Settings, SettingsSpec } from '../../typings/settings'
 import { userData, resources } from '../utils/directory'
 import { globalHandler } from '../utils/handler'
 import { provideIPC } from '../utils/hooks'
+import type { Settings, SettingsSpec } from '../../typings/settings'
 
 const defaultSpecs = resources.require<SettingsSpec[]>('settings.spec.json')!
 

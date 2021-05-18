@@ -2,8 +2,6 @@ import { shell, ipcRenderer } from 'electron'
 import { memoize } from 'lodash-es'
 import { quote } from 'shell-quote'
 import { unref } from 'vue'
-import type { Launcher } from '../../typings/launcher'
-import type { TerminalTab } from '../../typings/terminal'
 import { injectIPC } from '../utils/hooks'
 import { getLauncherCommand } from '../utils/launcher'
 import { resolveHome } from '../utils/terminal'
@@ -14,6 +12,8 @@ import {
   activateTerminalTab,
   executeTerminalTab,
 } from './terminal'
+import type { Launcher } from '../../typings/launcher'
+import type { TerminalTab } from '../../typings/terminal'
 
 export const useLaunchers = memoize(() => {
   return injectIPC<Launcher[]>('launchers', [])

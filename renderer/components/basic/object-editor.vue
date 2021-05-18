@@ -29,8 +29,8 @@
 
 <script lang="ts">
 import { isEqual } from 'lodash-es'
-import type { PropType } from 'vue'
 import { computed, reactive, toRefs, unref, watch } from 'vue'
+import type { PropType } from 'vue'
 
 interface EditorEntry {
   key: string | number | symbol,

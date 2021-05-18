@@ -15,9 +15,9 @@
 </template>
 
 <script lang="ts">
-import type { PropType } from 'vue'
 import { reactive, toRefs, ref, computed, unref, onBeforeUpdate } from 'vue'
 import { handleMousePressing } from '../../utils/helper'
+import type { PropType } from 'vue'
 
 export default {
   name: 'sortable-list',

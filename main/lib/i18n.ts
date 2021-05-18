@@ -2,9 +2,9 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { computed, markRaw, ref, unref } from '@vue/reactivity'
 import { app } from 'electron'
-import type { Dictionary, TranslationVariables } from '../../typings/i18n'
 import { userData, resources } from '../utils/directory'
 import { provideIPC } from '../utils/hooks'
+import type { Dictionary, TranslationVariables } from '../../typings/i18n'
 
 export interface TranslationFileEntry {
   locale: string,

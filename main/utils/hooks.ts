@@ -1,7 +1,7 @@
-import type { ReactiveEffectOptions, Ref } from '@vue/reactivity'
 import { effect, stop, toRaw, unref } from '@vue/reactivity'
 import { ipcMain } from 'electron'
 import { broadcast } from '../lib/frame'
+import type { ReactiveEffectOptions, Ref } from '@vue/reactivity'
 
 export function useEffect<T>(fn: (onInvalidate: (cleanupFn: () => void) => void) => T, options?: ReactiveEffectOptions) {
   let cleanup: (() => void) | undefined

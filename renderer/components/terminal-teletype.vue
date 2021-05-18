@@ -12,11 +12,11 @@
 <script lang="ts">
 import 'xterm/css/xterm.css'
 import { quote } from 'shell-quote'
-import type { PropType } from 'vue'
 import { reactive, toRefs, onMounted, onActivated } from 'vue'
-import type { TerminalTab } from '../../typings/terminal'
 import { mountTerminalTab, writeTerminalTab } from '../hooks/terminal'
 import ScrollBar from './basic/scroll-bar.vue'
+import type { TerminalTab } from '../../typings/terminal'
+import type { PropType } from 'vue'
 
 export default {
   name: 'terminal-teletype',

@@ -1,8 +1,8 @@
 import { last } from 'lodash-es'
-import type { DirectiveBinding } from 'vue'
 import { computed, unref } from 'vue'
-import type { Dictionary, TranslationVariables } from '../../typings/i18n'
 import { injectIPC } from './hooks'
+import type { Dictionary, TranslationVariables } from '../../typings/i18n'
+import type { DirectiveBinding } from 'vue'
 
 const DELIMITER = '#!'
 

@@ -1,7 +1,7 @@
-import type { MessageBoxOptions, NativeImage } from 'electron'
 import { app, BrowserWindow, dialog, ipcMain, nativeImage, shell } from 'electron'
 import { execa } from '../utils/helper'
 import { broadcast } from './frame'
+import type { MessageBoxOptions, NativeImage } from 'electron'
 
 function handleMessages() {
   process.on('uncaughtException', error => {

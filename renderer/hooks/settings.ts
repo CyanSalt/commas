@@ -1,6 +1,6 @@
 import { memoize } from 'lodash-es'
-import type { Settings, SettingsSpec } from '../../typings/settings'
 import { injectIPC } from '../utils/hooks'
+import type { Settings, SettingsSpec } from '../../typings/settings'
 
 export const useSettings = memoize(() => {
   return injectIPC<Settings>('settings', {})

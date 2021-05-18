@@ -1,8 +1,8 @@
 import * as util from 'util'
 import { computed, unref } from '@vue/reactivity'
 import { shell } from 'electron'
-import type { IpcMainInvokeEvent } from 'electron'
 import { useSettings } from '../../../main/lib/settings'
+import type { IpcMainInvokeEvent } from 'electron'
 
 export interface CommandContext {
   argv: string[],

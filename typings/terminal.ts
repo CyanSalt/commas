@@ -1,5 +1,5 @@
-import type { Terminal } from 'xterm'
 import type { IconEntry } from '../renderer/assets/icons'
+import type { Terminal } from 'xterm'
 
 export interface TerminalTabPane {
   title: string,

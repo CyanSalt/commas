@@ -1,14 +1,14 @@
 import * as fs from 'fs'
 import * as os from 'os'
 import { unref } from '@vue/reactivity'
-import type { WebContents } from 'electron'
 import { app, ipcMain } from 'electron'
-import type { IPty, IPtyForkOptions } from 'node-pty'
 import * as pty from 'node-pty'
-import type { TerminalInfo } from '../../typings/terminal'
 import { execa } from '../utils/helper'
 import { getDefaultEnv, getDefaultShell } from '../utils/shell'
 import { useSettings, whenSettingsReady } from './settings'
+import type { TerminalInfo } from '../../typings/terminal'
+import type { WebContents } from 'electron'
+import type { IPty, IPtyForkOptions } from 'node-pty'
 
 const ptyProcessMap = new Map<number, IPty>()
 

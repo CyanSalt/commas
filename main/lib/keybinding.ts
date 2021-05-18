@@ -1,7 +1,7 @@
 import { computed, ref, unref } from '@vue/reactivity'
-import type { KeyBinding } from '../../typings/keybinding'
 import { userData } from '../utils/directory'
 import { provideIPC } from '../utils/hooks'
+import type { KeyBinding } from '../../typings/keybinding'
 
 const userKeyBindingsRef = userData.use<KeyBinding[]>('keybindings.json', [])
 const addonKeyBindingsRef = ref<KeyBinding[]>([])

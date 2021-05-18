@@ -1,7 +1,7 @@
 import * as fs from 'fs'
-import type { Readable } from 'stream'
 import { net } from 'electron'
 import { oncea } from './helper'
+import type { Readable } from 'stream'
 
 export async function downloadFile(url: string, file: string) {
   const stream = fs.createWriteStream(file)

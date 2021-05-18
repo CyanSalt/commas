@@ -1,5 +1,5 @@
-import type { TranslationFileEntry } from '../../main/lib/i18n'
 import { addTranslationDirectory, addTranslations, Priority, removeTranslation, translate } from '../../main/lib/i18n'
+import type { TranslationFileEntry } from '../../main/lib/i18n'
 import type { CommasContext } from '../types'
 
 async function noConflictAddTranslations(this: CommasContext, entries: TranslationFileEntry[]) {

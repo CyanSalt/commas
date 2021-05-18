@@ -34,8 +34,8 @@ import { reactive, toRefs, unref, computed, watchEffect } from 'vue'
 import LoadingSpinner from '../../../renderer/components/basic/loading-spinner.vue'
 import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
 import { useUserSettings } from '../../../renderer/hooks/settings'
-import type { ThemeEntry } from './utils'
 import { fetchThemeList } from './utils'
+import type { ThemeEntry } from './utils'
 
 export default {
   name: 'theme-pane',

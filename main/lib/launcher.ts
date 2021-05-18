@@ -1,8 +1,8 @@
 import { computed, unref } from '@vue/reactivity'
-import type { Launcher } from '../../typings/launcher'
 import { userData } from '../utils/directory'
 import { createIDGenerator } from '../utils/helper'
 import { provideIPC } from '../utils/hooks'
+import type { Launcher } from '../../typings/launcher'
 
 const generateID = createIDGenerator()
 

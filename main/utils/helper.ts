@@ -1,6 +1,6 @@
 import * as childProcess from 'child_process'
-import type { EventEmitter } from 'events'
 import * as util from 'util'
+import type { EventEmitter } from 'events'
 
 const execa = util.promisify(childProcess.exec)
 

@@ -1,9 +1,9 @@
 import { effect, unref } from '@vue/reactivity'
-import type { BrowserWindow } from 'electron'
 import difference from 'lodash/difference'
 import * as commas from '../../api/main'
 import { userData } from '../utils/directory'
 import { useAddons } from './settings'
+import type { BrowserWindow } from 'electron'
 
 async function loadAddons() {
   await commas.app.discoverAddons()
