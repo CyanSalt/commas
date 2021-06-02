@@ -59,4 +59,4 @@ You can clone or download the repository and build Commas locally.
 
 ## License
 
-MIT &copy; [CyanSalt](https://github.com/CyanSalt)
+ISC &copy; [CyanSalt](https://github.com/CyanSalt)

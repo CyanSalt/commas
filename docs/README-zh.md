@@ -59,4 +59,4 @@
 
 ## 许可
 
-MIT &copy; [CyanSalt](https://github.com/CyanSalt)
+ISC &copy; [CyanSalt](https://github.com/CyanSalt)
