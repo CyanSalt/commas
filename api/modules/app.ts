@@ -53,23 +53,24 @@ function cloneAPI(api: Object, name: string) {
 
 const userDataPath = isPackaged()
   ? getPath('userData')
-  : path.resolve(__dirname, '../../userData')
+  : path.resolve(__dirname, isMainProcess() ? '../../userdata' : '../userdata')
 
 interface AddonInfo {
   entry: string,
   manifest: any,
+  type: 'builtin' | 'user',
 }
 
 const discoveredAddons: Record<string, AddonInfo> = {}
 async function discoverAddons() {
   const paths = [
-    path.join(userDataPath, 'addons'),
-    path.join(__dirname, isMainProcess() ? '../../addons' : '../addons'),
+    { type: 'user' as const, base: path.join(userDataPath, 'addons') },
+    { type: 'builtin' as const, base: path.join(__dirname, isMainProcess() ? '../../addons' : '../addons') },
   ]
-  for (const basePath of paths) {
+  for (const { type, base } of paths) {
     let dirents: fs.Dirent[] = []
     try {
-      dirents = await fs.promises.readdir(basePath, { withFileTypes: true })
+      dirents = await fs.promises.readdir(base, { withFileTypes: true })
     } catch {
       // ignore
     }
@@ -80,9 +81,9 @@ async function discoverAddons() {
       .filter(name => !discoveredAddons[name])
     for (const name of directories) {
       try {
-        const manifest = __non_webpack_require__(path.join(basePath, name, 'commas.json'))
-        const entry = path.join(basePath, name, 'index.js')
-        discoveredAddons[name] = { entry, manifest }
+        const manifest = __non_webpack_require__(path.join(base, name, 'commas.json'))
+        const entry = path.join(base, name, 'index.js')
+        discoveredAddons[name] = { type, entry, manifest }
       } catch {
         // continue
       }
@@ -90,8 +91,13 @@ async function discoverAddons() {
   }
 }
 
-function getAddonInfo(name: string) {
+function getAddonInfo(name: string): AddonInfo | undefined {
   return discoveredAddons[name]
+}
+
+function getUserAddons() {
+  return Object.keys(discoveredAddons)
+    .filter(name => discoveredAddons[name].type === 'user')
 }
 
 const loadedAddons: string[] = []
@@ -135,6 +141,7 @@ export {
   cloneAPI,
   discoverAddons,
   getAddonInfo,
+  getUserAddons,
   loadAddon,
   unloadAddon,
   unloadAddons,

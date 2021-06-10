@@ -21,7 +21,7 @@
         v-else-if="isSimpleObject"
         v-model="model"
         :with-keys="spec.type === 'map'"
-        :pinned="spec.recommendations"
+        :pinned="recommendations"
       >
         <template #note="{ item }">
           <template v-if="hasNotes">
@@ -146,10 +146,21 @@ export default {
       return props.spec.key === 'terminal.addon.includes'
     })
 
+    const recommendationsRef = computed(() => {
+      const recommendations = props.spec.recommendations
+      if (props.spec.key === 'terminal.addon.includes') {
+        return [
+          ...recommendations!,
+          ...commas.app.getUserAddons(),
+        ]
+      }
+      return recommendations
+    })
+
     function getNote(item: EditorEntryItem) {
       if (props.spec.key === 'terminal.addon.includes') {
-        const { manifest } = commas.app.getAddonInfo(item.entry.value)
-        return manifest ? manifest.description : ''
+        const info = commas.app.getAddonInfo(item.entry.value)
+        return info?.manifest?.description ?? ''
       }
       return undefined
     }
@@ -235,6 +246,7 @@ export default {
       isCustomized: isCustomizedRef,
       isChanged: isChangedRef,
       hasNotes: hasNotesRef,
+      recommendations: recommendationsRef,
       getNote,
       toggle,
       reset,
