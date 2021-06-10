@@ -26,7 +26,7 @@ function fillLauncherIDs(launchers: Omit<Launcher, 'id'>[], old: Launcher[] | nu
   })
 }
 
-const rawLaunchersRef = userData.use<Omit<Launcher, 'id'>[]>('launchers.json', [])
+const rawLaunchersRef = userData.useYAML<Omit<Launcher, 'id'>[]>('launchers.yaml', [])
 
 let oldValue: Launcher[]
 const launchersRef = computed(() => {

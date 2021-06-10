@@ -1,0 +1,14 @@
+---
+# Place your key bindings here.
+# They will be also added to the application menu on macOS.
+# The `command` could be registered in your custom script.
+
+# - label: Open User Directory
+#   accelerator: CmdOrCtrl+Shift+,
+#   command: open-user-directory
+
+# - label: Go to Previous Word
+#   accelerator: Alt+ArrowLeft
+#   command: xterm:send
+#   args:
+#     - "\eb"

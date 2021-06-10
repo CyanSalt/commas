@@ -43,7 +43,7 @@
     "eslint-plugin-import": "^2.23.2",
     "eslint-plugin-unicorn": "^32.0.1",
     "eslint-plugin-vue": "^7.9.0",
-    "eslint-plugin-vue-scoped-css": "^1.1.0",
+    "eslint-plugin-vue-scoped-css": "^1.2.1",
     "lodash-es": "^4.17.21",
     "mini-css-extract-plugin": "^1.6.0",
     "png2icons": "^2.0.1",
@@ -67,12 +67,12 @@
     "xterm-addon-webgl": "^0.11.0"
   },
   "dependencies": {
+    "@atomist/yaml-updater": "^1.0.2",
     "@vue/reactivity": "^3.0.11",
     "color-rgba": "^2.2.3",
-    "json5": "^2.2.0",
     "lodash": "^4.17.21",
     "node-pty": "^0.10.1",
-    "recast": "^0.20.3",
-    "sudo-prompt": "^9.2.1"
+    "sudo-prompt": "^9.2.1",
+    "yaml": "^1.10.2"
   }
 }

@@ -38,13 +38,13 @@ You can clone or download the repository and build Commas locally.
 
 - All of user data are stored in a separate **user data folder**, which is `~/Library/Application Support/Commas/` on macOS, `%localappdata%/Commas/` on Windows and `~/.config/Commas/` on Linux. You can configure and back up personal data by editing / copying files in the user data folder.
 
+- You can place any of the files mentioned below in the user data folder. The configuration files (settings, key bindings, translations) are in YAML format, while the resource files (themes) are in JSON format.
+
 - Commas has several useful / interesting built-in [addons](https://github.com/CyanSalt/commas/tree/master/addons). You can also download / write third-party addons, place them in the `addons` directory of the user data folder, and manage the addons you want to enable through settings.
 
 - Commas also supports adding custom scripts and stylesheets. You can see the sample files [here](https://github.com/CyanSalt/commas/tree/master/resources/examples). This directory also contains the example files which could help you to customize shortcut keys or command launchers.
 
-- If there is no translation for the language you want in the application, you can add / modify the `translation.json` file in the user data folder. The content of the file can be similar to part of [the translation file](https://github.com/CyanSalt/commas/blob/master/resources/locales/zh-CN.json). You can also use key-value pairs like `"@use": "zh-CN"` to refer to an existing translation file.
-
-- You can place any of the files mentioned above in the user data folder. All JSON files will be treated as [JSON5](https://json5.org/) format (like the literal objects in ECMAScript 5).
+- If there is no translation for the language you want in the application, you can add / modify the `translation.yaml` file in the user data folder. The content of the file can be similar to part of [the translation file](https://github.com/CyanSalt/commas/blob/master/resources/locales/zh-CN.json). You can also use key-value pairs like `"@use": zh-CN` to refer to an existing translation file.
 
 - Commas has a rich set of built-in [hook API](https://github.com/CyanSalt/commas/tree/master/api). You can read the built-in addons for reference in writing your own addons.
 

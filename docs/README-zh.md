@@ -38,13 +38,13 @@
 
 - 所有的数据都存储在独立的**用户数据文件夹**下，在 macOS 上是 `~/Library/Application Support/Commas/`, 在 Windows 上是 `%localappdata%/Commas/`，在 Linux 上是 `~/.config/Commas/`。你可以通过编辑/拷贝用户数据文件夹下的文件来配置和备份个人数据。
 
+- 你可以把下面提到的任意文件放置在用户数据文件夹下。配置文件（设置、快捷键、翻译）均使用 YAML 格式，而资源文件（主题）则使用 JSON 格式。
+
 - Commas 内置了数个有用/有趣的[插件](https://github.com/CyanSalt/commas/tree/master/addons)，你也可以下载/编写第三方插件放置在用户数据文件夹的 `addons` 目录下，并通过设置来管理期望启用的插件。
 
 - Commas 也支持添加自定义脚本和样式表。你可以查看这里的[示例文件](https://github.com/CyanSalt/commas/tree/master/resources/examples)。这个目录下也包含了辅助你自定义快捷键或是命令启动项的示例文件。
 
-- 如果应用内没有你想要语言的翻译，你可以在用户数据文件夹下添加/修改 `translation.json` 文件。文件内容可以是类似于这个[翻译文件](https://github.com/CyanSalt/commas/blob/master/resources/locales/zh-CN.json)的一部分。你也可以通过 `"@use": "zh-CN"` 这样的键值对来引用已有的翻译文件。
-
-- 你可以把上面提到的任意文件放置在用户数据文件夹下。所有的 JSON 文件都会被作为 [JSON5](https://json5.org/) 格式解析（类似于 ECMAScript 5 中的对象字面量)。
+- 如果应用内没有你想要语言的翻译，你可以在用户数据文件夹下添加/修改 `translation.yaml` 文件。文件内容可以是类似于这个[翻译文件](https://github.com/CyanSalt/commas/blob/master/resources/locales/zh-CN.json)的一部分。你也可以通过 `"@use": zh-CN` 这样的键值对来引用已有的翻译文件。
 
 - Commas 内置了一组丰富的[钩子 API](https://github.com/CyanSalt/commas/tree/master/api)。你可以参考 Commas 的自带插件来编写自己的插件。
 

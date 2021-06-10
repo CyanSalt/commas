@@ -87,7 +87,7 @@ function removeTranslation(entry: TranslationFileEntry) {
 }
 
 async function loadTranslations() {
-  const custom = (await userData.load<Dictionary>('translation.json')) ?? {}
+  const custom = (await userData.loadYAML<Dictionary>('translation.yaml')) ?? {}
   if (custom['@use']) {
     resolveLanguage(custom['@use'])
   } else {
@@ -99,7 +99,7 @@ async function loadTranslations() {
   // Custom translation
   const translations = unref(translationsRef)
   translations.push(markRaw({
-    file: userData.file('translation.json'),
+    file: userData.file('translation.yaml'),
     dictionary: custom,
     priority: Priority.custom,
   }))

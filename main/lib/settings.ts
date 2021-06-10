@@ -5,6 +5,7 @@ import { computed, customRef, effect, ref, unref } from '@vue/reactivity'
 import { ipcMain, shell } from 'electron'
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
+import YAML from 'yaml'
 import { userData, resources } from '../utils/directory'
 import { globalHandler } from '../utils/handler'
 import { provideIPC } from '../utils/hooks'
@@ -22,23 +23,21 @@ function generateSettingsSource() {
   const currentSpecs = unref(specsRef)
   const sources: string[] = []
   for (const spec of currentSpecs) {
-    if (sources.length) {
-      sources[sources.length - 1] += ',\n'
-    }
     if (spec.comments) {
       for (const comment of spec.comments) {
-        sources.push(`// ${comment}`)
+        sources.push(`# ${comment}`)
       }
     }
-    const key = JSON.stringify(spec.key)
-    const value = JSON.stringify(spec.default, null, 2)
-    const entry = `${key}: ${value}`
-    const lines = entry.split('\n')
-    for (const line of lines) {
-      sources.push(line)
+    const defaultValue = spec.default
+    const value = YAML.stringify(defaultValue).trim()
+    if (defaultValue && typeof defaultValue === 'object' && Object.keys(defaultValue).length > 1) {
+      sources.push(`${spec.key}:`, ...value.split('\n').map(line => '  ' + line))
+    } else {
+      sources.push(`${spec.key}: ${value}`)
     }
+    sources.push('')
   }
-  return ['{', ...sources.map(line => (line ? `  ${line}` : '')), '}', '']
+  return ['---', ...sources]
     .join('\n')
 }
 
@@ -60,7 +59,7 @@ function whenSettingsReady() {
   return whenReadyPromise
 }
 
-const userSettingsRef = userData.use<Settings>('settings.json', {}, resolveWhenReady)
+const userSettingsRef = userData.useYAML<Settings>('settings.yaml', {}, resolveWhenReady)
 
 const settingsRef = computed<Settings>({
   get() {
@@ -111,7 +110,7 @@ function useAddons() {
 }
 
 async function openSettingsFile() {
-  const name = 'settings.json'
+  const name = 'settings.yaml'
   const file = userData.file(name)
   try {
     await fs.promises.access(file)
@@ -123,7 +122,7 @@ async function openSettingsFile() {
 
 async function openDefaultSettings() {
   const source = generateSettingsSource()
-  const target = path.join(os.tmpdir(), 'commas-default-settings.json')
+  const target = path.join(os.tmpdir(), 'commas-default-settings.yaml')
   try {
     await fs.promises.writeFile(target, source)
     return shell.openPath(target)

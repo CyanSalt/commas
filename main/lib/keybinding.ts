@@ -3,7 +3,7 @@ import { userData } from '../utils/directory'
 import { provideIPC } from '../utils/hooks'
 import type { KeyBinding } from '../../typings/keybinding'
 
-const userKeyBindingsRef = userData.use<KeyBinding[]>('keybindings.json', [])
+const userKeyBindingsRef = userData.useYAML<KeyBinding[]>('keybindings.yaml', [])
 const addonKeyBindingsRef = ref<KeyBinding[]>([])
 
 function useUserKeyBindings() {

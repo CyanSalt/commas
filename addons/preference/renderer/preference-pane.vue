@@ -14,7 +14,7 @@
         <span v-i18n>Open default settings#!preference.7</span>
       </span>
       <span class="link" @click="openSettingsFile">
-        <span v-i18n="{ F: 'settings.json' }">Edit %F#!preference.8</span>
+        <span v-i18n="{ F: 'settings.yaml' }">Edit %F#!preference.8</span>
       </span>
     </div>
     <h2 v-i18n class="group-title">Features#!preference.3</h2>
@@ -25,7 +25,7 @@
         :key="index"
       ></component>
       <span class="link" @click="openLaunchers">
-        <span v-i18n="{ F: 'launchers.json' }">Edit %F#!preference.8</span>
+        <span v-i18n="{ F: 'launchers.yaml' }">Edit %F#!preference.8</span>
       </span>
     </div>
     <h2 v-i18n class="group-title">Customization#!preference.4</h2>
@@ -36,10 +36,10 @@
         :key="index"
       ></component>
       <span class="link" @click="openKeyBindings">
-        <span v-i18n="{ F: 'keybindings.json' }">Edit %F#!preference.8</span>
+        <span v-i18n="{ F: 'keybindings.yaml' }">Edit %F#!preference.8</span>
       </span>
       <span class="link" @click="openTranslation">
-        <span v-i18n="{ F: 'translation.json' }">Edit %F#!preference.8</span>
+        <span v-i18n="{ F: 'translation.yaml' }">Edit %F#!preference.8</span>
       </span>
       <span class="link" @click="openCustomJS">
         <span v-i18n="{ F: 'custom.js' }">Edit %F#!preference.8</span>
@@ -115,15 +115,15 @@ export default {
     }
 
     function openLaunchers() {
-      ipcRenderer.invoke('open-user-file', 'launchers.json', true)
+      ipcRenderer.invoke('open-user-file', 'launchers.yaml', true)
     }
 
     function openKeyBindings() {
-      ipcRenderer.invoke('open-user-file', 'keybindings.json', true)
+      ipcRenderer.invoke('open-user-file', 'keybindings.yaml', true)
     }
 
     function openTranslation() {
-      ipcRenderer.invoke('open-user-file', 'translation.json', true)
+      ipcRenderer.invoke('open-user-file', 'translation.yaml', true)
     }
 
     function openCustomJS() {
