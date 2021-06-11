@@ -1,23 +1,20 @@
-const defined: Record<string, any> = Object.create(null)
+const cache: Record<string, any> = Object.create(null)
 
-function define(data: Record<string, any>) {
-  Object.assign(defined, data)
-}
-
-let context = __non_webpack_require__
-
-function connect(data) {
-  context = data
+function connect(data, prefix?: string) {
+  if (prefix) {
+    Object.assign(cache, Object.fromEntries(Object.entries(data).map(([key, value]) => [
+      key.startsWith(prefix) ? key.slice(prefix.length) : key, value,
+    ])))
+  } else {
+    Object.assign(cache, data)
+  }
 }
 
 function extract(request: string) {
-  return defined[request]
-    ? __webpack_require__(defined[request])
-    : context(`./${request}`)
+  return cache[request]
 }
 
 export {
   connect,
-  define,
   extract,
 }

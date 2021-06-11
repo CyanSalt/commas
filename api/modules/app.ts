@@ -35,7 +35,7 @@ function cloneAPIModule(object: object, context: {} | undefined) {
   return new Proxy(object, {
     get(target, property, receiver) {
       const value = Reflect.get(target, property, receiver)
-      return value instanceof Object ? cloneAPIMethod(value, context) : value
+      return typeof value === 'function' ? cloneAPIMethod(value, context) : value
     },
   })
 }
@@ -46,7 +46,7 @@ function cloneAPI(api: Object, name: string) {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       const context = { $: receiver, __name__: name }
       const value = Reflect.get(target, property, receiver)
-      return value instanceof Object ? cloneAPIModule(value, context) : value
+      return typeof value === 'object' && value !== null ? cloneAPIModule(value, context) : value
     },
   })
 }
@@ -81,7 +81,7 @@ async function discoverAddons() {
       .filter(name => !discoveredAddons[name])
     for (const name of directories) {
       try {
-        const manifest = __non_webpack_require__(path.join(base, name, 'commas.json'))
+        const manifest = require(path.join(base, name, 'commas.json'))
         const entry = path.join(base, name, 'index.js')
         discoveredAddons[name] = { type, entry, manifest }
       } catch {
@@ -107,12 +107,12 @@ function loadAddon(name: string, api: object) {
   let addon
   if (name === 'custom.js') {
     try {
-      addon = __non_webpack_require__(path.join(userDataPath, name))
+      addon = require(path.join(userDataPath, name))
     } catch {
       addon = () => {/* noop */}
     }
   } else {
-    addon = __non_webpack_require__(discoveredAddons[name].entry)
+    addon = require(discoveredAddons[name].entry)
   }
   addon(cloneAPI(api, name))
   loadedAddons.push(name)

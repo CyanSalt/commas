@@ -1,7 +1,10 @@
+import * as Vue from 'vue'
+// @ts-expect-error import-glob
+import modules from '../../addons/*/renderer/**.{ts,css,vue}'
 import * as bundler from '../../api/modules/bundler'
 
-bundler.connect(require.context('../../addons/', true, /\/renderer\/.+\.(ts|css|vue)$/))
+bundler.connect(modules, '../../addons/')
 
-bundler.define({
-  vue: require.resolve('vue'),
+bundler.connect({
+  vue: Vue,
 })

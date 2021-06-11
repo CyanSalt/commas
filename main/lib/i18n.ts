@@ -2,9 +2,9 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { computed, markRaw, ref, unref } from '@vue/reactivity'
 import { app } from 'electron'
+import type { Dictionary, TranslationVariables } from '../../typings/i18n'
 import { userData, resources } from '../utils/directory'
 import { provideIPC } from '../utils/hooks'
-import type { Dictionary, TranslationVariables } from '../../typings/i18n'
 
 export interface TranslationFileEntry {
   locale: string,
@@ -50,7 +50,7 @@ const dictionaryRef = computed(() => {
 
 function loadDictionary(entry: TranslationFileEntry, priority: Priority) {
   const file = entry.file
-  const dictionary = __non_webpack_require__(file) as Dictionary
+  const dictionary = require(file) as Dictionary
   const translations = unref(translationsRef)
   translations.push(markRaw({ file, dictionary, priority }))
 }

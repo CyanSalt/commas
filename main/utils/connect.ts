@@ -1,3 +1,5 @@
+// @ts-expect-error import-glob
+import modules from '../../addons/*/main/**.ts'
 import * as bundler from '../../api/modules/bundler'
 
-bundler.connect(require.context('../../addons/', true, /\/main\/.+\.ts$/))
+bundler.connect(modules, '../../addons/')

@@ -5,7 +5,7 @@ const util = require('util')
 const chalk = require('chalk')
 const packager = require('electron-packager')
 const png2icons = require('png2icons')
-const app = require('./package.json')
+const app = require('../package.json')
 
 const execa = util.promisify(childProcess.exec)
 
@@ -101,7 +101,7 @@ async function compressPackage(dir) {
   return execa(`zip -ry ${dir}.zip ${dir}/`)
 }
 
-async function make() {
+async function pack() {
   // Generate icons
   const startedAt = Date.now()
   const input = await fs.promises.readFile(`${options.icon}.png`)
@@ -124,7 +124,7 @@ async function make() {
   return Date.now() - startedAt
 }
 
-make().then(
+pack().then(
   duration => {
     logger.done(`Build finished after ${duration / 1000}s.`)
   },

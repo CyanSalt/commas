@@ -55,7 +55,7 @@ class Directory {
   require<T>(basename: string) {
     const file = this.file(basename)
     try {
-      return __non_webpack_require__(file) as T
+      return require(file) as T
     } catch {
       return null
     }
