@@ -6,10 +6,10 @@ import { ipcMain, shell } from 'electron'
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
 import YAML from 'yaml'
+import type { Settings, SettingsSpec } from '../../typings/settings'
 import { userData, resources } from '../utils/directory'
 import { globalHandler } from '../utils/handler'
 import { provideIPC } from '../utils/hooks'
-import type { Settings, SettingsSpec } from '../../typings/settings'
 
 const defaultSpecs = resources.require<SettingsSpec[]>('settings.spec.json')!
 
@@ -30,7 +30,7 @@ function generateSettingsSource() {
     }
     const defaultValue = spec.default
     const value = YAML.stringify(defaultValue).trim()
-    if (defaultValue && typeof defaultValue === 'object' && Object.keys(defaultValue).length > 1) {
+    if (defaultValue && typeof defaultValue === 'object' && Object.keys(defaultValue).length) {
       sources.push(`${spec.key}:`, ...value.split('\n').map(line => '  ' + line))
     } else {
       sources.push(`${spec.key}: ${value}`)
