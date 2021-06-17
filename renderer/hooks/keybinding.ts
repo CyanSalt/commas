@@ -1,8 +1,8 @@
 import { memoize } from 'lodash-es'
 import { unref, computed } from 'vue'
+import type { KeyBinding } from '../../typings/keybinding'
 import defaultKeyBindings from '../assets/keybindings'
 import { injectIPC } from '../utils/hooks'
-import type { KeyBinding } from '../../typings/keybinding'
 
 export const useAllKeyBindings = memoize(() => {
   return injectIPC<KeyBinding[]>('keybindings', [])

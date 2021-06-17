@@ -1,11 +1,11 @@
 import { computed, effect, ref, unref } from '@vue/reactivity'
 import { nativeTheme, systemPreferences } from 'electron'
+import type { BrowserWindowConstructorOptions } from 'electron'
+import type { Theme } from '../../typings/theme'
 import { toRGBA, toCSSColor, toElectronColor, isDarkColor, mix } from '../utils/color'
 import { resources, userData } from '../utils/directory'
 import { provideIPC } from '../utils/hooks'
 import { useDefaultSettings, useSettings } from './settings'
-import type { Theme } from '../../typings/theme'
-import type { BrowserWindowConstructorOptions } from 'electron'
 
 interface BrowserWindowThemeOptions {
   backgroundColor: string,

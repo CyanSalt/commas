@@ -1,8 +1,8 @@
+import type { Ref } from '@vue/reactivity'
 import { ipcMain } from 'electron'
+import type { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
 import { provideIPC } from '../../main/utils/hooks'
 import type { CommasContext } from '../types'
-import type { Ref } from '@vue/reactivity'
-import type { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
 
 function on(this: CommasContext, channel: string, listener: (event: IpcMainEvent, ...args: any[]) => void) {
   ipcMain.on(channel, listener)

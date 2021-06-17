@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron'
-import { memoize } from 'lodash-es'
 import type { MenuItemConstructorOptions } from 'electron'
+import { memoize } from 'lodash-es'
 
 export const getAppVersion = memoize(() => {
   return ipcRenderer.invoke('get-app-version')

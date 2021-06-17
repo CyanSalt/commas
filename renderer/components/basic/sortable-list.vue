@@ -16,8 +16,8 @@
 
 <script lang="ts">
 import { reactive, toRefs, ref, computed, unref, onBeforeUpdate } from 'vue'
-import { handleMousePressing } from '../../utils/helper'
 import type { PropType } from 'vue'
+import { handleMousePressing } from '../../utils/helper'
 
 export default {
   name: 'sortable-list',

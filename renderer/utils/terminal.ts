@@ -1,8 +1,8 @@
 import * as os from 'os'
 import * as path from 'path'
 import { ipcRenderer } from 'electron'
-import icons from '../assets/icons'
 import type { TerminalTab } from '../../typings/terminal'
+import icons from '../assets/icons'
 
 const meta = {
   homedir: os.homedir(),

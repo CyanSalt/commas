@@ -26,10 +26,10 @@
 <script lang="ts">
 import * as path from 'path'
 import { reactive, toRefs, computed, unref } from 'vue'
+import type { PropType } from 'vue'
+import type { TerminalTab } from '../../typings/terminal'
 import { getTerminalTabTitle, useCurrentTerminal, closeTerminalTab } from '../hooks/terminal'
 import { getIconEntryByProcess } from '../utils/terminal'
-import type { TerminalTab } from '../../typings/terminal'
-import type { PropType } from 'vue'
 
 export default {
   name: 'tab-item',
