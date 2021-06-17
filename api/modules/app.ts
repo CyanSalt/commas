@@ -75,7 +75,7 @@ async function discoverAddons() {
       // ignore
     }
     const directories = dirents
-      .filter(dirent => dirent.isDirectory())
+      .filter(dirent => dirent.isDirectory() || path.extname(dirent.name) === '.asar')
       .map(dirent => dirent.name)
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       .filter(name => !discoveredAddons[name])
@@ -83,7 +83,8 @@ async function discoverAddons() {
       try {
         const manifest = require(path.join(base, name, 'commas.json'))
         const entry = path.join(base, name, 'index.js')
-        discoveredAddons[name] = { type, entry, manifest }
+        const basename = path.basename(name, '.asar')
+        discoveredAddons[basename] = { type, entry, manifest }
       } catch {
         // continue
       }
