@@ -109,7 +109,7 @@ async function pack() {
     generateAppIcon(input, options.icon, 'ico'),
     generateAppIcon(input, options.icon, 'icns'),
   ])
-  // Equivalent to {type: 'development'} for electron-osx-sign
+  // Equivalent to { type: 'development' } for electron-osx-sign
   if (process.platform === 'darwin') {
     options.osxSign = {
       identity: await getMacOSCodeSign('Apple Development'),

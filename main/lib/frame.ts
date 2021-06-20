@@ -54,7 +54,7 @@ const focusedWindowRef = customRef<BrowserWindow | null>((track, trigger) => {
   }
 })
 
-export function useFocusedWindow() {
+function useFocusedWindow() {
   return focusedWindowRef
 }
 
@@ -62,4 +62,5 @@ export {
   hasWindow,
   getLastWindow,
   broadcast,
+  useFocusedWindow,
 }

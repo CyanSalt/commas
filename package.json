@@ -44,7 +44,6 @@
     "eslint-plugin-vue": "^7.10.0",
     "eslint-plugin-vue-scoped-css": "^1.2.1",
     "lodash-es": "^4.17.21",
-    "mini-css-extract-plugin": "^1.6.0",
     "png2icons": "^2.0.1",
     "sass": "^1.34.1",
     "shell-quote": "^1.7.2",
