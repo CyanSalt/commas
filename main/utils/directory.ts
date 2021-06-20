@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { updateYamlDocument } from '@atomist/yaml-updater'
 import { customRef, effect } from '@vue/reactivity'
+import chokidar from 'chokidar'
 import { app } from 'electron'
 import debounce from 'lodash/debounce'
 import YAML from 'yaml'
@@ -44,9 +45,9 @@ class Directory {
   }
 
   watch(basename: string, updater: (event: string, filename: string) => void) {
-    // `chokidar` is too large; `gaze` seems to be OK. Use native currently.
+    const watcher = chokidar.watch(basename)
     try {
-      return fs.watch(this.file(basename), debounce(updater, 500))
+      return watcher.on('all', debounce(updater, 500))
     } catch {
       return null
     }

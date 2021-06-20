@@ -63,6 +63,7 @@
   "dependencies": {
     "@atomist/yaml-updater": "^1.0.2",
     "@vue/reactivity": "^3.1.1",
+    "chokidar": "^3.5.2",
     "color-rgba": "^2.2.3",
     "lodash": "^4.17.21",
     "node-pty": "^0.10.1",
