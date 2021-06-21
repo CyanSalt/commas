@@ -45,7 +45,7 @@ class Directory {
   }
 
   watch(basename: string, updater: (event: string, filename: string) => void) {
-    const watcher = chokidar.watch(basename)
+    const watcher = chokidar.watch(this.file(basename))
     try {
       return watcher.on('all', debounce(updater, 500))
     } catch {
