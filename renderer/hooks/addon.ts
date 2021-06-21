@@ -1,10 +1,14 @@
 import { difference } from 'lodash-es'
 import { watchEffect, unref } from 'vue'
 import * as commas from '../../api/renderer'
-import { useAddons } from './settings'
+import { useAddons, useDiscoveredAddons } from './settings'
 
-export async function loadAddons() {
-  await commas.app.discoverAddons()
+export function loadAddons() {
+  const discoveredAddonsRef = useDiscoveredAddons()
+  watchEffect(() => {
+    const addons = unref(discoveredAddonsRef)
+    commas.app.preloadAddons(addons)
+  })
   const addonsRef = useAddons()
   let loadedAddons: string[] = []
   watchEffect(() => {

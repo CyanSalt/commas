@@ -80,7 +80,7 @@ const settingsRef = computed<Settings>({
   },
 })
 
-const addonsRef = customRef<string[]>((track, trigger) => {
+const enabledAddonsRef = customRef<string[]>((track, trigger) => {
   let addons: string[] = []
   whenSettingsReady().then(() => {
     effect(() => {
@@ -105,8 +105,8 @@ function useSettings() {
   return settingsRef
 }
 
-function useAddons() {
-  return addonsRef
+function useEnabledAddons() {
+  return enabledAddonsRef
 }
 
 async function openSettingsFile() {
@@ -146,7 +146,6 @@ function handleSettingsMessages() {
   provideIPC('settings-specs', specsRef)
   provideIPC('user-settings', userSettingsRef)
   provideIPC('settings', settingsRef)
-  provideIPC('addons', addonsRef)
   ipcMain.handle('open-settings-file', () => {
     return openSettingsFile()
   })
@@ -175,7 +174,7 @@ export {
   useSettings,
   useDefaultSettings,
   useSettingsSpecs,
-  useAddons,
+  useEnabledAddons,
   openSettingsFile,
   handleSettingsMessages,
 }

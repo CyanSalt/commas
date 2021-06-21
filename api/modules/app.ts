@@ -1,5 +1,4 @@
 import { EventEmitter } from 'events'
-import * as fs from 'fs'
 import * as path from 'path'
 import { app, ipcRenderer } from 'electron'
 import type { CommasContext } from '../types'
@@ -61,44 +60,9 @@ interface AddonInfo {
   type: 'builtin' | 'user',
 }
 
-const discoveredAddons: Record<string, AddonInfo> = {}
-async function discoverAddons() {
-  const paths = [
-    { type: 'user' as const, base: path.join(userDataPath, 'addons') },
-    { type: 'builtin' as const, base: path.join(__dirname, isMainProcess() ? '../../addons' : '../addons') },
-  ]
-  for (const { type, base } of paths) {
-    let dirents: fs.Dirent[] = []
-    try {
-      dirents = await fs.promises.readdir(base, { withFileTypes: true })
-    } catch {
-      // ignore
-    }
-    const directories = dirents
-      .filter(dirent => dirent.isDirectory() || path.extname(dirent.name) === '.asar')
-      .map(dirent => dirent.name)
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      .filter(name => !discoveredAddons[name])
-    for (const name of directories) {
-      try {
-        const manifest = require(path.join(base, name, 'commas.json'))
-        const entry = path.join(base, name, 'index.js')
-        const basename = path.basename(name, '.asar')
-        discoveredAddons[basename] = { type, entry, manifest }
-      } catch {
-        // continue
-      }
-    }
-  }
-}
-
-function getAddonInfo(name: string): AddonInfo | undefined {
-  return discoveredAddons[name]
-}
-
-function getUserAddons() {
-  return Object.keys(discoveredAddons)
-    .filter(name => discoveredAddons[name].type === 'user')
+let preloadedAddons: Record<string, AddonInfo> = {}
+function preloadAddons(addons: Record<string, AddonInfo>) {
+  preloadedAddons = addons
 }
 
 const loadedAddons: string[] = []
@@ -113,7 +77,7 @@ function loadAddon(name: string, api: object) {
       addon = () => {/* noop */}
     }
   } else {
-    addon = require(discoveredAddons[name].entry)
+    addon = require(preloadedAddons[name].entry)
   }
   addon(cloneAPI(api, name))
   loadedAddons.push(name)
@@ -140,9 +104,7 @@ export {
   isMainProcess,
   isPackaged,
   cloneAPI,
-  discoverAddons,
-  getAddonInfo,
-  getUserAddons,
+  preloadAddons,
   loadAddon,
   unloadAddon,
   unloadAddons,

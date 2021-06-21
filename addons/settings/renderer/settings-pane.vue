@@ -2,6 +2,7 @@
   <terminal-pane class="settings-pane">
     <h2 v-i18n class="group-title">Settings#!settings.1</h2>
     <div class="group">
+      <span v-i18n class="link" @click="refreshAddons">Refresh addons#!settings.3</span>
       <div class="action-line">
         <span :class="['link form-action toggle-all', { collapsed: isCollapsed }]" @click="toggleAll">
           <span class="feather-icon icon-chevrons-down"></span>
@@ -26,6 +27,7 @@
 </template>
 
 <script lang="ts">
+import { ipcRenderer } from 'electron'
 import { cloneDeep, isEqual } from 'lodash-es'
 import { reactive, computed, unref, toRefs, watchEffect, onBeforeUpdate } from 'vue'
 import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
@@ -82,6 +84,10 @@ export default {
       isCollapsedRef.value = !isCollapsed
     }
 
+    function refreshAddons() {
+      ipcRenderer.invoke('refresh-addons')
+    }
+
     watchEffect(revert)
 
     onBeforeUpdate(() => {
@@ -96,6 +102,7 @@ export default {
       revert,
       confirm,
       toggleAll,
+      refreshAddons,
     }
   },
 }

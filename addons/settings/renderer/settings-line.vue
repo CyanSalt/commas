@@ -72,10 +72,10 @@
 import { isEqual } from 'lodash-es'
 import { reactive, computed, toRefs, unref } from 'vue'
 import type { PropType } from 'vue'
-import * as commas from '../../../api/renderer'
 import ObjectEditor from '../../../renderer/components/basic/object-editor.vue'
 import type { EditorEntryItem } from '../../../renderer/components/basic/object-editor.vue'
 import SwitchControl from '../../../renderer/components/basic/switch-control.vue'
+import { useDiscoveredAddons } from '../../../renderer/hooks/settings'
 import type { SettingsSpec } from '../../../typings/settings'
 
 export default {
@@ -146,12 +146,16 @@ export default {
       return props.spec.key === 'terminal.addon.includes'
     })
 
+    const discoveredAddonsRef = useDiscoveredAddons()
+
     const recommendationsRef = computed(() => {
       const recommendations = props.spec.recommendations
       if (props.spec.key === 'terminal.addon.includes') {
+        const discoveredAddons = unref(discoveredAddonsRef)
         return [
           ...recommendations!,
-          ...commas.app.getUserAddons(),
+          ...Object.keys(discoveredAddons)
+            .filter(name => discoveredAddons[name].type === 'user'),
         ]
       }
       return recommendations
@@ -159,7 +163,9 @@ export default {
 
     function getNote(item: EditorEntryItem) {
       if (props.spec.key === 'terminal.addon.includes') {
-        const info = commas.app.getAddonInfo(item.entry.value)
+        const discoveredAddons = unref(discoveredAddonsRef)
+        const info = discoveredAddons[item.entry.value]
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         return info?.manifest?.description ?? ''
       }
       return undefined

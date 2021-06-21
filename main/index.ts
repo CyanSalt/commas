@@ -3,6 +3,7 @@ import { effect, unref } from '@vue/reactivity'
 import { app } from 'electron'
 import * as commas from '../api/main'
 import { loadAddons, loadCustomJS } from './lib/addon'
+import { discoverAddons, handleAddonMessages } from './lib/addon-manager'
 import { hasWindow, getLastWindow } from './lib/frame'
 import { loadTranslations, handleI18NMessages } from './lib/i18n'
 import { handleKeyBindingMessages } from './lib/keybinding'
@@ -19,6 +20,7 @@ handleMessages()
 handleI18NMessages()
 handleMenuMessages()
 handleWindowMessages()
+handleAddonMessages()
 handleSettingsMessages()
 handleThemeMessages()
 handleTerminalMessages()
@@ -27,7 +29,8 @@ handleKeyBindingMessages()
 
 let cwd
 async function initialize() {
-  await loadAddons()
+  await discoverAddons()
+  loadAddons()
   loadCustomJS()
   await loadTranslations()
   await app.whenReady()
