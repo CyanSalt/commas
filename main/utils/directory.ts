@@ -87,7 +87,7 @@ class Directory {
     const content = await this.read(basename)
     if (!content) return null
     const updated = updateYamlDocument(data, content, { keepArrayIndent: true })
-    return this.write(basename, updated)
+    return this.write(basename, updated.trim() + '\n')
   }
 
   useYAML<T>(basename: string, defaultValue: T, afterTriggered?: () => void) {
