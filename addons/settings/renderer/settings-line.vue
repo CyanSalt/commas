@@ -56,6 +56,7 @@
         <option
           v-for="option in spec.paradigm"
           :key="option"
+          :value="option"
         >{{ option }}</option>
       </select>
       <textarea

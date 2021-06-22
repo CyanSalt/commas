@@ -2,6 +2,14 @@
   <terminal-pane class="theme-pane">
     <h2 v-i18n class="group-title">Configure theme#!theme.2</h2>
     <div class="group">
+      <div class="form-line">
+        <label v-i18n class="form-label">Dark Mode#!theme.4</label>
+        <select v-model="themeType" class="form-control">
+          <option v-i18n value="">Follow Theme#!theme.5</option>
+          <option v-i18n value="light">Light#!theme.6</option>
+          <option v-i18n value="dark">Dark#!theme.7</option>
+        </select>
+      </div>
       <span v-i18n class="link" @click="reset">Reset to default#!preference.12</span>
       <div class="form-line">
         <label v-i18n class="form-label">Search#!preference.11</label>
@@ -69,6 +77,28 @@ export default {
       return settings['terminal.theme.name']
     })
 
+    const themeTypeRef = computed({
+      get() {
+        const userSettings = unref(userSettingsRef)
+        return userSettings['terminal.theme.customization']?.type ?? ''
+      },
+      set(value) {
+        if (!value) value = undefined
+        const userSettings = unref(userSettingsRef)
+        let customization = {
+          ...userSettings['terminal.theme.customization'],
+          type: value,
+        }
+        if (!value && Object.keys(customization).length <= 1) {
+          customization = undefined
+        }
+        userSettingsRef.value = {
+          ...userSettings,
+          'terminal.theme.customization': customization,
+        }
+      },
+    })
+
     function updateTheme(name: string) {
       const userSettings = unref(userSettingsRef)
       userSettingsRef.value = {
@@ -103,6 +133,7 @@ export default {
       ...toRefs(state),
       filteredList: filteredListRef,
       currentTheme: currentThemeRef,
+      themeType: themeTypeRef,
       reset,
       openMarketplace,
       applyItem,

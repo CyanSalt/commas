@@ -66,10 +66,12 @@ const themeRef = computed(async () => {
   }
   const opacity: number = settings['terminal.style.opacity']
   const backgroundRGBA = toRGBA(theme.background!)
-  const isDark = isDarkColor(backgroundRGBA)
-  theme.type = isDark ? 'dark' : 'light'
   theme.opacity = opacity
   theme.background = toCSSColor({ ...backgroundRGBA, a: 1 })
+  if (!['dark', 'light'].includes(theme.type)) {
+    const isDark = isDarkColor(backgroundRGBA)
+    theme.type = isDark ? 'dark' : 'light'
+  }
   if (!theme.selection || toRGBA(theme.selection).a < 1) {
     theme.selection = toCSSColor(mix(toRGBA(theme.foreground!), backgroundRGBA, 0.5))
   }
