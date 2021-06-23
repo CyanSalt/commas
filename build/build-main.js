@@ -40,4 +40,8 @@ module.exports = () => build({
     externalNodeModules(),
     importGlob(),
   ],
+  define: {
+    // Optimization
+    'process.type': JSON.stringify('browser'),
+  },
 })

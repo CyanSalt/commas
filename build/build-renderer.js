@@ -46,6 +46,8 @@ module.exports = () => build({
   define: {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     __VUE_OPTIONS_API__: JSON.stringify(false),
+    // Optimization
+    'process.type': JSON.stringify('renderer'),
   },
   plugins: [
     vue(),
