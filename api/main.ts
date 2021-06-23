@@ -6,7 +6,6 @@ import * as frame from './modules/frame'
 import * as i18n from './modules/i18n'
 import * as ipcMain from './modules/ipc-main'
 import * as keybinding from './modules/keybinding'
-import * as protocol from './modules/protocol'
 import * as settings from './modules/settings'
 
 export {
@@ -15,7 +14,6 @@ export {
   settings,
   frame,
   directory,
-  protocol,
   keybinding,
   ipcMain,
   bundler,

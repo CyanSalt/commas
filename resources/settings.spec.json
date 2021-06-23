@@ -170,7 +170,7 @@
     "key": "terminal.addon.includes",
     "type": "list",
     "paradigm": ["string"],
-    "recommendations": ["cli", "updater", "preference", "proxy", "settings", "theme", "menu", "power-mode", "sync", "landscape"],
+    "recommendations": ["cli", "updater", "preference", "proxy", "settings", "theme", "menu", "power-mode", "landscape"],
     "label": "Enabled Addons",
     "comments": [
       "List of enabled addon name"

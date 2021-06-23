@@ -10,7 +10,6 @@ import { handleKeyBindingMessages } from './lib/keybinding'
 import { handleLauncherMessages } from './lib/launcher'
 import { createApplicationMenu, createDockMenu, handleMenuMessages } from './lib/menu'
 import { handleMessages } from './lib/message'
-import { startServingProtocol, handleProtocolRequest } from './lib/protocol'
 import { handleSettingsMessages, useSettings, whenSettingsReady } from './lib/settings'
 import { handleTerminalMessages } from './lib/terminal'
 import { handleThemeMessages } from './lib/theme'
@@ -41,7 +40,6 @@ async function initialize() {
       createDockMenu()
     })
   }
-  startServingProtocol()
   createWindow(cwd)
 }
 
@@ -74,11 +72,6 @@ app.on('will-finish-launching', () => {
     }
     const frame = getLastWindow()
     frame.webContents.send('open-tab', { cwd: file })
-  })
-  // handle custom protocol
-  app.on('open-url', (event, url) => {
-    event.preventDefault()
-    handleProtocolRequest(url)
   })
 })
 

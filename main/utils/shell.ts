@@ -1,5 +1,6 @@
 import * as path from 'path'
 import { app } from 'electron'
+import { userData } from './directory'
 import { execa } from './helper'
 
 const BIN_PATH = app.isPackaged
@@ -17,7 +18,8 @@ function getDefaultEnv() {
     LANG: app.getLocale().replace('-', '_') + '.UTF-8',
     TERM_PROGRAM: app.name,
     TERM_PROGRAM_VERSION: app.getVersion(),
-    TERM_PROGRAM_BIN: app.getPath('exe'),
+    COMMAS_EXE: app.getPath('exe'),
+    COMMAS_USERDATA: userData.path,
     PATH: process.env.PATH ? `${process.env.PATH}:${BIN_PATH}` : BIN_PATH,
   }
   // Fix NVM `npm_config_prefix` error in development environment

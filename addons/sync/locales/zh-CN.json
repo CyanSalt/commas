@@ -1,8 +1,0 @@
-{
-  "Sync data from remote#!sync.1": "同步远程数据",
-  "The file '%T' will be synchronized from %F .#!sync.2": "即将从 %F 同步文件“%T”。",
-  "Synchronization succeeded#!sync.3": "同步成功",
-  "Synchronization failed#!sync.4": "同步失败",
-  "View#!sync.5": "查看",
-  "Later#!sync.6": "稍后再说"
-}
