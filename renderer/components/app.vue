@@ -123,6 +123,10 @@ export default {
 }
 </script>
 
+<style src="../assets/fonts/feather.css"></style>
+
+<style src="../assets/fonts/devicon.css"></style>
+
 <style lang="scss" scoped>
 :global(:root) {
   --design-green: 40 201 65;

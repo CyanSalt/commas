@@ -3,15 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' http: https:; img-src 'self' blob: http: https:; style-src 'self' 'unsafe-inline'; media-src http: https:">
-  <link rel="stylesheet" href="dist/style.css">
-  <link rel="stylesheet" href="assets/fonts/feather.css">
-  <link rel="stylesheet" href="assets/fonts/devicon.css">
-  <link rel="preload" href="assets/fonts/feather.woff" as="font">
-  <link rel="preload" href="assets/fonts/devicon.woff" as="font">
-  <link rel="modulepreload" href="dist/app.es.js" as="script">
+  <link rel="preload" href="./assets/fonts/feather.woff" as="font">
+  <link rel="preload" href="./assets/fonts/devicon.woff" as="font">
 </head>
 <body>
   <div id="app"></div>
-  <script type="module" src="dist/app.es.js"></script>
+  <script type="module" src="./app.ts"></script>
 </body>
 </html>

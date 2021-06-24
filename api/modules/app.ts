@@ -52,7 +52,7 @@ function cloneAPI(api: Object, name: string) {
 
 const userDataPath = isPackaged()
   ? getPath('userData')
-  : path.resolve(__dirname, isMainProcess() ? '../../userdata' : '../userdata')
+  : path.resolve('../../userdata')
 
 interface AddonInfo {
   entry: string,

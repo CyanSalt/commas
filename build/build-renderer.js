@@ -100,6 +100,7 @@ module.exports = () => build({
   build: {
     target: 'chrome91',
     assetsDir: '.',
+    cssCodeSplit: false,
     minify: false,
     rollupOptions: {
       external: [
@@ -115,11 +116,6 @@ module.exports = () => build({
         ...builtinModules,
         'electron',
       ],
-    },
-    lib: {
-      entry: 'app.ts',
-      formats: ['es'],
-      fileName: 'app',
     },
   },
 })

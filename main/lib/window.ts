@@ -48,7 +48,7 @@ function createWindow(...args: string[]) {
       }, 500)
     })
   }
-  frame.loadFile(path.resolve(__dirname, '../../renderer/index.html'))
+  frame.loadFile(path.resolve(__dirname, '../../renderer/dist/index.html'))
   // gracefully show window
   frame.once('ready-to-show', () => {
     frame.show()

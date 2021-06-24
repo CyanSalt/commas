@@ -53,9 +53,9 @@ const options = {
   asar: true,
   icon: 'resources/images/icon',
   ignore: [
-    '^/(?!addons|bin|main|node_modules|renderer|resources|package\\.json)',
-    '^/main/(?!dist)$',
-    '^/renderer/(?!dist|index\\.html)$',
+    '^/(?!addons|main|node_modules|renderer|resources|package\\.json)',
+    '^/main/(?!dist)',
+    '^/renderer/(?!dist)',
     '^/resources/.*\\.(ico|icns)$',
   ],
   extraResource: [
