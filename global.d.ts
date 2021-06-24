@@ -5,5 +5,3 @@ declare module '*.vue' {
 
   export default component
 }
-
-declare const ResizeObserver: typeof IntersectionObserver

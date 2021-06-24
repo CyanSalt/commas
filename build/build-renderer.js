@@ -98,6 +98,7 @@ module.exports = () => build({
     stringify: true,
   },
   build: {
+    target: 'chrome91',
     assetsDir: '.',
     minify: false,
     rollupOptions: {

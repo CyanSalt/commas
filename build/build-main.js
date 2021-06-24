@@ -40,6 +40,7 @@ module.exports = () => build({
     externalNodeModules(),
     importGlob(),
   ],
+  target: 'node14.16.0',
   define: {
     // Optimization
     'process.type': JSON.stringify('browser'),
