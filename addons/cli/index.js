@@ -94,7 +94,7 @@ module.exports = function (commas) {
           return ''
         }
         if (!context) {
-          context = {}
+          context = Object.create(null)
           vm.createContext(context)
         }
         return util.inspect(vm.runInContext(script, context), {
