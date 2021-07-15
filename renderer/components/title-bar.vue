@@ -126,14 +126,17 @@ export default {
 
     async function updateBranch() {
       const directory = unref(directoryRef)
-      if (!directory) {
+      if (directory) {
+        state.branch = await ipcRenderer.invoke('get-git-branch', directory)
+      } else {
         state.branch = ''
-        return
       }
-      state.branch = await ipcRenderer.invoke('get-git-branch', directory)
     }
 
-    watchEffect(updateBranch)
+    watchEffect(() => {
+      state.branch = ''
+      updateBranch()
+    })
 
     function runScript(event: MouseEvent) {
       const launcher = unref(launcherRef)
