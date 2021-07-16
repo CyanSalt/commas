@@ -63,12 +63,13 @@
 
 <script lang="ts">
 import { ipcRenderer, shell } from 'electron'
-import { computed, reactive, toRefs, watchEffect } from 'vue'
+import { computed } from 'vue'
 import type { Component } from 'vue'
 import * as commas from '../../../api/renderer'
 import SwitchControl from '../../../renderer/components/basic/switch-control.vue'
 import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
 import { getAppVersion } from '../../../renderer/utils/frame'
+import { useAsyncComputed } from '../../../renderer/utils/hooks'
 
 interface PreferenceItem {
   component: Component,
@@ -90,17 +91,12 @@ export default {
       return list.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0))
     }
 
-    const state = reactive({
-      version: '',
-      generalItems: computed(() => getItems('general')),
-      featureItems: computed(() => getItems('feature')),
-      customizationItems: computed(() => getItems('customization')),
-      aboutItems: computed(() => getItems('about')),
-    })
+    const generalItemsRef = computed(() => getItems('general'))
+    const featureItemsRef = computed(() => getItems('feature'))
+    const customizationItemsRef = computed(() => getItems('customization'))
+    const aboutItemsRef = computed(() => getItems('about'))
 
-    watchEffect(async () => {
-      state.version = await getAppVersion()
-    })
+    const versionRef = useAsyncComputed(() => getAppVersion(), '')
 
     function openUserDirectory() {
       ipcRenderer.invoke('open-user-directory')
@@ -139,7 +135,11 @@ export default {
     }
 
     return {
-      ...toRefs(state),
+      version: versionRef,
+      generalItems: generalItemsRef,
+      featureItems: featureItemsRef,
+      customizationItems: customizationItemsRef,
+      aboutItems: aboutItemsRef,
       openUserDirectory,
       openDefaultSettings,
       openSettingsFile,

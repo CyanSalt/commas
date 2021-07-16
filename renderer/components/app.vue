@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { ipcRenderer } from 'electron'
-import { reactive, toRefs, unref, onMounted } from 'vue'
+import { onMounted, unref } from 'vue'
 import * as commas from '../../api/renderer'
 import { loadAddons, loadCustomJS } from '../hooks/addon'
 import {
@@ -68,12 +68,11 @@ export default {
     FindBox,
   },
   setup() {
-    const state = reactive({
-      isFullscreen: useFullscreen(),
-      isTabListEnabled: useIsTabListEnabled(),
-      terminal: useCurrentTerminal(),
-      slots: commas.context.getCollection('@slot'),
-    })
+    const isFullscreenRef = useFullscreen()
+    const isTabListEnabledRef = useIsTabListEnabled()
+    const terminalRef = useCurrentTerminal()
+
+    const slotsRef = commas.context.getCollection('@slot')
 
     loadAddons()
     loadCustomJS()
@@ -116,7 +115,10 @@ export default {
     })
 
     return {
-      ...toRefs(state),
+      isFullscreen: isFullscreenRef,
+      isTabListEnabled: isTabListEnabledRef,
+      terminal: terminalRef,
+      slots: slotsRef,
     }
   },
 }

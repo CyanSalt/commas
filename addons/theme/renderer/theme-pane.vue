@@ -38,10 +38,11 @@
 
 <script lang="ts">
 import { shell, ipcRenderer } from 'electron'
-import { reactive, toRefs, unref, computed, watchEffect } from 'vue'
+import { computed, ref, unref } from 'vue'
 import LoadingSpinner from '../../../renderer/components/basic/loading-spinner.vue'
 import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
 import { useUserSettings } from '../../../renderer/hooks/settings'
+import { useAsyncComputed } from '../../../renderer/utils/hooks'
 import { fetchThemeList } from './utils'
 import type { ThemeEntry } from './utils'
 
@@ -52,23 +53,16 @@ export default {
     LoadingSpinner,
   },
   setup() {
-    const state = reactive({
-      loading: false as string | false,
-      keyword: '',
-      list: [] as ThemeEntry[],
-    })
+    const loadingRef = ref<string | false>(false)
+    const keywordRef = ref('')
 
-    watchEffect(async () => {
-      try {
-        state.list = await fetchThemeList()
-      } catch {
-        // ignore error
-      }
-    })
+    const listRef = useAsyncComputed(() => fetchThemeList(), [])
 
     const filteredListRef = computed(() => {
-      if (!state.keyword) return state.list
-      return state.list.filter(item => item.name.includes(state.keyword))
+      const list = unref(listRef)
+      const keyword = unref(keywordRef)
+      if (!keyword) return list
+      return list.filter(item => item.name.includes(keyword))
     })
 
     const userSettingsRef = useUserSettings()
@@ -116,8 +110,9 @@ export default {
     }
 
     async function applyItem(item: ThemeEntry) {
-      if (state.loading) return
-      state.loading = item.name
+      const loading = unref(loadingRef)
+      if (loading) return
+      loadingRef.value = item.name
       const result = await ipcRenderer.invoke(
         'download-user-file',
         `themes/${item.name}.json`,
@@ -126,11 +121,13 @@ export default {
       if (result) {
         updateTheme(item.name)
       }
-      state.loading = false
+      loadingRef.value = false
     }
 
     return {
-      ...toRefs(state),
+      loading: loadingRef,
+      keyword: keywordRef,
+      list: listRef,
       filteredList: filteredListRef,
       currentTheme: currentThemeRef,
       themeType: themeTypeRef,

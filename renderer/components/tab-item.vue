@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import * as path from 'path'
-import { reactive, toRefs, computed, unref } from 'vue'
+import { computed, unref } from 'vue'
 import type { PropType } from 'vue'
 import type { TerminalTab } from '../../typings/terminal'
 import { getTerminalTabTitle, useCurrentTerminal, closeTerminalTab } from '../hooks/terminal'
@@ -43,8 +43,6 @@ export default {
     },
   },
   setup(props) {
-    const state = reactive({})
-
     const terminalRef = useCurrentTerminal()
     const isFocusedRef = computed(() => {
       return Boolean(props.tab) && unref(terminalRef) === props.tab
@@ -80,7 +78,6 @@ export default {
     }
 
     return {
-      ...toRefs(state),
       isFocused: isFocusedRef,
       pane: paneRef,
       iconEntry: iconEntryRef,

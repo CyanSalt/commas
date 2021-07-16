@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, toRefs, ref, computed, unref, onMounted, onBeforeUnmount, onActivated } from 'vue'
+import { computed, onActivated, onBeforeUnmount, onMounted, ref, unref } from 'vue'
 import { handleMousePressing } from '../../utils/helper'
 
 export default {
@@ -26,10 +26,8 @@ export default {
     },
   },
   setup(props) {
-    const state = reactive({
-      root: null as HTMLElement | null,
-      isScrolling: false,
-    })
+    const rootRef = ref<HTMLElement | null>(null)
+    const isScrollingRef = ref(false)
 
     const heightRef = ref(0)
     const maxHeightRef = ref(0)
@@ -50,7 +48,8 @@ export default {
 
     const containerRef = computed(() => {
       if (props.parent) return props.parent
-      if (state.root) return state.root.previousElementSibling
+      const root = unref(rootRef)
+      if (root) return root.previousElementSibling
       return null
     })
 
@@ -76,7 +75,7 @@ export default {
     }
 
     function startScrolling(startingEvent: DragEvent) {
-      state.isScrolling = true
+      isScrollingRef.value = true
       const startingTop = unref(topRef)
       handleMousePressing({
         onMove(event) {
@@ -85,7 +84,7 @@ export default {
           })
         },
         onEnd() {
-          state.isScrolling = false
+          isScrollingRef.value = false
         },
       })
     }
@@ -105,7 +104,8 @@ export default {
     }
 
     onMounted(() => {
-      maxHeightRef.value = state.root!.parentElement!.clientHeight
+      const root = unref(rootRef)!
+      maxHeightRef.value = root.parentElement!.clientHeight
       const container = unref(containerRef)!
       container.addEventListener('scroll', handleScroll, { passive: true })
     })
@@ -123,7 +123,8 @@ export default {
     })
 
     return {
-      ...toRefs(state),
+      root: rootRef,
+      isScrolling: isScrollingRef,
       isOverflowed: isOverflowedRef,
       thumbStyle: thumbStyleRef,
       jump,

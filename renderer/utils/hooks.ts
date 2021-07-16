@@ -29,3 +29,26 @@ export function injectIPC<T>(key: string, defaultValue: T) {
     }
   })
 }
+
+export function useAsyncComputed<T>(factory: () => Promise<T>, defaultValue: T) {
+  return customRef<T>((track, trigger) => {
+    let currentValue = defaultValue
+    watchEffect(async () => {
+      try {
+        currentValue = await factory()
+      } catch {
+        currentValue = defaultValue
+      }
+      trigger()
+    })
+    return {
+      get() {
+        track()
+        return currentValue
+      },
+      set() {
+        // ignore
+      },
+    }
+  })
+}

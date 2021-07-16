@@ -1,5 +1,5 @@
 <template>
-  <div :class="['user-setting-line', 'form-line', 'block', { collapsed }]">
+  <div :class="['user-setting-line', 'form-line', 'block', { collapsed: isCollapsed }]">
     <label :class="['form-label', { customized: isCustomized, changed: isChanged }]">
       <span class="link tree-node" @click="toggle">
         <span class="feather-icon icon-chevron-down"></span>
@@ -71,13 +71,17 @@
 
 <script lang="ts">
 import { isEqual } from 'lodash-es'
-import { reactive, computed, toRefs, unref } from 'vue'
+import { computed, ref, unref } from 'vue'
 import type { PropType } from 'vue'
 import ObjectEditor from '../../../renderer/components/basic/object-editor.vue'
 import type { EditorEntryItem } from '../../../renderer/components/basic/object-editor.vue'
 import SwitchControl from '../../../renderer/components/basic/switch-control.vue'
 import { useDiscoveredAddons } from '../../../renderer/hooks/settings'
 import type { SettingsSpec } from '../../../typings/settings'
+
+export interface SettingsLineAPI {
+  isCollapsed: boolean,
+}
 
 export default {
   name: 'settings-line',
@@ -104,10 +108,8 @@ export default {
       return true
     },
   },
-  setup(props, { emit }) {
-    const state = reactive({
-      collapsed: false,
-    })
+  setup(props, { emit, expose }) {
+    const isCollapsedRef = ref(false)
 
     const isSimpleObjectRef = computed(() => {
       return ['list', 'map'].includes(props.spec.type)
@@ -238,15 +240,19 @@ export default {
     }
 
     function toggle() {
-      state.collapsed = !state.collapsed
+      isCollapsedRef.value = !isCollapsedRef.value
     }
 
     function reset() {
       modelRef.value = props.spec.default
     }
 
+    expose({
+      isCollapsed: isCollapsedRef,
+    })
+
     return {
-      ...toRefs(state),
+      isCollapsed: isCollapsedRef,
       isSimpleObject: isSimpleObjectRef,
       placeholder: placeholderRef,
       model: modelRef,

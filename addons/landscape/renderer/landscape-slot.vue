@@ -36,35 +36,34 @@
 </template>
 
 <script lang="ts">
-import { computed, reactive, toRefs, unref, watchEffect } from 'vue'
+import { computed, ref, unref, watchEffect } from 'vue'
 import { useSettings } from '../../../renderer/hooks/settings'
 import { useNonce } from './hooks'
 
 export default {
   name: 'landscape-slot',
   setup() {
-    const state = reactive({
-      nonce: useNonce(),
-      lazyURL: '',
-    })
+    const nonceRef = useNonce()
+
+    const lazyURLRef = ref('')
 
     const settingsRef = useSettings()
     const urlRef = computed(() => {
       const settings = unref(settingsRef)
       const url: string = settings['landscape.background.url']
-      return url ? url.replace('<nonce>', String(state.nonce)) : ''
+      return url ? url.replace('<nonce>', String(unref(nonceRef))) : ''
     })
 
     watchEffect(() => {
       const image = new Image()
       image.src = unref(urlRef)
       image.addEventListener('load', () => {
-        state.lazyURL = image.src
+        lazyURLRef.value = image.src
       })
     })
 
     return {
-      ...toRefs(state),
+      lazyURL: lazyURLRef,
     }
   },
 }

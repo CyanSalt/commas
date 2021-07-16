@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import { ipcRenderer, nativeImage, shell } from 'electron'
-import { reactive, computed, watchEffect, toRefs, unref } from 'vue'
+import { computed, ref, unref, watchEffect } from 'vue'
 import { useMinimized, useMaximized } from '../hooks/frame'
 import { getLauncherByTerminalTab } from '../hooks/launcher'
 import { useSettings } from '../hooks/settings'
@@ -64,16 +64,12 @@ import { getPrompt } from '../utils/terminal'
 
 export default {
   setup() {
-    const state = reactive({
-      isMaximized: useMaximized(),
-      isTabListEnabled: useIsTabListEnabled(),
-      isCustomControlEnabled: computed(() => {
-        return process.platform !== 'darwin'
-      }),
-      tabs: useTerminalTabs(),
-      activeIndex: useTerminalActiveIndex(),
-      branch: '',
-    })
+    const isMaximizedRef = useMaximized()
+    const isTabListEnabledRef = useIsTabListEnabled()
+    const tabsRef = useTerminalTabs()
+    const activeIndexRef = useTerminalActiveIndex()
+
+    const branchRef = ref('')
 
     const terminalRef = useCurrentTerminal()
     const directoryRef = computed(() => {
@@ -126,14 +122,14 @@ export default {
     async function updateBranch() {
       const directory = unref(directoryRef)
       if (directory) {
-        state.branch = await ipcRenderer.invoke('get-git-branch', directory)
+        branchRef.value = await ipcRenderer.invoke('get-git-branch', directory)
       } else {
-        state.branch = ''
+        branchRef.value = ''
       }
     }
 
     watchEffect(() => {
-      state.branch = ''
+      branchRef.value = ''
       updateBranch()
     })
 
@@ -166,7 +162,7 @@ export default {
     }
 
     function maximize() {
-      state.isMaximized = !state.isMaximized
+      isMaximizedRef.value = !isMaximizedRef.value
     }
 
     function close() {
@@ -174,7 +170,7 @@ export default {
     }
 
     function toggleTabList() {
-      state.isTabListEnabled = !state.isTabListEnabled
+      isTabListEnabledRef.value = !isTabListEnabledRef.value
     }
 
     watchEffect(() => {
@@ -188,7 +184,11 @@ export default {
     })
 
     return {
-      ...toRefs(state),
+      isCustomControlEnabled: process.platform !== 'darwin',
+      isMaximized: isMaximizedRef,
+      tabs: tabsRef,
+      activeIndex: activeIndexRef,
+      branch: branchRef,
       directory: directoryRef,
       pane: paneRef,
       title: titleRef,

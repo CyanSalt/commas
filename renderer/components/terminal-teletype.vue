@@ -12,7 +12,7 @@
 <script lang="ts">
 import 'xterm/css/xterm.css'
 import { quote } from 'shell-quote'
-import { reactive, toRefs, onMounted, onActivated } from 'vue'
+import { onActivated, onMounted, ref, unref } from 'vue'
 import type { PropType } from 'vue'
 import type { TerminalTab } from '../../typings/terminal'
 import { mountTerminalTab, writeTerminalTab } from '../hooks/terminal'
@@ -29,10 +29,8 @@ export default {
     },
   },
   setup(props) {
-    const state = reactive({
-      terminal: null as HTMLElement | null,
-      viewport: null as HTMLElement | null,
-    })
+    const terminalRef = ref<HTMLElement | null>(null)
+    const viewportRef = ref<HTMLElement | null>(null)
 
     function dragFileOver(event: DragEvent) {
       if (event.dataTransfer) {
@@ -48,9 +46,10 @@ export default {
     }
 
     onMounted(() => {
-      mountTerminalTab(props.tab, state.terminal!)
+      const terminal = unref(terminalRef)!
+      mountTerminalTab(props.tab, terminal!)
       const xterm = props.tab.xterm
-      state.viewport = xterm['_core']._viewportElement
+      viewportRef.value = xterm['_core']._viewportElement
     })
 
     onActivated(() => {
@@ -63,7 +62,7 @@ export default {
     })
 
     return {
-      ...toRefs(state),
+      terminal: terminalRef,
       dragFileOver,
       dropFile,
     }

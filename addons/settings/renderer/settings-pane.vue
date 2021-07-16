@@ -29,9 +29,10 @@
 <script lang="ts">
 import { ipcRenderer } from 'electron'
 import { cloneDeep, isEqual } from 'lodash-es'
-import { reactive, computed, unref, toRefs, watchEffect, onBeforeUpdate } from 'vue'
+import { computed, onBeforeUpdate, ref, unref, watchEffect } from 'vue'
 import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
 import { useUserSettings, useSettingsSpecs } from '../../../renderer/hooks/settings'
+import type { SettingsLineAPI } from './settings-line.vue'
 import SettingsLine from './settings-line.vue'
 
 export default {
@@ -41,14 +42,14 @@ export default {
     SettingsLine,
   },
   setup() {
-    const state = reactive({
-      settings: useUserSettings(),
-      values: {},
-      lines: [] as { collapsed: boolean }[],
-    })
+    const settingsRef = useUserSettings()
+    const valuesRef = ref({})
+    const linesRef = ref<SettingsLineAPI[]>([])
 
     const isChangedRef = computed(() => {
-      return !isEqual(state.settings, state.values)
+      const settings = unref(settingsRef)
+      const values = unref(valuesRef)
+      return !isEqual(settings, values)
     })
 
     const specsRef = useSettingsSpecs()
@@ -61,20 +62,23 @@ export default {
     })
 
     function revert() {
-      state.values = cloneDeep(state.settings)
+      const settings = unref(settingsRef)
+      valuesRef.value = cloneDeep(settings)
     }
 
     function confirm() {
-      state.settings = state.values
+      settingsRef.value = unref(valuesRef)
     }
 
     const isCollapsedRef = computed<boolean>({
       get() {
-        return state.lines.every(line => line.collapsed)
+        const lines = unref(linesRef)
+        return lines.every(line => line.isCollapsed)
       },
       set(value) {
-        state.lines.forEach(line => {
-          line.collapsed = value
+        const lines = unref(linesRef)
+        lines.forEach(line => {
+          line.isCollapsed = value
         })
       },
     })
@@ -91,11 +95,13 @@ export default {
     watchEffect(revert)
 
     onBeforeUpdate(() => {
-      state.lines = []
+      linesRef.value = []
     })
 
     return {
-      ...toRefs(state),
+      settings: settingsRef,
+      values: valuesRef,
+      lines: linesRef,
       isChanged: isChangedRef,
       rows: rowsRef,
       isCollapsed: isCollapsedRef,

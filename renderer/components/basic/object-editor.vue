@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { isEqual } from 'lodash-es'
-import { computed, reactive, toRefs, unref, watch } from 'vue'
+import { computed, ref, unref, watch } from 'vue'
 import type { PropType } from 'vue'
 
 interface EditorEntry {
@@ -65,9 +65,7 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const state = reactive({
-      entries: [] as EditorEntry[],
-    })
+    const entriesRef = ref<EditorEntry[]>([])
 
     function transform(object: object | undefined): EditorEntry[] {
       if (!object) return []
@@ -80,14 +78,15 @@ export default {
     }
 
     const entryItemsRef = computed(() => {
+      const entries = unref(entriesRef)
       const pinnedEntries = transform(props.pinned)
       const pinnedItems = pinnedEntries.map<EditorEntryItem>(entry => ({
         entry,
         pinned: true,
-        index: state.entries.findIndex(item => isMatchedWithPinned(item, entry)),
+        index: entries.findIndex(item => isMatchedWithPinned(item, entry)),
         id: `pinned:${props.withKeys ? entry.key : entry.value}`,
       }))
-      const extraItems = state.entries
+      const extraItems = entries
         .map<EditorEntryItem>((entry, index) => (
         {
           entry,
@@ -102,17 +101,18 @@ export default {
     })
 
     const resultRef = computed<object>(() => {
+      const entries = unref(entriesRef)
       if (props.withKeys) {
-        return Object.fromEntries(state.entries.map(({ key, value }) => [key, value]))
+        return Object.fromEntries(entries.map(({ key, value }) => [key, value]))
       } else {
-        return state.entries.map(({ key, value }) => value)
+        return entries.map(({ key, value }) => value)
       }
     })
 
     watch(() => props.modelValue, modelValue => {
       const result = unref(resultRef)
       if (!isEqual(modelValue, result)) {
-        state.entries = transform(props.modelValue)
+        entriesRef.value = transform(props.modelValue)
       }
     }, { immediate: true })
 
@@ -121,23 +121,25 @@ export default {
     })
 
     function add() {
-      state.entries.push({ key: '', value: '' })
+      const entries = unref(entriesRef)
+      entries.push({ key: '', value: '' })
     }
 
     function remove(item: EditorEntryItem) {
-      state.entries.splice(item.index, 1)
+      const entries = unref(entriesRef)
+      entries.splice(item.index, 1)
     }
 
     function togglePinned(item: EditorEntryItem) {
       if (item.index === -1) {
-        state.entries.push({ ...item.entry })
+        const entries = unref(entriesRef)
+        entries.push({ ...item.entry })
       } else {
         remove(item)
       }
     }
 
     return {
-      ...toRefs(state),
       entryItems: entryItemsRef,
       add,
       remove,

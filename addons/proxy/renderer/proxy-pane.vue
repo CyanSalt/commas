@@ -34,11 +34,12 @@
 
 <script lang="ts">
 import { ipcRenderer, shell } from 'electron'
-import { computed, reactive, toRefs, unref, watchEffect } from 'vue'
+import { computed, ref, unref } from 'vue'
 import LoadingSpinner from '../../../renderer/components/basic/loading-spinner.vue'
 import SwitchControl from '../../../renderer/components/basic/switch-control.vue'
 import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
 import { useSettings } from '../../../renderer/hooks/settings'
+import { useAsyncComputed } from '../../../renderer/utils/hooks'
 import { useProxyRootCAStatus, useProxyServerVersion, useSystemProxyStatus } from './hooks'
 
 export default {
@@ -49,22 +50,21 @@ export default {
     LoadingSpinner,
   },
   setup() {
-    const state = reactive({
-      supportsSystemProxy: process.platform === 'darwin',
-      supportsKeyChain: process.platform === 'darwin',
-      isSystemProxyEnabled: useSystemProxyStatus(),
-      isCertInstalled: useProxyRootCAStatus(),
-      version: useProxyServerVersion(),
-      latestVersion: null as string | null,
-      isInstalling: false,
-    })
+    const isSystemProxyEnabledRef = useSystemProxyStatus()
+    const isCertInstalledRef = useProxyRootCAStatus()
+    const versionRef = useProxyServerVersion()
 
-    watchEffect(async () => {
-      state.latestVersion = await ipcRenderer.invoke('get-latest-proxy-server-version')
-    })
+    const isInstallingRef = ref(false)
+
+    const latestVersionRef = useAsyncComputed<string | undefined>(
+      () => ipcRenderer.invoke('get-latest-proxy-server-version'),
+      undefined
+    )
 
     const isOutdatedRef = computed(() => {
-      return state.version === null || Boolean(state.latestVersion) && state.version !== state.latestVersion
+      const version = unref(versionRef)
+      const latestVersion = unref(latestVersionRef)
+      return version === null || Boolean(latestVersion) && version !== latestVersion
     })
 
     const settingsRef = useSettings()
@@ -91,17 +91,22 @@ export default {
     }
 
     async function install() {
-      state.isInstalling = true
+      isInstallingRef.value = true
       try {
         await ipcRenderer.invoke('install-proxy-server')
       } catch {
         // ignore error
       }
-      state.isInstalling = false
+      isInstallingRef.value = false
     }
 
     return {
-      ...toRefs(state),
+      supportsSystemProxy: process.platform === 'darwin',
+      supportsKeyChain: process.platform === 'darwin',
+      version: versionRef,
+      isSystemProxyEnabled: isSystemProxyEnabledRef,
+      isCertInstalled: isCertInstalledRef,
+      isInstalling: isInstallingRef,
       isOutdated: isOutdatedRef,
       openEditor,
       installRootCA,

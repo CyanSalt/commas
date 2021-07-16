@@ -42,21 +42,19 @@
 </template>
 
 <script lang="ts">
-import { reactive, computed, unref, onMounted, toRefs } from 'vue'
+import { computed, onMounted, reactive, ref, unref } from 'vue'
 import { useIsFinding } from '../hooks/shell'
 import { useCurrentTerminal } from '../hooks/terminal'
 
 export default {
   setup() {
-    const state = reactive({
-      root: null as HTMLElement | null,
-      finder: null as HTMLInputElement | null,
-      keyword: '',
-      options: {
-        caseSensitive: false,
-        wholeWord: false,
-        regex: false,
-      },
+    const rootRef = ref<HTMLElement | null>(null)
+    const finderRef = ref<HTMLInputElement | null>(null)
+    const keywordRef = ref('')
+    const options = reactive({
+      caseSensitive: false,
+      wholeWord: false,
+      regex: false,
     })
 
     const terminalRef = useCurrentTerminal()
@@ -70,28 +68,32 @@ export default {
     })
 
     onMounted(() => {
+      const root = unref(rootRef)!
       new IntersectionObserver(([{ isIntersecting }]) => {
         if (isIntersecting) {
-          state.finder?.focus()
+          const finder = unref(finderRef)
+          finder?.focus()
         } else {
           const terminal = unref(terminalRef)
           if (terminal?.xterm) {
             terminal.xterm.focus()
           }
         }
-      }).observe(state.root!)
+      }).observe(root)
     })
 
     function findPrevious() {
       const terminal = unref(terminalRef)
       if (!terminal) return
-      return terminal.addons.search.findPrevious(state.keyword, state.options)
+      const keyword = unref(keywordRef)
+      return terminal.addons.search.findPrevious(keyword, options)
     }
 
     function findNext() {
       const terminal = unref(terminalRef)
       if (!terminal) return
-      return terminal.addons.search.findNext(state.keyword, state.options)
+      const keyword = unref(keywordRef)
+      return terminal.addons.search.findNext(keyword, options)
     }
 
     function find(event: KeyboardEvent) {
@@ -102,12 +104,15 @@ export default {
       isFindingRef.value = false
     }
 
-    function toggle(key: keyof typeof state.options) {
-      state.options[key] = !state.options[key]
+    function toggle(key: keyof typeof options) {
+      options[key] = !options[key]
     }
 
     return {
-      ...toRefs(state),
+      root: rootRef,
+      finder: finderRef,
+      keyword: keywordRef,
+      options,
       isVisible: isVisibleRef,
       find,
       cancel,

@@ -10,17 +10,15 @@
 </template>
 
 <script lang="ts">
-import { reactive, toRefs, computed, unref } from 'vue'
+import { computed, unref } from 'vue'
 import { useSettings } from '../../../renderer/hooks/settings'
 import { useProxyServerStatus, useSystemProxyStatus } from './hooks'
 
 export default {
   name: 'proxy-anchor',
   setup() {
-    const state = reactive({
-      status: useProxyServerStatus(),
-      systemStatus: useSystemProxyStatus(),
-    })
+    const statusRef = useProxyServerStatus()
+    const systemStatusRef = useSystemProxyStatus()
 
     const settingsRef = useSettings()
     const portRef = computed<number>(() => {
@@ -29,13 +27,15 @@ export default {
     })
 
     function toggle() {
-      if (state.status !== undefined) {
-        state.status = !state.status
+      const status = unref(statusRef)
+      if (status !== undefined) {
+        statusRef.value = !statusRef.value
       }
     }
 
     return {
-      ...toRefs(state),
+      status: statusRef,
+      systemStatus: systemStatusRef,
       port: portRef,
       toggle,
     }

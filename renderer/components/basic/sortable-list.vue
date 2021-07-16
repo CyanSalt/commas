@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, toRefs, ref, computed, unref, onBeforeUpdate } from 'vue'
+import { computed, onBeforeUpdate, ref, unref } from 'vue'
 import type { PropType } from 'vue'
 import { handleMousePressing } from '../../utils/helper'
 
@@ -41,11 +41,10 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const state = reactive({
-      root: null as HTMLElement | null,
-      items: [] as HTMLElement[],
-      draggingIndex: -1,
-    })
+
+    const rootRef = ref<HTMLElement | null>(null)
+    const itemsRef = ref<HTMLElement[]>([])
+    const draggingIndexRef = ref(-1)
 
     const keysRef = computed(() => {
       return props.value.map((value, index) => {
@@ -60,20 +59,25 @@ export default {
     const startingParentBoundsRef = ref<DOMRect | null>(null)
 
     const draggingElementRef = computed(() => {
-      return state.items[state.draggingIndex]
+      const items = unref(itemsRef)
+      const draggingIndex = unref(draggingIndexRef)
+      return items[draggingIndex]
     })
 
     function startDragging(event: DragEvent, index: number) {
-      if (props.disabled || state.items[index].contains(document.activeElement)) return
+      if (props.disabled) return
+      const items = unref(itemsRef)
+      if (items[index].contains(document.activeElement)) return
       handleMousePressing({
         onMove: handleDraggingMove,
         onEnd: handleDraggingEnd,
       })
-      state.draggingIndex = index
+      draggingIndexRef.value = index
       const draggingElement = unref(draggingElementRef)
       startingBoundsRef.value = draggingElement.getBoundingClientRect()
       startingEventRef.value = event
-      startingParentBoundsRef.value = (state.root as HTMLElement).getBoundingClientRect()
+      const root = unref(rootRef)!
+      startingParentBoundsRef.value = root.getBoundingClientRect()
     }
 
     function getMovingTarget(event: MouseEvent) {
@@ -87,7 +91,7 @@ export default {
       distance = Math.max(Math.min(max, distance), min)
       const bounds = draggingElement.getBoundingClientRect()
       let offset = distance + startingBounds.top - bounds.top
-      const items = state.items
+      const items = unref(itemsRef)
       let currentIndex = items.findIndex(child => {
         const childBounds = child.getBoundingClientRect()
         return childBounds.bottom > event.clientY
@@ -103,7 +107,7 @@ export default {
     }
 
     function handleDraggingMove(event: MouseEvent) {
-      const draggingIndex = state.draggingIndex
+      const draggingIndex = unref(draggingIndexRef)
       if (draggingIndex === -1) return
       const { style } = unref(draggingElementRef)
       style.transform = ''
@@ -119,7 +123,7 @@ export default {
     }
 
     function handleDraggingEnd(event: MouseEvent) {
-      const draggingIndex = state.draggingIndex
+      const draggingIndex = unref(draggingIndexRef)
       if (draggingIndex === -1) return
       const { style } = unref(draggingElementRef)
       style.transform = ''
@@ -128,18 +132,20 @@ export default {
       if (index !== draggingIndex) {
         emit('change', draggingIndex, index)
       }
-      state.draggingIndex = index
+      draggingIndexRef.value = index
       setTimeout(() => {
-        state.draggingIndex = -1
+        draggingIndexRef.value = -1
       })
     }
 
     onBeforeUpdate(() => {
-      state.items = []
+      itemsRef.value = []
     })
 
     return {
-      ...toRefs(state),
+      root: rootRef,
+      items: itemsRef,
+      draggingIndex: draggingIndexRef,
       keys: keysRef,
       startDragging,
     }

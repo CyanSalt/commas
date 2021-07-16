@@ -93,7 +93,7 @@
 <script lang="ts">
 import * as path from 'path'
 import { ipcRenderer } from 'electron'
-import { reactive, toRefs, computed, unref, nextTick, watchEffect } from 'vue'
+import { computed, nextTick, ref, unref } from 'vue'
 import * as commas from '../../api/renderer'
 import {
   useLaunchers,
@@ -112,6 +112,7 @@ import {
 } from '../hooks/terminal'
 import { openContextMenu } from '../utils/frame'
 import { handleMousePressing } from '../utils/helper'
+import { useAsyncComputed } from '../utils/hooks'
 import { getShells } from '../utils/terminal'
 import ScrollBar from './basic/scroll-bar.vue'
 import SortableList from './basic/sortable-list.vue'
@@ -124,39 +125,39 @@ export default {
     SortableList,
   },
   setup() {
-    const state = reactive({
-      shells: [],
-      launchers: useLaunchers(),
-      anchors: commas.context.getCollection('@anchor'),
-      searcher: null as HTMLInputElement | null,
-      width: 176,
-      isCollapsed: false,
-      isFinding: false,
-      keyword: '',
-    })
+    const launchersRef = useLaunchers()
+
+    const searcherRef = ref<HTMLInputElement | null>(null)
+    const widthRef = ref(176)
+    const isCollapsedRef = ref(false)
+    const isFindingRef = ref(false)
+    const keywordRef = ref('')
+
+    const anchorsRef = commas.context.getCollection('@anchor')
+
+    const shellsRef = useAsyncComputed(() => getShells(), [])
 
     const filteredLaunchersRef = computed(() => {
-      if (!state.isFinding) return state.launchers
-      const keywords = state.keyword.toLowerCase().split(/\s+/)
-      return state.launchers.filter(
+      const launchers = unref(launchersRef)
+      const isFinding = unref(isFindingRef)
+      if (!isFinding) return launchers
+      const keyword = unref(keywordRef)
+      const keywords = keyword.toLowerCase().split(/\s+/)
+      return launchers.filter(
         launcher => keywords.every(
-          keyword => Object.values(launcher).join(' ').toLowerCase().includes(keyword)
+          item => Object.values(launcher).join(' ').toLowerCase().includes(item)
         )
       )
     })
 
     const isLauncherSortingDisabledRef = computed(() => {
-      return state.isCollapsed || state.isFinding
+      return unref(isCollapsedRef) || unref(isFindingRef)
     })
 
     const tabsRef = useTerminalTabs()
     const standaloneTabsRef = computed(() => {
       const tabs = unref(tabsRef)
       return tabs.filter(tab => !tab.launcher)
-    })
-
-    watchEffect(async () => {
-      state.shells = await getShells()
     })
 
     function sortTabs(from: number, to: number) {
@@ -166,7 +167,8 @@ export default {
     }
 
     function selectShell(event: MouseEvent) {
-      openContextMenu(state.shells.map(shell => ({
+      const shells = unref(shellsRef)
+      openContextMenu(shells.map(shell => ({
         label: path.basename(shell),
         command: 'open-tab',
         args: [{ shell }],
@@ -174,18 +176,20 @@ export default {
     }
 
     function toggleCollapsing() {
-      state.isCollapsed = !state.isCollapsed
+      isCollapsedRef.value = !isCollapsedRef.value
     }
 
     async function toggleFinding() {
-      const isFinding = state.isFinding
-      state.isFinding = !isFinding
+      const isFinding = unref(isFindingRef)
+      isFindingRef.value = !isFinding
       if (isFinding) {
-        state.keyword = ''
-        state.searcher?.blur()
+        keywordRef.value = ''
+        const searcher = unref(searcherRef)
+        searcher?.blur()
       } else {
         await nextTick()
-        state.searcher?.focus()
+        const searcher = unref(searcherRef)
+        searcher?.focus()
       }
     }
 
@@ -194,13 +198,13 @@ export default {
     }
 
     function resize(startingEvent: DragEvent) {
-      const original = state.width
+      const original = unref(widthRef)
       const start = startingEvent.clientX
       const max = document.body.clientWidth / 2
       handleMousePressing({
         onMove(event) {
           const width = original + event.clientX - start
-          state.width = Math.min(Math.max(width, 120), max)
+          widthRef.value = Math.min(Math.max(width, 120), max)
         },
       })
     }
@@ -210,7 +214,13 @@ export default {
     }
 
     return {
-      ...toRefs(state),
+      shells: shellsRef,
+      searcher: searcherRef,
+      width: widthRef,
+      isCollapsed: isCollapsedRef,
+      isFinding: isFindingRef,
+      keyword: keywordRef,
+      anchors: anchorsRef,
       filteredLaunchers: filteredLaunchersRef,
       isLauncherSortingDisabled: isLauncherSortingDisabledRef,
       standaloneTabs: standaloneTabsRef,
