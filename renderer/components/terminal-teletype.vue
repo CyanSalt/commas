@@ -19,7 +19,6 @@ import { mountTerminalTab, writeTerminalTab } from '../hooks/terminal'
 import ScrollBar from './basic/scroll-bar.vue'
 
 export default {
-  name: 'terminal-teletype',
   components: {
     'scroll-bar': ScrollBar,
   },

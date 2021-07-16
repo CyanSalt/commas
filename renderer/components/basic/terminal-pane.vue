@@ -11,7 +11,6 @@
 import ScrollBar from './scroll-bar.vue'
 
 export default {
-  name: 'terminal-pane',
   components: {
     'scroll-bar': ScrollBar,
   },

@@ -47,7 +47,6 @@ import { useIsFinding } from '../hooks/shell'
 import { useCurrentTerminal } from '../hooks/terminal'
 
 export default {
-  name: 'find-box',
   setup() {
     const state = reactive({
       root: null as HTMLElement | null,

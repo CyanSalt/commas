@@ -118,7 +118,6 @@ import SortableList from './basic/sortable-list.vue'
 import TabItem from './tab-item.vue'
 
 export default {
-  name: 'tab-list',
   components: {
     'tab-item': TabItem,
     'scroll-bar': ScrollBar,

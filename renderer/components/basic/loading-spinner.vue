@@ -4,12 +4,6 @@
   </span>
 </template>
 
-<script lang="ts">
-export default {
-  name: 'loading-spinner',
-}
-</script>
-
 <style lang="scss" scoped>
 @keyframes spinner-rotate {
   from {

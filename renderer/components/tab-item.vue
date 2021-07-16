@@ -32,7 +32,6 @@ import { getTerminalTabTitle, useCurrentTerminal, closeTerminalTab } from '../ho
 import { getIconEntryByProcess } from '../utils/terminal'
 
 export default {
-  name: 'tab-item',
   props: {
     name: {
       type: String,

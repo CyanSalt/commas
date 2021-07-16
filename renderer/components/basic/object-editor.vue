@@ -45,7 +45,6 @@ export interface EditorEntryItem {
 }
 
 export default {
-  name: 'object-editor',
   props: {
     modelValue: {
       type: [Object, undefined] as PropType<object | undefined>,

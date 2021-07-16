@@ -63,7 +63,6 @@ import { translate } from '../utils/i18n'
 import { getPrompt } from '../utils/terminal'
 
 export default {
-  name: 'title-bar',
   setup() {
     const state = reactive({
       isMaximized: useMaximized(),

@@ -13,7 +13,6 @@
 
 <script lang="ts">
 export default {
-  name: 'switch-control',
   inheritAttrs: false,
   props: {
     modelValue: {

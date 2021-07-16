@@ -20,7 +20,6 @@ import type { PropType } from 'vue'
 import { handleMousePressing } from '../../utils/helper'
 
 export default {
-  name: 'sortable-list',
   props: {
     value: {
       type: Array as PropType<any[]>,
