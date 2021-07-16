@@ -1,12 +1,12 @@
 <template>
-  <terminal-pane class="preference-pane">
+  <TerminalPane class="preference-pane">
     <h2 v-i18n class="group-title">General#!preference.2</h2>
     <div class="group">
       <component
         :is="item.component"
         v-for="(item, index) in generalItems"
         :key="index"
-      ></component>
+      />
       <span class="link" @click="openUserDirectory">
         <span v-i18n>Open user directory#!preference.6</span>
       </span>
@@ -23,7 +23,7 @@
         :is="item.component"
         v-for="(item, index) in featureItems"
         :key="index"
-      ></component>
+      />
       <span class="link" @click="openLaunchers">
         <span v-i18n="{ F: 'launchers.yaml' }">Edit %F#!preference.8</span>
       </span>
@@ -34,7 +34,7 @@
         :is="item.component"
         v-for="(item, index) in customizationItems"
         :key="index"
-      ></component>
+      />
       <span class="link" @click="openKeyBindings">
         <span v-i18n="{ F: 'keybindings.yaml' }">Edit %F#!preference.8</span>
       </span>
@@ -54,11 +54,11 @@
         :is="item.component"
         v-for="(item, index) in aboutItems"
         :key="index"
-      ></component>
+      />
       <span v-i18n="{ V: version }" class="text">Current version: %V#!preference.9</span>
       <span v-i18n class="link" @click="openWebsite">Visit our website#!preference.10</span>
     </div>
-  </terminal-pane>
+  </TerminalPane>
 </template>
 
 <script lang="ts">
@@ -79,8 +79,8 @@ interface PreferenceItem {
 export default {
   name: 'preference-pane',
   components: {
-    'terminal-pane': TerminalPane,
-    'switch-control': SwitchControl,
+    TerminalPane,
+    SwitchControl,
   },
   setup() {
     const preferenceItems: PreferenceItem[] = commas.context.getCollection('preference')

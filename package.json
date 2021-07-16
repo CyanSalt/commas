@@ -22,7 +22,7 @@
     "node": ">=10.0.0"
   },
   "devDependencies": {
-    "@cyansalt/eslint-config": "^1.11.1",
+    "@cyansalt/eslint-config": "^1.11.2",
     "@cyansalt/stylelint-config": "^1.6.1",
     "@cyansalt/tsconfig": "^1.1.1",
     "@types/color-rgba": "^2.1.0",

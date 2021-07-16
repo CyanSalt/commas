@@ -1,5 +1,5 @@
 <template>
-  <terminal-pane class="theme-pane">
+  <TerminalPane class="theme-pane">
     <h2 v-i18n class="group-title">Configure theme#!theme.2</h2>
     <div class="group">
       <div class="form-line">
@@ -19,21 +19,21 @@
           <span class="link" @click="openMarketplace">mbadolato/iTerm2-Color-Schemes</span>
         </div>
       </div>
-      <loading-spinner v-if="!list.length" class="theme-loading"></loading-spinner>
+      <LoadingSpinner v-if="!list.length" class="theme-loading" />
       <div v-else class="theme-list">
         <div v-for="item in filteredList" :key="item.name" class="theme-item">
           <img class="theme-screenshot" :src="item.screenshot">
           <div class="theme-action">
             <span class="theme-name">{{ item.name }}</span>
             <span v-if="item.name !== currentTheme" class="link" @click="applyItem(item)">
-              <loading-spinner v-if="loading === item.name"></loading-spinner>
+              <LoadingSpinner v-if="loading === item.name" />
               <span v-else class="feather-icon icon-check"></span>
             </span>
           </div>
         </div>
       </div>
     </div>
-  </terminal-pane>
+  </TerminalPane>
 </template>
 
 <script lang="ts">
@@ -48,8 +48,8 @@ import type { ThemeEntry } from './utils'
 export default {
   name: 'theme-pane',
   components: {
-    'terminal-pane': TerminalPane,
-    'loading-spinner': LoadingSpinner,
+    TerminalPane,
+    LoadingSpinner,
   },
   setup() {
     const state = reactive({

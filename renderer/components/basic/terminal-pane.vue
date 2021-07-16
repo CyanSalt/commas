@@ -3,7 +3,7 @@
     <div class="scroll-area">
       <slot></slot>
     </div>
-    <scroll-bar keep-alive></scroll-bar>
+    <ScrollBar keep-alive />
   </article>
 </template>
 
@@ -12,7 +12,7 @@ import ScrollBar from './scroll-bar.vue'
 
 export default {
   components: {
-    'scroll-bar': ScrollBar,
+    ScrollBar,
   },
 }
 </script>

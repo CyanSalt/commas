@@ -1,5 +1,5 @@
 <template>
-  <terminal-pane class="settings-pane">
+  <TerminalPane class="settings-pane">
     <h2 v-i18n class="group-title">Settings#!settings.1</h2>
     <div class="group">
       <span v-i18n class="link" @click="refreshAddons">Refresh addons#!settings.3</span>
@@ -14,16 +14,16 @@
           <span class="feather-icon icon-check"></span>
         </span>
       </div>
-      <settings-line
+      <SettingsLine
         v-for="(row, index) in rows"
         :key="row.key"
         :ref="line => lines[index] = line"
         v-model="values[row.key]"
         :spec="row"
         :current-value="settings[row.key]"
-      ></settings-line>
+      />
     </div>
-  </terminal-pane>
+  </TerminalPane>
 </template>
 
 <script lang="ts">
@@ -37,8 +37,8 @@ import SettingsLine from './settings-line.vue'
 export default {
   name: 'settings-pane',
   components: {
-    'terminal-pane': TerminalPane,
-    'settings-line': SettingsLine,
+    TerminalPane,
+    SettingsLine,
   },
   setup() {
     const state = reactive({

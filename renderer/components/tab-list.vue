@@ -3,18 +3,18 @@
     <div class="list-column" :style="{ width: width + 'px' }">
       <div class="list">
         <div class="scroll-area">
-          <sortable-list
+          <SortableList
             v-slot="{ value }"
             :value="standaloneTabs"
             value-key="pid"
             class="processes"
             @change="sortTabs"
           >
-            <tab-item
+            <TabItem
               :tab="value"
               @click="activateTerminalTab(value)"
-            ></tab-item>
-          </sortable-list>
+            />
+          </SortableList>
           <div class="new-tab">
             <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
               <span class="feather-icon icon-chevron-down"></span>
@@ -47,7 +47,7 @@
               >
             </div>
           </div>
-          <sortable-list
+          <SortableList
             v-slot="{ value: launcher }"
             :value="filteredLaunchers"
             value-key="id"
@@ -55,7 +55,7 @@
             :disabled="isLauncherSortingDisabled"
             @change="sortLaunchers"
           >
-            <tab-item
+            <TabItem
               v-show="!isCollapsed || getTerminalTabByLauncher(launcher)"
               :tab="getTerminalTabByLauncher(launcher)"
               :name="launcher.name"
@@ -69,10 +69,10 @@
                   <span class="feather-icon icon-external-link"></span>
                 </div>
               </template>
-            </tab-item>
-          </sortable-list>
+            </TabItem>
+          </SortableList>
         </div>
-        <scroll-bar></scroll-bar>
+        <ScrollBar />
       </div>
       <div class="bottom-actions">
         <div class="anchor" @click="configure">
@@ -83,7 +83,7 @@
           v-for="(anchor, index) in anchors"
           :key="index"
           class="anchor"
-        ></component>
+        />
       </div>
     </div>
     <div draggable="true" class="sash" @dragstart.prevent="resize"></div>
@@ -119,9 +119,9 @@ import TabItem from './tab-item.vue'
 
 export default {
   components: {
-    'tab-item': TabItem,
-    'scroll-bar': ScrollBar,
-    'sortable-list': SortableList,
+    TabItem,
+    ScrollBar,
+    SortableList,
   },
   setup() {
     const state = reactive({

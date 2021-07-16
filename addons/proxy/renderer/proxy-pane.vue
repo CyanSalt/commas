@@ -1,16 +1,16 @@
 <template>
-  <terminal-pane class="proxy-pane">
+  <TerminalPane class="proxy-pane">
     <h2 v-i18n class="group-title">Proxy#!proxy.1</h2>
     <div class="group">
       <div v-if="supportsSystemProxy" class="form-line">
         <label v-i18n class="form-label">Enable system proxy#!proxy.3</label>
-        <switch-control v-model="isSystemProxyEnabled"></switch-control>
+        <SwitchControl v-model="isSystemProxyEnabled" />
       </div>
       <span v-i18n class="link" @click="openEditor">Edit proxy rules#!proxy.4</span>
       <div class="form-line">
         <span v-i18n="{ V: version ?? '--' }" class="text">Current version: %V#!preference.9</span>
         <span v-if="isInstalling" class="form-action" @click="install">
-          <loading-spinner></loading-spinner>
+          <LoadingSpinner />
         </span>
         <span v-else-if="isOutdated" class="link form-action" @click="install">
           <span :class="['feather-icon', version ? 'icon-arrow-up' : 'icon-download-cloud']"></span>
@@ -29,7 +29,7 @@
         <span v-i18n class="link" @click="openKeychainAccess">Open Keychain Access#!proxy.9</span>
       </div>
     </template>
-  </terminal-pane>
+  </TerminalPane>
 </template>
 
 <script lang="ts">
@@ -44,9 +44,9 @@ import { useProxyRootCAStatus, useProxyServerVersion, useSystemProxyStatus } fro
 export default {
   name: 'proxy-pane',
   components: {
-    'terminal-pane': TerminalPane,
-    'switch-control': SwitchControl,
-    'loading-spinner': LoadingSpinner,
+    TerminalPane,
+    SwitchControl,
+    LoadingSpinner,
   },
   setup() {
     const state = reactive({

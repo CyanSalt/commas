@@ -16,8 +16,8 @@
           class="form-tip-line"
         >{{ comment }}#!settings.comments.{{ index }}.{{ spec.key }}</div>
       </div>
-      <switch-control v-if="spec.type === 'boolean'" v-model="model"></switch-control>
-      <object-editor
+      <SwitchControl v-if="spec.type === 'boolean'" v-model="model" />
+      <ObjectEditor
         v-else-if="isSimpleObject"
         v-model="model"
         :with-keys="spec.type === 'map'"
@@ -33,7 +33,7 @@
             <span class="feather-icon icon-rotate-ccw"></span>
           </span>
         </template>
-      </object-editor>
+      </ObjectEditor>
       <input
         v-else-if="spec.type === 'number'"
         v-model="model"
@@ -82,8 +82,8 @@ import type { SettingsSpec } from '../../../typings/settings'
 export default {
   name: 'settings-line',
   components: {
-    'switch-control': SwitchControl,
-    'object-editor': ObjectEditor,
+    SwitchControl,
+    ObjectEditor,
   },
   props: {
     spec: {

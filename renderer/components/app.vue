@@ -1,23 +1,23 @@
 <template>
   <div :class="['app', { opaque: isFullscreen }]">
-    <title-bar></title-bar>
+    <TitleBar />
     <div class="content">
-      <tab-list v-show="isTabListEnabled"></tab-list>
+      <TabList v-show="isTabListEnabled" />
       <main class="interface">
-        <find-box></find-box>
+        <FindBox />
         <template v-if="terminal">
           <keep-alive>
             <template v-if="terminal.pane">
               <component
                 :is="terminal.pane.component"
                 :key="terminal.pid"
-              ></component>
+              />
             </template>
             <template v-else>
-              <terminal-teletype
+              <TerminalTeletype
                 :key="terminal.pid"
                 :tab="terminal"
-              ></terminal-teletype>
+              />
             </template>
           </keep-alive>
         </template>
@@ -28,7 +28,7 @@
       v-for="(slot, index) in slots"
       :key="index"
       class="slot"
-    ></component>
+    />
   </div>
 </template>
 
@@ -62,10 +62,10 @@ import TitleBar from './title-bar.vue'
 
 export default {
   components: {
-    'title-bar': TitleBar,
-    'tab-list': TabList,
-    'terminal-teletype': TerminalTeletype,
-    'find-box': FindBox,
+    TitleBar,
+    TabList,
+    TerminalTeletype,
+    FindBox,
   },
   setup() {
     const state = reactive({

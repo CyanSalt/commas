@@ -5,7 +5,7 @@
     @drop.prevent="dropFile"
   >
     <div ref="terminal" class="terminal-content"></div>
-    <scroll-bar v-if="viewport" :parent="viewport"></scroll-bar>
+    <ScrollBar v-if="viewport" :parent="viewport" />
   </article>
 </template>
 
@@ -20,7 +20,7 @@ import ScrollBar from './basic/scroll-bar.vue'
 
 export default {
   components: {
-    'scroll-bar': ScrollBar,
+    ScrollBar,
   },
   props: {
     tab: {
