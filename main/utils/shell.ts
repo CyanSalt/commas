@@ -14,14 +14,17 @@ function getDefaultShell() {
 }
 
 function getDefaultEnv() {
-  const defaultEnv: Record<string, string> = {
+  const PATH_SEP = process.platform === 'win32' ? ';' : ':'
+  const defaultEnv: NodeJS.ProcessEnv = {
     ...process.env,
     LANG: app.getLocale().replace('-', '_') + '.UTF-8',
     TERM_PROGRAM: app.name,
     TERM_PROGRAM_VERSION: app.getVersion(),
     COMMAS_EXE: app.getPath('exe'),
     COMMAS_USERDATA: userData.path,
-    PATH: process.env.PATH ? `${process.env.PATH}:${BIN_PATH}` : BIN_PATH,
+    // Overwrite the real `Path` on Windows
+    Path: process.env.PATH ? `${process.env.PATH}${PATH_SEP}${BIN_PATH}` : BIN_PATH,
+    PATH: process.env.PATH ? `${process.env.PATH}${PATH_SEP}${BIN_PATH}` : BIN_PATH,
   }
   // Fix NVM `npm_config_prefix` error in development environment
   if (!app.isPackaged && defaultEnv.npm_config_prefix) {
@@ -30,7 +33,7 @@ function getDefaultEnv() {
   return defaultEnv
 }
 
-async function loginExecute(command: string) {
+function loginExecute(command: string) {
   const env = getDefaultEnv()
   if (process.platform === 'win32') {
     return execa(command, { env })

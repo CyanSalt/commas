@@ -64,7 +64,7 @@ export default {
     const isOutdatedRef = computed(() => {
       const version = unref(versionRef)
       const latestVersion = unref(latestVersionRef)
-      return version === null || Boolean(latestVersion) && version !== latestVersion
+      return Boolean(latestVersion) && (version === null || version !== latestVersion)
     })
 
     const settingsRef = useSettings()
