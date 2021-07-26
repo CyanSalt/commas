@@ -102,6 +102,7 @@ async function compressPackage(dir) {
 }
 
 async function pack() {
+  const local = process.argv.includes('--local')
   // Generate icons
   const startedAt = Date.now()
   const input = await fs.promises.readFile(`${options.icon}.png`)
@@ -116,11 +117,16 @@ async function pack() {
       'gatekeeper-assess': false,
     }
   }
+  if (local) {
+    delete options.platform
+  }
   // Run electron-packager
   const appPaths = await packager(options)
-  await Promise.all(
-    appPaths.map(dir => compressPackage(dir))
-  )
+  if (!local) {
+    await Promise.all(
+      appPaths.map(dir => compressPackage(dir))
+    )
+  }
   return Date.now() - startedAt
 }
 

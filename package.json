@@ -8,6 +8,7 @@
   "scripts": {
     "postinstall": "node post-install.js",
     "build": "node build/build.js && node build/pack.js",
+    "build:local": "node build/build.js && node build/pack.js -- --local",
     "dev": "node build/build.js && electron .",
     "lint:script": "eslint --ignore-path .gitignore --ext .js,.ts,.vue --cache --fix .",
     "lint:style": "stylelint --ignore-path .gitignore --cache --fix ./**/*.{css,vue}",

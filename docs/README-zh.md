@@ -20,7 +20,7 @@
   - 确保你的设备上安装了最新的 LTS 版本的 Node.js；
   - 下载源代码，通过命令行进入代码目录；
   - 运行 `npm install` 安装依赖；
-  - 运行 `npm run build` 以生成此应用的免安装版本。
+  - 运行 `npm run build:local` 以生成此应用的免安装版本。
 
 ## 功能
 
