@@ -51,17 +51,21 @@ export async function openLauncher(launcher: Launcher, { command }: OpenLauncher
 }
 
 export async function startLauncher(launcher: Launcher) {
+  const settings = unref(useSettings())
+  const shellPath = settings['terminal.shell.path']
   return openLauncher(launcher, {
-    command: getLauncherCommand(launcher),
+    command: getLauncherCommand(launcher, shellPath),
   })
 }
 
 export async function runLauncherScript(launcher: Launcher, index: number) {
+  const settings = unref(useSettings())
+  const shellPath = settings['terminal.shell.path']
   return openLauncher(launcher, {
     command: getLauncherCommand({
       ...launcher,
       ...launcher.scripts![index],
-    }),
+    }, shellPath),
   })
 }
 

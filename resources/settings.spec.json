@@ -4,7 +4,7 @@
     "type": "string",
     "label": "Shell Path",
     "comments": [
-      "Path of shell, $SHELL or %COMSPEC% by default"
+      "Path of shell, $SHELL or PowerShell (on Windows) by default"
     ],
     "default": ""
   },

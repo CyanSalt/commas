@@ -76,7 +76,7 @@ const windowsCMDShells = ['cmd.exe']
 // `git-cmd.exe --no-cd` has no title feature like windows built-in cmd.exe
 // but invoke MinGW core when arguments `--command=usr/bin/bash.exe` specified
 // TODO: judge title feature with both command and arguments
-const windowsStandardShells = ['bash.exe', 'git-cmd.exe']
+const windowsStandardShells = ['bash.exe', 'wsl.exe', 'git-cmd.exe']
 
 export function getWindowsProcessInfo(shell: string, title: string): Partial<TerminalTab> | null {
   shell = path.basename(shell)

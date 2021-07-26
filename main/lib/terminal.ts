@@ -129,7 +129,15 @@ function handleTerminalMessages() {
     }
   })
   ipcMain.handle('get-shells', async () => {
-    if (process.platform === 'win32') return []
+    if (process.platform === 'win32') {
+      return [
+        'powershell.exe',
+        'cmd.exe',
+        'wsl.exe',
+        // 'bash.exe',
+        // 'git-cmd.exe',
+      ]
+    }
     try {
       const { stdout } = await execa('grep "^/" /etc/shells')
       return stdout.trim().split('\n')

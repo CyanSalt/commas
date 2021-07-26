@@ -9,7 +9,8 @@ const BIN_PATH = app.isPackaged
 
 function getDefaultShell() {
   return process.platform === 'win32'
-    ? process.env.COMSPEC : process.env.SHELL
+    ? 'powershell.exe' // process.env.COMSPEC
+    : process.env.SHELL
 }
 
 function getDefaultEnv() {
@@ -29,10 +30,14 @@ function getDefaultEnv() {
   return defaultEnv
 }
 
-function loginExecute(command: string) {
-  const shell = getDefaultShell()
+async function loginExecute(command: string) {
   const env = getDefaultEnv()
-  return execa(`${shell} -lic '${command}'`, { env })
+  if (process.platform === 'win32') {
+    return execa(command, { env })
+  } else {
+    const shell = getDefaultShell()
+    return execa(`${shell} -lic '${command}'`, { env })
+  }
 }
 
 export {

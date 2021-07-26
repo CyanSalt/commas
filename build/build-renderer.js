@@ -21,7 +21,7 @@ const importGlob = () => ({
     const cwd = path.dirname(meta.importer)
     const files = await fastglob(id, { cwd })
     return `
-      ${files.map((module, index) => `import * as module$${index} from '${path.resolve(cwd, module)}'`).join(';')}
+      ${files.map((module, index) => `import * as module$${index} from '${path.posix.join(cwd, module)}'`).join(';')}
       export default {${files.map((module, index) => `"${module}": module$${index}`).join(',')}}
     `
   },

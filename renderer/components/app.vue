@@ -143,7 +143,7 @@ export default {
 }
 :global(body) {
   margin: 0;
-  font-family: Fira Code, Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
+  font-family: Fira Code, Cascadia Code, Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
   font-size: 14px;
   user-select: none;
   cursor: default;

@@ -1,6 +1,6 @@
 {
   "Shell Path#!settings.label.terminal.shell.path": "Shell 路径",
-  "Path of shell, $SHELL or %COMSPEC% by default#!settings.comments.0.terminal.shell.path": "Shell 的路径, 默认使用 $SHELL 或 %COMSPEC%",
+  "Path of shell, $SHELL or PowerShell (on Windows) by default#!settings.comments.0.terminal.shell.path": "Shell 的路径, 默认使用 $SHELL 或 PowerShell (在 Windows 上)",
   "Shell Args#!settings.label.terminal.shell.args": "Shell 命令行参数",
   "Arguments of shell command line#!settings.comments.0.terminal.shell.args": "Shell 命令行的参数",
   "Shell Args#!settings.label.terminal.shell.windowsArgs": "Shell 命令行参数",
