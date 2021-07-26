@@ -102,6 +102,10 @@ export async function createTerminalTab({ cwd: workingDirectory, shell: shellPat
     launcher,
   })
   xterm.attachCustomKeyEventHandler(event => {
+    // Support Ctrl+C to copy on Windows
+    if (process.platform === 'win32' && event.ctrlKey && event.key === 'c' && xterm.hasSelection()) {
+      return false
+    }
     const keybindings = unref(keybindingsRef)
     const matchedItem = keybindings.find(item => isMatch(event, item.pattern))
     if (!matchedItem) return true
