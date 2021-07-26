@@ -118,6 +118,7 @@ function handleTerminalMessages() {
   })
   ipcMain.handle('get-git-branch', async (event, directory: string) => {
     const command = process.platform === 'win32'
+      // TODO: os.devNull
       ? 'git rev-parse --abbrev-ref HEAD 2> NUL'
       : 'git branch 2> /dev/null | grep \\* | cut -d " " -f2'
     try {
