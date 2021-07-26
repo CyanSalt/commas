@@ -20,7 +20,7 @@ You can clone or download the repository and build Commas locally.
   - Make sure you have the latest LTS version of Node.js installed on your device.
   - Download the source code and enter the directory through the command line.
   - Run `npm install` to install dependencies
-  - Run `npm run build:local` to generate portable versions of this application.
+  - Run `npm run build` to generate portable versions of this application.
 
 ## Features
 
