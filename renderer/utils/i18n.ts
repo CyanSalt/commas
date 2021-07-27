@@ -1,6 +1,6 @@
 import { last } from 'lodash-es'
 import { computed, unref } from 'vue'
-import type { DirectiveBinding } from 'vue'
+import type { Directive, VNode } from 'vue'
 import type { Dictionary, TranslationVariables } from '../../typings/i18n'
 import { injectIPC } from './hooks'
 
@@ -49,14 +49,14 @@ export function translate(text: string, variables?: TranslationVariables) {
   })
 }
 
-export function translateElement(el: HTMLElement, { arg, value }: DirectiveBinding<TranslationVariables>) {
+function getVNodeTextContent(vnode: VNode): string {
+  return Array.isArray(vnode.children)
+    ? vnode.children.map(getVNodeTextContent).join('')
+    : String(vnode.children ?? '')
+}
+
+export const translateElement: Directive<HTMLElement, TranslationVariables> = (el, { arg, value }, vnode) => {
   const attr = arg ?? 'textContent'
-  const originalAttr = `i18n:${attr}(original)`
-  const replacedAttr = `i18n:${attr}`
-  if (el[attr] !== el[replacedAttr] || el[originalAttr] === undefined) {
-    el[originalAttr] = el[attr]
-  }
-  const content = translate(el[originalAttr], value)
-  el[attr] = content
-  el[replacedAttr] = content
+  const text = arg ? String(vnode.props?.[arg] ?? '') : getVNodeTextContent(vnode)
+  el[attr] = translate(text, value)
 }
