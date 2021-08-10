@@ -2,6 +2,7 @@
   <div
     :class="['proxy-anchor', { active: status, disabled: status === undefined, system: systemStatus }]"
     @click="toggle"
+    @contextmenu="configure"
   >
     <span v-if="status === undefined" class="feather-icon icon-more-horizontal"></span>
     <span v-else class="feather-icon icon-navigation"></span>
@@ -11,6 +12,7 @@
 
 <script lang="ts">
 import { computed, unref } from 'vue'
+import * as commas from '../../../api/renderer'
 import { useSettings } from '../../../renderer/hooks/settings'
 import { useProxyServerStatus, useSystemProxyStatus } from './hooks'
 
@@ -33,11 +35,16 @@ export default {
       }
     }
 
+    function configure() {
+      commas.workspace.openPaneTab('proxy')
+    }
+
     return {
       status: statusRef,
       systemStatus: systemStatusRef,
       port: portRef,
       toggle,
+      configure,
     }
   },
 }
