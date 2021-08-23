@@ -34,9 +34,7 @@ function loadCustomCSS(frame: BrowserWindow) {
   frame.webContents.on('did-finish-load', async () => {
     const styles = await loadingCSS
     if (styles) {
-      frame.webContents.insertCSS(styles, {
-        cssOrigin: 'user',
-      })
+      frame.webContents.insertCSS(styles)
     }
   })
 }
