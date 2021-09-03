@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@cyansalt/eslint-config": "^1.13.2",
-    "@cyansalt/stylelint-config": "^1.7.2",
+    "@cyansalt/stylelint-config": "^1.8.2",
     "@cyansalt/tsconfig": "^1.1.2",
     "@types/color-rgba": "^2.1.0",
     "@types/lodash": "^4.14.172",
@@ -49,6 +49,7 @@
     "sass": "^1.37.5",
     "shell-quote": "^1.7.2",
     "stylelint": "^13.13.1",
+    "stylelint-order": "^4.1.0",
     "stylelint-scss": "^3.20.1",
     "typescript": "^4.3.5",
     "vite": "^2.4.4",

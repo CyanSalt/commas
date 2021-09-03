@@ -126,43 +126,43 @@ export default {
 
 <style lang="scss" scoped>
 .find-box {
-  flex: none;
   display: flex;
-  padding: 4px 8px;
+  flex: none;
   height: 26px;
+  padding: 4px 8px;
   line-height: 26px;
 }
 .keyword {
   flex: auto;
   border: none;
-  outline: none;
-  font: inherit;
   color: inherit;
+  font: inherit;
   background: transparent;
+  outline: none;
   &::placeholder {
     color: inherit;
     opacity: 0.5;
   }
 }
 .options {
-  flex: none;
   display: flex;
+  flex: none;
 }
 .option {
   display: inline-block;
   width: 28px;
   font-size: 12px;
   text-align: center;
-  cursor: pointer;
   opacity: 0.5;
   transition: opacity 0.2s;
+  cursor: pointer;
   &.selected {
     opacity: 1;
   }
 }
 .buttons {
-  flex: none;
   display: flex;
+  flex: none;
 }
 .button {
   display: inline-block;

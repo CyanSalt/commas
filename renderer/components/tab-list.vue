@@ -244,33 +244,33 @@ export default {
 
 <style lang="scss" scoped>
 .tab-list {
-  flex: none;
-  display: flex;
-  font-size: 14px;
   --tab-height: 46px;
+  display: flex;
+  flex: none;
+  font-size: 14px;
 }
 .list-column {
-  flex: auto;
-  width: 176px;
   display: flex;
+  flex: auto;
   flex-direction: column;
+  width: 176px;
 }
 .list {
+  position: relative;
   flex: auto;
   height: 0;
-  position: relative;
 }
 .scroll-area {
+  box-sizing: border-box;
   height: 100%;
   overflow-y: auto;
-  box-sizing: border-box;
   &::-webkit-scrollbar {
     width: 0px;
   }
 }
 :deep(.scroll-bar) {
-  width: 8px;
   right: 2px;
+  width: 8px;
 }
 .sash {
   flex: none;
@@ -280,9 +280,9 @@ export default {
   cursor: col-resize;
 }
 .new-tab {
-  padding: 0 16px;
   display: flex;
   height: var(--tab-height);
+  padding: 0 16px;
   line-height: var(--tab-height);
   text-align: center;
 }
@@ -307,8 +307,8 @@ export default {
   cursor: pointer;
 }
 .buttons {
-  flex: none;
   display: flex;
+  flex: none;
 }
 .button {
   width: 18px;
@@ -322,8 +322,8 @@ export default {
     opacity: 1;
   }
   &.active {
-    opacity: 1;
     color: rgb(var(--design-yellow));
+    opacity: 1;
   }
 }
 .group-name {
@@ -331,8 +331,8 @@ export default {
   transition: opacity 0.2s, color 0.2s, transform 0.2s;
   &.collapsed {
     color: rgb(var(--design-yellow));
-    transform: rotate(-90deg);
     opacity: 1;
+    transform: rotate(-90deg);
   }
   &:not(.collapsed):hover {
     opacity: 1;
@@ -346,30 +346,30 @@ export default {
   width: 100%;
   padding: 0;
   border: none;
-  outline: none;
-  font: inherit;
   color: inherit;
+  font: inherit;
   background: transparent;
+  outline: none;
   &::placeholder {
     color: inherit;
     opacity: 0.5;
   }
 }
 .bottom-actions {
-  flex: none;
   display: flex;
+  flex: none;
+  height: 16px;
   padding: 8px 16px;
   line-height: 16px;
-  height: 16px;
   .anchor {
     margin-right: 8px;
   }
 }
 // eslint-disable-next-line vue-scoped-css/no-unused-selector
 .anchor {
-  cursor: pointer;
   opacity: 0.5;
   transition: opacity 0.2s;
+  cursor: pointer;
   &:hover:not(.disabled),
   &.active {
     opacity: 1;

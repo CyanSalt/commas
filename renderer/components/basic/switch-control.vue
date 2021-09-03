@@ -46,19 +46,19 @@ export default {
 .switch-content {
   position: relative;
   display: inline-block;
-  padding: 1px;
   width: 2em;
   height: 1em;
+  padding: 1px;
   &::before {
+    content: '';
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    content: '';
     display: inline-block;
-    border-radius: 0.5em;
     background: currentColor;
+    border-radius: 0.5em;
     opacity: 0.25;
     transition: opacity 0.2s, background 0.2s;
     .switch-checkbox:checked + & {
@@ -67,15 +67,15 @@ export default {
     }
   }
   &::after {
+    content: '';
     position: absolute;
     top: 1px;
     left: 1px;
-    content: '';
     display: inline-block;
     width: 1em;
     height: 1em;
-    border-radius: 0.5em;
     background: white;
+    border-radius: 0.5em;
     transition: transform 0.2s;
     .switch-checkbox:checked + & {
       transform: translateX(100%);

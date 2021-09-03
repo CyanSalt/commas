@@ -145,8 +145,8 @@ export default {
   margin: 0;
   font-family: Fira Code, Cascadia Code, Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
   font-size: 14px;
-  user-select: none;
   cursor: default;
+  user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
 .app {
@@ -154,10 +154,10 @@ export default {
   flex-direction: column;
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
+  color: rgb(var(--theme-foreground));
   /* Default line height of xterm.js */
   line-height: 1.2;
-  color: rgb(var(--theme-foreground));
+  overflow: hidden;
   background: rgb(var(--theme-background) / var(--theme-opacity));
   transition: background 0.2s;
   &.opaque {
@@ -165,16 +165,16 @@ export default {
   }
 }
 .content {
+  z-index: 1;
+  display: flex;
   flex: auto;
   width: 100vw;
-  display: flex;
   overflow: hidden;
-  z-index: 1;
 }
 .interface {
-  flex: auto;
-  width: 0;
   display: flex;
+  flex: auto;
   flex-direction: column;
+  width: 0;
 }
 </style>

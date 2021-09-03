@@ -209,35 +209,35 @@ export default {
 
 <style lang="scss" scoped>
 .title-bar {
+  z-index: 1;
+  display: flex;
   flex: none;
+  justify-content: space-between;
   height: 36px;
   line-height: 36px;
-  display: flex;
-  justify-content: space-between;
   text-align: center;
   -webkit-app-region: drag;
-  z-index: 1;
 }
 .git-branch,
 .controls {
-  flex: 1 0 auto;
   display: flex;
+  flex: 1 0 auto;
   width: 108px;
 }
 .title-wrapper {
-  padding: 0 8px;
-  max-width: calc(100vw - 216px);
-  box-sizing: border-box;
-  flex: 2 0 auto;
   display: flex;
+  flex: 2 0 auto;
   justify-content: center;
   align-items: center;
+  box-sizing: border-box;
+  max-width: calc(100vw - 216px);
+  padding: 0 8px;
 }
 .shortcut {
   flex: none;
   margin-right: 8px;
-  cursor: pointer;
   transition: color 0.2s;
+  cursor: pointer;
   -webkit-app-region: no-drag;
 }
 .open-directory:hover {
@@ -255,37 +255,37 @@ export default {
   }
 }
 .title-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   /* Show ellipsis on left */
   direction: rtl;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   unicode-bidi: plaintext;
+  overflow: hidden;
 }
 .git-branch {
-  padding-left: 16px;
   box-sizing: border-box;
+  padding-left: 16px;
   .title-bar.no-controls & {
     order: 1;
-    padding-left: 0;
-    padding-right: 16px;
     justify-content: flex-end;
+    padding-right: 16px;
+    padding-left: 0;
   }
 }
 .branch-updater {
   margin-right: 4px;
-  cursor: pointer;
   opacity: 0.5;
   transition: opacity 0.2s;
+  cursor: pointer;
   -webkit-app-region: no-drag;
   &:hover {
     opacity: 1;
   }
 }
 .branch-name {
-  opacity: 0.5;
-  overflow: hidden;
   text-overflow: ellipsis;
+  overflow: hidden;
+  opacity: 0.5;
 }
 .controls {
   justify-content: flex-end;
@@ -295,16 +295,16 @@ export default {
 }
 .tab-index-indicator {
   margin-left: 8px;
+  color: rgb(var(--theme-foreground) / 0.5);
   font-size: 12px;
   cursor: pointer;
   -webkit-app-region: no-drag;
-  color: rgb(var(--theme-foreground) / 0.5);
 }
 .button {
   width: 36px;
   height: 36px;
-  cursor: pointer;
   transition: color 0.2s;
+  cursor: pointer;
   -webkit-app-region: no-drag;
   &.minimize:hover {
     color: rgb(var(--design-green));

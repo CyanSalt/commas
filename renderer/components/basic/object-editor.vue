@@ -174,8 +174,8 @@ export default {
 }
 .pinned-checker {
   width: 24px;
-  text-align: center;
   margin-right: 4px;
+  text-align: center;
 }
 .pinned-control {
   vertical-align: middle;

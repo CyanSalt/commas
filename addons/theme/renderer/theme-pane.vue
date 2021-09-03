@@ -141,19 +141,19 @@ export default {
 
 <style lang="scss" scoped>
 .theme-list {
-  padding: 12px 0;
-  width: 100%;
   display: grid;
   grid-template-columns: repeat(2, minmax(90px, 1fr));
   grid-gap: 24px;
+  width: 100%;
+  padding: 12px 0;
 }
 .theme-item {
   position: relative;
   display: flex;
   flex-direction: column;
-  border-radius: 4px;
   overflow: hidden;
   background: rgb(var(--theme-foreground) / 0.1);
+  border-radius: 4px;
 }
 .theme-screenshot {
   width: 100%;
@@ -164,8 +164,8 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 12px;
   height: 48px;
+  padding: 0 12px;
 }
 .theme-loading {
   margin: 12px 0;

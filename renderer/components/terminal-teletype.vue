@@ -72,17 +72,17 @@ export default {
 
 <style lang="scss" scoped>
 .terminal-teletype {
+  position: relative;
+  display: flex;
   flex: auto;
   height: 0;
-  display: flex;
-  position: relative;
 }
 .terminal-content {
-  width: 0;
   flex: auto;
-  padding: 4px 8px;
   /* issue@xterm: fix bug of `xterm.fit()` */
   box-sizing: border-box;
+  width: 0;
+  padding: 4px 8px;
   :deep(.xterm-viewport) {
     overflow-y: hidden;
     background-color: transparent !important;

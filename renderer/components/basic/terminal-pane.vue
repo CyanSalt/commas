@@ -20,10 +20,10 @@ export default {
 <style lang="scss" scoped>
 .terminal-pane {
   position: relative;
-  padding: 4px 24px;
-  height: 100%;
-  box-sizing: border-box;
   z-index: 0;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 4px 24px;
 }
 .scroll-area {
   height: 100%;
@@ -42,16 +42,16 @@ export default {
   line-height: 24px;
 }
 :deep(.group) {
-  margin-bottom: 24px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  margin-bottom: 24px;
   line-height: 32px;
 }
 :deep(.link) {
-  cursor: pointer;
   opacity: 0.5;
   transition: opacity 0.2s, color 0.2s, transform 0.2s;
+  cursor: pointer;
   &.disabled {
     pointer-events: none;
   }
@@ -91,14 +91,14 @@ export default {
   margin-top: 10px;
 }
 :deep(.form-label) {
-  width: 14em;
   align-self: flex-start;
+  width: 14em;
 }
 :deep(.form-line-tip) {
   flex-basis: 100%;
   margin-bottom: 8px;
-  font-size: 12px;
   font-style: italic;
+  font-size: 12px;
   line-height: 24px;
   &::before {
     content: '*';
@@ -109,13 +109,13 @@ export default {
 :deep(textarea.form-control) {
   width: 165px;
   padding: 2px 6px;
-  line-height: 20px;
   border: none;
-  outline: none;
   color: inherit;
-  font-size: inherit;
   font-family: inherit;
+  font-size: inherit;
+  line-height: 20px;
   background: rgb(127 127 127 / 0.2);
+  outline: none;
   &::placeholder {
     color: rgb(var(--theme-foreground));
     opacity: 0.25;
@@ -131,35 +131,35 @@ export default {
 :deep(input.immersive-control) {
   appearance: none;
   padding: 0;
+  border: none;
+  color: inherit;
   font: inherit;
   line-height: inherit;
-  border: none;
-  outline: none;
-  color: inherit;
   background: transparent;
+  outline: none;
 }
 :deep(select.form-control) {
+  height: 24px;
   padding: 2px 6px;
+  border: none;
+  color: var(--foreground-color);
   font: inherit;
   line-height: 20px;
-  height: 24px;
-  border-radius: 4px;
-  border: none;
-  outline: none;
   background: rgb(127 127 127 / 0.2);
-  color: var(--foreground-color);
+  border-radius: 4px;
+  outline: none;
 }
 :deep(.form-tips) {
   margin: 4px 0;
-  line-height: 24px;
   font-size: 12px;
-  user-select: text;
+  line-height: 24px;
   opacity: 0.5;
+  user-select: text;
 }
 :deep(.form-action) {
+  width: 24px;
   margin-left: 8px;
   font-size: 16px;
-  width: 24px;
   text-align: center;
 }
 </style>

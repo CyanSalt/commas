@@ -1,8 +1,8 @@
 @font-face {
   font-family: 'Feather Icon';
-  src: url('feather.woff') format('woff');
-  font-weight: normal;
   font-style: normal;
+  font-weight: normal;
+  src: url('feather.woff') format('woff');
 }
 
 .feather-icon {

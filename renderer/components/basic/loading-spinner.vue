@@ -18,12 +18,12 @@
   vertical-align: -0.15em;
 }
 .spinner {
+  box-sizing: border-box;
   width: 1em;
   height: 1em;
-  box-sizing: border-box;
-  border-radius: 50%;
   border: 0.1em solid;
   border-left-color: transparent;
+  border-radius: 50%;
   animation: spinner-rotate 0.6s linear infinite;
 }
 </style>

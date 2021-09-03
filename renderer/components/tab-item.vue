@@ -94,10 +94,10 @@ export default {
   padding: 0 16px;
 }
 .tab-title {
-  flex: auto;
-  width: 0;
   display: flex;
+  flex: auto;
   align-items: center;
+  width: 0;
   opacity: 0.5;
   .tab-item.active &,
   .sortable-item.dragging & {
@@ -105,8 +105,8 @@ export default {
   }
 }
 .tab-icon {
-  flex: none;
   display: inline-block;
+  flex: none;
   margin-right: 6px;
   &.feather-icon {
     margin-top: -2px;
@@ -115,8 +115,8 @@ export default {
 .tab-name {
   flex: auto;
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
+  overflow: hidden;
 }
 .tab-overview {
   position: relative;
@@ -130,16 +130,16 @@ export default {
     position: absolute;
     top: 11px;
     bottom: 11px;
-    transform: scale(0);
     left: -16px;
     border-left: 5px solid rgb(var(--design-blue));
+    transform: scale(0);
     transition: transform 0.15s, border-color 0.2s;
     .tab-item.active & {
       transform: scale(1);
     }
     .sortable-item.dragging & {
-      transform: scale(1);
       border-left-color: rgb(var(--design-yellow));
+      transform: scale(1);
     }
   }
 }
@@ -148,12 +148,12 @@ export default {
 }
 .idle-light {
   display: inline-block;
-  margin: 0 6px;
   width: 6px;
   height: 6px;
+  margin: 0 6px;
   vertical-align: 1px;
-  border-radius: 50%;
   background: currentColor;
+  border-radius: 50%;
   transition: color 0.2s;
   &.busy {
     color: rgb(var(--design-green));
@@ -167,16 +167,16 @@ export default {
 }
 .operations {
   display: none;
-  text-align: center;
   font-size: 14px;
+  text-align: center;
   .tab-item:hover & {
     display: flex;
   }
 }
 .button {
   width: 18px;
-  cursor: pointer;
   transition: color 0.2s;
+  cursor: pointer;
 }
 .close:hover {
   color: rgb(var(--design-red));
