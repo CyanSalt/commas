@@ -77,7 +77,9 @@ export default {
         return userSettings['terminal.theme.customization']?.type ?? ''
       },
       set(value) {
-        if (!value) value = undefined
+        if (!value) {
+          value = undefined
+        }
         const userSettings = unref(userSettingsRef)
         let customization = {
           ...userSettings['terminal.theme.customization'],

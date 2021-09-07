@@ -46,7 +46,9 @@ export function getIconEntryByProcess(process: string) {
   let name = process.toLowerCase()
   // strip extname in process name (Windows only)
   const point = name.lastIndexOf('.')
-  if (point !== -1) name = name.slice(0, point)
+  if (point !== -1) {
+    name = name.slice(0, point)
+  }
   return icons.find(icon => {
     if (icon.pattern) return icon.pattern.test(name)
     return icon.context!.includes(name)
@@ -61,7 +63,9 @@ export function resolveWindowsDisk(directory: string) {
   const slices = directory.split('/')
   if (slices[0] === '') {
     let start = 1
-    if (slices[start] === 'mnt') start += 1
+    if (slices[start] === 'mnt') {
+      start += 1
+    }
     const disk = slices[start].toUpperCase() + ':'
     return [disk].concat(slices.slice(start + 1)).join(path.sep)
   }

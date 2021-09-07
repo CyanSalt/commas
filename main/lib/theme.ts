@@ -55,8 +55,12 @@ const themeRef = computed(async () => {
     const path = `themes/${name}.json`
     // TODO: memoize
     let source = resources.require<Theme>(path)
-    if (!source) source = userData.require<Theme>(path)
-    if (source) originalTheme = source
+    if (!source) {
+      source = userData.require<Theme>(path)
+    }
+    if (source) {
+      originalTheme = source
+    }
   }
   const customization: Partial<Theme> = settings['terminal.theme.customization']
   const theme: Theme = {

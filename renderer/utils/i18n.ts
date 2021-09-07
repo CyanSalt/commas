@@ -15,7 +15,7 @@ const dictionaryRef = injectIPC<Dictionary>('dictionary', {})
 const databaseRef = computed(() => {
   const dictionary = unref(dictionaryRef)
   const database: Dictionary = Object.fromEntries(Object.entries(dictionary).map(
-    ([key, value]) => [getTextSequence(key, false), value]
+    ([key, value]) => [getTextSequence(key, false), value],
   ))
   return database
 })
@@ -23,7 +23,7 @@ const databaseRef = computed(() => {
 const conciseDictionaryRef = computed(() => {
   const dictionary = unref(dictionaryRef)
   const conciseDictionary: Dictionary = Object.fromEntries(Object.entries(dictionary).map(
-    ([key, value]) => [getTextSequence(key, true), value]
+    ([key, value]) => [getTextSequence(key, true), value],
   ))
   return conciseDictionary
 })

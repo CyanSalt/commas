@@ -90,7 +90,12 @@ export interface CreateTerminalTabOptions {
   command?: string,
 }
 
-export async function createTerminalTab({ cwd: workingDirectory, shell: shellPath, command, launcher }: CreateTerminalTabOptions = {}) {
+export async function createTerminalTab({
+  cwd: workingDirectory,
+  shell: shellPath,
+  command,
+  launcher,
+}: CreateTerminalTabOptions = {}) {
   const info: TerminalInfo = await ipcRenderer.invoke('create-terminal', { cwd: workingDirectory, shell: shellPath })
   const xterm = new Terminal(unref(terminalOptionsRef))
   const tab = reactive<TerminalTab>({
@@ -122,7 +127,9 @@ export async function createTerminalTab({ cwd: workingDirectory, shell: shellPat
   const pid = info.pid
   // Setup communication between xterm.js and node-pty
   xterm.onData(data => {
-    if (tab.alerting) tab.alerting = false
+    if (tab.alerting) {
+      tab.alerting = false
+    }
     writeTerminalTab(tab, data)
   })
   xterm.onResize(({ cols, rows }) => {
@@ -138,7 +145,9 @@ export async function createTerminalTab({ cwd: workingDirectory, shell: shellPat
     const settings = unref(useSettings())
     if (settings['terminal.tab.liveCwd']) {
       const latestCwd: string | undefined = await ipcRenderer.invoke('get-terminal-cwd', tab.pid)
-      if (latestCwd) tab.cwd = latestCwd
+      if (latestCwd) {
+        tab.cwd = latestCwd
+      }
     }
   }, 250)
   xterm.onLineFeed(() => {
@@ -270,7 +279,9 @@ export function handleTerminalMessages() {
     const xterm = tab.xterm
     if (xterm.element) {
       const observer: ReturnType<typeof createResizeObserver> | undefined = createResizeObserver.cache.get(undefined)
-      if (observer) observer.unobserve(xterm.element)
+      if (observer) {
+        observer.unobserve(xterm.element)
+      }
     }
     xterm.dispose()
     removeTerminalTab(tab)
@@ -290,7 +301,9 @@ export function handleTerminalMessages() {
     const tabs = unref(tabsRef)
     if (!tabs.length) return
     let targetIndex = index % tabs.length
-    if (targetIndex < 0) targetIndex += tabs.length
+    if (targetIndex < 0) {
+      targetIndex += tabs.length
+    }
     activeIndexRef.value = targetIndex
   })
   ipcRenderer.on('select-previous-tab', () => {
@@ -326,12 +339,15 @@ export function handleTerminalMessages() {
     const launchers = unref(useLaunchers())
     const launcherTabs = sortBy(
       groups.true ?? [],
-      ({ launcher }) => launchers.findIndex(item => item.id === launcher!.id)
+      ({ launcher }) => launchers.findIndex(item => item.id === launcher!.id),
     ).map(({ launcher, index }) => ({
       label: launcher!.name,
       args: [index],
     }))
-    const options = [...normalTabs, ...launcherTabs].map<MenuItemConstructorOptions & { args?: any[] }>((item, index) => {
+    const options = [
+      ...normalTabs,
+      ...launcherTabs,
+    ].map<MenuItemConstructorOptions & { args?: any[] }>((item, index) => {
       const number = index + 1
       return {
         ...item,
@@ -363,7 +379,9 @@ export function loadTerminalAddons(tab: TerminalTab) {
     tab.addons.weblinks = new WebLinksAddon((event, uri) => {
       const shouldOpen = settings['terminal.link.modifier'] === 'Alt' ? event.altKey
         : (process.platform === 'darwin' ? event.metaKey : event.ctrlKey)
-      if (shouldOpen) shell.openExternal(uri)
+      if (shouldOpen) {
+        shell.openExternal(uri)
+      }
     })
     xterm.loadAddon(tab.addons.weblinks)
   }

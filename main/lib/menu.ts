@@ -181,7 +181,7 @@ function handleMenuMessages() {
   ipcMain.handle('contextmenu', (event, template: KeyBinding[], options: PopupOptions) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     const menu = Menu.buildFromTemplate(
-      template.map(resolveBindingCommand)
+      template.map(resolveBindingCommand),
     )
     menu.popup({
       ...options,

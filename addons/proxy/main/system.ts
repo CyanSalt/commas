@@ -58,7 +58,7 @@ async function loadSystemProxy() {
     proxy
     && proxy.Enabled === 'Yes'
     && proxy.Server === '127.0.0.1'
-    && proxy.Port === String(port)
+    && proxy.Port === String(port),
   )
 }
 

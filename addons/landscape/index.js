@@ -14,12 +14,12 @@ module.exports = function (commas) {
 
     commas.context.provide(
       '@slot',
-      commas.bundler.extract('landscape/renderer/landscape-slot.vue').default
+      commas.bundler.extract('landscape/renderer/landscape-slot.vue').default,
     )
 
     commas.context.provide(
       '@anchor',
-      commas.bundler.extract('landscape/renderer/landscape-anchor.vue').default
+      commas.bundler.extract('landscape/renderer/landscape-anchor.vue').default,
     )
 
   }

@@ -24,7 +24,12 @@
           <span class="feather-icon icon-check"></span>
           <span v-i18n>Certification installed#!proxy.8</span>
         </span>
-        <span v-if="isCertInstalled" v-i18n class="link" @click="uninstallRootCA">Uninstall Root Certification#!proxy.7</span>
+        <span
+          v-if="isCertInstalled"
+          v-i18n
+          class="link"
+          @click="uninstallRootCA"
+        >Uninstall Root Certification#!proxy.7</span>
         <span v-else v-i18n class="link" @click="installRootCA">Install Root Certification#!proxy.6</span>
         <span v-i18n class="link" @click="openKeychainAccess">Open Keychain Access#!proxy.9</span>
       </div>
@@ -58,7 +63,7 @@ export default {
 
     const latestVersionRef = useAsyncComputed<string | undefined>(
       () => ipcRenderer.invoke('get-latest-proxy-server-version'),
-      undefined
+      undefined,
     )
 
     const isOutdatedRef = computed(() => {

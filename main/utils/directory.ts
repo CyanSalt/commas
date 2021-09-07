@@ -106,7 +106,9 @@ class Directory {
           data = defaultValue
         }
         trigger()
-        if (afterTriggered) afterTriggered()
+        if (afterTriggered) {
+          afterTriggered()
+        }
       })
       this.watch(basename, () => {
         reactiveEffect()

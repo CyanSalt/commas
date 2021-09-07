@@ -12,7 +12,7 @@ const keybindingsRef = computed(() => {
   const allKeyBindings = unref(useAllKeyBindings())
   return [
     ...allKeyBindings.filter(
-      item => item.command?.startsWith('xterm:')
+      item => item.command?.startsWith('xterm:'),
     ),
     ...defaultKeyBindings,
   ]

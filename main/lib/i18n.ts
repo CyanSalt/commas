@@ -14,7 +14,7 @@ export interface TranslationFileEntry {
 export enum Priority {
   custom = 0,
   addon = 1,
-  builtin = 2
+  builtin = 2,
 }
 
 interface Translation {

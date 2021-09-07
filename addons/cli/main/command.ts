@@ -15,7 +15,12 @@ export interface CommandModule {
   handler: (context: CommandContext, event: IpcMainInvokeEvent) => any,
 }
 
-export async function executeCommand(event: IpcMainInvokeEvent, inputContext: CommandContext, commands: CommandModule[], aliases: Record<string, string>) {
+export async function executeCommand(
+  event: IpcMainInvokeEvent,
+  inputContext: CommandContext,
+  commands: CommandModule[],
+  aliases: Record<string, string>,
+) {
   const [subcommand, ...argv] = inputContext.argv
   let command = subcommand
   while (aliases[command]) {

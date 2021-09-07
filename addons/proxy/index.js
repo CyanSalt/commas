@@ -73,7 +73,7 @@ module.exports = function (commas) {
 
     commas.context.provide(
       '@anchor',
-      commas.bundler.extract('proxy/renderer/proxy-anchor.vue').default
+      commas.bundler.extract('proxy/renderer/proxy-anchor.vue').default,
     )
 
     commas.context.provide('preference', {

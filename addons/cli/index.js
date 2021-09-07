@@ -75,7 +75,7 @@ module.exports = function (commas) {
     commas.context.provide('cli', {
       command: 'select',
       handler({ argv }, event) {
-        const index = Number.parseInt(argv[0])
+        const index = Number.parseInt(argv[0], 10)
         if (!Number.isNaN(index)) {
           event.sender.send('select-tab', index)
         }
@@ -108,8 +108,10 @@ module.exports = function (commas) {
     commas.context.provide('cli', {
       command: 'roll',
       handler({ argv }) {
-        let length = Number.parseInt(argv[0])
-        if (Number.isNaN(length)) length = 1
+        let length = Number.parseInt(argv[0], 10)
+        if (Number.isNaN(length)) {
+          length = 1
+        }
         return Array.from({ length })
           .map(() => random(1, 100)).join('\n')
       },

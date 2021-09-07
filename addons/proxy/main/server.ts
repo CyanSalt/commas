@@ -7,7 +7,9 @@ import { loginExecute } from '../../../main/utils/shell'
 async function createServer(cancelation?: Promise<unknown>) {
   const settings = unref(useSettings())
   const port: number = settings['proxy.server.port']
-  if (cancelation) await cancelation
+  if (cancelation) {
+    await cancelation
+  }
   return loginExecute(`whistle start -p ${port}`)
 }
 

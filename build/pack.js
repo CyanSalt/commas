@@ -86,7 +86,7 @@ const options = {
 
 async function getMacOSCodeSign(name) {
   const { stdout } = await execa(
-    `security find-identity -p codesigning -v | grep -o "\\"${name}: .*\\""`
+    `security find-identity -p codesigning -v | grep -o "\\"${name}: .*\\""`,
   )
   return stdout.toString().trim()
 }
@@ -124,7 +124,7 @@ async function pack() {
   const appPaths = await packager(options)
   if (!local) {
     await Promise.all(
-      appPaths.map(dir => compressPackage(dir))
+      appPaths.map(dir => compressPackage(dir)),
     )
   }
   return Date.now() - startedAt

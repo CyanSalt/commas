@@ -22,7 +22,9 @@ module.exports = function (commas) {
             commas.i18n.translate('Later#!updater.3'),
           ],
         })
-        if (response === 0) autoUpdater.quitAndInstall()
+        if (response === 0) {
+          autoUpdater.quitAndInstall()
+        }
       })
       // Initialize
       setupAutoUpdater()
@@ -34,7 +36,9 @@ module.exports = function (commas) {
     }
 
     commas.ipcMain.handle('check-for-updates', () => {
-      if (supportsAutoUpdater) checkForUpdates()
+      if (supportsAutoUpdater) {
+        checkForUpdates()
+      }
     })
 
     commas.settings.addSpecs(require('./settings.spec.json'))

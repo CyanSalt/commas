@@ -145,8 +145,8 @@ export default {
       const keywords = keyword.toLowerCase().split(/\s+/)
       return launchers.filter(
         launcher => keywords.every(
-          item => Object.values(launcher).join(' ').toLowerCase().includes(item)
-        )
+          item => Object.values(launcher).join(' ').toLowerCase().includes(item),
+        ),
       )
     })
 

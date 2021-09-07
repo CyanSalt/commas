@@ -24,7 +24,9 @@ function oncea<T extends EventEmitter, U extends string>(emitter: T, finish: U, 
 type IDIterator = (id: number) => number
 
 function createIDGenerator(iterator?: IDIterator) {
-  if (!iterator) iterator = id => id + 1
+  if (!iterator) {
+    iterator = id => id + 1
+  }
   let id = 0
   return () => {
     id = iterator!(id)

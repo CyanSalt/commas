@@ -74,8 +74,8 @@ const settingsRef = computed<Settings>({
     const defaultSettings = unref(defaultSettingsRef)
     userSettingsRef.value = Object.fromEntries(
       Object.entries(data).filter(
-        ([key, value]) => !isEqual(value, defaultSettings[key])
-      )
+        ([key, value]) => !isEqual(value, defaultSettings[key]),
+      ),
     )
   },
 })

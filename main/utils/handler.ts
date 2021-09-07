@@ -22,7 +22,9 @@ const globalHandler = {
     if (!handler) {
       throw new ReferenceError(`No handler registered for '${channel}'`)
     }
-    if (handler.once) this.removeHandler(channel)
+    if (handler.once) {
+      this.removeHandler(channel)
+    }
     return handler.listener.apply(undefined, args)
   },
 
