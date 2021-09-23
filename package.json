@@ -10,6 +10,7 @@
     "dev": "node build/build.js && electron .",
     "build": "node build/build.js && node build/pack.js -- --local",
     "pack": "node build/build.js && node build/pack.js",
+    "release": "release-it",
     "lint:script": "eslint --ignore-path .gitignore --ext .js,.ts,.vue --cache --fix .",
     "lint:style": "stylelint --ignore-path .gitignore --cache --fix ./**/*.{css,vue}",
     "lint": "npm run lint:script && npm run lint:style"
@@ -26,6 +27,7 @@
     "@cyansalt/eslint-config": "^1.17.1",
     "@cyansalt/stylelint-config": "^1.8.3",
     "@cyansalt/tsconfig": "^1.1.2",
+    "@release-it/conventional-changelog": "^3.3.0",
     "@types/color-rgba": "^2.1.0",
     "@types/lodash": "^4.14.173",
     "@types/lodash-es": "^4.17.5",
@@ -46,6 +48,7 @@
     "eslint-plugin-vue-scoped-css": "^1.3.0",
     "lodash-es": "^4.17.21",
     "png2icons": "^2.0.1",
+    "release-it": "^14.11.6",
     "sass": "^1.42.1",
     "shell-quote": "^1.7.2",
     "stylelint": "^13.13.1",
