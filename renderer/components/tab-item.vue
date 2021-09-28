@@ -2,11 +2,13 @@
   <div :class="['tab-item', { active: isFocused }]">
     <div class="tab-overview">
       <div class="tab-title">
+        <span v-if="name" class="tab-icon feather-icon icon-hash"></span>
         <span
-          v-if="iconEntry"
+          v-else-if="iconEntry"
           :style="{ color: isFocused ? iconEntry.color : undefined }"
           :class="['tab-icon', iconEntry.name]"
         ></span>
+        <span v-else class="tab-icon feather-icon icon-terminal"></span>
         <span v-if="pane" v-i18n class="tab-name">{{ pane.title }}</span>
         <span v-else class="tab-name">{{ title }}</span>
       </div>
@@ -54,7 +56,7 @@ export default {
     })
 
     const iconEntryRef = computed(() => {
-      if (props.name || !props.tab) return null
+      if (!props.tab) return null
       const pane = unref(paneRef)
       if (pane) return pane.icon
       return getIconEntryByProcess(props.tab.process)
@@ -91,7 +93,7 @@ export default {
 
 <style lang="scss" scoped>
 .tab-item {
-  padding: 0 16px;
+  padding: 4px 8px;
 }
 .tab-title {
   display: flex;
@@ -99,6 +101,7 @@ export default {
   align-items: center;
   width: 0;
   opacity: 0.5;
+  transition: opacity 0.2s;
   .tab-item.active &,
   .sortable-item.dragging & {
     opacity: 1;
@@ -117,6 +120,10 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  transition: color 0.2s;
+  .sortable-item.dragging & {
+    color: rgb(var(--design-yellow));
+  }
 }
 .tab-overview {
   position: relative;
@@ -124,23 +131,10 @@ export default {
   justify-content: space-between;
   align-items: center;
   height: var(--tab-height);
-  border-bottom: 1px solid rgb(var(--theme-foreground) / 0.05);
-  &::before {
-    content: '';
-    position: absolute;
-    top: 11px;
-    bottom: 11px;
-    left: -16px;
-    border-left: 5px solid rgb(var(--design-blue));
-    transform: scale(0);
-    transition: transform 0.15s, border-color 0.2s;
-    .tab-item.active & {
-      transform: scale(1);
-    }
-    .sortable-item.dragging & {
-      border-left-color: rgb(var(--design-yellow));
-      transform: scale(1);
-    }
+  padding: 0 8px;
+  border-radius: 8px;
+  .tab-item.active & {
+    background: rgb(var(--theme-foreground) / 0.15);
   }
 }
 .right-side {

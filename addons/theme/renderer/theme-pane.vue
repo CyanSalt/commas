@@ -13,7 +13,7 @@
       <span v-i18n class="link" @click="reset">Reset to default#!preference.12</span>
       <div class="form-line">
         <label v-i18n class="form-label">Search#!preference.11</label>
-        <input v-model="keyword" type="text" class="form-control">
+        <input v-model="keyword" type="search" class="form-control">
         <div class="form-line-tip">
           <span v-i18n>Theme will be downloaded from#!theme.3</span>
           <span class="link" @click="openMarketplace">mbadolato/iTerm2-Color-Schemes</span>

@@ -17,7 +17,7 @@
           </SortableList>
           <div class="new-tab">
             <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
-              <span class="feather-icon icon-chevron-down"></span>
+              <span class="feather-icon icon-more-horizontal"></span>
             </div>
             <div class="default-shell anchor" @click="createTerminalTab()">
               <span class="feather-icon icon-plus"></span>
@@ -40,6 +40,7 @@
                 ref="searcher"
                 v-model="keyword"
                 v-i18n:placeholder
+                type="search"
                 class="keyword"
                 placeholder="Find...#!terminal.5"
                 autofocus
@@ -244,7 +245,7 @@ export default {
 
 <style lang="scss" scoped>
 .tab-list {
-  --tab-height: 46px;
+  --tab-height: 36px;
   display: flex;
   flex: none;
   font-size: 14px;
@@ -282,7 +283,7 @@ export default {
 .new-tab {
   display: flex;
   height: var(--tab-height);
-  padding: 0 16px;
+  padding: 4px 16px;
   line-height: var(--tab-height);
   text-align: center;
 }
