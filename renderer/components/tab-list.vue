@@ -63,10 +63,17 @@
               @click="openLauncher(launcher)"
             >
               <template #operations>
-                <div class="button launch" @click.stop="startLauncher(launcher)">
+                <div
+                  class="button launch"
+                  @click.stop="startLauncher(launcher)"
+                  @contextmenu="showLauncherScripts(launcher, $event)"
+                >
                   <span class="feather-icon icon-play"></span>
                 </div>
-                <div class="button launch-externally" @click.stop="startLauncherExternally(launcher)">
+                <div
+                  class="button launch-externally"
+                  @click.stop="startLauncherExternally(launcher)"
+                >
                   <span class="feather-icon icon-external-link"></span>
                 </div>
               </template>
@@ -96,6 +103,7 @@ import * as path from 'path'
 import { ipcRenderer } from 'electron'
 import { computed, nextTick, ref, unref } from 'vue'
 import * as commas from '../../api/renderer'
+import type { Launcher } from '../../typings/launcher'
 import {
   useLaunchers,
   getTerminalTabByLauncher,
@@ -214,6 +222,25 @@ export default {
       moveLauncher(from, to)
     }
 
+    function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
+      const scripts = launcher.scripts ?? []
+      openContextMenu([
+        {
+          label: 'Launch#!terminal.6',
+          command: 'start-launcher',
+          args: [launcher],
+        },
+        {
+          type: 'separator',
+        },
+        ...scripts.map((script, index) => ({
+          label: script.name || script.command,
+          command: 'run-script',
+          args: [launcher, index],
+        })),
+      ], event)
+    }
+
     return {
       shells: shellsRef,
       searcher: searcherRef,
@@ -235,6 +262,7 @@ export default {
       openLauncher,
       startLauncher,
       startLauncherExternally,
+      showLauncherScripts,
       configure,
       resize,
       sortLaunchers,

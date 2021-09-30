@@ -3,5 +3,6 @@
   "All tabs in this window will be closed.#!terminal.2": "当前窗口的全部标签都将被关闭。",
   "Confirm#!terminal.3": "确认",
   "Cancel#!terminal.4": "取消",
-  "Find...#!terminal.5": "查找..."
+  "Find...#!terminal.5": "查找...",
+  "Launch#!terminal.6": "启动"
 }

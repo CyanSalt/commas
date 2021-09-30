@@ -12,9 +12,6 @@
       </template>
     </div>
     <div class="title-wrapper">
-      <div v-if="scripts.length" class="shortcut run-script" @click="runScript">
-        <span class="feather-icon icon-play"></span>
-      </div>
       <a
         v-if="directory"
         draggable="true"
@@ -58,11 +55,9 @@
 import { ipcRenderer, nativeImage, shell } from 'electron'
 import { computed, ref, unref, watchEffect } from 'vue'
 import { useMinimized, useMaximized } from '../hooks/frame'
-import { getLauncherByTerminalTab } from '../hooks/launcher'
 import { useSettings } from '../hooks/settings'
 import { useIsTabListEnabled } from '../hooks/shell'
 import { showTabOptions, useCurrentTerminal, useTerminalActiveIndex, useTerminalTabs } from '../hooks/terminal'
-import { openContextMenu } from '../utils/frame'
 import { translate } from '../utils/i18n'
 import { getPrompt } from '../utils/terminal'
 
@@ -110,19 +105,6 @@ export default {
       return null
     })
 
-    const launcherRef = computed(() => {
-      const terminal = unref(terminalRef)
-      if (!terminal) return null
-      return getLauncherByTerminalTab(terminal)
-    })
-    const scriptsRef = computed(() => {
-      const launcher = unref(launcherRef)
-      if (launcher?.scripts) {
-        return launcher.scripts
-      }
-      return []
-    })
-
     async function updateBranch() {
       const directory = unref(directoryRef)
       if (directory) {
@@ -136,19 +118,6 @@ export default {
       branchRef.value = ''
       updateBranch()
     })
-
-    function runScript(event: MouseEvent) {
-      const launcher = unref(launcherRef)
-      const scripts = unref(scriptsRef)
-      openContextMenu(
-        scripts.map((script, index) => ({
-          label: script.name || script.command,
-          command: 'run-script',
-          args: [launcher, index],
-        })),
-        event,
-      )
-    }
 
     function openDirectory() {
       const directory = unref(directoryRef)
@@ -196,10 +165,8 @@ export default {
       directory: directoryRef,
       pane: paneRef,
       title: titleRef,
-      scripts: scriptsRef,
       icon: iconRef,
       updateBranch,
-      runScript,
       openDirectory,
       startDraggingDirectory,
       minimize,
