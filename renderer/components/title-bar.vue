@@ -27,7 +27,11 @@
       </a>
       <div v-if="pane" v-i18n class="title-text">{{ pane.title }}</div>
       <div v-else class="title-text">{{ title }}</div>
-      <div class="tab-index-indicator" @click="toggleTabList">
+      <div
+        class="tab-index-indicator"
+        @click="toggleTabList"
+        @contextmenu="showTabOptions"
+      >
         [{{ activeIndex + 1 }}/{{ tabs.length }}]
       </div>
     </div>
@@ -57,7 +61,7 @@ import { useMinimized, useMaximized } from '../hooks/frame'
 import { getLauncherByTerminalTab } from '../hooks/launcher'
 import { useSettings } from '../hooks/settings'
 import { useIsTabListEnabled } from '../hooks/shell'
-import { useCurrentTerminal, useTerminalActiveIndex, useTerminalTabs } from '../hooks/terminal'
+import { showTabOptions, useCurrentTerminal, useTerminalActiveIndex, useTerminalTabs } from '../hooks/terminal'
 import { openContextMenu } from '../utils/frame'
 import { translate } from '../utils/i18n'
 import { getPrompt } from '../utils/terminal'
@@ -202,6 +206,7 @@ export default {
       maximize,
       close,
       toggleTabList,
+      showTabOptions,
     }
   },
 }

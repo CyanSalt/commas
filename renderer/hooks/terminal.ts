@@ -215,6 +215,43 @@ export function getTerminalTabTitle(tab: TerminalTab) {
   return getPrompt(expr, tab) || tab.process
 }
 
+export function showTabOptions(event?: MouseEvent) {
+  const tabs = unref(tabsRef)
+  const entries = tabs.map((tab, index) => {
+    const launcher = getLauncherByTerminalTab(tab)
+    return { tab, launcher, index }
+  })
+  const groups = groupBy(entries, entry => Boolean(entry.launcher)) as Partial<Record<'true' | 'false', typeof entries>>
+  const normalTabs = (groups.false ?? []).map(({ tab, index }) => ({
+    label: getTerminalTabTitle(tab),
+    args: [index],
+  }))
+  const launchers = unref(useLaunchers())
+  const launcherTabs = sortBy(
+    groups.true ?? [],
+    ({ launcher }) => launchers.findIndex(item => item.id === launcher!.id),
+  ).map(({ launcher, index }) => ({
+    label: launcher!.name,
+    args: [index],
+  }))
+  const options = [
+    ...normalTabs,
+    ...launcherTabs,
+  ].map<MenuItemConstructorOptions & { args?: any[] }>((item, index) => {
+    const number = index + 1
+    return {
+      ...item,
+      command: 'select-tab',
+      accelerator: number < 10 ? String(number) : undefined,
+    }
+  })
+  if (groups.false && groups.true) {
+    options.splice(groups.false.length, 0, { type: 'separator' })
+  }
+  const activeIndex = unref(activeIndexRef)
+  openContextMenu(options, event ?? [0, 36], options.findIndex(item => item.args?.[0] === activeIndex))
+}
+
 function handleTerminalTabHistory() {
   let navigating: number | null = null
   window.addEventListener('popstate', event => {
@@ -326,40 +363,7 @@ export function handleTerminalMessages() {
     history.forward()
   })
   ipcRenderer.on('show-tab-options', () => {
-    const tabs = unref(tabsRef)
-    const entries = tabs.map((tab, index) => {
-      const launcher = getLauncherByTerminalTab(tab)
-      return { tab, launcher, index }
-    })
-    const groups = groupBy(entries, entry => Boolean(entry.launcher)) as Partial<Record<'true' | 'false', typeof entries>>
-    const normalTabs = (groups.false ?? []).map(({ tab, index }) => ({
-      label: getTerminalTabTitle(tab),
-      args: [index],
-    }))
-    const launchers = unref(useLaunchers())
-    const launcherTabs = sortBy(
-      groups.true ?? [],
-      ({ launcher }) => launchers.findIndex(item => item.id === launcher!.id),
-    ).map(({ launcher, index }) => ({
-      label: launcher!.name,
-      args: [index],
-    }))
-    const options = [
-      ...normalTabs,
-      ...launcherTabs,
-    ].map<MenuItemConstructorOptions & { args?: any[] }>((item, index) => {
-      const number = index + 1
-      return {
-        ...item,
-        command: 'select-tab',
-        accelerator: number < 10 ? String(number) : undefined,
-      }
-    })
-    if (groups.false && groups.true) {
-      options.splice(groups.false.length, 0, { type: 'separator' })
-    }
-    const activeIndex = unref(activeIndexRef)
-    openContextMenu(options, [0, 36], options.findIndex(item => item.args?.[0] === activeIndex))
+    showTabOptions()
   })
 }
 
