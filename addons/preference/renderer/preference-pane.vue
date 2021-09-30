@@ -50,12 +50,12 @@
     </div>
     <h2 v-i18n class="group-title">About#!preference.5</h2>
     <div class="group">
+      <span v-i18n="{ V: version }" class="text">Current version: %V#!preference.9</span>
       <component
         :is="item.component"
         v-for="(item, index) in aboutItems"
         :key="index"
       />
-      <span v-i18n="{ V: version }" class="text">Current version: %V#!preference.9</span>
       <span v-i18n class="link" @click="openWebsite">Visit our website#!preference.10</span>
     </div>
   </TerminalPane>
