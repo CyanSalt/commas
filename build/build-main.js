@@ -1,37 +1,8 @@
 const { build } = require('esbuild')
-const fastglob = require('fast-glob')
+const externalNodeModules = require('./plugins/esbuild/external-node-modules')
+const importGlob = require('./plugins/esbuild/import-glob')
 
-const externalNodeModules = () => ({
-  name: 'external-node-modules',
-  setup(pluginBuild) {
-    const filter = /^[^./]|^\.[^./]|^\.\.[^/]/
-    pluginBuild.onResolve({ filter }, args => ({ path: args.path, external: true }))
-  },
-})
-
-const importGlob = () => ({
-  name: 'import-glob',
-  setup(pluginBuild) {
-    pluginBuild.onResolve({ filter: /\*/ }, args => ({
-      path: args.path,
-      namespace: 'import-glob',
-      pluginData: {
-        resolveDir: args.resolveDir,
-      },
-    }))
-    pluginBuild.onLoad({ filter: /^/, namespace: 'import-glob' }, async (args) => {
-      const files = await fastglob(args.path, { cwd: args.pluginData.resolveDir })
-      files.sort()
-      const contents = `
-        ${files.map((module, index) => `import * as module$${index} from '${module}'`).join(';')}
-        export default {${files.map((module, index) => `"${module}": module$${index}`).join(',')}}
-      `
-      return { contents, resolveDir: args.pluginData.resolveDir }
-    })
-  },
-})
-
-module.exports = () => build({
+module.exports = (versions) => build({
   entryPoints: ['main/index.ts'],
   outfile: 'main/dist/index.js',
   bundle: true,
@@ -40,7 +11,7 @@ module.exports = () => build({
     externalNodeModules(),
     importGlob(),
   ],
-  target: 'node14.16.0',
+  target: `node${versions.node}`,
   define: {
     // Optimization
     'process.type': JSON.stringify('browser'),
