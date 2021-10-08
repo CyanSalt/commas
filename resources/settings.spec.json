@@ -73,6 +73,16 @@
     "default": true
   },
   {
+    "key": "terminal.tab.liveIcon",
+    "type": "boolean",
+    "label": "Enable Live Icon",
+    "comments": [
+      "Support real-time icon (currently for macOS only)",
+      "Disabling this feature will slightly improved performance."
+    ],
+    "default": true
+  },
+  {
     "key": "terminal.tab.titleFormat",
     "type": "string",
     "label": "Tab Title Format",

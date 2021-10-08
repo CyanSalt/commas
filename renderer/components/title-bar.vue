@@ -63,6 +63,7 @@ import { getPrompt } from '../utils/terminal'
 
 export default {
   setup() {
+    const settingsRef = useSettings()
     const isMaximizedRef = useMaximized()
     const isTabListEnabledRef = useIsTabListEnabled()
     const tabsRef = useTerminalTabs()
@@ -84,7 +85,6 @@ export default {
       return terminal.pane
     })
 
-    const settingsRef = useSettings()
     const titleRef = computed(() => {
       const terminal = unref(terminalRef)
       if (!terminal) return ''
@@ -105,7 +105,8 @@ export default {
 
     async function updateIcon() {
       const directory = unref(directoryRef)
-      if (directory && process.platform === 'darwin') {
+      const settings = unref(settingsRef)
+      if (directory && process.platform === 'darwin' && settings['terminal.tab.liveIcon']) {
         iconBufferRef.value = await ipcRenderer.invoke('get-icon', directory)
       } else {
         iconBufferRef.value = defaultIconBuffer
