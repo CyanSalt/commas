@@ -16,7 +16,7 @@
         <input v-model="keyword" type="search" class="form-control">
         <div class="form-line-tip">
           <span v-i18n>Theme will be downloaded from#!theme.3</span>
-          <span class="link" @click="openMarketplace">mbadolato/iTerm2-Color-Schemes</span>
+          <span class="link github-link" @click="openMarketplace">mbadolato/iTerm2-Color-Schemes</span>
         </div>
       </div>
       <LoadingSpinner v-if="!list.length" class="theme-loading" />
@@ -171,5 +171,8 @@ export default {
 }
 .theme-loading {
   margin: 12px 0;
+}
+.github-link {
+  margin-left: 0.5em;
 }
 </style>
