@@ -26,13 +26,13 @@
 
 - 可选的多标签支持
 - 可自定义快捷的命令启动项
-- 内置多种插件
+- 内置多个附加功能
   - 可视化配置编辑器
   - 支持自定义命令的 CLI
   - 集成 [Whistle](https://github.com/avwo/whistle) 代理
   - 可定制主题 (200+ 可下载)
 - 多语言支持
-- 支持用户脚本和第三方插件
+- 支持用户脚本和第三方附加功能
 
 ## 定制
 
@@ -40,13 +40,13 @@
 
 - 你可以把下面提到的任意文件放置在用户数据文件夹下。配置文件（设置、快捷键、翻译）均使用 YAML 格式，而资源文件（主题）则使用 JSON 格式。
 
-- Commas 内置了数个有用/有趣的[插件](https://github.com/CyanSalt/commas/tree/master/addons)，你也可以下载/编写第三方插件放置在用户数据文件夹的 `addons` 目录下，并通过设置来管理期望启用的插件。
+- Commas 内置了数个有用/有趣的[附加功能](https://github.com/CyanSalt/commas/tree/master/addons)，你也可以下载/编写第三方附加功能放置在用户数据文件夹的 `addons` 目录下，并通过设置来管理期望启用的附加功能。
 
 - Commas 也支持添加自定义脚本和样式表。你可以查看这里的[示例文件](https://github.com/CyanSalt/commas/tree/master/resources/examples)。这个目录下也包含了辅助你自定义快捷键或是命令启动项的示例文件。
 
 - 如果应用内没有你想要语言的翻译，你可以在用户数据文件夹下添加/修改 `translation.yaml` 文件。文件内容可以是类似于这个[翻译文件](https://github.com/CyanSalt/commas/blob/master/resources/locales/zh-CN.json)的一部分。你也可以通过 `"@use": zh-CN` 这样的键值对来引用已有的翻译文件。
 
-- Commas 内置了一组丰富的[钩子 API](https://github.com/CyanSalt/commas/tree/master/api)。你可以参考 Commas 的自带插件来编写自己的插件。
+- Commas 内置了一组丰富的[钩子 API](https://github.com/CyanSalt/commas/tree/master/api)。你可以参考 Commas 的内置附加功能来编写自己的附加功能。
 
 - 以及，你还可以通过快捷键 <kbd>&#8984;/Ctrl</kbd> <kbd>Shift</kbd> <kbd>I</kbd> 打开 Commas 的开发者工具，检查 UI 中的 HTML 元素，就像在浏览器里一样！
 

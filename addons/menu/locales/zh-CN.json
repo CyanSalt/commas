@@ -25,7 +25,7 @@
   "Edit#!menu.edit": "编辑",
   "Window#!menu.window": "窗口",
   "User#!menu.user": "用户",
-  "Addon#!menu.addon": "插件",
+  "Addon#!menu.addon": "附加功能",
   "Help#!menu.help": "帮助",
   "Toggle Developer Tools#!menu.toggledevtools": "切换开发人员工具",
   "Relaunch %A#!menu.relaunch": "重新启动 %A"

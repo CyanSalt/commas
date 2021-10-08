@@ -18,7 +18,7 @@
   "Support dynamic \\w and \\W in formatting#!settings.comments.0.terminal.tab.liveCwd": "在格式中支持动态的 \\w 和 \\W",
   "Disabling this feature will slightly improved performance.#!settings.comments.1.terminal.tab.liveCwd": "禁用此特性将略微提升性能",
   "Enable Live Icon#!settings.label.terminal.tab.liveIcon": "启用实时图标",
-  "Support real-time icon (currently for macOS only)#!settings.comments.0.terminal.tab.liveIcon": "支持动态的图标 (目前仅支持 macOS)",
+  "Support real-time icon (currently for macOS only)#!settings.comments.0.terminal.tab.liveIcon": "支持实时的图标 (目前仅支持 macOS)",
   "Disabling this feature will slightly improved performance.#!settings.comments.1.terminal.tab.liveIcon": "禁用此特性将略微提升性能",
   "Tab Title Format#!settings.label.terminal.tab.titleFormat": "标签页标题格式",
   "Title format of terminal tab in grammer of bash prompt#!settings.comments.0.terminal.tab.titleFormat": "以 Bash 提示符语法描述的终端标签页标题格式",
