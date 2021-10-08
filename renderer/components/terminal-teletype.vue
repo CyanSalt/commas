@@ -1,6 +1,7 @@
 <template>
   <article
     class="terminal-teletype"
+    @contextmenu="openEditingMenu"
     @dragover.prevent="dragFileOver"
     @drop.prevent="dropFile"
   >
@@ -16,6 +17,7 @@ import { onActivated, onMounted, ref, unref } from 'vue'
 import type { PropType } from 'vue'
 import type { TerminalTab } from '../../typings/terminal'
 import { mountTerminalTab, writeTerminalTab } from '../hooks/terminal'
+import { openContextMenu } from '../utils/frame'
 import ScrollBar from './basic/scroll-bar.vue'
 
 export default {
@@ -45,6 +47,29 @@ export default {
       writeTerminalTab(props.tab, quote(paths))
     }
 
+    function openEditingMenu(event: MouseEvent) {
+      openContextMenu([
+        {
+          label: 'Copy#!terminal.7',
+          accelerator: 'CmdOrCtrl+C',
+          role: 'copy',
+        },
+        {
+          label: 'Paste#!terminal.8',
+          accelerator: 'CmdOrCtrl+V',
+          role: 'paste',
+        },
+        {
+          type: 'separator',
+        },
+        {
+          label: 'Clear#!terminal.9',
+          accelerator: 'CmdOrCtrl+K',
+          command: 'clear-terminal',
+        },
+      ], event)
+    }
+
     onMounted(() => {
       const terminal = unref(terminalRef)!
       mountTerminalTab(props.tab, terminal!)
@@ -65,6 +90,7 @@ export default {
       terminal: terminalRef,
       dragFileOver,
       dropFile,
+      openEditingMenu,
     }
   },
 }

@@ -1,5 +1,5 @@
 import { computed, ref, unref } from '@vue/reactivity'
-import type { KeyBinding } from '../../typings/keybinding'
+import type { KeyBinding } from '../../typings/menu'
 import { userData } from '../utils/directory'
 import { provideIPC } from '../utils/hooks'
 

@@ -4,5 +4,8 @@
   "Confirm#!terminal.3": "确认",
   "Cancel#!terminal.4": "取消",
   "Find...#!terminal.5": "查找...",
-  "Launch#!terminal.6": "启动"
+  "Launch#!terminal.6": "启动",
+  "Copy#!terminal.7": "复制",
+  "Paste#!terminal.8": "粘贴",
+  "Clear#!terminal.9": "清除"
 }

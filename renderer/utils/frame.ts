@@ -1,13 +1,13 @@
 import { ipcRenderer } from 'electron'
-import type { MenuItemConstructorOptions } from 'electron'
 import { memoize } from 'lodash-es'
+import type { MenuItem } from '../../typings/menu'
 
 export const getAppVersion = memoize(() => {
   return ipcRenderer.invoke('get-app-version')
 })
 
 export function openContextMenu(
-  template: MenuItemConstructorOptions[],
+  template: MenuItem[],
   position: [number, number] | MouseEvent,
   defaultIndex = -1,
 ): Promise<void> {

@@ -1,6 +1,6 @@
 import { markRaw, unref } from '@vue/reactivity'
 import { useAddonKeyBindings } from '../../main/lib/keybinding'
-import type { KeyBinding } from '../../typings/keybinding'
+import type { KeyBinding } from '../../typings/menu'
 import type { CommasContext } from '../types'
 
 function addKeyBinding(item: KeyBinding) {

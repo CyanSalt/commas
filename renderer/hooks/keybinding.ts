@@ -1,6 +1,6 @@
 import { memoize } from 'lodash-es'
 import { unref, computed } from 'vue'
-import type { KeyBinding } from '../../typings/keybinding'
+import type { KeyBinding } from '../../typings/menu'
 import defaultKeyBindings from '../assets/keybindings'
 import { injectIPC } from '../utils/hooks'
 

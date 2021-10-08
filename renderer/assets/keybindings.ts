@@ -1,4 +1,4 @@
-import type { KeyBinding } from '../../typings/keybinding'
+import type { KeyBinding } from '../../typings/menu'
 
 export default [
   {

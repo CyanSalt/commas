@@ -1,16 +1,16 @@
 import { computed, unref } from '@vue/reactivity'
 import { app, BrowserWindow, ipcMain, Menu, nativeImage, TouchBar } from 'electron'
 import type { MenuItemConstructorOptions, PopupOptions } from 'electron'
-import type { KeyBinding } from '../../typings/keybinding'
+import type { MenuItem } from '../../typings/menu'
 import { resources } from '../utils/directory'
 import { globalHandler } from '../utils/handler'
 import { useFocusedWindow } from './frame'
 import { translate } from './i18n'
 import { useAddonKeyBindings, useUserKeyBindings } from './keybinding'
 
-const terminalMenuItems = resources.require<KeyBinding[]>('terminal.menu.json')!
+const terminalMenuItems = resources.require<MenuItem[]>('terminal.menu.json')!
 
-function resolveBindingCommand(binding: KeyBinding) {
+function resolveBindingCommand(binding: MenuItem) {
   const focusedWindow = unref(useFocusedWindow())
   const result: MenuItemConstructorOptions = { ...binding }
   if (binding.label) {
@@ -178,7 +178,7 @@ function createDockMenu() {
 }
 
 function handleMenuMessages() {
-  ipcMain.handle('contextmenu', (event, template: KeyBinding[], options: PopupOptions) => {
+  ipcMain.handle('contextmenu', (event, template: MenuItem[], options: PopupOptions) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     const menu = Menu.buildFromTemplate(
       template.map(resolveBindingCommand),
