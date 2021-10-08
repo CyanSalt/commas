@@ -19,13 +19,19 @@
             <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
               <span class="feather-icon icon-more-horizontal"></span>
             </div>
-            <div class="default-shell anchor" @click="createTerminalTab()">
+            <div
+              class="default-shell anchor"
+              @click="createTerminalTab()"
+              @contextmenu="selectShell"
+            >
               <span class="feather-icon icon-plus"></span>
             </div>
           </div>
           <div class="launcher-folder" @click="toggleCollapsing">
             <div :class="['group-name', { collapsed: isCollapsed }]">
-              <span class="feather-icon icon-chevrons-down"></span>
+              <span class="folder-icon">
+                <span class="feather-icon icon-chevrons-down"></span>
+              </span>
             </div>
             <div class="buttons" @click.stop>
               <div
@@ -177,6 +183,7 @@ export default {
 
     function selectShell(event: MouseEvent) {
       const shells = unref(shellsRef)
+      if (!shells.length) return
       openContextMenu(shells.map(shell => ({
         label: path.basename(shell),
         command: 'open-tab',
@@ -318,6 +325,10 @@ export default {
 .select-shell {
   flex: none;
   width: 18px;
+  visibility: hidden;
+  .new-tab:hover & {
+    visibility: visible;
+  }
 }
 .default-shell {
   flex: auto;
@@ -356,15 +367,22 @@ export default {
   }
 }
 .group-name {
+  flex: auto;
   opacity: 0.5;
-  transition: opacity 0.2s, color 0.2s, transform 0.2s;
+  transition: opacity 0.2s, color 0.2s;
   &.collapsed {
     color: rgb(var(--design-yellow));
     opacity: 1;
-    transform: rotate(-90deg);
   }
   &:not(.collapsed):hover {
     opacity: 1;
+  }
+}
+.folder-icon {
+  display: inline-block;
+  transition: transform 0.2s;
+  .group-name.collapsed & {
+    transform: rotate(-90deg);
   }
 }
 .find-launcher {

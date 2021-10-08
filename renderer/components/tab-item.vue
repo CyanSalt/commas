@@ -102,6 +102,7 @@ export default {
   width: 0;
   opacity: 0.5;
   transition: opacity 0.2s;
+  // .tab-item:hover &,
   .tab-item.active &,
   .sortable-item.dragging & {
     opacity: 1;
