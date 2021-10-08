@@ -1,5 +1,6 @@
 import { app, BrowserWindow, dialog, ipcMain, nativeImage, shell } from 'electron'
 import type { MessageBoxOptions, NativeImage } from 'electron'
+import * as fileIcon from 'file-icon'
 import { execa } from '../utils/helper'
 import { broadcast } from './frame'
 
@@ -84,11 +85,10 @@ function handleMessages() {
     frame.title = data.title
     frame.representedFilename = data.directory
   })
-  ipcMain.handle('drag-file', async (event, path: string) => {
+  ipcMain.handle('drag-file', async (event, path: string, iconBuffer?: Buffer) => {
     let icon: NativeImage
-    if (process.platform === 'darwin') {
-      icon = nativeImage.createFromNamedImage('NSImageNameFolder')
-        .resize({ width: 16 })
+    if (iconBuffer) {
+      icon = nativeImage.createFromBuffer(iconBuffer).resize({ width: 16 })
     } else {
       icon = await app.getFileIcon(path, { size: 'small' })
     }
@@ -96,6 +96,9 @@ function handleMessages() {
   })
   ipcMain.handle('beep', () => {
     shell.beep()
+  })
+  ipcMain.handle('get-icon', (event, path: string) => {
+    return fileIcon.buffer(path, { size: 32 })
   })
 }
 

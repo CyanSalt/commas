@@ -68,6 +68,7 @@ export default {
     const tabsRef = useTerminalTabs()
     const activeIndexRef = useTerminalActiveIndex()
 
+    const iconBufferRef = ref<Buffer>()
     const branchRef = ref('')
 
     const terminalRef = useCurrentTerminal()
@@ -95,14 +96,35 @@ export default {
       return getPrompt(expr, terminal)
     })
 
-    const iconRef = computed(() => {
-      if (process.platform === 'darwin') {
-        const icon = nativeImage.createFromNamedImage('NSImageNameFolder')
-          .toPNG()
-        const blob = new Blob([icon], { type: 'image/png' })
-        return URL.createObjectURL(blob)
+    let defaultIconBuffer: Buffer | undefined
+    if (process.platform === 'darwin') {
+      defaultIconBuffer = nativeImage.createFromNamedImage('NSImageNameFolder')
+        .resize({ width: 32 })
+        .toPNG()
+    }
+
+    async function updateIcon() {
+      const directory = unref(directoryRef)
+      if (directory && process.platform === 'darwin') {
+        iconBufferRef.value = await ipcRenderer.invoke('get-icon', directory)
+      } else {
+        iconBufferRef.value = defaultIconBuffer
       }
-      return null
+    }
+
+    watchEffect(() => {
+      iconBufferRef.value = defaultIconBuffer
+      updateIcon()
+    })
+
+    const iconRef = computed(() => {
+      const iconBuffer = unref(iconBufferRef)
+      if (iconBuffer) {
+        const blob = new Blob([iconBuffer], { type: 'image/png' })
+        return URL.createObjectURL(blob)
+      } else {
+        return ''
+      }
     })
 
     async function updateBranch() {
@@ -126,7 +148,8 @@ export default {
 
     function startDraggingDirectory() {
       const directory = unref(directoryRef)
-      ipcRenderer.invoke('drag-file', directory)
+      const iconBuffer = unref(iconBufferRef)
+      ipcRenderer.invoke('drag-file', directory, iconBuffer)
     }
 
     const isMinimizedRef = useMinimized()

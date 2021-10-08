@@ -70,6 +70,7 @@
     "@vue/reactivity": "^3.2.14",
     "chokidar": "^3.5.2",
     "color-rgba": "^2.3.0",
+    "file-icon": "^4.0.0",
     "lodash": "^4.17.21",
     "node-pty": "^0.10.1",
     "sudo-prompt": "^9.2.1",
