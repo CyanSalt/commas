@@ -1,0 +1,9 @@
+{
+  "name": "preference",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Provide entries for various features",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC"
+}

@@ -1,0 +1,9 @@
+{
+  "name": "proxy",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Open an HTTP proxy server",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC"
+}

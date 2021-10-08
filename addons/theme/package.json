@@ -1,0 +1,9 @@
+{
+  "name": "theme",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Download theme from GitHub",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC"
+}

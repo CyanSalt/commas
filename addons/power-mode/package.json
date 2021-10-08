@@ -1,0 +1,9 @@
+{
+  "name": "power-mode",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Turn on power mode",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC"
+}

@@ -1,0 +1,9 @@
+{
+  "name": "settings",
+  "private": true,
+  "version": "0.1.0",
+  "description": "User interface for custom settings",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC"
+}

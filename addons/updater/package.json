@@ -1,0 +1,9 @@
+{
+  "name": "updater",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Check updates and download automatically",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC"
+}

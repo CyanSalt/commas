@@ -39,7 +39,7 @@ async function discoverAddons() {
       .filter(name => !result[name])
     for (const file of directories) {
       try {
-        const manifest = require(path.join(base, file, 'commas.json'))
+        const manifest = require(path.join(base, file, 'package.json'))
         const entry = path.join(base, file, 'index.js')
         const name = path.basename(file, '.asar')
         result[name] = { type, entry, manifest }
