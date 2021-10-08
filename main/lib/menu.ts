@@ -96,7 +96,7 @@ async function createApplicationMenu() {
       label: translate('Help#!menu.help'),
       role: 'help',
       submenu: [
-        { role: 'toggleDevTools', label: translate('Toggle Developer Tools#!toggledevtools') },
+        { role: 'toggleDevTools', label: translate('Toggle Developer Tools#!menu.toggledevtools') },
         {
           label: translate('Relaunch %A#!menu.relaunch', { A: app.name }),
           accelerator: 'CmdOrCtrl+Shift+R',

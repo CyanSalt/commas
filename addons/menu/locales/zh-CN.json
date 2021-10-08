@@ -1,4 +1,7 @@
 {
+  "Copy#!menu.copy": "复制",
+  "Paste#!menu.paste": "粘贴",
+  "Clear#!menu.clear": "清除",
   "About %A#!menu.about": "关于 %A",
   "Preferences...#!menu.preference": "首选项...",
   "Services#!menu.services": "服务",
@@ -24,6 +27,6 @@
   "User#!menu.user": "用户",
   "Addon#!menu.addon": "插件",
   "Help#!menu.help": "帮助",
-  "Toggle Developer Tools#!toggledevtools": "切换开发人员工具",
+  "Toggle Developer Tools#!menu.toggledevtools": "切换开发人员工具",
   "Relaunch %A#!menu.relaunch": "重新启动 %A"
 }

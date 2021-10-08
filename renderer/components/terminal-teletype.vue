@@ -50,12 +50,12 @@ export default {
     function openEditingMenu(event: MouseEvent) {
       openContextMenu([
         {
-          label: 'Copy#!terminal.7',
+          label: 'Copy#!menu.copy',
           accelerator: 'CmdOrCtrl+C',
           role: 'copy',
         },
         {
-          label: 'Paste#!terminal.8',
+          label: 'Paste#!menu.paste',
           accelerator: 'CmdOrCtrl+V',
           role: 'paste',
         },
@@ -63,7 +63,7 @@ export default {
           type: 'separator',
         },
         {
-          label: 'Clear#!terminal.9',
+          label: 'Clear#!menu.clear',
           accelerator: 'CmdOrCtrl+K',
           command: 'clear-terminal',
         },

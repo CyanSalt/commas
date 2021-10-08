@@ -51,7 +51,7 @@
     "command": "toggle-finding"
   },
   {
-    "label": "Clear#!terminal.9",
+    "label": "Clear#!menu.clear",
     "accelerator": "CmdOrCtrl+K",
     "command": "clear-terminal"
   },
