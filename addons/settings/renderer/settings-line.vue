@@ -281,10 +281,14 @@ export default {
     }
   }
 }
+.item-label {
+  user-select: text;
+}
 .item-key {
   margin-left: 16px;
   font-size: 12px;
   opacity: 0.5;
+  user-select: text;
 }
 .tree-node {
   width: 24px;

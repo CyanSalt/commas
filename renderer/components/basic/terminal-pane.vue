@@ -1,5 +1,5 @@
 <template>
-  <article class="terminal-pane">
+  <article class="terminal-pane" @contextmenu="openEditingMenu">
     <div class="scroll-area">
       <slot></slot>
     </div>
@@ -8,11 +8,32 @@
 </template>
 
 <script lang="ts">
+import { openContextMenu } from '../../utils/frame'
 import ScrollBar from './scroll-bar.vue'
 
 export default {
   components: {
     ScrollBar,
+  },
+  setup() {
+    function openEditingMenu(event: MouseEvent) {
+      openContextMenu([
+        {
+          label: 'Copy#!terminal.7',
+          accelerator: 'CmdOrCtrl+C',
+          role: 'copy',
+        },
+        {
+          label: 'Paste#!terminal.8',
+          accelerator: 'CmdOrCtrl+V',
+          role: 'paste',
+        },
+      ], event)
+    }
+
+    return {
+      openEditingMenu,
+    }
   },
 }
 </script>
