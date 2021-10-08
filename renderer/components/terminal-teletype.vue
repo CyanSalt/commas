@@ -31,8 +31,8 @@ export default {
     },
   },
   setup(props) {
-    const terminalRef = ref<HTMLElement | null>(null)
-    const viewportRef = ref<HTMLElement | null>(null)
+    const terminalRef = ref<HTMLElement>()
+    const viewportRef = ref<HTMLElement>()
 
     function dragFileOver(event: DragEvent) {
       if (event.dataTransfer) {

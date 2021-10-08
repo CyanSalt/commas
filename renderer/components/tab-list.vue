@@ -142,7 +142,7 @@ export default {
   setup() {
     const launchersRef = useLaunchers()
 
-    const searcherRef = ref<HTMLInputElement | null>(null)
+    const searcherRef = ref<HTMLInputElement>()
     const widthRef = ref(176)
     const isCollapsedRef = ref(false)
     const isFindingRef = ref(false)

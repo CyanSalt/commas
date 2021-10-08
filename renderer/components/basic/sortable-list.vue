@@ -42,7 +42,7 @@ export default {
   },
   setup(props, { emit }) {
 
-    const rootRef = ref<HTMLElement | null>(null)
+    const rootRef = ref<HTMLElement>()
     const itemsRef = ref<HTMLElement[]>([])
     const draggingIndexRef = ref(-1)
 
@@ -54,9 +54,9 @@ export default {
       })
     })
 
-    const startingBoundsRef = ref<DOMRect | null>(null)
-    const startingEventRef = ref<MouseEvent | null>(null)
-    const startingParentBoundsRef = ref<DOMRect | null>(null)
+    const startingBoundsRef = ref<DOMRect>()
+    const startingEventRef = ref<MouseEvent>()
+    const startingParentBoundsRef = ref<DOMRect>()
 
     const draggingElementRef = computed(() => {
       const items = unref(itemsRef)

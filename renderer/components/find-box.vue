@@ -48,8 +48,8 @@ import { useCurrentTerminal } from '../hooks/terminal'
 
 export default {
   setup() {
-    const rootRef = ref<HTMLElement | null>(null)
-    const finderRef = ref<HTMLInputElement | null>(null)
+    const rootRef = ref<HTMLElement>()
+    const finderRef = ref<HTMLInputElement>()
     const keywordRef = ref('')
     const options = reactive({
       caseSensitive: false,

@@ -26,7 +26,7 @@ export default {
     },
   },
   setup(props) {
-    const rootRef = ref<HTMLElement | null>(null)
+    const rootRef = ref<HTMLElement>()
     const isScrollingRef = ref(false)
 
     const heightRef = ref(0)
