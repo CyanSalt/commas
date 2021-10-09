@@ -34,20 +34,6 @@
           </span>
         </template>
       </ObjectEditor>
-      <input
-        v-else-if="spec.type === 'number'"
-        v-model="model"
-        :placeholder="placeholder"
-        type="number"
-        class="form-control"
-      >
-      <input
-        v-else-if="spec.type === 'string'"
-        v-model="model"
-        :placeholder="placeholder"
-        type="text"
-        class="form-control"
-      >
       <select
         v-else-if="spec.type === 'enum'"
         v-model="model"
@@ -59,12 +45,28 @@
           :value="option"
         >{{ option }}</option>
       </select>
-      <textarea
-        v-else
-        v-model="model"
-        :placeholder="placeholder"
-        class="form-control"
-      ></textarea>
+      <ValueSelector v-else v-model="model" :pinned="recommendations">
+        <input
+          v-if="spec.type === 'number'"
+          v-model="model"
+          :placeholder="placeholder"
+          type="number"
+          class="form-control"
+        >
+        <input
+          v-else-if="spec.type === 'string'"
+          v-model="model"
+          :placeholder="placeholder"
+          type="text"
+          class="form-control"
+        >
+        <textarea
+          v-else
+          v-model="model"
+          :placeholder="placeholder"
+          class="form-control"
+        ></textarea>
+      </ValueSelector>
     </div>
   </div>
 </template>
@@ -76,6 +78,7 @@ import type { PropType } from 'vue'
 import ObjectEditor from '../../../renderer/components/basic/object-editor.vue'
 import type { EditorEntryItem } from '../../../renderer/components/basic/object-editor.vue'
 import SwitchControl from '../../../renderer/components/basic/switch-control.vue'
+import ValueSelector from '../../../renderer/components/basic/value-selector.vue'
 import { useDiscoveredAddons } from '../../../renderer/hooks/settings'
 import type { SettingsSpec } from '../../../typings/settings'
 
@@ -88,6 +91,7 @@ export default {
   components: {
     SwitchControl,
     ObjectEditor,
+    ValueSelector,
   },
   props: {
     spec: {
@@ -273,22 +277,28 @@ export default {
   &.form-line.block .form-label {
     display: flex;
     align-items: center;
-    &.customized {
-      font-style: italic;
-    }
-    &.changed {
-      color: rgb(var(--design-yellow));
-    }
   }
 }
 .item-label {
   user-select: text;
+  .form-label.customized & {
+    font-style: italic;
+  }
+  .form-label.changed & {
+    color: rgb(var(--design-yellow));
+  }
 }
 .item-key {
   margin-left: 16px;
   font-size: 12px;
   opacity: 0.5;
   user-select: text;
+  .form-label.customized & {
+    font-style: italic;
+  }
+  .form-label.changed & {
+    color: rgb(var(--design-yellow));
+  }
 }
 .tree-node {
   width: 24px;

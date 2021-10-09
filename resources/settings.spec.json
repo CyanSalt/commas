@@ -13,6 +13,7 @@
     "type": "list",
     "paradigm": ["string"],
     "configurable": ["linux", "darwin"],
+    "recommendations": ["--login"],
     "label": "Shell Args",
     "comments": [
       "Arguments of shell command line"
@@ -54,6 +55,7 @@
   {
     "key": "terminal.external.explorer",
     "type": ["string", "list"],
+    "recommendations": ["Visual Studio Code"],
     "label": "External Explorer",
     "comments": [
       "Absolute path (or with args as array) of external file manager",
