@@ -6,7 +6,7 @@ const buildRenderer = require('./build-renderer')
 const electron = require.resolve('electron/cli.js')
 const versionScript = path.resolve(__dirname, 'electron-versions.js')
 const versions = JSON.parse(
-  childProcess.execSync(`${electron} ${versionScript}`).toString(),
+  childProcess.execSync(`node ${electron} ${versionScript}`).toString(),
 )
 
 buildMain(versions)
