@@ -37,7 +37,7 @@ export async function executeCommand(
 
 const externalURLCommandsRef = computed(() => {
   const settings = unref(useSettings())
-  const entries: ({ command: string, url: string })[] | undefined = settings['shell.command.externalURLs']
+  const entries: ({ command: string, url: string })[] | undefined = settings['cli.command.externalURLs']
   return entries ? entries.map<CommandModule>(entry => {
     const { url, command } = entry
     return {

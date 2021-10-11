@@ -1,6 +1,6 @@
 [
   {
-    "key": "shell.command.externalURLs",
+    "key": "cli.command.externalURLs",
     "type": "list",
     "paradigm": ["map"],
     "label": "External URL Commands",
@@ -10,7 +10,7 @@
     "default": []
   },
   {
-    "key": "shell.command.aliases",
+    "key": "cli.command.aliases",
     "type": "map",
     "paradigm": ["string", "string"],
     "label": "Commands Aliases",
