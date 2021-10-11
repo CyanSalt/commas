@@ -1,5 +1,5 @@
 <template>
-  <div :class="['app', { opaque: isFullscreen, rounded: withRoundCorners }]">
+  <div :class="['app', { opaque: isFullscreen, rounded: withRoundedCorners }]">
     <TitleBar />
     <div class="content">
       <TabList v-show="isTabListEnabled" />
@@ -115,7 +115,7 @@ export default {
     })
 
     return {
-      withRoundCorners: process.platform === 'win32',
+      withRoundedCorners: process.platform === 'win32',
       isFullscreen: isFullscreenRef,
       isTabListEnabled: isTabListEnabledRef,
       terminal: terminalRef,
