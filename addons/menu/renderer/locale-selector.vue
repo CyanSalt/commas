@@ -1,8 +1,7 @@
 <template>
   <div class="locale-selector form-line">
     <label v-i18n class="form-label">Language#!menu.locale.1</label>
-    <select v-model="userLanguage" class="form-control">
-      <option v-i18n value="">Follow System#!menu.locale.2</option>
+    <select v-model="language" class="form-control">
       <option
         v-for="option in supportedLanguages"
         :key="option"
@@ -14,8 +13,9 @@
 </template>
 
 <script lang="ts">
+import { computed, unref } from 'vue'
 import * as commas from '../../../api/renderer'
-import { useUserLanguage } from '../../../renderer/hooks/i18n'
+import { useLanguage } from '../../../renderer/hooks/i18n'
 
 interface LanguageOption {
   label: string,
@@ -24,11 +24,19 @@ interface LanguageOption {
 
 export default {
   setup() {
-    const userLanguage = useUserLanguage()
-    const supportedLanguages: LanguageOption[] = commas.context.getCollection('locales')
+    const languageRef = useLanguage()
+    const locales: LanguageOption[] = commas.context.getCollection('locales')
+    const supportedLanguages = computed(() => {
+      const languages = [...locales]
+      const language = unref(languageRef)
+      if (language && !languages.some(item => item.value === language)) {
+        languages.push({ label: language, value: language })
+      }
+      return languages
+    })
 
     return {
-      userLanguage,
+      language: languageRef,
       supportedLanguages,
     }
   },

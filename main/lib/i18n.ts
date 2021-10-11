@@ -44,29 +44,23 @@ const localeRef = customRef<string | undefined>((track, trigger) => {
 
 const userDictionaryRef = userData.useYAML<Dictionary>('translation.yaml', {})
 
-const userLanguageRef = computed<string>({
+const languageRef = computed<string | undefined>({
   get() {
     const userDictionary = unref(userDictionaryRef)
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    return userDictionary['@use'] ?? ''
+    if (userDictionary['@use']) {
+      return userDictionary['@use']
+    } else {
+      return unref(localeRef)
+    }
   },
   set(value) {
     const userDictionary = unref(userDictionaryRef)
-    // eslint-disable-next-line prefer-object-spread
+    const language = unref(languageRef)
     userDictionaryRef.value = {
       ...userDictionary,
-      '@use': value || undefined,
+      '@use': value === language ? '' : value,
     }
   },
-})
-
-const languageRef = computed(() => {
-  const userLanguage = unref(userLanguageRef)
-  if (userLanguage) {
-    return userLanguage
-  } else {
-    return unref(localeRef)
-  }
 })
 
 const translations = shallowReactive(new Set<Translation>())
@@ -164,8 +158,8 @@ function translate(text: string, variables?: TranslationVariables) {
 }
 
 function handleI18NMessages() {
+  provideIPC('language', languageRef)
   provideIPC('dictionary', dictionaryRef)
-  provideIPC('user-language', userLanguageRef)
 }
 
 export {
