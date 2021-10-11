@@ -1,10 +1,10 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { computed, markRaw, ref, unref } from '@vue/reactivity'
+import { computed, customRef, effect, shallowReactive, unref } from '@vue/reactivity'
 import { app } from 'electron'
 import type { Dictionary, TranslationVariables } from '../../typings/i18n'
 import { userData, resources } from '../utils/directory'
-import { provideIPC } from '../utils/hooks'
+import { provideIPC, useEffect } from '../utils/hooks'
 
 export interface TranslationFileEntry {
   locale: string,
@@ -25,25 +25,56 @@ interface Translation {
 
 const DELIMITER = '#!'
 
-let resolveLanguage: (value: string) => void
-
-const languagePromise = new Promise<string>((resolve) => {
-  resolveLanguage = resolve
+const localeRef = customRef<string | undefined>((track, trigger) => {
+  let locale
+  app.whenReady().then(() => {
+    locale = app.getLocale()
+    trigger()
+  })
+  return {
+    get() {
+      track()
+      return locale
+    },
+    set() {
+      throw new Error('Cannot set locale at runtime.')
+    },
+  }
 })
 
-function getLanguage() {
-  return languagePromise
-}
+const userDictionaryRef = userData.useYAML<Dictionary>('translation.yaml', {})
 
-const translationsRef = ref<Translation[]>([])
+const userLanguageRef = computed<string>({
+  get() {
+    const userDictionary = unref(userDictionaryRef)
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    return userDictionary['@use'] ?? ''
+  },
+  set(value) {
+    const userDictionary = unref(userDictionaryRef)
+    // eslint-disable-next-line prefer-object-spread
+    userDictionaryRef.value = {
+      ...userDictionary,
+      '@use': value || undefined,
+    }
+  },
+})
+
+const languageRef = computed(() => {
+  const userLanguage = unref(userLanguageRef)
+  if (userLanguage) {
+    return userLanguage
+  } else {
+    return unref(localeRef)
+  }
+})
+
+const translations = shallowReactive(new Set<Translation>())
 
 const dictionaryRef = computed(() => {
-  const translations = unref(translationsRef)
   const sources = [...translations]
     .sort((a, b) => a.priority - b.priority)
-    // Strange issue: Cannot read property 'dictionary' of undefined
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    .map(item => item?.dictionary)
+    .map(item => item.dictionary)
   const dictionary: Dictionary = Object.assign({}, ...sources)
   return dictionary
 })
@@ -51,22 +82,31 @@ const dictionaryRef = computed(() => {
 function loadDictionary(entry: TranslationFileEntry, priority: Priority) {
   const file = entry.file
   const dictionary = require(file) as Dictionary
-  const translations = unref(translationsRef)
-  translations.push(markRaw({ file, dictionary, priority }))
+  const translation: Translation = { file, dictionary, priority }
+  translations.add(translation)
+  return translation
 }
 
-async function addTranslations(entries: TranslationFileEntry[], priority: Priority) {
-  const language = await getLanguage()
-  let matched = entries.find(item => item.locale === language)
-  if (!matched) {
-    const sepIndex = language.indexOf('-')
-    const lang = sepIndex !== -1 ? language.slice(0, sepIndex) : language
-    matched = entries.find(item => item.locale.startsWith(`${lang}-`))
-  }
-  if (matched) {
-    loadDictionary(matched, priority)
-  }
-  return matched
+function addTranslations(entries: TranslationFileEntry[], priority: Priority) {
+  return useEffect(async (onInvalidate) => {
+    const language = unref(languageRef)
+    if (!language) return
+    let matched = entries.find(item => item.locale === language)
+    if (!matched) {
+      const sepIndex = language.indexOf('-')
+      const lang = sepIndex !== -1 ? language.slice(0, sepIndex) : language
+      matched = entries.find(item => item.locale.startsWith(`${lang}-`))
+    }
+    if (matched) {
+      let translation
+      onInvalidate(async () => {
+        await 'Execution of process below'
+        removeTranslation(translation)
+      })
+      await 'Avoid tracking the translationsRef'
+      translation = loadDictionary(matched, priority)
+    }
+  })
 }
 
 async function addTranslationDirectory(directory: string, priority: Priority) {
@@ -78,37 +118,40 @@ async function addTranslationDirectory(directory: string, priority: Priority) {
   return addTranslations(entries, priority)
 }
 
-function removeTranslation(entry: TranslationFileEntry) {
-  const translations = unref(translationsRef)
-  const index = translations.findIndex(item => item.file === entry.file)
-  if (index !== -1) {
-    translations.splice(index, 1)
+function removeTranslation(translation: Translation) {
+  const matched = [...translations].find(item => item.file === translation.file)
+  if (matched) {
+    translations.delete(matched)
   }
 }
 
-async function loadTranslations() {
-  const custom = (await userData.loadYAML<Dictionary>('translation.yaml')) ?? {}
-  if (custom['@use']) {
-    resolveLanguage(custom['@use'])
-  } else {
-    await app.whenReady()
-    resolveLanguage(app.getLocale())
-  }
-  // Built-in
-  await addTranslationDirectory(resources.file('locales'), Priority.builtin)
-  // Custom translation
-  const translations = unref(translationsRef)
-  translations.push(markRaw({
+function loadBuiltinTranslations() {
+  return addTranslationDirectory(resources.file('locales'), Priority.builtin)
+}
+
+async function loadCustomTranslation() {
+  const userDictionary = unref(userDictionaryRef)
+  const translation: Translation = {
     file: userData.file('translation.yaml'),
-    dictionary: custom,
+    dictionary: userDictionary,
     priority: Priority.custom,
-  }))
+  }
+  removeTranslation(translation)
+  translations.add(translation)
+}
+
+async function loadTranslations() {
+  await loadBuiltinTranslations()
+  effect(() => {
+    loadCustomTranslation()
+  })
 }
 
 function translateText(text: string) {
   if (!text) return text
   const dictionary = unref(dictionaryRef)
-  if (dictionary[text]) return dictionary[text]
+  const translated = dictionary[text]
+  if (translated) return translated
   return text.split(DELIMITER)[0]
 }
 
@@ -122,14 +165,13 @@ function translate(text: string, variables?: TranslationVariables) {
 
 function handleI18NMessages() {
   provideIPC('dictionary', dictionaryRef)
+  provideIPC('user-language', userLanguageRef)
 }
 
 export {
-  getLanguage,
   loadTranslations,
   translate,
   addTranslations,
   addTranslationDirectory,
-  removeTranslation,
   handleI18NMessages,
 }

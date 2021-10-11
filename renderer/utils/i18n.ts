@@ -1,7 +1,8 @@
 import { last } from 'lodash-es'
 import { computed, unref } from 'vue'
-import type { Directive, VNode } from 'vue'
+import type { VNode } from 'vue'
 import type { Dictionary, TranslationVariables } from '../../typings/i18n'
+import { createReactiveDirective } from './directives'
 import { injectIPC } from './hooks'
 
 const DELIMITER = '#!'
@@ -31,13 +32,16 @@ const conciseDictionaryRef = computed(() => {
 function translateText(text: string) {
   if (!text) return text
   const dictionary = unref(dictionaryRef)
-  if (dictionary[text]) return dictionary[text]
+  let translated = dictionary[text]
+  if (translated) return translated
   const database = unref(databaseRef)
   const identity = getTextSequence(text, false)
-  if (database[identity]) return database[identity]
+  translated = database[identity]
+  if (translated) return translated
   const conciseDictionary = unref(conciseDictionaryRef)
   const readableText = getTextSequence(text, true)
-  if (conciseDictionary[readableText]) return conciseDictionary[readableText]
+  translated = conciseDictionary[readableText]
+  if (translated) return translated
   return readableText
 }
 
@@ -55,8 +59,10 @@ function getVNodeTextContent(vnode: VNode): string {
     : String(vnode.children ?? '')
 }
 
-export const translateElement: Directive<HTMLElement, TranslationVariables> = (el, { arg, value }, vnode) => {
-  const attr = arg ?? 'textContent'
-  const text = arg ? String(vnode.props?.[arg] ?? '') : getVNodeTextContent(vnode)
-  el[attr] = translate(text, value)
-}
+export const translateElement = createReactiveDirective<HTMLElement, TranslationVariables>(
+  (el, { arg, value }, vnode) => {
+    const attr = arg ?? 'textContent'
+    const text = arg ? String(vnode.props?.[arg] ?? '') : getVNodeTextContent(vnode)
+    el[attr] = translate(text, value)
+  },
+)

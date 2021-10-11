@@ -87,7 +87,7 @@ class Directory {
     const content = await this.read(basename)
     if (!content) {
       const created = YAML.stringify(data)
-      return this.write(basename, created.trim() + '\n')
+      return this.write(basename, '---\n' + created.trim() + '\n')
     } else {
       const updated = updateYamlDocument(data, content, { keepArrayIndent: true })
       return this.write(basename, updated.trim() + '\n')

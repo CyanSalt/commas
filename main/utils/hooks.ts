@@ -36,9 +36,14 @@ export function provideIPC<T>(key: string, valueRef: Ref<T>) {
   ipcMain.handle(`set-ref:${key}`, (event, value: T) => {
     valueRef.value = value
   })
+  let latestValuePromise
   const reactiveEffect = effect(async () => {
-    const value = unref(valueRef)
-    broadcast(`update-ref:${key}`, await value)
+    const valuePromise = Promise.resolve(unref(valueRef))
+    latestValuePromise = valuePromise
+    const value = await valuePromise
+    if (valuePromise === latestValuePromise) {
+      broadcast(`update-ref:${key}`, value)
+    }
   })
   return () => {
     ipcMain.removeHandler(`get-ref:${key}`)
