@@ -1,4 +1,8 @@
 {
+  "Language#!menu.locale.1": "语言",
+  "Follow System#!menu.locale.2": "跟随系统",
+  "English#!menu.locale.en-US": "英语",
+  "Chinese (Simplified)#!menu.locale.zh-CN": "中文 (简体)",
   "Copy#!menu.copy": "复制",
   "Paste#!menu.paste": "粘贴",
   "Clear#!menu.clear": "清除",
