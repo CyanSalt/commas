@@ -31,6 +31,11 @@ export default [
     color: '#3776ab',
   },
   {
+    name: 'devicon devicon-ruby',
+    context: ['ruby'],
+    color: '#f44336',
+  },
+  {
     name: 'devicon devicon-docker',
     context: ['docker', 'docker-compose'],
     color: '#1488c6',
