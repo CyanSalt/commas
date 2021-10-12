@@ -92,7 +92,7 @@ async function getMacOSCodeSign(name) {
 }
 
 async function compressPackage(dir) {
-  logger.info(`Packing ${path.basename(dir)}...`)
+  logger.info(`Packing ${dir}...`)
   try {
     await fs.promises.unlink(`${dir}.zip`)
   } catch {
@@ -123,9 +123,12 @@ async function pack() {
   // Run electron-packager
   const appPaths = await packager(options)
   if (!local) {
+    const cwd = process.cwd()
+    process.chdir(options.out)
     await Promise.all(
-      appPaths.map(dir => compressPackage(dir)),
+      appPaths.map(dir => compressPackage(path.relative(options.out, dir))),
     )
+    process.chdir(cwd)
   }
   return Date.now() - startedAt
 }
