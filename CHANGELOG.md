@@ -1,3 +1,34 @@
+## [0.19.0](https://github.com/CyanSalt/commas/compare/v0.18.0...v0.19.0) (2021-10-13)
+
+
+### Features
+
+* add context menu to launching button ([2b613de](https://github.com/CyanSalt/commas/commit/2b613deb4dd0b87f6d4e19afbe7115643d34a269))
+* add context menu to tab index indicator ([50d1fc8](https://github.com/CyanSalt/commas/commit/50d1fc839cf9f52197e7c2f323ab46f296b58740))
+* add context menu to terminal panes ([abe2c3d](https://github.com/CyanSalt/commas/commit/abe2c3dea9727973b7eade2f7faa8031fd77efa9))
+* add right-click menu on terminals ([3fce98a](https://github.com/CyanSalt/commas/commit/3fce98a173d9e5970f924d20c64eaf27491dd948))
+* add round corners on windows ([02c58e9](https://github.com/CyanSalt/commas/commit/02c58e9fc8f3959a22e1fb4ec48983132676166e))
+* add ruby icon ([6c021e7](https://github.com/CyanSalt/commas/commit/6c021e7c3805d55a5682e94680f9c3c5d4b6d25e))
+* add setting terminal.tab.liveIcon ([4cbfed5](https://github.com/CyanSalt/commas/commit/4cbfed50d99bd0a3ee6d73456603b311c189965f))
+* **menu:** add language selector ([00510ac](https://github.com/CyanSalt/commas/commit/00510ac3531e5353fa1703916e3c39c880089ff6))
+* optimize tab list interaction ([91c3403](https://github.com/CyanSalt/commas/commit/91c340391049634d065b3a8af0c85cda74b996b6))
+* real-time icons on macOS ([72746dc](https://github.com/CyanSalt/commas/commit/72746dc91621c9c734431e2ff312d971fb841f98))
+* refine tab list ([8701a5e](https://github.com/CyanSalt/commas/commit/8701a5ec975d02d3a7e49f685c062ed22a764e97))
+* **settings:** add value selector ([83716fe](https://github.com/CyanSalt/commas/commit/83716fe761af8428c869777a333d5a29b4b91d58))
+* support dynamic language ([e0f1b77](https://github.com/CyanSalt/commas/commit/e0f1b7732c2d1b723fe1ff2574fafc1781ddf4a9))
+
+
+### Bug Fixes
+
+* build on win32 ([62de201](https://github.com/CyanSalt/commas/commit/62de201cb52b196a2cfc244f09dd2c2348499356))
+* **cli:** setting key ([bf78546](https://github.com/CyanSalt/commas/commit/bf785460e0d13799d40280ff1d7cc75e0f4b5dab))
+* **menu:** remove "Follow System" option ([75d8772](https://github.com/CyanSalt/commas/commit/75d8772141d2b4f70cb1199f27f3cc86290839e3))
+* package content tree ([fe4f6e1](https://github.com/CyanSalt/commas/commit/fe4f6e195385cb5c4b7acb281edb3a1ac42ba7a4))
+* slot order ([60bfbee](https://github.com/CyanSalt/commas/commit/60bfbee9a8df1c31365ca7f13c2f398f3cdd34cd))
+* **theme:** link space ([1e97d3a](https://github.com/CyanSalt/commas/commit/1e97d3a800ea77edb24a2acadc4d7ce80ddb1738))
+* typo ([4c7e342](https://github.com/CyanSalt/commas/commit/4c7e34236c81704ba764815c2c8d2c89815d99b6))
+* use menu addon to translate context menu ([ae091c1](https://github.com/CyanSalt/commas/commit/ae091c11bf34be2fea2ed7ef44de57d66a6eefcf))
+
 ## [0.18.0](https://github.com/CyanSalt/commas/compare/v0.17.1...v0.18.0) (2021-09-23)
 
 
