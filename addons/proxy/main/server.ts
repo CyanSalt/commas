@@ -1,5 +1,5 @@
 import { customRef, stop, unref } from '@vue/reactivity'
-import type { ReactiveEffect } from '@vue/reactivity'
+import type { ReactiveEffectRunner } from '@vue/reactivity'
 import { useSettings } from '../../../main/lib/settings'
 import { useEffect } from '../../../main/utils/hooks'
 import { loginExecute } from '../../../main/utils/shell'
@@ -42,7 +42,7 @@ function installProxyServer() {
 const serverStatusRef = customRef<boolean | undefined>((track, trigger) => {
   let status: boolean | undefined = false
   let cancelation: Promise<unknown> | undefined
-  let serverEffect: ReactiveEffect<void>
+  let serverEffect: ReactiveEffectRunner
   const createEffect = () => useEffect(async (onInvalidate) => {
     const server = createServer(cancelation)
     onInvalidate(async () => {

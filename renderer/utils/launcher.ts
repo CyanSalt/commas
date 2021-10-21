@@ -10,18 +10,17 @@ export function getLauncherCommand(launcher: Launcher, shellPath: string) {
       : '$SHELL -li'
   }
   if (launcher.directory) {
-    const directory = launcher.directory.replace(' ', '\\ ')
     const isPowerShell = process.platform === 'win32'
       && (!shellPath || path.basename(shellPath) === 'powershell.exe')
       && !launcher.remote
     if (isPowerShell) {
       command = command
-        ? `Set-Location -Path ${directory}; if ($?) { ${command} }`
-        : `Set-Location -Path ${directory}`
+        ? `Set-Location -Path ${quote([launcher.directory])}; if ($?) { ${command} }`
+        : `Set-Location -Path ${quote([launcher.directory])}`
     } else {
       command = command
-        ? `cd ${directory} && (${command})`
-        : `cd ${directory}`
+        ? `cd ${quote([launcher.directory])} && (${command})`
+        : `cd ${quote([launcher.directory])}`
     }
   }
   if (launcher.remote) {

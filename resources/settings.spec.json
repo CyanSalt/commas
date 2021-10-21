@@ -54,13 +54,25 @@
   },
   {
     "key": "terminal.external.explorer",
-    "type": ["string", "list"],
-    "recommendations": ["Visual Studio Code"],
+    "type": "string",
+    "recommendations": ["open -a \"Visual Studio Code\" \"${directory}\""],
     "label": "External Explorer",
     "comments": [
-      "Absolute path (or with args as array) of external file manager",
-      "(or code editor, etc) for launchers",
+      "Command of external file manager (or code editor, etc) for launchers",
+      "Use ${directory} to interpolate the variable at runtime",
       "Open in system file manager by default"
+    ],
+    "default": ""
+  },
+  {
+    "key": "terminal.external.remoteExplorer",
+    "type": "string",
+    "recommendations": ["code --folder-uri \"vscode-remote://ssh-remote+${remote}${directory}\""],
+    "label": "Remote External Explorer",
+    "comments": [
+      "Command of external file manager for remote launchers",
+      "Use ${directory} or ${remote} to interpolate these variables at runtime",
+      "Skip by default"
     ],
     "default": ""
   },

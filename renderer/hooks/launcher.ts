@@ -1,6 +1,5 @@
 import { shell, ipcRenderer } from 'electron'
 import { memoize } from 'lodash-es'
-import { quote } from 'shell-quote'
 import { unref } from 'vue'
 import type { Launcher } from '../../typings/launcher'
 import type { TerminalTab } from '../../typings/terminal'
@@ -70,30 +69,21 @@ export async function runLauncherScript(launcher: Launcher, index: number) {
 }
 
 export async function startLauncherExternally(launcher: Launcher) {
-  if (launcher.external) {
-    return ipcRenderer.invoke('execute', launcher.external)
-  }
-  if (!launcher.directory) return
-  const directory = resolveHome(launcher.directory)
+  const directory = launcher.directory ? resolveHome(launcher.directory) : ''
   const settings = unref(useSettings())
-  let explorer = settings['terminal.external.explorer']
+  let explorer = launcher.explorer ?? (
+    launcher.remote
+      ? settings['terminal.external.remoteExplorer']
+      : settings['terminal.external.explorer']
+  )
   if (!explorer) {
+    if (launcher.remote) return
     return shell.openPath(directory)
   }
-  if (!Array.isArray(explorer)) {
-    // Use applications on macOS by default
-    if (process.platform === 'darwin') {
-      explorer = ['open', '-a', explorer]
-    } else {
-      explorer = [explorer]
-    }
-  }
-  if (explorer.includes('$_')) {
-    explorer = explorer.map(item => (item === '$_' ? directory : item))
-  } else {
-    explorer = [...explorer, directory]
-  }
-  return ipcRenderer.invoke('execute', quote(explorer))
+  explorer = explorer
+    .replace(/\$\{directory\}/g, directory)
+    .replace(/\$\{remote\}/g, launcher.remote ?? '')
+  return ipcRenderer.invoke('execute', explorer)
 }
 
 export function moveLauncher(from: number, to: number) {
