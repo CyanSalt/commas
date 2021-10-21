@@ -67,7 +67,7 @@
   {
     "key": "terminal.external.remoteExplorer",
     "type": "string",
-    "recommendations": ["code --folder-uri \"vscode-remote://ssh-remote+${remote}${directory}\""],
+    "recommendations": ["/usr/local/bin/code --folder-uri \"vscode-remote://ssh-remote+${remote}${directory}\""],
     "label": "Remote External Explorer",
     "comments": [
       "Command of external file manager for remote launchers",

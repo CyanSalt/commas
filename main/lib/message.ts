@@ -2,7 +2,6 @@ import { app, BrowserWindow, dialog, ipcMain, nativeImage, shell } from 'electro
 import type { MessageBoxOptions, NativeImage } from 'electron'
 import * as fileIcon from 'file-icon'
 import { execa } from '../utils/helper'
-import { getDefaultEnv } from '../utils/shell'
 import { broadcast } from './frame'
 
 function handleMessages() {
@@ -72,7 +71,7 @@ function handleMessages() {
     frame.destroy()
   })
   ipcMain.handle('execute', (event, command) => {
-    return execa(command, { env: getDefaultEnv() })
+    return execa(command)
   })
   ipcMain.handle('inject-style', (event, style: string) => {
     return event.sender.insertCSS(style)
