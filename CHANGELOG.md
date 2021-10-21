@@ -1,3 +1,10 @@
+### [0.19.2](https://github.com/CyanSalt/commas/compare/v0.19.1...v0.19.2) (2021-10-21)
+
+
+### Bug Fixes
+
+* env for renderer process execution ([515092c](https://github.com/CyanSalt/commas/commit/515092c33a84125b413aa4bc05f701f295e410bf))
+
 ### [0.19.1](https://github.com/CyanSalt/commas/compare/v0.19.0...v0.19.1) (2021-10-21)
 
 
