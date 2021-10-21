@@ -88,6 +88,7 @@ export default {
 
     return {
       terminal: terminalRef,
+      viewport: viewportRef,
       dragFileOver,
       dropFile,
       openEditingMenu,
