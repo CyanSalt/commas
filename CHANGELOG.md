@@ -1,3 +1,11 @@
+### [0.19.3](https://github.com/CyanSalt/commas/compare/v0.19.2...v0.19.3) (2021-10-21)
+
+
+### Bug Fixes
+
+* recommended settings ([8f0210b](https://github.com/CyanSalt/commas/commit/8f0210b67ad05c50a3afb4eab65990c5fb1903df))
+* viewport ref error ([164a564](https://github.com/CyanSalt/commas/commit/164a5644b602c5a8f8dbc597bdef6b9eed89ab61))
+
 ### [0.19.2](https://github.com/CyanSalt/commas/compare/v0.19.1...v0.19.2) (2021-10-21)
 
 
