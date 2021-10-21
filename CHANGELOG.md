@@ -1,3 +1,11 @@
+### [0.19.1](https://github.com/CyanSalt/commas/compare/v0.19.0...v0.19.1) (2021-10-21)
+
+
+### Features
+
+* add terminal.external.remoteExplorer ([b68efca](https://github.com/CyanSalt/commas/commit/b68efca9026b0e1e232c881512417c87080d038b))
+* support custom external launcher commands ([6091b7d](https://github.com/CyanSalt/commas/commit/6091b7db0b25534fd16d8725bb27f1723c7ded09))
+
 ## [0.19.0](https://github.com/CyanSalt/commas/compare/v0.18.0...v0.19.0) (2021-10-13)
 
 
