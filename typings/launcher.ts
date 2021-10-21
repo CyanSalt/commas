@@ -5,5 +5,6 @@ export interface Launcher {
   directory?: string,
   login?: boolean,
   remote?: boolean,
+  external?: string,
   scripts?: Omit<Launcher, 'id'>[],
 }

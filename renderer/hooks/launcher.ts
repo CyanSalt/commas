@@ -70,6 +70,9 @@ export async function runLauncherScript(launcher: Launcher, index: number) {
 }
 
 export async function startLauncherExternally(launcher: Launcher) {
+  if (launcher.external) {
+    return ipcRenderer.invoke('execute', launcher.external)
+  }
   if (!launcher.directory) return
   const directory = resolveHome(launcher.directory)
   const settings = unref(useSettings())
