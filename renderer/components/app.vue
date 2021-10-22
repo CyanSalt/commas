@@ -140,7 +140,7 @@ export default {
   --system-accent: var(--design-blue);
 }
 :global(::selection) {
-  background: var(--theme-selection);
+  background: rgb(var(--theme-selection));
 }
 :global(body) {
   margin: 0;

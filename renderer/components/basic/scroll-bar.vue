@@ -150,7 +150,7 @@ export default {
   right: 0;
   bottom: 0;
   left: 0;
-  background: var(--theme-foreground);
+  background: rgb(var(--theme-foreground));
   opacity: 0;
   transition: opacity 0.5s;
 }
