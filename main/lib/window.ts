@@ -37,22 +37,19 @@ function createWindow(...args: string[]) {
     })
   }
   const frame = new BrowserWindow(options)
+  frame.loadFile(path.resolve(__dirname, '../../renderer/dist/index.html'))
+  // Gracefully show window
   // Fix shadow issue on macOS
   if (process.platform === 'darwin') {
-    frame.setSize(options.width - 1, options.height - 1)
-    frame.setWindowButtonVisibility(false)
-    frame.webContents.once('did-finish-load', () => {
-      setTimeout(() => {
-        frame.setSize(options.width, options.height)
-        frame.setWindowButtonVisibility(true)
-      }, 500)
+    /** {@link https://github.com/electron/electron/issues/4472} */
+    frame.webContents.once('dom-ready', () => {
+      frame.show()
+    })
+  } else {
+    frame.once('ready-to-show', () => {
+      frame.show()
     })
   }
-  frame.loadFile(path.resolve(__dirname, '../../renderer/dist/index.html'))
-  // gracefully show window
-  frame.once('ready-to-show', () => {
-    frame.show()
-  })
   // insert custom css
   loadCustomCSS(frame)
   // these handler must be bound in main process
