@@ -15,7 +15,7 @@ function createWindow(...args: string[]) {
     width: (8 * 80) + (2 * 8) + 180,
     minWidth: (8 * 40) + (2 * 8) + 180,
     height: (17 * 25) + (2 * 4) + 36,
-    frame: false,
+    frame: false, // Not required for macOS
     titleBarStyle: 'hiddenInset' as const,
     transparent: true,
     acceptFirstMouse: true,
