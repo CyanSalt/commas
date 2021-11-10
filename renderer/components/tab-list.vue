@@ -65,7 +65,7 @@
             <TabItem
               v-show="!isCollapsed || getTerminalTabByLauncher(launcher)"
               :tab="getTerminalTabByLauncher(launcher)"
-              :name="launcher.name"
+              :launcher="launcher"
               @click="openLauncher(launcher)"
             >
               <template #operations>

@@ -2,7 +2,10 @@
   <div :class="['tab-item', { active: isFocused }]">
     <div class="tab-overview">
       <div class="tab-title">
-        <span v-if="name" class="tab-icon feather-icon icon-hash"></span>
+        <span
+          v-if="launcher"
+          :class="['tab-icon', 'feather-icon', launcher.remote ? 'icon-link' : 'icon-hash']"
+        ></span>
         <span
           v-else-if="iconEntry"
           :style="{ color: isFocused ? iconEntry.color : undefined }"
@@ -29,15 +32,16 @@
 import * as path from 'path'
 import { computed, unref } from 'vue'
 import type { PropType } from 'vue'
+import type { Launcher } from '../../typings/launcher'
 import type { TerminalTab } from '../../typings/terminal'
 import { getTerminalTabTitle, useCurrentTerminal, closeTerminalTab } from '../hooks/terminal'
 import { getIconEntryByProcess } from '../utils/terminal'
 
 export default {
   props: {
-    name: {
-      type: String,
-      default: '',
+    launcher: {
+      type: Object as PropType<Launcher | undefined>,
+      default: undefined,
     },
     tab: {
       type: Object as PropType<TerminalTab | undefined>,
@@ -63,7 +67,7 @@ export default {
     })
 
     const titleRef = computed(() => {
-      if (props.name) return props.name
+      if (props.launcher) return props.launcher.name
       return props.tab ? getTerminalTabTitle(props.tab) : ''
     })
 
