@@ -1,6 +1,5 @@
 import * as os from 'os'
 import { ipcRenderer, shell } from 'electron'
-import type { MenuItemConstructorOptions } from 'electron'
 import { memoize, debounce, isMatch, sortBy, groupBy } from 'lodash-es'
 import { ref, computed, unref, markRaw, reactive, toRaw, watch } from 'vue'
 import { Terminal } from 'xterm'
@@ -12,6 +11,7 @@ import { Unicode11Addon } from 'xterm-addon-unicode11'
 import { WebLinksAddon } from 'xterm-addon-web-links'
 import { WebglAddon } from 'xterm-addon-webgl'
 import * as commas from '../../api/renderer'
+import type { MenuItem } from '../../typings/menu'
 import type { TerminalInfo, TerminalTab } from '../../typings/terminal'
 import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
@@ -180,7 +180,7 @@ export async function createTerminalTab({
   watch(terminalOptionsRef, (terminalOptions) => {
     const latestXterm = tab.xterm
     for (const [key, value] of Object.entries(terminalOptions)) {
-      latestXterm.setOption(key, value)
+      latestXterm.options[key] = value
     }
     loadTerminalAddons(tab)
   })
@@ -237,7 +237,7 @@ export function showTabOptions(event?: MouseEvent) {
   const options = [
     ...normalTabs,
     ...launcherTabs,
-  ].map<MenuItemConstructorOptions & { args?: any[] }>((item, index) => {
+  ].map<MenuItem>((item, index) => {
     const number = index + 1
     return {
       ...item,

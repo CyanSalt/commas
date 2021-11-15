@@ -65,8 +65,8 @@ export class PowerMode {
   createCanvas() {
     const canvas = document.createElement('canvas')
     const initialDimensions = this.xterm['_core']._renderService.dimensions
-    canvas.width = this.xterm.getOption('cols') * initialDimensions.actualCellWidth
-    canvas.height = this.xterm.getOption('rows') * initialDimensions.actualCellHeight
+    canvas.width = this.xterm.cols * initialDimensions.actualCellWidth
+    canvas.height = this.xterm.rows * initialDimensions.actualCellHeight
     Object.assign(canvas.style, {
       position: 'absolute',
       top: '0',
@@ -99,14 +99,14 @@ export class PowerMode {
 
   drawFrame() {
     this._canvasContext.clearRect(0, 0, this._canvas.width, this._canvas.height)
-    const theme = this.xterm.getOption('theme')
+    const theme = this.xterm.options.theme!
     this._particles.forEach(particle => {
       particle.velocity.y += 0.075 // gravity
       particle.x += particle.velocity.x
       particle.y += particle.velocity.y
       particle.alpha *= 0.96 // fadeout
       this._canvasContext.globalAlpha = particle.alpha
-      this._canvasContext.fillStyle = theme.foreground
+      this._canvasContext.fillStyle = theme.foreground!
       this._canvasContext.fillRect(Math.round(particle.x - 1), Math.round(particle.y - 1), 3, 3)
     })
     const length = this._particles.length
