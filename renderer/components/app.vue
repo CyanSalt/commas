@@ -59,6 +59,8 @@ import FindBox from './find-box.vue'
 import TabList from './tab-list.vue'
 import TerminalTeletype from './terminal-teletype.vue'
 import TitleBar from './title-bar.vue'
+import '../assets/fonts/feather.css'
+import '../assets/fonts/devicon.css'
 
 export default {
   components: {
@@ -124,10 +126,6 @@ export default {
   },
 }
 </script>
-
-<style src="../assets/fonts/feather.css"></style>
-
-<style src="../assets/fonts/devicon.css"></style>
 
 <style lang="scss" scoped>
 :global(:root) {
