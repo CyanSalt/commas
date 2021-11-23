@@ -48,11 +48,20 @@ module.exports = function (commas) {
     commas.context.provide('cli', {
       command: 'help',
       handler() {
-        return [
-          '\nUsage: commas <command>\n',
-          '\nwhere <command> is one of:',
-          '\n    ' + wrap(unref(commandListRef)) + '\n',
-        ].join('')
+        /** {@link https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=COMMAS} */
+        return `
+ ██████╗ ██████╗ ███╗   ███╗███╗   ███╗ █████╗ ███████╗
+██╔════╝██╔═══██╗████╗ ████║████╗ ████║██╔══██╗██╔════╝
+██║     ██║   ██║██╔████╔██║██╔████╔██║███████║███████╗
+██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██╔══██║╚════██║
+╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║██║  ██║███████║
+ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝
+
+Usage: commas <command>
+
+where <command> is one of:
+    ${wrap(unref(commandListRef))}
+`
       },
     })
 
