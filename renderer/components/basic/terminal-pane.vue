@@ -1,20 +1,13 @@
 <template>
   <article class="terminal-pane" @contextmenu="openEditingMenu">
-    <div class="scroll-area">
-      <slot></slot>
-    </div>
-    <ScrollBar keep-alive />
+    <slot></slot>
   </article>
 </template>
 
 <script lang="ts">
 import { openContextMenu } from '../../utils/frame'
-import ScrollBar from './scroll-bar.vue'
 
 export default {
-  components: {
-    ScrollBar,
-  },
   setup() {
     function openEditingMenu(event: MouseEvent) {
       openContextMenu([
@@ -39,22 +32,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '../../assets/_partials';
+
 .terminal-pane {
+  @include partials.scroll-container;
   position: relative;
   z-index: 0;
   box-sizing: border-box;
   height: 100%;
   padding: 4px 24px;
-}
-.scroll-area {
-  height: 100%;
-  overflow: auto;
-  &::-webkit-scrollbar {
-    width: 0px;
-  }
-  & > :last-child {
-    margin-bottom: 16px;
-  }
 }
 :deep(.group-title) {
   margin-top: 0;

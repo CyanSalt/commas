@@ -6,7 +6,6 @@
     @drop.prevent="dropFile"
   >
     <div ref="terminal" class="terminal-content"></div>
-    <ScrollBar v-if="viewport" :parent="viewport" />
   </article>
 </template>
 
@@ -18,12 +17,8 @@ import type { PropType } from 'vue'
 import type { TerminalTab } from '../../typings/terminal'
 import { mountTerminalTab, writeTerminalTab } from '../hooks/terminal'
 import { openContextMenu } from '../utils/frame'
-import ScrollBar from './basic/scroll-bar.vue'
 
 export default {
-  components: {
-    ScrollBar,
-  },
   props: {
     tab: {
       type: Object as PropType<TerminalTab>,
@@ -32,7 +27,6 @@ export default {
   },
   setup(props) {
     const terminalRef = ref<HTMLElement>()
-    const viewportRef = ref<HTMLElement>()
 
     function dragFileOver(event: DragEvent) {
       if (event.dataTransfer) {
@@ -73,8 +67,6 @@ export default {
     onMounted(() => {
       const terminal = unref(terminalRef)!
       mountTerminalTab(props.tab, terminal!)
-      const xterm = props.tab.xterm
-      viewportRef.value = xterm['_core']._viewportElement
     })
 
     onActivated(() => {
@@ -88,7 +80,6 @@ export default {
 
     return {
       terminal: terminalRef,
-      viewport: viewportRef,
       dragFileOver,
       dropFile,
       openEditingMenu,
@@ -98,6 +89,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '../assets/_partials';
+
 .terminal-teletype {
   position: relative;
   display: flex;
@@ -111,7 +104,7 @@ export default {
   width: 0;
   padding: 4px 8px;
   :deep(.xterm-viewport) {
-    overflow-y: hidden;
+    @include partials.scroll-container;
     background-color: transparent !important;
   }
 }

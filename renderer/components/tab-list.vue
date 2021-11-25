@@ -2,91 +2,88 @@
   <nav class="tab-list">
     <div class="list-column" :style="{ width: width + 'px' }">
       <div class="list">
-        <div class="scroll-area">
-          <SortableList
-            v-slot="{ value }"
-            :value="standaloneTabs"
-            value-key="pid"
-            class="processes"
-            @change="sortTabs"
-          >
-            <TabItem
-              :tab="value"
-              @click="activateTerminalTab(value)"
-            />
-          </SortableList>
-          <div class="new-tab">
-            <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
-              <span class="feather-icon icon-more-horizontal"></span>
-            </div>
-            <div
-              class="default-shell anchor"
-              @click="createTerminalTab()"
-              @contextmenu="selectShell"
-            >
-              <span class="feather-icon icon-plus"></span>
-            </div>
+        <SortableList
+          v-slot="{ value }"
+          :value="standaloneTabs"
+          value-key="pid"
+          class="processes"
+          @change="sortTabs"
+        >
+          <TabItem
+            :tab="value"
+            @click="activateTerminalTab(value)"
+          />
+        </SortableList>
+        <div class="new-tab">
+          <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
+            <span class="feather-icon icon-more-horizontal"></span>
           </div>
-          <div class="launcher-folder" @click="toggleCollapsing">
-            <div :class="['group-name', { collapsed: isCollapsed }]">
-              <span class="folder-icon">
-                <span class="feather-icon icon-chevrons-down"></span>
-              </span>
-            </div>
-            <div class="buttons" @click.stop>
-              <div
-                :class="['button', 'find', { active: isFinding }]"
-                @click="toggleFinding"
-              >
-                <span class="feather-icon icon-filter"></span>
-              </div>
-            </div>
-            <div v-show="isFinding" class="find-launcher" @click.stop>
-              <input
-                ref="searcher"
-                v-model="keyword"
-                v-i18n:placeholder
-                type="search"
-                class="keyword"
-                placeholder="Find...#!terminal.5"
-                autofocus
-                @keyup.esc="toggleFinding"
-              >
-            </div>
-          </div>
-          <SortableList
-            v-slot="{ value: launcher }"
-            :value="filteredLaunchers"
-            value-key="id"
-            class="launchers"
-            :disabled="isLauncherSortingDisabled"
-            @change="sortLaunchers"
+          <div
+            class="default-shell anchor"
+            @click="createTerminalTab()"
+            @contextmenu="selectShell"
           >
-            <TabItem
-              v-show="!isCollapsed || getTerminalTabByLauncher(launcher)"
-              :tab="getTerminalTabByLauncher(launcher)"
-              :launcher="launcher"
-              @click="openLauncher(launcher)"
-            >
-              <template #operations>
-                <div
-                  class="button launch"
-                  @click.stop="startLauncher(launcher)"
-                  @contextmenu="showLauncherScripts(launcher, $event)"
-                >
-                  <span class="feather-icon icon-play"></span>
-                </div>
-                <div
-                  class="button launch-externally"
-                  @click.stop="startLauncherExternally(launcher)"
-                >
-                  <span class="feather-icon icon-external-link"></span>
-                </div>
-              </template>
-            </TabItem>
-          </SortableList>
+            <span class="feather-icon icon-plus"></span>
+          </div>
         </div>
-        <ScrollBar />
+        <div class="launcher-folder" @click="toggleCollapsing">
+          <div :class="['group-name', { collapsed: isCollapsed }]">
+            <span class="folder-icon">
+              <span class="feather-icon icon-chevrons-down"></span>
+            </span>
+          </div>
+          <div class="buttons" @click.stop>
+            <div
+              :class="['button', 'find', { active: isFinding }]"
+              @click="toggleFinding"
+            >
+              <span class="feather-icon icon-filter"></span>
+            </div>
+          </div>
+          <div v-show="isFinding" class="find-launcher" @click.stop>
+            <input
+              ref="searcher"
+              v-model="keyword"
+              v-i18n:placeholder
+              type="search"
+              class="keyword"
+              placeholder="Find...#!terminal.5"
+              autofocus
+              @keyup.esc="toggleFinding"
+            >
+          </div>
+        </div>
+        <SortableList
+          v-slot="{ value: launcher }"
+          :value="filteredLaunchers"
+          value-key="id"
+          class="launchers"
+          :disabled="isLauncherSortingDisabled"
+          @change="sortLaunchers"
+        >
+          <TabItem
+            v-show="!isCollapsed || getTerminalTabByLauncher(launcher)"
+            :tab="getTerminalTabByLauncher(launcher)"
+            :launcher="launcher"
+            @click="openLauncher(launcher)"
+          >
+            <template #operations>
+              <div
+                class="button launch"
+                @click.stop="startLauncher(launcher)"
+                @contextmenu="showLauncherScripts(launcher, $event)"
+              >
+                <span class="feather-icon icon-play"></span>
+              </div>
+              <div
+                class="button launch-externally"
+                @click.stop="startLauncherExternally(launcher)"
+              >
+                <span class="feather-icon icon-external-link"></span>
+              </div>
+            </template>
+          </TabItem>
+        </SortableList>
       </div>
       <div class="bottom-actions">
         <div class="anchor" @click="configure">
@@ -129,14 +126,12 @@ import { openContextMenu } from '../utils/frame'
 import { handleMousePressing } from '../utils/helper'
 import { useAsyncComputed } from '../utils/hooks'
 import { getShells } from '../utils/terminal'
-import ScrollBar from './basic/scroll-bar.vue'
 import SortableList from './basic/sortable-list.vue'
 import TabItem from './tab-item.vue'
 
 export default {
   components: {
     TabItem,
-    ScrollBar,
     SortableList,
   },
   setup() {
@@ -279,6 +274,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '../assets/_partials';
+
 .tab-list {
   --tab-height: 36px;
   display: flex;
@@ -292,21 +289,10 @@ export default {
   width: 176px;
 }
 .list {
+  @include partials.scroll-container(8px);
   position: relative;
   flex: auto;
   height: 0;
-}
-.scroll-area {
-  box-sizing: border-box;
-  height: 100%;
-  overflow-y: auto;
-  &::-webkit-scrollbar {
-    width: 0px;
-  }
-}
-:deep(.scroll-bar) {
-  right: 2px;
-  width: 8px;
 }
 .sash {
   flex: none;
