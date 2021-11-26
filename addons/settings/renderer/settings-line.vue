@@ -280,6 +280,7 @@ export default {
   }
 }
 .item-label {
+  cursor: text;
   user-select: text;
   .form-label.customized & {
     font-style: italic;
@@ -292,6 +293,7 @@ export default {
   margin-left: 16px;
   font-size: 12px;
   opacity: 0.5;
+  cursor: text;
   user-select: text;
   .form-label.customized & {
     font-style: italic;

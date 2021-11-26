@@ -16,6 +16,7 @@ const CSS_COLORS = {
   // xterm
   foreground: '--theme-foreground',
   background: '--theme-background',
+  selection: '--theme-selection',
   black: '--theme-black',
   red: '--theme-red',
   green: '--theme-green',
@@ -37,8 +38,6 @@ const CSS_COLORS = {
 }
 
 const CSS_PROPERTIES = {
-  // xterm
-  selection: '--theme-selection',
   // extensions
   opacity: '--theme-opacity',
 }

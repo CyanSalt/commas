@@ -161,6 +161,7 @@ export default {
   font-size: 12px;
   line-height: 24px;
   opacity: 0.5;
+  cursor: text;
   user-select: text;
 }
 :deep(.form-action) {
