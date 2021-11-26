@@ -128,6 +128,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@use '../assets/_partials';
+
+@property --scrollbar-opacity {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
 :global(:root) {
   --design-green: 40 201 65;
   --design-yellow: 255 189 46;
