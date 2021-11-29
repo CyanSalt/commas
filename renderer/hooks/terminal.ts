@@ -7,6 +7,7 @@ import type { ITerminalOptions } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
 import { LigaturesAddon } from 'xterm-addon-ligatures'
 import { SearchAddon } from 'xterm-addon-search'
+import { SerializeAddon } from 'xterm-addon-serialize'
 import { Unicode11Addon } from 'xterm-addon-unicode11'
 import { WebLinksAddon } from 'xterm-addon-web-links'
 import { WebglAddon } from 'xterm-addon-webgl'
@@ -17,7 +18,7 @@ import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
 import { getPrompt, getWindowsProcessInfo } from '../utils/terminal'
 import { useKeyBindings } from './keybinding'
-import { getLauncherByTerminalTab, useLaunchers } from './launcher'
+import { getLauncherByTerminalTab, loadLauncherSession, saveLauncherSession, useLaunchers } from './launcher'
 import { useSettings } from './settings'
 import { useTheme } from './theme'
 
@@ -98,6 +99,7 @@ export async function createTerminalTab({
 }: CreateTerminalTabOptions = {}) {
   const info: TerminalInfo = await ipcRenderer.invoke('create-terminal', { cwd: workingDirectory, shell: shellPath })
   const xterm = new Terminal(unref(terminalOptionsRef))
+  const settings = unref(useSettings())
   const tab = reactive<TerminalTab>({
     ...info,
     title: '',
@@ -125,6 +127,9 @@ export async function createTerminalTab({
     }
   })
   const pid = info.pid
+  if (launcher && settings['terminal.launcher.persistHistory']) {
+    loadLauncherSession(xterm, launcher)
+  }
   // Setup communication between xterm.js and node-pty
   xterm.onData(data => {
     if (tab.alerting) {
@@ -142,8 +147,8 @@ export async function createTerminalTab({
     }
   })
   const updateCwd = debounce(async () => {
-    const settings = unref(useSettings())
-    if (settings['terminal.tab.liveCwd']) {
+    const currentSettings = unref(useSettings())
+    if (currentSettings['terminal.tab.liveCwd']) {
       const latestCwd: string | undefined = await ipcRenderer.invoke('get-terminal-cwd', tab.pid)
       if (latestCwd) {
         tab.cwd = latestCwd
@@ -320,6 +325,11 @@ export function handleTerminalMessages() {
         observer.unobserve(xterm.element)
       }
     }
+    const launcher = getLauncherByTerminalTab(tab)
+    const settings = unref(useSettings())
+    if (launcher && settings['terminal.launcher.persistHistory']) {
+      saveLauncherSession(tab)
+    }
     xterm.dispose()
     removeTerminalTab(tab)
   })
@@ -370,6 +380,7 @@ export function handleTerminalMessages() {
 export function loadTerminalAddons(tab: TerminalTab) {
   const xterm = tab.xterm
   if (!xterm.element) return
+  const launcher = getLauncherByTerminalTab(tab)
   const settings = unref(useSettings())
   if (!tab.addons.fit) {
     tab.addons.fit = new FitAddon()
@@ -412,6 +423,16 @@ export function loadTerminalAddons(tab: TerminalTab) {
   } else {
     if (tab.addons.webgl) {
       tab.addons.webgl.dispose()
+    }
+  }
+  if (launcher && settings['terminal.launcher.persistHistory']) {
+    if (!tab.addons.serialize) {
+      tab.addons.serialize = new SerializeAddon()
+      xterm.loadAddon(tab.addons.serialize)
+    } else {
+      if (tab.addons.serialize) {
+        tab.addons.serialize.dispose()
+      }
     }
   }
 }

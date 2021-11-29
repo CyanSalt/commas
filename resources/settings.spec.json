@@ -108,6 +108,15 @@
     "default": "\\v"
   },
   {
+    "key": "terminal.launcher.persistHistory",
+    "type": "boolean",
+    "label": "Persistent Launcher History",
+    "comments": [
+      "Persistent the history of a launcher after it has been closed"
+    ],
+    "default": false
+  },
+  {
     "key": "terminal.link.modifier",
     "type": "enum",
     "paradigm": ["CmdOrCtrl", "Alt"],

@@ -1,6 +1,7 @@
 import { shell, ipcRenderer } from 'electron'
 import { memoize } from 'lodash-es'
-import { unref } from 'vue'
+import { unref, watch } from 'vue'
+import type { Terminal } from 'xterm'
 import type { Launcher } from '../../typings/launcher'
 import type { TerminalTab } from '../../typings/terminal'
 import { injectIPC } from '../utils/hooks'
@@ -100,7 +101,25 @@ export function moveLauncher(from: number, to: number) {
   launchersRef.value = launchers
 }
 
+const launcherSessionMap = new Map<number, string>()
+
+export function loadLauncherSession(xterm: Terminal, id: number) {
+  const session = launcherSessionMap.get(id)
+  if (session) {
+    xterm.write(session)
+  }
+}
+
+export function saveLauncherSession(tab: TerminalTab) {
+  if (tab.launcher) {
+    launcherSessionMap.set(tab.launcher, tab.addons.serialize.serialize())
+  }
+}
+
 export function handleLauncherMessages() {
+  watch(useLaunchers(), () => {
+    launcherSessionMap.clear()
+  })
   ipcRenderer.on('start-launcher', (event, launcher: Launcher) => {
     startLauncher(launcher)
   })
