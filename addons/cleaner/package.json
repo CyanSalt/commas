@@ -1,0 +1,9 @@
+{
+  "name": "cleaner",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Clean up the application cache",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC"
+}

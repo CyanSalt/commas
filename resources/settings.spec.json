@@ -203,11 +203,11 @@
     "key": "terminal.addon.includes",
     "type": "list",
     "paradigm": ["string"],
-    "recommendations": ["cli", "updater", "preference", "proxy", "settings", "theme", "menu", "power-mode", "landscape"],
+    "recommendations": ["cli", "updater", "preference", "proxy", "settings", "theme", "menu", "power-mode", "cleaner", "landscape"],
     "label": "Enabled Addons",
     "comments": [
       "List of enabled addon name"
     ],
-    "default": ["cli", "updater", "preference", "proxy", "settings", "theme", "menu", "power-mode"]
+    "default": ["cli", "updater", "preference", "proxy", "settings", "theme", "menu", "power-mode", "cleaner"]
   }
 ]
