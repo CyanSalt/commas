@@ -1,6 +1,6 @@
-const fastglob = require('fast-glob')
+import fastglob from 'fast-glob'
 
-const importGlob = () => ({
+export default () => ({
   name: 'import-glob',
   setup(pluginBuild) {
     pluginBuild.onResolve({ filter: /\*/ }, args => ({
@@ -21,5 +21,3 @@ const importGlob = () => ({
     })
   },
 })
-
-module.exports = importGlob

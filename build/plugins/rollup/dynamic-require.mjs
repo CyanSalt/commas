@@ -1,4 +1,4 @@
-const dynamicRequire = ({ moduleIds }) => ({
+export default ({ moduleIds }) => ({
   name: 'dynamic-require',
   enforce: 'post',
   transform(code) {
@@ -43,5 +43,3 @@ const dynamicRequire = ({ moduleIds }) => ({
     return transformedCode
   },
 })
-
-module.exports = dynamicRequire

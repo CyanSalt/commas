@@ -1,11 +1,11 @@
-const childProcess = require('child_process')
-const fs = require('fs')
-const path = require('path')
-const util = require('util')
-const chalk = require('chalk')
-const packager = require('electron-packager')
-const png2icons = require('png2icons')
-const app = require('../package.json')
+import childProcess from 'child_process'
+import fs from 'fs'
+import path from 'path'
+import util from 'util'
+import chalk from 'chalk'
+import packager from 'electron-packager'
+import png2icons from 'png2icons'
+import app from '../package.json'
 
 const execa = util.promisify(childProcess.exec)
 

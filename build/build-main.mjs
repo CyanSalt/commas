@@ -1,8 +1,8 @@
-const { build } = require('esbuild')
-const externalNodeModules = require('./plugins/esbuild/external-node-modules')
-const importGlob = require('./plugins/esbuild/import-glob')
+import esbuild from 'esbuild'
+import externalNodeModules from './plugins/esbuild/external-node-modules.mjs'
+import importGlob from './plugins/esbuild/import-glob.mjs'
 
-module.exports = (versions) => build({
+export default (versions) => esbuild.build({
   entryPoints: ['main/index.ts'],
   outfile: 'main/dist/index.js',
   bundle: true,

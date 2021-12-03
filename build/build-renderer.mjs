@@ -1,10 +1,10 @@
-const { builtinModules } = require('module')
-const vue = require('@vitejs/plugin-vue')
-const { build } = require('vite')
-const dynamicRequire = require('./plugins/rollup/dynamic-require')
-const importGlob = require('./plugins/rollup/import-glob')
+import { builtinModules } from 'module'
+import vue from '@vitejs/plugin-vue'
+import vite from 'vite'
+import dynamicRequire from './plugins/rollup/dynamic-require.mjs'
+import importGlob from './plugins/rollup/import-glob.mjs'
 
-module.exports = (versions) => build({
+export default (versions) => vite.build({
   configFile: false,
   envFile: false,
   root: 'renderer',

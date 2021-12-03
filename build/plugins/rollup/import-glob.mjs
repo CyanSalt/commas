@@ -1,7 +1,7 @@
-const path = require('path')
-const fastglob = require('fast-glob')
+import path from 'path'
+import fastglob from 'fast-glob'
 
-const importGlob = () => ({
+export default () => ({
   name: 'import-glob',
   enforce: 'pre',
   resolveId(source, importer) {
@@ -23,5 +23,3 @@ const importGlob = () => ({
     `
   },
 })
-
-module.exports = importGlob
