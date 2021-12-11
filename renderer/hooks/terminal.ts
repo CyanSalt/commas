@@ -415,7 +415,7 @@ export function loadTerminalAddons(tab: TerminalTab) {
       tab.addons.ligatures.dispose()
     }
   }
-  if (settings['terminal.renderer.type'] === 'webgl') {
+  if (settings['terminal.renderer.type'] === 'webgl' && !xterm.options.allowTransparency) {
     if (!tab.addons.webgl) {
       tab.addons.webgl = new WebglAddon()
       xterm.loadAddon(tab.addons.webgl)

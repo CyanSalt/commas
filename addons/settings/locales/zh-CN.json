@@ -36,7 +36,7 @@
   "Renderer Type#!settings.label.terminal.renderer.type": "渲染方式",
   "Specify how to render the terminal#!settings.comments.0.terminal.renderer.type": "声明如何渲染终端",
   "Options: 'dom', 'canvas' or 'webgl'#!settings.comments.1.terminal.renderer.type": "可选项: 'dom', 'canvas' 或 'webgl'",
-  "Notice that 'webgl' does not support opacity currently#!settings.comments.2.terminal.renderer.type": "注意目前 'webgl' 不支持透明度",
+  "'webgl' will fallback to 'canvas' when transparency is enabled#!settings.comments.2.terminal.renderer.type": "当透明度启用时，'webgl' 将回退到 'canvas'",
   "Background Opacity#!settings.label.terminal.style.opacity": "背景不透明度",
   "Background opacity of window#!settings.comments.0.terminal.style.opacity": "窗口的背景不透明度",
   "It will not work if RGBA background is specified in theme file#!settings.comments.1.terminal.style.opacity": "当主题文件中声明了 RGBA 格式的背景时将不起作用",

@@ -135,9 +135,9 @@
     "comments": [
       "Specify how to render the terminal",
       "Options: 'dom', 'canvas' or 'webgl'",
-      "Notice that 'webgl' does not support opacity currently"
+      "'webgl' will fallback to 'canvas' when transparency is enabled"
     ],
-    "default": "canvas"
+    "default": "webgl"
   },
   {
     "key": "terminal.style.opacity",
@@ -148,7 +148,7 @@
       "Background opacity of window",
       "It will not work if RGBA background is specified in theme file"
     ],
-    "default": 0.9
+    "default": 1
   },
   {
     "key": "terminal.style.fontSize",
