@@ -413,6 +413,7 @@ export function loadTerminalAddons(tab: TerminalTab) {
   } else {
     if (tab.addons.ligatures) {
       tab.addons.ligatures.dispose()
+      delete tab.addons.ligatures
     }
   }
   if (settings['terminal.renderer.type'] === 'webgl' && !xterm.options.allowTransparency) {
@@ -423,6 +424,7 @@ export function loadTerminalAddons(tab: TerminalTab) {
   } else {
     if (tab.addons.webgl) {
       tab.addons.webgl.dispose()
+      delete tab.addons.webgl
     }
   }
   if (launcher && settings['terminal.launcher.persistHistory']) {
@@ -432,6 +434,7 @@ export function loadTerminalAddons(tab: TerminalTab) {
     } else {
       if (tab.addons.serialize) {
         tab.addons.serialize.dispose()
+        delete tab.addons.serialize
       }
     }
   }
