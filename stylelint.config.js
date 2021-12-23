@@ -1,5 +1,5 @@
 module.exports = {
   extends: [
-    '@cyansalt/stylelint-config',
+    '@cyansalt/stylelint-config-preset',
   ],
 }
