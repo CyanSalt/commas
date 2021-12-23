@@ -398,7 +398,6 @@ export default {
     margin-right: 8px;
   }
 }
-// eslint-disable-next-line vue-scoped-css/no-unused-selector
 .anchor {
   opacity: 0.5;
   transition: opacity 0.2s;

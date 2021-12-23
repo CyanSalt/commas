@@ -24,7 +24,7 @@
     "node": ">=14.0.0"
   },
   "devDependencies": {
-    "@cyansalt/eslint-config-preset": "^1.0.4",
+    "@cyansalt/eslint-config-preset": "^1.0.6",
     "@cyansalt/stylelint-config-preset": "^1.0.2",
     "@cyansalt/tsconfig": "^1.2.0",
     "@release-it/conventional-changelog": "^3.3.0",

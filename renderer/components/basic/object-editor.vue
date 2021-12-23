@@ -153,7 +153,6 @@ export default {
 .property-line {
   display: flex;
   align-items: center;
-  // eslint-disable-next-line vue-scoped-css/no-unused-selector
   & + .form-tips {
     padding-left: 28px;
   }
