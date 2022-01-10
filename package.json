@@ -4,7 +4,13 @@
   "productName": "Commas",
   "author": "CyanSalt",
   "description": "A hackable terminal and command runner.",
+  "bin": {
+    "commas": "bin/commas"
+  },
   "main": "main/dist/index.js",
+  "directories": {
+    "doc": "docs"
+  },
   "scripts": {
     "postinstall": "node post-install.js",
     "dev": "node build/build.mjs && electron .",
@@ -17,8 +23,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/CyanSalt/commas.git"
+    "url": "git+https://github.com/CyanSalt/commas.git"
   },
+  "bugs": {
+    "url": "https://github.com/CyanSalt/commas/issues"
+  },
+  "homepage": "https://github.com/CyanSalt/commas#readme",
   "license": "ISC",
   "engines": {
     "node": ">=14.0.0"
