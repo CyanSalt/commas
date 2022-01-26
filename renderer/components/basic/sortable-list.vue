@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeUpdate } from 'vue'
+import { onBeforeUpdate } from 'vue'
 import type { PropType } from 'vue'
 import { handleMousePressing } from '../../utils/helper'
 
@@ -29,7 +29,7 @@ const root = $ref<HTMLElement>()
 let items = $ref<HTMLElement[]>([])
 let draggingIndex = $ref(-1)
 
-const keys = computed(() => {
+const keys = $computed(() => {
   return props.value.map((value, index) => {
     if (props.valueKey === undefined) return index
     if (typeof props.valueKey === 'function') return props.valueKey.call(undefined, value)
