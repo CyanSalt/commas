@@ -1,106 +1,3 @@
-<template>
-  <nav class="tab-list">
-    <div class="list-column" :style="{ width: width + 'px' }">
-      <div class="list">
-        <SortableList
-          v-slot="{ value }"
-          :value="standaloneTabs"
-          value-key="pid"
-          class="processes"
-          @change="sortTabs"
-        >
-          <TabItem
-            :tab="value"
-            @click="activateTerminalTab(value)"
-          />
-        </SortableList>
-        <div class="new-tab">
-          <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
-            <span class="feather-icon icon-more-horizontal"></span>
-          </div>
-          <div
-            class="default-shell anchor"
-            @click="createTerminalTab()"
-            @contextmenu="selectShell"
-          >
-            <span class="feather-icon icon-plus"></span>
-          </div>
-        </div>
-        <div class="launcher-folder" @click="toggleCollapsing">
-          <div :class="['group-name', { collapsed: isCollapsed }]">
-            <span class="folder-icon">
-              <span class="feather-icon icon-chevrons-down"></span>
-            </span>
-          </div>
-          <div class="buttons" @click.stop>
-            <div
-              :class="['button', 'find', { active: isFinding }]"
-              @click="toggleFinding"
-            >
-              <span class="feather-icon icon-filter"></span>
-            </div>
-          </div>
-          <div v-show="isFinding" class="find-launcher" @click.stop>
-            <input
-              ref="searcher"
-              v-model="keyword"
-              v-i18n:placeholder
-              type="search"
-              class="keyword"
-              placeholder="Find...#!terminal.5"
-              autofocus
-              @keyup.esc="toggleFinding"
-            >
-          </div>
-        </div>
-        <SortableList
-          v-slot="{ value: launcher }"
-          :value="filteredLaunchers"
-          value-key="id"
-          class="launchers"
-          :disabled="isLauncherSortingDisabled"
-          @change="sortLaunchers"
-        >
-          <TabItem
-            v-show="!isCollapsed || getTerminalTabByLauncher(launcher)"
-            :tab="getTerminalTabByLauncher(launcher)"
-            :launcher="launcher"
-            @click="openLauncher(launcher)"
-          >
-            <template #operations>
-              <div
-                class="button launch"
-                @click.stop="startLauncher(launcher)"
-                @contextmenu="showLauncherScripts(launcher, $event)"
-              >
-                <span class="feather-icon icon-play"></span>
-              </div>
-              <div
-                class="button launch-externally"
-                @click.stop="startLauncherExternally(launcher)"
-              >
-                <span class="feather-icon icon-external-link"></span>
-              </div>
-            </template>
-          </TabItem>
-        </SortableList>
-      </div>
-      <div class="bottom-actions">
-        <div class="anchor" @click="configure">
-          <span class="feather-icon icon-settings"></span>
-        </div>
-        <component
-          :is="anchor"
-          v-for="(anchor, index) in anchors"
-          :key="index"
-          class="anchor"
-        />
-      </div>
-    </div>
-    <div draggable="true" class="sash" @dragstart.prevent="resize"></div>
-  </nav>
-</template>
-
 <script lang="ts">
 import * as path from 'path'
 import { ipcRenderer } from 'electron'
@@ -272,6 +169,109 @@ export default {
   },
 }
 </script>
+
+<template>
+  <nav class="tab-list">
+    <div class="list-column" :style="{ width: width + 'px' }">
+      <div class="list">
+        <SortableList
+          v-slot="{ value }"
+          :value="standaloneTabs"
+          value-key="pid"
+          class="processes"
+          @change="sortTabs"
+        >
+          <TabItem
+            :tab="value"
+            @click="activateTerminalTab(value)"
+          />
+        </SortableList>
+        <div class="new-tab">
+          <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
+            <span class="feather-icon icon-more-horizontal"></span>
+          </div>
+          <div
+            class="default-shell anchor"
+            @click="createTerminalTab()"
+            @contextmenu="selectShell"
+          >
+            <span class="feather-icon icon-plus"></span>
+          </div>
+        </div>
+        <div class="launcher-folder" @click="toggleCollapsing">
+          <div :class="['group-name', { collapsed: isCollapsed }]">
+            <span class="folder-icon">
+              <span class="feather-icon icon-chevrons-down"></span>
+            </span>
+          </div>
+          <div class="buttons" @click.stop>
+            <div
+              :class="['button', 'find', { active: isFinding }]"
+              @click="toggleFinding"
+            >
+              <span class="feather-icon icon-filter"></span>
+            </div>
+          </div>
+          <div v-show="isFinding" class="find-launcher" @click.stop>
+            <input
+              ref="searcher"
+              v-model="keyword"
+              v-i18n:placeholder
+              type="search"
+              class="keyword"
+              placeholder="Find...#!terminal.5"
+              autofocus
+              @keyup.esc="toggleFinding"
+            >
+          </div>
+        </div>
+        <SortableList
+          v-slot="{ value: launcher }"
+          :value="filteredLaunchers"
+          value-key="id"
+          class="launchers"
+          :disabled="isLauncherSortingDisabled"
+          @change="sortLaunchers"
+        >
+          <TabItem
+            v-show="!isCollapsed || getTerminalTabByLauncher(launcher)"
+            :tab="getTerminalTabByLauncher(launcher)"
+            :launcher="launcher"
+            @click="openLauncher(launcher)"
+          >
+            <template #operations>
+              <div
+                class="button launch"
+                @click.stop="startLauncher(launcher)"
+                @contextmenu="showLauncherScripts(launcher, $event)"
+              >
+                <span class="feather-icon icon-play"></span>
+              </div>
+              <div
+                class="button launch-externally"
+                @click.stop="startLauncherExternally(launcher)"
+              >
+                <span class="feather-icon icon-external-link"></span>
+              </div>
+            </template>
+          </TabItem>
+        </SortableList>
+      </div>
+      <div class="bottom-actions">
+        <div class="anchor" @click="configure">
+          <span class="feather-icon icon-settings"></span>
+        </div>
+        <component
+          :is="anchor"
+          v-for="(anchor, index) in anchors"
+          :key="index"
+          class="anchor"
+        />
+      </div>
+    </div>
+    <div draggable="true" class="sash" @dragstart.prevent="resize"></div>
+  </nav>
+</template>
 
 <style lang="scss" scoped>
 @use '../assets/_partials';
