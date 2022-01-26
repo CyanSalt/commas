@@ -1,3 +1,62 @@
+<script lang="ts" setup>
+import { ipcRenderer, shell } from 'electron'
+import LoadingSpinner from '../../../renderer/components/basic/loading-spinner.vue'
+import SwitchControl from '../../../renderer/components/basic/switch-control.vue'
+import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
+import { useSettings } from '../../../renderer/hooks/settings'
+import { useAsyncComputed } from '../../../renderer/utils/hooks'
+import { useProxyRootCAStatus, useProxyServerVersion, useSystemProxyStatus } from './hooks'
+
+const settings = $(useSettings())
+const isSystemProxyEnabled = $(useSystemProxyStatus())
+const isCertInstalled = $(useProxyRootCAStatus())
+const version = $(useProxyServerVersion())
+
+let isInstalling = $ref(false)
+
+const supportsSystemProxy = process.platform === 'darwin'
+const supportsKeyChain = process.platform === 'darwin'
+
+const latestVersion = $(useAsyncComputed<string | undefined>(
+  () => ipcRenderer.invoke('get-latest-proxy-server-version'),
+  undefined,
+))
+
+const isOutdated = $computed(() => {
+  return Boolean(latestVersion) && (version === null || version !== latestVersion)
+})
+
+const port = $computed(() => {
+  return settings['proxy.server.port']
+})
+
+function openEditor() {
+  shell.openExternal(`http://localhost:${port}`)
+}
+
+function installRootCA() {
+  return ipcRenderer.invoke('install-proxy-root-ca')
+}
+
+function uninstallRootCA() {
+  return ipcRenderer.invoke('uninstall-proxy-root-ca')
+}
+
+function openKeychainAccess() {
+  return ipcRenderer.invoke('execute', `open -a 'Keychain Access'`)
+}
+
+async function install() {
+  isInstalling = true
+  try {
+    await ipcRenderer.invoke('install-proxy-server')
+  } catch {
+    // ignore error
+  }
+  isInstalling = false
+}
+</script>
+
 <template>
   <TerminalPane class="proxy-pane">
     <h2 v-i18n class="group-title">Proxy#!proxy.1</h2>
@@ -36,92 +95,6 @@
     </template>
   </TerminalPane>
 </template>
-
-<script lang="ts">
-import { ipcRenderer, shell } from 'electron'
-import { computed, ref, unref } from 'vue'
-import LoadingSpinner from '../../../renderer/components/basic/loading-spinner.vue'
-import SwitchControl from '../../../renderer/components/basic/switch-control.vue'
-import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
-import { useSettings } from '../../../renderer/hooks/settings'
-import { useAsyncComputed } from '../../../renderer/utils/hooks'
-import { useProxyRootCAStatus, useProxyServerVersion, useSystemProxyStatus } from './hooks'
-
-export default {
-  name: 'proxy-pane',
-  components: {
-    TerminalPane,
-    SwitchControl,
-    LoadingSpinner,
-  },
-  setup() {
-    const isSystemProxyEnabledRef = useSystemProxyStatus()
-    const isCertInstalledRef = useProxyRootCAStatus()
-    const versionRef = useProxyServerVersion()
-
-    const isInstallingRef = ref(false)
-
-    const latestVersionRef = useAsyncComputed<string | undefined>(
-      () => ipcRenderer.invoke('get-latest-proxy-server-version'),
-      undefined,
-    )
-
-    const isOutdatedRef = computed(() => {
-      const version = unref(versionRef)
-      const latestVersion = unref(latestVersionRef)
-      return Boolean(latestVersion) && (version === null || version !== latestVersion)
-    })
-
-    const settingsRef = useSettings()
-    const portRef = computed(() => {
-      const settings = unref(settingsRef)
-      return settings['proxy.server.port']
-    })
-
-    function openEditor() {
-      const port = unref(portRef)
-      shell.openExternal(`http://localhost:${port}`)
-    }
-
-    function installRootCA() {
-      return ipcRenderer.invoke('install-proxy-root-ca')
-    }
-
-    function uninstallRootCA() {
-      return ipcRenderer.invoke('uninstall-proxy-root-ca')
-    }
-
-    function openKeychainAccess() {
-      return ipcRenderer.invoke('execute', `open -a 'Keychain Access'`)
-    }
-
-    async function install() {
-      isInstallingRef.value = true
-      try {
-        await ipcRenderer.invoke('install-proxy-server')
-      } catch {
-        // ignore error
-      }
-      isInstallingRef.value = false
-    }
-
-    return {
-      supportsSystemProxy: process.platform === 'darwin',
-      supportsKeyChain: process.platform === 'darwin',
-      version: versionRef,
-      isSystemProxyEnabled: isSystemProxyEnabledRef,
-      isCertInstalled: isCertInstalledRef,
-      isInstalling: isInstallingRef,
-      isOutdated: isOutdatedRef,
-      openEditor,
-      installRootCA,
-      uninstallRootCA,
-      openKeychainAccess,
-      install,
-    }
-  },
-}
-</script>
 
 <style lang="scss" scoped>
 .cert-status .feather-icon {

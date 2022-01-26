@@ -1,3 +1,68 @@
+<script lang="ts" setup>
+import { ipcRenderer, shell } from 'electron'
+import type { Component } from 'vue'
+import * as commas from '../../../api/renderer'
+import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
+import { getAppVersion } from '../../../renderer/utils/frame'
+import { useAsyncComputed } from '../../../renderer/utils/hooks'
+
+interface PreferenceItem {
+  component: Component,
+  group: string,
+  priority?: number,
+}
+
+const preferenceItems: PreferenceItem[] = commas.context.getCollection('preference')
+
+function getItems(group: string) {
+  const list = preferenceItems.filter(item => item.group === group)
+  return list.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0))
+}
+
+const generalItems = $computed(() => getItems('general'))
+const featureItems = $computed(() => getItems('feature'))
+const customizationItems = $computed(() => getItems('customization'))
+const aboutItems = $computed(() => getItems('about'))
+
+const version = $(useAsyncComputed(() => getAppVersion(), ''))
+
+function openUserDirectory() {
+  ipcRenderer.invoke('open-user-directory')
+}
+
+function openDefaultSettings() {
+  ipcRenderer.invoke('open-default-settings')
+}
+
+function openSettingsFile() {
+  ipcRenderer.invoke('open-settings-file')
+}
+
+function openLaunchers() {
+  ipcRenderer.invoke('open-user-file', 'launchers.yaml', true)
+}
+
+function openKeyBindings() {
+  ipcRenderer.invoke('open-user-file', 'keybindings.yaml', true)
+}
+
+function openTranslation() {
+  ipcRenderer.invoke('open-user-file', 'translation.yaml', true)
+}
+
+function openCustomJS() {
+  ipcRenderer.invoke('open-user-file', 'custom.js', true)
+}
+
+function openCustomCSS() {
+  ipcRenderer.invoke('open-user-file', 'custom.css', true)
+}
+
+function openWebsite() {
+  shell.openExternal('https://github.com/CyanSalt/commas')
+}
+</script>
+
 <template>
   <TerminalPane class="preference-pane">
     <h2 v-i18n class="group-title">General#!preference.2</h2>
@@ -60,96 +125,3 @@
     </div>
   </TerminalPane>
 </template>
-
-<script lang="ts">
-import { ipcRenderer, shell } from 'electron'
-import { computed } from 'vue'
-import type { Component } from 'vue'
-import * as commas from '../../../api/renderer'
-import SwitchControl from '../../../renderer/components/basic/switch-control.vue'
-import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
-import { getAppVersion } from '../../../renderer/utils/frame'
-import { useAsyncComputed } from '../../../renderer/utils/hooks'
-
-interface PreferenceItem {
-  component: Component,
-  group: string,
-  priority?: number,
-}
-
-export default {
-  name: 'preference-pane',
-  components: {
-    TerminalPane,
-    SwitchControl,
-  },
-  setup() {
-    const preferenceItems: PreferenceItem[] = commas.context.getCollection('preference')
-
-    function getItems(group: string) {
-      const list = preferenceItems.filter(item => item.group === group)
-      return list.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0))
-    }
-
-    const generalItemsRef = computed(() => getItems('general'))
-    const featureItemsRef = computed(() => getItems('feature'))
-    const customizationItemsRef = computed(() => getItems('customization'))
-    const aboutItemsRef = computed(() => getItems('about'))
-
-    const versionRef = useAsyncComputed(() => getAppVersion(), '')
-
-    function openUserDirectory() {
-      ipcRenderer.invoke('open-user-directory')
-    }
-
-    function openDefaultSettings() {
-      ipcRenderer.invoke('open-default-settings')
-    }
-
-    function openSettingsFile() {
-      ipcRenderer.invoke('open-settings-file')
-    }
-
-    function openLaunchers() {
-      ipcRenderer.invoke('open-user-file', 'launchers.yaml', true)
-    }
-
-    function openKeyBindings() {
-      ipcRenderer.invoke('open-user-file', 'keybindings.yaml', true)
-    }
-
-    function openTranslation() {
-      ipcRenderer.invoke('open-user-file', 'translation.yaml', true)
-    }
-
-    function openCustomJS() {
-      ipcRenderer.invoke('open-user-file', 'custom.js', true)
-    }
-
-    function openCustomCSS() {
-      ipcRenderer.invoke('open-user-file', 'custom.css', true)
-    }
-
-    function openWebsite() {
-      shell.openExternal('https://github.com/CyanSalt/commas')
-    }
-
-    return {
-      version: versionRef,
-      generalItems: generalItemsRef,
-      featureItems: featureItemsRef,
-      customizationItems: customizationItemsRef,
-      aboutItems: aboutItemsRef,
-      openUserDirectory,
-      openDefaultSettings,
-      openSettingsFile,
-      openLaunchers,
-      openKeyBindings,
-      openTranslation,
-      openCustomJS,
-      openCustomCSS,
-      openWebsite,
-    }
-  },
-}
-</script>

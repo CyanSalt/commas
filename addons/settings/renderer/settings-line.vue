@@ -1,3 +1,179 @@
+<script lang="ts" setup>
+import { isEqual } from 'lodash-es'
+import type { PropType } from 'vue'
+import ObjectEditor from '../../../renderer/components/basic/object-editor.vue'
+import type { EditorEntryItem } from '../../../renderer/components/basic/object-editor.vue'
+import SwitchControl from '../../../renderer/components/basic/switch-control.vue'
+import ValueSelector from '../../../renderer/components/basic/value-selector.vue'
+import { useDiscoveredAddons } from '../../../renderer/hooks/settings'
+import type { SettingsSpec } from '../../../typings/settings'
+
+export interface SettingsLineAPI {
+  isCollapsed: boolean,
+}
+
+const props = defineProps({
+  spec: {
+    type: Object as PropType<SettingsSpec>,
+    required: true,
+  },
+  modelValue: {
+    type: undefined,
+    required: true,
+  },
+  currentValue: {
+    type: undefined,
+    required: true,
+  },
+})
+
+const emit = defineEmits({
+  'update:modelValue': (value: any) => {
+    return true
+  },
+})
+
+const discoveredAddons = $(useDiscoveredAddons())
+
+let isCollapsed = $ref(false)
+
+const isSimpleObject = $computed(() => {
+  return ['list', 'map'].includes(props.spec.type)
+        && !['list', 'map'].includes(props.spec.paradigm?.[0])
+})
+
+const placeholder = $computed(() => {
+  return String(stringify(props.spec.default))
+})
+
+let model = $computed({
+  get: () => {
+    if (props.modelValue === undefined && ['boolean', 'enum', 'list', 'map'].includes(props.spec.type)) {
+      return normalize(props.spec.default)
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (isSimpleObject) {
+      return normalize(props.modelValue)
+    }
+    return stringify(props.modelValue)
+  },
+  set: (value) => {
+    emit('update:modelValue', parse(value))
+  },
+})
+
+const isCustomized = $computed(() => {
+  if (props.modelValue === undefined) return false
+  return !isEqual(props.modelValue, props.spec.default)
+})
+
+const isChanged = $computed(() => {
+  return !isEqual(props.modelValue, props.currentValue)
+})
+
+const hasNotes = $computed(() => {
+  return props.spec.key === 'terminal.addon.includes'
+})
+
+const recommendations = $computed(() => {
+  const specRecommendations = props.spec.recommendations
+  if (props.spec.key === 'terminal.addon.includes') {
+    return [
+      ...specRecommendations!,
+      ...Object.keys(discoveredAddons)
+        .filter(name => discoveredAddons[name].type === 'user'),
+    ]
+  }
+  return specRecommendations
+})
+
+function getNote(item: EditorEntryItem) {
+  if (props.spec.key === 'terminal.addon.includes') {
+    const info = discoveredAddons[item.entry.value]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    return info?.manifest?.description ?? ''
+  }
+  return undefined
+}
+
+function accepts(type: string) {
+  return props.spec.type === type || (
+    Array.isArray(props.spec.type) && props.spec.type.includes(type)
+  )
+}
+
+function normalize(value) {
+  if (accepts('list') && Array.isArray(value)) {
+    return value
+  }
+  if (accepts('map') && typeof value === 'object') {
+    return value
+  }
+  if (value === undefined) {
+    return ''
+  }
+  return value
+}
+
+function stringify(value) {
+  if (accepts('list') && Array.isArray(value)) {
+    return JSON.stringify(value, null, 2)
+  }
+  if (accepts('map') && typeof value === 'object') {
+    return JSON.stringify(value, null, 2)
+  }
+  if (value === undefined) {
+    return ''
+  }
+  return value as string | number | boolean
+}
+
+function parseJSON(value) {
+  try {
+    return JSON.parse(value)
+  } catch {
+    return undefined
+  }
+}
+
+function parse(value) {
+  if (accepts('map')) {
+    const parsed = parseJSON(value)
+    if (typeof parsed === 'object') {
+      return parsed
+    }
+  }
+  if (accepts('list')) {
+    const parsed = parseJSON(value)
+    if (Array.isArray(parsed)) {
+      return parsed
+    }
+  }
+  if (accepts('number')) {
+    const parsed = parseJSON(value)
+    if (typeof parsed === 'number') {
+      return parsed
+    }
+  }
+  if (!accepts('string') && value === '') {
+    return undefined
+  }
+  return value
+}
+
+function toggle() {
+  isCollapsed = !isCollapsed
+}
+
+function reset() {
+  model = props.spec.default
+}
+
+defineExpose({
+  isCollapsed,
+})
+</script>
+
 <template>
   <div :class="['user-setting-line', 'form-line', 'block', { collapsed: isCollapsed }]">
     <label :class="['form-label', { customized: isCustomized, changed: isChanged }]">
@@ -70,207 +246,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { isEqual } from 'lodash-es'
-import { computed, ref, unref } from 'vue'
-import type { PropType } from 'vue'
-import ObjectEditor from '../../../renderer/components/basic/object-editor.vue'
-import type { EditorEntryItem } from '../../../renderer/components/basic/object-editor.vue'
-import SwitchControl from '../../../renderer/components/basic/switch-control.vue'
-import ValueSelector from '../../../renderer/components/basic/value-selector.vue'
-import { useDiscoveredAddons } from '../../../renderer/hooks/settings'
-import type { SettingsSpec } from '../../../typings/settings'
-
-export interface SettingsLineAPI {
-  isCollapsed: boolean,
-}
-
-export default {
-  name: 'settings-line',
-  components: {
-    SwitchControl,
-    ObjectEditor,
-    ValueSelector,
-  },
-  props: {
-    spec: {
-      type: Object as PropType<SettingsSpec>,
-      required: true,
-    },
-    modelValue: {
-      type: undefined,
-      required: true,
-    },
-    currentValue: {
-      type: undefined,
-      required: true,
-    },
-  },
-  emits: {
-    'update:modelValue': (value: any) => {
-      return true
-    },
-  },
-  setup(props, { emit, expose }) {
-    const isCollapsedRef = ref(false)
-
-    const isSimpleObjectRef = computed(() => {
-      return ['list', 'map'].includes(props.spec.type)
-        && !['list', 'map'].includes(props.spec.paradigm?.[0])
-    })
-
-    const placeholderRef = computed(() => {
-      return stringify(props.spec.default)
-    })
-
-    const modelRef = computed({
-      get: () => {
-        if (props.modelValue === undefined && ['boolean', 'enum', 'list', 'map'].includes(props.spec.type)) {
-          return normalize(props.spec.default)
-        }
-        const isSimpleObject = unref(isSimpleObjectRef)
-        if (isSimpleObject) {
-          return normalize(props.modelValue)
-        }
-        return stringify(props.modelValue)
-      },
-      set: (value) => {
-        emit('update:modelValue', parse(value))
-      },
-    })
-
-    const isCustomizedRef = computed(() => {
-      if (props.modelValue === undefined) return false
-      return !isEqual(props.modelValue, props.spec.default)
-    })
-
-    const isChangedRef = computed(() => {
-      return !isEqual(props.modelValue, props.currentValue)
-    })
-
-    const hasNotesRef = computed(() => {
-      return props.spec.key === 'terminal.addon.includes'
-    })
-
-    const discoveredAddonsRef = useDiscoveredAddons()
-
-    const recommendationsRef = computed(() => {
-      const recommendations = props.spec.recommendations
-      if (props.spec.key === 'terminal.addon.includes') {
-        const discoveredAddons = unref(discoveredAddonsRef)
-        return [
-          ...recommendations!,
-          ...Object.keys(discoveredAddons)
-            .filter(name => discoveredAddons[name].type === 'user'),
-        ]
-      }
-      return recommendations
-    })
-
-    function getNote(item: EditorEntryItem) {
-      if (props.spec.key === 'terminal.addon.includes') {
-        const discoveredAddons = unref(discoveredAddonsRef)
-        const info = discoveredAddons[item.entry.value]
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        return info?.manifest?.description ?? ''
-      }
-      return undefined
-    }
-
-    function accepts(type: string) {
-      return props.spec.type === type || (
-        Array.isArray(props.spec.type) && props.spec.type.includes(type)
-      )
-    }
-
-    function normalize(value) {
-      if (accepts('list') && Array.isArray(value)) {
-        return value
-      }
-      if (accepts('map') && typeof value === 'object') {
-        return value
-      }
-      if (value === undefined) {
-        return ''
-      }
-      return value
-    }
-
-    function stringify(value) {
-      if (accepts('list') && Array.isArray(value)) {
-        return JSON.stringify(value, null, 2)
-      }
-      if (accepts('map') && typeof value === 'object') {
-        return JSON.stringify(value, null, 2)
-      }
-      if (value === undefined) {
-        return ''
-      }
-      return value as string | number | boolean
-    }
-
-    function parseJSON(value) {
-      try {
-        return JSON.parse(value)
-      } catch {
-        return undefined
-      }
-    }
-
-    function parse(value) {
-      if (accepts('map')) {
-        const parsed = parseJSON(value)
-        if (typeof parsed === 'object') {
-          return parsed
-        }
-      }
-      if (accepts('list')) {
-        const parsed = parseJSON(value)
-        if (Array.isArray(parsed)) {
-          return parsed
-        }
-      }
-      if (accepts('number')) {
-        const parsed = parseJSON(value)
-        if (typeof parsed === 'number') {
-          return parsed
-        }
-      }
-      if (!accepts('string') && value === '') {
-        return undefined
-      }
-      return value
-    }
-
-    function toggle() {
-      isCollapsedRef.value = !isCollapsedRef.value
-    }
-
-    function reset() {
-      modelRef.value = props.spec.default
-    }
-
-    expose({
-      isCollapsed: isCollapsedRef,
-    })
-
-    return {
-      isCollapsed: isCollapsedRef,
-      isSimpleObject: isSimpleObjectRef,
-      placeholder: placeholderRef,
-      model: modelRef,
-      isCustomized: isCustomizedRef,
-      isChanged: isChangedRef,
-      hasNotes: hasNotesRef,
-      recommendations: recommendationsRef,
-      getNote,
-      toggle,
-      reset,
-    }
-  },
-}
-</script>
 
 <style lang="scss" scoped>
 .user-setting-line {

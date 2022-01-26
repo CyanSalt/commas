@@ -1,3 +1,27 @@
+<script lang="ts" setup>
+import { watchEffect } from 'vue'
+import { useSettings } from '../../../renderer/hooks/settings'
+import { useNonce } from './hooks'
+
+const settings = $(useSettings())
+const nonce = useNonce()
+
+let lazyURL = $ref('')
+
+const url = $computed(() => {
+  const backgroundURL: string = settings['landscape.background.url']
+  return backgroundURL ? backgroundURL.replace('<nonce>', String(nonce)) : ''
+})
+
+watchEffect(() => {
+  const image = new Image()
+  image.src = url
+  image.addEventListener('load', () => {
+    lazyURL = image.src
+  })
+})
+</script>
+
 <template>
   <transition name="landscape">
     <svg
@@ -34,40 +58,6 @@
     </svg>
   </transition>
 </template>
-
-<script lang="ts">
-import { computed, ref, unref, watchEffect } from 'vue'
-import { useSettings } from '../../../renderer/hooks/settings'
-import { useNonce } from './hooks'
-
-export default {
-  name: 'landscape-slot',
-  setup() {
-    const nonceRef = useNonce()
-
-    const lazyURLRef = ref('')
-
-    const settingsRef = useSettings()
-    const urlRef = computed(() => {
-      const settings = unref(settingsRef)
-      const url: string = settings['landscape.background.url']
-      return url ? url.replace('<nonce>', String(unref(nonceRef))) : ''
-    })
-
-    watchEffect(() => {
-      const image = new Image()
-      image.src = unref(urlRef)
-      image.addEventListener('load', () => {
-        lazyURLRef.value = image.src
-      })
-    })
-
-    return {
-      lazyURL: lazyURLRef,
-    }
-  },
-}
-</script>
 
 <style lang="scss" scoped>
 .landscape-slot {

@@ -1,3 +1,82 @@
+<script lang="ts" setup>
+import { shell, ipcRenderer } from 'electron'
+import LoadingSpinner from '../../../renderer/components/basic/loading-spinner.vue'
+import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
+import { useUserSettings } from '../../../renderer/hooks/settings'
+import { useAsyncComputed } from '../../../renderer/utils/hooks'
+import { fetchThemeList } from './utils'
+import type { ThemeEntry } from './utils'
+
+let loading = $ref<string | false>(false)
+const keyword = $ref('')
+
+const list = $(useAsyncComputed(() => fetchThemeList(), []))
+
+const filteredList = $computed(() => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (!keyword) return list
+  return list.filter(item => item.name.includes(keyword))
+})
+
+let userSettings = $(useUserSettings())
+
+const currentTheme = $computed<string>(() => {
+  return userSettings['terminal.theme.name']
+})
+
+const themeType = $computed({
+  get() {
+    return userSettings['terminal.theme.customization']?.type ?? ''
+  },
+  set(value) {
+    if (!value) {
+      value = undefined
+    }
+    let customization = {
+      ...userSettings['terminal.theme.customization'],
+      type: value,
+    }
+    if (!value && Object.keys(customization).length <= 1) {
+      customization = undefined
+    }
+    userSettings = {
+      ...userSettings,
+      'terminal.theme.customization': customization,
+    }
+  },
+})
+
+function updateTheme(name: string) {
+  userSettings = {
+    ...userSettings,
+    'terminal.theme.name': name,
+  }
+}
+
+function reset() {
+  updateTheme('oceanic-next')
+}
+
+function openMarketplace() {
+  shell.openExternal('https://github.com/mbadolato/iTerm2-Color-Schemes/tree/master/windowsterminal')
+}
+
+async function applyItem(item: ThemeEntry) {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (loading) return
+  loading = item.name
+  const result = await ipcRenderer.invoke(
+    'download-user-file',
+    `themes/${item.name}.json`,
+    item.url,
+  )
+  if (result) {
+    updateTheme(item.name)
+  }
+  loading = false
+}
+</script>
+
 <template>
   <TerminalPane class="theme-pane">
     <h2 v-i18n class="group-title">Configure theme#!theme.2</h2>
@@ -35,111 +114,6 @@
     </div>
   </TerminalPane>
 </template>
-
-<script lang="ts">
-import { shell, ipcRenderer } from 'electron'
-import { computed, ref, unref } from 'vue'
-import LoadingSpinner from '../../../renderer/components/basic/loading-spinner.vue'
-import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
-import { useUserSettings } from '../../../renderer/hooks/settings'
-import { useAsyncComputed } from '../../../renderer/utils/hooks'
-import { fetchThemeList } from './utils'
-import type { ThemeEntry } from './utils'
-
-export default {
-  name: 'theme-pane',
-  components: {
-    TerminalPane,
-    LoadingSpinner,
-  },
-  setup() {
-    const loadingRef = ref<string | false>(false)
-    const keywordRef = ref('')
-
-    const listRef = useAsyncComputed(() => fetchThemeList(), [])
-
-    const filteredListRef = computed(() => {
-      const list = unref(listRef)
-      const keyword = unref(keywordRef)
-      if (!keyword) return list
-      return list.filter(item => item.name.includes(keyword))
-    })
-
-    const userSettingsRef = useUserSettings()
-    const currentThemeRef = computed<string>(() => {
-      const settings = unref(userSettingsRef)
-      return settings['terminal.theme.name']
-    })
-
-    const themeTypeRef = computed({
-      get() {
-        const userSettings = unref(userSettingsRef)
-        return userSettings['terminal.theme.customization']?.type ?? ''
-      },
-      set(value) {
-        if (!value) {
-          value = undefined
-        }
-        const userSettings = unref(userSettingsRef)
-        let customization = {
-          ...userSettings['terminal.theme.customization'],
-          type: value,
-        }
-        if (!value && Object.keys(customization).length <= 1) {
-          customization = undefined
-        }
-        userSettingsRef.value = {
-          ...userSettings,
-          'terminal.theme.customization': customization,
-        }
-      },
-    })
-
-    function updateTheme(name: string) {
-      const userSettings = unref(userSettingsRef)
-      userSettingsRef.value = {
-        ...userSettings,
-        'terminal.theme.name': name,
-      }
-    }
-
-    function reset() {
-      updateTheme('oceanic-next')
-    }
-
-    function openMarketplace() {
-      shell.openExternal('https://github.com/mbadolato/iTerm2-Color-Schemes/tree/master/windowsterminal')
-    }
-
-    async function applyItem(item: ThemeEntry) {
-      const loading = unref(loadingRef)
-      if (loading) return
-      loadingRef.value = item.name
-      const result = await ipcRenderer.invoke(
-        'download-user-file',
-        `themes/${item.name}.json`,
-        item.url,
-      )
-      if (result) {
-        updateTheme(item.name)
-      }
-      loadingRef.value = false
-    }
-
-    return {
-      loading: loadingRef,
-      keyword: keywordRef,
-      list: listRef,
-      filteredList: filteredListRef,
-      currentTheme: currentThemeRef,
-      themeType: themeTypeRef,
-      reset,
-      openMarketplace,
-      applyItem,
-    }
-  },
-}
-</script>
 
 <style lang="scss" scoped>
 .theme-list {

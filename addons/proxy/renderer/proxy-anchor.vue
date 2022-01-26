@@ -1,3 +1,28 @@
+<script lang="ts" setup>
+import * as commas from '../../../api/renderer'
+import { useSettings } from '../../../renderer/hooks/settings'
+import { useProxyServerStatus, useSystemProxyStatus } from './hooks'
+
+const settings = $(useSettings())
+const systemStatus = $(useSystemProxyStatus())
+
+let status = $(useProxyServerStatus())
+
+const port = $computed<number>(() => {
+  return settings['proxy.server.port']
+})
+
+function toggle() {
+  if (status !== undefined) {
+    status = !status
+  }
+}
+
+function configure() {
+  commas.workspace.openPaneTab('proxy')
+}
+</script>
+
 <template>
   <div
     :class="['proxy-anchor', { active: status, disabled: status === undefined, system: systemStatus }]"
@@ -9,46 +34,6 @@
     <span v-if="status" class="server-port">{{ port }}</span>
   </div>
 </template>
-
-<script lang="ts">
-import { computed, unref } from 'vue'
-import * as commas from '../../../api/renderer'
-import { useSettings } from '../../../renderer/hooks/settings'
-import { useProxyServerStatus, useSystemProxyStatus } from './hooks'
-
-export default {
-  name: 'proxy-anchor',
-  setup() {
-    const statusRef = useProxyServerStatus()
-    const systemStatusRef = useSystemProxyStatus()
-
-    const settingsRef = useSettings()
-    const portRef = computed<number>(() => {
-      const settings = unref(settingsRef)
-      return settings['proxy.server.port']
-    })
-
-    function toggle() {
-      const status = unref(statusRef)
-      if (status !== undefined) {
-        statusRef.value = !statusRef.value
-      }
-    }
-
-    function configure() {
-      commas.workspace.openPaneTab('proxy')
-    }
-
-    return {
-      status: statusRef,
-      systemStatus: systemStatusRef,
-      port: portRef,
-      toggle,
-      configure,
-    }
-  },
-}
-</script>
 
 <style lang="scss" scoped>
 .proxy-anchor {

@@ -1,18 +1,9 @@
+<script lang="ts" setup>
+import { refreshLandscapeBackground } from './hooks'
+</script>
+
 <template>
-  <div class="landscape-anchor" @click="refresh">
+  <div class="landscape-anchor" @click="refreshLandscapeBackground">
     <span class="feather-icon icon-shuffle"></span>
   </div>
 </template>
-
-<script lang="ts">
-import { refreshLandscapeBackground } from './hooks'
-
-export default {
-  name: 'landscape-anchor',
-  setup() {
-    return {
-      refresh: refreshLandscapeBackground,
-    }
-  },
-}
-</script>
