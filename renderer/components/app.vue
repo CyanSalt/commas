@@ -1,5 +1,81 @@
+<script lang="ts" setup>
+import { ipcRenderer } from 'electron'
+import { onMounted } from 'vue'
+import * as commas from '../../api/renderer'
+import { loadAddons, loadCustomJS } from '../hooks/addon'
+import {
+  useFullscreen,
+  handleFrameMessages,
+} from '../hooks/frame'
+import { handleLauncherMessages } from '../hooks/launcher'
+import {
+  useIsTabListEnabled,
+  useWillQuit,
+  confirmClosing,
+  handleShellMessages,
+} from '../hooks/shell'
+import {
+  useCurrentTerminal,
+  useTerminalTabs,
+  handleTerminalMessages,
+  createTerminalTab,
+} from '../hooks/terminal'
+import { injectTheme } from '../hooks/theme'
+import FindBox from './find-box.vue'
+import TabList from './tab-list.vue'
+import TerminalTeletype from './terminal-teletype.vue'
+import TitleBar from './title-bar.vue'
+import '../assets/fonts/feather.css'
+import '../assets/fonts/devicon.css'
+
+const isFullscreen = $(useFullscreen())
+const isTabListEnabled = $(useIsTabListEnabled())
+const terminal = $(useCurrentTerminal())
+const tabs = $(useTerminalTabs())
+const willQuit = $(useWillQuit())
+
+const slots = commas.context.getCollection('@slot')
+
+loadAddons()
+loadCustomJS()
+injectTheme()
+handleFrameMessages()
+handleShellMessages()
+handleTerminalMessages()
+handleLauncherMessages()
+
+const startIndex = process.argv.indexOf('--') + 1
+const args = startIndex ? process.argv.slice(startIndex) : []
+const initialPath = args[0]
+createTerminalTab({ cwd: initialPath })
+
+ipcRenderer.on('uncaught-error', (event, error: Error) => {
+  console.error(`Uncaught error in main process: ${String(error)}`)
+})
+
+window.addEventListener('beforeunload', async event => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (!willQuit && tabs.length > 1) {
+    event.returnValue = false
+    const confirmed = await confirmClosing()
+    if (confirmed) {
+      commas.app.unloadAddons()
+      commas.app.events.emit('unload')
+      ipcRenderer.invoke('destroy')
+    }
+  } else {
+    commas.app.unloadAddons()
+    commas.app.events.emit('unload')
+  }
+})
+
+onMounted(() => {
+  commas.app.events.emit('ready')
+})
+</script>
+
 <template>
-  <div :class="['app', { opaque: opaque || isFullscreen }]">
+  <div :class="['app', { opaque: isFullscreen }]">
     <TitleBar />
     <div class="content">
       <TabList v-show="isTabListEnabled" />
@@ -31,101 +107,6 @@
     />
   </div>
 </template>
-
-<script lang="ts">
-import { ipcRenderer } from 'electron'
-import { onMounted, unref } from 'vue'
-import * as commas from '../../api/renderer'
-import { loadAddons, loadCustomJS } from '../hooks/addon'
-import {
-  useFullscreen,
-  handleFrameMessages,
-} from '../hooks/frame'
-import { handleLauncherMessages } from '../hooks/launcher'
-import {
-  useIsTabListEnabled,
-  useWillQuit,
-  confirmClosing,
-  handleShellMessages,
-} from '../hooks/shell'
-import {
-  useCurrentTerminal,
-  useTerminalTabs,
-  handleTerminalMessages,
-  createTerminalTab,
-} from '../hooks/terminal'
-import { injectTheme } from '../hooks/theme'
-import FindBox from './find-box.vue'
-import TabList from './tab-list.vue'
-import TerminalTeletype from './terminal-teletype.vue'
-import TitleBar from './title-bar.vue'
-import '../assets/fonts/feather.css'
-import '../assets/fonts/devicon.css'
-
-export default {
-  components: {
-    TitleBar,
-    TabList,
-    TerminalTeletype,
-    FindBox,
-  },
-  setup() {
-    const isFullscreenRef = useFullscreen()
-    const isTabListEnabledRef = useIsTabListEnabled()
-    const terminalRef = useCurrentTerminal()
-
-    const slotsRef = commas.context.getCollection('@slot')
-
-    loadAddons()
-    loadCustomJS()
-    injectTheme()
-    handleFrameMessages()
-    handleShellMessages()
-    handleTerminalMessages()
-    handleLauncherMessages()
-
-    const index = process.argv.indexOf('--') + 1
-    const args = index ? process.argv.slice(index) : []
-    const initialPath = args[0]
-    createTerminalTab({ cwd: initialPath })
-
-    ipcRenderer.on('uncaught-error', (event, error: Error) => {
-      console.error(`Uncaught error in main process: ${String(error)}`)
-    })
-
-    const tabsRef = useTerminalTabs()
-    const willQuitRef = useWillQuit()
-    window.addEventListener('beforeunload', async event => {
-      const willQuit = unref(willQuitRef)
-      const tabs = unref(tabsRef)
-      if (!willQuit && tabs.length > 1) {
-        event.returnValue = false
-        const confirmed = await confirmClosing()
-        if (confirmed) {
-          commas.app.unloadAddons()
-          commas.app.events.emit('unload')
-          ipcRenderer.invoke('destroy')
-        }
-      } else {
-        commas.app.unloadAddons()
-        commas.app.events.emit('unload')
-      }
-    })
-
-    onMounted(() => {
-      commas.app.events.emit('ready')
-    })
-
-    return {
-      opaque: process.platform === 'win32',
-      isFullscreen: isFullscreenRef,
-      isTabListEnabled: isTabListEnabledRef,
-      terminal: terminalRef,
-      slots: slotsRef,
-    }
-  },
-}
-</script>
 
 <style lang="scss" scoped>
 @use '../assets/_partials';

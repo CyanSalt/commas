@@ -1,3 +1,122 @@
+<script lang="ts" setup>
+import { ipcRenderer, nativeImage, shell } from 'electron'
+import { watchEffect } from 'vue'
+import { useMinimized, useMaximized } from '../hooks/frame'
+import { useSettings } from '../hooks/settings'
+import { useIsTabListEnabled } from '../hooks/shell'
+import { showTabOptions, useCurrentTerminal, useTerminalActiveIndex, useTerminalTabs } from '../hooks/terminal'
+import { translate } from '../utils/i18n'
+import { getPrompt } from '../utils/terminal'
+
+const settings = $(useSettings())
+const tabs = $(useTerminalTabs())
+const activeIndex = $(useTerminalActiveIndex())
+const terminal = $(useCurrentTerminal())
+
+let isMaximized = $(useMaximized())
+let isMinimized = $(useMinimized())
+let isTabListEnabled = $(useIsTabListEnabled())
+
+let iconBuffer = $ref<Buffer | undefined>()
+let branch = $ref('')
+
+const directory = $computed(() => {
+  if (!terminal || terminal.pane) return ''
+  return terminal.cwd
+})
+
+const pane = $computed(() => {
+  if (!terminal) return null
+  return terminal.pane
+})
+
+const title = $computed(() => {
+  if (!terminal) return ''
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (directory) return getPrompt('\\w', terminal)
+  if (terminal.title) return terminal.title
+  const expr = settings['terminal.tab.titleFormat']
+  return getPrompt(expr, terminal)
+})
+
+let defaultIconBuffer: Buffer | undefined
+if (process.platform === 'darwin') {
+  defaultIconBuffer = nativeImage.createFromNamedImage('NSImageNameFolder')
+    .resize({ width: 32 })
+    .toPNG()
+}
+
+const isCustomControlEnabled = process.platform !== 'darwin'
+
+async function updateIcon() {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (directory && process.platform === 'darwin' && settings['terminal.tab.liveIcon']) {
+    iconBuffer = await ipcRenderer.invoke('get-icon', directory)
+  } else {
+    iconBuffer = defaultIconBuffer
+  }
+}
+
+watchEffect(() => {
+  iconBuffer = defaultIconBuffer
+  updateIcon()
+})
+
+const icon = $computed(() => {
+  if (iconBuffer) {
+    const blob = new Blob([iconBuffer], { type: 'image/png' })
+    return URL.createObjectURL(blob)
+  } else {
+    return ''
+  }
+})
+
+async function updateBranch() {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (directory) {
+    branch = await ipcRenderer.invoke('get-git-branch', directory)
+  } else {
+    branch = ''
+  }
+}
+
+watchEffect(() => {
+  branch = ''
+  updateBranch()
+})
+
+function openDirectory() {
+  shell.openPath(directory)
+}
+
+function startDraggingDirectory() {
+  ipcRenderer.invoke('drag-file', directory, iconBuffer)
+}
+
+function minimize() {
+  isMinimized = !isMinimized
+}
+
+function maximize() {
+  isMaximized = !isMaximized
+}
+
+function close() {
+  window.close()
+}
+
+function toggleTabList() {
+  isTabListEnabled = !isTabListEnabled
+}
+
+watchEffect(() => {
+  ipcRenderer.invoke('update-window', {
+    title: `${pane ? translate(pane.title) : title}`,
+    directory,
+  })
+})
+</script>
+
 <template>
   <header
     :class="['title-bar', { 'no-controls': !isCustomControlEnabled }]"
@@ -50,158 +169,6 @@
     </div>
   </header>
 </template>
-
-<script lang="ts">
-import { ipcRenderer, nativeImage, shell } from 'electron'
-import { computed, ref, unref, watchEffect } from 'vue'
-import { useMinimized, useMaximized } from '../hooks/frame'
-import { useSettings } from '../hooks/settings'
-import { useIsTabListEnabled } from '../hooks/shell'
-import { showTabOptions, useCurrentTerminal, useTerminalActiveIndex, useTerminalTabs } from '../hooks/terminal'
-import { translate } from '../utils/i18n'
-import { getPrompt } from '../utils/terminal'
-
-export default {
-  setup() {
-    const settingsRef = useSettings()
-    const isMaximizedRef = useMaximized()
-    const isTabListEnabledRef = useIsTabListEnabled()
-    const tabsRef = useTerminalTabs()
-    const activeIndexRef = useTerminalActiveIndex()
-
-    const iconBufferRef = ref<Buffer>()
-    const branchRef = ref('')
-
-    const terminalRef = useCurrentTerminal()
-    const directoryRef = computed(() => {
-      const terminal = unref(terminalRef)
-      if (!terminal || terminal.pane) return ''
-      return terminal.cwd
-    })
-
-    const paneRef = computed(() => {
-      const terminal = unref(terminalRef)
-      if (!terminal) return null
-      return terminal.pane
-    })
-
-    const titleRef = computed(() => {
-      const terminal = unref(terminalRef)
-      if (!terminal) return ''
-      const directory = unref(directoryRef)
-      if (directory) return getPrompt('\\w', terminal)
-      if (terminal.title) return terminal.title
-      const settings = unref(settingsRef)
-      const expr = settings['terminal.tab.titleFormat']
-      return getPrompt(expr, terminal)
-    })
-
-    let defaultIconBuffer: Buffer | undefined
-    if (process.platform === 'darwin') {
-      defaultIconBuffer = nativeImage.createFromNamedImage('NSImageNameFolder')
-        .resize({ width: 32 })
-        .toPNG()
-    }
-
-    async function updateIcon() {
-      const directory = unref(directoryRef)
-      const settings = unref(settingsRef)
-      if (directory && process.platform === 'darwin' && settings['terminal.tab.liveIcon']) {
-        iconBufferRef.value = await ipcRenderer.invoke('get-icon', directory)
-      } else {
-        iconBufferRef.value = defaultIconBuffer
-      }
-    }
-
-    watchEffect(() => {
-      iconBufferRef.value = defaultIconBuffer
-      updateIcon()
-    })
-
-    const iconRef = computed(() => {
-      const iconBuffer = unref(iconBufferRef)
-      if (iconBuffer) {
-        const blob = new Blob([iconBuffer], { type: 'image/png' })
-        return URL.createObjectURL(blob)
-      } else {
-        return ''
-      }
-    })
-
-    async function updateBranch() {
-      const directory = unref(directoryRef)
-      if (directory) {
-        branchRef.value = await ipcRenderer.invoke('get-git-branch', directory)
-      } else {
-        branchRef.value = ''
-      }
-    }
-
-    watchEffect(() => {
-      branchRef.value = ''
-      updateBranch()
-    })
-
-    function openDirectory() {
-      const directory = unref(directoryRef)
-      shell.openPath(directory)
-    }
-
-    function startDraggingDirectory() {
-      const directory = unref(directoryRef)
-      const iconBuffer = unref(iconBufferRef)
-      ipcRenderer.invoke('drag-file', directory, iconBuffer)
-    }
-
-    const isMinimizedRef = useMinimized()
-    function minimize() {
-      isMinimizedRef.value = !isMinimizedRef.value
-    }
-
-    function maximize() {
-      isMaximizedRef.value = !isMaximizedRef.value
-    }
-
-    function close() {
-      window.close()
-    }
-
-    function toggleTabList() {
-      isTabListEnabledRef.value = !isTabListEnabledRef.value
-    }
-
-    watchEffect(() => {
-      const pane = unref(paneRef)
-      const title = unref(titleRef)
-      const directory = unref(directoryRef)
-      ipcRenderer.invoke('update-window', {
-        title: `${pane ? translate(pane.title) : title}`,
-        directory,
-      })
-    })
-
-    return {
-      isCustomControlEnabled: process.platform !== 'darwin',
-      isMaximized: isMaximizedRef,
-      tabs: tabsRef,
-      activeIndex: activeIndexRef,
-      branch: branchRef,
-      directory: directoryRef,
-      pane: paneRef,
-      title: titleRef,
-      icon: iconRef,
-      updateBranch,
-      openDirectory,
-      startDraggingDirectory,
-      minimize,
-      maximize,
-      close,
-      toggleTabList,
-      showTabOptions,
-    }
-  },
-}
-</script>
 
 <style lang="scss" scoped>
 .title-bar {

@@ -1,3 +1,71 @@
+<script lang="ts" setup>
+import 'xterm/css/xterm.css'
+import { quote } from 'shell-quote'
+import { onActivated, onMounted } from 'vue'
+import type { PropType } from 'vue'
+import type { TerminalTab } from '../../typings/terminal'
+import { mountTerminalTab, writeTerminalTab } from '../hooks/terminal'
+import { openContextMenu } from '../utils/frame'
+
+const props = defineProps({
+  tab: {
+    type: Object as PropType<TerminalTab>,
+    required: true,
+  },
+})
+
+const terminal = $ref<HTMLElement>()
+
+function dragFileOver(event: DragEvent) {
+  if (event.dataTransfer) {
+    event.dataTransfer.dropEffect = 'link'
+  }
+}
+
+function dropFile(event: DragEvent) {
+  const files = event.dataTransfer?.files
+  if (!files || !files.length) return
+  const paths = Array.from(files).map(({ path }) => path)
+  writeTerminalTab(props.tab, quote(paths))
+}
+
+function openEditingMenu(event: MouseEvent) {
+  openContextMenu([
+    {
+      label: 'Copy#!menu.copy',
+      accelerator: 'CmdOrCtrl+C',
+      role: 'copy',
+    },
+    {
+      label: 'Paste#!menu.paste',
+      accelerator: 'CmdOrCtrl+V',
+      role: 'paste',
+    },
+    {
+      type: 'separator',
+    },
+    {
+      label: 'Clear#!menu.clear',
+      accelerator: 'CmdOrCtrl+K',
+      command: 'clear-terminal',
+    },
+  ], event)
+}
+
+onMounted(() => {
+  mountTerminalTab(props.tab, terminal)
+})
+
+onActivated(() => {
+  const xterm = props.tab.xterm
+  if (xterm['_core'].viewport) {
+    xterm['_core'].viewport.syncScrollArea()
+  }
+  xterm.scrollToBottom()
+  xterm.focus()
+})
+</script>
+
 <template>
   <article
     class="terminal-teletype"
@@ -8,85 +76,6 @@
     <div ref="terminal" class="terminal-content"></div>
   </article>
 </template>
-
-<script lang="ts">
-import 'xterm/css/xterm.css'
-import { quote } from 'shell-quote'
-import { onActivated, onMounted, ref, unref } from 'vue'
-import type { PropType } from 'vue'
-import type { TerminalTab } from '../../typings/terminal'
-import { mountTerminalTab, writeTerminalTab } from '../hooks/terminal'
-import { openContextMenu } from '../utils/frame'
-
-export default {
-  props: {
-    tab: {
-      type: Object as PropType<TerminalTab>,
-      required: true,
-    },
-  },
-  setup(props) {
-    const terminalRef = ref<HTMLElement>()
-
-    function dragFileOver(event: DragEvent) {
-      if (event.dataTransfer) {
-        event.dataTransfer.dropEffect = 'link'
-      }
-    }
-
-    function dropFile(event: DragEvent) {
-      const files = event.dataTransfer?.files
-      if (!files || !files.length) return
-      const paths = Array.from(files).map(({ path }) => path)
-      writeTerminalTab(props.tab, quote(paths))
-    }
-
-    function openEditingMenu(event: MouseEvent) {
-      openContextMenu([
-        {
-          label: 'Copy#!menu.copy',
-          accelerator: 'CmdOrCtrl+C',
-          role: 'copy',
-        },
-        {
-          label: 'Paste#!menu.paste',
-          accelerator: 'CmdOrCtrl+V',
-          role: 'paste',
-        },
-        {
-          type: 'separator',
-        },
-        {
-          label: 'Clear#!menu.clear',
-          accelerator: 'CmdOrCtrl+K',
-          command: 'clear-terminal',
-        },
-      ], event)
-    }
-
-    onMounted(() => {
-      const terminal = unref(terminalRef)!
-      mountTerminalTab(props.tab, terminal!)
-    })
-
-    onActivated(() => {
-      const xterm = props.tab.xterm
-      if (xterm['_core'].viewport) {
-        xterm['_core'].viewport.syncScrollArea()
-      }
-      xterm.scrollToBottom()
-      xterm.focus()
-    })
-
-    return {
-      terminal: terminalRef,
-      dragFileOver,
-      dropFile,
-      openEditingMenu,
-    }
-  },
-}
-</script>
 
 <style lang="scss" scoped>
 @use '../assets/_partials';

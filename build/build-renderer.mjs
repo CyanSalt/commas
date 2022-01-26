@@ -16,7 +16,9 @@ export default (versions) => vite.build({
     'process.type': JSON.stringify('renderer'),
   },
   plugins: [
-    vue(),
+    vue({
+      reactivityTransform: true,
+    }),
     importGlob(),
     dynamicRequire({
       moduleIds: [

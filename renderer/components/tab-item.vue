@@ -1,3 +1,56 @@
+<script lang="ts" setup>
+import * as path from 'path'
+import type { PropType } from 'vue'
+import type { Launcher } from '../../typings/launcher'
+import type { TerminalTab } from '../../typings/terminal'
+import { getTerminalTabTitle, useCurrentTerminal, closeTerminalTab } from '../hooks/terminal'
+import { getIconEntryByProcess } from '../utils/terminal'
+
+const props = defineProps({
+  launcher: {
+    type: Object as PropType<Launcher | undefined>,
+    default: undefined,
+  },
+  tab: {
+    type: Object as PropType<TerminalTab | undefined>,
+    default: undefined,
+  },
+})
+
+const terminal = $(useCurrentTerminal())
+const isFocused = $computed(() => {
+  return Boolean(props.tab) && terminal === props.tab
+})
+
+const pane = $computed(() => {
+  if (!props.tab) return null
+  return props.tab.pane
+})
+
+const iconEntry = $computed(() => {
+  if (!props.tab) return null
+  if (pane) return pane.icon
+  return getIconEntryByProcess(props.tab.process)
+})
+
+const title = $computed(() => {
+  if (props.launcher) return props.launcher.name
+  return props.tab ? getTerminalTabTitle(props.tab) : ''
+})
+
+const idleState = $computed(() => {
+  if (!props.tab || pane) return ''
+  if (props.tab.alerting) return 'alerting'
+  if (props.tab.process === path.basename(props.tab.shell)) return 'idle'
+  return 'busy'
+})
+
+function close() {
+  if (!props.tab) return
+  closeTerminalTab(props.tab)
+}
+</script>
+
 <template>
   <div :class="['tab-item', { active: isFocused }]">
     <div class="tab-overview">
@@ -27,73 +80,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import * as path from 'path'
-import { computed, unref } from 'vue'
-import type { PropType } from 'vue'
-import type { Launcher } from '../../typings/launcher'
-import type { TerminalTab } from '../../typings/terminal'
-import { getTerminalTabTitle, useCurrentTerminal, closeTerminalTab } from '../hooks/terminal'
-import { getIconEntryByProcess } from '../utils/terminal'
-
-export default {
-  props: {
-    launcher: {
-      type: Object as PropType<Launcher | undefined>,
-      default: undefined,
-    },
-    tab: {
-      type: Object as PropType<TerminalTab | undefined>,
-      default: undefined,
-    },
-  },
-  setup(props) {
-    const terminalRef = useCurrentTerminal()
-    const isFocusedRef = computed(() => {
-      return Boolean(props.tab) && unref(terminalRef) === props.tab
-    })
-
-    const paneRef = computed(() => {
-      if (!props.tab) return null
-      return props.tab.pane
-    })
-
-    const iconEntryRef = computed(() => {
-      if (!props.tab) return null
-      const pane = unref(paneRef)
-      if (pane) return pane.icon
-      return getIconEntryByProcess(props.tab.process)
-    })
-
-    const titleRef = computed(() => {
-      if (props.launcher) return props.launcher.name
-      return props.tab ? getTerminalTabTitle(props.tab) : ''
-    })
-
-    const idleStateRef = computed(() => {
-      if (!props.tab || unref(paneRef)) return ''
-      if (props.tab.alerting) return 'alerting'
-      if (props.tab.process === path.basename(props.tab.shell)) return 'idle'
-      return 'busy'
-    })
-
-    function close() {
-      if (!props.tab) return
-      closeTerminalTab(props.tab)
-    }
-
-    return {
-      isFocused: isFocusedRef,
-      pane: paneRef,
-      iconEntry: iconEntryRef,
-      title: titleRef,
-      idleState: idleStateRef,
-      close,
-    }
-  },
-}
-</script>
 
 <style lang="scss" scoped>
 .tab-item {

@@ -1,3 +1,31 @@
+<script lang="ts" setup>
+import type { PropType } from 'vue'
+
+const props = defineProps({
+  modelValue: {
+    type: null,
+    required: true,
+  },
+  pinned: {
+    type: Array as PropType<string[]>,
+    default: () => [],
+  },
+})
+
+const emit = defineEmits({
+  'update:modelValue': (value: any) => {
+    return true
+  },
+})
+
+let isPinned = $ref(props.modelValue && props.pinned.includes(props.modelValue))
+
+function update(value, pinned: boolean) {
+  isPinned = pinned
+  emit('update:modelValue', value)
+}
+</script>
+
 <template>
   <div class="value-selector">
     <template v-for="value in pinned" :key="value">
@@ -11,7 +39,7 @@
     <template v-if="pinned.length">
       <div class="property-line">
         <label class="pinned-checker">
-          <input :checked="!isPinned" type="radio" class="pinned-control" @change="update(otherValue)">
+          <input :checked="!isPinned" type="radio" class="pinned-control" @change="update(undefined, false)">
         </label>
         <span v-if="isPinned" class="customization-placeholder">...</span>
         <slot v-else></slot>
@@ -22,42 +50,6 @@
     </template>
   </div>
 </template>
-
-<script lang="ts">
-import type { PropType } from 'vue'
-import { ref } from 'vue'
-
-export default {
-  props: {
-    modelValue: {
-      type: null,
-      required: true,
-    },
-    pinned: {
-      type: Array as PropType<string[]>,
-      default: () => [],
-    },
-  },
-  emits: {
-    'update:modelValue': (value: any) => {
-      return true
-    },
-  },
-  setup(props, { emit }) {
-    const isPinnedRef = ref(props.modelValue && props.pinned.includes(props.modelValue))
-
-    function update(value, pinned: boolean) {
-      isPinnedRef.value = pinned
-      emit('update:modelValue', value)
-    }
-
-    return {
-      isPinned: isPinnedRef,
-      update,
-    }
-  },
-}
-</script>
 
 <style lang="scss" scoped>
 .property-line {

@@ -1,35 +1,27 @@
+<script lang="ts" setup>
+import { openContextMenu } from '../../utils/frame'
+
+function openEditingMenu(event: MouseEvent) {
+  openContextMenu([
+    {
+      label: 'Copy#!menu.copy',
+      accelerator: 'CmdOrCtrl+C',
+      role: 'copy',
+    },
+    {
+      label: 'Paste#!menu.paste',
+      accelerator: 'CmdOrCtrl+V',
+      role: 'paste',
+    },
+  ], event)
+}
+</script>
+
 <template>
   <article class="terminal-pane" @contextmenu="openEditingMenu">
     <slot></slot>
   </article>
 </template>
-
-<script lang="ts">
-import { openContextMenu } from '../../utils/frame'
-
-export default {
-  setup() {
-    function openEditingMenu(event: MouseEvent) {
-      openContextMenu([
-        {
-          label: 'Copy#!menu.copy',
-          accelerator: 'CmdOrCtrl+C',
-          role: 'copy',
-        },
-        {
-          label: 'Paste#!menu.paste',
-          accelerator: 'CmdOrCtrl+V',
-          role: 'paste',
-        },
-      ], event)
-    }
-
-    return {
-      openEditingMenu,
-    }
-  },
-}
-</script>
 
 <style lang="scss" scoped>
 @use '../../assets/_partials';

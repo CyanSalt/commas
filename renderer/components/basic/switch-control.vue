@@ -1,3 +1,28 @@
+<script lang="ts" setup>
+defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+const emit = defineEmits({
+  'update:modelValue': (value: boolean) => {
+    return typeof value === 'boolean'
+  },
+})
+
+function change(event) {
+  emit('update:modelValue', event.target.checked)
+}
+</script>
+
+<script lang="ts">
+export default {
+  inheritAttrs: false,
+}
+</script>
+
 <template>
   <label class="switch-control">
     <input
@@ -10,31 +35,6 @@
     <span class="switch-content"></span>
   </label>
 </template>
-
-<script lang="ts">
-export default {
-  inheritAttrs: false,
-  props: {
-    modelValue: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  emits: {
-    'update:modelValue': (value: boolean) => {
-      return typeof value === 'boolean'
-    },
-  },
-  setup(props, { emit }) {
-    function change(event) {
-      emit('update:modelValue', event.target.checked)
-    }
-    return {
-      change,
-    }
-  },
-}
-</script>
 
 <style lang="scss" scoped>
 .switch-control {

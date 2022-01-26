@@ -1,3 +1,62 @@
+<script lang="ts" setup>
+import { onMounted, reactive } from 'vue'
+import { useIsFinding } from '../hooks/shell'
+import { useCurrentTerminal } from '../hooks/terminal'
+
+const terminal = $(useCurrentTerminal())
+
+const root = $ref<HTMLElement>()
+const finder = $ref<HTMLInputElement>()
+const keyword = $ref('')
+const options = reactive({
+  caseSensitive: false,
+  wholeWord: false,
+  regex: false,
+})
+
+let isFinding = $(useIsFinding())
+
+const isVisible = $computed(() => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (!isFinding) return false
+  return Boolean(terminal && !terminal.pane)
+})
+
+onMounted(() => {
+  new IntersectionObserver(([{ isIntersecting }]) => {
+    if (isIntersecting) {
+      finder.focus()
+    } else {
+      if (terminal?.xterm) {
+        terminal.xterm.focus()
+      }
+    }
+  }).observe(root)
+})
+
+function findPrevious() {
+  if (!terminal) return
+  return terminal.addons.search.findPrevious(keyword, options)
+}
+
+function findNext() {
+  if (!terminal) return
+  return terminal.addons.search.findNext(keyword, options)
+}
+
+function find(event: KeyboardEvent) {
+  return event.shiftKey ? findPrevious() : findNext()
+}
+
+function cancel() {
+  isFinding = false
+}
+
+function toggle(key: keyof typeof options) {
+  options[key] = !options[key]
+}
+</script>
+
 <template>
   <div v-show="isVisible" ref="root" class="find-box">
     <input
@@ -40,89 +99,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { computed, onMounted, reactive, ref, unref } from 'vue'
-import { useIsFinding } from '../hooks/shell'
-import { useCurrentTerminal } from '../hooks/terminal'
-
-export default {
-  setup() {
-    const rootRef = ref<HTMLElement>()
-    const finderRef = ref<HTMLInputElement>()
-    const keywordRef = ref('')
-    const options = reactive({
-      caseSensitive: false,
-      wholeWord: false,
-      regex: false,
-    })
-
-    const terminalRef = useCurrentTerminal()
-
-    const isFindingRef = useIsFinding()
-    const isVisibleRef = computed(() => {
-      const isFinding = unref(isFindingRef)
-      if (!isFinding) return false
-      const terminal = unref(terminalRef)
-      return Boolean(terminal && !terminal.pane)
-    })
-
-    onMounted(() => {
-      const root = unref(rootRef)!
-      new IntersectionObserver(([{ isIntersecting }]) => {
-        if (isIntersecting) {
-          const finder = unref(finderRef)
-          finder?.focus()
-        } else {
-          const terminal = unref(terminalRef)
-          if (terminal?.xterm) {
-            terminal.xterm.focus()
-          }
-        }
-      }).observe(root)
-    })
-
-    function findPrevious() {
-      const terminal = unref(terminalRef)
-      if (!terminal) return
-      const keyword = unref(keywordRef)
-      return terminal.addons.search.findPrevious(keyword, options)
-    }
-
-    function findNext() {
-      const terminal = unref(terminalRef)
-      if (!terminal) return
-      const keyword = unref(keywordRef)
-      return terminal.addons.search.findNext(keyword, options)
-    }
-
-    function find(event: KeyboardEvent) {
-      return event.shiftKey ? findPrevious() : findNext()
-    }
-
-    function cancel() {
-      isFindingRef.value = false
-    }
-
-    function toggle(key: keyof typeof options) {
-      options[key] = !options[key]
-    }
-
-    return {
-      root: rootRef,
-      finder: finderRef,
-      keyword: keywordRef,
-      options,
-      isVisible: isVisibleRef,
-      find,
-      cancel,
-      toggle,
-      findPrevious,
-      findNext,
-    }
-  },
-}
-</script>
 
 <style lang="scss" scoped>
 .find-box {

@@ -4,6 +4,7 @@ import type { IconEntry } from '../renderer/assets/icons'
 export interface TerminalTabPane {
   title: string,
   icon: IconEntry,
+  component: any,
 }
 
 export interface TerminalInfo {
