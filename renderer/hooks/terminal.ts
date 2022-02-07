@@ -381,7 +381,8 @@ export function loadTerminalAddons(tab: TerminalTab) {
   const xterm = tab.xterm
   if (!xterm.element) return
   const launcher = getLauncherByTerminalTab(tab)
-  const settings = unref(useSettings())
+  const settingsRef = useSettings()
+  const settings = unref(settingsRef)
   if (!tab.addons.fit) {
     tab.addons.fit = new FitAddon()
     xterm.loadAddon(tab.addons.fit)
@@ -392,7 +393,8 @@ export function loadTerminalAddons(tab: TerminalTab) {
   }
   if (!tab.addons.weblinks) {
     tab.addons.weblinks = new WebLinksAddon((event, uri) => {
-      const shouldOpen = settings['terminal.link.modifier'] === 'Alt' ? event.altKey
+      const currentSettings = unref(settingsRef)
+      const shouldOpen = currentSettings['terminal.link.modifier'] === 'Alt' ? event.altKey
         : (process.platform === 'darwin' ? event.metaKey : event.ctrlKey)
       if (shouldOpen) {
         shell.openExternal(uri)
