@@ -17,7 +17,7 @@ module.exports = function (commas) {
 
     commas.app.onCleanup(() => {
       ipcMain.handle('open-settings', () => {
-        return commas.settings.openFile()
+        return commas.settings.openSettingsFile()
       })
     })
 

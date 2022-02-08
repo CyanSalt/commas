@@ -57,7 +57,7 @@ module.exports = function (commas) {
       systemStatusRef.value = false
     })
 
-    commas.settings.addSpecs(require('./settings.spec.json'))
+    commas.settings.addSettingsSpecs(require('./settings.spec.json'))
 
     commas.i18n.addTranslationDirectory(path.join(__dirname, 'locales'))
 

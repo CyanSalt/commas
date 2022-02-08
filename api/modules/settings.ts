@@ -23,7 +23,7 @@ function addSpecs(this: CommasContext, specs: SettingsSpec[]) {
 }
 
 export {
-  addSpecs,
+  addSpecs as addSettingsSpecs,
   useSettings,
-  openSettingsFile as openFile,
+  openSettingsFile,
 }

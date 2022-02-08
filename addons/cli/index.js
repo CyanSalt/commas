@@ -148,7 +148,7 @@ where <command> is one of:
       stop(reactiveEffect)
     })
 
-    commas.settings.addSpecs(require('./settings.spec.json'))
+    commas.settings.addSettingsSpecs(require('./settings.spec.json'))
 
     commas.i18n.addTranslationDirectory(path.join(__dirname, 'locales'))
 
