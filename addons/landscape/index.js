@@ -13,12 +13,12 @@ module.exports = function (commas) {
   } else {
 
     commas.context.provide(
-      '@slot',
+      '@ui-slot',
       commas.bundler.extract('landscape/renderer/landscape-slot.vue').default,
     )
 
     commas.context.provide(
-      '@anchor',
+      '@ui-side-anchor',
       commas.bundler.extract('landscape/renderer/landscape-anchor.vue').default,
     )
 

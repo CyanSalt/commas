@@ -34,7 +34,7 @@ const terminal = $(useCurrentTerminal())
 const tabs = $(useTerminalTabs())
 const willQuit = $(useWillQuit())
 
-const slots = commas.proxy.context.getCollection('@slot')
+const slots = commas.proxy.context.getCollection('@ui-slot')
 
 loadAddons()
 loadCustomJS()

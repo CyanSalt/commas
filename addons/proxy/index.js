@@ -72,7 +72,7 @@ module.exports = function (commas) {
     })
 
     commas.context.provide(
-      '@anchor',
+      '@ui-side-anchor',
       commas.bundler.extract('proxy/renderer/proxy-anchor.vue').default,
     )
 
