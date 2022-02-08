@@ -1,4 +1,4 @@
-export default ({ moduleIds }) => ({
+export default ({ includes }) => ({
   name: 'dynamic-require',
   enforce: 'post',
   transform(code) {
@@ -15,7 +15,10 @@ export default ({ moduleIds }) => ({
     for (const statement of importDeclarations) {
       if (statement.type === 'ImportDeclaration') {
         const source = statement.source
-        if (source.type === 'Literal' && moduleIds.includes(source.value)) {
+        const match = (pattern, value) => {
+          return typeof pattern === 'string' ? pattern === value : pattern.test(value)
+        }
+        if (source.type === 'Literal' && includes.some(id => match(id, source.value))) {
           transformedCode = code.slice(lastIndex, statement.start)
           lastIndex = statement.end
           const namespaceSpecifier = statement.specifiers

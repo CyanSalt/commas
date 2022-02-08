@@ -3,7 +3,8 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "Node12",
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": "."
   },
   "exclude": [
     "**/dist",

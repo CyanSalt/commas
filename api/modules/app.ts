@@ -50,6 +50,35 @@ function cloneAPI(api: Object, name: string) {
   })
 }
 
+function addCommasModuleResolver() {
+  const Module = require('module')
+  const modules = [
+    'commas:api',
+    'commas:api/main',
+    'commas:api/renderer',
+  ]
+  if (!Module._resolveFilename._original) {
+    const resolveFilename = function (this: any, request: string, ...args) {
+      if (modules.includes(request)) return request
+      return resolveFilename._original.call(this, request, ...args)
+    }
+    resolveFilename._original = Module._resolveFilename
+    Module._resolveFilename = resolveFilename
+  }
+}
+
+function addCommasModule(exports) {
+  addCommasModuleResolver()
+  const mod = { exports } as any
+  require.cache['commas:api'] = mod
+  require.cache[isMainProcess() ? 'commas:api/main' : 'commas:api/renderer'] = mod
+}
+
+function unsetCommasModule() {
+  delete require.cache['commas:api']
+  delete require.cache[isMainProcess() ? 'commas:api/main' : 'commas:api/renderer']
+}
+
 const userDataPath = isPackaged()
   ? getPath('userData')
   : path.resolve('../../userdata')
@@ -79,7 +108,10 @@ function loadAddon(name: string, api: object) {
   } else {
     addon = require(preloadedAddons[name].entry)
   }
-  addon(cloneAPI(api, name))
+  const clonedAPI = cloneAPI(api, name)
+  addCommasModule(clonedAPI)
+  addon(clonedAPI)
+  unsetCommasModule()
   loadedAddons.push(name)
 }
 

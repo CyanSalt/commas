@@ -21,9 +21,10 @@ export default (versions) => vite.build({
     }),
     importGlob(),
     dynamicRequire({
-      moduleIds: [
-        ...builtinModules,
+      includes: [
+        /^commas:/,
         'electron',
+        ...builtinModules,
       ],
     }),
   ],
@@ -37,8 +38,9 @@ export default (versions) => vite.build({
     minify: false,
     rollupOptions: {
       external: [
-        ...builtinModules,
+        /^commas:/,
         'electron',
+        ...builtinModules,
       ],
       output: {
         freeze: false,
@@ -46,8 +48,9 @@ export default (versions) => vite.build({
     },
     commonjsOptions: {
       ignore: [
-        ...builtinModules,
+        id => /^commas:/.test(id),
         'electron',
+        ...builtinModules,
       ],
     },
   },
