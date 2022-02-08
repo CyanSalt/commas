@@ -2,8 +2,8 @@ import { last } from 'lodash-es'
 import { computed, unref } from 'vue'
 import type { VNode } from 'vue'
 import type { Dictionary, TranslationVariables } from '../../typings/i18n'
+import { injectIPC } from './compositions'
 import { createReactiveDirective } from './directives'
-import { injectIPC } from './hooks'
 
 const DELIMITER = '#!'
 

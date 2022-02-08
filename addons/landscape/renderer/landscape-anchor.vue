@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { refreshLandscapeBackground } from './hooks'
+import { refreshLandscapeBackground } from './compositions'
 </script>
 
 <template>

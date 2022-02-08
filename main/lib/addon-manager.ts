@@ -3,8 +3,8 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { computed, shallowRef, unref } from '@vue/reactivity'
 import { ipcMain } from 'electron'
+import { provideIPC } from '../utils/compositions'
 import { userData } from '../utils/directory'
-import { provideIPC } from '../utils/hooks'
 import { useEnabledAddons } from './settings'
 
 interface AddonInfo {

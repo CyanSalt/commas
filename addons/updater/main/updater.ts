@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import { stop, unref } from '@vue/reactivity'
 import { app, autoUpdater } from 'electron'
 import { useSettings } from '../../../main/lib/settings'
-import { useEffect } from '../../../main/utils/hooks'
+import { useEffect } from '../../../main/utils/compositions'
 
 async function checkForUpdates() {
   try {

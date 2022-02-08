@@ -1,7 +1,7 @@
 import type { Ref } from '@vue/reactivity'
 import { ipcMain } from 'electron'
 import type { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
-import { provideIPC } from '../../main/utils/hooks'
+import { provideIPC } from '../../main/utils/compositions'
 import type { CommasContext } from '../types'
 
 function on(this: CommasContext, channel: string, listener: (event: IpcMainEvent, ...args: any[]) => void) {

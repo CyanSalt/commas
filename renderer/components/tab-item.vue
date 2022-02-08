@@ -3,7 +3,7 @@ import * as path from 'path'
 import type { PropType } from 'vue'
 import type { Launcher } from '../../typings/launcher'
 import type { TerminalTab } from '../../typings/terminal'
-import { getTerminalTabTitle, useCurrentTerminal, closeTerminalTab } from '../hooks/terminal'
+import { getTerminalTabTitle, useCurrentTerminal, closeTerminalTab } from '../compositions/terminal'
 import { getIconEntryByProcess } from '../utils/terminal'
 
 const props = defineProps({

@@ -2,8 +2,8 @@
 import { shell, ipcRenderer } from 'electron'
 import LoadingSpinner from '../../../renderer/components/basic/loading-spinner.vue'
 import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
-import { useUserSettings } from '../../../renderer/hooks/settings'
-import { useAsyncComputed } from '../../../renderer/utils/hooks'
+import { useUserSettings } from '../../../renderer/compositions/settings'
+import { useAsyncComputed } from '../../../renderer/utils/compositions'
 import { fetchThemeList } from './utils'
 import type { ThemeEntry } from './utils'
 

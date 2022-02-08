@@ -2,25 +2,25 @@
 import { ipcRenderer } from 'electron'
 import { onMounted } from 'vue'
 import * as commas from '../../api/renderer'
-import { loadAddons, loadCustomJS } from '../hooks/addon'
+import { loadAddons, loadCustomJS } from '../compositions/addon'
 import {
   useFullscreen,
   handleFrameMessages,
-} from '../hooks/frame'
-import { handleLauncherMessages } from '../hooks/launcher'
+} from '../compositions/frame'
+import { handleLauncherMessages } from '../compositions/launcher'
 import {
   useIsTabListEnabled,
   useWillQuit,
   confirmClosing,
   handleShellMessages,
-} from '../hooks/shell'
+} from '../compositions/shell'
 import {
   useCurrentTerminal,
   useTerminalTabs,
   handleTerminalMessages,
   createTerminalTab,
-} from '../hooks/terminal'
-import { injectTheme } from '../hooks/theme'
+} from '../compositions/terminal'
+import { injectTheme } from '../compositions/theme'
 import FindBox from './find-box.vue'
 import TabList from './tab-list.vue'
 import TerminalTeletype from './terminal-teletype.vue'

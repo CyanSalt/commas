@@ -5,7 +5,7 @@ import ObjectEditor from '../../../renderer/components/basic/object-editor.vue'
 import type { EditorEntryItem } from '../../../renderer/components/basic/object-editor.vue'
 import SwitchControl from '../../../renderer/components/basic/switch-control.vue'
 import ValueSelector from '../../../renderer/components/basic/value-selector.vue'
-import { useDiscoveredAddons } from '../../../renderer/hooks/settings'
+import { useDiscoveredAddons } from '../../../renderer/compositions/settings'
 import type { SettingsSpec } from '../../../typings/settings'
 
 export interface SettingsLineAPI {

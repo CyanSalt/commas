@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron'
 import type { IpcRendererEvent } from 'electron'
-import { injectIPC } from '../../renderer/utils/hooks'
+import { injectIPC } from '../../renderer/utils/compositions'
 import type { CommasContext } from '../types'
 
 function on(this: CommasContext, channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) {

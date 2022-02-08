@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as commas from '../../../api/renderer'
-import { useLanguage } from '../../../renderer/hooks/i18n'
+import { useLanguage } from '../../../renderer/compositions/i18n'
 
 interface LanguageOption {
   label: string,

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import * as commas from '../../../api/renderer'
-import { useSettings } from '../../../renderer/hooks/settings'
-import { useProxyServerStatus, useSystemProxyStatus } from './hooks'
+import { useSettings } from '../../../renderer/compositions/settings'
+import { useProxyServerStatus, useSystemProxyStatus } from './compositions'
 
 const settings = $(useSettings())
 const systemStatus = $(useSystemProxyStatus())

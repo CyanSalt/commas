@@ -1,7 +1,7 @@
 import { customRef, stop, unref } from '@vue/reactivity'
 import type { ReactiveEffectRunner } from '@vue/reactivity'
 import { useSettings } from '../../../main/lib/settings'
-import { useEffect } from '../../../main/utils/hooks'
+import { useEffect } from '../../../main/utils/compositions'
 import { loginExecute } from '../../../main/utils/shell'
 
 async function createServer(cancelation?: Promise<unknown>) {

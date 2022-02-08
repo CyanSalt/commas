@@ -3,8 +3,8 @@ import { ipcRenderer, shell } from 'electron'
 import type { Component } from 'vue'
 import * as commas from '../../../api/renderer'
 import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
+import { useAsyncComputed } from '../../../renderer/utils/compositions'
 import { getAppVersion } from '../../../renderer/utils/frame'
-import { useAsyncComputed } from '../../../renderer/utils/hooks'
 
 interface PreferenceItem {
   component: Component,

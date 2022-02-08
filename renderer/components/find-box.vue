@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, reactive } from 'vue'
-import { useIsFinding } from '../hooks/shell'
-import { useCurrentTerminal } from '../hooks/terminal'
+import { useIsFinding } from '../compositions/shell'
+import { useCurrentTerminal } from '../compositions/terminal'
 
 const terminal = $(useCurrentTerminal())
 

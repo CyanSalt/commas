@@ -3,7 +3,7 @@ import { ipcRenderer } from 'electron'
 import { cloneDeep, isEqual } from 'lodash-es'
 import { onBeforeUpdate, watchEffect } from 'vue'
 import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
-import { useUserSettings, useSettingsSpecs } from '../../../renderer/hooks/settings'
+import { useUserSettings, useSettingsSpecs } from '../../../renderer/compositions/settings'
 import type { SettingsLineAPI } from './settings-line.vue'
 import SettingsLine from './settings-line.vue'
 

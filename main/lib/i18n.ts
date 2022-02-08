@@ -3,8 +3,8 @@ import * as path from 'path'
 import { computed, customRef, effect, shallowReactive, unref } from '@vue/reactivity'
 import { app } from 'electron'
 import type { Dictionary, TranslationVariables } from '../../typings/i18n'
+import { provideIPC, useEffect } from '../utils/compositions'
 import { userData, resources } from '../utils/directory'
-import { provideIPC, useEffect } from '../utils/hooks'
 
 export interface TranslationFileEntry {
   locale: string,

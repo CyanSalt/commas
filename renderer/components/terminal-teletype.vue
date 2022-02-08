@@ -4,7 +4,7 @@ import { quote } from 'shell-quote'
 import { onActivated, onMounted } from 'vue'
 import type { PropType } from 'vue'
 import type { TerminalTab } from '../../typings/terminal'
-import { mountTerminalTab, writeTerminalTab } from '../hooks/terminal'
+import { mountTerminalTab, writeTerminalTab } from '../compositions/terminal'
 import { openContextMenu } from '../utils/frame'
 
 const props = defineProps({

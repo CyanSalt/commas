@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { watchEffect } from 'vue'
-import { useSettings } from '../../../renderer/hooks/settings'
-import { useNonce } from './hooks'
+import { useSettings } from '../../../renderer/compositions/settings'
+import { useNonce } from './compositions'
 
 const settings = $(useSettings())
 const nonce = useNonce()

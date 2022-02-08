@@ -2,7 +2,7 @@ import { ipcRenderer } from 'electron'
 import { memoize } from 'lodash-es'
 import { unref, watchEffect } from 'vue'
 import type { Theme } from '../../typings/theme'
-import { injectIPC } from '../utils/hooks'
+import { injectIPC } from '../utils/compositions'
 
 export const useTheme = memoize(() => {
   return injectIPC('theme', { variables: {} } as Theme)

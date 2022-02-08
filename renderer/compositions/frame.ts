@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron'
 import { memoize } from 'lodash-es'
-import { injectIPC } from '../utils/hooks'
+import { injectIPC } from '../utils/compositions'
 
 export const useMinimized = memoize(() => {
   return injectIPC('minimized', false)

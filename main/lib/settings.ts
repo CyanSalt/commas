@@ -7,9 +7,9 @@ import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
 import YAML from 'yaml'
 import type { Settings, SettingsSpec } from '../../typings/settings'
+import { provideIPC } from '../utils/compositions'
 import { userData, resources } from '../utils/directory'
 import { globalHandler } from '../utils/handler'
-import { provideIPC } from '../utils/hooks'
 
 const defaultSpecs = resources.require<SettingsSpec[]>('settings.spec.json')!
 

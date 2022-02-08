@@ -3,9 +3,9 @@ import { ipcRenderer, shell } from 'electron'
 import LoadingSpinner from '../../../renderer/components/basic/loading-spinner.vue'
 import SwitchControl from '../../../renderer/components/basic/switch-control.vue'
 import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
-import { useSettings } from '../../../renderer/hooks/settings'
-import { useAsyncComputed } from '../../../renderer/utils/hooks'
-import { useProxyRootCAStatus, useProxyServerVersion, useSystemProxyStatus } from './hooks'
+import { useSettings } from '../../../renderer/compositions/settings'
+import { useAsyncComputed } from '../../../renderer/utils/compositions'
+import { useProxyRootCAStatus, useProxyServerVersion, useSystemProxyStatus } from './compositions'
 
 const settings = $(useSettings())
 const isSystemProxyEnabled = $(useSystemProxyStatus())

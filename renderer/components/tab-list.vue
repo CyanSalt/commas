@@ -11,17 +11,17 @@ import {
   startLauncher,
   startLauncherExternally,
   moveLauncher,
-} from '../hooks/launcher'
+} from '../compositions/launcher'
 import {
   useTerminalTabs,
   createTerminalTab,
   moveTerminalTab,
   activateTerminalTab,
   getTerminalTabIndex,
-} from '../hooks/terminal'
+} from '../compositions/terminal'
+import { useAsyncComputed } from '../utils/compositions'
 import { openContextMenu } from '../utils/frame'
 import { handleMousePressing } from '../utils/helper'
-import { useAsyncComputed } from '../utils/hooks'
 import { getShells } from '../utils/terminal'
 import SortableList from './basic/sortable-list.vue'
 import TabItem from './tab-item.vue'
