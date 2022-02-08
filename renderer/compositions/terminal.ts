@@ -162,6 +162,7 @@ export async function createTerminalTab({
     tab.alerting = true
     ipcRenderer.invoke('beep')
   })
+  // iTerm2 style notification
   xterm.parser.registerOscHandler(9, data => {
     ipcRenderer.invoke('notify', {
       title: getTerminalTabTitle(tab),
@@ -169,6 +170,7 @@ export async function createTerminalTab({
     })
     return true
   })
+  // Commas protocol
   xterm.parser.registerOscHandler(539, data => {
     try {
       const { argv, cwd, stdin } = JSON.parse(data)
