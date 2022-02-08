@@ -1,4 +1,4 @@
-import { shallowReactive, markRaw, unref } from 'vue'
+import { shallowReactive, markRaw } from 'vue'
 import { activateOrAddTerminalTab, useTerminalTabs } from '../../renderer/compositions/terminal'
 import { createIDGenerator } from '../../renderer/utils/helper'
 import type { TerminalTab, TerminalTabPane } from '../../typings/terminal'
@@ -28,13 +28,9 @@ function openPaneTab(name: string) {
   activateOrAddTerminalTab(getPaneTab(name))
 }
 
-function getTerminalTabs() {
-  return unref(useTerminalTabs())
-}
-
 export {
   registerTabPane,
   getPaneTab,
   openPaneTab,
-  getTerminalTabs,
+  useTerminalTabs,
 }

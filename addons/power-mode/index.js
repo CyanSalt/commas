@@ -28,7 +28,8 @@ module.exports = function (commas) {
     }
 
     const enable = () => {
-      commas.workspace.getTerminalTabs().forEach(openPowerMode)
+      const tabsRef = commas.workspace.useTerminalTabs()
+      tabsRef.value.forEach(openPowerMode)
       commas.app.events.on('terminal-tab-mounted', openPowerMode)
     }
 
