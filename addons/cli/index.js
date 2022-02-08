@@ -11,9 +11,11 @@ module.exports = function (commas) {
     const { computed, effect, stop, unref } = require('@vue/reactivity')
     const { executeCommand, useExternalURLCommands } = commas.bundler.extract('cli/main/command.ts')
 
+    const settingsRef = commas.settings.useSettings()
+
     const commands = commas.context.getCollection('cli')
     commas.ipcMain.handle('cli', (event, context) => {
-      const settings = commas.settings.getSettings()
+      const settings = unref(settingsRef)
       const aliases = settings['cli.command.aliases'] ?? {}
       return executeCommand(event, context, commands, aliases)
     })
@@ -37,7 +39,7 @@ module.exports = function (commas) {
     }
 
     const commandListRef = computed(() => {
-      const settings = commas.settings.getSettings()
+      const settings = unref(settingsRef)
       const aliases = settings['cli.command.aliases'] ?? {}
       return [
         ...commands.map(item => item.command),

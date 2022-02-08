@@ -22,12 +22,8 @@ function addSpecs(this: CommasContext, specs: SettingsSpec[]) {
   })
 }
 
-function getSettings() {
-  return unref(useSettings())
-}
-
 export {
   addSpecs,
-  getSettings,
+  useSettings,
   openSettingsFile as openFile,
 }
