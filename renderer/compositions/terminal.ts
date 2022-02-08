@@ -162,6 +162,13 @@ export async function createTerminalTab({
     tab.alerting = true
     ipcRenderer.invoke('beep')
   })
+  xterm.parser.registerOscHandler(9, data => {
+    ipcRenderer.invoke('notify', {
+      title: getTerminalTabTitle(tab),
+      body: data,
+    })
+    return true
+  })
   xterm.parser.registerOscHandler(539, data => {
     try {
       const { argv, cwd, stdin } = JSON.parse(data)

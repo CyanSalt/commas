@@ -2,6 +2,7 @@ import { app, BrowserWindow, dialog, ipcMain, nativeImage, shell } from 'electro
 import type { MessageBoxOptions, NativeImage } from 'electron'
 import * as fileIcon from 'file-icon'
 import { execa } from '../utils/helper'
+import { notify } from '../utils/notification'
 import { broadcast } from './frame'
 
 function handleMessages() {
@@ -99,6 +100,9 @@ function handleMessages() {
   })
   ipcMain.handle('get-icon', (event, path: string) => {
     return fileIcon.buffer(path, { size: 32 })
+  })
+  ipcMain.handle('notify', (event, data) => {
+    return notify(data)
   })
 }
 
