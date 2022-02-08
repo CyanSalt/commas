@@ -408,7 +408,7 @@ export function loadTerminalAddons(tab: TerminalTab) {
       if (shouldOpen) {
         shell.openExternal(uri)
       }
-    })
+    }, {}, true)
     xterm.loadAddon(tab.addons.weblinks)
   }
   if (!tab.addons.unicode11) {

@@ -1,4 +1,4 @@
-import type { IDisposable, Terminal } from 'xterm'
+import type { IDisposable, ITerminalAddon, Terminal } from 'xterm'
 
 interface Particle {
   x: number,
@@ -10,7 +10,7 @@ interface Particle {
   },
 }
 
-export class PowerMode {
+export class PowerMode implements ITerminalAddon {
 
   declare xterm: Terminal
   declare _canvas: HTMLCanvasElement
