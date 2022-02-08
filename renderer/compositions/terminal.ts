@@ -1,5 +1,5 @@
 import * as os from 'os'
-import { ipcRenderer, shell } from 'electron'
+import { clipboard, ipcRenderer, shell } from 'electron'
 import { memoize, debounce, isMatch, sortBy, groupBy } from 'lodash-es'
 import { ref, computed, unref, markRaw, reactive, toRaw, watch } from 'vue'
 import { Terminal } from 'xterm'
@@ -179,6 +179,55 @@ export async function createTerminalTab({
             break
         }
         break
+      case 'SetMark':
+        // TODO: add jumping logics
+        xterm.registerMarker(0)
+        break
+      case 'StealFocus':
+        ipcRenderer.invoke('activate-window')
+        break
+      case 'ClearScrollback':
+        xterm.clear()
+        break
+      case 'CurrentDir':
+        tab.cwd = args[1]
+        break
+      case 'RequestAttention':
+        switch (args[1]) {
+          case 'yes':
+            ipcRenderer.invoke('bounce', {
+              active: true,
+              type: 'critical',
+            })
+            break
+          case 'no':
+            ipcRenderer.invoke('bounce', {
+              active: false,
+            })
+            break
+          // TODO: implementation
+          case 'fireworks':
+          case 'once':
+            ipcRenderer.invoke('bounce', {
+              active: true,
+              type: 'informational',
+            })
+            break
+          case 'Copy':
+            if (args[1]?.startsWith(':')) {
+              clipboard.writeText(Buffer.from(args[1].slice(1), 'base64').toString())
+            }
+            break
+          case 'UnicodeVersion': {
+            const version = parseInt(args[1], 10)
+            if (version <= 6) {
+              xterm.unicode.activeVersion = '6'
+            } else if (version >= 11) {
+              xterm.unicode.activeVersion = '11'
+            }
+            break
+          }
+        }
     }
     return true
   })

@@ -5,6 +5,8 @@ import { execa } from '../utils/helper'
 import { notify } from '../utils/notification'
 import { broadcast } from './frame'
 
+let currentBouncingId = -1
+
 function handleMessages() {
   process.on('uncaughtException', error => {
     console.error(error)
@@ -103,6 +105,31 @@ function handleMessages() {
   })
   ipcMain.handle('notify', (event, data) => {
     return notify(data)
+  })
+  ipcMain.handle('activate-window', event => {
+    const frame = BrowserWindow.fromWebContents(event.sender)
+    if (!frame) return false
+    frame.show()
+  })
+  ipcMain.handle('bounce', (event, { active, type }) => {
+    if (active) {
+      if (process.platform === 'darwin') {
+        currentBouncingId = app.dock.bounce(type)
+      } else {
+        const frame = BrowserWindow.fromWebContents(event.sender)
+        if (!frame) return false
+        frame.flashFrame(true)
+      }
+    } else {
+      if (process.platform === 'darwin') {
+        app.dock.cancelBounce(currentBouncingId)
+        currentBouncingId = -1
+      } else {
+        const frame = BrowserWindow.fromWebContents(event.sender)
+        if (!frame) return false
+        frame.flashFrame(false)
+      }
+    }
   })
 }
 
