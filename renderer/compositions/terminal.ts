@@ -11,7 +11,7 @@ import { SerializeAddon } from 'xterm-addon-serialize'
 import { Unicode11Addon } from 'xterm-addon-unicode11'
 import { WebLinksAddon } from 'xterm-addon-web-links'
 import { WebglAddon } from 'xterm-addon-webgl'
-import * as commas from '../../api/renderer'
+import * as commas from '../../api/core-renderer'
 import type { MenuItem } from '../../typings/menu'
 import type { TerminalInfo, TerminalTab } from '../../typings/terminal'
 import { toKeyEventPattern } from '../utils/accelerator'
@@ -450,7 +450,7 @@ export function mountTerminalTab(tab: TerminalTab, element: HTMLElement) {
   observer.observe(element)
   tab.addons.fit.fit()
   xterm.focus()
-  commas.app.events.emit('terminal-tab-mounted', tab)
+  commas.proxy.app.events.emit('terminal-tab-mounted', tab)
 }
 
 export function writeTerminalTab(tab: TerminalTab, data: string) {

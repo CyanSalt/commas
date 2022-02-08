@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import * as path from 'path'
 import { nextTick } from 'vue'
-import * as commas from '../../api/renderer'
+import * as commas from '../../api/core-renderer'
 import type { Launcher } from '../../typings/launcher'
 import {
   useLaunchers,
@@ -25,7 +25,7 @@ import { getShells } from '../utils/terminal'
 import SortableList from './basic/sortable-list.vue'
 import TabItem from './tab-item.vue'
 
-const anchors = commas.context.getCollection('@anchor')
+const anchors = commas.proxy.context.getCollection('@anchor')
 const shells = $(useAsyncComputed(() => getShells(), []))
 
 const tabs = $(useTerminalTabs())

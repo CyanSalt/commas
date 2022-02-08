@@ -1,7 +1,7 @@
 import './utils/connect'
 import { effect, unref } from '@vue/reactivity'
 import { app } from 'electron'
-import * as commas from '../api/main'
+import * as commas from '../api/core-main'
 import { loadAddons, loadCustomJS } from './lib/addon'
 import { discoverAddons, handleAddonMessages } from './lib/addon-manager'
 import { hasWindow, getLastWindow } from './lib/frame'
@@ -33,7 +33,7 @@ async function initialize() {
   loadCustomJS()
   await loadTranslations()
   await app.whenReady()
-  commas.app.events.emit('ready')
+  commas.proxy.app.events.emit('ready')
   if (process.platform === 'darwin') {
     effect(() => {
       createApplicationMenu()
@@ -82,6 +82,6 @@ app.on('window-all-closed', () => {
 })
 
 app.on('will-quit', () => {
-  commas.app.unloadAddons()
-  commas.app.events.emit('unload')
+  commas.addon.unloadAddons()
+  commas.proxy.app.events.emit('unload')
 })

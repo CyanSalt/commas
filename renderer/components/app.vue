@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ipcRenderer } from 'electron'
 import { onMounted } from 'vue'
-import * as commas from '../../api/renderer'
+import * as commas from '../../api/core-renderer'
 import { loadAddons, loadCustomJS } from '../compositions/addon'
 import {
   useFullscreen,
@@ -34,7 +34,7 @@ const terminal = $(useCurrentTerminal())
 const tabs = $(useTerminalTabs())
 const willQuit = $(useWillQuit())
 
-const slots = commas.context.getCollection('@slot')
+const slots = commas.proxy.context.getCollection('@slot')
 
 loadAddons()
 loadCustomJS()
@@ -59,18 +59,18 @@ window.addEventListener('beforeunload', async event => {
     event.returnValue = false
     const confirmed = await confirmClosing()
     if (confirmed) {
-      commas.app.unloadAddons()
-      commas.app.events.emit('unload')
+      commas.addon.unloadAddons()
+      commas.proxy.app.events.emit('unload')
       ipcRenderer.invoke('destroy')
     }
   } else {
-    commas.app.unloadAddons()
-    commas.app.events.emit('unload')
+    commas.addon.unloadAddons()
+    commas.proxy.app.events.emit('unload')
   }
 })
 
 onMounted(() => {
-  commas.app.events.emit('ready')
+  commas.proxy.app.events.emit('ready')
 })
 </script>
 
