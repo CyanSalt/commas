@@ -24,12 +24,12 @@ export default ({ includes }) => ({
           const namespaceSpecifier = statement.specifiers
             .find(specifier => specifier.type === 'ImportNamespaceSpecifier')
           if (namespaceSpecifier) {
-            dynamicRequireCode += `\nconst ${namespaceSpecifier.local.name} = require(${source.raw});`
+            dynamicRequireCode += `\nvar ${namespaceSpecifier.local.name} = require(${source.raw});`
           }
           const normalSpecifiers = statement.specifiers
             .filter(specifier => specifier.type === 'ImportSpecifier')
           if (normalSpecifiers.length) {
-            dynamicRequireCode += `\nconst { ${
+            dynamicRequireCode += `\nvar { ${
               normalSpecifiers.map(specifier => (specifier.imported.name === specifier.local.name ? specifier.imported.name : `${specifier.imported.name}: ${specifier.local.name}`)).join(', ')
             } } = require(${source.raw});`
           }

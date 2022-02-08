@@ -1,7 +1,6 @@
-<script lang="ts">
+<script lang="ts" setup>
 import * as path from 'path'
-import { ipcRenderer } from 'electron'
-import { computed, nextTick, ref, unref } from 'vue'
+import { nextTick } from 'vue'
 import * as commas from '../../api/renderer'
 import type { Launcher } from '../../typings/launcher'
 import {
@@ -26,147 +25,107 @@ import { getShells } from '../utils/terminal'
 import SortableList from './basic/sortable-list.vue'
 import TabItem from './tab-item.vue'
 
-export default {
-  components: {
-    TabItem,
-    SortableList,
-  },
-  setup() {
-    const launchersRef = useLaunchers()
+const anchors = commas.context.getCollection('@anchor')
+const shells = $(useAsyncComputed(() => getShells(), []))
 
-    const searcherRef = ref<HTMLInputElement>()
-    const widthRef = ref(176)
-    const isCollapsedRef = ref(false)
-    const isFindingRef = ref(false)
-    const keywordRef = ref('')
+const tabs = $(useTerminalTabs())
+const launchers = $(useLaunchers())
 
-    const anchorsRef = commas.context.getCollection('@anchor')
+let searcher = $ref<HTMLInputElement>()
+let width = $ref(176)
+let isCollapsed = $ref(false)
+let isFinding = $ref(false)
+let keyword = $ref('')
 
-    const shellsRef = useAsyncComputed(() => getShells(), [])
+const filteredLaunchers = $computed(() => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (!isFinding) return launchers
+  const keywords = keyword.toLowerCase().split(/\s+/)
+  return launchers.filter(
+    launcher => keywords.every(
+      item => Object.values(launcher).join(' ').toLowerCase().includes(item),
+    ),
+  )
+})
 
-    const filteredLaunchersRef = computed(() => {
-      const launchers = unref(launchersRef)
-      const isFinding = unref(isFindingRef)
-      if (!isFinding) return launchers
-      const keyword = unref(keywordRef)
-      const keywords = keyword.toLowerCase().split(/\s+/)
-      return launchers.filter(
-        launcher => keywords.every(
-          item => Object.values(launcher).join(' ').toLowerCase().includes(item),
-        ),
-      )
-    })
+const isLauncherSortingDisabled = $computed(() => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  return isCollapsed || isFinding
+})
 
-    const isLauncherSortingDisabledRef = computed(() => {
-      return unref(isCollapsedRef) || unref(isFindingRef)
-    })
+const standaloneTabs = $computed(() => {
+  return tabs.filter(tab => !tab.launcher)
+})
 
-    const tabsRef = useTerminalTabs()
-    const standaloneTabsRef = computed(() => {
-      const tabs = unref(tabsRef)
-      return tabs.filter(tab => !tab.launcher)
-    })
+function sortTabs(from: number, to: number) {
+  const toIndex = getTerminalTabIndex(standaloneTabs[to])
+  moveTerminalTab(standaloneTabs[from], toIndex)
+}
 
-    function sortTabs(from: number, to: number) {
-      const standaloneTabs = unref(standaloneTabsRef)
-      const toIndex = getTerminalTabIndex(standaloneTabs[to])
-      moveTerminalTab(standaloneTabs[from], toIndex)
-    }
+function selectShell(event: MouseEvent) {
+  if (!shells.length) return
+  openContextMenu(shells.map(shell => ({
+    label: path.basename(shell),
+    command: 'open-tab',
+    args: [{ shell }],
+  })), event)
+}
 
-    function selectShell(event: MouseEvent) {
-      const shells = unref(shellsRef)
-      if (!shells.length) return
-      openContextMenu(shells.map(shell => ({
-        label: path.basename(shell),
-        command: 'open-tab',
-        args: [{ shell }],
-      })), event)
-    }
+function toggleCollapsing() {
+  isCollapsed = !isCollapsed
+}
 
-    function toggleCollapsing() {
-      isCollapsedRef.value = !isCollapsedRef.value
-    }
+async function toggleFinding() {
+  isFinding = !isFinding
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (isFinding) {
+    await nextTick()
+    searcher.focus()
+  } else {
+    keyword = ''
+    searcher.blur()
+  }
+}
 
-    async function toggleFinding() {
-      const isFinding = unref(isFindingRef)
-      isFindingRef.value = !isFinding
-      if (isFinding) {
-        keywordRef.value = ''
-        const searcher = unref(searcherRef)
-        searcher?.blur()
-      } else {
-        await nextTick()
-        const searcher = unref(searcherRef)
-        searcher?.focus()
-      }
-    }
+function configure() {
+  // FIXME: Cannot move it to top. No idea why.
+  const { ipcRenderer } = require('electron')
+  ipcRenderer.invoke('open-settings')
+}
 
-    function configure() {
-      ipcRenderer.invoke('open-settings')
-    }
+function resize(startingEvent: DragEvent) {
+  const original = width
+  const start = startingEvent.clientX
+  const max = document.body.clientWidth / 2
+  handleMousePressing({
+    onMove(event) {
+      const target = original + event.clientX - start
+      width = Math.min(Math.max(target, 120), max)
+    },
+  })
+}
 
-    function resize(startingEvent: DragEvent) {
-      const original = unref(widthRef)
-      const start = startingEvent.clientX
-      const max = document.body.clientWidth / 2
-      handleMousePressing({
-        onMove(event) {
-          const width = original + event.clientX - start
-          widthRef.value = Math.min(Math.max(width, 120), max)
-        },
-      })
-    }
+function sortLaunchers(from: number, to: number) {
+  moveLauncher(from, to)
+}
 
-    function sortLaunchers(from: number, to: number) {
-      moveLauncher(from, to)
-    }
-
-    function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
-      const scripts = launcher.scripts ?? []
-      openContextMenu([
-        {
-          label: 'Launch#!terminal.6',
-          command: 'start-launcher',
-          args: [launcher],
-        },
-        {
-          type: 'separator',
-        },
-        ...scripts.map((script, index) => ({
-          label: script.name || script.command,
-          command: 'run-script',
-          args: [launcher, index],
-        })),
-      ], event)
-    }
-
-    return {
-      shells: shellsRef,
-      searcher: searcherRef,
-      width: widthRef,
-      isCollapsed: isCollapsedRef,
-      isFinding: isFindingRef,
-      keyword: keywordRef,
-      anchors: anchorsRef,
-      filteredLaunchers: filteredLaunchersRef,
-      isLauncherSortingDisabled: isLauncherSortingDisabledRef,
-      standaloneTabs: standaloneTabsRef,
-      sortTabs,
-      activateTerminalTab,
-      selectShell,
-      createTerminalTab,
-      toggleCollapsing,
-      toggleFinding,
-      getTerminalTabByLauncher,
-      openLauncher,
-      startLauncher,
-      startLauncherExternally,
-      showLauncherScripts,
-      configure,
-      resize,
-      sortLaunchers,
-    }
-  },
+function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
+  const scripts = launcher.scripts ?? []
+  openContextMenu([
+    {
+      label: 'Launch#!terminal.6',
+      command: 'start-launcher',
+      args: [launcher],
+    },
+    {
+      type: 'separator',
+    },
+    ...scripts.map((script, index) => ({
+      label: script.name || script.command,
+      command: 'run-script',
+      args: [launcher, index],
+    })),
+  ], event)
 }
 </script>
 
