@@ -162,6 +162,26 @@ export async function createTerminalTab({
     tab.alerting = true
     ipcRenderer.invoke('beep')
   })
+  // iTerm2 escape codes
+  xterm.parser.registerOscHandler(1337, data => {
+    const args = data.split('=')
+    switch (args[0]) {
+      case 'CursorShape':
+        switch (args[1]) {
+          case '0':
+            xterm.options.cursorStyle = 'block'
+            break
+          case '1':
+            xterm.options.cursorStyle = 'bar'
+            break
+          case '2':
+            xterm.options.cursorStyle = 'underline'
+            break
+        }
+        break
+    }
+    return true
+  })
   // iTerm2 style notification
   xterm.parser.registerOscHandler(9, data => {
     ipcRenderer.invoke('notify', {

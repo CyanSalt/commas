@@ -216,10 +216,11 @@ defineExpose({
         class="form-control"
       >
         <option
-          v-for="option in spec.paradigm"
+          v-for="(option, index) in spec.paradigm"
           :key="option"
+          v-i18n
           :value="option"
-        >{{ option }}</option>
+        >{{ option }}#!settings.options.{{ index }}.{{ spec.key }}</option>
       </select>
       <ValueSelector v-else v-model="model" :pinned="recommendations">
         <input

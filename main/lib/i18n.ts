@@ -91,6 +91,9 @@ function addTranslations(entries: TranslationFileEntry[], priority: Priority) {
       const lang = sepIndex !== -1 ? language.slice(0, sepIndex) : language
       matched = entries.find(item => item.locale.startsWith(`${lang}-`))
     }
+    if (!matched) {
+      matched = entries.find(item => item.locale === 'default')
+    }
     if (matched) {
       let translation
       onInvalidate(async () => {

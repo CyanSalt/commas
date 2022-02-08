@@ -1,0 +1,5 @@
+{
+  "block#!settings.options.0.terminal.style.cursorStyle": "█",
+  "bar#!settings.options.1.terminal.style.cursorStyle": "｜",
+  "underline#!settings.options.2.terminal.style.cursorStyle": "_"
+}

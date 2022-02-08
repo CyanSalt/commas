@@ -179,6 +179,16 @@
     "default": false
   },
   {
+    "key": "terminal.style.cursorStyle",
+    "type": "enum",
+    "paradigm": ["block", "bar", "underline"],
+    "label": "Cursor Style",
+    "comments": [
+      "Cursor style for terminals"
+    ],
+    "default": "block"
+  },
+  {
     "key": "terminal.theme.name",
     "type": "string",
     "recommendations": ["oceanic-next", "tomorrow"],
