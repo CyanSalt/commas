@@ -1,5 +1,5 @@
 import type { MessageBoxOptions } from 'electron'
-import { dialog, Notification } from 'electron'
+import { nativeImage, dialog, Notification } from 'electron'
 import { oncea } from './helper'
 
 interface NotifyOptions {
@@ -12,6 +12,9 @@ interface NotifyOptions {
 async function notify({ type, title = '', body, actions = [] }: NotifyOptions) {
   if (Notification.isSupported() && (!actions.length || process.platform === 'darwin')) {
     const notification = new Notification({
+      icon: process.platform === 'darwin' && ['warning', 'error'].includes(type!)
+        ? nativeImage.createFromNamedImage('NSImageNameCaution')
+        : undefined,
       title,
       body,
       silent: true,
