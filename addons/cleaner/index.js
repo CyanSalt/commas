@@ -5,13 +5,12 @@ module.exports = function (commas) {
   if (commas.app.isMainProcess()) {
 
     const path = require('path')
-    const { ipcMain } = require('electron')
 
-    ipcMain.handle('get-cache-size', event => {
+    commas.ipcMain.handle('get-cache-size', event => {
       return event.sender.session.getCacheSize()
     })
 
-    ipcMain.handle('clear-cache', event => {
+    commas.ipcMain.handle('clear-cache', event => {
       event.sender.session.clearCache()
     })
 
