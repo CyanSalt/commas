@@ -1,6 +1,6 @@
 import type { MessageBoxOptions } from 'electron'
 import { nativeImage, dialog, Notification } from 'electron'
-import { oncea } from './helper'
+import { until } from './helper'
 
 interface NotifyOptions {
   type?: MessageBoxOptions['type'],
@@ -22,7 +22,7 @@ async function notify({ type, title = '', body, actions = [] }: NotifyOptions) {
     })
     notification.show()
     if (!actions.length) return -1
-    return oncea(notification, 'action')
+    return until(notification, 'action')
       .then(([event, index]: any[]) => index as number)
   } else if (type === 'error') {
     dialog.showErrorBox(title, body)

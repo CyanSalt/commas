@@ -8,7 +8,7 @@ interface OnceEmitter<T extends string, U extends any[]> {
   once(name: T, listener: (...args: U) => unknown): this,
 }
 
-function oncea<T extends EventEmitter, U extends string>(emitter: T, finish: U, error?: string) {
+function until<T extends EventEmitter, U extends string>(emitter: T, finish: U, error?: string) {
   return new Promise<T extends OnceEmitter<U, infer V> ? V : unknown[]>((resolve, reject) => {
     emitter.once(finish, (...args: any) => {
       resolve(args)
@@ -47,7 +47,7 @@ function createPattern(expression: string) {
 
 export {
   execa,
-  oncea,
+  until,
   createIDGenerator,
   createPattern,
 }
