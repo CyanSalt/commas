@@ -15,6 +15,7 @@ module.exports = function (commas) {
       // Notification
       autoUpdater.on('update-downloaded', async (event, notes, name) => {
         const response = await commas.frame.notify({
+          type: 'info',
           title: name,
           body: commas.i18n.translate('A new version has been downloaded. Restart the application to apply the updates.#!updater.1'),
           actions: [

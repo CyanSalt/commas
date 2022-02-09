@@ -1,13 +1,15 @@
+import type { MessageBoxOptions } from 'electron'
 import { dialog, Notification } from 'electron'
 import { oncea } from './helper'
 
 interface NotifyOptions {
   title: string,
   body: string,
+  type?: MessageBoxOptions['type'],
   actions?: string[],
 }
 
-async function notify({ title, body, actions = [] }: NotifyOptions) {
+async function notify({ type, title, body, actions = [] }: NotifyOptions) {
   if (Notification.isSupported() && process.platform === 'darwin') {
     const notification = new Notification({
       title,
@@ -19,9 +21,12 @@ async function notify({ title, body, actions = [] }: NotifyOptions) {
     if (!actions.length) return -1
     return oncea(notification, 'action')
       .then(([event, index]: any[]) => index as number)
+  } else if (type === 'error') {
+    dialog.showErrorBox(title, body)
+    return -1
   } else {
     const options = {
-      type: 'info',
+      type,
       message: title,
       detail: body,
       buttons: actions,
