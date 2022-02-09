@@ -3,14 +3,14 @@ import { dialog, Notification } from 'electron'
 import { oncea } from './helper'
 
 interface NotifyOptions {
-  title: string,
-  body: string,
   type?: MessageBoxOptions['type'],
+  title?: string,
+  body: string,
   actions?: string[],
 }
 
-async function notify({ type, title, body, actions = [] }: NotifyOptions) {
-  if (Notification.isSupported() && process.platform === 'darwin') {
+async function notify({ type, title = '', body, actions = [] }: NotifyOptions) {
+  if (Notification.isSupported() && (!actions.length || process.platform === 'darwin')) {
     const notification = new Notification({
       title,
       body,

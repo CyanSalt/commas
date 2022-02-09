@@ -4,5 +4,6 @@
   "Confirm#!terminal.3": "确认",
   "Cancel#!terminal.4": "取消",
   "Find...#!terminal.5": "查找...",
-  "Launch#!terminal.6": "启动"
+  "Launch#!terminal.6": "启动",
+  "Addon [%N] does not support Commas %V (requires %E)#!terminal.7": "插件 [%N] 不支持 Commas %V (需要 %E)"
 }

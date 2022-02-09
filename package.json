@@ -71,6 +71,7 @@
     "file-icon": "^4.0.0",
     "lodash": "^4.17.21",
     "node-pty": "^0.10.1",
+    "semver": "^7.3.5",
     "sudo-prompt": "^9.2.1",
     "yaml": "^1.10.2"
   }
