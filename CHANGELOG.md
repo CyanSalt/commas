@@ -1,3 +1,45 @@
+## [0.20.0](https://github.com/CyanSalt/commas/compare/v0.19.3...v0.20.0) (2022-02-10)
+
+
+### Features
+
+* add `terminal.style.cursorStyle` ([5e23c33](https://github.com/CyanSalt/commas/commit/5e23c33ded33b330ce979178b0399f30d717df2e))
+* add ascii arts ([314158f](https://github.com/CyanSalt/commas/commit/314158f9fe85e6fa130506431f072d70a32e451b))
+* add cleaner plugin ([401adb3](https://github.com/CyanSalt/commas/commit/401adb3246ea35b0f0d444359baeec4fa675179c))
+* add icon to macOS notification ([698e022](https://github.com/CyanSalt/commas/commit/698e022c8295a4db9b0432f2902d5e002cd12aa1))
+* add notification osc handler ([6915f30](https://github.com/CyanSalt/commas/commit/6915f301c605d25c5449d06fa491230d6a67f111))
+* enable webgl by default ([6fda3ff](https://github.com/CyanSalt/commas/commit/6fda3ff44c357ab69d2d0534e1032ef2480f1926))
+* persist history for launchers ([f26e645](https://github.com/CyanSalt/commas/commit/f26e64534fae46ae40a136f642e74e4e5c98634c))
+* support `commas attention` ([1aa6556](https://github.com/CyanSalt/commas/commit/1aa6556c41acd6932a29023a29e384697c05be05))
+* support `notify` before app is ready ([53384c2](https://github.com/CyanSalt/commas/commit/53384c28bd744405641a7f3f4ad3b0d116f6dbae))
+* support `RequestAttention=fireworks` ([ee667b5](https://github.com/CyanSalt/commas/commit/ee667b5e70bdcb895ac7ecf49e8aea6727e021aa))
+* support commas:api module ([6312430](https://github.com/CyanSalt/commas/commit/6312430746748db84c08fc4a65b8a1a59731d395))
+* support engines.commas for addons ([a35c121](https://github.com/CyanSalt/commas/commit/a35c121175d37995854b7b9bc86047f90d928a8e))
+* support iterm2 style links ([84f02e2](https://github.com/CyanSalt/commas/commit/84f02e2c9fbad8e1bfb4742603eac70953d5fc6a))
+* support partial iterm escape codes ([5dfd830](https://github.com/CyanSalt/commas/commit/5dfd8302704813b9c770d3fad15a4bf8301691cf))
+* use different icon for remote launchers ([023150b](https://github.com/CyanSalt/commas/commit/023150b40bd23e59feac941e3942bc5d28772aaa))
+* use native scrollbar ([e3ec6ce](https://github.com/CyanSalt/commas/commit/e3ec6ce7417c4f6993b071327de95a81b584b228))
+
+
+### Bug Fixes
+
+* clean properties ([68b5247](https://github.com/CyanSalt/commas/commit/68b524786747cea64ebbe6ea67c879d38b8e602f))
+* **cleaner:** side effects ([f0e84d3](https://github.com/CyanSalt/commas/commit/f0e84d3d159219b21708a532c6fe7c11244d026b))
+* computed style ([37d1e56](https://github.com/CyanSalt/commas/commit/37d1e56992121d289fe6b0b0847349399539b3d3))
+* dark mode translations ([08f4c06](https://github.com/CyanSalt/commas/commit/08f4c065e762d07ec9c57efb0440bbcfc16e5f3c))
+* link modifier settings ([5f17a62](https://github.com/CyanSalt/commas/commit/5f17a62f3d910e03ef197dd79de1095ea31333fe))
+* main fields for addons ([0a7ced8](https://github.com/CyanSalt/commas/commit/0a7ced8a992f0fe02df808fb801d819354a87099))
+* modern xterm usage ([be6d780](https://github.com/CyanSalt/commas/commit/be6d780ecc63ebff87fbbcd3b932c542e0392bf9))
+* npm audit ([98b6fba](https://github.com/CyanSalt/commas/commit/98b6fba4d8d5d7a302a9de28b75af558105978e1))
+* pack error ([992f02f](https://github.com/CyanSalt/commas/commit/992f02f853ba6691be01ac0eae4b734aec7687e3))
+* revert default opacity ([001f07d](https://github.com/CyanSalt/commas/commit/001f07d14d72eb8575c47c3cd6672a79c4192d4a))
+* scroll bar style ([118349c](https://github.com/CyanSalt/commas/commit/118349c2197bb53767775df59cf078e0a16bf3ed))
+* selection style ([8bce8eb](https://github.com/CyanSalt/commas/commit/8bce8eb9c32ccb4f4f0d47ee8af885d9aa3d42e6))
+* tsconfig schema ([e843f77](https://github.com/CyanSalt/commas/commit/e843f77fe2f02394271102f2788d8d04de06d931))
+* vue types ([e17c52c](https://github.com/CyanSalt/commas/commit/e17c52c99de5e03670a6f1e3c51be92f7f413405))
+* vulnerabilities ([c64addc](https://github.com/CyanSalt/commas/commit/c64addcb976f9761d09d85b7f99ab80944d65423))
+* window shadow on macOS ([a0b1080](https://github.com/CyanSalt/commas/commit/a0b10808e2f9f8e1e1cc5ea3a55fed3a0dfeec76))
+
 ### [0.19.3](https://github.com/CyanSalt/commas/compare/v0.19.2...v0.19.3) (2021-10-21)
 
 
