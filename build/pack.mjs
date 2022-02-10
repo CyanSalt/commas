@@ -5,7 +5,7 @@ import util from 'util'
 import chalk from 'chalk'
 import packager from 'electron-packager'
 import png2icons from 'png2icons'
-import app from '../package.json'
+import app from './read-pkg.js'
 
 const execa = util.promisify(childProcess.exec)
 
