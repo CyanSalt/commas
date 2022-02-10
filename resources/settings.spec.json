@@ -148,7 +148,7 @@
       "Background opacity of window",
       "It will not work if RGBA background is specified in theme file"
     ],
-    "default": 1
+    "default": 0.9
   },
   {
     "key": "terminal.style.fontSize",
