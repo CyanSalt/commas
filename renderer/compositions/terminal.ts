@@ -1,6 +1,6 @@
 import * as os from 'os'
 import { clipboard, ipcRenderer, shell } from 'electron'
-import { memoize, debounce, isMatch, sortBy, groupBy } from 'lodash-es'
+import { memoize, debounce, findLast, isMatch, sortBy, groupBy } from 'lodash-es'
 import { ref, computed, unref, markRaw, reactive, toRaw, watch } from 'vue'
 import { Terminal } from 'xterm'
 import type { ITerminalOptions } from 'xterm'
@@ -13,7 +13,7 @@ import { WebLinksAddon } from 'xterm-addon-web-links'
 import { WebglAddon } from 'xterm-addon-webgl'
 import * as commas from '../../api/core-renderer'
 import type { MenuItem } from '../../typings/menu'
-import type { TerminalInfo, TerminalTab } from '../../typings/terminal'
+import type { TerminalInfo, TerminalTab, XtermBufferPosition, XtermLink } from '../../typings/terminal'
 import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
 import { getPrompt, getWindowsProcessInfo } from '../utils/terminal'
@@ -99,12 +99,14 @@ export async function createTerminalTab({
 }: CreateTerminalTabOptions = {}) {
   const info: TerminalInfo = await ipcRenderer.invoke('create-terminal', { cwd: workingDirectory, shell: shellPath })
   const xterm = new Terminal(unref(terminalOptionsRef))
-  const settings = unref(useSettings())
+  const settingsRef = useSettings()
+  const settings = unref(settingsRef)
   const tab = reactive<TerminalTab>({
     ...info,
     title: '',
     xterm: markRaw(xterm),
     addons: markRaw({}),
+    links: markRaw([]),
     alerting: false,
     launcher,
   })
@@ -230,6 +232,53 @@ export async function createTerminalTab({
         }
     }
     return true
+  })
+  // iTerm2 style link
+  xterm.parser.registerOscHandler(8, data => {
+    const args = data.split(';')
+    if (args.length !== 2) return false
+    const point: XtermBufferPosition = {
+      x: xterm.buffer.active.cursorX + 1,
+      y: xterm.buffer.active.cursorY + 1,
+    }
+    if (args[1]) {
+      tab.links.push({ start: point, uri: args[1] })
+    } else {
+      const activeLink = findLast(tab.links, item => !item.end)
+      if (activeLink) {
+        point.x -= 1
+        activeLink.end = point
+      }
+    }
+    return true
+  })
+  xterm.registerLinkProvider({
+    provideLinks(y, callback) {
+      const links = tab.links
+        .filter((link): link is Required<XtermLink> => {
+          return Boolean(link.end && link.start.y <= y && link.end.y >= y)
+        })
+        .map(link => ({
+          range: {
+            start: link.start,
+            end: link.end,
+          },
+          text: xterm.buffer.active.getLine(y)!.translateToString(
+            false,
+            link.start.y < y ? undefined : link.start.x,
+            link.end.y > y ? undefined : link.end.x,
+          ),
+          activate(event) {
+            const currentSettings = unref(settingsRef)
+            const shouldOpen = currentSettings['terminal.link.modifier'] === 'Alt' ? event.altKey
+              : (process.platform === 'darwin' ? event.metaKey : event.ctrlKey)
+            if (shouldOpen) {
+              shell.openExternal(link.uri)
+            }
+          },
+        }))
+      callback(links)
+    },
   })
   // iTerm2 style notification
   xterm.parser.registerOscHandler(9, data => {
