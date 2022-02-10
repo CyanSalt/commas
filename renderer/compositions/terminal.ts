@@ -1,7 +1,7 @@
 import * as os from 'os'
 import { clipboard, ipcRenderer, shell } from 'electron'
 import { memoize, debounce, findLast, isMatch, sortBy, groupBy } from 'lodash-es'
-import { ref, computed, unref, markRaw, reactive, toRaw, watch } from 'vue'
+import { ref, computed, unref, markRaw, reactive, toRaw, watch, nextTick } from 'vue'
 import { Terminal } from 'xterm'
 import type { ITerminalOptions } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
@@ -17,6 +17,7 @@ import type { TerminalInfo, TerminalTab, XtermBufferPosition, XtermLink } from '
 import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
 import { getPrompt, getWindowsProcessInfo } from '../utils/terminal'
+import { addFirework } from './fireworks'
 import { useKeyBindings } from './keybinding'
 import { getLauncherByTerminalTab, loadLauncherSession, saveLauncherSession, useLaunchers } from './launcher'
 import { useSettings } from './settings'
@@ -187,6 +188,7 @@ export async function createTerminalTab({
         break
       case 'StealFocus':
         ipcRenderer.invoke('activate-window')
+        activateTerminalTab(tab)
         break
       case 'ClearScrollback':
         xterm.clear()
@@ -207,29 +209,43 @@ export async function createTerminalTab({
               active: false,
             })
             break
-          // TODO: implementation
-          case 'fireworks':
           case 'once':
             ipcRenderer.invoke('bounce', {
               active: true,
               type: 'informational',
             })
             break
-          case 'Copy':
-            if (args[1]?.startsWith(':')) {
-              clipboard.writeText(Buffer.from(args[1].slice(1), 'base64').toString())
-            }
-            break
-          case 'UnicodeVersion': {
-            const version = parseInt(args[1], 10)
-            if (version <= 6) {
-              xterm.unicode.activeVersion = '6'
-            } else if (version >= 11) {
-              xterm.unicode.activeVersion = '11'
-            }
+          case 'fireworks': {
+            ipcRenderer.invoke('activate-window')
+            activateTerminalTab(tab)
+            nextTick(() => {
+              const element = xterm.element!
+              const bounds = element.getBoundingClientRect()
+              const dimensions = xterm['_core']._renderService.dimensions
+              const { cursorX, cursorY } = xterm.buffer.active
+              addFirework({
+                x: bounds.x + (cursorX + 0.5) * dimensions.actualCellWidth,
+                y: bounds.y + (cursorY + 0.5) * dimensions.actualCellHeight,
+              })
+            })
             break
           }
         }
+        break
+      case 'Copy':
+        if (args[1]?.startsWith(':')) {
+          clipboard.writeText(Buffer.from(args[1].slice(1), 'base64').toString())
+        }
+        break
+      case 'UnicodeVersion': {
+        const version = parseInt(args[1], 10)
+        if (version <= 6) {
+          xterm.unicode.activeVersion = '6'
+        } else if (version >= 11) {
+          xterm.unicode.activeVersion = '11'
+        }
+        break
+      }
     }
     return true
   })
