@@ -136,6 +136,13 @@ where <command> is one of:
       },
     })
 
+    commas.context.provide('cli', {
+      command: 'attention',
+      handler() {
+        return '\x1b]1337;RequestAttention=fireworks\x1b\\'
+      },
+    })
+
     const externalURLCommandsRef = useExternalURLCommands()
     let loadedExternalURLCommands = []
     const reactiveEffect = effect(() => {
