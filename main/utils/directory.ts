@@ -1,12 +1,12 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { updateYamlDocument } from '@atomist/yaml-updater'
 import { customRef, effect } from '@vue/reactivity'
 import chokidar from 'chokidar'
 import { app } from 'electron'
 import debounce from 'lodash/debounce'
 import YAML from 'yaml'
 import { downloadFile } from './net'
+import { updateDocument } from './yaml-updater'
 
 class Directory {
 
@@ -89,7 +89,7 @@ class Directory {
       const created = YAML.stringify(data)
       return this.write(basename, '---\n' + created.trim() + '\n')
     } else {
-      const updated = updateYamlDocument(data, content, { keepArrayIndent: true })
+      const updated = updateDocument(content, data)
       return this.write(basename, updated.trim() + '\n')
     }
   }

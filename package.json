@@ -64,7 +64,6 @@
     "xterm-addon-webgl": "^0.11.4"
   },
   "dependencies": {
-    "@atomist/yaml-updater": "^1.0.2",
     "@vue/reactivity": "^3.2.30",
     "chokidar": "^3.5.3",
     "color-rgba": "^2.4.0",
@@ -73,6 +72,6 @@
     "node-pty": "^0.10.1",
     "semver": "^7.3.5",
     "sudo-prompt": "^9.2.1",
-    "yaml": "^1.10.2"
+    "yaml": "^2.0.0-10"
   }
 }
