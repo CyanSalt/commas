@@ -1,15 +1,14 @@
 <script lang="ts" setup>
 import { ipcRenderer } from 'electron'
 import { cloneDeep, isEqual } from 'lodash-es'
-import { onBeforeUpdate, watchEffect } from 'vue'
+import { watchEffect } from 'vue'
 import TerminalPane from '../../../renderer/components/basic/terminal-pane.vue'
 import { useUserSettings, useSettingsSpecs } from '../../../renderer/compositions/settings'
-import type { SettingsLineAPI } from './settings-line.vue'
 import SettingsLine from './settings-line.vue'
 
 let settings = $(useUserSettings())
 let values = $ref({})
-let lines = $ref<SettingsLineAPI[]>([])
+let open = $ref<boolean[]>([])
 
 const isChanged = $computed(() => {
   return !isEqual(settings, values)
@@ -23,14 +22,16 @@ const rows = $computed(() => {
   })
 })
 
+watchEffect(() => {
+  open = rows.map(() => true)
+})
+
 let isCollapsed = $computed<boolean>({
   get() {
-    return lines.every(line => line.isCollapsed)
+    return open.every(item => !item)
   },
   set(value) {
-    lines.forEach(line => {
-      line.isCollapsed = value
-    })
+    open = open.map(() => !value)
   },
 })
 
@@ -51,10 +52,6 @@ function refreshAddons() {
 }
 
 watchEffect(revert)
-
-onBeforeUpdate(() => {
-  lines = []
-})
 </script>
 
 <template>
@@ -76,8 +73,8 @@ onBeforeUpdate(() => {
       <SettingsLine
         v-for="(row, index) in rows"
         :key="row.key"
-        :ref="line => lines[index] = line"
         v-model="values[row.key]"
+        v-model:open="open[index]"
         :spec="row"
         :current-value="settings[row.key]"
       />

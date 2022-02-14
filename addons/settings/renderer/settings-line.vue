@@ -8,10 +8,6 @@ import ValueSelector from '../../../renderer/components/basic/value-selector.vue
 import { useDiscoveredAddons } from '../../../renderer/compositions/settings'
 import type { SettingsSpec } from '../../../typings/settings'
 
-export interface SettingsLineAPI {
-  isCollapsed: boolean,
-}
-
 const props = defineProps({
   spec: {
     type: Object as PropType<SettingsSpec>,
@@ -25,17 +21,22 @@ const props = defineProps({
     type: undefined,
     required: true,
   },
+  open: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits({
   'update:modelValue': (value: any) => {
     return true
   },
+  'update:open': (value: boolean) => {
+    return typeof value === 'boolean'
+  },
 })
 
 const discoveredAddons = $(useDiscoveredAddons())
-
-let isCollapsed = $ref(false)
 
 const isSimpleObject = $computed(() => {
   return ['list', 'map'].includes(props.spec.type)
@@ -161,28 +162,28 @@ function parse(value) {
   return value
 }
 
-function toggle() {
-  isCollapsed = !isCollapsed
+function toggle(event) {
+  emit('update:open', event.target.open)
 }
 
 function reset() {
   model = props.spec.default
 }
-
-defineExpose({
-  isCollapsed,
-})
 </script>
 
 <template>
-  <div :class="['user-setting-line', 'form-line', 'block', { collapsed: isCollapsed }]">
-    <label :class="['form-label', { customized: isCustomized, changed: isChanged }]">
-      <span class="link tree-node" @click="toggle">
+  <details
+    :open="open"
+    class="user-setting-line form-line block"
+    @toggle="toggle"
+  >
+    <summary :class="['line-summary', { customized: isCustomized, changed: isChanged }]">
+      <span class="link tree-node">
         <span class="feather-icon icon-chevron-down"></span>
       </span>
       <span v-i18n class="item-label">{{ spec.label }}#!settings.label.{{ spec.key }}</span>
       <span class="item-key">{{ spec.key }}</span>
-    </label>
+    </summary>
     <div class="setting-detail">
       <div class="form-tips">
         <div
@@ -245,7 +246,7 @@ defineExpose({
         ></textarea>
       </ValueSelector>
     </div>
-  </div>
+  </details>
 </template>
 
 <style lang="scss" scoped>
@@ -255,13 +256,16 @@ defineExpose({
     align-items: center;
   }
 }
+.line-summary {
+  display: flex;
+}
 .item-label {
   cursor: text;
   user-select: text;
-  .form-label.customized & {
+  .line-summary.customized & {
     font-style: italic;
   }
-  .form-label.changed & {
+  .line-summary.changed & {
     color: rgb(var(--design-yellow));
   }
 }
@@ -271,10 +275,10 @@ defineExpose({
   opacity: 0.5;
   cursor: text;
   user-select: text;
-  .form-label.customized & {
+  .line-summary.customized & {
     font-style: italic;
   }
-  .form-label.changed & {
+  .line-summary.changed & {
     color: rgb(var(--design-yellow));
   }
 }
@@ -283,13 +287,13 @@ defineExpose({
   text-align: center;
   opacity: 1;
   transition: transform 0.2s;
-  .user-setting-line.collapsed & {
-    transform: rotate(-90deg);
+  .user-setting-line:not([open]) & {
+    transform: rotate(-90deg) translateX(2px);
   }
 }
 .setting-detail {
   padding-left: 24px;
-  .user-setting-line.collapsed & {
+  .user-setting-line:not([open]) & {
     display: none;
   }
 }
