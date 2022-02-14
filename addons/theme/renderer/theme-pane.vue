@@ -100,16 +100,16 @@ async function applyItem(item: ThemeEntry) {
       </div>
       <LoadingSpinner v-if="!list.length" class="theme-loading" />
       <div v-else class="theme-list">
-        <div v-for="item in filteredList" :key="item.name" class="theme-item">
+        <figure v-for="item in filteredList" :key="item.name" class="theme-item">
           <img class="theme-screenshot" :src="item.screenshot">
-          <div class="theme-action">
+          <figcaption class="theme-action">
             <span class="theme-name">{{ item.name }}</span>
             <span v-if="item.name !== currentTheme" class="link" @click="applyItem(item)">
               <LoadingSpinner v-if="loading === item.name" />
               <span v-else class="feather-icon icon-check"></span>
             </span>
-          </div>
-        </div>
+          </figcaption>
+        </figure>
       </div>
     </div>
   </TerminalPane>
@@ -127,6 +127,7 @@ async function applyItem(item: ThemeEntry) {
   position: relative;
   display: flex;
   flex-direction: column;
+  margin: 0;
   overflow: hidden;
   background: rgb(var(--theme-foreground) / 0.1);
   border-radius: 4px;
