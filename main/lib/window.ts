@@ -14,7 +14,7 @@ function createWindow(...args: string[]) {
     title: app.name,
     width: (8 * 80) + (2 * 8) + 180,
     minWidth: (8 * 40) + (2 * 8) + 180,
-    height: (17 * 25) + (2 * 4) + 36,
+    height: (18 * 24) + (2 * 4) + 36,
     titleBarStyle: process.platform === 'darwin'
       ? 'hiddenInset' as const
       : 'hidden' as const,
