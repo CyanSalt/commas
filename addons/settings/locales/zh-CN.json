@@ -1,7 +1,4 @@
 {
-  "block#!settings.options.0.terminal.style.cursorStyle": "█",
-  "bar#!settings.options.1.terminal.style.cursorStyle": "｜",
-  "underline#!settings.options.2.terminal.style.cursorStyle": "_",
   "Shell Path#!settings.label.terminal.shell.path": "Shell 路径",
   "Path of shell, $SHELL or PowerShell (on Windows) by default#!settings.comments.0.terminal.shell.path": "Shell 的路径, 默认使用 $SHELL 或 PowerShell (在 Windows 上)",
   "Shell Args#!settings.label.terminal.shell.args": "Shell 命令行参数",
