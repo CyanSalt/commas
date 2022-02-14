@@ -12,17 +12,20 @@ import { translate } from './i18n'
 
 function checkAddon(name: string, discoveredAddons: Record<string, AddonInfo>) {
   const { manifest } = discoveredAddons[name]
-  const engine = manifest.engines?.commas
-  const version = app.getVersion()
-  if (engine && !semver.satisfies(engine, version)) {
-    notify({
-      type: 'error',
-      body: translate(`Addon [%N] does not support Commas %V (requires %E)#!terminal.7`, {
-        N: name,
-        E: engine,
-        V: version,
-      }),
-    })
+  const engines = manifest.engines ? Object.entries<string>(manifest.engines) : []
+  for (const [engine, range] of engines) {
+    const version = engine === 'commas' ? app.getVersion() : process.versions[engine]
+    if (version && !semver.satisfies(version, range, { loose: true, includePrerelease: true })) {
+      notify({
+        type: 'error',
+        body: translate('Addon [%N] only supports %A %E, not %V#!terminal.7', {
+          N: name,
+          A: engine,
+          E: range,
+          V: version,
+        }),
+      })
+    }
   }
 }
 
