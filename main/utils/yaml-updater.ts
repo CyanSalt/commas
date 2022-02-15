@@ -15,9 +15,10 @@ function updateNode(doc: Document, node: Node, data: any) {
   }
   if (YAML.isSeq(node)) {
     const items = [...node.items] as any[]
-    for (const index of items.keys()) {
+    Array.from(items.keys()).reduceRight((never, key, index) => {
       node.deleteIn([index])
-    }
+      return never
+    }, undefined)
     for (const value of data) {
       const item = items.find(el => isEqual(el, value))
       if (item) {
