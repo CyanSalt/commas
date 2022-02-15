@@ -2,6 +2,7 @@
 import { isEqual } from 'lodash-es'
 import { watch } from 'vue'
 import type { PropType } from 'vue'
+import OrderedCheckbox from './ordered-checkbox.vue'
 
 const props = defineProps({
   modelValue: {
@@ -113,7 +114,7 @@ export interface EditorEntryItem {
     <template v-for="item in entryItems" :key="item.id">
       <div class="property-line">
         <label v-if="item.pinned" class="pinned-checker">
-          <input :checked="item.index !== -1" type="checkbox" class="pinned-control" @change="togglePinned(item)">
+          <OrderedCheckbox :index="item.index" class="pinned-control" @change="togglePinned(item)" />
         </label>
         <span v-else class="link remove" @click="remove(item)">
           <span class="feather-icon icon-minus"></span>
