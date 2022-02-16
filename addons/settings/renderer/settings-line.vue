@@ -186,8 +186,8 @@ function reset() {
       <span class="link tree-node">
         <span class="feather-icon icon-chevron-down"></span>
       </span>
-      <span v-i18n class="item-label">{{ spec.label }}#!settings.label.{{ spec.key }}</span>
-      <span class="item-key">{{ spec.key }}</span>
+      <span v-i18n class="item-label" @click.prevent>{{ spec.label }}#!settings.label.{{ spec.key }}</span>
+      <span class="item-key" @click.prevent>{{ spec.key }}</span>
     </summary>
     <div class="setting-detail">
       <div class="form-tips">
