@@ -235,6 +235,9 @@ function reset() {
           :placeholder="placeholder"
           type="number"
           class="form-control"
+          :min="spec.schema.minimum"
+          :max="spec.schema.maximum"
+          :step="spec.schema.type === 'integer' ? 1 : 0.1"
         >
         <input
           v-else-if="accepts(spec.schema, 'string')"
