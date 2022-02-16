@@ -131,6 +131,12 @@ function handleMessages() {
       }
     }
   })
+  ipcMain.handle('find', (event, text, options) => {
+    return event.sender.findInPage(text, options)
+  })
+  ipcMain.handle('stop-finding', (event, action) => {
+    event.sender.stopFindInPage(action)
+  })
 }
 
 function handleEvents(frame: BrowserWindow) {

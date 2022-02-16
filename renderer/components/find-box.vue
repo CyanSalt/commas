@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { onMounted, reactive } from 'vue'
+import { ipcRenderer } from 'electron'
+import { onMounted, reactive, watch } from 'vue'
 import { useIsFinding } from '../compositions/shell'
 import { useCurrentTerminal } from '../compositions/terminal'
 
@@ -16,12 +17,6 @@ const options = reactive({
 
 let isFinding = $(useIsFinding())
 
-const isVisible = $computed(() => {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (!isFinding) return false
-  return Boolean(terminal && !terminal.pane)
-})
-
 onMounted(() => {
   new IntersectionObserver(([{ isIntersecting }]) => {
     if (isIntersecting) {
@@ -36,12 +31,26 @@ onMounted(() => {
 
 function findPrevious() {
   if (!terminal) return
-  return terminal.addons.search.findPrevious(keyword, options)
+  if (terminal.pane) {
+    return ipcRenderer.invoke('find', keyword, {
+      forward: false,
+      matchCase: options.caseSensitive,
+    })
+  } else {
+    return terminal.addons.search.findPrevious(keyword, options)
+  }
 }
 
 function findNext() {
   if (!terminal) return
-  return terminal.addons.search.findNext(keyword, options)
+  if (terminal.pane) {
+    return ipcRenderer.invoke('find', keyword, {
+      forward: true,
+      matchCase: options.caseSensitive,
+    })
+  } else {
+    return terminal.addons.search.findNext(keyword, options)
+  }
 }
 
 function find(event: KeyboardEvent) {
@@ -55,10 +64,17 @@ function cancel() {
 function toggle(key: keyof typeof options) {
   options[key] = !options[key]
 }
+
+watch($$(isFinding), value => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (!value && terminal?.pane) {
+    ipcRenderer.invoke('stop-finding', 'clearSelection')
+  }
+})
 </script>
 
 <template>
-  <div v-show="isVisible" ref="root" class="find-box">
+  <div v-show="isFinding" ref="root" class="find-box">
     <input
       ref="finder"
       v-model="keyword"
