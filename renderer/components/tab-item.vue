@@ -6,7 +6,7 @@ import type { TerminalTab } from '../../typings/terminal'
 import { getTerminalTabTitle, useCurrentTerminal, closeTerminalTab } from '../compositions/terminal'
 import { getIconEntryByProcess } from '../utils/terminal'
 
-const { launcher, tab } = $(defineProps({
+const { launcher, tab } = defineProps({
   launcher: {
     type: Object as PropType<Launcher | undefined>,
     default: undefined,
@@ -15,7 +15,7 @@ const { launcher, tab } = $(defineProps({
     type: Object as PropType<TerminalTab | undefined>,
     default: undefined,
   },
-}))
+})
 
 const terminal = $(useCurrentTerminal())
 const isFocused = $computed(() => {

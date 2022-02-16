@@ -9,7 +9,7 @@ import { useDiscoveredAddons } from '../../../renderer/compositions/settings'
 import type { SettingsSpec } from '../../../typings/settings'
 import { accepts, isObjectSchema } from './json-schema'
 
-const { spec, modelValue, currentValue, open } = $(defineProps({
+const { spec, modelValue, currentValue, open } = defineProps({
   spec: {
     type: Object as PropType<SettingsSpec>,
     required: true,
@@ -26,7 +26,7 @@ const { spec, modelValue, currentValue, open } = $(defineProps({
     type: Boolean,
     default: false,
   },
-}))
+})
 
 const emit = defineEmits({
   'update:modelValue': (value: any) => {

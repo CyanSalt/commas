@@ -4,7 +4,7 @@ import { watch } from 'vue'
 import type { PropType } from 'vue'
 import OrderedCheckbox from './ordered-checkbox.vue'
 
-const { modelValue, withKeys, pinned } = $(defineProps({
+const { modelValue, withKeys, pinned } = defineProps({
   modelValue: {
     type: [Object, undefined] as PropType<object | undefined>,
     required: true,
@@ -17,7 +17,7 @@ const { modelValue, withKeys, pinned } = $(defineProps({
     type: [Object, undefined] as PropType<object | undefined>,
     default: undefined,
   },
-}))
+})
 
 const emit = defineEmits({
   'update:modelValue': (value: object | undefined) => {

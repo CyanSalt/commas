@@ -7,12 +7,12 @@ import type { TerminalTab } from '../../typings/terminal'
 import { mountTerminalTab, writeTerminalTab } from '../compositions/terminal'
 import { openContextMenu } from '../utils/frame'
 
-const { tab } = $(defineProps({
+const { tab } = defineProps({
   tab: {
     type: Object as PropType<TerminalTab>,
     required: true,
   },
-}))
+})
 
 const terminal = $ref<HTMLElement>()
 

@@ -3,7 +3,7 @@ import { onBeforeUpdate } from 'vue'
 import type { PropType } from 'vue'
 import { handleMousePressing } from '../../utils/helper'
 
-const { value, valueKey, disabled } = $(defineProps({
+const { value, valueKey, disabled } = defineProps({
   value: {
     type: Array as PropType<any[]>,
     required: true,
@@ -16,7 +16,7 @@ const { value, valueKey, disabled } = $(defineProps({
     type: Boolean,
     default: false,
   },
-}))
+})
 
 const emit = defineEmits({
   change: (fromIndex: number, toIndex: number) => {
