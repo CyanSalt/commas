@@ -40,6 +40,7 @@ const checked = $computed<boolean>({
   display: inline-flex;
 }
 .pseudo-control {
+  position: relative;
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -73,6 +74,8 @@ const checked = $computed<boolean>({
   }
 }
 .pseudo-control-text {
+  position: relative;
+  z-index: 1;
   color: white;
   font-size: 0.8em;
   user-select: none;
