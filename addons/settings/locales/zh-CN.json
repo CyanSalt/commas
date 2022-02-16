@@ -32,7 +32,7 @@
   "Persistent the history of a launcher after it has been closed#!settings.comments.0.terminal.launcher.persistHistory": "在启动器关闭后保留其历史记录",
   "Link Modifier#!settings.label.terminal.link.modifier": "链接修饰键",
   "Keyboard modifier for opening link by click#!settings.comments.0.terminal.link.modifier": "点击打开链接时的键盘修饰键",
-  "Options: 'CmdOrCtrl' or 'Alt'#!settings.comments.1.terminal.link.modifier": "可选项: 'CmdOrCtrl' 或 'Alt'",
+  "any#!settings.options.0.terminal.link.modifier": "任意",
   "Renderer Type#!settings.label.terminal.renderer.type": "渲染方式",
   "Specify how to render the terminal#!settings.comments.0.terminal.renderer.type": "声明如何渲染终端",
   "Options: 'dom', 'canvas' or 'webgl'#!settings.comments.1.terminal.renderer.type": "可选项: 'dom', 'canvas' 或 'webgl'",

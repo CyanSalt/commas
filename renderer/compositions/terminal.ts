@@ -537,8 +537,18 @@ export function loadTerminalAddons(tab: TerminalTab) {
   if (!tab.addons.weblinks) {
     tab.addons.weblinks = new WebLinksAddon((event, uri) => {
       const currentSettings = unref(settingsRef)
-      const shouldOpen = currentSettings['terminal.link.modifier'] === 'Alt' ? event.altKey
-        : (process.platform === 'darwin' ? event.metaKey : event.ctrlKey)
+      let shouldOpen = false
+      switch (currentSettings['terminal.link.modifier']) {
+        case 'Alt':
+          shouldOpen = event.altKey
+          break
+        case 'CmdOrCtrl':
+          shouldOpen = process.platform === 'darwin' ? event.metaKey : event.ctrlKey
+          break
+        default:
+          shouldOpen = event.altKey || (process.platform === 'darwin' ? event.metaKey : event.ctrlKey)
+          break
+      }
       if (shouldOpen) {
         shell.openExternal(uri)
       }

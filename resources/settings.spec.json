@@ -148,14 +148,13 @@
     "key": "terminal.link.modifier",
     "label": "Link Modifier",
     "comments": [
-      "Keyboard modifier for opening link by click",
-      "Options: 'CmdOrCtrl' or 'Alt'"
+      "Keyboard modifier for opening link by click"
     ],
     "schema": {
       "type": "string",
-      "enum": ["CmdOrCtrl", "Alt"]
+      "enum": ["any", "CmdOrCtrl", "Alt"]
     },
-    "default": "Alt"
+    "default": "any"
   },
   {
     "key": "terminal.renderer.type",
