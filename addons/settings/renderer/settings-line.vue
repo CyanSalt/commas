@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { isEqual } from 'lodash-es'
+import type { JSONSchema } from 'typings/json-schema'
 import type { PropType } from 'vue'
 import ObjectEditor from '../../../renderer/components/basic/object-editor.vue'
 import type { EditorEntryItem } from '../../../renderer/components/basic/object-editor.vue'
@@ -38,9 +39,24 @@ const emit = defineEmits({
 
 const discoveredAddons = $(useDiscoveredAddons())
 
+function isObjectSchema(schema: JSONSchema) {
+  return ['array', 'object'].includes(schema.type)
+}
+
 const isSimpleObject = $computed(() => {
-  return ['list', 'map'].includes(props.spec.type)
-        && !['list', 'map'].includes(props.spec.paradigm?.[0])
+  const schema = props.spec.schema
+  if (!schema) return false
+  if (schema.type === 'array') {
+    return !isObjectSchema(schema.items)
+  }
+  if (schema.type === 'object') {
+    if (schema.additionalProperties === false || (
+      typeof schema.additionalProperties === 'object'
+        && isObjectSchema(schema.additionalProperties)
+    )) return false
+    return !schema.properties || Object.values(schema.properties).every(prop => !isObjectSchema(prop))
+  }
+  return false
 })
 
 const placeholder = $computed(() => {
@@ -49,7 +65,11 @@ const placeholder = $computed(() => {
 
 let model = $computed({
   get: () => {
-    if (props.modelValue === undefined && ['boolean', 'enum', 'list', 'map'].includes(props.spec.type)) {
+    if (
+      props.modelValue === undefined
+      && props.spec.schema
+      && ['boolean', 'array', 'object'].includes(props.spec.schema.type)
+    ) {
       return normalize(props.spec.default)
     }
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -97,17 +117,15 @@ function getNote(item: EditorEntryItem) {
   return undefined
 }
 
-function accepts(type: string) {
-  return props.spec.type === type || (
-    Array.isArray(props.spec.type) && props.spec.type.includes(type)
-  )
+function accepts(type: JSONSchema['type']) {
+  return props.spec.schema?.type === type
 }
 
 function normalize(value) {
-  if (accepts('list') && Array.isArray(value)) {
+  if (accepts('array') && Array.isArray(value)) {
     return value
   }
-  if (accepts('map') && typeof value === 'object') {
+  if (accepts('object') && typeof value === 'object') {
     return value
   }
   if (value === undefined) {
@@ -117,10 +135,10 @@ function normalize(value) {
 }
 
 function stringify(value) {
-  if (accepts('list') && Array.isArray(value)) {
+  if (accepts('array') && Array.isArray(value)) {
     return JSON.stringify(value, null, 2)
   }
-  if (accepts('map') && typeof value === 'object') {
+  if (accepts('object') && typeof value === 'object') {
     return JSON.stringify(value, null, 2)
   }
   if (value === undefined) {
@@ -138,19 +156,19 @@ function parseJSON(value) {
 }
 
 function parse(value) {
-  if (accepts('map')) {
+  if (accepts('object')) {
     const parsed = parseJSON(value)
     if (typeof parsed === 'object') {
       return parsed
     }
   }
-  if (accepts('list')) {
+  if (accepts('array')) {
     const parsed = parseJSON(value)
     if (Array.isArray(parsed)) {
       return parsed
     }
   }
-  if (accepts('number')) {
+  if (props.spec.schema && ['number', 'integer'].includes(props.spec.schema.type)) {
     const parsed = parseJSON(value)
     if (typeof parsed === 'number') {
       return parsed
@@ -193,11 +211,11 @@ function reset() {
           class="form-tip-line"
         >{{ comment }}#!settings.comments.{{ index }}.{{ spec.key }}</div>
       </div>
-      <SwitchControl v-if="spec.type === 'boolean'" v-model="model" />
+      <SwitchControl v-if="spec.schema?.type === 'boolean'" v-model="model" />
       <ObjectEditor
         v-else-if="isSimpleObject"
         v-model="model"
-        :with-keys="spec.type === 'map'"
+        :with-keys="spec.schema?.type === 'object'"
         :pinned="recommendations"
       >
         <template #note="{ item }">
@@ -212,12 +230,12 @@ function reset() {
         </template>
       </ObjectEditor>
       <select
-        v-else-if="spec.type === 'enum'"
+        v-else-if="spec.schema?.enum"
         v-model="model"
         class="form-control"
       >
         <option
-          v-for="(option, index) in spec.paradigm"
+          v-for="(option, index) in spec.schema.enum"
           :key="option"
           v-i18n
           :value="option"
@@ -225,14 +243,14 @@ function reset() {
       </select>
       <ValueSelector v-else v-model="model" :pinned="recommendations">
         <input
-          v-if="spec.type === 'number'"
+          v-if="spec.schema && ['number', 'integer'].includes(spec.schema.type)"
           v-model="model"
           :placeholder="placeholder"
           type="number"
           class="form-control"
         >
         <input
-          v-else-if="spec.type === 'string'"
+          v-else-if="spec.schema?.type === 'string'"
           v-model="model"
           :placeholder="placeholder"
           type="text"

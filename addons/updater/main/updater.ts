@@ -37,7 +37,9 @@ function useAutoUpdaterEffect() {
         clearInterval(timer)
       })
     }
-    checkForUpdates()
+    if (interval >= 0) {
+      checkForUpdates()
+    }
   })
   autoUpdater.on('update-available', () => {
     stop(reactiveEffect)

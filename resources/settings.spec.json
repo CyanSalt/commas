@@ -1,223 +1,276 @@
 [
   {
     "key": "terminal.shell.path",
-    "type": "string",
     "label": "Shell Path",
     "comments": [
       "Path of shell, $SHELL or PowerShell (on Windows) by default"
     ],
+    "schema": {
+      "type": "string"
+    },
     "default": ""
   },
   {
     "key": "terminal.shell.args",
-    "type": "list",
-    "paradigm": ["string"],
-    "configurable": ["linux", "darwin"],
-    "recommendations": ["--login"],
     "label": "Shell Args",
     "comments": [
       "Arguments of shell command line"
     ],
+    "configurable": ["linux", "darwin"],
+    "schema": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "recommendations": ["--login"],
     "default": ["--login"]
   },
   {
     "key": "terminal.shell.windowsArgs",
-    "type": "list",
-    "paradigm": ["string"],
-    "configurable": ["win32"],
     "label": "Shell Args",
     "comments": [
       "Arguments of shell command line (for Windows)"
     ],
+    "configurable": ["win32"],
+    "schema": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "default": []
   },
   {
     "key": "terminal.shell.env",
-    "type": "map",
-    "paradigm": ["string", "string"],
     "label": "Extra environment variables",
     "comments": [
       "Extra environment variables"
     ],
+    "schema": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
     "default": {}
   },
   {
     "key": "terminal.external.openPathIn",
-    "type": "enum",
-    "paradigm": ["new-tab", "new-window"],
     "label": "Open External Path In",
     "comments": [
       "Specify how to open external paths",
       "Options: 'new-tab' or 'new-window'"
     ],
+    "schema": {
+      "type": "string",
+      "enum": ["new-tab", "new-window"]
+    },
     "default": "new-tab"
   },
   {
     "key": "terminal.external.explorer",
-    "type": "string",
-    "recommendations": ["open -a \"Visual Studio Code\" \"${directory}\""],
     "label": "External Explorer",
     "comments": [
       "Command of external file manager (or code editor, etc) for launchers",
       "Use ${directory} to interpolate the variable at runtime",
       "Open in system file manager by default"
     ],
+    "schema": {
+      "type": "string"
+    },
+    "recommendations": ["open -a \"Visual Studio Code\" \"${directory}\""],
     "default": ""
   },
   {
     "key": "terminal.external.remoteExplorer",
-    "type": "string",
-    "recommendations": ["/usr/local/bin/code --folder-uri \"vscode-remote://ssh-remote+${remote}${directory}\""],
     "label": "Remote External Explorer",
     "comments": [
       "Command of external file manager for remote launchers",
       "Use ${directory} or ${remote} to interpolate these variables at runtime",
       "Skip by default"
     ],
+    "schema": {
+      "type": "string"
+    },
+    "recommendations": ["/usr/local/bin/code --folder-uri \"vscode-remote://ssh-remote+${remote}${directory}\""],
     "default": ""
   },
   {
     "key": "terminal.tab.liveCwd",
-    "type": "boolean",
     "label": "Enable Live CWD",
     "comments": [
       "Support dynamic \\w and \\W in formatting",
       "Disabling this feature will slightly improved performance."
     ],
+    "schema": {
+      "type": "boolean"
+    },
     "default": true
   },
   {
     "key": "terminal.tab.liveIcon",
-    "type": "boolean",
     "label": "Enable Live Icon",
     "comments": [
       "Support real-time icon (currently for macOS only)",
       "Disabling this feature will slightly improved performance."
     ],
+    "schema": {
+      "type": "boolean"
+    },
     "default": true
   },
   {
     "key": "terminal.tab.titleFormat",
-    "type": "string",
     "label": "Tab Title Format",
     "comments": [
       "Title format of terminal tab in grammer of bash prompt",
       "It will not work if title is set from OSC 0 or OSC 2",
       "Supported identifiers: \\h \\H \\l \\u \\v \\w \\W"
     ],
+    "schema": {
+      "type": "string"
+    },
     "default": "\\v"
   },
   {
     "key": "terminal.launcher.persistHistory",
-    "type": "boolean",
     "label": "Persistent Launcher History",
     "comments": [
       "Persistent the history of a launcher after it has been closed"
     ],
+    "schema": {
+      "type": "boolean"
+    },
     "default": false
   },
   {
     "key": "terminal.link.modifier",
-    "type": "enum",
-    "paradigm": ["CmdOrCtrl", "Alt"],
     "label": "Link Modifier",
     "comments": [
       "Keyboard modifier for opening link by click",
       "Options: 'CmdOrCtrl' or 'Alt'"
     ],
+    "schema": {
+      "type": "string",
+      "enum": ["CmdOrCtrl", "Alt"]
+    },
     "default": "Alt"
   },
   {
     "key": "terminal.renderer.type",
-    "type": "enum",
-    "paradigm": ["dom", "canvas", "webgl"],
     "label": "Renderer Type",
     "comments": [
       "Specify how to render the terminal",
       "Options: 'dom', 'canvas' or 'webgl'",
       "'webgl' will fallback to 'canvas' when transparency is enabled"
     ],
+    "schema": {
+      "type": "string",
+      "enum": ["dom", "canvas", "webgl"]
+    },
     "default": "webgl"
   },
   {
     "key": "terminal.style.opacity",
-    "type": "number",
-    "paradigm": [0, 1],
     "label": "Background Opacity",
     "comments": [
       "Background opacity of window",
       "It will not work if RGBA background is specified in theme file"
     ],
+    "schema": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
     "default": 0.9
   },
   {
     "key": "terminal.style.fontSize",
-    "type": "number",
-    "paradigm": [12, null],
     "label": "Font Size",
     "comments": [
       "Font size for window in pixels"
     ],
+    "schema": {
+      "type": "integer",
+      "minimum": 12
+    },
     "default": 14
   },
   {
     "key": "terminal.style.fontFamily",
-    "type": "string",
     "label": "Font Family",
     "comments": [
       "Font family names for window"
     ],
+    "schema": {
+      "type": "string"
+    },
     "default": "Fira Code, Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace"
   },
   {
     "key": "terminal.style.fontLigatures",
-    "type": "boolean",
     "label": "Enable Font Ligatures",
     "comments": [
       "Enable font ligatures (if specified font family supports, like Fira Code or Iosevka)"
     ],
+    "schema": {
+      "type": "boolean"
+    },
     "default": false
   },
   {
     "key": "terminal.style.cursorStyle",
-    "type": "enum",
-    "paradigm": ["block", "bar", "underline"],
     "label": "Cursor Style",
     "comments": [
       "Cursor style for terminals"
     ],
+    "schema": {
+      "type": "string",
+      "enum": ["block", "bar", "underline"]
+    },
     "default": "block"
   },
   {
     "key": "terminal.theme.name",
-    "type": "string",
-    "recommendations": ["oceanic-next", "tomorrow"],
     "label": "Theme Name",
     "comments": [
       "File name of built-in theme or files in `themes/` folder",
       "Support `oceanic-next` or `tomorrow` by default"
     ],
+    "schema": {
+      "type": "string"
+    },
+    "recommendations": ["oceanic-next", "tomorrow"],
     "default": "oceanic-next"
   },
   {
     "key": "terminal.theme.customization",
-    "type": "map",
-    "paradigm": ["string", "string"],
     "label": "Custom Theme Colors",
     "comments": [
       "Overwrite colors in the theme file"
     ],
+    "schema": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
     "default": {}
   },
   {
     "key": "terminal.addon.includes",
-    "type": "list",
-    "paradigm": ["string"],
-    "recommendations": ["cli", "updater", "preference", "proxy", "settings", "theme", "menu", "power-mode", "cleaner", "landscape"],
     "label": "Enabled Addons",
     "comments": [
       "List of enabled addon name"
     ],
+    "schema": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "recommendations": ["cli", "updater", "preference", "proxy", "settings", "theme", "menu", "power-mode", "cleaner", "landscape"],
     "default": ["cli", "updater", "preference", "proxy", "settings", "theme", "menu", "power-mode", "cleaner"]
   }
 ]

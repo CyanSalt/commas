@@ -1,22 +1,38 @@
 [
   {
     "key": "cli.command.externalURLs",
-    "type": "list",
-    "paradigm": ["map"],
     "label": "External URL Commands",
     "comments": [
       "Shortcut commands for external URLs"
     ],
+    "schema": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "default": []
   },
   {
     "key": "cli.command.aliases",
-    "type": "map",
-    "paradigm": ["string", "string"],
     "label": "Commands Aliases",
     "comments": [
       "Commands aliases in the shell"
     ],
+    "schema": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
     "default": {}
   }
 ]

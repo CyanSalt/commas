@@ -1,12 +1,15 @@
 [
   {
     "key": "proxy.server.port",
-    "type": "number",
-    "paradigm": [0, 65535],
     "label": "Proxy Server Port",
     "comments": [
       "Specify HTTP port for proxy server"
     ],
+    "schema": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535
+    },
     "default": 8899
   }
 ]

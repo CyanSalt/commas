@@ -1,11 +1,13 @@
 [
   {
     "key": "landscape.background.url",
-    "type": "string",
     "label": "Background URL",
     "comments": [
       "URL of landscape background image"
     ],
+    "schema": {
+      "type": "string"
+    },
     "default": "http://picsum.photos/836/469.webp?random=<nonce>"
   }
 ]
