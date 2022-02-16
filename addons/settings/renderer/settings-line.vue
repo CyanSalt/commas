@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { isEqual } from 'lodash-es'
-import type { JSONSchema } from 'typings/json-schema'
 import type { PropType } from 'vue'
 import ObjectEditor from '../../../renderer/components/basic/object-editor.vue'
 import type { EditorEntryItem } from '../../../renderer/components/basic/object-editor.vue'
@@ -8,6 +7,7 @@ import SwitchControl from '../../../renderer/components/basic/switch-control.vue
 import ValueSelector from '../../../renderer/components/basic/value-selector.vue'
 import { useDiscoveredAddons } from '../../../renderer/compositions/settings'
 import type { SettingsSpec } from '../../../typings/settings'
+import { accepts, isObjectSchema } from './json-schema'
 
 const { spec, modelValue, currentValue, open } = $(defineProps({
   spec: {
@@ -39,21 +39,13 @@ const emit = defineEmits({
 
 const discoveredAddons = $(useDiscoveredAddons())
 
-function isObjectSchema(schema: JSONSchema) {
-  return ['array', 'object'].includes(schema.type)
-}
-
 const isSimpleObject = $computed(() => {
   const schema = spec.schema
-  if (!schema) return false
-  if (schema.type === 'array') {
-    return !isObjectSchema(schema.items)
+  if (accepts(schema, 'array')) {
+    return !accepts(schema.items, ['array', 'object'])
   }
-  if (schema.type === 'object') {
-    if (schema.additionalProperties === false || (
-      typeof schema.additionalProperties === 'object'
-        && isObjectSchema(schema.additionalProperties)
-    )) return false
+  if (accepts(schema, 'object')) {
+    if (schema.additionalProperties === true || isObjectSchema(schema.additionalProperties)) return false
     return !schema.properties || Object.values(schema.properties).every(prop => !isObjectSchema(prop))
   }
   return false
@@ -67,8 +59,7 @@ let model = $computed({
   get: () => {
     if (
       modelValue === undefined
-      && spec.schema
-      && ['boolean', 'array', 'object'].includes(spec.schema.type)
+      && accepts(spec.schema, ['boolean', 'array', 'object'])
     ) {
       return normalize(spec.default)
     }
@@ -117,15 +108,11 @@ function getNote(item: EditorEntryItem) {
   return undefined
 }
 
-function accepts(type: JSONSchema['type']) {
-  return spec.schema?.type === type
-}
-
 function normalize(value) {
-  if (accepts('array') && Array.isArray(value)) {
+  if (accepts(spec.schema, 'array') && Array.isArray(value)) {
     return value
   }
-  if (accepts('object') && typeof value === 'object') {
+  if (accepts(spec.schema, 'object') && typeof value === 'object') {
     return value
   }
   if (value === undefined) {
@@ -135,10 +122,10 @@ function normalize(value) {
 }
 
 function stringify(value) {
-  if (accepts('array') && Array.isArray(value)) {
+  if (accepts(spec.schema, 'array') && Array.isArray(value)) {
     return JSON.stringify(value, null, 2)
   }
-  if (accepts('object') && typeof value === 'object') {
+  if (accepts(spec.schema, 'object') && typeof value === 'object') {
     return JSON.stringify(value, null, 2)
   }
   if (value === undefined) {
@@ -156,25 +143,25 @@ function parseJSON(value) {
 }
 
 function parse(value) {
-  if (accepts('object')) {
+  if (accepts(spec.schema, 'object')) {
     const parsed = parseJSON(value)
     if (typeof parsed === 'object') {
       return parsed
     }
   }
-  if (accepts('array')) {
+  if (accepts(spec.schema, 'array')) {
     const parsed = parseJSON(value)
     if (Array.isArray(parsed)) {
       return parsed
     }
   }
-  if (spec.schema && ['number', 'integer'].includes(spec.schema.type)) {
+  if (accepts(spec.schema, ['number', 'integer'])) {
     const parsed = parseJSON(value)
     if (typeof parsed === 'number') {
       return parsed
     }
   }
-  if (!accepts('string') && value === '') {
+  if (!accepts(spec.schema, 'string') && value === '') {
     return undefined
   }
   return value
@@ -211,11 +198,11 @@ function reset() {
           class="form-tip-line"
         >{{ comment }}#!settings.comments.{{ index }}.{{ spec.key }}</div>
       </div>
-      <SwitchControl v-if="spec.schema?.type === 'boolean'" v-model="model" />
+      <SwitchControl v-if="accepts(spec.schema, 'boolean')" v-model="model" />
       <ObjectEditor
         v-else-if="isSimpleObject"
         v-model="model"
-        :with-keys="spec.schema?.type === 'object'"
+        :with-keys="accepts(spec.schema, 'object')"
         :pinned="recommendations"
       >
         <template #note="{ item }">
@@ -243,14 +230,14 @@ function reset() {
       </select>
       <ValueSelector v-else v-model="model" :pinned="recommendations">
         <input
-          v-if="spec.schema && ['number', 'integer'].includes(spec.schema.type)"
+          v-if="accepts(spec.schema, ['number', 'integer'])"
           v-model="model"
           :placeholder="placeholder"
           type="number"
           class="form-control"
         >
         <input
-          v-else-if="spec.schema?.type === 'string'"
+          v-else-if="accepts(spec.schema, 'string')"
           v-model="model"
           :placeholder="placeholder"
           type="text"

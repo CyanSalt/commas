@@ -18,7 +18,7 @@ export interface BooleanSchema extends BaseSchema {
 
 export interface ArraySchema extends BaseSchema {
   type: 'array',
-  items: JSONSchema,
+  items?: JSONSchema,
 }
 
 export interface ObjectSchema extends BaseSchema {
