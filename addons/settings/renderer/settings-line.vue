@@ -9,7 +9,7 @@ import ValueSelector from '../../../renderer/components/basic/value-selector.vue
 import { useDiscoveredAddons } from '../../../renderer/compositions/settings'
 import type { SettingsSpec } from '../../../typings/settings'
 
-const props = defineProps({
+const { spec, modelValue, currentValue, open } = $(defineProps({
   spec: {
     type: Object as PropType<SettingsSpec>,
     required: true,
@@ -26,7 +26,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-})
+}))
 
 const emit = defineEmits({
   'update:modelValue': (value: any) => {
@@ -44,7 +44,7 @@ function isObjectSchema(schema: JSONSchema) {
 }
 
 const isSimpleObject = $computed(() => {
-  const schema = props.spec.schema
+  const schema = spec.schema
   if (!schema) return false
   if (schema.type === 'array') {
     return !isObjectSchema(schema.items)
@@ -60,23 +60,23 @@ const isSimpleObject = $computed(() => {
 })
 
 const placeholder = $computed(() => {
-  return String(stringify(props.spec.default))
+  return String(stringify(spec.default))
 })
 
 let model = $computed({
   get: () => {
     if (
-      props.modelValue === undefined
-      && props.spec.schema
-      && ['boolean', 'array', 'object'].includes(props.spec.schema.type)
+      modelValue === undefined
+      && spec.schema
+      && ['boolean', 'array', 'object'].includes(spec.schema.type)
     ) {
-      return normalize(props.spec.default)
+      return normalize(spec.default)
     }
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (isSimpleObject) {
-      return normalize(props.modelValue)
+      return normalize(modelValue)
     }
-    return stringify(props.modelValue)
+    return stringify(modelValue)
   },
   set: (value) => {
     emit('update:modelValue', parse(value))
@@ -84,21 +84,21 @@ let model = $computed({
 })
 
 const isCustomized = $computed(() => {
-  if (props.modelValue === undefined) return false
-  return !isEqual(props.modelValue, props.spec.default)
+  if (modelValue === undefined) return false
+  return !isEqual(modelValue, spec.default)
 })
 
 const isChanged = $computed(() => {
-  return !isEqual(props.modelValue, props.currentValue)
+  return !isEqual(modelValue, currentValue)
 })
 
 const hasNotes = $computed(() => {
-  return props.spec.key === 'terminal.addon.includes'
+  return spec.key === 'terminal.addon.includes'
 })
 
 const recommendations = $computed(() => {
-  const specRecommendations = props.spec.recommendations
-  if (props.spec.key === 'terminal.addon.includes') {
+  const specRecommendations = spec.recommendations
+  if (spec.key === 'terminal.addon.includes') {
     return [
       ...specRecommendations!,
       ...Object.keys(discoveredAddons)
@@ -109,7 +109,7 @@ const recommendations = $computed(() => {
 })
 
 function getNote(item: EditorEntryItem) {
-  if (props.spec.key === 'terminal.addon.includes') {
+  if (spec.key === 'terminal.addon.includes') {
     const info = discoveredAddons[item.entry.value]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     return info?.manifest?.description ?? ''
@@ -118,7 +118,7 @@ function getNote(item: EditorEntryItem) {
 }
 
 function accepts(type: JSONSchema['type']) {
-  return props.spec.schema?.type === type
+  return spec.schema?.type === type
 }
 
 function normalize(value) {
@@ -168,7 +168,7 @@ function parse(value) {
       return parsed
     }
   }
-  if (props.spec.schema && ['number', 'integer'].includes(props.spec.schema.type)) {
+  if (spec.schema && ['number', 'integer'].includes(spec.schema.type)) {
     const parsed = parseJSON(value)
     if (typeof parsed === 'number') {
       return parsed
@@ -185,7 +185,7 @@ function toggle(event) {
 }
 
 function reset() {
-  model = props.spec.default
+  model = spec.default
 }
 </script>
 

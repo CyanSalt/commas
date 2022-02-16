@@ -7,12 +7,12 @@ import type { TerminalTab } from '../../typings/terminal'
 import { mountTerminalTab, writeTerminalTab } from '../compositions/terminal'
 import { openContextMenu } from '../utils/frame'
 
-const props = defineProps({
+const { tab } = $(defineProps({
   tab: {
     type: Object as PropType<TerminalTab>,
     required: true,
   },
-})
+}))
 
 const terminal = $ref<HTMLElement>()
 
@@ -26,7 +26,7 @@ function dropFile(event: DragEvent) {
   const files = event.dataTransfer?.files
   if (!files || !files.length) return
   const paths = Array.from(files).map(({ path }) => path)
-  writeTerminalTab(props.tab, quote(paths))
+  writeTerminalTab(tab, quote(paths))
 }
 
 function openEditingMenu(event: MouseEvent) {
@@ -53,11 +53,11 @@ function openEditingMenu(event: MouseEvent) {
 }
 
 onMounted(() => {
-  mountTerminalTab(props.tab, terminal)
+  mountTerminalTab(tab, terminal)
 })
 
 onActivated(() => {
-  const xterm = props.tab.xterm
+  const xterm = tab.xterm
   if (xterm['_core'].viewport) {
     xterm['_core'].viewport.syncScrollArea()
   }

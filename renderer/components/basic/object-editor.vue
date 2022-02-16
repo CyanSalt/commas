@@ -4,7 +4,7 @@ import { watch } from 'vue'
 import type { PropType } from 'vue'
 import OrderedCheckbox from './ordered-checkbox.vue'
 
-const props = defineProps({
+const { modelValue, withKeys, pinned } = $(defineProps({
   modelValue: {
     type: [Object, undefined] as PropType<object | undefined>,
     required: true,
@@ -17,7 +17,7 @@ const props = defineProps({
     type: [Object, undefined] as PropType<object | undefined>,
     default: undefined,
   },
-})
+}))
 
 const emit = defineEmits({
   'update:modelValue': (value: object | undefined) => {
@@ -33,17 +33,17 @@ function transform(object: object | undefined): EditorEntry[] {
 }
 
 function isMatchedWithPinned(entry: EditorEntry, pinned: EditorEntry) {
-  if (props.withKeys && entry.key !== pinned.key) return false
+  if (withKeys && entry.key !== pinned.key) return false
   return entry.value === pinned.value
 }
 
 const entryItems = $computed(() => {
-  const pinnedEntries = transform(props.pinned)
+  const pinnedEntries = transform(pinned)
   const pinnedItems = pinnedEntries.map<EditorEntryItem>(entry => ({
     entry,
     pinned: true,
     index: entries.findIndex(item => isMatchedWithPinned(item, entry)),
-    id: `pinned:${props.withKeys ? entry.key : entry.value}`,
+    id: `pinned:${withKeys ? entry.key : entry.value}`,
   }))
   const extraItems = entries
     .map<EditorEntryItem>((entry, index) => (
@@ -60,16 +60,16 @@ const entryItems = $computed(() => {
 })
 
 const result = $computed<object>(() => {
-  if (props.withKeys) {
+  if (withKeys) {
     return Object.fromEntries(entries.map(({ key, value }) => [key, value]))
   } else {
     return entries.map(({ key, value }) => value)
   }
 })
 
-watch(() => props.modelValue, modelValue => {
-  if (!isEqual(modelValue, result)) {
-    entries = transform(props.modelValue)
+watch($$(modelValue), value => {
+  if (!isEqual(value, result)) {
+    entries = transform(value)
   }
 }, { immediate: true })
 

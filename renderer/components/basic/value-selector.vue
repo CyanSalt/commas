@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
 
-const props = defineProps({
+const { modelValue, pinned } = $(defineProps({
   modelValue: {
     type: null,
     required: true,
@@ -10,7 +10,7 @@ const props = defineProps({
     type: Array as PropType<string[]>,
     default: () => [],
   },
-})
+}))
 
 const emit = defineEmits({
   'update:modelValue': (value: any) => {
@@ -18,10 +18,10 @@ const emit = defineEmits({
   },
 })
 
-let isPinned = $ref(props.modelValue && props.pinned.includes(props.modelValue))
+let isPinned = $ref(modelValue && pinned.includes(modelValue))
 
-function update(value, pinned: boolean) {
-  isPinned = pinned
+function update(value, pinnedStatus: boolean) {
+  isPinned = pinnedStatus
   emit('update:modelValue', value)
 }
 </script>

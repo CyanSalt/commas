@@ -6,7 +6,7 @@ import type { TerminalTab } from '../../typings/terminal'
 import { getTerminalTabTitle, useCurrentTerminal, closeTerminalTab } from '../compositions/terminal'
 import { getIconEntryByProcess } from '../utils/terminal'
 
-const props = defineProps({
+const { launcher, tab } = $(defineProps({
   launcher: {
     type: Object as PropType<Launcher | undefined>,
     default: undefined,
@@ -15,39 +15,39 @@ const props = defineProps({
     type: Object as PropType<TerminalTab | undefined>,
     default: undefined,
   },
-})
+}))
 
 const terminal = $(useCurrentTerminal())
 const isFocused = $computed(() => {
-  return Boolean(props.tab) && terminal === props.tab
+  return Boolean(tab) && terminal === tab
 })
 
 const pane = $computed(() => {
-  if (!props.tab) return null
-  return props.tab.pane
+  if (!tab) return null
+  return tab.pane
 })
 
 const iconEntry = $computed(() => {
-  if (!props.tab) return null
+  if (!tab) return null
   if (pane) return pane.icon
-  return getIconEntryByProcess(props.tab.process)
+  return getIconEntryByProcess(tab.process)
 })
 
 const title = $computed(() => {
-  if (props.launcher) return props.launcher.name
-  return props.tab ? getTerminalTabTitle(props.tab) : ''
+  if (launcher) return launcher.name
+  return tab ? getTerminalTabTitle(tab) : ''
 })
 
 const idleState = $computed(() => {
-  if (!props.tab || pane) return ''
-  if (props.tab.alerting) return 'alerting'
-  if (props.tab.process === path.basename(props.tab.shell)) return 'idle'
+  if (!tab || pane) return ''
+  if (tab.alerting) return 'alerting'
+  if (tab.process === path.basename(tab.shell)) return 'idle'
   return 'busy'
 })
 
 function close() {
-  if (!props.tab) return
-  closeTerminalTab(props.tab)
+  if (!tab) return
+  closeTerminalTab(tab)
 }
 </script>
 

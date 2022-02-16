@@ -3,7 +3,7 @@ import { onBeforeUpdate } from 'vue'
 import type { PropType } from 'vue'
 import { handleMousePressing } from '../../utils/helper'
 
-const props = defineProps({
+const { value, valueKey, disabled } = $(defineProps({
   value: {
     type: Array as PropType<any[]>,
     required: true,
@@ -16,7 +16,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-})
+}))
 
 const emit = defineEmits({
   change: (fromIndex: number, toIndex: number) => {
@@ -30,10 +30,10 @@ let items = $ref<HTMLElement[]>([])
 let draggingIndex = $ref(-1)
 
 const keys = $computed(() => {
-  return props.value.map((value, index) => {
-    if (props.valueKey === undefined) return index
-    if (typeof props.valueKey === 'function') return props.valueKey.call(undefined, value)
-    return value[props.valueKey]
+  return value.map((item, index) => {
+    if (valueKey === undefined) return index
+    if (typeof valueKey === 'function') return valueKey(item)
+    return item[valueKey]
   })
 })
 
@@ -46,7 +46,7 @@ const draggingElement = $computed(() => {
 })
 
 function startDragging(event: DragEvent, index: number) {
-  if (props.disabled) return
+  if (disabled) return
   if (items[index].contains(document.activeElement)) return
   handleMousePressing({
     onMove: handleDraggingMove,

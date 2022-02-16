@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-const props = defineProps({
+const { index } = $(defineProps({
   index: {
     type: Number,
     default: -1,
   },
-})
+}))
 
 const emit = defineEmits({
   change: () => {
@@ -13,7 +13,7 @@ const emit = defineEmits({
 })
 
 const order = $computed(() => {
-  return props.index + 1
+  return index + 1
 })
 
 const checked = $computed<boolean>({
