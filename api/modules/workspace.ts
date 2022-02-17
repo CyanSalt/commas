@@ -1,14 +1,14 @@
-import { shallowReactive, markRaw } from 'vue'
+import { shallowReactive, markRaw, unref } from 'vue'
 import { activateOrAddTerminalTab, useTerminalTabs } from '../../renderer/compositions/terminal'
 import { createIDGenerator } from '../../renderer/utils/helper'
 import type { TerminalTab, TerminalTabPane } from '../../typings/terminal'
 import type { CommasContext } from '../types'
 
-const tabs = shallowReactive<Record<string, TerminalTab>>({})
+const panes = shallowReactive<Record<string, TerminalTab>>({})
 const generateID = createIDGenerator()
 
 function registerTabPane(this: CommasContext, name: string, pane: TerminalTabPane) {
-  tabs[name] = markRaw({
+  panes[name] = markRaw({
     pid: generateID(),
     process: '',
     title: '',
@@ -16,16 +16,46 @@ function registerTabPane(this: CommasContext, name: string, pane: TerminalTabPan
     pane,
   } as TerminalTab)
   this.$.app.onCleanup(() => {
-    delete tabs[name]
+    delete panes[name]
   })
 }
 
 function getPaneTab(name: string) {
-  return tabs[name]
+  return panes[name]
 }
 
 function openPaneTab(name: string) {
   activateOrAddTerminalTab(getPaneTab(name))
+}
+
+function effectTerminalTab(
+  this: CommasContext,
+  callback: (tab: TerminalTab, active: boolean) => void,
+  immediate?: boolean,
+) {
+  let active = false
+
+  this.$.app.events.on('terminal-tab-effect', tab => {
+    callback(tab, active)
+  })
+
+  const toggle = (enabled: boolean) => {
+    if (active === enabled) return
+    active = enabled
+    const tabs = unref(useTerminalTabs())
+    tabs.forEach(tab => {
+      callback(tab, active)
+    })
+  }
+
+  this.$.app.onCleanup(() => {
+    toggle(false)
+  })
+  if (immediate) {
+    toggle(true)
+  }
+
+  return toggle
 }
 
 export {
@@ -33,4 +63,5 @@ export {
   getPaneTab,
   openPaneTab,
   useTerminalTabs,
+  effectTerminalTab,
 }

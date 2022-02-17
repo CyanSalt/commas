@@ -16,44 +16,19 @@ module.exports = function (commas) {
 
     const { PowerMode } = commas.bundler.extract('power-mode/renderer/xterm.ts')
 
-    const instances = []
-
-    const openPowerMode = tab => {
-      const xterm = tab.xterm
-      if (!xterm) return
-      const powerMode = new PowerMode()
-      tab.addons.powerMode = powerMode
-      xterm.loadAddon(powerMode)
-      instances.push(powerMode)
-    }
-
-    const enable = () => {
-      const tabsRef = commas.workspace.useTerminalTabs()
-      tabsRef.value.forEach(openPowerMode)
-      commas.app.events.on('terminal-tab-mounted', openPowerMode)
-    }
-
-    const disable = () => {
-      instances.forEach(instance => {
-        instance.dispose()
-      })
-      commas.app.events.off('terminal-tab-mounted', openPowerMode)
-    }
-
-    commas.app.onCleanup(() => {
-      disable()
+    const toggle = commas.workspace.effectTerminalTab((tab, active) => {
+      if (active && !tab.addons.powerMode) {
+        const powerMode = new PowerMode()
+        tab.addons.powerMode = powerMode
+        tab.xterm.loadAddon(powerMode)
+      } else if (!active && tab.addons.powerMode) {
+        tab.addons.powerMode.dispose()
+        delete tab.addons.powerMode
+      }
     })
 
-    let enabled = false
-
     commas.ipcRenderer.on('toggle-power-mode', (event, active) => {
-      if (enabled && !active) {
-        enabled = false
-        disable()
-      } else if (!enabled && active) {
-        enabled = true
-        enable()
-      }
+      toggle(active)
     })
 
   }
