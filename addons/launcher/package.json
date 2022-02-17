@@ -1,0 +1,9 @@
+{
+  "name": "launcher",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Quick execution of commands",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC"
+}

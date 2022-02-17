@@ -72,7 +72,7 @@
     "key": "terminal.external.explorer",
     "label": "External Explorer",
     "comments": [
-      "Command of external file manager (or code editor, etc) for launchers",
+      "Command for starting external file manager (or code editor, etc)",
       "Use ${directory} to interpolate the variable at runtime",
       "Open in system file manager by default"
     ],
@@ -86,7 +86,7 @@
     "key": "terminal.external.remoteExplorer",
     "label": "Remote External Explorer",
     "comments": [
-      "Command of external file manager for remote launchers",
+      "Command for starting remote external file manager",
       "Use ${directory} or ${remote} to interpolate these variables at runtime",
       "Skip by default"
     ],
@@ -132,17 +132,6 @@
       "type": "string"
     },
     "default": "\\v"
-  },
-  {
-    "key": "terminal.launcher.persistHistory",
-    "label": "Persistent Launcher History",
-    "comments": [
-      "Persistent the history of a launcher after it has been closed"
-    ],
-    "schema": {
-      "type": "boolean"
-    },
-    "default": false
   },
   {
     "key": "terminal.link.modifier",
@@ -269,7 +258,7 @@
         "type": "string"
       }
     },
-    "recommendations": ["cli", "updater", "preference", "proxy", "settings", "theme", "menu", "power-mode", "cleaner", "landscape"],
-    "default": ["cli", "updater", "preference", "proxy", "settings", "theme", "menu", "power-mode", "cleaner"]
+    "recommendations": ["cli", "updater", "launcher", "preference", "proxy", "settings", "theme", "menu", "power-mode", "cleaner", "landscape"],
+    "default": ["cli", "updater", "launcher", "preference", "proxy", "settings", "theme", "menu", "power-mode", "cleaner"]
   }
 ]

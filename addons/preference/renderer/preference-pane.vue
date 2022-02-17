@@ -38,10 +38,6 @@ function openSettingsFile() {
   ipcRenderer.invoke('open-settings-file')
 }
 
-function openLaunchers() {
-  ipcRenderer.invoke('open-user-file', 'launchers.yaml', true)
-}
-
 function openKeyBindings() {
   ipcRenderer.invoke('open-user-file', 'keybindings.yaml', true)
 }
@@ -89,9 +85,6 @@ function openWebsite() {
         v-for="(item, index) in featureItems"
         :key="index"
       />
-      <span class="link" @click="openLaunchers">
-        <span v-i18n="{ F: 'launchers.yaml' }">Edit %F#!preference.8</span>
-      </span>
     </div>
     <h2 v-i18n class="group-title">Customization#!preference.4</h2>
     <div class="group">

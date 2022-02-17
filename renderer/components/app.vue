@@ -8,7 +8,6 @@ import {
   useFullscreen,
   handleFrameMessages,
 } from '../compositions/frame'
-import { handleLauncherMessages } from '../compositions/launcher'
 import {
   useIsTabListEnabled,
   useWillQuit,
@@ -45,7 +44,6 @@ injectTheme()
 handleFrameMessages()
 handleShellMessages()
 handleTerminalMessages()
-handleLauncherMessages()
 
 const startIndex = process.argv.indexOf('--') + 1
 const args = startIndex ? process.argv.slice(startIndex) : []

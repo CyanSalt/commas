@@ -1,19 +1,18 @@
 import { shell, ipcRenderer } from 'electron'
 import { memoize } from 'lodash-es'
-import { unref, watch } from 'vue'
-import type { Terminal } from 'xterm'
-import type { Launcher } from '../../typings/launcher'
-import type { TerminalTab } from '../../typings/terminal'
-import { injectIPC } from '../utils/compositions'
-import { getLauncherCommand } from '../utils/launcher'
-import { resolveHome } from '../utils/terminal'
-import { useSettings } from './settings'
+import { unref } from 'vue'
+import { useSettings } from '../../../renderer/compositions/settings'
 import {
   useTerminalTabs,
   createTerminalTab,
   activateTerminalTab,
   executeTerminalTab,
-} from './terminal'
+} from '../../../renderer/compositions/terminal'
+import { injectIPC } from '../../../renderer/utils/compositions'
+import { resolveHome } from '../../../renderer/utils/terminal'
+import type { TerminalTab, TerminalTabGroup } from '../../../typings/terminal'
+import type { Launcher } from '../typings/launcher'
+import { getLauncherCommand } from './utils'
 
 export const useLaunchers = memoize(() => {
   return injectIPC<Launcher[]>('launchers', [])
@@ -21,12 +20,23 @@ export const useLaunchers = memoize(() => {
 
 export function getTerminalTabByLauncher(launcher: Launcher) {
   const tabs = unref(useTerminalTabs())
-  return tabs.find(tab => tab.launcher === launcher.id)
+  return tabs.find(tab => tab.group?.type === 'launcher' && tab.group.data === launcher.id)
 }
 
 export function getLauncherByTerminalTab(tab: TerminalTab) {
   const launchers = unref(useLaunchers())
-  return launchers.find(launcher => tab.launcher === launcher.id)
+  return launchers.find(launcher => tab.group?.type === 'launcher' && tab.group.data === launcher.id)
+}
+
+export function createLauncherGroup(launcher: Launcher): TerminalTabGroup {
+  return {
+    type: 'launcher',
+    title: launcher.name,
+    icon: {
+      name: `feather-icon ${launcher.remote ? 'icon-link' : 'icon-hash'}`,
+    },
+    data: launcher.id,
+  }
 }
 
 interface OpenLauncherOptions {
@@ -44,8 +54,8 @@ export async function openLauncher(launcher: Launcher, { command }: OpenLauncher
     const directory = launcher.remote ? undefined : launcher.directory
     await createTerminalTab({
       cwd: directory && resolveHome(directory),
-      launcher: launcher.id,
       command,
+      group: createLauncherGroup(launcher),
     })
   }
 }
@@ -99,31 +109,4 @@ export function moveLauncher(from: number, to: number) {
     launchers.splice(to, 0, rule)
   }
   launchersRef.value = launchers
-}
-
-const launcherSessionMap = new Map<number, string>()
-
-export function loadLauncherSession(xterm: Terminal, id: number) {
-  const session = launcherSessionMap.get(id)
-  if (session) {
-    xterm.write(session)
-  }
-}
-
-export function saveLauncherSession(tab: TerminalTab) {
-  if (tab.launcher) {
-    launcherSessionMap.set(tab.launcher, tab.addons.serialize.serialize())
-  }
-}
-
-export function handleLauncherMessages() {
-  watch(useLaunchers(), () => {
-    launcherSessionMap.clear()
-  })
-  ipcRenderer.on('start-launcher', (event, launcher: Launcher) => {
-    startLauncher(launcher)
-  })
-  ipcRenderer.on('run-script', (event, launcher: Launcher, index: number) => {
-    runLauncherScript(launcher, index)
-  })
 }

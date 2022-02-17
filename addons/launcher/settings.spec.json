@@ -1,0 +1,13 @@
+[
+  {
+    "key": "launcher.session.persist",
+    "label": "Persistent Launcher Session",
+    "comments": [
+      "Persistent the history of a launcher after it has been closed"
+    ],
+    "schema": {
+      "type": "boolean"
+    },
+    "default": false
+  }
+]

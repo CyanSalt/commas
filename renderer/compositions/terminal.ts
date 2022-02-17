@@ -1,25 +1,23 @@
 import * as os from 'os'
 import { clipboard, ipcRenderer, shell } from 'electron'
-import { memoize, debounce, findLast, isMatch, sortBy, groupBy } from 'lodash-es'
+import { memoize, debounce, findLast, isMatch } from 'lodash-es'
 import { ref, computed, unref, markRaw, reactive, toRaw, watch, nextTick } from 'vue'
 import { Terminal } from 'xterm'
 import type { ITerminalOptions } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
 import { LigaturesAddon } from 'xterm-addon-ligatures'
 import { SearchAddon } from 'xterm-addon-search'
-import { SerializeAddon } from 'xterm-addon-serialize'
 import { Unicode11Addon } from 'xterm-addon-unicode11'
 import { WebLinksAddon } from 'xterm-addon-web-links'
 import { WebglAddon } from 'xterm-addon-webgl'
 import * as commas from '../../api/core-renderer'
 import type { MenuItem } from '../../typings/menu'
-import type { TerminalInfo, TerminalTab, XtermBufferPosition, XtermLink } from '../../typings/terminal'
+import type { TerminalInfo, TerminalTab, TerminalTabGroup, XtermBufferPosition, XtermLink } from '../../typings/terminal'
 import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
 import { getPrompt, getWindowsProcessInfo } from '../utils/terminal'
 import { addFirework } from './fireworks'
 import { useKeyBindings } from './keybinding'
-import { getLauncherByTerminalTab, loadLauncherSession, saveLauncherSession, useLaunchers } from './launcher'
 import { useSettings } from './settings'
 import { useTheme } from './theme'
 
@@ -88,20 +86,19 @@ const keybindingsRef = computed(() => {
 export interface CreateTerminalTabOptions {
   cwd?: string,
   shell?: string,
-  launcher?: number,
   command?: string,
+  group?: TerminalTabGroup,
 }
 
 export async function createTerminalTab({
   cwd: workingDirectory,
   shell: shellPath,
   command,
-  launcher,
+  group,
 }: CreateTerminalTabOptions = {}) {
   const info: TerminalInfo = await ipcRenderer.invoke('create-terminal', { cwd: workingDirectory, shell: shellPath })
   const xterm = new Terminal(unref(terminalOptionsRef))
   const settingsRef = useSettings()
-  const settings = unref(settingsRef)
   const tab = reactive<TerminalTab>({
     ...info,
     title: '',
@@ -109,7 +106,7 @@ export async function createTerminalTab({
     addons: markRaw({}),
     links: markRaw([]),
     alerting: false,
-    launcher,
+    group,
   })
   xterm.attachCustomKeyEventHandler(event => {
     // Support shortcuts on Windows
@@ -130,9 +127,6 @@ export async function createTerminalTab({
     }
   })
   const pid = info.pid
-  if (launcher && settings['terminal.launcher.persistHistory']) {
-    loadLauncherSession(xterm, launcher)
-  }
   // Setup communication between xterm.js and node-pty
   xterm.onData(data => {
     if (tab.alerting) {
@@ -338,6 +332,7 @@ export async function createTerminalTab({
   const tabs = unref(tabsRef)
   tabs.push(tab)
   activeIndexRef.value = tabs.length - 1
+  return tab
 }
 
 const createResizeObserver = memoize(() => {
@@ -354,6 +349,9 @@ export function getTerminalTabTitle(tab: TerminalTab) {
   if (tab.pane) {
     return tab.pane.title
   }
+  if (tab.group) {
+    return tab.group.title
+  }
   if (process.platform !== 'win32' && tab.title) {
     return tab.title
   }
@@ -365,37 +363,16 @@ export function getTerminalTabTitle(tab: TerminalTab) {
 
 export function showTabOptions(event?: MouseEvent) {
   const tabs = unref(tabsRef)
-  const entries = tabs.map((tab, index) => {
-    const launcher = getLauncherByTerminalTab(tab)
-    return { tab, launcher, index }
-  })
-  const groups = groupBy(entries, entry => Boolean(entry.launcher)) as Partial<Record<'true' | 'false', typeof entries>>
-  const normalTabs = (groups.false ?? []).map(({ tab, index }) => ({
-    label: getTerminalTabTitle(tab),
-    args: [index],
-  }))
-  const launchers = unref(useLaunchers())
-  const launcherTabs = sortBy(
-    groups.true ?? [],
-    ({ launcher }) => launchers.findIndex(item => item.id === launcher!.id),
-  ).map(({ launcher, index }) => ({
-    label: launcher!.name,
-    args: [index],
-  }))
-  const options = [
-    ...normalTabs,
-    ...launcherTabs,
-  ].map<MenuItem>((item, index) => {
+  const entries = tabs.map((tab, index) => ({ tab, index }))
+  const options = entries.map<MenuItem>(({ tab, index }) => {
     const number = index + 1
     return {
-      ...item,
+      label: getTerminalTabTitle(tab),
+      args: [index],
       command: 'select-tab',
       accelerator: number < 10 ? String(number) : undefined,
     }
   })
-  if (groups.false && groups.true) {
-    options.splice(groups.false.length, 0, { type: 'separator' })
-  }
   const activeIndex = unref(activeIndexRef)
   openContextMenu(options, event ?? [0, 36], options.findIndex(item => item.args?.[0] === activeIndex))
 }
@@ -468,11 +445,6 @@ export function handleTerminalMessages() {
         observer.unobserve(xterm.element)
       }
     }
-    const launcher = getLauncherByTerminalTab(tab)
-    const settings = unref(useSettings())
-    if (launcher && settings['terminal.launcher.persistHistory']) {
-      saveLauncherSession(tab)
-    }
     xterm.dispose()
     removeTerminalTab(tab)
   })
@@ -523,7 +495,6 @@ export function handleTerminalMessages() {
 export function loadTerminalAddons(tab: TerminalTab) {
   const xterm = tab.xterm
   if (!xterm.element) return
-  const launcher = getLauncherByTerminalTab(tab)
   const settingsRef = useSettings()
   const settings = unref(settingsRef)
   if (!tab.addons.fit) {
@@ -582,17 +553,7 @@ export function loadTerminalAddons(tab: TerminalTab) {
       delete tab.addons.webgl
     }
   }
-  if (launcher && settings['terminal.launcher.persistHistory']) {
-    if (!tab.addons.serialize) {
-      tab.addons.serialize = new SerializeAddon()
-      xterm.loadAddon(tab.addons.serialize)
-    } else {
-      if (tab.addons.serialize) {
-        tab.addons.serialize.dispose()
-        delete tab.addons.serialize
-      }
-    }
-  }
+  commas.proxy.app.events.emit('terminal-tab-effect', tab)
 }
 
 export function mountTerminalTab(tab: TerminalTab, element: HTMLElement) {
@@ -603,7 +564,6 @@ export function mountTerminalTab(tab: TerminalTab, element: HTMLElement) {
   observer.observe(element)
   tab.addons.fit.fit()
   xterm.focus()
-  commas.proxy.app.events.emit('terminal-tab-mounted', tab)
 }
 
 export function writeTerminalTab(tab: TerminalTab, data: string) {

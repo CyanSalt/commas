@@ -1,18 +1,17 @@
 <script lang="ts" setup>
 import * as path from 'path'
 import type { PropType } from 'vue'
-import type { Launcher } from '../../typings/launcher'
-import type { TerminalTab } from '../../typings/terminal'
+import type { TerminalTab, TerminalTabGroup } from '../../typings/terminal'
 import { getTerminalTabTitle, useCurrentTerminal, closeTerminalTab } from '../compositions/terminal'
 import { getIconEntryByProcess } from '../utils/terminal'
 
-const { launcher, tab } = defineProps({
-  launcher: {
-    type: Object as PropType<Launcher | undefined>,
-    default: undefined,
-  },
+const { tab, group } = defineProps({
   tab: {
     type: Object as PropType<TerminalTab | undefined>,
+    default: undefined,
+  },
+  group: {
+    type: Object as PropType<TerminalTabGroup | undefined>,
     default: undefined,
   },
 })
@@ -28,13 +27,14 @@ const pane = $computed(() => {
 })
 
 const iconEntry = $computed(() => {
+  if (group) return group.icon
   if (!tab) return null
   if (pane) return pane.icon
   return getIconEntryByProcess(tab.process)
 })
 
 const title = $computed(() => {
-  if (launcher) return launcher.name
+  if (group) return group.title
   return tab ? getTerminalTabTitle(tab) : ''
 })
 
@@ -56,11 +56,7 @@ function close() {
     <div class="tab-overview">
       <div class="tab-title">
         <span
-          v-if="launcher"
-          :class="['tab-icon', 'feather-icon', launcher.remote ? 'icon-link' : 'icon-hash']"
-        ></span>
-        <span
-          v-else-if="iconEntry"
+          v-if="iconEntry"
           :style="{ color: isFocused ? iconEntry.color : undefined }"
           :class="['tab-icon', iconEntry.name]"
         ></span>

@@ -7,7 +7,6 @@ import { discoverAddons, handleAddonMessages } from './lib/addon-manager'
 import { hasWindow, getLastWindow } from './lib/frame'
 import { loadTranslations, handleI18NMessages } from './lib/i18n'
 import { handleKeyBindingMessages } from './lib/keybinding'
-import { handleLauncherMessages } from './lib/launcher'
 import { createApplicationMenu, createDockMenu, handleMenuMessages } from './lib/menu'
 import { handleMessages } from './lib/message'
 import { handleSettingsMessages, useSettings, whenSettingsReady } from './lib/settings'
@@ -23,7 +22,6 @@ handleAddonMessages()
 handleSettingsMessages()
 handleThemeMessages()
 handleTerminalMessages()
-handleLauncherMessages()
 handleKeyBindingMessages()
 
 let cwd

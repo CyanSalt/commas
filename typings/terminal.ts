@@ -7,6 +7,13 @@ export interface TerminalTabPane {
   component: any,
 }
 
+export interface TerminalTabGroup {
+  type: string,
+  title: string,
+  icon: IconEntry,
+  data: any,
+}
+
 export interface TerminalInfo {
   pid: number,
   process: string,
@@ -31,6 +38,6 @@ export interface TerminalTab extends TerminalInfo {
   addons: Record<string, any>, // Record<string, ITerminalAddon>
   links: XtermLink[],
   alerting?: boolean,
-  launcher?: number,
   pane?: TerminalTabPane,
+  group?: TerminalTabGroup,
 }
