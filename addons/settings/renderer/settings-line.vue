@@ -51,6 +51,11 @@ const isSimpleObject = $computed(() => {
   return false
 })
 
+const isScalarEnum = $computed(() => {
+  const schema = spec.schema
+  return schema?.enum?.every(item => typeof item !== 'object')
+})
+
 const placeholder = $computed(() => {
   return String(stringify(spec.default))
 })
@@ -217,12 +222,12 @@ function reset() {
         </template>
       </ObjectEditor>
       <select
-        v-else-if="spec.schema?.enum"
+        v-else-if="isScalarEnum"
         v-model="model"
         class="form-control"
       >
         <option
-          v-for="(option, index) in spec.schema.enum"
+          v-for="(option, index) in spec.schema!.enum"
           :key="option"
           v-i18n
           :value="option"
@@ -237,12 +242,13 @@ function reset() {
           class="form-control"
           :min="spec.schema.minimum"
           :max="spec.schema.maximum"
-          :step="spec.schema.type === 'integer' ? 1 : 0.1"
+          :step="spec.schema.multipleOf"
         >
         <input
           v-else-if="accepts(spec.schema, 'string')"
           v-model="model"
           :placeholder="placeholder"
+          :pattern="spec.schema.pattern"
           type="text"
           class="form-control"
         >

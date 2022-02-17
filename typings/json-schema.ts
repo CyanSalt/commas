@@ -1,30 +1,22 @@
-export interface BaseSchema {
-  enum?: any[],
-}
+export type JSONSchemaType = 'string' | 'number' | 'integer' | 'boolean' | 'array' | 'object'
 
-export interface NumericSchema extends BaseSchema {
-  type: 'number' | 'integer',
+export interface JSONSchema {
+  type?: JSONSchemaType | JSONSchemaType[],
+  enum?: any[],
+  // string
+  pattern?: string,
+  // number
   minimum?: number,
   maximum?: number,
-}
-
-export interface StringSchema extends BaseSchema {
-  type: 'string',
-}
-
-export interface BooleanSchema extends BaseSchema {
-  type: 'boolean',
-}
-
-export interface ArraySchema extends BaseSchema {
-  type: 'array',
+  multipleOf?: number,
+  // array
   items?: JSONSchema,
-}
-
-export interface ObjectSchema extends BaseSchema {
-  type: 'object',
+  // object
   properties?: Record<string, JSONSchema>,
   additionalProperties?: boolean | JSONSchema,
+  // combining
+  allOf?: JSONSchema[],
+  anyOf?: JSONSchema[],
+  oneOf?: JSONSchema[],
+  not?: JSONSchema,
 }
-
-export type JSONSchema = NumericSchema | StringSchema | BooleanSchema | ArraySchema | ObjectSchema
