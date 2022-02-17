@@ -39,19 +39,19 @@ function openSettingsFile() {
 }
 
 function openKeyBindings() {
-  ipcRenderer.invoke('open-user-file', 'keybindings.yaml', true)
+  ipcRenderer.invoke('open-user-file', 'keybindings.yaml')
 }
 
 function openTranslation() {
-  ipcRenderer.invoke('open-user-file', 'translation.yaml', true)
+  ipcRenderer.invoke('open-user-file', 'translation.yaml')
 }
 
 function openCustomJS() {
-  ipcRenderer.invoke('open-user-file', 'custom.js', true)
+  ipcRenderer.invoke('open-user-file', 'custom.js')
 }
 
 function openCustomCSS() {
-  ipcRenderer.invoke('open-user-file', 'custom.css', true)
+  ipcRenderer.invoke('open-user-file', 'custom.css')
 }
 
 function openWebsite() {

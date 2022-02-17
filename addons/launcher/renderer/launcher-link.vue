@@ -2,7 +2,7 @@
 import { ipcRenderer } from 'electron'
 
 function openLaunchers() {
-  ipcRenderer.invoke('open-user-file', 'launchers.yaml', true)
+  ipcRenderer.invoke('open-user-file', 'launchers.yaml')
 }
 </script>
 
