@@ -23,6 +23,8 @@ function add(this: CommasContext, binding: KeyBinding) {
   })
 }
 
+export * from '../shim'
+
 export {
   add,
 }

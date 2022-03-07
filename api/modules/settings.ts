@@ -22,6 +22,8 @@ function addSpecs(this: CommasContext, specs: SettingsSpec[]) {
   })
 }
 
+export * from '../shim'
+
 export {
   addSpecs as addSettingsSpecs,
   useSettings,

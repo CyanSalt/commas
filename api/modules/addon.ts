@@ -105,6 +105,8 @@ function unloadAddons() {
   loadedAddons.forEach(unloadAddon)
 }
 
+export * from '../shim'
+
 export {
   cloneAPI,
   preloadAddons,

@@ -14,6 +14,8 @@ function extract(request: string) {
   return cache[request]
 }
 
+export * from '../shim'
+
 export {
   connect,
   extract,

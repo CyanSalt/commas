@@ -30,6 +30,8 @@ function provide(this: CommasContext, name: string, ...data: any[]) {
   }
 }
 
+export * from '../shim'
+
 export {
   getCollection,
   provide,

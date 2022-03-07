@@ -25,6 +25,8 @@ function provide<T>(this: CommasContext, key: string, valueRef: Ref<T>) {
   })
 }
 
+export * from '../shim'
+
 export {
   on,
   handle,

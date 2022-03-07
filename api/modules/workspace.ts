@@ -58,6 +58,8 @@ function effectTerminalTab(
   return toggle
 }
 
+export * from '../shim'
+
 export {
   registerTabPane,
   getPaneTab,

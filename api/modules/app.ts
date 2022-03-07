@@ -25,6 +25,8 @@ function onCleanup(this: CommasContext, callback: () => void) {
   events.once(`unload:${this.__name__}`, callback)
 }
 
+export * from '../shim'
+
 export {
   events,
   isMainProcess,

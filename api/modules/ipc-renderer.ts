@@ -11,6 +11,8 @@ function on(this: CommasContext, channel: string, listener: (event: IpcRendererE
   })
 }
 
+export * from '../shim'
+
 export {
   on,
   injectIPC as inject,

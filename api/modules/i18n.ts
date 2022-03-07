@@ -17,6 +17,8 @@ async function noConflictAddTranslationDirectory(this: CommasContext, directory:
   })
 }
 
+export * from '../shim'
+
 export {
   translate,
   noConflictAddTranslationDirectory as addTranslationDirectory,
