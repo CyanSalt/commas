@@ -3,55 +3,8 @@
  */
 module.exports = function (commas) {
   if (commas.app.isMainProcess()) {
-
-    const path = require('path')
-    const { stop } = require('@vue/reactivity')
-    const { app, autoUpdater } = require('electron')
-    const { checkForUpdates, setupAutoUpdater, useAutoUpdaterEffect } = commas.bundler.extract('updater/main/updater.ts')
-
-    const supportsAutoUpdater = app.isPackaged && ['darwin', 'win32'].includes(process.platform)
-
-    if (supportsAutoUpdater) {
-      // Notification
-      autoUpdater.on('update-downloaded', async (event, notes, name) => {
-        const response = await commas.frame.notify({
-          type: 'info',
-          title: name,
-          body: commas.i18n.translate('A new version has been downloaded. Restart the application to apply the updates.#!updater.1'),
-          actions: [
-            commas.i18n.translate('Restart#!updater.2'),
-            commas.i18n.translate('Later#!updater.3'),
-          ],
-        })
-        if (response === 0) {
-          autoUpdater.quitAndInstall()
-        }
-      })
-      // Initialize
-      setupAutoUpdater()
-      // Enable checking automatically
-      const reactiveEffect = useAutoUpdaterEffect()
-      commas.app.onCleanup(() => {
-        stop(reactiveEffect)
-      })
-    }
-
-    commas.ipcMain.handle('check-for-updates', () => {
-      if (supportsAutoUpdater) {
-        checkForUpdates()
-      }
-    })
-
-    commas.settings.addSettingsSpecs(require('./settings.spec.json'))
-
-    commas.i18n.addTranslationDirectory(path.join(__dirname, 'locales'))
-
+    require('./dist/main')
   } else {
-
-    commas.context.provide('preference', {
-      component: commas.bundler.extract('updater/renderer/updater-link.vue').default,
-      group: 'about',
-    })
-
+    require('./dist/renderer')
   }
 }

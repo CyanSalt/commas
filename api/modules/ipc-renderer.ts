@@ -1,6 +1,5 @@
 import { ipcRenderer } from 'electron'
 import type { IpcRendererEvent } from 'electron'
-import { useSettings } from '../../renderer/compositions/settings'
 import { injectIPC } from '../../renderer/utils/compositions'
 import type { CommasContext } from '../types'
 
@@ -16,5 +15,4 @@ export * from '../shim'
 export {
   on,
   injectIPC as inject,
-  useSettings,
 }

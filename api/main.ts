@@ -1,5 +1,4 @@
 export * as app from './modules/app'
-export * as bundler from './modules/bundler'
 export * as context from './modules/context'
 export * as directory from './modules/directory'
 export * as frame from './modules/frame'

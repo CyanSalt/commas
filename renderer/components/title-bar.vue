@@ -5,7 +5,7 @@ import { useMinimized, useMaximized } from '../compositions/frame'
 import { useSettings } from '../compositions/settings'
 import { useIsTabListEnabled } from '../compositions/shell'
 import { showTabOptions, useCurrentTerminal, useTerminalActiveIndex, useTerminalTabs } from '../compositions/terminal'
-import { translate } from '../utils/i18n'
+import { translate, vI18n } from '../utils/i18n'
 import { getPrompt } from '../utils/terminal'
 
 const settings = $(useSettings())

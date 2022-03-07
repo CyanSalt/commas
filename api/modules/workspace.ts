@@ -1,6 +1,18 @@
+import * as url from 'url'
 import { shallowReactive, markRaw, unref } from 'vue'
-import { activateOrAddTerminalTab, useTerminalTabs } from '../../renderer/compositions/terminal'
+import { useLanguage } from '../../renderer/compositions/i18n'
+import { useDiscoveredAddons, useSettings, useSettingsSpecs, useUserSettings } from '../../renderer/compositions/settings'
+import {
+  activateOrAddTerminalTab,
+  useTerminalTabs,
+  createTerminalTab,
+  activateTerminalTab,
+  executeTerminalTab,
+} from '../../renderer/compositions/terminal'
+import { useAsyncComputed } from '../../renderer/utils/compositions'
+import { getAppVersion, openContextMenu } from '../../renderer/utils/frame'
 import { createIDGenerator } from '../../renderer/utils/helper'
+import { resolveHome } from '../../renderer/utils/terminal'
 import type { TerminalTab, TerminalTabPane } from '../../typings/terminal'
 import type { CommasContext } from '../types'
 
@@ -58,6 +70,16 @@ function effectTerminalTab(
   return toggle
 }
 
+function addCSSFile(this: CommasContext, file: string) {
+  const link = document.createElement('link')
+  link.rel = 'stylesheet'
+  link.href = url.pathToFileURL(file).href
+  document.head.append(link)
+  this.$.app.onCleanup(() => {
+    link.remove()
+  })
+}
+
 export * from '../shim'
 
 export {
@@ -65,5 +87,19 @@ export {
   getPaneTab,
   openPaneTab,
   useTerminalTabs,
+  createTerminalTab,
+  activateTerminalTab,
+  executeTerminalTab,
   effectTerminalTab,
+  // TODO: review and clean these
+  addCSSFile,
+  openContextMenu,
+  useLanguage,
+  useSettings,
+  resolveHome,
+  useAsyncComputed,
+  getAppVersion,
+  useDiscoveredAddons,
+  useSettingsSpecs,
+  useUserSettings,
 }

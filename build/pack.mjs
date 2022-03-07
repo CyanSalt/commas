@@ -5,7 +5,9 @@ import util from 'util'
 import chalk from 'chalk'
 import packager from 'electron-packager'
 import png2icons from 'png2icons'
-import app from './read-pkg.js'
+import { requireCommonJS } from './utils/common.mjs'
+
+const app = requireCommonJS(import.meta, '../package.json')
 
 const execa = util.promisify(childProcess.exec)
 
@@ -54,6 +56,7 @@ const options = {
   icon: 'resources/images/icon',
   ignore: [
     '^/(?!addons|main|node_modules|renderer|resources|package\\.json)',
+    '^/addon/[^/]+/src',
     '^/main/(?!dist)',
     '^/renderer/(?!dist)',
     '^/resources/.*\\.(ico|icns)$',

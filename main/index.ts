@@ -1,4 +1,3 @@
-import './utils/connect'
 import { effect, unref } from '@vue/reactivity'
 import { app } from 'electron'
 import * as commas from '../api/core-main'

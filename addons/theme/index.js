@@ -3,25 +3,8 @@
  */
 module.exports = function (commas) {
   if (commas.app.isMainProcess()) {
-
-    const path = require('path')
-
-    commas.i18n.addTranslationDirectory(path.join(__dirname, 'locales'))
-
+    require('./dist/main')
   } else {
-
-    commas.workspace.registerTabPane('theme', {
-      title: 'Theme#!theme.1',
-      component: commas.bundler.extract('theme/renderer/theme-pane.vue').default,
-      icon: {
-        name: 'feather-icon icon-feather',
-      },
-    })
-
-    commas.context.provide('preference', {
-      component: commas.bundler.extract('theme/renderer/theme-link.vue').default,
-      group: 'general',
-    })
-
+    require('./dist/renderer')
   }
 }

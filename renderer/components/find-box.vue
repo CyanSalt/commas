@@ -3,6 +3,7 @@ import { ipcRenderer } from 'electron'
 import { onMounted, reactive, watch } from 'vue'
 import { useIsFinding } from '../compositions/shell'
 import { useCurrentTerminal } from '../compositions/terminal'
+import { vI18n } from '../utils/i18n'
 
 const terminal = $(useCurrentTerminal())
 

@@ -1,8 +1,7 @@
-import './utils/connect'
 import { createApp } from 'vue'
 import App from './components/app.vue'
-import { translateElement } from './utils/i18n'
+import resources from './utils/resources'
 
 createApp(App)
-  .directive('i18n', translateElement)
+  .use(resources)
   .mount('#app')

@@ -51,7 +51,7 @@ function getVNodeTextContent(vnode: VNode): string {
     : String(vnode.children ?? '')
 }
 
-export const translateElement = createReactiveDirective<HTMLElement, TranslationVariables>(
+export const vI18n = createReactiveDirective<HTMLElement, TranslationVariables>(
   (el, { arg, value }, vnode) => {
     const attr = arg ?? 'textContent'
     const text = arg ? String(vnode.props?.[arg] ?? '') : getVNodeTextContent(vnode)
