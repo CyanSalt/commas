@@ -1,7 +1,6 @@
 import { builtinModules } from 'module'
 import vue from '@vitejs/plugin-vue'
 import vite from 'vite'
-import dynamicRequire from './plugins/rollup/dynamic-require.mjs'
 import importGlob from './plugins/rollup/import-glob.mjs'
 
 export default (versions) => vite.build({
@@ -20,13 +19,6 @@ export default (versions) => vite.build({
       reactivityTransform: true,
     }),
     importGlob(),
-    dynamicRequire({
-      includes: [
-        /^commas:/,
-        'electron',
-        ...builtinModules,
-      ],
-    }),
   ],
   json: {
     stringify: true,
@@ -43,6 +35,7 @@ export default (versions) => vite.build({
         ...builtinModules,
       ],
       output: {
+        format: 'cjs',
         freeze: false,
       },
     },

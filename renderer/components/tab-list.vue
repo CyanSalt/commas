@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import * as path from 'path'
+import { ipcRenderer } from 'electron'
 import * as commas from '../../api/core-renderer'
 import {
   useTerminalTabs,
@@ -42,8 +43,6 @@ function selectShell(event: MouseEvent) {
 }
 
 function configure() {
-  // FIXME: Cannot move it to top. No idea why.
-  const { ipcRenderer } = require('electron')
   ipcRenderer.invoke('open-settings')
 }
 
