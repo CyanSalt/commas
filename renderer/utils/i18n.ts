@@ -1,5 +1,4 @@
 import { last } from 'lodash-es'
-import { computed, unref } from 'vue'
 import type { VNode } from 'vue'
 import type { Dictionary, TranslationVariables } from '../../typings/i18n'
 import { injectIPC } from './compositions'
@@ -11,34 +10,27 @@ function getTextSequence(text: string, readable?: boolean) {
   return readable ? text.split(DELIMITER)[0] : last(text.split(DELIMITER))!
 }
 
-const dictionaryRef = injectIPC<Dictionary>('dictionary', {})
+const dictionary = $(injectIPC<Dictionary>('dictionary', {}))
 
-const databaseRef = computed(() => {
-  const dictionary = unref(dictionaryRef)
-  const database: Dictionary = Object.fromEntries(Object.entries(dictionary).map(
+const database = $computed<Dictionary>(() => {
+  return Object.fromEntries(Object.entries(dictionary).map(
     ([key, value]) => [getTextSequence(key, false), value],
   ))
-  return database
 })
 
-const conciseDictionaryRef = computed(() => {
-  const dictionary = unref(dictionaryRef)
-  const conciseDictionary: Dictionary = Object.fromEntries(Object.entries(dictionary).map(
+const conciseDictionary = $computed<Dictionary>(() => {
+  return Object.fromEntries(Object.entries(dictionary).map(
     ([key, value]) => [getTextSequence(key, true), value],
   ))
-  return conciseDictionary
 })
 
 function translateText(text: string) {
   if (!text) return text
-  const dictionary = unref(dictionaryRef)
   let translated = dictionary[text]
   if (translated) return translated
-  const database = unref(databaseRef)
   const identity = getTextSequence(text, false)
   translated = database[identity]
   if (translated) return translated
-  const conciseDictionary = unref(conciseDictionaryRef)
   const readableText = getTextSequence(text, true)
   translated = conciseDictionary[readableText]
   if (translated) return translated

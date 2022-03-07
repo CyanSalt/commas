@@ -1,15 +1,14 @@
-import { memoize } from 'lodash-es'
-import { unref, computed } from 'vue'
 import type { KeyBinding } from '../../typings/menu'
 import defaultKeyBindings from '../assets/keybindings'
 import { injectIPC } from '../utils/compositions'
 
-export const useAllKeyBindings = memoize(() => {
-  return injectIPC<KeyBinding[]>('keybindings', [])
-})
+const allKeyBindings = $(injectIPC<KeyBinding[]>('keybindings', []))
 
-const keybindingsRef = computed(() => {
-  const allKeyBindings = unref(useAllKeyBindings())
+export function useAllKeyBindings() {
+  return $$(allKeyBindings)
+}
+
+const keybindings = $computed(() => {
   return [
     ...allKeyBindings.filter(
       item => item.command?.startsWith('xterm:'),
@@ -19,5 +18,5 @@ const keybindingsRef = computed(() => {
 })
 
 export function useKeyBindings() {
-  return keybindingsRef
+  return $$(keybindings)
 }

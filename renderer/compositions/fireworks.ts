@@ -1,4 +1,3 @@
-import { ref, unref } from 'vue'
 import { createIDGenerator } from '../utils/helper'
 
 const generateID = createIDGenerator()
@@ -11,14 +10,13 @@ export interface Firework {
   },
 }
 
-const fireworksRef = ref<Firework[]>([])
+const fireworks = $ref<Firework[]>([])
 
 export function useFireworks() {
-  return fireworksRef
+  return $$(fireworks)
 }
 
 export function addFirework(position: Firework['position']) {
-  const fireworks = unref(fireworksRef)
   fireworks.push({
     position,
     id: generateID(),
@@ -26,7 +24,6 @@ export function addFirework(position: Firework['position']) {
 }
 
 export function removeFirework(target: Firework) {
-  const fireworks = unref(fireworksRef)
   const targetIndex = fireworks.findIndex(item => item.id === target.id)
   if (targetIndex !== -1) {
     fireworks.splice(targetIndex, 1)

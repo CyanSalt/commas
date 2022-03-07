@@ -1,17 +1,16 @@
 import { ipcRenderer } from 'electron'
-import { memoize } from 'lodash-es'
-import { unref, watchEffect } from 'vue'
+import { watchEffect } from 'vue'
 import type { Theme } from '../../typings/theme'
 import { injectIPC } from '../utils/compositions'
 
-export const useTheme = memoize(() => {
-  return injectIPC('theme', { variables: {} } as Theme)
-})
+const theme = $(injectIPC('theme', { variables: {} } as Theme))
+
+export function useTheme() {
+  return $$(theme)
+}
 
 export function injectTheme() {
-  const themeRef = useTheme()
   watchEffect((onInvalidate) => {
-    const theme = unref(themeRef)
     const type = theme.type
     document.body.dataset.themeType = type
     onInvalidate(() => {
@@ -19,7 +18,6 @@ export function injectTheme() {
     })
   })
   watchEffect((onInvalidate) => {
-    const theme = unref(themeRef)
     const declarations = Object.entries(theme.variables)
       .map(([key, value]) => `${key}: ${value};`).join(' ')
     const injection: Promise<string> = ipcRenderer.invoke('inject-style', `:root[data-commas] { ${declarations} }`)
