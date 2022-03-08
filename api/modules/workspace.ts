@@ -6,6 +6,7 @@ import {
   createTerminalTab,
   executeTerminalTab,
   getTerminalTabTitle,
+  useCurrentTerminal,
   useTerminalTabs,
 } from '../../renderer/compositions/terminal'
 import { createIDGenerator } from '../../renderer/utils/helper'
@@ -99,5 +100,6 @@ export {
   createTerminalTab,
   executeTerminalTab,
   getTerminalTabTitle,
+  useCurrentTerminal,
   useTerminalTabs,
 }

@@ -38,19 +38,7 @@ export class ITerm2Addon implements ITerminalAddon {
             }
             break
           case 'SetMark': {
-            // TODO: add jumping logics
-            const marker = xterm.registerMarker()!
-            const decoration = xterm.registerDecoration({
-              marker,
-              x: xterm.buffer.active.cursorX,
-            })!
-            const dimensions = xterm['_core']._renderService.dimensions
-            decoration.onRender(() => {
-              const el = decoration.element!
-              el.style.setProperty('--width', `${dimensions.actualCellWidth}px`)
-              el.style.setProperty('--height', `${dimensions.actualCellHeight}px`)
-              el.classList.add('terminal-marker')
-            })
+            this.setMark()
             break
           }
           case 'StealFocus':
@@ -213,6 +201,22 @@ export class ITerm2Addon implements ITerminalAddon {
       disposable.dispose()
     })
     this.disposables = []
+  }
+
+  setMark() {
+    const xterm = this.tab.xterm
+    // TODO: add jumping logics
+    const marker = xterm.registerMarker()!
+    const decoration = xterm.registerDecoration({
+      marker,
+    })!
+    const dimensions = xterm['_core']._renderService.dimensions
+    decoration.onRender(() => {
+      const el = decoration.element!
+      el.style.setProperty('--width', `${dimensions.actualCellWidth}px`)
+      el.style.setProperty('--height', `${dimensions.actualCellHeight}px`)
+      el.classList.add('terminal-marker')
+    })
   }
 
 }
