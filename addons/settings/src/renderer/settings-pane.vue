@@ -5,6 +5,8 @@ import { cloneDeep, isEqual } from 'lodash-es'
 import { watchEffect } from 'vue'
 import SettingsLine from './settings-line.vue'
 
+const { vI18n, TerminalPane } = commas.ui.vueAssets
+
 let settings = $(commas.remote.useUserSettings())
 let values = $ref({})
 let open = $ref<boolean[]>([])

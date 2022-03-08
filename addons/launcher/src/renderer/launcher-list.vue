@@ -12,6 +12,8 @@ import {
   useLaunchers,
 } from './launcher'
 
+const { vI18n, SortableList, TabItem } = commas.ui.vueAssets
+
 const launchers = $(useLaunchers())
 
 let searcher = $ref<HTMLInputElement>()
@@ -104,7 +106,6 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
         >
       </div>
     </div>
-    <!-- TODO: share components between core and addons -->
     <SortableList
       v-slot="{ value: launcher }"
       :value="filteredLaunchers"

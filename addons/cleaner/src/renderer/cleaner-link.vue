@@ -1,6 +1,9 @@
 <script lang="ts" setup>
+import * as commas from 'commas:api/renderer'
 import { ipcRenderer } from 'electron'
 import { onMounted } from 'vue'
+
+const { vI18n } = commas.ui.vueAssets
 
 let cacheSize = $ref<number>()
 

@@ -3,6 +3,8 @@ import * as commas from 'commas:api/renderer'
 import { ipcRenderer, shell } from 'electron'
 import type { Component } from 'vue'
 
+const { vI18n, TerminalPane } = commas.ui.vueAssets
+
 interface PreferenceItem {
   component: Component,
   group: string,

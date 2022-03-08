@@ -4,6 +4,8 @@ import { shell, ipcRenderer } from 'electron'
 import { fetchThemeList } from './utils'
 import type { ThemeEntry } from './utils'
 
+const { vI18n, LoadingSpinner, TerminalPane } = commas.ui.vueAssets
+
 let loading = $ref<string | false>(false)
 const keyword = $ref('')
 

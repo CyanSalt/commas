@@ -6,6 +6,8 @@ import type { EditorEntryItem } from '../../../../renderer/components/basic/obje
 import type { SettingsSpec } from '../../../../typings/settings'
 import { accepts, isObjectSchema } from './json-schema'
 
+const { vI18n, ObjectEditor, SwitchControl, ValueSelector } = commas.ui.vueAssets
+
 const { spec, modelValue, currentValue, open } = defineProps({
   spec: {
     type: Object as PropType<SettingsSpec>,

@@ -3,6 +3,8 @@ import * as commas from 'commas:api/renderer'
 import { ipcRenderer, shell } from 'electron'
 import { useProxyRootCAStatus, useProxyServerVersion, useSystemProxyStatus } from './compositions'
 
+const { vI18n, LoadingSpinner, SwitchControl, TerminalPane } = commas.ui.vueAssets
+
 const settings = $(commas.remote.useSettings())
 const isSystemProxyEnabled = $(useSystemProxyStatus())
 const isCertInstalled = $(useProxyRootCAStatus())

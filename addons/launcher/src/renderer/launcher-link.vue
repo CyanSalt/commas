@@ -1,5 +1,8 @@
 <script lang="ts" setup>
+import * as commas from 'commas:api/renderer'
 import { ipcRenderer } from 'electron'
+
+const { vI18n } = commas.ui.vueAssets
 
 function openLaunchers() {
   ipcRenderer.invoke('open-user-file', 'launchers.yaml')
