@@ -1,5 +1,5 @@
 /**
- * @param {import('../../api/types').Commas} commas
+ * @param {import('../../api/types').API} commas
  */
 module.exports = function (commas) {
   if (commas.app.isMainProcess()) {

@@ -1,9 +1,9 @@
 import { ipcRenderer } from 'electron'
 import type { IpcRendererEvent } from 'electron'
 import { injectIPC } from '../../renderer/utils/compositions'
-import type { CommasContext } from '../types'
+import type { RendererAPIContext } from '../types'
 
-function on(this: CommasContext, channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) {
+function on(this: RendererAPIContext, channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) {
   ipcRenderer.on(channel, listener)
   this.$.app.onCleanup(() => {
     ipcRenderer.removeListener(channel, listener)

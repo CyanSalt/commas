@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 import { app, ipcRenderer } from 'electron'
-import type { CommasContext } from '../types'
+import type { APIContext } from '../types'
 
 const events = new EventEmitter()
 events.setMaxListeners(0)
@@ -27,7 +27,7 @@ function getVersion() {
     : ipcRenderer.sendSync('get-version') as string
 }
 
-function onCleanup(this: CommasContext, callback: () => void) {
+function onCleanup(this: APIContext, callback: () => void) {
   events.once(`unload:${this.__name__}`, callback)
 }
 

@@ -1,16 +1,16 @@
 import { stop } from '@vue/reactivity'
 import { addTranslationDirectory, addTranslations, Priority, translate } from '../../main/lib/i18n'
 import type { TranslationFileEntry } from '../../main/lib/i18n'
-import type { CommasContext } from '../types'
+import type { MainAPIContext } from '../types'
 
-async function noConflictAddTranslations(this: CommasContext, entries: TranslationFileEntry[]) {
+async function noConflictAddTranslations(this: MainAPIContext, entries: TranslationFileEntry[]) {
   const reactiveEffect = addTranslations(entries, Priority.addon)
   this.$.app.onCleanup(() => {
     stop(reactiveEffect)
   })
 }
 
-async function noConflictAddTranslationDirectory(this: CommasContext, directory: string) {
+async function noConflictAddTranslationDirectory(this: MainAPIContext, directory: string) {
   const reactiveEffect = await addTranslationDirectory(directory, Priority.addon)
   this.$.app.onCleanup(() => {
     stop(reactiveEffect)

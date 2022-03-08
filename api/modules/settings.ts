@@ -1,7 +1,7 @@
 import { markRaw, unref } from '@vue/reactivity'
 import { openSettingsFile, useSettings, useSettingsSpecs } from '../../main/lib/settings'
 import type { SettingsSpec } from '../../typings/settings'
-import type { CommasContext } from '../types'
+import type { MainAPIContext } from '../types'
 
 function addSettingsSpecs(specs: SettingsSpec[]) {
   const currentSpecs = unref(useSettingsSpecs())
@@ -14,7 +14,7 @@ function removeSettingsSpecs(specs: SettingsSpec[]) {
   specsRef.value = currentSpecs.filter(item => specs.some(spec => spec.key !== item.key))
 }
 
-function addSpecs(this: CommasContext, specs: SettingsSpec[]) {
+function addSpecs(this: MainAPIContext, specs: SettingsSpec[]) {
   const validSpecs = specs.filter(spec => spec.key.startsWith(`${this.__name__}.`))
   addSettingsSpecs(validSpecs)
   this.$.app.onCleanup(() => {

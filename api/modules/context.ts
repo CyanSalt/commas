@@ -1,5 +1,5 @@
 import { shallowReactive } from '@vue/reactivity'
-import type { CommasContext } from '../types'
+import type { APIContext } from '../types'
 
 const namespaces = shallowReactive<Record<string, any[]>>({})
 
@@ -20,7 +20,7 @@ function cancelProviding(name: string, ...data: any[]) {
   }
 }
 
-function provide(this: CommasContext, name: string, ...data: any[]) {
+function provide(this: APIContext, name: string, ...data: any[]) {
   const collection = getCollection(name)
   collection.push(...data)
   if (data.length) {

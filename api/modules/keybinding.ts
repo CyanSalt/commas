@@ -1,7 +1,7 @@
 import { markRaw, unref } from '@vue/reactivity'
 import { useAddonKeyBindings } from '../../main/lib/keybinding'
 import type { KeyBinding } from '../../typings/menu'
-import type { CommasContext } from '../types'
+import type { MainAPIContext } from '../types'
 
 function addKeyBinding(item: KeyBinding) {
   const addonKeyBindings = unref(useAddonKeyBindings())
@@ -16,7 +16,7 @@ function removeKeyBinding(item: KeyBinding) {
   }
 }
 
-function add(this: CommasContext, binding: KeyBinding) {
+function add(this: MainAPIContext, binding: KeyBinding) {
   addKeyBinding(binding)
   this.$.app.onCleanup(() => {
     removeKeyBinding(binding)

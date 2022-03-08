@@ -14,12 +14,12 @@ import { openContextMenu } from '../../renderer/utils/frame'
 import { createIDGenerator } from '../../renderer/utils/helper'
 import { resolveHome } from '../../renderer/utils/terminal'
 import type { TerminalTab, TerminalTabPane } from '../../typings/terminal'
-import type { CommasContext } from '../types'
+import type { RendererAPIContext } from '../types'
 
 const panes = shallowReactive<Record<string, TerminalTab>>({})
 const generateID = createIDGenerator()
 
-function registerTabPane(this: CommasContext, name: string, pane: TerminalTabPane) {
+function registerTabPane(this: RendererAPIContext, name: string, pane: TerminalTabPane) {
   panes[name] = markRaw({
     pid: generateID(),
     process: '',
@@ -41,7 +41,7 @@ function openPaneTab(name: string) {
 }
 
 function effectTerminalTab(
-  this: CommasContext,
+  this: RendererAPIContext,
   callback: (tab: TerminalTab, active: boolean) => void,
   immediate?: boolean,
 ) {
@@ -70,7 +70,7 @@ function effectTerminalTab(
   return toggle
 }
 
-function addCSSFile(this: CommasContext, file: string) {
+function addCSSFile(this: RendererAPIContext, file: string) {
   const link = document.createElement('link')
   link.rel = 'stylesheet'
   link.href = url.pathToFileURL(file).href
