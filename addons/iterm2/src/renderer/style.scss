@@ -1,0 +1,8 @@
+.terminal-marker {
+  height: 0 !important;
+  margin-top: calc(var(--height) / 6);
+  margin-left: calc(0px - var(--width) * 2 / 3);
+  border-top: calc(var(--height) / 3) solid transparent;
+  border-bottom: calc(var(--height) / 3) solid transparent;
+  border-left: calc(var(--width) * 2 / 3) solid rgb(var(--design-blue));
+}

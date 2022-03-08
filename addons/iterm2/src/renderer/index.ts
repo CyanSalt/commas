@@ -2,6 +2,7 @@ import * as path from 'path'
 import * as commas from 'commas:api/renderer'
 import FireworkSlot from './firework-slot.vue'
 import { ITerm2Addon } from './xterm'
+import './style.scss'
 
 commas.ui.addCSSFile(path.join(__dirname, '../../dist/renderer/style.css'))
 

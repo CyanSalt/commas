@@ -37,10 +37,22 @@ export class ITerm2Addon implements ITerminalAddon {
                 break
             }
             break
-          case 'SetMark':
-          // TODO: add jumping logics
-            xterm.registerMarker()
+          case 'SetMark': {
+            // TODO: add jumping logics
+            const marker = xterm.registerMarker()!
+            const decoration = xterm.registerDecoration({
+              marker,
+              x: xterm.buffer.active.cursorX,
+            })!
+            const dimensions = xterm['_core']._renderService.dimensions
+            decoration.onRender(() => {
+              const el = decoration.element!
+              el.style.setProperty('--width', `${dimensions.actualCellWidth}px`)
+              el.style.setProperty('--height', `${dimensions.actualCellHeight}px`)
+              el.classList.add('terminal-marker')
+            })
             break
+          }
           case 'StealFocus':
             ipcRenderer.invoke('activate-window')
             commas.workspace.activateTerminalTab(this.tab)
