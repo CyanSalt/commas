@@ -10,6 +10,7 @@ const { position } = defineProps({
 })
 
 const emit = defineEmits({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   'animation-end': () => true,
 })
 
@@ -42,19 +43,20 @@ watchEffect(() => {
 }
 .firework-overlay {
   --time: 3s;
+  --count: 40;
   position: fixed;
   z-index: 1;
   pointer-events: none;
 }
 .line {
   position: absolute;
-  transform: rotate(calc(var(--index) * 360deg * 31.416 / v-bind(count)));
+  transform: rotate(calc(var(--index) * 360deg * 31.416 / var(--count)));
 }
 .star {
   position: absolute;
-  color: hsl(calc(var(--index) * 360deg * 31.416 / v-bind(count)) 100% 50%);
+  color: hsl(calc(var(--index) * 360deg * 31.416 / var(--count)) 100% 50%);
   font-size: 32px;
   animation: fly forwards var(--time);
-  animation-delay: calc(-0.2 * var(--index) * var(--time) / v-bind(count));
+  animation-delay: calc(-0.2 * var(--index) * var(--time) / var(--count));
 }
 </style>

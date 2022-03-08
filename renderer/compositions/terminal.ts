@@ -15,7 +15,8 @@ import type { MenuItem } from '../../typings/menu'
 import type { TerminalInfo, TerminalTab, TerminalTabGroup, XtermBufferPosition, XtermLink } from '../../typings/terminal'
 import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
-import { getPrompt, getWindowsProcessInfo } from '../utils/terminal'
+import { calculateDOM, loadingElement } from '../utils/helper'
+import { getPrompt, getWindowsProcessInfo, parseITerm2EscapeSequence } from '../utils/terminal'
 import { addFirework } from './fireworks'
 import { useKeyBindings } from './keybinding'
 import { useSettings } from './settings'
@@ -149,11 +150,11 @@ export async function createTerminalTab({
     ipcRenderer.invoke('beep')
   })
   // iTerm2 escape codes
-  xterm.parser.registerOscHandler(1337, data => {
-    const args = data.split('=')
-    switch (args[0]) {
+  xterm.parser.registerOscHandler(1337, async data => {
+    const sequence = parseITerm2EscapeSequence(data)
+    switch (sequence.command) {
       case 'CursorShape':
-        switch (args[1]) {
+        switch (sequence.positional) {
           case '0':
             xterm.options.cursorStyle = 'block'
             break
@@ -167,7 +168,7 @@ export async function createTerminalTab({
         break
       case 'SetMark':
         // TODO: add jumping logics
-        xterm.registerMarker(0)
+        xterm.registerMarker()
         break
       case 'StealFocus':
         ipcRenderer.invoke('activate-window')
@@ -177,10 +178,10 @@ export async function createTerminalTab({
         xterm.clear()
         break
       case 'CurrentDir':
-        tab.cwd = args[1]
+        tab.cwd = sequence.positional
         break
       case 'RequestAttention':
-        switch (args[1]) {
+        switch (sequence.positional) {
           case 'yes':
             ipcRenderer.invoke('bounce', {
               active: true,
@@ -216,18 +217,53 @@ export async function createTerminalTab({
         }
         break
       case 'Copy':
-        if (args[1]?.startsWith(':')) {
-          clipboard.writeText(Buffer.from(args[1].slice(1), 'base64').toString())
-        }
+        clipboard.writeText(sequence.body.toString())
         break
       case 'UnicodeVersion': {
-        const version = parseInt(args[1], 10)
+        const version = parseInt(sequence.positional, 10)
         if (version <= 6) {
           xterm.unicode.activeVersion = '6'
         } else if (version >= 11) {
           xterm.unicode.activeVersion = '11'
         }
         break
+      }
+      case 'File': {
+        const blob = new Blob([sequence.body])
+        const url = URL.createObjectURL(blob)
+        const image = new Image()
+        image.src = url
+        await loadingElement(image)
+        const dimensions = xterm['_core']._renderService.dimensions
+        const getImageDimension = (
+          targetImage: HTMLImageElement,
+          fn: (el: HTMLImageElement, dimension: string) => number,
+          value: string,
+          scale: number,
+        ) => {
+          const numeric = Number(value)
+          return isNaN(numeric)
+            ? Math.ceil(calculateDOM(el => fn(el, value), targetImage) / scale)
+            : numeric
+        }
+        const width = getImageDimension(image, (el, dimension) => {
+          el.style.width = dimension
+          return el.clientWidth
+        }, sequence.args.width, dimensions.actualCellWidth)
+        const height = getImageDimension(image, (el, dimension) => {
+          el.style.height = dimension
+          return el.clientHeight
+        }, sequence.args.height, dimensions.actualCellHeight)
+        const marker = xterm.registerMarker()!
+        const decoration = xterm.registerDecoration({
+          marker,
+          width,
+          height,
+        })!
+        xterm.write('\r\n'.repeat(height - 1))
+        decoration.onRender(() => {
+          decoration.element!.style.background = `url('${url}') no-repeat center/${sequence.args.preserveAspectRatio === '0' ? '100%' : 'contain'}`
+        })
       }
     }
     return true
