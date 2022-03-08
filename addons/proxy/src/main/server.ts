@@ -1,9 +1,8 @@
 import { customRef, stop, unref } from '@vue/reactivity'
 import type { ReactiveEffectRunner } from '@vue/reactivity'
-// TODO: make these shareable
 import * as commas from 'commas:api/main'
+// TODO: make these shareable
 import { useEffect } from '../../../../main/utils/compositions'
-import { loginExecute } from '../../../../main/utils/shell'
 
 async function createServer(cancelation?: Promise<unknown>) {
   const settings = unref(commas.settings.useSettings())
@@ -11,16 +10,16 @@ async function createServer(cancelation?: Promise<unknown>) {
   if (cancelation) {
     await cancelation
   }
-  return loginExecute(`whistle start -p ${port}`)
+  return commas.shell.loginExecute(`whistle start -p ${port}`)
 }
 
 function closeServer() {
-  return loginExecute('whistle stop')
+  return commas.shell.loginExecute('whistle stop')
 }
 
 async function getProxyServerVersion() {
   try {
-    const { stdout } = await loginExecute('whistle -V')
+    const { stdout } = await commas.shell.loginExecute('whistle -V')
     return stdout.trim()
   } catch {
     return null
@@ -29,7 +28,7 @@ async function getProxyServerVersion() {
 
 async function getLatestProxyServerVersion() {
   try {
-    const { stdout } = await loginExecute('npm view whistle version')
+    const { stdout } = await commas.shell.loginExecute('npm view whistle version')
     return stdout.trim()
   } catch {
     return null
@@ -37,7 +36,7 @@ async function getLatestProxyServerVersion() {
 }
 
 function installProxyServer() {
-  return loginExecute('npm install -g whistle')
+  return commas.shell.loginExecute('npm install -g whistle')
 }
 
 const serverStatusRef = customRef<boolean | undefined>((track, trigger) => {

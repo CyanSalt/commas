@@ -1,7 +1,5 @@
 import { customRef, effect, unref } from '@vue/reactivity'
-// TODO: make it shareable
 import * as commas from 'commas:api/main'
-import { execa } from '../../../../main/utils/helper'
 
 async function getMacOSCurrentNetworkService() {
   const networkInterface = 'route get default | grep interface | awk \'{print $2}\''
@@ -11,7 +9,7 @@ async function getMacOSCurrentNetworkService() {
     // 'awk "FNR == 1{print $2}"'
     'head -n 1 | cut -d " " -f2-',
   ]
-  const { stdout } = await execa(pipes.join(' | '))
+  const { stdout } = await commas.shell.execute(pipes.join(' | '))
   return stdout.trim()
 }
 
@@ -19,7 +17,7 @@ async function getGlobalWebProxy() {
   if (process.platform !== 'darwin') return
   const service = await getMacOSCurrentNetworkService()
   if (!service) return
-  const { stdout } = await execa(`networksetup -getwebproxy "${service}"`)
+  const { stdout } = await commas.shell.execute(`networksetup -getwebproxy "${service}"`)
   return stdout.trim().split('\n').reduce<Record<string, string>>((result, line) => {
     const [key, value] = line.split(': ')
     result[key.trim()] = value.trim()
@@ -48,7 +46,7 @@ async function setGlobalWebProxy(options?: GlobalWebProxy) {
       `networksetup -setsecurewebproxystate "${service}" off`,
     )
   }
-  return execa(commands.join(' && '))
+  return commas.shell.execute(commands.join(' && '))
 }
 
 async function loadSystemProxy() {

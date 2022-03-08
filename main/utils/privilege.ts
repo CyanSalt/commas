@@ -2,7 +2,7 @@ import * as path from 'path'
 import { app } from 'electron'
 import * as sudo from 'sudo-prompt'
 
-const sudoExeca = (command: string) => {
+const sudoExecute = (command: string) => {
   return new Promise((resolve, reject) => {
     sudo.exec(command, {
       name: app.name,
@@ -20,5 +20,5 @@ const sudoExeca = (command: string) => {
 }
 
 export {
-  sudoExeca as sudo,
+  sudoExecute,
 }
