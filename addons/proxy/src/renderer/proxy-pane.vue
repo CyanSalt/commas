@@ -13,7 +13,7 @@ let isInstalling = $ref(false)
 const supportsSystemProxy = process.platform === 'darwin'
 const supportsKeyChain = process.platform === 'darwin'
 
-const latestVersion = $(commas.workspace.useAsyncComputed<string | undefined>(
+const latestVersion = $(commas.helperRenderer.useAsyncComputed<string | undefined>(
   () => ipcRenderer.invoke('get-latest-proxy-server-version'),
   undefined,
 ))

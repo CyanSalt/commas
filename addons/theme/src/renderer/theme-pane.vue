@@ -7,7 +7,7 @@ import type { ThemeEntry } from './utils'
 let loading = $ref<string | false>(false)
 const keyword = $ref('')
 
-const list = $(commas.workspace.useAsyncComputed(() => fetchThemeList(), []))
+const list = $(commas.helperRenderer.useAsyncComputed(() => fetchThemeList(), []))
 
 const filteredList = $computed(() => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition

@@ -6,9 +6,7 @@ import {
   activateTerminalTab,
   executeTerminalTab,
 } from '../../renderer/compositions/terminal'
-import { useAsyncComputed } from '../../renderer/utils/compositions'
 import { createIDGenerator } from '../../renderer/utils/helper'
-import { resolveHome } from '../../renderer/utils/terminal'
 import type { TerminalTab, TerminalTabPane } from '../../typings/terminal'
 import type { RendererAPIContext } from '../types'
 
@@ -77,7 +75,4 @@ export {
   activateTerminalTab,
   executeTerminalTab,
   effectTerminalTab,
-  // TODO: review and clean these
-  resolveHome,
-  useAsyncComputed,
 }

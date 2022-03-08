@@ -1,8 +1,6 @@
 import { customRef, stop, unref } from '@vue/reactivity'
 import type { ReactiveEffectRunner } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
-// TODO: make these shareable
-import { useEffect } from '../../../../main/utils/compositions'
 
 async function createServer(cancelation?: Promise<unknown>) {
   const settings = unref(commas.settings.useSettings())
@@ -43,7 +41,7 @@ const serverStatusRef = customRef<boolean | undefined>((track, trigger) => {
   let status: boolean | undefined = false
   let cancelation: Promise<unknown> | undefined
   let serverEffect: ReactiveEffectRunner
-  const createEffect = () => useEffect(async (onInvalidate) => {
+  const createEffect = () => commas.helperMain.useEffect(async (onInvalidate) => {
     const server = createServer(cancelation)
     onInvalidate(async () => {
       cancelation = closeServer()

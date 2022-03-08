@@ -1,12 +1,10 @@
 import { computed, unref } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
-// TODO: make it shareable
-import { createIDGenerator } from '../../../../main/utils/helper'
 import type { Launcher } from '../../typings/launcher'
 
 const userData = commas.directory.userData
 
-const generateID = createIDGenerator()
+const generateID = commas.helperMain.createIDGenerator()
 
 function fillLauncherIDs(launchers: Omit<Launcher, 'id'>[], old: Launcher[] | null) {
   const oldValues = old ? [...old] : []
