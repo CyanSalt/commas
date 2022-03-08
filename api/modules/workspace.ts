@@ -1,10 +1,11 @@
 import { shallowReactive, markRaw, unref } from 'vue'
 import {
   activateOrAddTerminalTab,
-  useTerminalTabs,
-  createTerminalTab,
   activateTerminalTab,
+  createTerminalTab,
   executeTerminalTab,
+  getTerminalTabTitle,
+  useTerminalTabs,
 } from '../../renderer/compositions/terminal'
 import { createIDGenerator } from '../../renderer/utils/helper'
 import type { TerminalTab, TerminalTabPane } from '../../typings/terminal'
@@ -70,9 +71,11 @@ export {
   registerTabPane,
   getPaneTab,
   openPaneTab,
-  useTerminalTabs,
-  createTerminalTab,
-  activateTerminalTab,
-  executeTerminalTab,
   effectTerminalTab,
+  activateOrAddTerminalTab,
+  activateTerminalTab,
+  createTerminalTab,
+  executeTerminalTab,
+  getTerminalTabTitle,
+  useTerminalTabs,
 }

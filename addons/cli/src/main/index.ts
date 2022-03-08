@@ -4,6 +4,7 @@ import { computed, effect, stop, unref } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import { app, BrowserWindow } from 'electron'
 import random from 'lodash/random'
+import type { CommandModule } from './command'
 import { executeCommand, useExternalURLCommands } from './command'
 
 const settingsRef = commas.settings.useSettings()
@@ -133,15 +134,8 @@ commas.context.provide('cli', {
   },
 })
 
-commas.context.provide('cli', {
-  command: 'attention',
-  handler() {
-    return '\x1b]1337;RequestAttention=fireworks\x1b\\'
-  },
-})
-
 const externalURLCommandsRef = useExternalURLCommands()
-let loadedExternalURLCommands = []
+let loadedExternalURLCommands: CommandModule[] = []
 const reactiveEffect = effect(() => {
   const externalURLCommands = unref(externalURLCommandsRef)
   commas.context.cancelProviding('cli', ...loadedExternalURLCommands)

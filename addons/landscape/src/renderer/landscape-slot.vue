@@ -66,6 +66,7 @@ watchEffect(() => {
   left: 0;
   width: 100vw;
   height: 100vh;
+  pointer-events: none;
   &.landscape-enter-active {
     transition: opacity 0.5s;
   }

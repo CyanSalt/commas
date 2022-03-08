@@ -3,7 +3,6 @@ import { ipcRenderer } from 'electron'
 import { onMounted } from 'vue'
 import * as commas from '../../api/core-renderer'
 import { loadAddons, loadCustomJS } from '../compositions/addon'
-import { removeFirework, useFireworks } from '../compositions/fireworks'
 import {
   useFullscreen,
   handleFrameMessages,
@@ -22,7 +21,6 @@ import {
 } from '../compositions/terminal'
 import { injectTheme } from '../compositions/theme'
 import FindBox from './find-box.vue'
-import FireworkOverlay from './firework-overlay.vue'
 import TabList from './tab-list.vue'
 import TerminalTeletype from './terminal-teletype.vue'
 import TitleBar from './title-bar.vue'
@@ -34,7 +32,6 @@ const isTabListEnabled = $(useIsTabListEnabled())
 const terminal = $(useCurrentTerminal())
 const tabs = $(useTerminalTabs())
 const willQuit = $(useWillQuit())
-const fireworks = useFireworks()
 
 const slots = commas.proxy.context.getCollection('@ui-slot')
 
@@ -100,12 +97,6 @@ onMounted(() => {
         </template>
       </main>
     </div>
-    <FireworkOverlay
-      v-for="item in fireworks"
-      :key="item.id"
-      :position="item.position"
-      @animation-end="removeFirework(item)"
-    />
     <component
       :is="slot"
       v-for="(slot, index) in slots"

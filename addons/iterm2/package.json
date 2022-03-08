@@ -1,0 +1,9 @@
+{
+  "name": "iterm2",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Provide support for iTerm2 escape sequences",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC"
+}

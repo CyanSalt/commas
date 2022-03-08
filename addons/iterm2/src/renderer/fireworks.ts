@@ -1,6 +1,6 @@
-import { createIDGenerator } from '../utils/helper'
+import * as commas from 'commas:api/renderer'
 
-const generateID = createIDGenerator()
+const generateID = commas.helperRenderer.createIDGenerator()
 
 export interface Firework {
   id: number,
