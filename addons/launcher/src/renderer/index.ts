@@ -1,6 +1,6 @@
 import * as path from 'path'
 import * as commas from 'commas:api/renderer'
-import { unref, watch } from 'vue'
+import { watch } from 'vue'
 import { startLauncher, runLauncherScript, useLaunchers } from './launcher'
 import LauncherLink from './launcher-link.vue'
 import LauncherList from './launcher-list.vue'
@@ -15,14 +15,12 @@ commas.ipcRenderer.on('run-script', (event, launcher, index) => {
   runLauncherScript(launcher, index)
 })
 
-const settingsRef = commas.remote.useSettings()
-
 watch(useLaunchers(), () => {
   clearLauncherSessions()
 })
 
 commas.workspace.registerXtermAddon('launcherSession', tab => {
-  const settings = unref(settingsRef)
+  const settings = $(commas.remote.useSettings())
   if (tab.group?.type === 'launcher' && settings['launcher.session.persist']) {
     return new LauncherSessionAddon(tab.group.data)
   }

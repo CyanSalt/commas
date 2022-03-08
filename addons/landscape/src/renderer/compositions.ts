@@ -1,10 +1,9 @@
-import { ref } from 'vue'
+let nonce = $ref(Date.now())
 
-export const nonceRef = ref(Date.now())
 export function useNonce() {
-  return nonceRef
+  return $$(nonce)
 }
 
 export function refreshLandscapeBackground() {
-  nonceRef.value = Date.now()
+  nonce = Date.now()
 }

@@ -1,20 +1,19 @@
 import { ipcRenderer } from 'electron'
-import { ref } from 'vue'
 import { translate } from '../utils/i18n'
 
-export const isTabListEnabledRef = ref(true)
+let isTabListEnabled = $ref(true)
 export function useIsTabListEnabled() {
-  return isTabListEnabledRef
+  return $$(isTabListEnabled)
 }
 
-export const isFindingRef = ref(false)
+let isFinding = $ref(false)
 export function useIsFinding() {
-  return isFindingRef
+  return $$(isFinding)
 }
 
-export const willQuitRef = ref(false)
+let willQuit = $ref(false)
 export function useWillQuit() {
-  return willQuitRef
+  return $$(willQuit)
 }
 
 export async function confirmClosing() {
@@ -35,12 +34,12 @@ export async function confirmClosing() {
 
 export function handleShellMessages() {
   ipcRenderer.on('toggle-finding', () => {
-    isFindingRef.value = !isFindingRef.value
+    isFinding = !isFinding
   })
   ipcRenderer.on('toggle-tab-list', () => {
-    isTabListEnabledRef.value = !isTabListEnabledRef.value
+    isTabListEnabled = !isTabListEnabled
   })
   ipcRenderer.on('before-quit', () => {
-    willQuitRef.value = true
+    willQuit = true
   })
 }
