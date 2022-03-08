@@ -57,7 +57,7 @@ function sortLaunchers(from: number, to: number) {
 
 function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
   const scripts = launcher.scripts ?? []
-  commas.workspace.openContextMenu([
+  commas.ui.openContextMenu([
     {
       label: 'Launch#!terminal.6',
       command: 'start-launcher',

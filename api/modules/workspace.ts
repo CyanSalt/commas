@@ -1,7 +1,4 @@
-import * as url from 'url'
 import { shallowReactive, markRaw, unref } from 'vue'
-import { useLanguage } from '../../renderer/compositions/i18n'
-import { useDiscoveredAddons, useSettings, useSettingsSpecs, useUserSettings } from '../../renderer/compositions/settings'
 import {
   activateOrAddTerminalTab,
   useTerminalTabs,
@@ -10,7 +7,6 @@ import {
   executeTerminalTab,
 } from '../../renderer/compositions/terminal'
 import { useAsyncComputed } from '../../renderer/utils/compositions'
-import { openContextMenu } from '../../renderer/utils/frame'
 import { createIDGenerator } from '../../renderer/utils/helper'
 import { resolveHome } from '../../renderer/utils/terminal'
 import type { TerminalTab, TerminalTabPane } from '../../typings/terminal'
@@ -70,16 +66,6 @@ function effectTerminalTab(
   return toggle
 }
 
-function addCSSFile(this: RendererAPIContext, file: string) {
-  const link = document.createElement('link')
-  link.rel = 'stylesheet'
-  link.href = url.pathToFileURL(file).href
-  document.head.append(link)
-  this.$.app.onCleanup(() => {
-    link.remove()
-  })
-}
-
 export * from '../shim'
 
 export {
@@ -92,8 +78,6 @@ export {
   executeTerminalTab,
   effectTerminalTab,
   // TODO: review and clean these
-  addCSSFile,
-  openContextMenu,
   resolveHome,
   useAsyncComputed,
 }

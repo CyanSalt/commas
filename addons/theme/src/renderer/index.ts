@@ -3,7 +3,7 @@ import * as commas from 'commas:api/renderer'
 import ThemeLink from './theme-link.vue'
 import ThemePane from './theme-pane.vue'
 
-commas.workspace.addCSSFile(path.join(__dirname, '../../dist/renderer/style.css'))
+commas.ui.addCSSFile(path.join(__dirname, '../../dist/renderer/style.css'))
 
 commas.workspace.registerTabPane('theme', {
   title: 'Theme#!theme.1',

@@ -6,7 +6,7 @@ import LauncherLink from './launcher-link.vue'
 import LauncherList from './launcher-list.vue'
 import { clearLauncherSessions, LauncherSessionAddon } from './session'
 
-commas.workspace.addCSSFile(path.join(__dirname, '../../dist/renderer/style.css'))
+commas.ui.addCSSFile(path.join(__dirname, '../../dist/renderer/style.css'))
 
 commas.ipcRenderer.on('start-launcher', (event, launcher) => {
   startLauncher(launcher)

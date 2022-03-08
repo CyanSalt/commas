@@ -4,7 +4,7 @@ import ProxyAnchor from './proxy-anchor.vue'
 import ProxyLink from './proxy-link.vue'
 import ProxyPane from './proxy-pane.vue'
 
-commas.workspace.addCSSFile(path.join(__dirname, '../../dist/renderer/style.css'))
+commas.ui.addCSSFile(path.join(__dirname, '../../dist/renderer/style.css'))
 
 commas.workspace.registerTabPane('proxy', {
   title: 'Proxy#!proxy.1',
