@@ -3,7 +3,7 @@ import * as commas from 'commas:api/renderer'
 import { watchEffect } from 'vue'
 import { useNonce } from './compositions'
 
-const settings = $(commas.workspace.useSettings())
+const settings = $(commas.remote.useSettings())
 const nonce = useNonce()
 
 let lazyURL = $ref('')

@@ -34,7 +34,7 @@ const emit = defineEmits({
   },
 })
 
-const discoveredAddons = $(commas.workspace.useDiscoveredAddons())
+const discoveredAddons = $(commas.remote.useDiscoveredAddons())
 
 const isSimpleObject = $computed(() => {
   const schema = spec.schema

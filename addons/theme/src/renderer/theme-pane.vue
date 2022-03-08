@@ -15,7 +15,7 @@ const filteredList = $computed(() => {
   return list.filter(item => item.name.includes(keyword))
 })
 
-let userSettings = $(commas.workspace.useUserSettings())
+let userSettings = $(commas.remote.useUserSettings())
 
 const currentTheme = $computed<string>(() => {
   return userSettings['terminal.theme.name']

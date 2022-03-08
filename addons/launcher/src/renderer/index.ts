@@ -15,7 +15,7 @@ commas.ipcRenderer.on('run-script', (event, launcher, index) => {
   runLauncherScript(launcher, index)
 })
 
-const settingsRef = commas.workspace.useSettings()
+const settingsRef = commas.remote.useSettings()
 
 watch(useLaunchers(), () => {
   clearLauncherSessions()

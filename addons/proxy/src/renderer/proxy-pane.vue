@@ -3,7 +3,7 @@ import * as commas from 'commas:api/renderer'
 import { ipcRenderer, shell } from 'electron'
 import { useProxyRootCAStatus, useProxyServerVersion, useSystemProxyStatus } from './compositions'
 
-const settings = $(commas.workspace.useSettings())
+const settings = $(commas.remote.useSettings())
 const isSystemProxyEnabled = $(useSystemProxyStatus())
 const isCertInstalled = $(useProxyRootCAStatus())
 const version = $(useProxyServerVersion())

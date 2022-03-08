@@ -94,11 +94,6 @@ export {
   // TODO: review and clean these
   addCSSFile,
   openContextMenu,
-  useLanguage,
-  useSettings,
   resolveHome,
   useAsyncComputed,
-  useDiscoveredAddons,
-  useSettingsSpecs,
-  useUserSettings,
 }

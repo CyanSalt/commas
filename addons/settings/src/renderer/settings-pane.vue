@@ -5,7 +5,7 @@ import { cloneDeep, isEqual } from 'lodash-es'
 import { watchEffect } from 'vue'
 import SettingsLine from './settings-line.vue'
 
-let settings = $(commas.workspace.useUserSettings())
+let settings = $(commas.remote.useUserSettings())
 let values = $ref({})
 let open = $ref<boolean[]>([])
 
@@ -13,7 +13,7 @@ const isChanged = $computed(() => {
   return !isEqual(settings, values)
 })
 
-const specs = $(commas.workspace.useSettingsSpecs())
+const specs = $(commas.remote.useSettingsSpecs())
 const rows = $computed(() => {
   return specs.filter((item) => {
     return !Array.isArray(item.configurable)

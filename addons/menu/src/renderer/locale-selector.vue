@@ -6,7 +6,7 @@ interface LanguageOption {
   value: string,
 }
 
-const language = $(commas.workspace.useLanguage())
+const language = $(commas.remote.useLanguage())
 const locales: LanguageOption[] = commas.context.getCollection('locales')
 const supportedLanguages = $computed(() => {
   const languages = [...locales]

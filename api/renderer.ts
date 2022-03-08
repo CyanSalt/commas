@@ -1,4 +1,5 @@
 export * as app from './modules/app'
 export * as context from './modules/context'
 export * as ipcRenderer from './modules/ipc-renderer'
+export * as remote from './modules/remote'
 export * as workspace from './modules/workspace'
