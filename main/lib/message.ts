@@ -22,8 +22,8 @@ function handleMessages() {
   ipcMain.on('get-path', (event, name: Parameters<typeof app['getPath']>[0]) => {
     event.returnValue = app.getPath(name)
   })
-  ipcMain.handle('get-app-version', () => {
-    return app.getVersion()
+  ipcMain.on('get-version', (event) => {
+    event.returnValue = app.getVersion()
   })
   ipcMain.handle('get-ref:minimized', (event) => {
     const frame = BrowserWindow.fromWebContents(event.sender)

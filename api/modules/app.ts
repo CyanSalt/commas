@@ -21,6 +21,12 @@ function getPath(name: Parameters<typeof app['getPath']>[0]) {
     : ipcRenderer.sendSync('get-path', name) as string
 }
 
+function getVersion() {
+  return isMainProcess()
+    ? app.getVersion()
+    : ipcRenderer.sendSync('get-version') as string
+}
+
 function onCleanup(this: CommasContext, callback: () => void) {
   events.once(`unload:${this.__name__}`, callback)
 }
@@ -32,5 +38,6 @@ export {
   isMainProcess,
   isPackaged,
   getPath,
+  getVersion,
   onCleanup,
 }

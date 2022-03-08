@@ -1,10 +1,5 @@
 import { ipcRenderer } from 'electron'
-import { memoize } from 'lodash-es'
 import type { MenuItem } from '../../typings/menu'
-
-export const getAppVersion = memoize(() => {
-  return ipcRenderer.invoke('get-app-version')
-})
 
 export function openContextMenu(
   template: MenuItem[],

@@ -10,7 +10,7 @@ import {
   executeTerminalTab,
 } from '../../renderer/compositions/terminal'
 import { useAsyncComputed } from '../../renderer/utils/compositions'
-import { getAppVersion, openContextMenu } from '../../renderer/utils/frame'
+import { openContextMenu } from '../../renderer/utils/frame'
 import { createIDGenerator } from '../../renderer/utils/helper'
 import { resolveHome } from '../../renderer/utils/terminal'
 import type { TerminalTab, TerminalTabPane } from '../../typings/terminal'
@@ -98,7 +98,6 @@ export {
   useSettings,
   resolveHome,
   useAsyncComputed,
-  getAppVersion,
   useDiscoveredAddons,
   useSettingsSpecs,
   useUserSettings,

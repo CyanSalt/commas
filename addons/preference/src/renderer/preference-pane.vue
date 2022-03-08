@@ -21,7 +21,7 @@ const featureItems = $computed(() => getItems('feature'))
 const customizationItems = $computed(() => getItems('customization'))
 const aboutItems = $computed(() => getItems('about'))
 
-const version = $(commas.workspace.useAsyncComputed(() => commas.workspace.getAppVersion(), ''))
+const version = commas.app.getVersion()
 
 function openUserDirectory() {
   ipcRenderer.invoke('open-user-directory')
