@@ -21,16 +21,10 @@ watch(useLaunchers(), () => {
   clearLauncherSessions()
 })
 
-commas.workspace.effectTerminalTab((tab, active) => {
+commas.workspace.registerXtermAddon('launcherSession', tab => {
   const settings = unref(settingsRef)
   if (tab.group?.type === 'launcher' && settings['launcher.session.persist']) {
-    if (active && !tab.addons.launcherSession) {
-      tab.addons.launcherSession = new LauncherSessionAddon(tab.group.data)
-      tab.xterm.loadAddon(tab.addons.launcherSession)
-    } else if (!active && tab.addons.launcherSession) {
-      tab.addons.launcherSession.dispose()
-      delete tab.addons.launcherSession
-    }
+    return new LauncherSessionAddon(tab.group.data)
   }
 }, true)
 

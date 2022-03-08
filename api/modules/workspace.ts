@@ -1,4 +1,5 @@
 import { shallowReactive, markRaw, unref } from 'vue'
+import type { ITerminalAddon } from 'xterm'
 import {
   activateOrAddTerminalTab,
   activateTerminalTab,
@@ -65,6 +66,26 @@ function effectTerminalTab(
   return toggle
 }
 
+function registerXtermAddon(
+  this: RendererAPIContext,
+  key: string,
+  factory: (tab: TerminalTab) => ITerminalAddon | undefined,
+  immediate?: boolean,
+) {
+  return effectTerminalTab.call(this, (tab: TerminalTab, active: boolean) => {
+    const addon = factory(tab)
+    if (addon) {
+      if (active && !tab.addons[key]) {
+        tab.addons[key] = addon
+        tab.xterm.loadAddon(tab.addons[key])
+      } else if (!active && tab.addons[key]) {
+        tab.addons[key].dispose()
+        delete tab.addons[key]
+      }
+    }
+  }, immediate)
+}
+
 export * from '../shim'
 
 export {
@@ -72,6 +93,7 @@ export {
   getPaneTab,
   openPaneTab,
   effectTerminalTab,
+  registerXtermAddon,
   activateOrAddTerminalTab,
   activateTerminalTab,
   createTerminalTab,
