@@ -1,25 +1,26 @@
 import * as path from 'path'
 import { effect, stop, unref } from '@vue/reactivity'
+import type { BrowserWindowConstructorOptions } from 'electron'
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { globalHandler } from '../utils/handler'
 import { loadCustomCSS } from './addon'
 import { hasWindow, getLastWindow } from './frame'
 import { createTouchBar, createWindowMenu } from './menu'
 import { handleEvents } from './message'
+import { useSettings, whenSettingsReady } from './settings'
 import { useThemeOptions } from './theme'
 
-function createWindow(...args: string[]) {
-  const options = {
+async function createWindow(...args: string[]) {
+  const settingsRef = useSettings()
+  await whenSettingsReady()
+  const settings = unref(settingsRef)
+  const frameType = settings['terminal.style.frameType']
+  const options: Partial<BrowserWindowConstructorOptions> = {
     show: false,
     title: app.name,
     width: (8 * 80) + (2 * 8) + 180,
     minWidth: (8 * 40) + (2 * 8) + 180,
     height: (18 * 24) + (2 * 4) + 36,
-    titleBarStyle: process.platform === 'darwin'
-      ? 'hiddenInset' as const
-      : 'hidden' as const,
-    // Transparent window on Windows will lose border and shadow
-    transparent: process.platform !== 'win32',
     acceptFirstMouse: true,
     webPreferences: {
       nodeIntegration: true,
@@ -29,6 +30,11 @@ function createWindow(...args: string[]) {
         ...args.filter(arg => (arg as string | undefined) !== undefined),
       ],
     },
+  }
+  if (frameType === 'immersive') {
+    options.titleBarStyle = process.platform === 'darwin' ? 'hiddenInset' : 'hidden'
+    // Transparent window on Windows will lose border and shadow
+    options.transparent = process.platform !== 'win32'
   }
   // frame offset
   if (hasWindow()) {

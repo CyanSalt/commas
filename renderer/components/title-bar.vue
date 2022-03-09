@@ -20,6 +20,10 @@ let isTabListEnabled = $(useIsTabListEnabled())
 let iconBuffer = $ref<Buffer | undefined>()
 let branch = $ref('')
 
+const isEnabled = $computed(() => {
+  return settings['terminal.style.frameType'] === 'immersive'
+})
+
 const directory = $computed(() => {
   if (!terminal || terminal.pane) return ''
   return terminal.cwd
@@ -119,6 +123,7 @@ watchEffect(() => {
 
 <template>
   <header
+    v-if="isEnabled"
     :class="['title-bar', { 'no-controls': !isCustomControlEnabled }]"
     @dblclick="maximize"
   >

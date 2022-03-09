@@ -140,7 +140,7 @@ function resize(startingEvent: DragEvent) {
 .new-tab {
   display: flex;
   height: var(--tab-height);
-  padding: 4px 16px;
+  padding: 8px 16px 0;
   line-height: var(--tab-height);
   text-align: center;
 }

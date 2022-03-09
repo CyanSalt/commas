@@ -160,11 +160,27 @@
     "default": "webgl"
   },
   {
+    "key": "terminal.style.frameType",
+    "label": "Frame Type",
+    "comments": [
+      "Frame type of window",
+      "Options: 'system' or 'immersive'",
+      "Changing this setting will take effect after reloading the app"
+    ],
+    "schema": {
+      "type": "string",
+      "enum": ["system", "immersive"]
+    },
+    "reload": true,
+    "default": "immersive"
+  },
+  {
     "key": "terminal.style.opacity",
     "label": "Background Opacity",
     "comments": [
       "Background opacity of window",
-      "It will not work if RGBA background is specified in theme file"
+      "It will not work if RGBA background is specified in theme file",
+      "Or when using the system frame"
     ],
     "schema": {
       "type": "number",

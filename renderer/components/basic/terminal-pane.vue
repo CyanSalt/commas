@@ -32,7 +32,7 @@ function openEditingMenu(event: MouseEvent) {
   z-index: 0;
   box-sizing: border-box;
   height: 100%;
-  padding: 4px 24px;
+  padding: 8px 24px;
 }
 :deep(.group-title) {
   margin-top: 0;
