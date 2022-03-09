@@ -42,15 +42,13 @@ const CSS_PROPERTIES = {
   opacity: '--theme-opacity',
 }
 
-const defaultTheme = resources.require<Theme>('themes/oceanic-next.json')!
-
 const themeRef = computed(async () => {
   const settings = unref(useSettings())
   const defaultSettings = unref(useDefaultSettings())
-  let originalTheme = defaultTheme
-  const name: string = settings['terminal.theme.name']
-    || defaultSettings['terminal.theme.name']
-  if (name !== defaultSettings['terminal.theme.name']) {
+  const defaultThemeName = defaultSettings['terminal.theme.name']
+  let originalTheme = resources.require<Theme>(`themes/${defaultThemeName}.json`)!
+  const name: string = settings['terminal.theme.name'] || defaultThemeName
+  if (name !== defaultThemeName) {
     const path = `themes/${name}.json`
     // TODO: memoize
     let source = resources.require<Theme>(path)

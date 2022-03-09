@@ -9,5 +9,6 @@ export interface SettingsSpec {
   configurable?: NodeJS.Platform[],
   schema?: JSONSchema,
   recommendations?: any[],
+  reload?: boolean,
   default?: any,
 }

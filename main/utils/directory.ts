@@ -94,7 +94,7 @@ class Directory {
     }
   }
 
-  useYAML<T>(basename: string, defaultValue: T, afterTriggered?: () => void) {
+  useYAML<T>(basename: string, defaultValue: T, beforeTrigger?: () => void) {
     return customRef<T>((track, trigger) => {
       let data = defaultValue
       const reactiveEffect = effect(async () => {
@@ -105,10 +105,10 @@ class Directory {
           // file deleted for example
           data = defaultValue
         }
-        trigger()
-        if (afterTriggered) {
-          afterTriggered()
+        if (beforeTrigger) {
+          beforeTrigger()
         }
+        trigger()
       })
       this.watch(basename, () => {
         reactiveEffect()

@@ -50,9 +50,13 @@ function useDefaultSettings() {
   return defaultSettingsRef
 }
 
+let isReady = false
 let resolveWhenReady: (() => void) | undefined
 const whenReadyPromise = new Promise<void>(resolve => {
-  resolveWhenReady = resolve
+  resolveWhenReady = () => {
+    isReady = true
+    resolve()
+  }
 })
 
 function whenSettingsReady() {
@@ -61,14 +65,32 @@ function whenSettingsReady() {
 
 const userSettingsRef = userData.useYAML<Settings>('settings.yaml', {}, resolveWhenReady)
 
+let oldSettings: Settings | undefined
 const settingsRef = computed<Settings>({
   get() {
     const defaultSettings = unref(defaultSettingsRef)
     const userSettings = unref(userSettingsRef)
-    return cloneDeep({
+    const settings = cloneDeep({
       ...defaultSettings,
       ...userSettings,
     })
+    let actualSettings = {}
+    if (oldSettings) {
+      const specs = unref(specsRef)
+      for (const spec of specs) {
+        if (settings[spec.key] !== oldSettings[spec.key] && spec.reload) {
+          actualSettings[spec.key] = oldSettings[spec.key]
+        } else {
+          actualSettings[spec.key] = settings[spec.key]
+        }
+      }
+    } else {
+      actualSettings = settings
+    }
+    if (isReady) {
+      oldSettings = actualSettings
+    }
+    return actualSettings
   },
   set(data) {
     const defaultSettings = unref(defaultSettingsRef)
@@ -103,6 +125,13 @@ const enabledAddonsRef = customRef<string[]>((track, trigger) => {
 
 function useSettings() {
   return settingsRef
+}
+
+function updateSettings(settings: Partial<Settings>) {
+  settingsRef.value = {
+    ...unref(settingsRef),
+    ...settings,
+  }
 }
 
 function useEnabledAddons() {
@@ -174,6 +203,7 @@ export {
   useSettings,
   useDefaultSettings,
   useSettingsSpecs,
+  updateSettings,
   useEnabledAddons,
   openSettingsFile,
   handleSettingsMessages,

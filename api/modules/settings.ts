@@ -1,5 +1,11 @@
 import { markRaw, unref } from '@vue/reactivity'
-import { openSettingsFile, useSettings, useSettingsSpecs } from '../../main/lib/settings'
+import {
+  openSettingsFile,
+  updateSettings,
+  useDefaultSettings,
+  useSettings,
+  useSettingsSpecs,
+} from '../../main/lib/settings'
 import type { SettingsSpec } from '../../typings/settings'
 import type { MainAPIContext } from '../types'
 
@@ -27,5 +33,7 @@ export * from '../shim'
 export {
   addSpecs as addSettingsSpecs,
   useSettings,
+  useDefaultSettings,
   openSettingsFile,
+  updateSettings,
 }
