@@ -8,7 +8,7 @@
 #   command: open-user-directory
 
 # - label: Go to Previous Word
-#   accelerator: Alt+ArrowLeft
+#   accelerator: Alt+Left
 #   command: xterm:send
 #   args:
 #     - "\eb"

@@ -2,7 +2,7 @@ import * as commas from 'commas:api/renderer'
 import { clipboard, ipcRenderer, shell } from 'electron'
 import { findLast } from 'lodash-es'
 import { nextTick } from 'vue'
-import type { IDisposable, ITerminalAddon, Terminal } from 'xterm'
+import type { IDisposable, IMarker, ITerminalAddon, Terminal } from 'xterm'
 import type { TerminalTab, XtermBufferPosition, XtermLink } from '../../../../typings/terminal'
 import { addFirework } from './fireworks'
 import { calculateDOM, loadingElement, parseITerm2EscapeSequence } from './utils'
@@ -11,10 +11,13 @@ export class ITerm2Addon implements ITerminalAddon {
 
   tab: TerminalTab
   disposables: IDisposable[]
+  markMarkers: IMarker[]
+  recentMarkMarker?: WeakRef<IMarker>
 
   constructor(tab: TerminalTab) {
     this.tab = tab
     this.disposables = []
+    this.markMarkers = []
   }
 
   activate(xterm: Terminal) {
@@ -197,19 +200,25 @@ export class ITerm2Addon implements ITerminalAddon {
   }
 
   dispose() {
-    this.disposables.forEach(disposable => {
+    const disposables = [
+      ...this.disposables,
+      ...this.markMarkers,
+    ]
+    disposables.forEach(disposable => {
       disposable.dispose()
     })
     this.disposables = []
+    this.markMarkers = []
   }
 
   setMark() {
     const xterm = this.tab.xterm
-    // TODO: add jumping logics
     const marker = xterm.registerMarker()!
     const decoration = xterm.registerDecoration({
       marker,
     })!
+    this.markMarkers.push(marker)
+    this.markMarkers.sort((a, b) => b.line - a.line)
     const dimensions = xterm['_core']._renderService.dimensions
     decoration.onRender(() => {
       const el = decoration.element!
@@ -217,6 +226,28 @@ export class ITerm2Addon implements ITerminalAddon {
       el.style.setProperty('--height', `${dimensions.actualCellHeight}px`)
       el.classList.add('terminal-marker')
     })
+  }
+
+  scrollToMarker(marker: IMarker) {
+    this.recentMarkMarker = new WeakRef(marker)
+    const { xterm } = this.tab
+    xterm.scrollLines(marker.line - xterm.buffer.active.viewportY)
+  }
+
+  scrollToMark(offset: number) {
+    if (!this.markMarkers.length) return
+    const index = this.recentMarkMarker
+      // @ts-expect-error also find undefined
+      ? this.markMarkers.indexOf(this.recentMarkMarker.deref())
+      : -1
+    let targetIndex = index + offset
+    if (targetIndex < 0) {
+      targetIndex = this.markMarkers.length - 1
+    }
+    if (targetIndex > this.markMarkers.length - 1) {
+      targetIndex = 0
+    }
+    this.scrollToMarker(this.markMarkers[targetIndex])
   }
 
 }

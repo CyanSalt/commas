@@ -1,0 +1,19 @@
+[
+  {
+    "label": "Set Mark#!iterm2.1",
+    "accelerator": "CmdOrCtrl+Shift+M",
+    "command": "set-mark"
+  },
+  {
+    "label": "Previous Mark#!iterm2.2",
+    "accelerator": "CmdOrCtrl+Shift+Up",
+    "command": "scroll-to-mark",
+    "args": [-1]
+  },
+  {
+    "label": "Next Mark#!iterm2.3",
+    "accelerator": "CmdOrCtrl+Shift+Down",
+    "command": "scroll-to-mark",
+    "args": [1]
+  }
+]

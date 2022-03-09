@@ -16,15 +16,19 @@ function removeKeyBinding(item: KeyBinding) {
   }
 }
 
-function add(this: MainAPIContext, binding: KeyBinding) {
-  addKeyBinding(binding)
+function addKeyBindings(this: MainAPIContext, bindings: KeyBinding[]) {
+  bindings.forEach(binding => {
+    addKeyBinding(binding)
+  })
   this.$.app.onCleanup(() => {
-    removeKeyBinding(binding)
+    bindings.forEach(binding => {
+      removeKeyBinding(binding)
+    })
   })
 }
 
 export * from '../shim'
 
 export {
-  add,
+  addKeyBindings,
 }

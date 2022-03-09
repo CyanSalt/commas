@@ -8,10 +8,6 @@ commas.context.provide('cli', {
   },
 })
 
-commas.keybinding.add({
-  label: 'Set Mark#!iterm2.1',
-  accelerator: 'CmdOrCtrl+Shift+M',
-  command: 'set-mark',
-})
+commas.keybinding.addKeyBindings(require('../../keybindings.json'))
 
 commas.i18n.addTranslationDirectory(path.join(__dirname, '../../locales'))
