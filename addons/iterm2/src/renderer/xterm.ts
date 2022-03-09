@@ -224,7 +224,7 @@ export class ITerm2Addon implements ITerminalAddon {
       const el = decoration.element!
       el.style.setProperty('--width', `${dimensions.actualCellWidth}px`)
       el.style.setProperty('--height', `${dimensions.actualCellHeight}px`)
-      el.classList.add('terminal-marker')
+      el.classList.add('terminal-mark')
     })
   }
 
@@ -232,6 +232,17 @@ export class ITerm2Addon implements ITerminalAddon {
     this.recentMarkMarker = new WeakRef(marker)
     const { xterm } = this.tab
     xterm.scrollLines(marker.line - xterm.buffer.active.viewportY)
+    const decoration = xterm.registerDecoration({
+      marker,
+      width: xterm.cols,
+    })!
+    decoration.onRender(() => {
+      const el = decoration.element!
+      el.classList.add('terminal-mark-highlight-line')
+      el.addEventListener('animationend', () => {
+        decoration.dispose()
+      })
+    })
   }
 
   scrollToMark(offset: number) {

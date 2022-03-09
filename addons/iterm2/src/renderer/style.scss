@@ -1,8 +1,20 @@
-.terminal-marker {
+.terminal-mark {
   height: 0 !important;
   margin-top: calc(var(--height) / 6);
   margin-left: calc(0px - var(--width) * 5 / 6);
   border-top: calc(var(--height) / 3) solid transparent;
   border-bottom: calc(var(--height) / 3) solid transparent;
   border-left: calc(var(--width) * 2 / 3) solid rgb(var(--design-blue));
+}
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.terminal-mark-highlight-line {
+  background: rgb(var(--design-magenta) / 0.5);
+  animation: fade-out 1s;
 }
