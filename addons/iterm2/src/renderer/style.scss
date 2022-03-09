@@ -18,3 +18,7 @@
   background: rgb(var(--design-magenta) / 0.5);
   animation: fade-out 1s;
 }
+.terminal-cursor-highlight-line {
+  border: 1px solid rgb(var(--design-blue));
+  background: rgb(var(--design-blue) / 0.5);
+}

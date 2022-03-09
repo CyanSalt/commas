@@ -13,6 +13,7 @@ export class ITerm2Addon implements ITerminalAddon {
   disposables: IDisposable[]
   markMarkers: IMarker[]
   recentMarkMarker?: WeakRef<IMarker>
+  highlightMarker?: IMarker
 
   constructor(tab: TerminalTab) {
     this.tab = tab
@@ -54,6 +55,17 @@ export class ITerm2Addon implements ITerminalAddon {
           case 'CurrentDir':
             this.tab.cwd = sequence.positional
             break
+          case 'HighlightCursorLine': {
+            switch (sequence.positional) {
+              case 'yes':
+                this._activateHighlight()
+                break
+              case 'no':
+                this._deactivateHighlight()
+                break
+            }
+            break
+          }
           case 'RequestAttention':
             switch (sequence.positional) {
               case 'yes':
@@ -197,6 +209,11 @@ export class ITerm2Addon implements ITerminalAddon {
         })
         return true
       }),
+      xterm.onLineFeed(() => {
+        if (this._deactivateHighlight()) {
+          this._activateHighlight()
+        }
+      }),
     )
   }
 
@@ -229,7 +246,7 @@ export class ITerm2Addon implements ITerminalAddon {
     })
   }
 
-  scrollToMarker(marker: IMarker) {
+  _scrollToMarker(marker: IMarker) {
     this.recentMarkMarker = new WeakRef(marker)
     const { xterm } = this.tab
     xterm.scrollLines(marker.line - xterm.buffer.active.viewportY)
@@ -246,6 +263,29 @@ export class ITerm2Addon implements ITerminalAddon {
     })
   }
 
+  _activateHighlight() {
+    const { xterm } = this.tab
+    if (this.highlightMarker) return false
+    this.highlightMarker = xterm.registerMarker()!
+    const highlightDecoration = xterm.registerDecoration({
+      marker: this.highlightMarker,
+      width: xterm.cols,
+    })!
+    highlightDecoration.onRender(() => {
+      highlightDecoration.element!.classList.add('terminal-cursor-highlight-line')
+    })
+    this.highlightMarker.onDispose(() => {
+      highlightDecoration.dispose()
+    })
+  }
+
+  _deactivateHighlight() {
+    if (!this.highlightMarker) return false
+    this.highlightMarker.dispose()
+    this.highlightMarker = undefined
+    return true
+  }
+
   scrollToMark(offset: number) {
     if (!this.markMarkers.length) return
     const index = this.recentMarkMarker
@@ -259,7 +299,7 @@ export class ITerm2Addon implements ITerminalAddon {
     if (targetIndex > this.markMarkers.length - 1) {
       targetIndex = 0
     }
-    this.scrollToMarker(this.markMarkers[targetIndex])
+    this._scrollToMarker(this.markMarkers[targetIndex])
   }
 
 }
