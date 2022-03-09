@@ -120,14 +120,15 @@ export class ITerm2Addon implements ITerminalAddon {
                 ? Math.ceil(calculateDOM(el => fn(el, value), targetImage) / scale)
                 : numeric
             }
+            const baseScale = window.devicePixelRatio
             const width = getImageDimension(image, (el, dimension) => {
               el.style.width = dimension
               return el.clientWidth
-            }, sequence.args.width, dimensions.actualCellWidth)
+            }, sequence.args.width, dimensions.actualCellWidth * baseScale)
             const height = getImageDimension(image, (el, dimension) => {
               el.style.height = dimension
               return el.clientHeight
-            }, sequence.args.height, dimensions.actualCellHeight)
+            }, sequence.args.height, dimensions.actualCellHeight * baseScale)
             const marker = xterm.registerMarker()!
             const decoration = xterm.registerDecoration({
               marker,
