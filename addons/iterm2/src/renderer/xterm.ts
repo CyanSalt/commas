@@ -4,7 +4,7 @@ import { findLast } from 'lodash-es'
 import { nextTick } from 'vue'
 import type { IDisposable, IMarker, ITerminalAddon, Terminal } from 'xterm'
 import type { TerminalTab, XtermBufferPosition, XtermLink } from '../../../../typings/terminal'
-import { addFirework } from './fireworks'
+import { addFirework, useBadge } from './badge'
 import { calculateDOM, loadingElement, parseITerm2EscapeSequence } from './utils'
 
 export class ITerm2Addon implements ITerminalAddon {
@@ -23,6 +23,7 @@ export class ITerm2Addon implements ITerminalAddon {
 
   activate(xterm: Terminal) {
     const settings = $(commas.remote.useSettings())
+    let badge = $(useBadge())
     // iTerm2 escape codes
     this.disposables.push(
       xterm.parser.registerOscHandler(1337, async data => {
@@ -151,6 +152,12 @@ export class ITerm2Addon implements ITerminalAddon {
             decoration.onRender(() => {
               decoration.element!.style.background = `url('${url}') no-repeat center/${sequence.args.preserveAspectRatio === '0' ? '100%' : 'contain'}`
             })
+            break
+          }
+          case 'SetBadgeFormat': {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            badge = Buffer.from(sequence.positional, 'base64').toString()
+            break
           }
         }
         return true

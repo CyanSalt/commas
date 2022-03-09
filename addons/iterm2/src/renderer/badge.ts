@@ -16,6 +16,12 @@ export function useFireworks() {
   return $$(fireworks)
 }
 
+const badge = $ref('')
+
+export function useBadge() {
+  return $$(badge)
+}
+
 export function addFirework(position: Firework['position']) {
   fireworks.push({
     position,
