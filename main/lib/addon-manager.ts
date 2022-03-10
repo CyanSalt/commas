@@ -5,7 +5,7 @@ import { computed, shallowRef, unref } from '@vue/reactivity'
 import { ipcMain } from 'electron'
 import { provideIPC } from '../utils/compositions'
 import { userData } from '../utils/directory'
-import { useEnabledAddons } from './settings'
+import { useSettings } from './settings'
 
 interface AddonInfo {
   entry: string,
@@ -51,7 +51,11 @@ async function discoverAddons() {
   discoveredAddonsRef.value = result
 }
 
-const enabledAddonsRef = useEnabledAddons()
+const enabledAddonsRef = computed(() => {
+  const settings = unref(useSettings())
+  return settings['terminal.addon.includes']
+})
+
 const addonsRef = computed(() => {
   const discoveredAddons = unref(discoveredAddonsRef)
   const enabledAddons = unref(enabledAddonsRef)
