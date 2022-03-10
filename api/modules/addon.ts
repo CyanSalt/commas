@@ -1,4 +1,5 @@
 import * as path from 'path'
+import type { AddonInfo } from '../../typings/addon'
 import * as app from './app'
 
 function cloneAPIMethod(method: Function, context: {} | undefined) {
@@ -56,12 +57,6 @@ function addCommasModule(exports) {
 function unsetCommasModule() {
   delete require.cache['commas:api']
   delete require.cache[app.isMainProcess() ? 'commas:api/main' : 'commas:api/renderer']
-}
-
-interface AddonInfo {
-  entry: string,
-  manifest: any,
-  type: 'builtin' | 'user',
 }
 
 let preloadedAddons: Record<string, AddonInfo> = {}

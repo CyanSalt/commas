@@ -3,15 +3,10 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { computed, shallowRef, unref } from '@vue/reactivity'
 import { ipcMain } from 'electron'
+import type { AddonInfo } from '../../typings/addon'
 import { provideIPC } from '../utils/compositions'
 import { userData } from '../utils/directory'
 import { useSettings } from './settings'
-
-interface AddonInfo {
-  entry: string,
-  manifest: any,
-  type: 'builtin' | 'user',
-}
 
 const discoveredAddonsRef = shallowRef<Record<string, AddonInfo>>({})
 
