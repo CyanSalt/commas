@@ -6,4 +6,5 @@ export interface Theme extends ITheme {
   systemAccent: string,
   opacity: number,
   variables: Record<string, string>,
+  vibrancy: boolean,
 }

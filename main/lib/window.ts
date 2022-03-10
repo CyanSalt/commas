@@ -31,7 +31,7 @@ async function createWindow(...args: string[]) {
       ],
     },
   }
-  if (frameType === 'immersive') {
+  if (frameType !== 'system') {
     options.titleBarStyle = process.platform === 'darwin' ? 'hiddenInset' : 'hidden'
     // Transparent window on Windows will lose border and shadow
     options.transparent = process.platform !== 'win32'

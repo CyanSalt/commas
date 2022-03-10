@@ -84,6 +84,12 @@ const themeRef = computed(async () => {
   }
   const accentColor = systemPreferences.getAccentColor()
   theme.systemAccent = accentColor ? `#${accentColor.slice(0, 6)}` : ''
+  theme.vibrancy = process.platform === 'darwin'
+    ? settings['terminal.style.frameType'] === 'system' || theme.opacity === 0
+    : false
+  if (theme.vibrancy) {
+    theme.opacity = (1 - (1 - theme.opacity) ** 0.5)
+  }
   theme.variables = Object.fromEntries([
     ...Object.entries(CSS_COLORS).map(([key, attr]) => {
       let value = theme[key]
@@ -115,7 +121,7 @@ function handleThemeMessages() {
     const backgroundRGBA = toRGBA(theme.background!)
     themeOptionsRef.value = {
       backgroundColor: toElectronColor({ ...backgroundRGBA, a: 0 }),
-      vibrancy: theme.opacity === 0 ? 'sidebar' : undefined,
+      vibrancy: theme.vibrancy ? 'sidebar' : undefined,
     }
     // Enable system dark mode
     nativeTheme.themeSource = theme.type

@@ -21,7 +21,7 @@ let iconBuffer = $ref<Buffer | undefined>()
 let branch = $ref('')
 
 const isEnabled = $computed(() => {
-  return settings['terminal.style.frameType'] === 'immersive'
+  return settings['terminal.style.frameType'] !== 'system'
 })
 
 const directory = $computed(() => {

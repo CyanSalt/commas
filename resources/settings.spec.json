@@ -179,8 +179,7 @@
     "label": "Background Opacity",
     "comments": [
       "Background opacity of window",
-      "It will not work if RGBA background is specified in theme file",
-      "Or when using the system frame"
+      "It will not work if RGBA background is specified in theme file"
     ],
     "schema": {
       "type": "number",
