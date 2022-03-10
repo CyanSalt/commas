@@ -166,8 +166,5 @@ onMounted(() => {
   flex: auto;
   flex-direction: column;
   width: 0;
-  .app.is-vibrancy & {
-    background: rgb(var(--theme-background) / var(--theme-opacity));
-  }
 }
 </style>

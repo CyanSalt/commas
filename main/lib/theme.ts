@@ -84,9 +84,7 @@ const themeRef = computed(async () => {
   }
   const accentColor = systemPreferences.getAccentColor()
   theme.systemAccent = accentColor ? `#${accentColor.slice(0, 6)}` : ''
-  theme.vibrancy = process.platform === 'darwin'
-    ? settings['terminal.style.frameType'] === 'system' || theme.opacity === 0
-    : false
+  theme.vibrancy = process.platform === 'darwin' ? settings['terminal.style.vibrancy'] : false
   if (theme.vibrancy) {
     theme.opacity = (1 - (1 - theme.opacity) ** 0.5)
   }

@@ -189,6 +189,17 @@
     "default": 0.9
   },
   {
+    "key": "terminal.style.vibrancy",
+    "label": "Vibrancy Effect",
+    "comments": [
+      "Specify whether or not to enable the vibrancy effect for window (currently for macOS only)"
+    ],
+    "schema": {
+      "type": "boolean"
+    },
+    "default": false
+  },
+  {
     "key": "terminal.style.fontSize",
     "label": "Font Size",
     "comments": [
