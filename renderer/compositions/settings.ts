@@ -15,10 +15,6 @@ export const useSettingsSpecs = memoize(() => {
   return injectIPC<SettingsSpec[]>('settings-specs', [])
 })
 
-export const useDiscoveredAddons = memoize(() => {
-  return injectIPC<Record<string, AddonInfo>>('discovered-addons', {})
-})
-
 export const useAddons = memoize(() => {
-  return injectIPC<string[]>('addons', [])
+  return injectIPC<AddonInfo[]>('addons', [])
 })

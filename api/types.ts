@@ -8,6 +8,9 @@ type MixValues<T, U> = {
 export type MainAPI = typeof Main
 export type RendererAPI = typeof Renderer
 export type API = MainAPI & RendererAPI
+export type CompatableAPI = MainAPI | RendererAPI
+
+export type APIAddon = (api: CompatableAPI) => void
 
 export interface APIContext<T = API> {
   // eslint-disable-next-line @typescript-eslint/naming-convention

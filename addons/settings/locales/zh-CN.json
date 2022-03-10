@@ -64,6 +64,5 @@
   "Enabled Addons#!settings.label.terminal.addon.includes": "启用的附加功能",
   "List of enabled addon name#!settings.comments.0.terminal.addon.includes": "启用的附加功能名称列表",
   "Settings#!settings.1": "设置",
-  "Configure Settings#!settings.2": "配置设置",
-  "Refresh addons#!settings.3": "刷新附加功能"
+  "Configure Settings#!settings.2": "配置设置"
 }

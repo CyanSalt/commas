@@ -13,7 +13,7 @@ import { createIDGenerator } from '../../renderer/utils/helper'
 import type { TerminalTab, TerminalTabPane } from '../../typings/terminal'
 import type { RendererAPIContext } from '../types'
 
-const panes = shallowReactive<Record<string, TerminalTab>>({})
+const panes = shallowReactive<Record<string, TerminalTab | undefined>>({})
 const generateID = createIDGenerator()
 
 function registerTabPane(this: RendererAPIContext, name: string, pane: TerminalTabPane) {
@@ -34,7 +34,9 @@ function getPaneTab(name: string) {
 }
 
 function openPaneTab(name: string) {
-  activateOrAddTerminalTab(getPaneTab(name))
+  const pane = getPaneTab(name)
+  if (!pane) return
+  activateOrAddTerminalTab(pane)
 }
 
 function effectTerminalTab(
@@ -53,7 +55,9 @@ function effectTerminalTab(
     active = enabled
     const tabs = unref(useTerminalTabs())
     tabs.forEach(tab => {
-      callback(tab, active)
+      if (!tab.pane) {
+        callback(tab, active)
+      }
     })
   }
 

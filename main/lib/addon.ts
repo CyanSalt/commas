@@ -1,17 +1,48 @@
-import { effect, toRaw, unref } from '@vue/reactivity'
+import * as path from 'path'
+import { computed, effect, unref } from '@vue/reactivity'
 import type { BrowserWindow } from 'electron'
 import { app } from 'electron'
-import difference from 'lodash/difference'
+import differenceBy from 'lodash/differenceBy'
 import semver from 'semver'
 import * as commas from '../../api/core-main'
 import type { AddonInfo } from '../../typings/addon'
+import { provideIPC } from '../utils/compositions'
 import { userData } from '../utils/directory'
 import { notify } from '../utils/notification'
-import { useAddons, useDiscoveredAddons } from './addon-manager'
 import { translate } from './i18n'
+import { useSettings } from './settings'
 
-function checkAddon(name: string, discoveredAddons: Record<string, AddonInfo>) {
-  const { manifest } = discoveredAddons[name]
+function getAddonPaths() {
+  return [
+    { type: 'builtin' as const, base: path.join(__dirname, '../../addons') },
+    { type: 'user' as const, base: userData.file('addons') },
+  ]
+}
+
+function resolveAddon(name: string) {
+  const paths = getAddonPaths()
+  for (const { type, base } of paths) {
+    try {
+      const entry = path.join(base, name)
+      const manifest = require(path.join(entry, 'package.json'))
+      return { type, name, entry, manifest } as AddonInfo
+    } catch {
+      // continue
+    }
+    if (type === 'user') {
+      try {
+        const entry = path.join(base, `${name}.asar`)
+        const manifest = require(path.join(entry, 'package.json'))
+        return { type, name, entry, manifest } as AddonInfo
+      } catch {
+        // ignore
+      }
+    }
+  }
+}
+
+function checkAddon(addon: AddonInfo) {
+  const { manifest } = addon
   const engines = manifest.engines ? Object.entries<string>(manifest.engines) : []
   for (const [engine, range] of engines) {
     const version = engine === 'commas' ? app.getVersion() : process.versions[engine]
@@ -19,7 +50,7 @@ function checkAddon(name: string, discoveredAddons: Record<string, AddonInfo>) {
       notify({
         type: 'error',
         body: translate('Addon [%N] only supports %A %E, not %V#!terminal.7', {
-          N: name,
+          N: addon.name,
           A: engine,
           E: range,
           V: version,
@@ -29,21 +60,23 @@ function checkAddon(name: string, discoveredAddons: Record<string, AddonInfo>) {
   }
 }
 
+const addonsRef = computed(() => {
+  const settings = unref(useSettings())
+  const enabledAddons = settings['terminal.addon.includes']
+  return enabledAddons
+    .map(name => resolveAddon(name))
+    .filter((item): item is AddonInfo => Boolean(item))
+})
+
 function loadAddons() {
-  const discoveredAddonsRef = useDiscoveredAddons()
-  effect(() => {
-    const discoveredAddons = unref(discoveredAddonsRef)
-    commas.addon.preloadAddons(discoveredAddons)
-  })
-  const addonsRef = useAddons()
-  let loadedAddons: string[] = []
+  let loadedAddons: AddonInfo[] = []
   effect(() => {
     const addons = unref(addonsRef)
-    difference(loadedAddons, addons).forEach(addon => {
+    differenceBy(loadedAddons, addons, (addon: AddonInfo) => addon.name).forEach(addon => {
       commas.addon.unloadAddon(addon)
     })
-    difference(addons, loadedAddons).forEach(addon => {
-      checkAddon(addon, toRaw(discoveredAddonsRef).value)
+    differenceBy(addons, loadedAddons, (addon: AddonInfo) => addon.name).forEach(addon => {
+      checkAddon(addon)
       commas.addon.loadAddon(addon, commas.raw)
     })
     loadedAddons = [...addons]
@@ -51,7 +84,12 @@ function loadAddons() {
 }
 
 function loadCustomJS() {
-  commas.addon.loadAddon('custom.js', commas.raw)
+  commas.addon.loadAddon({
+    type: 'user',
+    name: 'custom.js',
+    entry: '',
+    manifest: {},
+  }, commas.raw)
 }
 
 function loadCustomCSS(frame: BrowserWindow) {
@@ -64,8 +102,15 @@ function loadCustomCSS(frame: BrowserWindow) {
   })
 }
 
+function handleAddonMessages() {
+  provideIPC('addons', addonsRef)
+}
+
 export {
   loadAddons,
   loadCustomJS,
   loadCustomCSS,
+  getAddonPaths,
+  resolveAddon,
+  handleAddonMessages,
 }

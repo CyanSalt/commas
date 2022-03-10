@@ -20,6 +20,7 @@ const { modelValue, withKeys, pinned } = defineProps({
 })
 
 const emit = defineEmits({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   'update:modelValue': (value: object | undefined) => {
     return !value || typeof value === 'object'
   },
@@ -142,7 +143,7 @@ export interface EditorEntryItem {
 .property-line {
   display: flex;
   align-items: center;
-  & + .form-tips {
+  & + :deep(.form-tips) {
     padding-left: 28px;
   }
 }

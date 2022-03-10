@@ -2,7 +2,6 @@
 import * as commas from 'commas:api/renderer'
 import { isEqual } from 'lodash-es'
 import type { PropType } from 'vue'
-import type { EditorEntryItem } from '../../../../renderer/components/basic/object-editor.vue'
 import type { SettingsSpec } from '../../../../typings/settings'
 import { accepts, isObjectSchema } from './json-schema'
 
@@ -28,15 +27,15 @@ const { spec, modelValue, currentValue, open } = defineProps({
 })
 
 const emit = defineEmits({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   'update:modelValue': (value: any) => {
     return true
   },
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   'update:open': (value: boolean) => {
     return typeof value === 'boolean'
   },
 })
-
-const discoveredAddons = $(commas.remote.useDiscoveredAddons())
 
 const isSimpleObject = $computed(() => {
   const schema = spec.schema
@@ -87,31 +86,6 @@ const isChanged = $computed(() => {
   return !isEqual(modelValue, currentValue)
 })
 
-const hasNotes = $computed(() => {
-  return spec.key === 'terminal.addon.includes'
-})
-
-const recommendations = $computed(() => {
-  const specRecommendations = spec.recommendations
-  if (spec.key === 'terminal.addon.includes') {
-    return [
-      ...specRecommendations!,
-      ...Object.keys(discoveredAddons)
-        .filter(name => discoveredAddons[name].type === 'user'),
-    ]
-  }
-  return specRecommendations
-})
-
-function getNote(item: EditorEntryItem) {
-  if (spec.key === 'terminal.addon.includes') {
-    const info = discoveredAddons[item.entry.value]
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    return info?.manifest?.description ?? ''
-  }
-  return undefined
-}
-
 function normalize(value) {
   if (accepts(spec.schema, 'array') && Array.isArray(value)) {
     return value
@@ -147,6 +121,9 @@ function parseJSON(value) {
 }
 
 function parse(value) {
+  if (typeof value !== 'string') {
+    return value
+  }
   if (accepts(spec.schema, 'object')) {
     const parsed = parseJSON(value)
     if (typeof parsed === 'object') {
@@ -207,13 +184,8 @@ function reset() {
         v-else-if="isSimpleObject"
         v-model="model"
         :with-keys="accepts(spec.schema, 'object')"
-        :pinned="recommendations"
+        :pinned="spec.recommendations"
       >
-        <template #note="{ item }">
-          <template v-if="hasNotes">
-            <div v-i18n class="form-tips">{{ getNote(item) }}</div>
-          </template>
-        </template>
         <template #extra>
           <span class="link reset" @click="reset">
             <span class="feather-icon icon-rotate-ccw"></span>
@@ -232,7 +204,7 @@ function reset() {
           :value="option"
         >{{ option }}#!settings.options.{{ index }}.{{ spec.key }}</option>
       </select>
-      <ValueSelector v-else v-model="model" :pinned="recommendations">
+      <ValueSelector v-else v-model="model" :pinned="spec.recommendations">
         <input
           v-if="accepts(spec.schema, ['number', 'integer'])"
           v-model="model"

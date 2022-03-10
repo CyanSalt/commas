@@ -1,21 +1,18 @@
-import { difference } from 'lodash-es'
+import { differenceBy } from 'lodash-es'
 import { watchEffect } from 'vue'
 import * as commas from '../../api/core-renderer'
-import { useAddons, useDiscoveredAddons } from './settings'
+import type { AddonInfo } from '../../typings/addon'
+import { useAddons } from './settings'
 
-const discoveredAddons = $(useDiscoveredAddons())
 const addons = $(useAddons())
 
 export function loadAddons() {
+  let loadedAddons: AddonInfo[] = []
   watchEffect(() => {
-    commas.addon.preloadAddons(discoveredAddons)
-  })
-  let loadedAddons: string[] = []
-  watchEffect(() => {
-    difference(loadedAddons, addons).forEach(addon => {
+    differenceBy(loadedAddons, addons, (addon: AddonInfo) => addon.name).forEach(addon => {
       commas.addon.unloadAddon(addon)
     })
-    difference(addons, loadedAddons).forEach(addon => {
+    differenceBy(addons, loadedAddons, (addon: AddonInfo) => addon.name).forEach(addon => {
       commas.addon.loadAddon(addon, commas.raw)
     })
     loadedAddons = [...addons]
@@ -23,5 +20,10 @@ export function loadAddons() {
 }
 
 export function loadCustomJS() {
-  commas.addon.loadAddon('custom.js', commas.raw)
+  commas.addon.loadAddon({
+    type: 'user',
+    name: 'custom.js',
+    entry: '',
+    manifest: {},
+  }, commas.raw)
 }

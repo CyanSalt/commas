@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
-import { ipcRenderer } from 'electron'
 import { cloneDeep, isEqual } from 'lodash-es'
 import { watchEffect } from 'vue'
 import SettingsLine from './settings-line.vue'
@@ -48,10 +47,6 @@ function toggleAll() {
   isCollapsed = !isCollapsed
 }
 
-function refreshAddons() {
-  ipcRenderer.invoke('refresh-addons')
-}
-
 watchEffect(revert)
 </script>
 
@@ -59,7 +54,6 @@ watchEffect(revert)
   <TerminalPane class="settings-pane">
     <h2 v-i18n class="group-title">Settings#!settings.1</h2>
     <form class="group">
-      <span v-i18n class="link" @click="refreshAddons">Refresh addons#!settings.3</span>
       <div class="action-line">
         <span :class="['link form-action toggle-all', { collapsed: isCollapsed }]" @click="toggleAll">
           <span class="feather-icon icon-chevrons-down"></span>

@@ -1,0 +1,9 @@
+{
+  "name": "addon-manager",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Manage builtin and installed addons",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC"
+}

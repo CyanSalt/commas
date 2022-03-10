@@ -1,5 +1,6 @@
 import * as path from 'path'
 import type { AddonInfo } from '../../typings/addon'
+import type { APIAddon, CompatableAPI } from '../types'
 import * as app from './app'
 
 function cloneAPIMethod(method: Function, context: {} | undefined) {
@@ -19,7 +20,7 @@ function cloneAPIModule(object: object, context: {} | undefined) {
   })
 }
 
-function cloneAPI<T extends Object>(api: T, name: string) {
+function cloneAPI<T extends CompatableAPI>(api: T, name: string) {
   return new Proxy(api, {
     get(target, property, receiver) {
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -59,40 +60,36 @@ function unsetCommasModule() {
   delete require.cache[app.isMainProcess() ? 'commas:api/main' : 'commas:api/renderer']
 }
 
-let preloadedAddons: Record<string, AddonInfo> = {}
-function preloadAddons(addons: Record<string, AddonInfo>) {
-  preloadedAddons = addons
-}
-
-const loadedAddons: string[] = []
-function loadAddon(name: string, api: object) {
+const loadedAddons: AddonInfo[] = []
+function loadAddon(addon: AddonInfo, api: CompatableAPI) {
+  if (loadedAddons.some(item => item.name === addon.name)) return
   // Reserved names
-  if (loadedAddons.includes(name) || name === 'terminal') return
-  let addon
-  if (name === 'custom.js') {
+  if (addon.name === 'terminal') return
+  let processor: APIAddon
+  if (addon.name === 'custom.js') {
     try {
       const userDataPath = app.isPackaged()
         ? app.getPath('userData')
         : path.resolve('../../userdata')
-      addon = require(path.join(userDataPath, name))
+      processor = require(path.join(userDataPath, addon.name))
     } catch {
-      addon = () => {/* noop */}
+      processor = () => {/* noop */}
     }
   } else {
-    addon = require(preloadedAddons[name].entry)
+    processor = require(addon.entry)
   }
-  const clonedAPI = cloneAPI(api, name)
+  const clonedAPI = cloneAPI(api, addon.name)
   addCommasModule(clonedAPI)
-  addon(clonedAPI)
+  processor(clonedAPI)
   unsetCommasModule()
-  loadedAddons.push(name)
+  loadedAddons.push(addon)
 }
 
-function unloadAddon(name: string) {
-  const index = loadedAddons.indexOf(name)
+function unloadAddon(addon: AddonInfo) {
+  const index = loadedAddons.findIndex(item => item.name === addon.name)
   if (index !== -1) {
     loadedAddons.splice(index, 1)
-    app.events.emit(`unload:${name}`)
+    app.events.emit(`unload:${addon.name}`)
   }
 }
 
@@ -104,7 +101,6 @@ export * from '../shim'
 
 export {
   cloneAPI,
-  preloadAddons,
   loadAddon,
   unloadAddon,
   unloadAddons,
