@@ -62,6 +62,8 @@ async function updateIcon() {
 }
 
 watchEffect(() => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (!isEnabled) return
   iconBuffer = defaultIconBuffer
   updateIcon()
 })
@@ -85,6 +87,8 @@ async function updateBranch() {
 }
 
 watchEffect(() => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (!isEnabled) return
   branch = ''
   updateBranch()
 })
