@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { ipcRenderer } from 'electron'
-import { isEqual } from 'lodash-es'
-import { onMounted, watchEffect } from 'vue'
-import type { EditorEntryItem } from '../../../../renderer/components/basic/object-editor.vue'
+import { onMounted } from 'vue'
+import type { AddonInfo } from '../../../../typings/addon'
 import { useDiscoveredAddons } from './compositions'
 
-const { vI18n, ObjectEditor, TerminalPane } = commas.ui.vueAssets
+const { vI18n, TerminalPane } = commas.ui.vueAssets
 
 let settings = $(commas.remote.useUserSettings())
 const specs = $(commas.remote.useSettingsSpecs())
@@ -17,16 +16,7 @@ const spec = $computed(() => {
 
 const discoveredAddons = $(useDiscoveredAddons())
 
-const recommendations = $computed(() => {
-  if (!spec) return []
-  return [
-    ...spec.recommendations!,
-    ...discoveredAddons.filter(addon => addon.type === 'user')
-      .map(addon => addon.name),
-  ]
-})
-
-let currentValue = $computed<string[]>({
+let enabledAddons = $computed<string[]>({
   get() {
     return settings['terminal.addon.includes'] ?? spec?.default ?? []
   },
@@ -35,33 +25,28 @@ let currentValue = $computed<string[]>({
   },
 })
 
-let model = $ref<string[]>([])
-
-const isChanged = $computed(() => {
-  return !isEqual(model, currentValue)
+const addonList = $computed(() => {
+  return discoveredAddons.map(addon => ({
+    addon,
+    enabled: enabledAddons.includes(addon.name),
+  }))
 })
 
-function getNote(item: EditorEntryItem) {
-  const info = discoveredAddons.find(addon => addon.name === item.entry.value)
-  return info?.manifest?.description ?? ''
+function toggle(addon: AddonInfo, enabled: boolean) {
+  const addons = enabledAddons
+    .filter(item => item !== addon.name)
+  if (enabled) {
+    addons.push(addon.name)
+  }
+  enabledAddons = addons
 }
 
-function refreshAddons() {
+function refresh() {
   ipcRenderer.invoke('discover-addons')
 }
 
-function revert() {
-  model = currentValue as string[]
-}
-
-function confirm() {
-  currentValue = model as string[]
-}
-
-watchEffect(revert)
-
 onMounted(() => {
-  refreshAddons()
+  refresh()
 })
 </script>
 
@@ -69,20 +54,34 @@ onMounted(() => {
   <TerminalPane class="addon-manager-pane">
     <h2 v-i18n class="group-title">Addons#!addon-manager.1</h2>
     <form class="group">
-      <span v-i18n class="link" @click="refreshAddons">Refresh addons#!addon-manager.3</span>
       <div class="action-line">
-        <span :class="['link form-action revert', { disabled: !isChanged }]" @click="revert">
-          <span class="feather-icon icon-rotate-ccw"></span>
-        </span>
-        <span :class="['link form-action confirm', { disabled: !isChanged }]" @click="confirm">
-          <span class="feather-icon icon-check"></span>
+        <span class="link form-action" @click="refresh">
+          <span class="feather-icon icon-refresh-cw"></span>
         </span>
       </div>
-      <ObjectEditor v-model="model" :pinned="recommendations">
-        <template #note="{ item }">
-          <div v-i18n class="form-tips">{{ getNote(item) }}</div>
-        </template>
-      </ObjectEditor>
+      <div class="addon-list">
+        <div
+          v-for="({ addon, enabled }) in addonList"
+          :key="addon.name"
+          :class="['addon-card', { 'is-disabled': !enabled }]"
+        >
+          <div class="addon-card-title">
+            <span class="addon-primary-info">
+              <span class="addon-name">{{ addon.manifest?.productName ?? addon.manifest?.name ?? addon.name }}</span>
+              <span v-if="addon.type === 'builtin'" v-i18n class="addon-tag">Built-in#!addon-manager.3</span>
+              <span v-else class="addon-version">{{ addon.manifest?.version ?? '' }}</span>
+            </span>
+            <span class="link form-action">
+              <span
+                :class="['feather-icon', enabled ? 'icon-zap-off' : 'icon-zap']"
+                @click="toggle(addon, !enabled)"
+              ></span>
+            </span>
+          </div>
+          <div class="addon-description">{{ addon.manifest?.description ?? '' }}</div>
+          <span class="addon-author">{{ addon.manifest?.author ?? '' }}</span>
+        </div>
+      </div>
     </form>
   </TerminalPane>
 </template>
@@ -91,15 +90,42 @@ onMounted(() => {
 .form-action {
   margin: 0;
 }
-.revert {
-  color: rgb(var(--design-red));
+.addon-list {
+  margin-top: 8px;
 }
-.confirm {
-  color: rgb(var(--design-green));
+.addon-card {
+  padding: 8px 0;
+  border-top: 1px solid rgb(var(--theme-foreground) / 0.1);
+  line-height: 24px;
+  &.is-disabled {
+    color: rgb(var(--theme-foreground) / 0.5);
+  }
 }
-.revert.disabled,
-.confirm.disabled {
-  color: inherit;
-  opacity: 0.5;
+.addon-card-title {
+  display: flex;
+  justify-content: space-between;
+  .form-action {
+    color: rgb(var(--design-red));
+    .addon-card.is-disabled & {
+      color: rgb(var(--design-yellow));
+    }
+  }
+}
+.addon-primary-info {
+  display: flex;
+  align-items: center;
+}
+.addon-name {
+  font-weight: bold;
+}
+.addon-tag {
+  margin-left: 1em;
+  color: rgb(var(--theme-green));
+  font-size: 12px;
+}
+.addon-version {
+  margin-left: 1em;
+  color: rgb(var(--theme-foreground) / 0.5);
+  font-size: 12px;
 }
 </style>
