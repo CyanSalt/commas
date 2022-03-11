@@ -2,8 +2,15 @@
   "name": "cli",
   "private": true,
   "version": "0.1.0",
+  "productName": "Commas CLI",
   "description": "Commas CLI",
   "main": "index.js",
   "author": "commas",
-  "license": "ISC"
+  "license": "ISC",
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "Commas CLI",
+      "description": "Commas 命令行工具"
+    }
+  }
 }

@@ -2,8 +2,15 @@
   "name": "launcher",
   "private": true,
   "version": "0.1.0",
+  "productName": "Launcher",
   "description": "Quick execution of commands",
   "main": "index.js",
   "author": "commas",
-  "license": "ISC"
+  "license": "ISC",
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "启动项",
+      "description": "快速运行命令"
+    }
+  }
 }

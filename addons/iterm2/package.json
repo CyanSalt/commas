@@ -2,8 +2,15 @@
   "name": "iterm2",
   "private": true,
   "version": "0.1.0",
+  "productName": "iTerm2 Escape Code",
   "description": "Provide support for iTerm2 escape sequences",
   "main": "index.js",
   "author": "commas",
-  "license": "ISC"
+  "license": "ISC",
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "iTerm2 转义码",
+      "description": "提供对 iTerm2 转义序列的支持"
+    }
+  }
 }

@@ -2,8 +2,15 @@
   "name": "cleaner",
   "private": true,
   "version": "0.1.0",
+  "productName": "Cache Cleaner",
   "description": "Clean up the application cache",
   "main": "index.js",
   "author": "commas",
-  "license": "ISC"
+  "license": "ISC",
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "缓存清理",
+      "description": "清理应用缓存"
+    }
+  }
 }

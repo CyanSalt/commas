@@ -1,9 +1,16 @@
 {
   "name": "addon-manager",
+  "productName": "Addon Manager",
   "private": true,
   "version": "0.1.0",
   "description": "Manage builtin and installed addons",
   "main": "index.js",
   "author": "commas",
-  "license": "ISC"
+  "license": "ISC",
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "附加功能管理",
+      "description": "管理内置的和已安装的附加功能"
+    }
+  }
 }

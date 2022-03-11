@@ -2,8 +2,15 @@
   "name": "power-mode",
   "private": true,
   "version": "0.1.0",
-  "description": "Turn on power mode",
+  "productName": "Power Mode",
+  "description": "Turn on power mode!",
   "main": "index.js",
   "author": "commas",
-  "license": "ISC"
+  "license": "ISC",
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "给力模式",
+      "description": "开启给力模式！"
+    }
+  }
 }

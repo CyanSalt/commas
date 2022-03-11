@@ -2,8 +2,15 @@
   "name": "proxy",
   "private": true,
   "version": "0.1.0",
+  "productName": "Proxy",
   "description": "Open an HTTP proxy server",
   "main": "index.js",
   "author": "commas",
-  "license": "ISC"
+  "license": "ISC",
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "代理",
+      "description": "打开 HTTP 代理服务器"
+    }
+  }
 }

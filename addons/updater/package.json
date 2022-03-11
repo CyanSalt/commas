@@ -2,8 +2,15 @@
   "name": "updater",
   "private": true,
   "version": "0.1.0",
+  "productName": "Auto Updater",
   "description": "Check updates and download automatically",
   "main": "index.js",
   "author": "commas",
-  "license": "ISC"
+  "license": "ISC",
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "自动更新",
+      "description": "自动检查和下载更新"
+    }
+  }
 }

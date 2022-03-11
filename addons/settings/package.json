@@ -2,8 +2,15 @@
   "name": "settings",
   "private": true,
   "version": "0.1.0",
-  "description": "User interface for custom settings",
+  "productName": "Settings",
+  "description": "User interface for customizing settings",
   "main": "index.js",
   "author": "commas",
-  "license": "ISC"
+  "license": "ISC",
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "设置",
+      "description": "自定义设置的用户界面"
+    }
+  }
 }

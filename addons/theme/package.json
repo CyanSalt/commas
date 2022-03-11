@@ -2,8 +2,15 @@
   "name": "theme",
   "private": true,
   "version": "0.1.0",
+  "productName": "Theme",
   "description": "Download theme from GitHub",
   "main": "index.js",
   "author": "commas",
-  "license": "ISC"
+  "license": "ISC",
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "主题",
+      "description": "从 GitHub 下载主题"
+    }
+  }
 }

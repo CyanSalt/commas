@@ -2,8 +2,15 @@
   "name": "preference",
   "private": true,
   "version": "0.1.0",
+  "productName": "Preference",
   "description": "Provide entries for various features",
   "main": "index.js",
   "author": "commas",
-  "license": "ISC"
+  "license": "ISC",
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "首选项",
+      "description": "为各种功能提供入口"
+    }
+  }
 }

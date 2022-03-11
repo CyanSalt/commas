@@ -25,9 +25,33 @@ let enabledAddons = $computed<string[]>({
   },
 })
 
+const language = $(commas.remote.useLanguage())
+
+function getI18NManifest(original: any) {
+  let manifest = { ...original }
+  const i18nMap: Record<string, any> | undefined = original?.['commas:i18n']
+  if (i18nMap) {
+    const locales = Object.keys(i18nMap)
+    let locale = locales.find(item => item === language)
+    if (!locale) {
+      const sepIndex = language.indexOf('-')
+      const lang = sepIndex !== -1 ? language.slice(0, sepIndex) : language
+      locale = locales.findIndex(item => item.startsWith(`${lang}-`))
+    }
+    if (locale) {
+      manifest = {
+        ...manifest,
+        ...i18nMap[locale],
+      }
+    }
+  }
+  return manifest
+}
+
 const addonList = $computed(() => {
   return discoveredAddons.map(addon => ({
     addon,
+    manifest: getI18NManifest(addon.manifest),
     enabled: enabledAddons.includes(addon.name),
   }))
 })
@@ -61,15 +85,15 @@ onMounted(() => {
       </div>
       <div class="addon-list">
         <div
-          v-for="({ addon, enabled }) in addonList"
+          v-for="({ addon, manifest, enabled }) in addonList"
           :key="addon.name"
           :class="['addon-card', { 'is-disabled': !enabled }]"
         >
           <div class="addon-card-title">
             <span class="addon-primary-info">
-              <span class="addon-name">{{ addon.manifest?.productName ?? addon.manifest?.name ?? addon.name }}</span>
-              <span v-if="addon.type === 'builtin'" v-i18n class="addon-tag">Built-in#!addon-manager.3</span>
-              <span v-else class="addon-version">{{ addon.manifest?.version ?? '' }}</span>
+              <span class="addon-name">{{ manifest.productName ?? manifest.name ?? addon.name }}</span>
+              <span v-if="manifest.productName ?? manifest.name !== addon.name" class="addon-id">{{ addon.name }}</span>
+              <span v-if="addon.type !== 'builtin'" class="addon-version">{{ manifest.version ?? '' }}</span>
             </span>
             <span class="link form-action">
               <span
@@ -78,8 +102,9 @@ onMounted(() => {
               ></span>
             </span>
           </div>
-          <div class="addon-description">{{ addon.manifest?.description ?? '' }}</div>
-          <span class="addon-author">{{ addon.manifest?.author ?? '' }}</span>
+          <div class="addon-description">{{ manifest.description ?? '' }}</div>
+          <span v-if="addon.type === 'builtin'" v-i18n class="addon-tag">Built-in#!addon-manager.3</span>
+          <span v-else class="addon-author">{{ manifest.author ?? '' }}</span>
         </div>
       </div>
     </form>
@@ -91,6 +116,8 @@ onMounted(() => {
   margin: 0;
 }
 .addon-list {
+  width: 100%;
+  max-width: 50vw;
   margin-top: 8px;
 }
 .addon-card {
@@ -118,14 +145,17 @@ onMounted(() => {
 .addon-name {
   font-weight: bold;
 }
-.addon-tag {
-  margin-left: 1em;
-  color: rgb(var(--theme-green));
-  font-size: 12px;
-}
+.addon-id,
 .addon-version {
   margin-left: 1em;
   color: rgb(var(--theme-foreground) / 0.5);
+  font-size: 12px;
+}
+.addon-tag {
+  color: rgb(var(--theme-green));
+  font-size: 12px;
+}
+.addon-author {
   font-size: 12px;
 }
 </style>
