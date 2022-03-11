@@ -23,7 +23,6 @@ function cloneAPIModule(object: object, context: {} | undefined) {
 function cloneAPI<T extends CompatableAPI>(api: T, name: string) {
   return new Proxy(api, {
     get(target, property, receiver) {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       const context = { $: receiver, __name__: name }
       const value = Reflect.get(target, property, receiver)
       return typeof value === 'object' && value !== null ? cloneAPIModule(value, context) : value

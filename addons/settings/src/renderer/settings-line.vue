@@ -27,11 +27,9 @@ const { spec, modelValue, currentValue, open } = defineProps({
 })
 
 const emit = defineEmits({
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   'update:modelValue': (value: any) => {
     return true
   },
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   'update:open': (value: boolean) => {
     return typeof value === 'boolean'
   },

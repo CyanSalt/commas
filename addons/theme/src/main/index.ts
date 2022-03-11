@@ -8,7 +8,6 @@ commas.ipcMain.handle('reset-theme', () => {
   const defaultSettings = unref(commas.settings.useDefaultSettings())
   const defaultThemeName = defaultSettings['terminal.theme.name']
   commas.settings.updateSettings({
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     'terminal.theme.name': defaultThemeName,
   })
 })

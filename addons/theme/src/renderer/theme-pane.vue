@@ -40,7 +40,6 @@ const themeType = $computed({
     }
     userSettings = {
       ...userSettings,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       'terminal.theme.customization': customization,
     }
   },
@@ -49,7 +48,6 @@ const themeType = $computed({
 function updateTheme(name: string) {
   userSettings = {
     ...userSettings,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     'terminal.theme.name': name,
   }
 }

@@ -1,8 +1,6 @@
 {
   "extends": "@cyansalt/tsconfig/tsconfig.app",
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "Node12",
     "sourceMap": true,
     "baseUrl": "."
   },

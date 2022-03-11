@@ -13,7 +13,6 @@ commas.ipcMain.handle('discover-addons', () => {
 
 commas.ipcMain.handle('set-addons', (event, value: string[]) => {
   commas.settings.updateSettings({
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     'terminal.addon.includes': value,
   })
 })

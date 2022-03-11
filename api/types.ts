@@ -13,7 +13,6 @@ export type CompatableAPI = MainAPI | RendererAPI
 export type APIAddon = (api: CompatableAPI) => void
 
 export interface APIContext<T = API> {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   __name__: string,
   $: MixValues<T, APIContext>,
   _: unknown,

@@ -31,10 +31,10 @@
     "node": ">=14.0.0"
   },
   "devDependencies": {
-    "@cyansalt/eslint-config-preset": "^1.4.1",
+    "@cyansalt/eslint-config-preset": "^1.4.3",
     "@cyansalt/stylelint-config-preset": "^1.1.2",
-    "@cyansalt/tsconfig": "^2.0.0",
-    "@release-it/conventional-changelog": "^4.2.0",
+    "@cyansalt/tsconfig": "^2.0.1",
+    "@release-it/conventional-changelog": "^4.2.2",
     "@types/color-rgba": "^2.1.0",
     "@types/lodash": "^4.14.179",
     "@types/lodash-es": "^4.17.6",
@@ -43,7 +43,7 @@
     "@vitejs/plugin-vue": "^2.2.4",
     "@vue/compiler-sfc": "^3.2.31",
     "chalk": "^4.1.2",
-    "electron": "^17.1.1",
+    "electron": "^17.1.2",
     "electron-packager": "^15.4.0",
     "esbuild": "^0.14.25",
     "lodash-es": "^4.17.21",
