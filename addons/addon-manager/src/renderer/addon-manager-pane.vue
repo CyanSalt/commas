@@ -21,7 +21,8 @@ const recommendations = $computed(() => {
   if (!spec) return []
   return [
     ...spec.recommendations!,
-    ...discoveredAddons.filter(addon => addon.type === 'user'),
+    ...discoveredAddons.filter(addon => addon.type === 'user')
+      .map(addon => addon.name),
   ]
 })
 
