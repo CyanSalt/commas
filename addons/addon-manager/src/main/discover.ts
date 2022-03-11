@@ -3,6 +3,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { shallowRef } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
+import uniq from 'lodash/uniq'
 import type { AddonInfo } from '../../../../typings/addon'
 
 const discoveredAddonsRef = shallowRef<AddonInfo[]>([])
@@ -22,9 +23,10 @@ async function discoverAddons() {
       // ignore
     }
   }
-  const result = entries
+  const names = entries
     .filter(dirent => dirent.isDirectory() || path.extname(dirent.name) === '.asar')
     .map(dirent => path.basename(dirent.name, '.asar'))
+  const result = uniq(names)
     .map(name => commas.directory.resolveAddon(name))
     .filter((item): item is AddonInfo => Boolean(item))
   discoveredAddonsRef.value = result
