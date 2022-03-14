@@ -5,7 +5,7 @@ import { onMounted } from 'vue'
 import type { AddonInfo } from '../../../../typings/addon'
 import { useDiscoveredAddons } from './compositions'
 
-const { vI18n, TerminalPane } = commas.ui.vueAssets
+const { vI18n, TerminalPane, SwitchControl } = commas.ui.vueAssets
 
 let settings = $(commas.remote.useUserSettings())
 const specs = $(commas.remote.useSettingsSpecs())
@@ -48,12 +48,20 @@ function getI18NManifest(original: any) {
   return manifest
 }
 
+let isBuiltinAddonsVisible = $ref(true)
+
 const addonList = $computed(() => {
-  return discoveredAddons.map(addon => ({
-    addon,
-    manifest: getI18NManifest(addon.manifest),
-    enabled: enabledAddons.includes(addon.name),
-  }))
+  return discoveredAddons
+    .filter(addon => {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (!isBuiltinAddonsVisible && addon.type === 'builtin') return false
+      return true
+    })
+    .map(addon => ({
+      addon,
+      manifest: getI18NManifest(addon.manifest),
+      enabled: enabledAddons.includes(addon.name),
+    }))
 })
 
 function toggle(addon: AddonInfo, enabled: boolean) {
@@ -78,6 +86,10 @@ onMounted(() => {
   <TerminalPane class="addon-manager-pane">
     <h2 v-i18n class="group-title">Addons#!addon-manager.1</h2>
     <form class="group">
+      <div class="form-line">
+        <label v-i18n class="form-label">Show Built-in Addons#!addon-manager.4</label>
+        <SwitchControl v-model="isBuiltinAddonsVisible" />
+      </div>
       <div class="action-line">
         <span class="link form-action" @click="refresh">
           <span class="feather-icon icon-refresh-cw"></span>
