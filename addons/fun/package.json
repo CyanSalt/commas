@@ -1,0 +1,16 @@
+{
+  "name": "fun",
+  "productName": "Fun",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A hidden fun game",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC",
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "趣味",
+      "description": "一个隐藏的趣味游戏"
+    }
+  }
+}

@@ -25,6 +25,18 @@ const emit = defineEmits({
   },
 })
 
+interface EditorEntry {
+  key: string | number | symbol,
+  value: any,
+}
+
+interface EditorEntryItem {
+  entry: EditorEntry,
+  index: number,
+  id: string | number,
+  pinned?: boolean,
+}
+
 let entries = $ref<EditorEntry[]>([])
 
 function transform(object: object | undefined): EditorEntry[] {
@@ -32,9 +44,9 @@ function transform(object: object | undefined): EditorEntry[] {
   return Object.entries(object).map(([key, value]) => ({ key, value }))
 }
 
-function isMatchedWithPinned(entry: EditorEntry, pinned: EditorEntry) {
-  if (withKeys && entry.key !== pinned.key) return false
-  return entry.value === pinned.value
+function isMatchedWithPinned(entry: EditorEntry, pinnedEntry: EditorEntry) {
+  if (withKeys && entry.key !== pinnedEntry.key) return false
+  return entry.value === pinnedEntry.value
 }
 
 const entryItems = $computed(() => {
@@ -52,7 +64,7 @@ const entryItems = $computed(() => {
       index,
       id: index,
     }))
-    .filter(item => !pinnedItems.some(pinned => isMatchedWithPinned(item.entry, pinned.entry)))
+    .filter(item => !pinnedItems.some(pinnedItem => isMatchedWithPinned(item.entry, pinnedItem.entry)))
   return [
     ...pinnedItems,
     ...extraItems,
@@ -73,8 +85,8 @@ watch($$(modelValue), value => {
   }
 }, { immediate: true })
 
-watch($$(result), result => {
-  emit('update:modelValue', result)
+watch($$(result), value => {
+  emit('update:modelValue', value)
 })
 
 function add() {
@@ -91,20 +103,6 @@ function togglePinned(item: EditorEntryItem) {
   } else {
     remove(item)
   }
-}
-</script>
-
-<script lang="ts">
-interface EditorEntry {
-  key: string | number | symbol,
-  value: any,
-}
-
-export interface EditorEntryItem {
-  entry: EditorEntry,
-  index: number,
-  id: string | number,
-  pinned?: boolean,
 }
 </script>
 
