@@ -3,16 +3,19 @@ import * as commas from 'commas:api/renderer'
 import { sample, sampleSize } from 'lodash-es'
 import { nextTick, onMounted, reactive } from 'vue'
 import FunDial from './fun-dial.vue'
-import type { IFunDial } from './fun-dial.vue'
 
 const { vI18n, TerminalPane } = commas.ui.vueAssets
+const generateID = commas.helperRenderer.createIDGenerator()
 
 interface Player {
+  id: number,
   color: string,
   speed: number,
   base: number,
   scale: number,
   army: number,
+  mainPosition: number,
+  benifitPosition: number,
 }
 
 interface TerritoryCell {
@@ -25,9 +28,6 @@ interface DialItem {
   action: string,
   label: string,
 }
-
-const mainDials = $ref<IFunDial[]>([])
-const benifitDials = $ref<IFunDial[]>([])
 
 const players = reactive<Player[]>([])
 
@@ -42,11 +42,14 @@ function initializePlayers() {
   ], 4)
   for (let index = 0; index < colors.length; index++) {
     players[index] = {
+      id: generateID(),
       color: colors[index],
       speed: 1,
       base: 1,
       scale: 1,
       army: 0,
+      mainPosition: 0,
+      benifitPosition: 0,
     }
   }
 }
@@ -83,10 +86,6 @@ const benifitDialItems: DialItem[] = [
   { color: 'green', percentage: 0.5, action: 'triple', label: '×3' },
 ]
 
-function rotateDial(player: Player, dial: IFunDial) {
-  dial.rotate(3000 / player.speed)
-}
-
 function sleep(timeout: number) {
   return new Promise(resolve => {
     setTimeout(resolve, timeout)
@@ -116,7 +115,7 @@ function getOutlineCells(player: Player) {
   })
 }
 
-async function attack(player: Player, index: number) {
+async function attack(player: Player) {
   const targets = getOutlineCells(player)
   if (!targets.length) return
   const target = sample(targets)!
@@ -124,10 +123,10 @@ async function attack(player: Player, index: number) {
   await sleep(50 / (Math.round(Math.log10(player.army)) + 1))
   player.army -= 1
   if (player.army) {
-    attack(player, index)
+    attack(player)
   } else {
     player.scale = 1
-    rotateDial(player, mainDials[index])
+    player.mainPosition = Math.random()
   }
 }
 
@@ -144,48 +143,50 @@ function isAlive(player: Player) {
   })
 }
 
-async function handleDial(player: Player, index: number, result: DialItem | undefined) {
+async function handleDial(player: Player, result: DialItem | undefined) {
   await sleep(500)
   if (!isAlive(player)) return
   if (!result) {
-    rotateDial(player, mainDials[index])
+    player.mainPosition = Math.random()
     return
   }
   switch (result.action) {
     case 'double':
       player.scale *= 2
-      rotateDial(player, mainDials[index])
+      player.mainPosition = Math.random()
       break
     case 'triple':
       player.scale *= 3
-      rotateDial(player, mainDials[index])
+      player.mainPosition = Math.random()
       break
     case 'add-base':
       player.base += 1
-      rotateDial(player, mainDials[index])
+      player.mainPosition = Math.random()
       break
     case 'add-speed':
       player.speed = Math.round((player.speed + 0.4) * 10) / 10
-      rotateDial(player, mainDials[index])
+      player.mainPosition = Math.random()
       break
     case 'roll':
-      rotateDial(player, benifitDials[index])
+      player.benifitPosition = Math.random()
       break
     case 'attack':
       player.army = player.base * player.scale
-      attack(player, index)
+      attack(player)
       break
   }
 }
 
-onMounted(async () => {
+async function refresh() {
   initializePlayers()
   initializeTerritory()
   await nextTick()
-  players.forEach((player, index) => {
-    rotateDial(player, mainDials[index])
+  players.forEach(player => {
+    player.mainPosition = Math.random()
   })
-})
+}
+
+onMounted(refresh)
 </script>
 
 <template>
@@ -203,15 +204,16 @@ onMounted(async () => {
       </div>
       <div class="player-area">
         <div
-          v-for="(player, index) in players"
-          :key="player.color"
+          v-for="player in players"
+          :key="player.id"
           class="player-card"
           :style="{ 'border-color': `rgb(var(--theme-${player.color}))` }"
         >
           <FunDial
-            :ref="((el: IFunDial) => mainDials[index] = el) as any"
             :items="mainDialItems"
-            @rotate-finish="handleDial(player, index, $event as DialItem)"
+            :position="player.mainPosition"
+            :duration="3000 / player.speed"
+            @rotate-finish="handleDial(player, $event as DialItem)"
           >
             <span
               v-for="item in mainDialItems"
@@ -224,9 +226,10 @@ onMounted(async () => {
             <div class="stats-line"><span v-i18n>Speed#!fun.3</span> = {{ player.speed }}</div>
           </div>
           <FunDial
-            :ref="((el: IFunDial) => benifitDials[index] = el) as any"
             :items="benifitDialItems"
-            @rotate-finish="handleDial(player, index, $event as DialItem)"
+            :position="player.benifitPosition"
+            :duration="3000 / player.speed"
+            @rotate-finish="handleDial(player, $event as DialItem)"
           >
             <span
               v-for="item in benifitDialItems"
@@ -236,6 +239,11 @@ onMounted(async () => {
           </FunDial>
         </div>
       </div>
+    </div>
+    <div class="action-line">
+      <span class="link form-action" @click="refresh">
+        <span class="feather-icon icon-refresh-cw"></span>
+      </span>
     </div>
     <div class="form-line-tip">Inspired by Algodoo</div>
   </TerminalPane>

@@ -1,15 +1,24 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
+import { watch } from 'vue'
 
 interface DialItem {
   color: string,
   percentage: number,
 }
 
-const { items } = defineProps({
+const { items, duration, position } = defineProps({
   items: {
     type: Array as PropType<DialItem[]>,
     required: true,
+  },
+  duration: {
+    type: Number,
+    required: true,
+  },
+  position: {
+    type: Number,
+    default: 0,
   },
 })
 
@@ -36,29 +45,16 @@ const totalPercentage = $computed(() => {
   return items.reduce((n, item) => n + item.percentage, 0)
 })
 
-let currentAngle = 0
-function rotate(duration: number) {
-  const target = Math.random()
+watch($$(position), (value, oldValue) => {
   const animation = pointer.animate([
-    { transform: `rotate(${currentAngle}turn)` },
-    { transform: `rotate(${5 + target}turn)` },
+    { transform: `rotate(${oldValue}turn)` },
+    { transform: `rotate(${5 + value}turn)` },
   ], { duration, easing: 'ease-out', fill: 'forwards' })
   animation.addEventListener('finish', () => {
-    currentAngle = target
-    const targetShape = shapes.find(shape => target > shape.start && target <= shape.end)
-    emit('rotate-finish', targetShape?.item)
+    const target = shapes.find(shape => value > shape.start && value <= shape.end)
+    emit('rotate-finish', target?.item)
   })
-}
-
-defineExpose({
-  rotate,
 })
-</script>
-
-<script lang="ts">
-export interface IFunDial {
-  rotate: (duration: number) => void,
-}
 </script>
 
 <template>
