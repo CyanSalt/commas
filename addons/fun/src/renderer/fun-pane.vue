@@ -237,6 +237,7 @@ onMounted(async () => {
         </div>
       </div>
     </div>
+    <div class="form-line-tip">Inspired by Algodoo</div>
   </TerminalPane>
 </template>
 
@@ -304,5 +305,8 @@ onMounted(async () => {
 .player-stats {
   flex: 1;
   width: 0;
+}
+.form-line-tip {
+  color: rgb(var(--theme-foreground) / 0.5);
 }
 </style>
