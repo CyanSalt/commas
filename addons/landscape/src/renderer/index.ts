@@ -1,7 +1,7 @@
 import * as path from 'path'
 import * as commas from 'commas:api/renderer'
-import LandscapeAnchor from './landscape-anchor.vue'
-import LandscapeSlot from './landscape-slot.vue'
+import LandscapeAnchor from './LandscapeAnchor.vue'
+import LandscapeSlot from './LandscapeSlot.vue'
 
 commas.ui.addCSSFile(path.join(__dirname, '../../dist/renderer/style.css'))
 

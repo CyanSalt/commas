@@ -2,7 +2,7 @@
 import * as commas from 'commas:api/renderer'
 import { cloneDeep, isEqual } from 'lodash-es'
 import { watchEffect } from 'vue'
-import SettingsLine from './settings-line.vue'
+import SettingsLine from './SettingsLine.vue'
 
 const { vI18n, TerminalPane } = commas.ui.vueAssets
 

@@ -1,6 +1,6 @@
 import * as path from 'path'
 import * as commas from 'commas:api/renderer'
-import FunPane from './fun-pane.vue'
+import FunPane from './FunPane.vue'
 
 commas.ui.addCSSFile(path.join(__dirname, '../../dist/renderer/style.css'))
 

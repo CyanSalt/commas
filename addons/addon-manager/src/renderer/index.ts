@@ -1,7 +1,7 @@
 import * as path from 'path'
 import * as commas from 'commas:api/renderer'
-import AddonManagerLink from './addon-manager-link.vue'
-import AddonManagerPane from './addon-manager-pane.vue'
+import AddonManagerLink from './AddonManagerLink.vue'
+import AddonManagerPane from './AddonManagerPane.vue'
 
 commas.ui.addCSSFile(path.join(__dirname, '../../dist/renderer/style.css'))
 

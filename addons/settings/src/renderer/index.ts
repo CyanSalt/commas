@@ -1,7 +1,7 @@
 import * as path from 'path'
 import * as commas from 'commas:api/renderer'
-import SettingsLink from './settings-link.vue'
-import SettingsPane from './settings-pane.vue'
+import SettingsLink from './SettingsLink.vue'
+import SettingsPane from './SettingsPane.vue'
 
 commas.ui.addCSSFile(path.join(__dirname, '../../dist/renderer/style.css'))
 

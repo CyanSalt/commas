@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import FireworkOverlay from './FireworkOverlay.vue'
 import { removeFirework, useBadge, useFireworks } from './badge'
-import FireworkOverlay from './firework-overlay.vue'
 
 const badge = useBadge()
 const fireworks = useFireworks()

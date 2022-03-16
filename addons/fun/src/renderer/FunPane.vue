@@ -2,7 +2,7 @@
 import * as commas from 'commas:api/renderer'
 import { sample, sampleSize } from 'lodash-es'
 import { nextTick, onMounted, reactive } from 'vue'
-import FunDial from './fun-dial.vue'
+import FunDial from './FunDial.vue'
 
 const { vI18n, TerminalPane } = commas.ui.vueAssets
 const generateID = commas.helperRenderer.createIDGenerator()

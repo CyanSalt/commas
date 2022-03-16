@@ -2,7 +2,7 @@
 import { isEqual } from 'lodash-es'
 import { watch } from 'vue'
 import type { PropType } from 'vue'
-import OrderedCheckbox from './ordered-checkbox.vue'
+import OrderedCheckbox from './OrderedCheckbox.vue'
 
 const { modelValue, withKeys, pinned } = defineProps({
   modelValue: {

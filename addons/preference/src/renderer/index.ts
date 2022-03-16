@@ -1,5 +1,5 @@
 import * as commas from 'commas:api/renderer'
-import PreferencePane from './preference-pane.vue'
+import PreferencePane from './PreferencePane.vue'
 
 commas.workspace.registerTabPane('preference', {
   title: 'Preferences#!preference.1',

@@ -20,10 +20,10 @@ import {
   createTerminalTab,
 } from '../compositions/terminal'
 import { injectTheme, useTheme } from '../compositions/theme'
-import FindBox from './find-box.vue'
-import TabList from './tab-list.vue'
-import TerminalTeletype from './terminal-teletype.vue'
-import TitleBar from './title-bar.vue'
+import FindBox from './FindBox.vue'
+import TabList from './TabList.vue'
+import TerminalTeletype from './TerminalTeletype.vue'
+import TitleBar from './TitleBar.vue'
 import '../assets/fonts/feather.css'
 import '../assets/fonts/devicon.css'
 

@@ -1,5 +1,5 @@
 import * as commas from 'commas:api/renderer'
-import UpdaterLink from './updater-link.vue'
+import UpdaterLink from './UpdaterLink.vue'
 
 commas.context.provide('preference', {
   component: UpdaterLink,

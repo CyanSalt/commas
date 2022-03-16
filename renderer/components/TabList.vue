@@ -13,8 +13,8 @@ import { useAsyncComputed } from '../utils/compositions'
 import { openContextMenu } from '../utils/frame'
 import { handleMousePressing } from '../utils/helper'
 import { getShells } from '../utils/terminal'
-import SortableList from './basic/sortable-list.vue'
-import TabItem from './tab-item.vue'
+import TabItem from './TabItem.vue'
+import SortableList from './basic/SortableList.vue'
 
 const anchors = commas.proxy.context.getCollection('@ui-side-anchor')
 const lists = commas.proxy.context.getCollection('@ui-side-list')

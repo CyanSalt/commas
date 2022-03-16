@@ -1,7 +1,7 @@
 import * as path from 'path'
 import * as commas from 'commas:api/renderer'
-import ThemeLink from './theme-link.vue'
-import ThemePane from './theme-pane.vue'
+import ThemeLink from './ThemeLink.vue'
+import ThemePane from './ThemePane.vue'
 
 commas.ui.addCSSFile(path.join(__dirname, '../../dist/renderer/style.css'))
 

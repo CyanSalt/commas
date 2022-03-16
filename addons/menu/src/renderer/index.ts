@@ -1,5 +1,5 @@
 import * as commas from 'commas:api/renderer'
-import LocaleSelector from './locale-selector.vue'
+import LocaleSelector from './LocaleSelector.vue'
 
 commas.context.provide('locales', {
   label: 'English',

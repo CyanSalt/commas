@@ -1,6 +1,6 @@
 import * as path from 'path'
 import * as commas from 'commas:api/renderer'
-import BadgeSlot from './badge-slot.vue'
+import BadgeSlot from './BadgeSlot.vue'
 import { ITerm2Addon } from './xterm'
 import './style.scss'
 

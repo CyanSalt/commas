@@ -1,6 +1,6 @@
 import * as path from 'path'
 import * as commas from 'commas:api/renderer'
-import CleanerLink from './cleaner-link.vue'
+import CleanerLink from './CleanerLink.vue'
 
 commas.ui.addCSSFile(path.join(__dirname, '../../dist/renderer/style.css'))
 
