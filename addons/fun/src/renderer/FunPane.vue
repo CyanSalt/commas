@@ -9,6 +9,7 @@ const generateID = commas.helperRenderer.createIDGenerator()
 
 interface Player {
   id: number,
+  offline: boolean,
   color: string,
   speed: number,
   base: number,
@@ -43,6 +44,7 @@ function initializePlayers() {
   for (let index = 0; index < colors.length; index++) {
     players[index] = {
       id: generateID(),
+      offline: false,
       color: colors[index],
       speed: 1,
       base: 1,
@@ -127,6 +129,7 @@ async function attack(player: Player) {
   const target = sample(targets)!
   target.color = player.color
   await nextFrame()
+  if (player.offline) return
   player.army -= 1
   if (player.army) {
     attack(player)
@@ -151,6 +154,7 @@ function isAlive(player: Player) {
 
 async function handleDial(player: Player, result: DialItem | undefined) {
   await sleep(500)
+  if (player.offline) return
   if (!isAlive(player)) return
   if (!result) {
     player.mainPosition = Math.random()
@@ -184,6 +188,9 @@ async function handleDial(player: Player, result: DialItem | undefined) {
 }
 
 async function refresh() {
+  players.forEach(player => {
+    player.offline = true
+  })
   initializePlayers()
   initializeTerritory()
   await nextTick()
