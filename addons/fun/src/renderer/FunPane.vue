@@ -94,12 +94,6 @@ function sleep(timeout: number) {
   })
 }
 
-async function nextFrame() {
-  return new Promise(resolve => {
-    requestAnimationFrame(resolve)
-  })
-}
-
 function getOutlineCells(player: Player) {
   return territory.flatMap((line, row) => {
     return line.flatMap((cell, column) => {
@@ -124,11 +118,13 @@ function getOutlineCells(player: Player) {
 }
 
 async function attack(player: Player) {
-  const targets = getOutlineCells(player)
-  if (!targets.length) return
-  const target = sample(targets)!
-  target.color = player.color
-  await nextFrame()
+  for (let i = 0; i < player.base; i++) {
+    const targets = getOutlineCells(player)
+    if (!targets.length) return
+    const target = sample(targets)!
+    target.color = player.color
+  }
+  await sleep(50)
   if (player.offline) return
   player.army -= 1
   if (player.army) {
@@ -181,7 +177,7 @@ async function handleDial(player: Player, result: DialItem | undefined) {
       player.benifitPosition = Math.random()
       break
     case 'attack':
-      player.army = player.base * player.scale
+      player.army = player.scale
       attack(player)
       break
   }
