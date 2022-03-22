@@ -2,7 +2,7 @@
   "Proxy#!proxy.1": "代理",
   "Configure Proxy#!proxy.2": "配置代理",
   "Enable system proxy#!proxy.3": "启用系统代理",
-  "Edit proxy rules#!proxy.4": "编辑代理规则",
+  "Proxy Server Address#!proxy.4": "代理服务器地址",
   "HTTPS Proxy#!proxy.5": "HTTPS 代理",
   "Install Root Certification#!proxy.6": "安装根证书",
   "Uninstall Root Certification#!proxy.7": "卸载根证书",

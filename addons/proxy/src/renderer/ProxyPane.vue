@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { ipcRenderer, shell } from 'electron'
-import { useProxyRootCAStatus, useProxyServerVersion, useSystemProxyStatus } from './compositions'
+import { useProxyRootCAStatus, useProxyServerStatus, useProxyServerVersion, useSystemProxyStatus } from './compositions'
 
 const { vI18n, LoadingSpinner, SwitchControl, TerminalPane } = commas.ui.vueAssets
 
@@ -9,6 +9,7 @@ const settings = $(commas.remote.useSettings())
 const isSystemProxyEnabled = $(useSystemProxyStatus())
 const isCertInstalled = $(useProxyRootCAStatus())
 const version = $(useProxyServerVersion())
+const status = $(useProxyServerStatus())
 
 let isInstalling = $ref(false)
 
@@ -26,6 +27,15 @@ const isOutdated = $computed(() => {
 
 const port = $computed(() => {
   return settings['proxy.server.port']
+})
+
+const ip = $(commas.helperRenderer.useAsyncComputed<string>(
+  () => ipcRenderer.invoke('get-ip'),
+  'localhost',
+))
+
+const address = $computed(() => {
+  return `http://${ip}:${port}`
 })
 
 function openEditor() {
@@ -59,11 +69,14 @@ async function install() {
   <TerminalPane class="proxy-pane">
     <h2 v-i18n class="group-title">Proxy#!proxy.1</h2>
     <div class="group">
+      <div v-if="status" class="form-line">
+        <label v-i18n class="form-label">Proxy Server Address#!proxy.4</label>
+        <span class="link" @click="openEditor">{{ address }}</span>
+      </div>
       <div v-if="supportsSystemProxy" class="form-line">
         <label v-i18n class="form-label">Enable system proxy#!proxy.3</label>
         <SwitchControl v-model="isSystemProxyEnabled" />
       </div>
-      <span v-i18n class="link" @click="openEditor">Edit proxy rules#!proxy.4</span>
       <div class="form-line">
         <span v-i18n="{ V: version ?? '--' }" class="text">Current version: %V#!preference.9</span>
         <span v-if="isInstalling" class="form-action" @click="install">
@@ -98,5 +111,8 @@ async function install() {
 .cert-status .feather-icon {
   margin-right: 8px;
   color: rgb(var(--design-green));
+}
+.proxy-pane .form-line {
+  margin-top: 0;
 }
 </style>

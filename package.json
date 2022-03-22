@@ -64,6 +64,7 @@
   },
   "dependencies": {
     "@vue/reactivity": "^3.2.31",
+    "address": "^1.1.2",
     "chokidar": "^3.5.3",
     "color-rgba": "^2.4.0",
     "file-icon": "^4.0.0",

@@ -1,5 +1,6 @@
 import * as path from 'path'
 import { effect, ref, stop } from '@vue/reactivity'
+import * as address from 'address'
 import * as commas from 'commas:api/main'
 import { checkRootCA, installRootCA, uninstallRootCA } from './cert'
 import { getLatestProxyServerVersion, getProxyServerVersion, installProxyServer, useProxyServerStatus } from './server'
@@ -11,6 +12,10 @@ commas.ipcMain.provide('proxy-server-status', serverStatusRef)
 
 commas.ipcMain.handle('get-latest-proxy-server-version', async () => {
   return getLatestProxyServerVersion()
+})
+
+commas.ipcMain.handle('get-ip', async () => {
+  return address.ip()
 })
 
 const serverVersionRef = ref<string | null | undefined>(undefined)
