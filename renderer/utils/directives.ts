@@ -12,7 +12,7 @@ export function createReactiveDirective<T, U>(hook: DirectiveHook<T, unknown, U>
   const bindings = new Set<DirectiveEffectBinding<T>>()
   const stopEffect: DirectiveHook<T, unknown, U> = (el, binding) => {
     const { arg } = binding
-    const attr = arg ?? 'textContent'
+    const attr = arg ?? ''
     bindings.forEach(item => {
       if (item.el === el && item.key === attr) {
         stop(item.effect)
