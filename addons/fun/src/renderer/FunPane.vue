@@ -151,7 +151,10 @@ function isAlive(player: Player) {
 async function handleDial(player: Player, result: DialItem | undefined) {
   await sleep(500)
   if (player.offline) return
-  if (!isAlive(player)) return
+  if (!isAlive(player)) {
+    player.offline = true
+    return
+  }
   if (!result) {
     player.mainPosition = Math.random()
     return
@@ -215,7 +218,7 @@ onMounted(refresh)
         <div
           v-for="player in players"
           :key="player.id"
-          class="player-card"
+          :class="['player-card', { 'is-offline': player.offline }]"
           :style="{ 'border-color': `rgb(var(--theme-${player.color}))` }"
         >
           <FunDial
@@ -231,7 +234,7 @@ onMounted(refresh)
             >{{ item.label }}</span>
           </FunDial>
           <div class="player-stats">
-            <div class="stats-line"><span v-i18n>Base#!fun.2</span> = {{ player.base }}×{{ player.scale }}</div>
+            <div class="stats-line"><span v-i18n>Base#!fun.2</span> = {{ player.base }}×{{ player.army || player.scale }}</div>
             <div class="stats-line"><span v-i18n>Speed#!fun.3</span> = {{ player.speed }}</div>
           </div>
           <FunDial
@@ -287,6 +290,9 @@ onMounted(refresh)
   align-items: center;
   padding-left: 1em;
   border-left: 4px solid;
+  &.is-offline {
+    opacity: 0.5;
+  }
   :deep(.fun-dial) {
     --dial-size: 64px;
   }
