@@ -14,7 +14,8 @@ const list = $(commas.helperRenderer.useAsyncComputed(() => fetchThemeList(), []
 const filteredList = $computed(() => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!keyword) return list
-  return list.filter(item => item.name.includes(keyword))
+  const lowerCase = keyword.toLowerCase()
+  return list.filter(item => item.name.toLowerCase().includes(lowerCase))
 })
 
 let userSettings = $(commas.remote.useUserSettings())
