@@ -1,7 +1,7 @@
 import { app, BrowserWindow, dialog, ipcMain, nativeImage, shell } from 'electron'
 import type { MessageBoxOptions, NativeImage } from 'electron'
 import * as fileIcon from 'file-icon'
-import { execa } from '../utils/helper'
+import { execa, until } from '../utils/helper'
 import { notify } from '../utils/notification'
 import { broadcast } from './frame'
 
@@ -131,8 +131,12 @@ function handleMessages() {
       }
     }
   })
-  ipcMain.handle('find', (event, text, options) => {
-    return event.sender.findInPage(text, options)
+  ipcMain.handle('find', async (event, text, options) => {
+    const foundInPage = until(event.sender, 'found-in-page')
+    event.sender.findInPage(text, options)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [fountInPageEvent, result] = await foundInPage
+    return result
   })
   ipcMain.handle('stop-finding', (event, action) => {
     event.sender.stopFindInPage(action)

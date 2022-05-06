@@ -15,8 +15,18 @@ const options = reactive({
   wholeWord: false,
   regex: false,
 })
+let currentNumber = $ref(0)
+let totalNumber = $ref(0)
 
 let isFinding = $(useIsFinding())
+
+watch([options, $$(keyword)], () => {
+  totalNumber = 0
+})
+
+watch($$(totalNumber), () => {
+  currentNumber = 0
+})
 
 onMounted(() => {
   new IntersectionObserver(([{ isIntersecting }]) => {
@@ -30,32 +40,41 @@ onMounted(() => {
   }).observe(root)
 })
 
-function findPrevious() {
+async function findPrevious() {
   if (!terminal) return
   if (terminal.pane) {
-    return ipcRenderer.invoke('find', keyword, {
+    const result = await ipcRenderer.invoke('find', keyword, {
       forward: false,
       matchCase: options.caseSensitive,
     })
+    totalNumber = result.matches
+    currentNumber = result.activeMatchOrdinal
   } else {
-    return terminal.addons.search.findPrevious(keyword, options)
+    terminal.addons.search.findPrevious(keyword, options)
   }
 }
 
-function findNext() {
+async function findNext() {
   if (!terminal) return
   if (terminal.pane) {
-    return ipcRenderer.invoke('find', keyword, {
+    const result = await ipcRenderer.invoke('find', keyword, {
       forward: true,
       matchCase: options.caseSensitive,
     })
+    totalNumber = result.matches
+    currentNumber = result.activeMatchOrdinal
   } else {
-    return terminal.addons.search.findNext(keyword, options)
+    terminal.addons.search.findNext(keyword, options)
   }
 }
 
-function find(event: KeyboardEvent) {
-  return event.shiftKey ? findPrevious() : findNext()
+async function find(event: KeyboardEvent & { target: HTMLInputElement }) {
+  if (event.shiftKey) {
+    await findPrevious()
+  } else {
+    await findNext()
+  }
+  event.target.focus()
 }
 
 function cancel() {
@@ -92,17 +111,20 @@ watch($$(isFinding), value => {
         :class="{ selected: options.caseSensitive }"
         @click="toggle('caseSensitive')"
       >Aa</div>
-      <div
-        class="option whole-word"
-        :class="{ selected: options.wholeWord }"
-        @click="toggle('wholeWord')"
-      >|Ab|</div>
-      <div
-        class="option use-regexp"
-        :class="{ selected: options.regex }"
-        @click="toggle('regex')"
-      >.*</div>
+      <template v-if="!terminal?.pane">
+        <div
+          class="option whole-word"
+          :class="{ selected: options.wholeWord }"
+          @click="toggle('wholeWord')"
+        >|Ab|</div>
+        <div
+          class="option use-regexp"
+          :class="{ selected: options.regex }"
+          @click="toggle('regex')"
+        >.*</div>
+      </template>
     </div>
+    <div v-if="currentNumber && totalNumber" class="indicator">{{ currentNumber }} / {{ totalNumber }}</div>
     <div class="buttons">
       <div class="button previous">
         <span class="feather-icon icon-arrow-left" @click="findPrevious"></span>
@@ -152,6 +174,10 @@ watch($$(isFinding), value => {
   &.selected {
     opacity: 1;
   }
+}
+.indicator {
+  margin: 0 0.5em;
+  font-size: 12px;
 }
 .buttons {
   display: flex;

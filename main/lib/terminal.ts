@@ -69,7 +69,7 @@ async function createTerminal(webContents: WebContents, { shell, cwd }: CreateTe
       webContents.send('exit-terminal', { pid: ptyProcess.pid, data })
     }
   })
-  webContents.on('destroyed', () => {
+  webContents.once('destroyed', () => {
     ptyProcess.kill()
   })
   ptyProcessMap.set(ptyProcess.pid, ptyProcess)

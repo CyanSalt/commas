@@ -94,7 +94,7 @@ function loadCustomJS() {
 
 function loadCustomCSS(frame: BrowserWindow) {
   const loadingCSS = userData.read('custom.css')
-  frame.webContents.on('did-finish-load', async () => {
+  frame.webContents.once('did-finish-load', async () => {
     const styles = await loadingCSS
     if (styles) {
       frame.webContents.insertCSS(styles)
