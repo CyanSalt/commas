@@ -20,6 +20,17 @@ import { useKeyBindings } from './keybinding'
 import { useSettings } from './settings'
 import { useTheme } from './theme'
 
+declare module '../../typings/terminal' {
+  export interface TerminalTabAddons {
+    fit: FitAddon,
+    ligatures: LigaturesAddon,
+    search: SearchAddon,
+    unicode11: Unicode11Addon,
+    webgl: WebglAddon,
+    weblinks: WebLinksAddon,
+  }
+}
+
 const settings = $(useSettings())
 const theme = $(useTheme())
 
@@ -93,7 +104,7 @@ export async function createTerminalTab({
     ...info,
     title: '',
     xterm: markRaw(xterm),
-    addons: markRaw({}),
+    addons: markRaw<any>({}),
     links: markRaw([]),
     alerting: false,
     group,
@@ -327,16 +338,17 @@ export function handleTerminalMessages() {
 export function loadTerminalAddons(tab: TerminalTab) {
   const xterm = tab.xterm
   if (!xterm.element) return
-  if (!tab.addons.fit) {
-    tab.addons.fit = new FitAddon()
-    xterm.loadAddon(tab.addons.fit)
+  const addons: Record<string, any> = tab.addons
+  if (!addons.fit) {
+    addons.fit = new FitAddon()
+    xterm.loadAddon(addons.fit)
   }
-  if (!tab.addons.search) {
-    tab.addons.search = new SearchAddon()
-    xterm.loadAddon(tab.addons.search)
+  if (!addons.search) {
+    addons.search = new SearchAddon()
+    xterm.loadAddon(addons.search)
   }
-  if (!tab.addons.weblinks) {
-    tab.addons.weblinks = new WebLinksAddon((event, uri) => {
+  if (!addons.weblinks) {
+    addons.weblinks = new WebLinksAddon((event, uri) => {
       let shouldOpen = false
       switch (settings['terminal.link.modifier']) {
         case 'Alt':
@@ -353,33 +365,33 @@ export function loadTerminalAddons(tab: TerminalTab) {
         shell.openExternal(uri)
       }
     }, {}, true)
-    xterm.loadAddon(tab.addons.weblinks)
+    xterm.loadAddon(addons.weblinks)
   }
-  if (!tab.addons.unicode11) {
-    tab.addons.unicode11 = new Unicode11Addon()
-    xterm.loadAddon(tab.addons.unicode11)
+  if (!addons.unicode11) {
+    addons.unicode11 = new Unicode11Addon()
+    xterm.loadAddon(addons.unicode11)
     xterm.unicode.activeVersion = '11'
   }
   if (settings['terminal.style.fontLigatures']) {
-    if (!tab.addons.ligatures) {
-      tab.addons.ligatures = new LigaturesAddon()
-      xterm.loadAddon(tab.addons.ligatures)
+    if (!addons.ligatures) {
+      addons.ligatures = new LigaturesAddon()
+      xterm.loadAddon(addons.ligatures)
     }
   } else {
-    if (tab.addons.ligatures) {
-      tab.addons.ligatures.dispose()
-      delete tab.addons.ligatures
+    if (addons.ligatures) {
+      addons.ligatures.dispose()
+      delete addons.ligatures
     }
   }
   if (settings['terminal.renderer.type'] === 'webgl' && !xterm.options.allowTransparency) {
-    if (!tab.addons.webgl) {
-      tab.addons.webgl = new WebglAddon()
-      xterm.loadAddon(tab.addons.webgl)
+    if (!addons.webgl) {
+      addons.webgl = new WebglAddon()
+      xterm.loadAddon(addons.webgl)
     }
   } else {
-    if (tab.addons.webgl) {
-      tab.addons.webgl.dispose()
-      delete tab.addons.webgl
+    if (addons.webgl) {
+      addons.webgl.dispose()
+      delete addons.webgl
     }
   }
   commas.proxy.app.events.emit('terminal-tab-effect', tab)

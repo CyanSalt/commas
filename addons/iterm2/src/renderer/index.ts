@@ -4,6 +4,12 @@ import BadgeSlot from './BadgeSlot.vue'
 import { ITerm2Addon } from './xterm'
 import './style.scss'
 
+declare module '../../../../typings/terminal' {
+  export interface TerminalTabAddons {
+    iterm2: ITerm2Addon,
+  }
+}
+
 commas.ui.addCSSFile(path.join(__dirname, '../../dist/renderer/style.css'))
 
 commas.workspace.registerXtermAddon('iterm2', tab => new ITerm2Addon(tab), true)

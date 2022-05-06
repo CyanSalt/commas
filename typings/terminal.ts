@@ -1,4 +1,4 @@
-import type { Terminal } from 'xterm'
+import type { ITerminalAddon, Terminal } from 'xterm'
 import type { IconEntry } from '../renderer/assets/icons'
 
 export interface TerminalTabPane {
@@ -32,10 +32,13 @@ export interface XtermLink {
   end?: XtermBufferPosition,
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface TerminalTabAddons extends Record<string, ITerminalAddon> {}
+
 export interface TerminalTab extends TerminalInfo {
   title: string,
   xterm: Terminal,
-  addons: Record<string, any>, // Record<string, ITerminalAddon>
+  addons: TerminalTabAddons,
   links: XtermLink[],
   alerting?: boolean,
   pane?: TerminalTabPane,
