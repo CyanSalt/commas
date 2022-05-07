@@ -17,12 +17,6 @@ function change(event) {
 }
 </script>
 
-<script lang="ts">
-export default {
-  inheritAttrs: false,
-}
-</script>
-
 <template>
   <label class="switch-control">
     <input
@@ -35,6 +29,12 @@ export default {
     <span class="switch-content"></span>
   </label>
 </template>
+
+<script lang="ts">
+export default {
+  inheritAttrs: false,
+}
+</script>
 
 <style lang="scss" scoped>
 .switch-control {
