@@ -8,12 +8,9 @@ const { value, valueKey, disabled } = defineProps<{
   disabled?: boolean,
 }>()
 
-const emit = defineEmits({
-  change: (fromIndex: number, toIndex: number) => {
-    return Number.isInteger(fromIndex)
-        && Number.isInteger(toIndex)
-  },
-})
+const emit = defineEmits<{
+  (event: 'change', fromIndex: number, toIndex: number): void,
+}>()
 
 const root = $ref<HTMLElement>()
 let items = $ref<HTMLElement[]>([])

@@ -12,9 +12,9 @@ const { items, duration, position = 0 } = defineProps<{
   position?: number,
 }>()
 
-const emit = defineEmits({
-  'rotate-finish': (value: DialItem | undefined) => true,
-})
+const emit = defineEmits<{
+  (event: 'rotate-finish', item: DialItem | undefined): void,
+}>()
 
 const pointer = $ref<HTMLDivElement>()
 

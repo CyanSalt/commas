@@ -8,9 +8,9 @@ const { position } = defineProps<{
   },
 }>()
 
-const emit = defineEmits({
-  'animation-end': () => true,
-})
+const emit = defineEmits<{
+  (event: 'animation-end'): void,
+}>()
 
 let count = 40
 let animatingCount = $ref(count)

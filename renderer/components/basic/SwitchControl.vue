@@ -3,11 +3,9 @@ const { modelValue } = defineProps<{
   modelValue?: boolean,
 }>()
 
-const emit = defineEmits({
-  'update:modelValue': (value: boolean) => {
-    return typeof value === 'boolean'
-  },
-})
+const emit = defineEmits<{
+  (event: 'update:modelValue', value: boolean): void,
+}>()
 
 function change(event) {
   emit('update:modelValue', event.target.checked)

@@ -9,11 +9,9 @@ const { modelValue, withKeys, pinned } = defineProps<{
   pinned?: object | undefined,
 }>()
 
-const emit = defineEmits({
-  'update:modelValue': (value: object | undefined) => {
-    return !value || typeof value === 'object'
-  },
-})
+const emit = defineEmits<{
+  (event: 'update:modelValue', value: object | undefined): void,
+}>()
 
 interface EditorEntry {
   key: string | number | symbol,

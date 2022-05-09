@@ -3,11 +3,9 @@ const { index = -1 } = defineProps<{
   index?: number,
 }>()
 
-const emit = defineEmits({
-  change: () => {
-    return true
-  },
-})
+const emit = defineEmits<{
+  (event: 'change'): void,
+}>()
 
 const order = $computed(() => {
   return index + 1

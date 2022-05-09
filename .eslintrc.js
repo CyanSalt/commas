@@ -11,5 +11,6 @@ module.exports = {
     'vue/no-setup-props-destructure': 'off',
     'vue/no-undef-components': 'error',
     'vue/no-undef-properties': 'error',
+    '@typescript-eslint/prefer-function-type': 'off',
   },
 }

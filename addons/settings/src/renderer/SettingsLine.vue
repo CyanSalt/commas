@@ -13,14 +13,10 @@ const { spec, modelValue, currentValue, open } = defineProps<{
   open?: boolean,
 }>()
 
-const emit = defineEmits({
-  'update:modelValue': (value: any) => {
-    return true
-  },
-  'update:open': (value: boolean) => {
-    return typeof value === 'boolean'
-  },
-})
+const emit = defineEmits<{
+  (event: 'update:modelValue', value: any): void,
+  (event: 'update:open', value: boolean): void,
+}>()
 
 const isSimpleObject = $computed(() => {
   const schema = spec.schema

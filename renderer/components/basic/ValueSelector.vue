@@ -4,11 +4,9 @@ const { modelValue, pinned = [] } = defineProps<{
   pinned?: string[],
 }>()
 
-const emit = defineEmits({
-  'update:modelValue': (value: any) => {
-    return true
-  },
-})
+const emit = defineEmits<{
+  (event: 'update:modelValue', value: any): void,
+}>()
 
 let isPinned = $ref(modelValue && pinned.includes(modelValue))
 
