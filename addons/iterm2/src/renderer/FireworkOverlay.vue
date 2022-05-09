@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import type { PropType } from 'vue'
 import { watchEffect } from 'vue'
 
-const { position } = defineProps({
+const { position } = defineProps<{
   position: {
-    type: Object as PropType<{ x: number, y: number }>,
-    required: true,
+    x: number,
+    y: number,
   },
-})
+}>()
 
 const emit = defineEmits({
   'animation-end': () => true,

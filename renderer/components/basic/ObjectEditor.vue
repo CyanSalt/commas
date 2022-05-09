@@ -1,23 +1,13 @@
 <script lang="ts" setup>
 import { isEqual } from 'lodash-es'
 import { watch } from 'vue'
-import type { PropType } from 'vue'
 import OrderedCheckbox from './OrderedCheckbox.vue'
 
-const { modelValue, withKeys, pinned } = defineProps({
-  modelValue: {
-    type: [Object, undefined] as PropType<object | undefined>,
-    required: true,
-  },
-  withKeys: {
-    type: Boolean,
-    default: false,
-  },
-  pinned: {
-    type: [Object, undefined] as PropType<object | undefined>,
-    default: undefined,
-  },
-})
+const { modelValue, withKeys, pinned } = defineProps<{
+  modelValue: object | undefined,
+  withKeys?: boolean,
+  pinned?: object | undefined,
+}>()
 
 const emit = defineEmits({
   'update:modelValue': (value: object | undefined) => {

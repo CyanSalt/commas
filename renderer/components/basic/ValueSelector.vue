@@ -1,16 +1,8 @@
 <script lang="ts" setup>
-import type { PropType } from 'vue'
-
-const { modelValue, pinned } = defineProps({
-  modelValue: {
-    type: null,
-    required: true,
-  },
-  pinned: {
-    type: Array as PropType<string[]>,
-    default: () => [],
-  },
-})
+const { modelValue, pinned = [] } = defineProps<{
+  modelValue: any,
+  pinned?: string[],
+}>()
 
 const emit = defineEmits({
   'update:modelValue': (value: any) => {

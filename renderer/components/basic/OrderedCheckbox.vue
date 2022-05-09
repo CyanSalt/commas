@@ -1,10 +1,7 @@
 <script lang="ts" setup>
-const { index } = defineProps({
-  index: {
-    type: Number,
-    default: -1,
-  },
-})
+const { index = -1 } = defineProps<{
+  index?: number,
+}>()
 
 const emit = defineEmits({
   change: () => {

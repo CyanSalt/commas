@@ -1,30 +1,17 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { isEqual } from 'lodash-es'
-import type { PropType } from 'vue'
 import type { SettingsSpec } from '../../../../typings/settings'
 import { accepts, isObjectSchema } from './json-schema'
 
 const { vI18n, ObjectEditor, SwitchControl, ValueSelector } = commas.ui.vueAssets
 
-const { spec, modelValue, currentValue, open } = defineProps({
-  spec: {
-    type: Object as PropType<SettingsSpec>,
-    required: true,
-  },
-  modelValue: {
-    type: undefined,
-    required: true,
-  },
-  currentValue: {
-    type: undefined,
-    required: true,
-  },
-  open: {
-    type: Boolean,
-    default: false,
-  },
-})
+const { spec, modelValue, currentValue, open } = defineProps<{
+  spec: SettingsSpec,
+  modelValue: any,
+  currentValue: any,
+  open?: boolean,
+}>()
 
 const emit = defineEmits({
   'update:modelValue': (value: any) => {

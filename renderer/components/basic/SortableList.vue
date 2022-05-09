@@ -1,22 +1,12 @@
 <script lang="ts" setup>
 import { onBeforeUpdate } from 'vue'
-import type { PropType } from 'vue'
 import { handleMousePressing } from '../../utils/helper'
 
-const { value, valueKey, disabled } = defineProps({
-  value: {
-    type: Array as PropType<any[]>,
-    required: true,
-  },
-  valueKey: {
-    type: [String, Function] as PropType<string | ((value: any) => any) | undefined>,
-    default: undefined,
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-})
+const { value, valueKey, disabled } = defineProps<{
+  value: any[],
+  valueKey?: string | ((value: any) => any) | undefined,
+  disabled?: boolean,
+}>()
 
 const emit = defineEmits({
   change: (fromIndex: number, toIndex: number) => {

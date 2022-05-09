@@ -1,21 +1,14 @@
 <script lang="ts" setup>
 import * as path from 'path'
-import type { PropType } from 'vue'
 import type { TerminalTab, TerminalTabGroup } from '../../typings/terminal'
 import { getTerminalTabTitle, useCurrentTerminal, closeTerminalTab } from '../compositions/terminal'
 import { vI18n } from '../utils/i18n'
 import { getIconEntryByProcess } from '../utils/terminal'
 
-const { tab, group } = defineProps({
-  tab: {
-    type: Object as PropType<TerminalTab | undefined>,
-    default: undefined,
-  },
-  group: {
-    type: Object as PropType<TerminalTabGroup | undefined>,
-    default: undefined,
-  },
-})
+const { tab, group } = defineProps<{
+  tab?: TerminalTab | undefined,
+  group?: TerminalTabGroup | undefined,
+}>()
 
 const terminal = $(useCurrentTerminal())
 const isFocused = $computed(() => {

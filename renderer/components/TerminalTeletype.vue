@@ -2,17 +2,13 @@
 import 'xterm/css/xterm.css'
 import { quote } from 'shell-quote'
 import { onActivated, onMounted } from 'vue'
-import type { PropType } from 'vue'
 import type { TerminalTab } from '../../typings/terminal'
 import { mountTerminalTab, writeTerminalTab } from '../compositions/terminal'
 import { openContextMenu } from '../utils/frame'
 
-const { tab } = defineProps({
-  tab: {
-    type: Object as PropType<TerminalTab>,
-    required: true,
-  },
-})
+const { tab } = defineProps<{
+  tab: TerminalTab,
+}>()
 
 const terminal = $ref<HTMLElement>()
 

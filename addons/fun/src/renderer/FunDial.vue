@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { PropType } from 'vue'
 import { watch } from 'vue'
 
 interface DialItem {
@@ -7,20 +6,11 @@ interface DialItem {
   percentage: number,
 }
 
-const { items, duration, position } = defineProps({
-  items: {
-    type: Array as PropType<DialItem[]>,
-    required: true,
-  },
-  duration: {
-    type: Number,
-    required: true,
-  },
-  position: {
-    type: Number,
-    default: 0,
-  },
-})
+const { items, duration, position = 0 } = defineProps<{
+  items: DialItem[],
+  duration: number,
+  position?: number,
+}>()
 
 const emit = defineEmits({
   'rotate-finish': (value: DialItem | undefined) => true,
