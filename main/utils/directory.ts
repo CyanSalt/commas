@@ -31,8 +31,7 @@ class Directory {
 
   async read(basename: string) {
     try {
-      const content = await fs.promises.readFile(this.file(basename))
-      return content.toString()
+      return await fs.promises.readFile(this.file(basename), 'utf8')
     } catch {
       return null
     }

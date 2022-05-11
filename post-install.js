@@ -5,7 +5,6 @@ const electron = require('electron/package.json')
 
 const rcFile = '.npmrc'
 
-let content = fs.readFileSync(rcFile)
-content = String(content)
+const content = fs.readFileSync(rcFile, 'utf8')
   .replace(/^(target=).*$/m, `$1${electron.version}`)
 fs.writeFileSync(rcFile, content)
