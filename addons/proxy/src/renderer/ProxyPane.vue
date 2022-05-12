@@ -9,7 +9,7 @@ const settings = $(commas.remote.useSettings())
 const isSystemProxyEnabled = $(useSystemProxyStatus())
 const isCertInstalled = $(useProxyRootCAStatus())
 const version = $(useProxyServerVersion())
-const status = $(useProxyServerStatus())
+let status = $(useProxyServerStatus())
 
 let isInstalling = $ref(false)
 
@@ -42,6 +42,12 @@ function openEditor() {
   shell.openExternal(`http://localhost:${port}`)
 }
 
+function toggleProxyServer() {
+  if (status !== undefined) {
+    status = !status
+  }
+}
+
 function installRootCA() {
   return ipcRenderer.invoke('install-proxy-root-ca')
 }
@@ -69,9 +75,13 @@ async function install() {
   <TerminalPane class="proxy-pane">
     <h2 v-i18n class="group-title">Proxy#!proxy.1</h2>
     <div class="group">
-      <div v-if="status" class="form-line">
+      <div class="form-line">
         <label v-i18n class="form-label">Proxy Server Address#!proxy.4</label>
-        <span class="link" @click="openEditor">{{ address }}</span>
+        <span v-if="status" class="link" @click="openEditor">{{ address }}</span>
+        <span v-else class="link shortcut" @click="toggleProxyServer">
+          <span class="feather-icon icon-navigation"></span>
+          <span v-i18n>Click this icon to start#!proxy.10</span>
+        </span>
       </div>
       <div v-if="supportsSystemProxy" class="form-line">
         <label v-i18n class="form-label">Enable system proxy#!proxy.3</label>
@@ -111,6 +121,12 @@ async function install() {
 .cert-status .feather-icon {
   margin-right: 8px;
   color: rgb(var(--design-green));
+}
+.shortcut {
+  display: flex;
+  .feather-icon {
+    margin-right: 8px;
+  }
 }
 .proxy-pane .form-line {
   margin-top: 0;
