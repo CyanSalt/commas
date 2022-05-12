@@ -149,14 +149,17 @@ watch($$(isFinding), value => {
 }
 .keyword {
   flex: auto;
+  padding: 2px 6px;
   border: none;
   color: inherit;
-  font: inherit;
-  background: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 20px;
+  background: rgb(127 127 127 / 0.2);
   outline: none;
   &::placeholder {
-    color: inherit;
-    opacity: 0.5;
+    color: rgb(var(--theme-foreground));
+    opacity: 0.25;
   }
 }
 .options {
