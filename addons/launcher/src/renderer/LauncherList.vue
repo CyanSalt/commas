@@ -100,7 +100,7 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
           v-i18n:placeholder
           type="search"
           class="keyword"
-          placeholder="Find...#!terminal.5"
+          placeholder="Find#!terminal.5"
           autofocus
           @keyup.esc="toggleFinding"
         >
