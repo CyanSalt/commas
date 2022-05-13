@@ -14,7 +14,7 @@ async function createWindow(...args: string[]) {
   const settingsRef = useSettings()
   await whenSettingsReady()
   const settings = unref(settingsRef)
-  const frameType = settings['terminal.style.frameType']
+  const frameType = settings['terminal.view.frameType']
   const options: Partial<BrowserWindowConstructorOptions> = {
     show: false,
     title: app.name,

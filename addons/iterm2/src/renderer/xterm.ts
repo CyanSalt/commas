@@ -198,7 +198,7 @@ export class ITerm2Addon implements ITerminalAddon {
                 link.end.y > y ? undefined : link.end.x,
               ),
               activate(event) {
-                const shouldOpen = settings['terminal.link.modifier'] === 'Alt' ? event.altKey
+                const shouldOpen = settings['terminal.view.linkModifier'] === 'Alt' ? event.altKey
                   : (process.platform === 'darwin' ? event.metaKey : event.ctrlKey)
                 if (shouldOpen) {
                   shell.openExternal(link.uri)

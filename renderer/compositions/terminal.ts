@@ -58,8 +58,8 @@ export function getTerminalTabIndex(tab: TerminalTab) {
 
 const terminalOptions = $computed<Partial<ITerminalOptions>>(() => {
   return {
-    rendererType: settings['terminal.renderer.type'] === 'webgl'
-      ? 'canvas' : settings['terminal.renderer.type'],
+    rendererType: settings['terminal.view.rendererType'] === 'webgl'
+      ? 'canvas' : settings['terminal.view.rendererType'],
     fontSize: settings['terminal.style.fontSize'],
     fontFamily: settings['terminal.style.fontFamily'],
     allowTransparency: theme.opacity < 1,
@@ -350,7 +350,7 @@ export function loadTerminalAddons(tab: TerminalTab) {
   if (!addons.weblinks) {
     addons.weblinks = new WebLinksAddon((event, uri) => {
       let shouldOpen = false
-      switch (settings['terminal.link.modifier']) {
+      switch (settings['terminal.view.linkModifier']) {
         case 'Alt':
           shouldOpen = event.altKey
           break

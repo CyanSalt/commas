@@ -134,7 +134,7 @@
     "default": "\\v"
   },
   {
-    "key": "terminal.link.modifier",
+    "key": "terminal.view.linkModifier",
     "label": "Link Modifier",
     "comments": [
       "Keyboard modifier for opening link by click"
@@ -146,7 +146,7 @@
     "default": "any"
   },
   {
-    "key": "terminal.renderer.type",
+    "key": "terminal.view.rendererType",
     "label": "Renderer Type",
     "comments": [
       "Specify how to render the terminal",
@@ -160,7 +160,7 @@
     "default": "webgl"
   },
   {
-    "key": "terminal.style.frameType",
+    "key": "terminal.view.frameType",
     "label": "Frame Type",
     "comments": [
       "Frame type of window",

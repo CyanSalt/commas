@@ -20,7 +20,7 @@ let isTabListEnabled = $(useIsTabListEnabled())
 let iconBuffer = $ref<Buffer | undefined>()
 
 const isEnabled = $computed(() => {
-  return settings['terminal.style.frameType'] !== 'system'
+  return settings['terminal.view.frameType'] !== 'system'
 })
 
 const directory = $computed(() => {

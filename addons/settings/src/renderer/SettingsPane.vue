@@ -8,7 +8,7 @@ const { vI18n, TerminalPane } = commas.ui.vueAssets
 
 let settings = $(commas.remote.useUserSettings())
 let values = $ref({})
-let open = $ref<boolean[]>([])
+let open = $ref<Record<string, boolean>>({})
 
 const isChanged = $computed(() => {
   return !isEqual(settings, values)
@@ -23,15 +23,20 @@ const rows = $computed(() => {
 })
 
 watchEffect(() => {
-  open = rows.map(() => true)
+  open = rows.reduce((record, spec) => {
+    record[spec.key] = true
+    return record
+  }, {})
 })
 
 let isCollapsed = $computed<boolean>({
   get() {
-    return open.every(item => !item)
+    return Object.values(open).every(item => !item)
   },
   set(value) {
-    open = open.map(() => !value)
+    Object.keys(open).forEach(key => {
+      open[key] = !value
+    })
   },
 })
 
@@ -66,10 +71,10 @@ watchEffect(revert)
         </span>
       </div>
       <SettingsLine
-        v-for="(row, index) in rows"
+        v-for="row in rows"
         :key="row.key"
         v-model="values[row.key]"
-        v-model:open="open[index]"
+        v-model:open="open[row.key]"
         :spec="row"
         :current-value="settings[row.key]"
       />
