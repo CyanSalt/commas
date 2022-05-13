@@ -7,4 +7,4 @@ commas.ui.addCSSFile(path.join(__dirname, '../../dist/renderer/style.css'))
 
 commas.context.provide('@ui-slot', LandscapeSlot)
 
-commas.context.provide('@ui-side-anchor', LandscapeAnchor)
+commas.context.provide('@ui-action-anchor', LandscapeAnchor)

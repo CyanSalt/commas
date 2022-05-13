@@ -18,7 +18,6 @@ let isMinimized = $(useMinimized())
 let isTabListEnabled = $(useIsTabListEnabled())
 
 let iconBuffer = $ref<Buffer | undefined>()
-let branch = $ref('')
 
 const isEnabled = $computed(() => {
   return settings['terminal.style.frameType'] !== 'system'
@@ -77,22 +76,6 @@ const icon = $computed(() => {
   }
 })
 
-async function updateBranch() {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (directory) {
-    branch = await ipcRenderer.invoke('get-git-branch', directory)
-  } else {
-    branch = ''
-  }
-}
-
-watchEffect(() => {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (!isEnabled) return
-  branch = ''
-  updateBranch()
-})
-
 function openDirectory() {
   shell.openPath(directory)
 }
@@ -131,14 +114,7 @@ watchEffect(() => {
     :class="['title-bar', { 'no-controls': !isCustomControlEnabled }]"
     @dblclick="maximize"
   >
-    <div class="git-branch">
-      <template v-if="branch">
-        <span class="branch-updater" @click="updateBranch">
-          <span class="feather-icon icon-git-branch"></span>
-        </span>
-        <span class="branch-name">{{ branch }}</span>
-      </template>
-    </div>
+    <div class="symmetrical-space"></div>
     <div class="title-wrapper">
       <a
         v-if="directory"
@@ -188,10 +164,11 @@ watchEffect(() => {
   height: 36px;
   line-height: 36px;
   text-align: center;
+  background: rgb(var(--theme-background));
   -webkit-app-region: drag;
 }
-.git-branch,
-.controls {
+.controls,
+.symmetrical-space {
   display: flex;
   flex: 1 0 auto;
   width: 108px;
@@ -234,30 +211,11 @@ watchEffect(() => {
   unicode-bidi: plaintext;
   overflow: hidden;
 }
-.git-branch {
-  box-sizing: border-box;
-  padding-left: 16px;
-  .title-bar.no-controls & {
-    order: 1;
-    justify-content: flex-end;
-    padding-right: 16px;
-    padding-left: 0;
-  }
-}
-.branch-updater {
-  margin-right: 4px;
-  opacity: 0.5;
-  transition: opacity 0.2s;
-  cursor: pointer;
-  -webkit-app-region: no-drag;
-  &:hover {
-    opacity: 1;
-  }
-}
-.branch-name {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  opacity: 0.5;
+.title-bar.no-controls .symmetrical-space {
+  order: 1;
+  justify-content: flex-end;
+  padding-right: 16px;
+  padding-left: 0;
 }
 .controls {
   justify-content: flex-end;

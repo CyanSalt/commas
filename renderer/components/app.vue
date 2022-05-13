@@ -20,6 +20,7 @@ import {
   createTerminalTab,
 } from '../compositions/terminal'
 import { injectTheme, useTheme } from '../compositions/theme'
+import ActionBar from './ActionBar.vue'
 import FindBox from './FindBox.vue'
 import TabList from './TabList.vue'
 import TerminalTeletype from './TerminalTeletype.vue'
@@ -104,6 +105,7 @@ onMounted(() => {
         </template>
       </main>
     </div>
+    <ActionBar />
     <component
       :is="slot"
       v-for="(slot, index) in slots"

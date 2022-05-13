@@ -14,7 +14,7 @@ commas.workspace.registerTabPane('proxy', {
   },
 })
 
-commas.context.provide('@ui-side-anchor', ProxyAnchor)
+commas.context.provide('@ui-action-anchor', ProxyAnchor)
 
 commas.context.provide('preference', {
   component: ProxyLink,

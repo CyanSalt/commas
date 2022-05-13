@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import * as path from 'path'
-import { ipcRenderer } from 'electron'
 import * as commas from '../../api/core-renderer'
 import {
   useTerminalTabs,
@@ -16,7 +15,6 @@ import { getShells } from '../utils/terminal'
 import TabItem from './TabItem.vue'
 import SortableList from './basic/SortableList.vue'
 
-const anchors = commas.proxy.context.getCollection('@ui-side-anchor')
 const lists = commas.proxy.context.getCollection('@ui-side-list')
 const shells = $(useAsyncComputed(() => getShells(), []))
 
@@ -42,10 +40,6 @@ function selectShell(event: MouseEvent) {
   })), event)
 }
 
-function configure() {
-  ipcRenderer.invoke('open-settings')
-}
-
 function resize(startingEvent: DragEvent) {
   const original = width
   const start = startingEvent.clientX
@@ -61,49 +55,36 @@ function resize(startingEvent: DragEvent) {
 
 <template>
   <nav class="tab-list">
-    <div class="list-column" :style="{ width: width + 'px' }">
-      <div class="list">
-        <SortableList
-          v-slot="{ value }"
-          :value="standaloneTabs"
-          value-key="pid"
-          class="processes"
-          @change="sortTabs"
+    <div class="list" :style="{ width: width + 'px' }">
+      <SortableList
+        v-slot="{ value }"
+        :value="standaloneTabs"
+        value-key="pid"
+        class="processes"
+        @change="sortTabs"
+      >
+        <TabItem
+          :tab="value"
+          @click="activateTerminalTab(value)"
+        />
+      </SortableList>
+      <div class="new-tab">
+        <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
+          <span class="feather-icon icon-more-horizontal"></span>
+        </div>
+        <div
+          class="default-shell anchor"
+          @click="createTerminalTab()"
+          @contextmenu="selectShell"
         >
-          <TabItem
-            :tab="value"
-            @click="activateTerminalTab(value)"
-          />
-        </SortableList>
-        <div class="new-tab">
-          <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
-            <span class="feather-icon icon-more-horizontal"></span>
-          </div>
-          <div
-            class="default-shell anchor"
-            @click="createTerminalTab()"
-            @contextmenu="selectShell"
-          >
-            <span class="feather-icon icon-plus"></span>
-          </div>
+          <span class="feather-icon icon-plus"></span>
         </div>
-        <component
-          :is="list"
-          v-for="(list, index) in lists"
-          :key="index"
-        />
       </div>
-      <div class="bottom-actions">
-        <div class="anchor" @click="configure">
-          <span class="feather-icon icon-settings"></span>
-        </div>
-        <component
-          :is="anchor"
-          v-for="(anchor, index) in anchors"
-          :key="index"
-          class="anchor"
-        />
-      </div>
+      <component
+        :is="list"
+        v-for="(list, index) in lists"
+        :key="index"
+      />
     </div>
     <div draggable="true" class="sash" @dragstart.prevent="resize"></div>
   </nav>
@@ -118,22 +99,17 @@ function resize(startingEvent: DragEvent) {
   flex: none;
   font-size: 14px;
 }
-.list-column {
+.list {
+  @include partials.scroll-container(8px);
+  position: relative;
   display: flex;
   flex: auto;
   flex-direction: column;
   width: 176px;
 }
-.list {
-  @include partials.scroll-container(8px);
-  position: relative;
-  flex: auto;
-  height: 0;
-}
 .sash {
   flex: none;
   width: 2px;
-  margin: 4px 0;
   border-right: 2px solid rgb(var(--theme-foreground) / 0.05);
   cursor: col-resize;
 }
@@ -159,16 +135,6 @@ function resize(startingEvent: DragEvent) {
 .select-shell + .default-shell {
   order: -1;
   padding-left: 18px;
-}
-.bottom-actions {
-  display: flex;
-  flex: none;
-  height: 16px;
-  padding: 8px 16px;
-  line-height: 16px;
-  .anchor {
-    margin-right: 8px;
-  }
 }
 .anchor {
   opacity: 0.5;
