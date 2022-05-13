@@ -43,7 +43,7 @@ let model = $computed({
   get: () => {
     if (
       modelValue === undefined
-      && accepts(spec.schema, ['boolean', 'array', 'object'])
+      && (isScalarEnum || accepts(spec.schema, ['boolean', 'array', 'object']))
     ) {
       return normalize(spec.default)
     }
