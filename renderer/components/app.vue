@@ -68,6 +68,12 @@ window.addEventListener('beforeunload', async event => {
   }
 })
 
+commas.proxy.app.events.once('terminal-tab-effect', () => {
+  requestIdleCallback(() => {
+    ipcRenderer.send('bootstrap')
+  })
+})
+
 onMounted(() => {
   commas.proxy.app.events.emit('ready')
 })
