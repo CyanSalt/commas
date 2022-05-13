@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
-import { cloneDeep, isEqual } from 'lodash-es'
+import { cloneDeep, groupBy, isEqual, startCase } from 'lodash-es'
 import { watchEffect } from 'vue'
 import SettingsLine from './SettingsLine.vue'
 
@@ -15,15 +15,44 @@ const isChanged = $computed(() => {
 })
 
 const specs = $(commas.remote.useSettingsSpecs())
-const rows = $computed(() => {
+const configurableSpecs = $computed(() => {
   return specs.filter((item) => {
     return !Array.isArray(item.configurable)
           || item.configurable.includes(process.platform)
   })
 })
 
+const addons = $(commas.remote.useAddons())
+
+const groups = $computed(() => {
+  return Object.entries(groupBy(configurableSpecs, spec => {
+    const domain = spec.key.split('.')
+    return domain.slice(0, domain[0] === 'terminal' ? 2 : 1).join('.')
+  })).map(([key, rows]) => {
+    let from: string | undefined
+    let name: string
+    const domain = key.split('.')
+    if (domain[0] === 'terminal') {
+      name = startCase(domain[1])
+    } else {
+      name = startCase(key)
+      const addon = addons.find(item => item.name === domain[0])
+      if (addon) {
+        const manifest = commas.remote.getAddonManifest(addon.manifest)
+        from = manifest.productName ?? manifest.name ?? addon.name
+      }
+    }
+    return {
+      key,
+      name,
+      from,
+      rows,
+    }
+  })
+})
+
 watchEffect(() => {
-  open = rows.reduce((record, spec) => {
+  open = configurableSpecs.reduce((record, spec) => {
     record[spec.key] = true
     return record
   }, {})
@@ -70,14 +99,22 @@ watchEffect(revert)
           <span class="feather-icon icon-check"></span>
         </span>
       </div>
-      <SettingsLine
-        v-for="row in rows"
-        :key="row.key"
-        v-model="values[row.key]"
-        v-model:open="open[row.key]"
-        :spec="row"
-        :current-value="settings[row.key]"
-      />
+      <div
+        v-for="group in groups"
+        :key="group.key"
+        class="settings-group"
+      >
+        <h3 v-if="group.from" class="settings-group-title">{{ group.from }}</h3>
+        <h3 v-else v-i18n class="settings-group-title">{{ group.name }}#!settings.group.{{ group.key }}</h3>
+        <SettingsLine
+          v-for="row in group.rows"
+          :key="row.key"
+          v-model="values[row.key]"
+          v-model:open="open[row.key]"
+          :spec="row"
+          :current-value="settings[row.key]"
+        />
+      </div>
     </form>
   </TerminalPane>
 </template>
@@ -100,5 +137,10 @@ watchEffect(revert)
 .confirm.disabled {
   color: inherit;
   opacity: 0.5;
+}
+.settings-group-title {
+  margin: 8px 0;
+  font-size: 16px;
+  line-height: 24px;
 }
 </style>

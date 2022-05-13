@@ -1,5 +1,6 @@
-import { useLanguage } from '../../renderer/compositions/i18n'
+import { getAddonManifest, useLanguage } from '../../renderer/compositions/i18n'
 import {
+  useAddons,
   useSettings,
   useSettingsSpecs,
   useUserSettings,
@@ -8,8 +9,10 @@ import {
 export * from '../shim'
 
 export {
+  useAddons,
   useLanguage,
   useSettings,
   useSettingsSpecs,
   useUserSettings,
+  getAddonManifest,
 }
