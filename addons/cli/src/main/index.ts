@@ -3,7 +3,7 @@ import * as util from 'util'
 import { computed, effect, stop, unref } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import { app, BrowserWindow } from 'electron'
-import random from 'lodash/random'
+import { random } from 'lodash'
 import type { CommandModule } from './command'
 import { executeCommand, useExternalURLCommands } from './command'
 

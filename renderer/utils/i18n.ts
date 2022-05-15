@@ -1,4 +1,4 @@
-import { last } from 'lodash-es'
+import { last } from 'lodash'
 import type { VNode } from 'vue'
 import type { Dictionary, TranslationVariables } from '../../typings/i18n'
 import { injectIPC } from './compositions'

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
-import { cloneDeep, groupBy, isEqual, startCase } from 'lodash-es'
+import { cloneDeep, groupBy, isEqual, startCase } from 'lodash'
 import { watchEffect } from 'vue'
 import SettingsLine from './SettingsLine.vue'
 

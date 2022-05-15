@@ -1,6 +1,6 @@
 import * as os from 'os'
 import { ipcRenderer, shell } from 'electron'
-import { memoize, debounce, isMatch } from 'lodash-es'
+import { memoize, debounce, isMatch } from 'lodash'
 import { markRaw, reactive, toRaw, watch } from 'vue'
 import { Terminal } from 'xterm'
 import type { ITerminalOptions } from 'xterm'

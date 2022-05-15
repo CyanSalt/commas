@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { isEqual } from 'lodash-es'
+import { isEqual } from 'lodash'
 import { watch } from 'vue'
 import OrderedCheckbox from './OrderedCheckbox.vue'
 

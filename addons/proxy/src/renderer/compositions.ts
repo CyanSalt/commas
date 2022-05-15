@@ -1,5 +1,5 @@
 import * as commas from 'commas:api/renderer'
-import { memoize } from 'lodash-es'
+import { memoize } from 'lodash'
 
 export const useProxyServerStatus = memoize(() => {
   return commas.ipcRenderer.inject<boolean | undefined>('proxy-server-status', undefined)

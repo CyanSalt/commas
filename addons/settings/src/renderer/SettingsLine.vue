@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
-import { isEqual } from 'lodash-es'
+import { isEqual } from 'lodash'
 import type { SettingsSpec } from '../../../../typings/settings'
 import { accepts, isObjectSchema } from './json-schema'
 

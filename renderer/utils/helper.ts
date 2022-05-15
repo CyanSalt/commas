@@ -1,4 +1,4 @@
-import { debounce } from 'lodash-es'
+import { debounce } from 'lodash'
 
 type IDIterator = (id: number) => number
 

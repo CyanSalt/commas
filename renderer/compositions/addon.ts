@@ -1,4 +1,4 @@
-import { differenceBy } from 'lodash-es'
+import { differenceBy } from 'lodash'
 import { watchEffect } from 'vue'
 import * as commas from '../../api/core-renderer'
 import type { AddonInfo } from '../../typings/addon'

@@ -37,8 +37,8 @@ export default (versions, tap) => vite.build(tap({
         /^commas:/,
         'electron',
         ...builtinModules,
-        // Connect reactivity system
         '@vue/reactivity',
+        'lodash',
         'vue',
       ],
       output: {

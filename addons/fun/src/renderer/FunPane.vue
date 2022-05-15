@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
-import { sample, sampleSize } from 'lodash-es'
+import { sample, sampleSize } from 'lodash'
 import { nextTick, onMounted, reactive } from 'vue'
 import FunDial from './FunDial.vue'
 

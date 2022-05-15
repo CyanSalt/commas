@@ -12,4 +12,14 @@ module.exports = {
     'vue/no-undef-components': 'error',
     'vue/no-undef-properties': 'error',
   },
+  overrides: [
+    {
+      files: ['**/main/**/*.ts'],
+      rules: {
+        'no-restricted-imports': ['error', {
+          paths: ['vue'],
+        }],
+      },
+    }
+  ],
 }

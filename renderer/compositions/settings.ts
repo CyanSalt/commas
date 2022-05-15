@@ -1,4 +1,4 @@
-import { memoize } from 'lodash-es'
+import { memoize } from 'lodash'
 import type { AddonInfo } from '../../typings/addon'
 import type { Settings, SettingsSpec } from '../../typings/settings'
 import { injectIPC } from '../utils/compositions'

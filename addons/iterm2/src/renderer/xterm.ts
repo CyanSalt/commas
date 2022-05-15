@@ -1,6 +1,6 @@
 import * as commas from 'commas:api/renderer'
 import { clipboard, ipcRenderer, shell } from 'electron'
-import { findLast } from 'lodash-es'
+import { findLast } from 'lodash'
 import { nextTick } from 'vue'
 import type { IDisposable, IMarker, ITerminalAddon, Terminal } from 'xterm'
 import type { TerminalTab, XtermBufferPosition, XtermLink } from '../../../../typings/terminal'
