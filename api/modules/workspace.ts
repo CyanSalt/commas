@@ -9,7 +9,7 @@ import {
   useCurrentTerminal,
   useTerminalTabs,
 } from '../../renderer/compositions/terminal'
-import { createIDGenerator } from '../../renderer/utils/helper'
+import { createIDGenerator } from '../../shared/helper'
 import type { TerminalTab, TerminalTabPane } from '../../typings/terminal'
 import type { RendererAPIContext } from '../types'
 

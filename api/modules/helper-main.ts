@@ -1,5 +1,5 @@
 import { useEffect } from '../../main/utils/compositions'
-import { createIDGenerator } from '../../main/utils/helper'
+import { createIDGenerator } from '../../shared/helper'
 
 export {
   useEffect,

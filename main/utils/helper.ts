@@ -21,19 +21,6 @@ function until<T extends EventEmitter, U extends string>(emitter: T, finish: U, 
   })
 }
 
-type IDIterator = (id: number) => number
-
-function createIDGenerator(iterator?: IDIterator) {
-  if (!iterator) {
-    iterator = id => id + 1
-  }
-  let id = 0
-  return () => {
-    id = iterator!(id)
-    return id
-  }
-}
-
 function createPattern(expression: string) {
   // eslint-disable-next-line unicorn/no-unsafe-regex
   const matches = expression.match(/^s\/(.+)\/([a-z]+)?$/)
@@ -48,6 +35,5 @@ function createPattern(expression: string) {
 export {
   execa,
   until,
-  createIDGenerator,
   createPattern,
 }
