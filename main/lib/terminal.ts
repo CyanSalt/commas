@@ -116,16 +116,6 @@ function handleTerminalMessages() {
       return ''
     }
   })
-  ipcMain.handle('get-git-branch', async (event, directory: string) => {
-    const command = `git rev-parse --abbrev-ref HEAD 2> ${os.devNull}`
-    try {
-      const { stdout } = await execa(command, { cwd: directory })
-      return stdout
-    } catch {
-      // Git for Windows will throw error if the directory is not a repository
-      return ''
-    }
-  })
   ipcMain.handle('get-shells', async () => {
     if (process.platform === 'win32') {
       return [

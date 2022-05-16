@@ -1,0 +1,16 @@
+{
+  "name": "git",
+  "productName": "Git Integration",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Show the Git branch name of the directory",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC",
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "Git 集成",
+      "description": "展示目录的 Git 分支名"
+    }
+  }
+}
