@@ -2,7 +2,7 @@
 import * as commas from 'commas:api/renderer'
 import { useProxyServerStatus, useSystemProxyStatus } from './compositions'
 
-const settings = $(commas.remote.useSettings())
+const settings = commas.remote.useSettings()
 const systemStatus = $(useSystemProxyStatus())
 
 let status = $(useProxyServerStatus())

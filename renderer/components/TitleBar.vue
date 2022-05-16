@@ -8,7 +8,7 @@ import { showTabOptions, useCurrentTerminal, useTerminalActiveIndex, useTerminal
 import { translate, vI18n } from '../utils/i18n'
 import { getPrompt } from '../utils/terminal'
 
-const settings = $(useSettings())
+const settings = useSettings()
 const tabs = $(useTerminalTabs())
 const activeIndex = $(useTerminalActiveIndex())
 const terminal = $(useCurrentTerminal())

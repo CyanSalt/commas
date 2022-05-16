@@ -14,7 +14,10 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['**/main/**/*.ts'],
+      files: [
+        '**/main/**/*.ts',
+        '**/shared/**/*.ts',
+      ],
       rules: {
         'no-restricted-imports': ['error', {
           paths: ['vue'],

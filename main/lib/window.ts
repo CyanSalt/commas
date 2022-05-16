@@ -11,9 +11,8 @@ import { useSettings, whenSettingsReady } from './settings'
 import { useThemeOptions } from './theme'
 
 async function createWindow(...args: string[]) {
-  const settingsRef = useSettings()
   await whenSettingsReady()
-  const settings = unref(settingsRef)
+  const settings = useSettings()
   const frameType = settings['terminal.view.frameType']
   const options: Partial<BrowserWindowConstructorOptions> = {
     show: false,

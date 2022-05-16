@@ -12,7 +12,7 @@ commas.ipcMain.handle('discover-addons', () => {
 })
 
 commas.ipcMain.handle('set-addons', (event, value: string[]) => {
-  commas.settings.updateSettings({
+  Object.assign(commas.settings.useSettings(), {
     'terminal.addon.includes': value,
   })
 })

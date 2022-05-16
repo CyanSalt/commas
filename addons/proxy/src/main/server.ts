@@ -1,9 +1,9 @@
-import { customRef, stop, unref } from '@vue/reactivity'
+import { customRef, stop } from '@vue/reactivity'
 import type { ReactiveEffectRunner } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 
 async function createServer(cancelation?: Promise<unknown>) {
-  const settings = unref(commas.settings.useSettings())
+  const settings = commas.settings.useSettings()
   const port: number = settings['proxy.server.port']
   if (cancelation) {
     await cancelation

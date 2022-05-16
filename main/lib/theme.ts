@@ -43,8 +43,8 @@ const CSS_PROPERTIES = {
 }
 
 const themeRef = computed(async () => {
-  const settings = unref(useSettings())
-  const defaultSettings = unref(useDefaultSettings())
+  const settings = useSettings()
+  const defaultSettings = useDefaultSettings()
   const defaultThemeName = defaultSettings['terminal.theme.name']
   let originalTheme = resources.require<Theme>(`themes/${defaultThemeName}.json`)!
   const name: string = settings['terminal.theme.name'] || defaultThemeName

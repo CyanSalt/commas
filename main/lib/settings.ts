@@ -5,6 +5,7 @@ import { computed, customRef, effect, ref, unref } from '@vue/reactivity'
 import { ipcMain, shell } from 'electron'
 import { cloneDeep, isEqual } from 'lodash'
 import YAML from 'yaml'
+import { surface } from '../../shared/compositions'
 import type { Settings, SettingsSpec } from '../../typings/settings'
 import { provideIPC } from '../utils/compositions'
 import { userData, resources } from '../utils/directory'
@@ -45,8 +46,10 @@ const defaultSettingsRef = computed<Settings>(() => {
   return Object.fromEntries(currentSpecs.map(spec => [spec.key, spec.default]))
 })
 
+const reactiveDefaultSettings = surface(defaultSettingsRef)
+
 function useDefaultSettings() {
-  return defaultSettingsRef
+  return reactiveDefaultSettings
 }
 
 let isReady = false
@@ -101,12 +104,17 @@ const settingsRef = computed<Settings>({
   },
 })
 
+const reactiveSettings = surface(settingsRef)
+
+function useSettings() {
+  return reactiveSettings
+}
+
 const enabledAddonsRef = customRef<string[]>((track, trigger) => {
   let addons: string[] = []
   whenSettingsReady().then(() => {
     effect(() => {
-      const settings = unref(settingsRef)
-      addons = settings['terminal.addon.includes']
+      addons = reactiveSettings['terminal.addon.includes']
       trigger()
     })
   })
@@ -116,22 +124,10 @@ const enabledAddonsRef = customRef<string[]>((track, trigger) => {
       return addons
     },
     set(value) {
-      const settings = unref(settingsRef)
-      settings['terminal.addon.includes'] = value
+      reactiveSettings['terminal.addon.includes'] = value
     },
   }
 })
-
-function useSettings() {
-  return settingsRef
-}
-
-function updateSettings(settings: Partial<Settings>) {
-  settingsRef.value = {
-    ...unref(settingsRef),
-    ...settings,
-  }
-}
 
 function useEnabledAddons() {
   return enabledAddonsRef
@@ -202,7 +198,6 @@ export {
   useSettings,
   useDefaultSettings,
   useSettingsSpecs,
-  updateSettings,
   useEnabledAddons,
   openSettingsFile,
   handleSettingsMessages,

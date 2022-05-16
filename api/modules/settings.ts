@@ -1,7 +1,6 @@
 import { markRaw, unref } from '@vue/reactivity'
 import {
   openSettingsFile,
-  updateSettings,
   useDefaultSettings,
   useSettings,
   useSettingsSpecs,
@@ -35,5 +34,4 @@ export {
   useSettings,
   useDefaultSettings,
   openSettingsFile,
-  updateSettings,
 }

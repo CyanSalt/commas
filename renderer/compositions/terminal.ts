@@ -31,7 +31,7 @@ declare module '../../typings/terminal' {
   }
 }
 
-const settings = $(useSettings())
+const settings = useSettings()
 const theme = $(useTheme())
 
 const tabs = $ref<TerminalTab[]>([])

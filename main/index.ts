@@ -1,4 +1,4 @@
-import { effect, unref } from '@vue/reactivity'
+import { effect } from '@vue/reactivity'
 import { app } from 'electron'
 import * as commas from '../api/core-main'
 import { handleAddonMessages, loadAddons, loadCustomJS } from './lib/addon'
@@ -50,9 +50,8 @@ app.on('will-finish-launching', () => {
   // handle opening outside
   app.on('open-file', async (event, file) => {
     event.preventDefault()
-    const settingsRef = useSettings()
     await whenSettingsReady()
-    const settings = unref(settingsRef)
+    const settings = useSettings()
     // for Windows
     if (!file) {
       file = process.argv[process.argv.length - 1]

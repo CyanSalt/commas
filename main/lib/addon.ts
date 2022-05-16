@@ -61,7 +61,7 @@ function checkAddon(addon: AddonInfo) {
 }
 
 const addonsRef = computed(() => {
-  const settings = unref(useSettings())
+  const settings = useSettings()
   const enabledAddons = settings['terminal.addon.includes']
   return enabledAddons
     .map(name => resolveAddon(name))

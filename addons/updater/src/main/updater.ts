@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import { stop, unref } from '@vue/reactivity'
+import { stop } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import { app, autoUpdater } from 'electron'
 
@@ -26,7 +26,7 @@ function setupAutoUpdater() {
 
 function useAutoUpdaterEffect() {
   const reactiveEffect = commas.helperMain.useEffect((onInvalidate) => {
-    const settings = unref(commas.settings.useSettings())
+    const settings = commas.settings.useSettings()
     const interval = settings['updater.polling.interval']
     if (interval) {
       const timer = setInterval(() => {

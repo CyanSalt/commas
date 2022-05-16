@@ -1,6 +1,5 @@
 import * as fs from 'fs'
 import * as os from 'os'
-import { unref } from '@vue/reactivity'
 import { app, ipcMain } from 'electron'
 import type { WebContents } from 'electron'
 import * as pty from 'node-pty'
@@ -19,10 +18,11 @@ interface CreateTerminalOptions {
 }
 
 async function createTerminal(webContents: WebContents, { shell, cwd }: CreateTerminalOptions): Promise<TerminalInfo> {
-  const settingsRef = useSettings()
-  await whenSettingsReady()
-  const settings = unref(settingsRef)
-  await app.whenReady()
+  await Promise.all([
+    whenSettingsReady(),
+    app.whenReady(),
+  ])
+  const settings = useSettings()
   const env: Record<string, string> = {
     ...getDefaultEnv(),
     ...settings['terminal.shell.env'],

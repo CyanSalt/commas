@@ -5,7 +5,7 @@ import type { Launcher } from '../../typings/launcher'
 import { getLauncherCommand } from './utils'
 
 const tabs = $(commas.workspace.useTerminalTabs())
-const settings = $(commas.remote.useSettings())
+const settings = commas.remote.useSettings()
 
 let launchers = $(commas.ipcRenderer.inject<Launcher[]>('launchers', []))
 

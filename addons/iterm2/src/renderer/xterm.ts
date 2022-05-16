@@ -22,7 +22,7 @@ export class ITerm2Addon implements ITerminalAddon {
   }
 
   activate(xterm: Terminal) {
-    const settings = $(commas.remote.useSettings())
+    const settings = commas.remote.useSettings()
     let badge = $(useBadge())
     // iTerm2 escape codes
     this.disposables.push(

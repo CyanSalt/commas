@@ -5,7 +5,7 @@ import { useProxyRootCAStatus, useProxyServerStatus, useProxyServerVersion, useS
 
 const { vI18n, LoadingSpinner, SwitchControl, TerminalPane } = commas.ui.vueAssets
 
-const settings = $(commas.remote.useSettings())
+const settings = commas.remote.useSettings()
 const isSystemProxyEnabled = $(useSystemProxyStatus())
 const isCertInstalled = $(useProxyRootCAStatus())
 const version = $(useProxyServerVersion())

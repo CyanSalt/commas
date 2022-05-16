@@ -1,13 +1,10 @@
 import * as path from 'path'
-import { unref } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 
 commas.i18n.addTranslationDirectory(path.join(__dirname, '../../locales'))
 
 commas.ipcMain.handle('reset-theme', () => {
-  const defaultSettings = unref(commas.settings.useDefaultSettings())
-  const defaultThemeName = defaultSettings['terminal.theme.name']
-  commas.settings.updateSettings({
-    'terminal.theme.name': defaultThemeName,
-  })
+  const settings = commas.settings.useSettings()
+  const defaultSettings = commas.settings.useDefaultSettings()
+  settings['terminal.theme.name'] = defaultSettings['terminal.theme.name']
 })

@@ -1,4 +1,4 @@
-import { customRef, effect, unref } from '@vue/reactivity'
+import { customRef, effect } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 
 async function getMacOSCurrentNetworkService() {
@@ -50,7 +50,7 @@ async function setGlobalWebProxy(options?: GlobalWebProxy) {
 }
 
 async function loadSystemProxy() {
-  const settings = unref(commas.settings.useSettings())
+  const settings = commas.settings.useSettings()
   const port: number = settings['proxy.server.port']
   const proxy = await getGlobalWebProxy()
   return Boolean(
@@ -64,7 +64,7 @@ async function loadSystemProxy() {
 async function setSystemProxy(value: boolean) {
   let proxy: GlobalWebProxy | undefined
   if (value) {
-    const settings = unref(commas.settings.useSettings())
+    const settings = commas.settings.useSettings()
     const port: number = settings['proxy.server.port']
     proxy = { host: '127.0.0.1', port }
   }

@@ -1,11 +1,10 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
-import { unref } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 
 async function installRootCA() {
-  const settings = unref(commas.settings.useSettings())
+  const settings = commas.settings.useSettings()
   const port = settings['proxy.server.port']
   const cert = path.join(os.tmpdir(), `whistle-root-ca.${Date.now()}.cert`)
   await commas.shell.downloadFile(`http://localhost:${port}/cgi-bin/rootca`, cert)

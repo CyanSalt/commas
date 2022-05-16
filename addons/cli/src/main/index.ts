@@ -7,11 +7,10 @@ import { random } from 'lodash'
 import type { CommandModule } from './command'
 import { executeCommand, useExternalURLCommands } from './command'
 
-const settingsRef = commas.settings.useSettings()
+const settings = commas.settings.useSettings()
 
 const commands = commas.context.getCollection('cli')
 commas.ipcMain.handle('cli', (event, context) => {
-  const settings = unref(settingsRef)
   const aliases = settings['cli.command.aliases'] ?? {}
   return executeCommand(event, context, commands, aliases)
 })
@@ -35,7 +34,6 @@ const wrap = (arr) => {
 }
 
 const commandListRef = computed(() => {
-  const settings = unref(settingsRef)
   const aliases = settings['cli.command.aliases'] ?? {}
   return [
     ...commands.map(item => item.command),

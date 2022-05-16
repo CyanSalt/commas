@@ -1,5 +1,5 @@
 import * as util from 'util'
-import { computed, unref } from '@vue/reactivity'
+import { computed } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import { shell } from 'electron'
 import type { IpcMainInvokeEvent } from 'electron'
@@ -36,7 +36,7 @@ export async function executeCommand(
 }
 
 const externalURLCommandsRef = computed(() => {
-  const settings = unref(commas.settings.useSettings())
+  const settings = commas.settings.useSettings()
   const entries: ({ command: string, url: string })[] | undefined = settings['cli.command.externalURLs']
   return entries ? entries.map<CommandModule>(entry => {
     const { url, command } = entry
