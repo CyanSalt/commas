@@ -155,13 +155,15 @@ async function openDefaultSettings() {
   }
 }
 
-async function openUserFile(file: string) {
+async function openUserFile(file: string, example?: string) {
   const filePath = userData.file(file)
   try {
     await fs.promises.access(filePath)
   } catch {
-    const examplePath = resources.file(path.join('examples', file))
-    await fs.promises.copyFile(examplePath, filePath)
+    if (!example) {
+      example = resources.file(path.join('examples', file))
+    }
+    await fs.promises.copyFile(example, filePath)
   }
   return shell.openPath(filePath)
 }
@@ -185,8 +187,8 @@ function handleSettingsMessages() {
   ipcMain.handle('open-user-directory', () => {
     return shell.openPath(userData.file('.'))
   })
-  ipcMain.handle('open-user-file', (event, file: string) => {
-    return openUserFile(file)
+  ipcMain.handle('open-user-file', (event, file: string, example?: string) => {
+    return openUserFile(file, example)
   })
   ipcMain.handle('download-user-file', (event, file: string, url: string, force?: boolean) => {
     return userData.download(file, url, force)
