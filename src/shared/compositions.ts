@@ -1,6 +1,33 @@
 import type { Ref } from '@vue/reactivity'
-import { effect, shallowReactive, stop, unref } from '@vue/reactivity'
+import { customRef, effect, shallowReactive, stop, unref } from '@vue/reactivity'
 import { difference, intersection, isEqual } from 'lodash'
+
+export function useAsyncComputed<T>(factory: () => Promise<T>): Ref<T | undefined>
+export function useAsyncComputed<T>(factory: () => Promise<T>, defaultValue: T): Ref<T>
+
+export function useAsyncComputed<T>(factory: () => Promise<T>, defaultValue?: T) {
+  return customRef<T | undefined>((track, trigger) => {
+    let currentValue = defaultValue
+    effect(async () => {
+      try {
+        currentValue = await factory()
+      } catch {
+        currentValue = defaultValue
+      }
+      trigger()
+    })
+    return {
+      get() {
+        track()
+        return currentValue
+      },
+      set() {
+        // ignore
+      },
+    }
+  })
+}
+
 
 function initializeSurface<T>(valueRef: Ref<T>, reactiveObject: T) {
   let running = 0

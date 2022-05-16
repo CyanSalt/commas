@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import * as path from 'path'
 import * as commas from '../../../api/core-renderer'
+import { useAsyncComputed } from '../../shared/compositions'
 import {
   useTerminalTabs,
   createTerminalTab,
@@ -8,7 +9,6 @@ import {
   activateTerminalTab,
   getTerminalTabIndex,
 } from '../compositions/terminal'
-import { useAsyncComputed } from '../utils/compositions'
 import { openContextMenu } from '../utils/frame'
 import { handleMousePressing } from '../utils/helper'
 import { getShells } from '../utils/terminal'

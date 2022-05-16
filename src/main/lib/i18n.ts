@@ -1,8 +1,9 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { computed, customRef, effect, shallowReactive, unref } from '@vue/reactivity'
+import { computed, effect, shallowReactive, unref } from '@vue/reactivity'
 import { app } from 'electron'
 import type { Dictionary, TranslationVariables } from '../../../typings/i18n'
+import { useAsyncComputed } from '../../shared/compositions'
 import { provideIPC, useEffect } from '../utils/compositions'
 import { userData, resources } from '../utils/directory'
 
@@ -25,21 +26,9 @@ interface Translation {
 
 const DELIMITER = '#!'
 
-const localeRef = customRef<string | undefined>((track, trigger) => {
-  let locale
-  app.whenReady().then(() => {
-    locale = app.getLocale()
-    trigger()
-  })
-  return {
-    get() {
-      track()
-      return locale
-    },
-    set() {
-      throw new Error('Cannot set locale at runtime.')
-    },
-  }
+const localeRef = useAsyncComputed(async () => {
+  await app.whenReady()
+  return app.getLocale()
 })
 
 const userDictionaryRef = userData.useYAML<Dictionary>('translation.yaml', {})
