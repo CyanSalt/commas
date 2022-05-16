@@ -2,7 +2,7 @@ import { computed, effect, ref, unref } from '@vue/reactivity'
 import { nativeTheme, systemPreferences } from 'electron'
 import type { BrowserWindowConstructorOptions } from 'electron'
 import type { Theme } from '../../../typings/theme'
-import { toRGBA, toCSSColor, toElectronColor, isDarkColor, mix } from '../utils/color'
+import { toRGBA, toCSSColor, toElectronColor, isDarkColor, mix, toHSLA, toRGBAFromHSLA } from '../utils/color'
 import { provideIPC } from '../utils/compositions'
 import { resources, userData } from '../utils/directory'
 import { useDefaultSettings, useSettings } from './settings'
@@ -12,7 +12,7 @@ interface BrowserWindowThemeOptions {
   vibrancy: BrowserWindowConstructorOptions['vibrancy'],
 }
 
-const CSS_COLORS = {
+const CSS_COLORS: Partial<Record<keyof Theme, string>> = {
   // xterm
   foreground: '--theme-foreground',
   background: '--theme-background',
@@ -35,6 +35,7 @@ const CSS_COLORS = {
   brightWhite: '--theme-brightwhite',
   // extensions
   systemAccent: '--system-accent',
+  materialBackground: '--material-background',
 }
 
 const CSS_PROPERTIES = {
@@ -82,6 +83,11 @@ const themeRef = computed(async () => {
   if (!theme.cursorAccent) {
     theme.cursorAccent = theme.background
   }
+  const backgroundHSLA = toHSLA(backgroundRGBA)
+  theme.materialBackground = toCSSColor(toRGBAFromHSLA({
+    ...backgroundHSLA,
+    l: backgroundHSLA.l - Math.min(backgroundHSLA.l * 0.2, 0.1),
+  }))
   const accentColor = systemPreferences.getAccentColor()
   theme.systemAccent = accentColor ? `#${accentColor.slice(0, 6)}` : ''
   theme.vibrancy = process.platform === 'darwin' ? settings['terminal.style.vibrancy'] : false

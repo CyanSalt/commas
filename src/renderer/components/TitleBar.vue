@@ -164,7 +164,7 @@ watchEffect(() => {
   height: 36px;
   line-height: 36px;
   text-align: center;
-  background: rgb(var(--theme-background));
+  background: rgb(var(--material-background) / var(--theme-opacity));
   -webkit-app-region: drag;
 }
 .controls,

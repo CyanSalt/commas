@@ -32,7 +32,7 @@ function configure() {
   height: 16px;
   padding: 8px 16px;
   line-height: 16px;
-  background: rgb(var(--theme-background));
+  background: rgb(var(--material-background) / var(--theme-opacity));
 }
 .anchor {
   margin-right: 8px;

@@ -153,7 +153,6 @@ onMounted(() => {
   /* Default line height of xterm.js */
   line-height: 1.2;
   overflow: hidden;
-  background: rgb(var(--theme-background) / var(--theme-opacity));
   transition: background 0.2s;
   &.is-opaque {
     background: rgb(var(--theme-background));
@@ -168,6 +167,7 @@ onMounted(() => {
   flex: auto;
   width: 100vw;
   overflow: hidden;
+  background: rgb(var(--theme-background) / var(--theme-opacity));
 }
 .interface {
   display: flex;
