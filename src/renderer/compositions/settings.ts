@@ -6,7 +6,7 @@ import { injectIPC } from '../utils/compositions'
 
 export const useSettings = memoize(() => {
   const settingsRef = injectIPC<Settings>('settings', {})
-  return surface(settingsRef)
+  return surface(settingsRef, true)
 })
 
 export const useUserSettings = memoize(() => {
