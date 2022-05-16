@@ -1,5 +1,5 @@
-import { getAddonPaths, resolveAddon } from '../../main/lib/addon'
-import { userData } from '../../main/utils/directory'
+import { getAddonPaths, resolveAddon } from '../../src/main/lib/addon'
+import { userData } from '../../src/main/utils/directory'
 
 export * from '../shim'
 

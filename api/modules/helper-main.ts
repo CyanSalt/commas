@@ -1,6 +1,6 @@
-import { useEffect } from '../../main/utils/compositions'
-import { execa } from '../../main/utils/helper'
-import { createIDGenerator } from '../../shared/helper'
+import { useEffect } from '../../src/main/utils/compositions'
+import { execa } from '../../src/main/utils/helper'
+import { createIDGenerator } from '../../src/shared/helper'
 
 export {
   useEffect,

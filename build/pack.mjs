@@ -50,15 +50,13 @@ const options = {
   platform: ['darwin', 'linux', 'win32'],
   executableName: process.platform === 'win32'
     ? app.name : app.productName,
-  out: 'dist/',
+  out: 'release/',
   overwrite: true,
   asar: true,
   icon: 'resources/images/icon',
   ignore: [
-    '^/(?!addons|main|node_modules|renderer|resources|package\\.json)',
+    '^/(?!addons|dist|node_modules|resources|package\\.json)',
     '^/addon/[^/]+/src',
-    '^/main/(?!dist)',
-    '^/renderer/(?!dist)',
     '^/resources/.*\\.(ico|icns)$',
   ],
   extraResource: [

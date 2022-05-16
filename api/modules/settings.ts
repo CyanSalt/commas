@@ -4,7 +4,7 @@ import {
   useDefaultSettings,
   useSettings,
   useSettingsSpecs,
-} from '../../main/lib/settings'
+} from '../../src/main/lib/settings'
 import type { SettingsSpec } from '../../typings/settings'
 import type { MainAPIContext } from '../types'
 

@@ -1,10 +1,10 @@
-import { getAddonManifest, useLanguage } from '../../renderer/compositions/i18n'
+import { getAddonManifest, useLanguage } from '../../src/renderer/compositions/i18n'
 import {
   useAddons,
   useSettings,
   useSettingsSpecs,
   useUserSettings,
-} from '../../renderer/compositions/settings'
+} from '../../src/renderer/compositions/settings'
 
 export * from '../shim'
 

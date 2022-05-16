@@ -1,7 +1,7 @@
 import { computed, effect, ref, unref } from '@vue/reactivity'
 import { nativeTheme, systemPreferences } from 'electron'
 import type { BrowserWindowConstructorOptions } from 'electron'
-import type { Theme } from '../../typings/theme'
+import type { Theme } from '../../../typings/theme'
 import { toRGBA, toCSSColor, toElectronColor, isDarkColor, mix } from '../utils/color'
 import { provideIPC } from '../utils/compositions'
 import { resources, userData } from '../utils/directory'

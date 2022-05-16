@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron'
-import type { MenuItem } from '../../typings/menu'
+import type { MenuItem } from '../../../typings/menu'
 
 export function openContextMenu(
   template: MenuItem[],

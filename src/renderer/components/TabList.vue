@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as path from 'path'
-import * as commas from '../../api/core-renderer'
+import * as commas from '../../../api/core-renderer'
 import {
   useTerminalTabs,
   createTerminalTab,

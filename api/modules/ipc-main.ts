@@ -1,7 +1,7 @@
 import type { Ref } from '@vue/reactivity'
 import { ipcMain } from 'electron'
 import type { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
-import { provideIPC } from '../../main/utils/compositions'
+import { provideIPC } from '../../src/main/utils/compositions'
 import type { MainAPIContext } from '../types'
 
 function on(this: MainAPIContext, channel: string, listener: (event: IpcMainEvent, ...args: any[]) => void) {

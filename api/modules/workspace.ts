@@ -8,8 +8,8 @@ import {
   getTerminalTabTitle,
   useCurrentTerminal,
   useTerminalTabs,
-} from '../../renderer/compositions/terminal'
-import { createIDGenerator } from '../../shared/helper'
+} from '../../src/renderer/compositions/terminal'
+import { createIDGenerator } from '../../src/shared/helper'
 import type { TerminalTab, TerminalTabPane } from '../../typings/terminal'
 import type { RendererAPIContext } from '../types'
 

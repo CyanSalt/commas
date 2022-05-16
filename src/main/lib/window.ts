@@ -44,7 +44,7 @@ async function createWindow(...args: string[]) {
     })
   }
   const frame = new BrowserWindow(options)
-  frame.loadFile(path.resolve(__dirname, '../../renderer/dist/index.html'))
+  frame.loadFile(path.resolve(__dirname, '../renderer/index.html'))
   // Gracefully show window
   // Fix shadow issue on macOS
   if (process.platform === 'darwin') {

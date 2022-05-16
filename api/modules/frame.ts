@@ -1,5 +1,5 @@
-import { broadcast } from '../../main/lib/frame'
-import { notify } from '../../main/utils/notification'
+import { broadcast } from '../../src/main/lib/frame'
+import { notify } from '../../src/main/utils/notification'
 
 export * from '../shim'
 

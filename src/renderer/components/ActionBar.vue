@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ipcRenderer } from 'electron'
-import * as commas from '../../api/core-renderer'
+import * as commas from '../../../api/core-renderer'
 
 const anchors = commas.proxy.context.getCollection('@ui-action-anchor')
 

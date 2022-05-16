@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron'
 import type { IpcRendererEvent } from 'electron'
-import { injectIPC } from '../../renderer/utils/compositions'
+import { injectIPC } from '../../src/renderer/utils/compositions'
 import type { RendererAPIContext } from '../types'
 
 function on(this: RendererAPIContext, channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) {
