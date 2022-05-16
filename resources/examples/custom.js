@@ -5,7 +5,7 @@
  */
 module.exports = function (commas) {
 
-  // an example to hack your software
+  // An example to hack your app
   // if (commas.app.isMainProcess()) {
   //   console.log(commas)
   // }
