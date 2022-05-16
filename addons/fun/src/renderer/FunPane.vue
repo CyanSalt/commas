@@ -41,7 +41,7 @@ function initializePlayers() {
     'magenta',
     'cyan',
   ], 4)
-  for (let index = 0; index < colors.length; index++) {
+  for (let index = 0; index < colors.length; index += 1) {
     players[index] = {
       id: generateID(),
       offline: false,
@@ -66,8 +66,8 @@ const territory = reactive(
 
 function initializeTerritory() {
   const half = size / 2
-  for (let row = 0; row < size; row++) {
-    for (let column = 0; column < size; column++) {
+  for (let row = 0; row < size; row += 1) {
+    for (let column = 0; column < size; column += 1) {
       const topBit = Number(row >= half)
       const leftBit = Number(column >= half)
       const index = 2 * topBit + leftBit
@@ -118,7 +118,7 @@ function getOutlineCells(player: Player) {
 }
 
 async function attack(player: Player) {
-  for (let i = 0; i < player.base; i++) {
+  for (let i = 0; i < player.base; i += 1) {
     const targets = getOutlineCells(player)
     if (!targets.length) return
     const target = sample(targets)!

@@ -10,6 +10,7 @@ import { surface } from '../../shared/compositions'
 import { provideIPC } from '../utils/compositions'
 import { userData, resources } from '../utils/directory'
 import { globalHandler } from '../utils/handler'
+import { translate } from './i18n'
 
 const defaultSpecs = resources.require<SettingsSpec[]>('settings.spec.json')!
 
@@ -24,8 +25,8 @@ function generateSettingsSource() {
   const sources: string[] = []
   for (const spec of currentSpecs) {
     if (spec.comments) {
-      for (const comment of spec.comments) {
-        sources.push(`# ${comment}`)
+      for (let i = 0; i < spec.comments.length; i += 1) {
+        sources.push(`# ${translate(`${spec.comments[i]}#!settings.comments.${i}.${spec.key}`)}`)
       }
     }
     const defaultValue = spec.default

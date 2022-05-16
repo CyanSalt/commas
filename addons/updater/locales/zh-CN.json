@@ -4,7 +4,7 @@
   "Later#!updater.3": "稍后再说",
   "Check for updates#!updater.4": "检查更新",
   "Update Check Interval#!updater.label.updater.polling.interval": "更新检查间隔",
-  "Check interval for automatic updates in minutes#!updater.comments.0.updater.polling.interval": "自动更新的检查间隔，单位为分钟",
-  "Set to 0 to check only at startup#!updater.comments.1.updater.polling.interval": "设置为 0 以仅在启动时检查",
-  "Set to a negative number to disable checking#!updater.comments.2.updater.polling.interval": "设置为负数以禁止检查"
+  "Check interval for automatic updates in minutes#!settings.comments.0.updater.polling.interval": "自动更新的检查间隔，单位为分钟",
+  "Set to 0 to check only at startup#!settings.comments.1.updater.polling.interval": "设置为 0 以仅在启动时检查",
+  "Set to a negative number to disable checking#!settings.comments.2.updater.polling.interval": "设置为负数以禁止检查"
 }

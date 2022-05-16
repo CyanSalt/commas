@@ -1,4 +1,4 @@
 {
-  "Persistent Launcher Session#!settings.label.terminal.launcher.persistHistory": "保留启动器会话",
-  "Persistent the history of a launcher after it has been closed#!settings.comments.0.terminal.launcher.persistHistory": "在启动器关闭后保留其历史记录"
+  "Persistent Launcher Session#!settings.label.launcher.session.persist": "保留启动器会话",
+  "Persistent the history of a launcher after it has been closed#!settings.comments.0.launcher.session.persist": "在启动器关闭后保留其历史记录"
 }

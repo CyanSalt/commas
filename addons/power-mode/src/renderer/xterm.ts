@@ -85,7 +85,7 @@ export class PowerMode implements ITerminalAddon {
     const x = (cursorX + 0.5) * dimensions.actualCellWidth
     const y = (cursorY + 0.5) * dimensions.actualCellHeight
     const count = 5 + Math.round(Math.random() * 5)
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < count; i += 1) {
       const velocity = {
         x: -1.5 + Math.random() * 3,
         y: -3.5 + Math.random() * 2,

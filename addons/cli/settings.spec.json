@@ -25,7 +25,7 @@
     "key": "cli.command.aliases",
     "label": "Commands Aliases",
     "comments": [
-      "Commands aliases in the shell"
+      "Commands aliases in the CLI"
     ],
     "schema": {
       "type": "object",
