@@ -16,4 +16,5 @@ commas.workspace.registerTabPane('settings', {
 commas.context.provide('preference', {
   component: SettingsLink,
   group: 'general',
+  priority: -1,
 })
