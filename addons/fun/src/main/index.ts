@@ -11,7 +11,9 @@ commas.context.provide('cli', {
         event.sender.send('start-fun')
         return undefined
       default:
-        return 'REALLY?!'
+        return argv[0]
+          ? 'Thanks, but aren\'t I fun?'
+          : 'What do you think of me? Maybe you\'ll find me fun?'
     }
   },
 })

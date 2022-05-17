@@ -1,6 +1,7 @@
 import * as path from 'path'
 import * as util from 'util'
 import { computed, effect, stop, unref } from '@vue/reactivity'
+import chalk from 'chalk'
 import * as commas from 'commas:api/main'
 import { app, BrowserWindow } from 'electron'
 import { random } from 'lodash'
@@ -45,18 +46,35 @@ commas.context.provide('cli', {
   command: 'help',
   handler() {
     /** {@link https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=COMMAS} */
-    return `
- ██████╗ ██████╗ ███╗   ███╗███╗   ███╗ █████╗ ███████╗
-██╔════╝██╔═══██╗████╗ ████║████╗ ████║██╔══██╗██╔════╝
-██║     ██║   ██║██╔████╔██║██╔████╔██║███████║███████╗
-██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██╔══██║╚════██║
-╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║██║  ██║███████║
-╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝
+    const ansi = `
+ ██████╗! ██████╗ !███╗   ███╗!███╗   ███╗! █████╗ !███████╗
+██╔════╝!██╔═══██╗!████╗ ████║!████╗ ████║!██╔══██╗!██╔════╝
+██║     !██║   ██║!██╔████╔██║!██╔████╔██║!███████║!███████╗
+██║     !██║   ██║!██║╚██╔╝██║!██║╚██╔╝██║!██╔══██║!╚════██║
+╚██████╗!╚██████╔╝!██║ ╚═╝ ██║!██║ ╚═╝ ██║!██║  ██║!███████║
+ ╚═════╝! ╚═════╝ !╚═╝     ╚═╝!╚═╝     ╚═╝!╚═╝  ╚═╝!╚══════╝
+`
+      .split('\n')
+      .map(line => {
+        const cols = line.split('!')
+        if (cols.length < 2) return line
+        const colors = [
+          chalk.red,
+          chalk.green,
+          chalk.yellow,
+          chalk.blue,
+          chalk.magenta,
+          chalk.cyan,
+        ]
+        return cols.map((col, index) => colors[index % colors.length](col)).join('')
+      })
+      .join('\n')
 
+    return `${ansi}
 Usage: commas <command>
 
 where <command> is one of:
-${wrap(unref(commandListRef))}
+    ${wrap(unref(commandListRef))}
 `
   },
 })
