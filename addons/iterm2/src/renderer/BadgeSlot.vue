@@ -21,6 +21,7 @@ const fireworks = useFireworks()
 <style lang="scss" scoped>
 .badge-slot {
   position: fixed;
+  z-index: 1;
   pointer-events: none;
 }
 .badge {

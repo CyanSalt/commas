@@ -43,7 +43,6 @@ watchEffect(() => {
   --time: 3s;
   --count: 40;
   position: fixed;
-  z-index: 1;
   pointer-events: none;
 }
 .line {
