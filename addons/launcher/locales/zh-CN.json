@@ -1,4 +1,5 @@
 {
+  "Launch#!launcher.1": "启动",
   "Persistent Launcher Session#!settings.label.launcher.session.persist": "保留启动器会话",
   "Persistent the history of a launcher after it has been closed#!settings.comments.0.launcher.session.persist": "在启动器关闭后保留其历史记录"
 }

@@ -61,7 +61,7 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
   const scripts = launcher.scripts ?? []
   commas.ui.openContextMenu([
     {
-      label: 'Launch#!terminal.6',
+      label: 'Launch#!launcher.1',
       command: 'start-launcher',
       args: [launcher],
     },

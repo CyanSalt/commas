@@ -181,6 +181,7 @@ watchEffect(() => {
   box-sizing: border-box;
   max-width: calc(100vw - 216px);
   padding: 0 8px;
+  font-size: 12px;
 }
 .shortcut {
   flex: none;
@@ -197,13 +198,14 @@ watchEffect(() => {
 }
 .directory-icon {
   width: 16px;
-  vertical-align: -2.5px;
+  vertical-align: -3.5px;
   transition: opacity 0.2s;
   .open-directory:active & {
     opacity: 0.5;
   }
 }
 .title-text {
+  font-weight: 500;
   /* Show ellipsis on left */
   direction: rtl;
   white-space: nowrap;

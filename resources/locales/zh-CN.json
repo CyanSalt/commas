@@ -4,6 +4,5 @@
   "Confirm#!terminal.3": "确认",
   "Cancel#!terminal.4": "取消",
   "Find#!terminal.5": "查找",
-  "Launch#!terminal.6": "启动",
-  "Addon [%N] only supports %A %E, not %V#!terminal.7": "插件 [%N] 仅支持 %A %E，而非 %V"
+  "Addon [%N] only supports %A %E, not %V#!terminal.6": "插件 [%N] 仅支持 %A %E，而非 %V"
 }

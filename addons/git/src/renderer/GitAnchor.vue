@@ -44,6 +44,7 @@ watchEffect(() => {
 }
 .branch-name {
   margin-left: 4px;
+  font-size: 12px;
   text-overflow: ellipsis;
   overflow: hidden;
 }
