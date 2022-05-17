@@ -167,12 +167,12 @@ onMounted(() => {
   flex: auto;
   width: 100vw;
   overflow: hidden;
-  background: rgb(var(--theme-background) / var(--theme-opacity));
 }
 .interface {
   display: flex;
   flex: auto;
   flex-direction: column;
   width: 0;
+  background: rgb(var(--theme-background) / var(--theme-opacity));
 }
 </style>

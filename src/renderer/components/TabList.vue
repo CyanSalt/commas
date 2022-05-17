@@ -98,6 +98,7 @@ function resize(startingEvent: DragEvent) {
   display: flex;
   flex: none;
   font-size: 14px;
+  background: rgb(var(--secondary-background) / var(--theme-opacity));
 }
 .list {
   @include partials.scroll-container(8px);
@@ -109,8 +110,7 @@ function resize(startingEvent: DragEvent) {
 }
 .sash {
   flex: none;
-  width: 2px;
-  border-right: 2px solid rgb(var(--theme-foreground) / 0.05);
+  width: 4px;
   cursor: col-resize;
 }
 .new-tab {

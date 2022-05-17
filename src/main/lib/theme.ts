@@ -36,6 +36,7 @@ const CSS_COLORS: Partial<Record<keyof Theme, string>> = {
   // extensions
   systemAccent: '--system-accent',
   materialBackground: '--material-background',
+  secondaryBackground: '--secondary-background',
 }
 
 const CSS_PROPERTIES = {
@@ -88,6 +89,7 @@ const themeRef = computed(async () => {
     ...backgroundHSLA,
     l: backgroundHSLA.l - Math.min(backgroundHSLA.l * 0.2, 0.1),
   }))
+  theme.secondaryBackground = toCSSColor(mix(backgroundRGBA, { r: 127, g: 127, b: 127, a: 1 }, 0.9))
   const accentColor = systemPreferences.getAccentColor()
   theme.systemAccent = accentColor ? `#${accentColor.slice(0, 6)}` : ''
   theme.vibrancy = process.platform === 'darwin' ? settings['terminal.style.vibrancy'] : false
