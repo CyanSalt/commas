@@ -1,14 +1,16 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { cloneDeep, groupBy, isEqual, startCase } from 'lodash'
-import { watchEffect } from 'vue'
+import { nextTick, onBeforeUpdate, watchEffect } from 'vue'
 import SettingsLine from './SettingsLine.vue'
 
 const { vI18n, TerminalPane } = commas.ui.vueAssets
 
 let settings = $(commas.remote.useUserSettings())
+let paneTabURL = $(commas.workspace.usePaneTabURL())
 let values = $ref({})
 let open = $ref<Record<string, boolean>>({})
+let lines: Record<string, HTMLElement | undefined> = {}
 
 const isChanged = $computed(() => {
   return !isEqual(settings, values)
@@ -51,6 +53,19 @@ const groups = $computed(() => {
   })
 })
 
+watchEffect(async () => {
+  if (!specs.length) return
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (paneTabURL) {
+    const url = new URL(paneTabURL)
+    const target = url.hash.slice(1)
+    if (target) {
+      await nextTick()
+      lines[target]?.scrollIntoView(true)
+    }
+  }
+})
+
 watchEffect(() => {
   open = configurableSpecs.reduce((record, spec) => {
     record[spec.key] = true
@@ -82,6 +97,10 @@ function toggleAll() {
 }
 
 watchEffect(revert)
+
+onBeforeUpdate(() => {
+  lines = {}
+})
 </script>
 
 <template>
@@ -108,6 +127,7 @@ watchEffect(revert)
         <h3 v-else v-i18n class="settings-group-title">{{ group.name }}#!settings.group.{{ group.key }}</h3>
         <SettingsLine
           v-for="row in group.rows"
+          :ref="item => lines[row.key] = item.$el"
           :key="row.key"
           v-model="values[row.key]"
           v-model:open="open[row.key]"

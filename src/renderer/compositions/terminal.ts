@@ -52,6 +52,11 @@ export function useCurrentTerminal() {
   return $$(currentTerminal)
 }
 
+let paneTabURL = $ref<string>('')
+export function usePaneTabURL() {
+  return $$(paneTabURL)
+}
+
 export function getTerminalTabIndex(tab: TerminalTab) {
   return tabs.indexOf(toRaw(tab))
 }
@@ -257,6 +262,9 @@ function handleTerminalTabHistory() {
 
 export function handleTerminalMessages() {
   handleTerminalTabHistory()
+  watch($$(currentTerminal), () => {
+    paneTabURL = ''
+  }, { flush: 'sync' })
   ipcRenderer.on('open-tab', (event, options: CreateTerminalTabOptions) => {
     createTerminalTab(options)
   })
@@ -337,6 +345,7 @@ export function handleTerminalMessages() {
     const url = new URL(address)
     const paths = trim(url.pathname, '/').split('/')
     commas.proxy.workspace.openPaneTab(paths[0])
+    paneTabURL = address
   })
 }
 

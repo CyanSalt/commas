@@ -7,6 +7,7 @@ import {
   executeTerminalTab,
   getTerminalTabTitle,
   useCurrentTerminal,
+  usePaneTabURL,
   useTerminalTabs,
 } from '../../src/renderer/compositions/terminal'
 import { createIDGenerator } from '../../src/shared/helper'
@@ -108,4 +109,5 @@ export {
   getTerminalTabTitle,
   useCurrentTerminal,
   useTerminalTabs,
+  usePaneTabURL,
 }

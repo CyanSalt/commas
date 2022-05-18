@@ -141,7 +141,7 @@ function reset() {
 <template>
   <details
     :open="open"
-    class="user-setting-line form-line block"
+    class="settings-line form-line block"
     @toggle="toggle"
   >
     <summary :class="['line-summary', { customized: isCustomized, changed: isChanged }]">
@@ -216,7 +216,7 @@ function reset() {
 </template>
 
 <style lang="scss" scoped>
-.user-setting-line {
+.settings-line {
   &.form-line.block .form-label {
     display: flex;
     align-items: center;
@@ -253,13 +253,13 @@ function reset() {
   text-align: center;
   opacity: 1;
   transition: transform 0.2s;
-  .user-setting-line:not([open]) & {
+  .settings-line:not([open]) & {
     transform: rotate(-90deg) translateX(2px);
   }
 }
 .setting-detail {
   padding-left: 24px;
-  .user-setting-line:not([open]) & {
+  .settings-line:not([open]) & {
     display: none;
   }
 }
