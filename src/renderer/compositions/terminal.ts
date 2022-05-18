@@ -1,6 +1,6 @@
 import * as os from 'os'
 import { ipcRenderer, shell } from 'electron'
-import { memoize, debounce, isMatch } from 'lodash'
+import { memoize, debounce, isMatch, trim } from 'lodash'
 import { markRaw, reactive, toRaw, watch } from 'vue'
 import { Terminal } from 'xterm'
 import type { ITerminalOptions } from 'xterm'
@@ -20,7 +20,7 @@ import { useKeyBindings } from './keybinding'
 import { useSettings } from './settings'
 import { useTheme } from './theme'
 
-declare module '../../typings/terminal' {
+declare module '../../../typings/terminal' {
   export interface TerminalTabAddons {
     fit: FitAddon,
     ligatures: LigaturesAddon,
@@ -332,6 +332,11 @@ export function handleTerminalMessages() {
   })
   ipcRenderer.on('show-tab-options', () => {
     showTabOptions()
+  })
+  ipcRenderer.on('open-url', (event, address: string) => {
+    const url = new URL(address)
+    const paths = trim(url.pathname, '/').split('/')
+    commas.proxy.workspace.openPaneTab(paths[0])
   })
 }
 

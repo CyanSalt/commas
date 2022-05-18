@@ -29,6 +29,7 @@ async function initialize() {
   await loadTranslations()
   await app.whenReady()
   commas.proxy.app.events.emit('ready')
+  app.setAsDefaultProtocolClient('commas')
   if (process.platform === 'darwin') {
     effect(() => {
       createApplicationMenu()
@@ -66,6 +67,15 @@ app.on('will-finish-launching', () => {
     }
     const frame = getLastWindow()
     frame.webContents.send('open-tab', { cwd: file })
+  })
+  app.on('open-url', async (event, url) => {
+    event.preventDefault()
+    await app.whenReady()
+    if (!hasWindow()) {
+      createWindow()
+    }
+    const frame = getLastWindow()
+    frame.webContents.send('open-url', url)
   })
 })
 

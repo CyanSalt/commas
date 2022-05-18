@@ -45,6 +45,9 @@ async function generateAppIcon(input, icon, suffix) {
   }
 }
 
+/**
+ * @type {import('electron-packager').Options}
+ */
 const options = {
   dir: '.',
   platform: ['darwin', 'linux', 'win32'],
@@ -67,6 +70,12 @@ const options = {
     'Copyright \u00a9', new Date().getFullYear(), app.author,
   ].join(' '),
   appCategoryType: 'public.app-category.developer-tools',
+  protocols: [
+    {
+      name: app.productName,
+      schemes: ['commas'],
+    },
+  ],
   extendInfo: {
     CFBundleDocumentTypes: [
       {

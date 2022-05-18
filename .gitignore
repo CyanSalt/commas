@@ -1,6 +1,7 @@
 .DS_Store
 node_modules
 dist
+release
 .*cache
 /resources/images/*.ico
 /resources/images/*.icns
