@@ -21,19 +21,7 @@ function until<T extends EventEmitter, U extends string>(emitter: T, finish: U, 
   })
 }
 
-function createPattern(expression: string) {
-  // eslint-disable-next-line unicorn/no-unsafe-regex
-  const matches = expression.match(/^s\/(.+)\/([a-z]+)?$/)
-  if (!matches) return null
-  try {
-    return new RegExp(matches[1], matches[2])
-  } catch {
-    return null
-  }
-}
-
 export {
   execa,
   until,
-  createPattern,
 }
