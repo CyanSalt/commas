@@ -14,11 +14,11 @@ import { createIDGenerator } from '../../src/shared/helper'
 import type { TerminalTab, TerminalTabPane } from '../../typings/terminal'
 import type { RendererAPIContext } from '../types'
 
-const panes = shallowReactive<Record<string, TerminalTab | undefined>>({})
+const paneTabs = shallowReactive<Record<string, TerminalTab | undefined>>({})
 const generateID = createIDGenerator()
 
 function registerTabPane(this: RendererAPIContext, name: string, pane: TerminalTabPane) {
-  panes[name] = markRaw({
+  paneTabs[name] = markRaw({
     pid: generateID(),
     process: '',
     title: '',
@@ -26,12 +26,12 @@ function registerTabPane(this: RendererAPIContext, name: string, pane: TerminalT
     pane,
   } as TerminalTab)
   this.$.app.onCleanup(() => {
-    delete panes[name]
+    delete paneTabs[name]
   })
 }
 
 function getPaneTab(name: string) {
-  return panes[name]
+  return paneTabs[name]
 }
 
 function openPaneTab(name: string) {

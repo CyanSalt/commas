@@ -1,13 +1,12 @@
 <script lang="ts" setup>
 import * as path from 'path'
 import * as commas from 'commas:api/renderer'
-import { ipcRenderer } from 'electron'
 
 const { vI18n } = commas.ui.vueAssets
 
 function openLaunchers() {
   const examplePath = path.join(__dirname, '../../examples/launchers.yaml')
-  ipcRenderer.invoke('open-user-file', 'launchers.yaml', examplePath)
+  commas.remote.openUserFile('launchers.yaml', examplePath)
 }
 </script>
 

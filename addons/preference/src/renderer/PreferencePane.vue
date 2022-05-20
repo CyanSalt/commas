@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
-import { ipcRenderer, shell } from 'electron'
+import { shell } from 'electron'
 import type { Component } from 'vue'
 
 const { vI18n, TerminalPane } = commas.ui.vueAssets
@@ -26,31 +26,31 @@ const aboutItems = $computed(() => getItems('about'))
 const version = commas.app.getVersion()
 
 function openUserDirectory() {
-  ipcRenderer.invoke('open-user-directory')
+  commas.remote.openUserDirectory()
 }
 
 function openDefaultSettings() {
-  ipcRenderer.invoke('open-default-settings')
+  commas.remote.openDefaultSettings()
 }
 
 function openSettingsFile() {
-  ipcRenderer.invoke('open-settings-file')
+  commas.remote.openSettingsFile()
 }
 
 function openKeyBindings() {
-  ipcRenderer.invoke('open-user-file', 'keybindings.yaml')
+  commas.remote.openUserFile('keybindings.yaml')
 }
 
 function openTranslation() {
-  ipcRenderer.invoke('open-user-file', 'translation.yaml')
+  commas.remote.openUserFile('translation.yaml')
 }
 
 function openCustomJS() {
-  ipcRenderer.invoke('open-user-file', 'custom.js')
+  commas.remote.openUserFile('custom.js')
 }
 
 function openCustomCSS() {
-  ipcRenderer.invoke('open-user-file', 'custom.css')
+  commas.remote.openUserFile('custom.css')
 }
 
 function openWebsite() {

@@ -148,12 +148,12 @@ async function openSettingsFile() {
 async function openDefaultSettings() {
   const source = generateSettingsSource()
   const target = path.join(os.tmpdir(), 'commas-default-settings.yaml')
-  try {
-    await fs.promises.writeFile(target, source)
-    return shell.openPath(target)
-  } catch {
-    // ignore error
-  }
+  await fs.promises.writeFile(target, source)
+  return shell.openPath(target)
+}
+
+function openUserDirectory() {
+  return shell.openPath(userData.file('.'))
 }
 
 async function openUserFile(file: string, example?: string) {
@@ -186,7 +186,7 @@ function handleSettingsMessages() {
     return openDefaultSettings()
   })
   ipcMain.handle('open-user-directory', () => {
-    return shell.openPath(userData.file('.'))
+    return openUserDirectory()
   })
   ipcMain.handle('open-user-file', (event, file: string, example?: string) => {
     return openUserFile(file, example)
@@ -203,5 +203,8 @@ export {
   useSettingsSpecs,
   useEnabledAddons,
   openSettingsFile,
+  openDefaultSettings,
+  openUserDirectory,
+  openUserFile,
   handleSettingsMessages,
 }
