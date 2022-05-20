@@ -33,6 +33,9 @@ export async function confirmClosing() {
 }
 
 export function handleShellMessages() {
+  ipcRenderer.on('uncaught-error', (event, error: Error) => {
+    console.error(`Uncaught error in main process: ${String(error)}`)
+  })
   ipcRenderer.on('toggle-finding', () => {
     isFinding = !isFinding
   })

@@ -49,10 +49,6 @@ const args = startIndex ? process.argv.slice(startIndex) : []
 const initialPath = args[0]
 createTerminalTab({ cwd: initialPath })
 
-ipcRenderer.on('uncaught-error', (event, error: Error) => {
-  console.error(`Uncaught error in main process: ${String(error)}`)
-})
-
 window.addEventListener('beforeunload', async event => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!willQuit && tabs.length > 1) {

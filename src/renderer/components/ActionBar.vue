@@ -46,7 +46,5 @@ function configure() {
 }
 .message {
   flex: 1;
-  padding: 0 8px;
-  font-size: 12px;
 }
 </style>

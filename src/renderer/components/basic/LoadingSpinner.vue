@@ -1,3 +1,7 @@
+<script lang="ts" setup>
+// void
+</script>
+
 <template>
   <span class="loading-spinner">
     <div class="spinner"></div>
