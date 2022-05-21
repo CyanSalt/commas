@@ -6,7 +6,7 @@ import { useSettings } from '../compositions/settings'
 import { useIsTabListEnabled } from '../compositions/shell'
 import { showTabOptions, useCurrentTerminal, useTerminalActiveIndex, useTerminalTabs } from '../compositions/terminal'
 import { translate, vI18n } from '../utils/i18n'
-import { getPrompt } from '../utils/terminal'
+import { getPrompt, omitHome } from '../utils/terminal'
 
 const settings = useSettings()
 const tabs = $(useTerminalTabs())
@@ -23,8 +23,16 @@ const isEnabled = $computed(() => {
   return settings['terminal.view.frameType'] !== 'system'
 })
 
-const directory = $computed(() => {
-  if (!terminal || terminal.pane) return ''
+const isDirectory = $computed(() => {
+  if (!terminal) return false
+  if (terminal.pane && terminal.shell) return false
+  return true
+})
+
+const fileOrDirectory = $computed(() => {
+  if (!terminal) return ''
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (terminal.pane && terminal.shell) return terminal.shell
   return terminal.cwd
 })
 
@@ -36,7 +44,7 @@ const pane = $computed(() => {
 const title = $computed(() => {
   if (!terminal) return ''
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (directory) return getPrompt('\\w', terminal)
+  if (fileOrDirectory) return omitHome(fileOrDirectory)
   if (terminal.title) return terminal.title
   const expr = settings['terminal.tab.titleFormat']
   return getPrompt(expr, terminal)
@@ -53,8 +61,8 @@ const isCustomControlEnabled = process.platform !== 'darwin'
 
 async function updateIcon() {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (directory && process.platform === 'darwin' && settings['terminal.tab.liveIcon']) {
-    iconBuffer = await ipcRenderer.invoke('get-icon', directory)
+  if (fileOrDirectory && process.platform === 'darwin' && settings['terminal.tab.liveIcon']) {
+    iconBuffer = await ipcRenderer.invoke('get-icon', fileOrDirectory)
   } else {
     iconBuffer = defaultIconBuffer
   }
@@ -76,12 +84,22 @@ const icon = $computed(() => {
   }
 })
 
-function openDirectory() {
-  shell.openPath(directory)
+function openDirectory(event: MouseEvent) {
+  if (event.detail > 1) return
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (isDirectory) {
+    shell.openPath(fileOrDirectory)
+  } else {
+    shell.showItemInFolder(fileOrDirectory)
+  }
+}
+
+function openFile() {
+  shell.openPath(fileOrDirectory)
 }
 
 function startDraggingDirectory() {
-  ipcRenderer.invoke('drag-file', directory, iconBuffer)
+  ipcRenderer.invoke('drag-file', fileOrDirectory, iconBuffer)
 }
 
 function minimize() {
@@ -102,8 +120,9 @@ function toggleTabList() {
 
 watchEffect(() => {
   ipcRenderer.invoke('update-window', {
-    title: `${pane ? translate(pane.title) : title}`,
-    directory,
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    title: `${pane && !fileOrDirectory ? translate(pane.title) : title}`,
+    filename: fileOrDirectory,
   })
 })
 </script>
@@ -117,16 +136,17 @@ watchEffect(() => {
     <div class="symmetrical-space"></div>
     <div class="title-wrapper">
       <a
-        v-if="directory"
+        v-if="fileOrDirectory"
         draggable="true"
         class="shortcut open-directory"
         @click="openDirectory"
+        @dblclick.stop="openFile"
         @dragstart.prevent="startDraggingDirectory"
       >
         <img v-if="icon" class="directory-icon" :src="icon">
-        <span v-else class="feather-icon icon-folder"></span>
+        <span v-else :class="['feather-icon', isDirectory ? 'icon-folder' : 'icon-file']"></span>
       </a>
-      <div v-if="pane" v-i18n class="title-text">{{ pane.title }}</div>
+      <div v-if="pane && !fileOrDirectory" v-i18n class="title-text">{{ pane.title }}</div>
       <div v-else class="title-text">{{ title }}</div>
       <div
         class="tab-index-indicator"

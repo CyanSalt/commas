@@ -8,7 +8,7 @@ const terminal = $(commas.workspace.useCurrentTerminal())
 let branch = $ref('')
 
 const directory = $computed(() => {
-  if (!terminal || terminal.pane) return ''
+  if (!terminal) return ''
   return terminal.cwd
 })
 

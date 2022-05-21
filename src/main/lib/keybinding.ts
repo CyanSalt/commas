@@ -1,9 +1,9 @@
 import { computed, ref, unref } from '@vue/reactivity'
 import type { KeyBinding } from '../../../typings/menu'
-import { provideIPC } from '../utils/compositions'
-import { userData } from '../utils/directory'
+import { provideIPC, useYAMLFile } from '../utils/compositions'
+import { userFile } from '../utils/directory'
 
-const userKeyBindingsRef = userData.useYAML<KeyBinding[]>('keybindings.yaml', [])
+const userKeyBindingsRef = useYAMLFile<KeyBinding[]>(userFile('keybindings.yaml'), [])
 const addonKeyBindingsRef = ref<KeyBinding[]>([])
 
 function useUserKeyBindings() {

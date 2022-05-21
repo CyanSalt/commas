@@ -44,15 +44,18 @@ export function getPrompt(expr: string, tab: TerminalTab | null) {
 
 export function getIconEntryByProcess(process: string) {
   let name = process.toLowerCase()
-  // strip extname in process name (Windows only)
-  const point = name.lastIndexOf('.')
-  if (point !== -1) {
-    name = name.slice(0, point)
+  const ext = path.extname(name)
+  // strip '.exe' extname in process name (Windows only)
+  if (ext === '.exe') {
+    name = name.slice(0, ext.length)
+  } else if (ext) {
+    name = ext
   }
-  return icons.find(icon => {
-    if (icon.pattern) return icon.pattern.test(name)
-    return icon.context!.includes(name)
-  })
+  return icons.find(icon => icon.patterns.some(item => {
+    return typeof item === 'string'
+      ? item === name
+      : item.test(name)
+  }))
 }
 
 /**

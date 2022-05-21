@@ -4,7 +4,7 @@ import type { BrowserWindowConstructorOptions } from 'electron'
 import type { Theme } from '../../../typings/theme'
 import { toRGBA, toCSSColor, toElectronColor, isDarkColor, mix, toHSLA, toRGBAFromHSLA } from '../utils/color'
 import { provideIPC } from '../utils/compositions'
-import { resources, userData } from '../utils/directory'
+import { resourceFile, userFile } from '../utils/directory'
 import { useDefaultSettings, useSettings } from './settings'
 
 interface BrowserWindowThemeOptions {
@@ -48,14 +48,20 @@ const themeRef = computed(async () => {
   const settings = useSettings()
   const defaultSettings = useDefaultSettings()
   const defaultThemeName = defaultSettings['terminal.theme.name']
-  let originalTheme = resources.require<Theme>(`themes/${defaultThemeName}.json`)!
+  let originalTheme: Theme = require(resourceFile('themes', `${defaultThemeName}.json`))
   const name: string = settings['terminal.theme.name'] || defaultThemeName
   if (name !== defaultThemeName) {
     const path = `themes/${name}.json`
     // TODO: memoize
-    let source = resources.require<Theme>(path)
-    if (!source) {
-      source = userData.require<Theme>(path)
+    let source: Theme | undefined
+    try {
+      source = require(resourceFile(path))
+    } catch {
+      try {
+        source = require(userFile(path))
+      } catch {
+        // ignore error
+      }
     }
     if (source) {
       originalTheme = source

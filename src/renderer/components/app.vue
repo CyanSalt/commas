@@ -21,6 +21,7 @@ import {
 } from '../compositions/terminal'
 import { injectTheme, useTheme } from '../compositions/theme'
 import ActionBar from './ActionBar.vue'
+import CodeEditorPane from './CodeEditorPane.vue'
 import FindBox from './FindBox.vue'
 import TabList from './TabList.vue'
 import TerminalTeletype from './TerminalTeletype.vue'
@@ -86,10 +87,18 @@ onMounted(() => {
         <template v-if="terminal">
           <keep-alive>
             <template v-if="terminal.pane">
-              <component
-                :is="terminal.pane.component"
-                :key="terminal.pid"
-              />
+              <template v-if="terminal.pane.type === 'editor'">
+                <CodeEditorPane
+                  :key="terminal.pid"
+                  :tab="terminal"
+                />
+              </template>
+              <template v-else>
+                <component
+                  :is="terminal.pane.component"
+                  :key="terminal.pid"
+                />
+              </template>
             </template>
             <template v-else>
               <TerminalTeletype

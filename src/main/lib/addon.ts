@@ -7,7 +7,8 @@ import semver from 'semver'
 import * as commas from '../../../api/core-main'
 import type { AddonInfo } from '../../../typings/addon'
 import { provideIPC } from '../utils/compositions'
-import { userData } from '../utils/directory'
+import { userFile } from '../utils/directory'
+import { readFile } from '../utils/file'
 import { notify } from '../utils/notification'
 import { translate } from './i18n'
 import { useSettings } from './settings'
@@ -15,7 +16,7 @@ import { useSettings } from './settings'
 function getAddonPaths() {
   return [
     { type: 'builtin' as const, base: path.join(__dirname, '../../addons') },
-    { type: 'user' as const, base: userData.file('addons') },
+    { type: 'user' as const, base: userFile('addons') },
   ]
 }
 
@@ -93,7 +94,7 @@ function loadCustomJS() {
 }
 
 function loadCustomCSS(frame: BrowserWindow) {
-  const loadingCSS = userData.read('custom.css')
+  const loadingCSS = readFile(userFile('custom.css'))
   frame.webContents.once('did-finish-load', async () => {
     const styles = await loadingCSS
     if (styles) {

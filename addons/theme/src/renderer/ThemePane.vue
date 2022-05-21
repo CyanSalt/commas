@@ -65,11 +65,7 @@ async function applyItem(item: ThemeEntry) {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (loading) return
   loading = item.name
-  const result = await ipcRenderer.invoke(
-    'download-user-file',
-    `themes/${item.name}.json`,
-    item.url,
-  )
+  const result = await commas.remote.downloadUserFile(`themes/${item.name}.json`, item.url)
   if (result) {
     updateTheme(item.name)
   }

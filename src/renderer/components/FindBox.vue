@@ -99,6 +99,7 @@ watch($$(isFinding), value => {
       ref="finder"
       v-model="keyword"
       v-i18n:placeholder
+      type="search"
       class="keyword"
       placeholder="Find#!terminal.5"
       autofocus

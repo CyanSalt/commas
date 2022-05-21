@@ -7,12 +7,13 @@ import { cloneDeep, isEqual } from 'lodash'
 import YAML from 'yaml'
 import type { Settings, SettingsSpec } from '../../../typings/settings'
 import { surface } from '../../shared/compositions'
-import { provideIPC } from '../utils/compositions'
-import { userData, resources } from '../utils/directory'
+import { provideIPC, useYAMLFile } from '../utils/compositions'
+import { resourceFile, userFile } from '../utils/directory'
+import { downloadFile, readFile, writeFile } from '../utils/file'
 import { globalHandler } from '../utils/handler'
 import { translate } from './i18n'
 
-const defaultSpecs = resources.require<SettingsSpec[]>('settings.spec.json')!
+const defaultSpecs: SettingsSpec[] = require(resourceFile('settings.spec.json'))
 
 const specsRef = ref(defaultSpecs)
 
@@ -66,7 +67,9 @@ function whenSettingsReady() {
   return whenReadyPromise
 }
 
-const userSettingsRef = userData.useYAML<Settings>('settings.yaml', {}, resolveWhenReady)
+const userSettingsRef = useYAMLFile<Settings>(userFile('settings.yaml'), {}, {
+  onTrigger: resolveWhenReady,
+})
 
 let oldSettings: Settings | undefined
 const settingsRef = computed<Settings>({
@@ -134,65 +137,78 @@ function useEnabledAddons() {
   return enabledAddonsRef
 }
 
-async function openSettingsFile() {
-  const name = 'settings.yaml'
-  const file = userData.file(name)
+async function prepareSettingsFile() {
+  const file = userFile('settings.yaml')
   try {
     await fs.promises.access(file)
   } catch {
-    await userData.write(name, generateSettingsSource())
+    await writeFile(file, generateSettingsSource())
   }
-  return shell.openPath(file)
+  return file
 }
 
-async function openDefaultSettings() {
+async function prepareDefaultSettings() {
+  const file = path.join(os.tmpdir(), 'commas-default-settings.yaml')
   const source = generateSettingsSource()
-  const target = path.join(os.tmpdir(), 'commas-default-settings.yaml')
-  await fs.promises.writeFile(target, source)
-  return shell.openPath(target)
+  await fs.promises.writeFile(file, source)
+  return file
 }
 
-function openUserDirectory() {
-  return shell.openPath(userData.file('.'))
-}
-
-async function openUserFile(file: string, example?: string) {
-  const filePath = userData.file(file)
+async function prepareUserFile(file: string, example?: string) {
+  const filePath = userFile(file)
   try {
     await fs.promises.access(filePath)
   } catch {
     if (!example) {
-      example = resources.file(path.join('examples', file))
+      example = resourceFile('examples', file)
     }
     await fs.promises.copyFile(example, filePath)
   }
-  return shell.openPath(filePath)
+  return filePath
+}
+
+async function openSettingsFile() {
+  const file = await prepareSettingsFile()
+  return shell.openPath(file)
+}
+
+function openUserDirectory() {
+  return shell.openPath(userFile())
+}
+
+async function downloadUserFile(file: string, url: string, force?: boolean) {
+  const filePath = userFile(file)
+  if (force) {
+    const data = await readFile(filePath)
+    if (data) return data
+  }
+  return downloadFile(filePath, url)
 }
 
 function handleSettingsMessages() {
   provideIPC('settings-specs', specsRef)
   provideIPC('user-settings', userSettingsRef)
   provideIPC('settings', settingsRef)
-  ipcMain.handle('open-settings-file', () => {
-    return openSettingsFile()
-  })
   ipcMain.handle('open-settings', () => {
     return openSettingsFile()
   })
   globalHandler.handle('global:open-settings', () => {
     return openSettingsFile()
   })
-  ipcMain.handle('open-default-settings', () => {
-    return openDefaultSettings()
-  })
   ipcMain.handle('open-user-directory', () => {
     return openUserDirectory()
   })
-  ipcMain.handle('open-user-file', (event, file: string, example?: string) => {
-    return openUserFile(file, example)
+  ipcMain.handle('prepare-settings-file', () => {
+    return prepareSettingsFile()
   })
-  ipcMain.handle('download-user-file', (event, file: string, url: string, force?: boolean) => {
-    return userData.download(file, url, force)
+  ipcMain.handle('prepare-default-settings', () => {
+    return prepareDefaultSettings()
+  })
+  ipcMain.handle('prepare-user-file', (event, file: string, example?: string) => {
+    return prepareUserFile(file, example)
+  })
+  ipcMain.handle('download-user-file', async (event, file: string, url: string, force?: boolean) => {
+    return downloadUserFile(file, url, force)
   })
 }
 
@@ -203,8 +219,7 @@ export {
   useSettingsSpecs,
   useEnabledAddons,
   openSettingsFile,
-  openDefaultSettings,
   openUserDirectory,
-  openUserFile,
+  downloadUserFile,
   handleSettingsMessages,
 }

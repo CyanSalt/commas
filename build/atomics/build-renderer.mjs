@@ -39,6 +39,8 @@ export default (versions, tap) => vite.build(tap({
         ...builtinModules,
         '@vue/reactivity',
         'lodash',
+        'prismjs',
+        /^prismjs\/.+(?<!\.css)$/,
         'vue',
       ],
       output: {

@@ -1,6 +1,7 @@
 import { app, BrowserWindow, dialog, ipcMain, nativeImage, shell } from 'electron'
-import type { MessageBoxOptions, NativeImage } from 'electron'
+import type { MessageBoxOptions, NativeImage, WebContents } from 'electron'
 import * as fileIcon from 'file-icon'
+import { readFile, watchFile, writeFile } from '../utils/file'
 import { execa, until } from '../utils/helper'
 import { notify } from '../utils/notification'
 import { broadcast } from './frame'
@@ -89,11 +90,11 @@ function handleMessages() {
   ipcMain.handle('eject-style', (event, key: string) => {
     return event.sender.removeInsertedCSS(key)
   })
-  ipcMain.handle('update-window', (event, data: { title: string, directory: string }) => {
+  ipcMain.handle('update-window', (event, data: { title: string, filename: string }) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     if (!frame) return false
     frame.title = data.title
-    frame.representedFilename = data.directory
+    frame.representedFilename = data.filename
   })
   ipcMain.handle('drag-file', async (event, path: string, iconBuffer?: Buffer) => {
     let icon: NativeImage
@@ -147,6 +148,33 @@ function handleMessages() {
   })
   ipcMain.handle('stop-finding', (event, action) => {
     event.sender.stopFindInPage(action)
+  })
+  ipcMain.handle('read-file', (event, file: string) => {
+    return readFile(file)
+  })
+  let watcherCollections = new WeakMap<WebContents, Map<string, any>>()
+  ipcMain.handle('get-ref:file', (event, file: string) => {
+    let watchers = watcherCollections.get(event.sender)
+    if (!watchers) {
+      watchers = new Map<string, any>()
+      watcherCollections.set(event.sender, watchers)
+    }
+    if (!watchers.has(file)) {
+      const watcher = watchFile(file, async () => {
+        event.sender.send('update-ref:file', await readFile(file), file)
+      })
+      watchers.set(file, watcher)
+    }
+    return readFile(file)
+  })
+  ipcMain.handle('set-ref:file', (event, content: string, file: string) => {
+    return writeFile(file, content)
+  })
+  ipcMain.handle('stop-ref:file', (event, file: string) => {
+    const watchers = watcherCollections.get(event.sender)
+    if (watchers) {
+      watchers.delete(file)
+    }
   })
 }
 

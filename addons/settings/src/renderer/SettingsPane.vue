@@ -127,7 +127,7 @@ onBeforeUpdate(() => {
         <h3 v-else v-i18n class="settings-group-title">{{ group.name }}#!settings.group.{{ group.key }}</h3>
         <SettingsLine
           v-for="row in group.rows"
-          :ref="item => lines[row.key] = item.$el"
+          :ref="item => lines[row.key] = item?.$el"
           :key="row.key"
           v-model="values[row.key]"
           v-model:open="open[row.key]"

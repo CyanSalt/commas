@@ -29,7 +29,7 @@
   },
   {
     "label": "Show Tab Options#!menu.showtaboptions",
-    "accelerator": "CmdOrCtrl+S",
+    "accelerator": "CmdOrCtrl+P",
     "command": "show-tab-options"
   },
   {
@@ -49,6 +49,11 @@
     "label": "Find#!menu.find",
     "accelerator": "CmdOrCtrl+F",
     "command": "toggle-finding"
+  },
+  {
+    "label": "Save#!menu.save",
+    "accelerator": "CmdOrCtrl+S",
+    "command": "save"
   },
   {
     "label": "Clear#!menu.clear",

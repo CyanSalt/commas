@@ -2,15 +2,17 @@ import type { ITerminalAddon, Terminal } from 'xterm'
 import type { IconEntry } from '../src/renderer/assets/icons'
 
 export interface TerminalTabPane {
+  type?: string,
   title: string,
-  icon: IconEntry,
+  icon?: IconEntry,
   component: any,
+  instance?: any,
 }
 
 export interface TerminalTabGroup {
   type: string,
   title: string,
-  icon: IconEntry,
+  icon?: IconEntry,
   data: any,
 }
 

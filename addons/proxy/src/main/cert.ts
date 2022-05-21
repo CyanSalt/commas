@@ -7,7 +7,7 @@ async function installRootCA() {
   const settings = commas.settings.useSettings()
   const port = settings['proxy.server.port']
   const cert = path.join(os.tmpdir(), `whistle-root-ca.${Date.now()}.cert`)
-  await commas.shell.downloadFile(`http://localhost:${port}/cgi-bin/rootca`, cert)
+  await commas.shell.requestFile(`http://localhost:${port}/cgi-bin/rootca`, cert)
   await commas.shell.sudoExecute(`security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ${cert}`)
   await fs.promises.unlink(cert)
 }

@@ -4,8 +4,8 @@ import { computed, effect, shallowReactive, unref } from '@vue/reactivity'
 import { app } from 'electron'
 import type { Dictionary, TranslationVariables } from '../../../typings/i18n'
 import { useAsyncComputed } from '../../shared/compositions'
-import { provideIPC, useEffect } from '../utils/compositions'
-import { userData, resources } from '../utils/directory'
+import { provideIPC, useEffect, useYAMLFile } from '../utils/compositions'
+import { resourceFile, userFile } from '../utils/directory'
 
 export interface TranslationFileEntry {
   locale: string,
@@ -31,7 +31,7 @@ const localeRef = useAsyncComputed(async () => {
   return app.getLocale()
 })
 
-const userDictionaryRef = userData.useYAML<Dictionary>('translation.yaml', {})
+const userDictionaryRef = useYAMLFile<Dictionary>(userFile('translation.yaml'), {})
 
 const languageRef = computed<string | undefined>({
   get() {
@@ -114,13 +114,13 @@ function removeTranslation(translation: Translation) {
 }
 
 function loadBuiltinTranslations() {
-  return addTranslationDirectory(resources.file('locales'), Priority.builtin)
+  return addTranslationDirectory(resourceFile('locales'), Priority.builtin)
 }
 
 async function loadCustomTranslation() {
   const userDictionary = unref(userDictionaryRef)
   const translation: Translation = {
-    file: userData.file('translation.yaml'),
+    file: userFile('translation.yaml'),
     dictionary: userDictionary,
     priority: Priority.custom,
   }

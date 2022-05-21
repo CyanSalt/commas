@@ -1,6 +1,6 @@
 import * as path from 'path'
 import { app } from 'electron'
-import { userData } from './directory'
+import { userFile } from './directory'
 import { execa } from './helper'
 
 const BIN_PATH = app.isPackaged
@@ -21,7 +21,7 @@ function getDefaultEnv() {
     TERM_PROGRAM: app.name,
     TERM_PROGRAM_VERSION: app.getVersion(),
     COMMAS_EXE: app.getPath('exe'),
-    COMMAS_USERDATA: userData.path,
+    COMMAS_USERDATA: userFile(),
     // Overwrite the real `Path` on Windows
     Path: process.env.PATH ? `${process.env.PATH}${PATH_SEP}${BIN_PATH}` : BIN_PATH,
     PATH: process.env.PATH ? `${process.env.PATH}${PATH_SEP}${BIN_PATH}` : BIN_PATH,

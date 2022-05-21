@@ -1,4 +1,5 @@
 import { ipcRenderer } from 'electron'
+import { useFile } from '../../src/renderer/compositions/frame'
 import { getAddonManifest, useLanguage } from '../../src/renderer/compositions/i18n'
 import {
   useAddons,
@@ -6,23 +7,31 @@ import {
   useSettingsSpecs,
   useUserSettings,
 } from '../../src/renderer/compositions/settings'
+import { openCodeEditorTab } from '../../src/renderer/compositions/terminal'
 
 export * from '../shim'
-
-function openDefaultSettings() {
-  return ipcRenderer.invoke('open-default-settings')
-}
-
-function openSettingsFile() {
-  return ipcRenderer.invoke('open-settings-file')
-}
 
 function openUserDirectory() {
   return ipcRenderer.invoke('open-user-directory')
 }
 
-function openUserFile(file: string, example?: string) {
-  return ipcRenderer.invoke('open-user-file', file, example)
+async function openDefaultSettings() {
+  const filePath: string = await ipcRenderer.invoke('prepare-default-settings')
+  openCodeEditorTab(filePath)
+}
+
+async function openSettingsFile() {
+  const filePath: string = await ipcRenderer.invoke('prepare-settings-file')
+  openCodeEditorTab(filePath)
+}
+
+async function openUserFile(file: string, example?: string) {
+  const filePath: string = await ipcRenderer.invoke('prepare-user-file', file, example)
+  openCodeEditorTab(filePath)
+}
+
+function downloadUserFile(file: string, url: string, force?: boolean) {
+  return ipcRenderer.invoke('download-user-file', file, url, force)
 }
 
 export {
@@ -31,9 +40,11 @@ export {
   useSettings,
   useSettingsSpecs,
   useUserSettings,
+  useFile,
   getAddonManifest,
+  openUserDirectory,
   openDefaultSettings,
   openSettingsFile,
-  openUserDirectory,
   openUserFile,
+  downloadUserFile,
 }

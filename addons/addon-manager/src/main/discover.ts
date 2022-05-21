@@ -13,7 +13,7 @@ function useDiscoveredAddons() {
 }
 
 async function discoverAddons() {
-  const paths = commas.directory.getAddonPaths()
+  const paths = commas.file.getAddonPaths()
   let entries: Dirent[] = []
   for (const { base } of paths) {
     try {
@@ -27,7 +27,7 @@ async function discoverAddons() {
     .filter(dirent => dirent.isDirectory() || path.extname(dirent.name) === '.asar')
     .map(dirent => path.basename(dirent.name, '.asar'))
   const result = uniq(names)
-    .map(name => commas.directory.resolveAddon(name))
+    .map(name => commas.file.resolveAddon(name))
     .filter((item): item is AddonInfo => Boolean(item))
   discoveredAddonsRef.value = result
 }

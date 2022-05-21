@@ -1,5 +1,6 @@
 import * as url from 'url'
 import TabItem from '../../src/renderer/components/TabItem.vue'
+import CodeEditor from '../../src/renderer/components/basic/CodeEditor.vue'
 import LoadingSpinner from '../../src/renderer/components/basic/LoadingSpinner.vue'
 import ObjectEditor from '../../src/renderer/components/basic/ObjectEditor.vue'
 import SortableList from '../../src/renderer/components/basic/SortableList.vue'
@@ -22,6 +23,7 @@ function addCSSFile(this: RendererAPIContext, file: string) {
 
 const vueAssets = {
   vI18n,
+  CodeEditor,
   LoadingSpinner,
   ObjectEditor,
   SortableList,

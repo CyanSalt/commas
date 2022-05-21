@@ -1,4 +1,5 @@
 import * as os from 'os'
+import * as path from 'path'
 import { ipcRenderer, shell } from 'electron'
 import { memoize, debounce, isMatch, trim } from 'lodash'
 import { markRaw, reactive, toRaw, watch } from 'vue'
@@ -13,8 +14,10 @@ import { WebglAddon } from 'xterm-addon-webgl'
 import * as commas from '../../../api/core-renderer'
 import type { MenuItem } from '../../../typings/menu'
 import type { TerminalInfo, TerminalTab, TerminalTabGroup } from '../../../typings/terminal'
+import { createIDGenerator } from '../../shared/helper'
 import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
+import { translate } from '../utils/i18n'
 import { getPrompt, getWindowsProcessInfo } from '../utils/terminal'
 import { useKeyBindings } from './keybinding'
 import { useSettings } from './settings'
@@ -209,8 +212,8 @@ const createResizeObserver = memoize(() => {
 })
 
 export function getTerminalTabTitle(tab: TerminalTab) {
-  if (tab.pane) {
-    return tab.pane.title
+  if (tab.pane && !tab.shell) {
+    return translate(tab.pane.title)
   }
   if (tab.group) {
     return tab.group.title
@@ -234,6 +237,28 @@ export function showTabOptions(event?: MouseEvent) {
     }
   })
   openContextMenu(options, event ?? [0, 36], options.findIndex(item => item.args?.[0] === activeIndex))
+}
+
+const generateID = createIDGenerator()
+
+export function openCodeEditorTab(file: string) {
+  let tab = tabs.find(item => {
+    return item.pane?.type === 'editor' && item.shell === file
+  })
+  if (!tab) {
+    tab = reactive({
+      pid: generateID(),
+      process: path.basename(file),
+      title: '',
+      cwd: path.dirname(file),
+      shell: file,
+      pane: {
+        type: 'editor',
+        title: '',
+      },
+    } as TerminalTab)
+  }
+  activateOrAddTerminalTab(tab)
 }
 
 function handleTerminalTabHistory() {
@@ -346,6 +371,13 @@ export function handleTerminalMessages() {
     const paths = trim(url.pathname, '/').split('/')
     commas.proxy.workspace.openPaneTab(paths[0])
     paneTabURL = address
+  })
+  ipcRenderer.on('open-code-editor', (event, file: string) => {
+    openCodeEditorTab(file)
+  })
+  ipcRenderer.on('save', () => {
+    if (!currentTerminal) return
+    currentTerminal.pane?.instance?.save?.()
   })
 }
 

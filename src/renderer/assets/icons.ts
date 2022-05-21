@@ -1,48 +1,47 @@
 export interface IconEntry {
   name: string,
-  context?: string[],
-  pattern?: RegExp,
+  patterns: (string | RegExp)[],
   color?: string,
 }
 
 export default [
   {
     name: 'devicon devicon-ssh',
-    context: ['ssh'],
+    patterns: ['ssh'],
   },
   {
     name: 'devicon devicon-git',
-    context: ['git'],
+    patterns: ['git'],
     color: '#f05032',
   },
   {
     name: 'devicon devicon-vim',
-    context: ['vi', 'vim', 'nvim'],
+    patterns: ['vi', 'vim', 'nvim'],
     color: '#019733',
   },
   {
     name: 'devicon devicon-nodejs',
-    context: ['node'],
+    patterns: ['node'],
     color: '#339933',
   },
   {
     name: 'devicon devicon-python',
-    pattern: /^python\d*/,
+    patterns: [/^python\d*/],
     color: '#3776ab',
   },
   {
     name: 'devicon devicon-ruby',
-    context: ['ruby'],
+    patterns: ['ruby'],
     color: '#f44336',
   },
   {
     name: 'devicon devicon-docker',
-    context: ['docker', 'docker-compose'],
+    patterns: ['docker', 'docker-compose'],
     color: '#1488c6',
   },
   {
     name: 'devicon devicon-amazonwebservices',
-    context: ['aws'],
+    patterns: ['aws'],
     color: '#232f3e',
   },
 ] as IconEntry[]

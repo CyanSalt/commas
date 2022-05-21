@@ -2,7 +2,6 @@
 import * as path from 'path'
 import type { TerminalTab, TerminalTabGroup } from '../../../typings/terminal'
 import { getTerminalTabTitle, useCurrentTerminal, closeTerminalTab } from '../compositions/terminal'
-import { vI18n } from '../utils/i18n'
 import { getIconEntryByProcess } from '../utils/terminal'
 
 const { tab, group } = defineProps<{
@@ -23,7 +22,7 @@ const pane = $computed(() => {
 const iconEntry = $computed(() => {
   if (group) return group.icon
   if (!tab) return null
-  if (pane) return pane.icon
+  if (pane && !tab.shell) return pane.icon
   return getIconEntryByProcess(tab.process)
 })
 
@@ -33,7 +32,8 @@ const title = $computed(() => {
 })
 
 const idleState = $computed(() => {
-  if (!tab || pane) return ''
+  if (!tab) return ''
+  if (pane && !tab.shell) return ''
   if (tab.alerting) return 'alerting'
   if (tab.process === path.basename(tab.shell)) return 'idle'
   return 'busy'
@@ -54,9 +54,9 @@ function close() {
           :style="{ color: isFocused ? iconEntry.color : undefined }"
           :class="['tab-icon', iconEntry.name]"
         ></span>
+        <span v-else-if="pane && tab!.shell" class="tab-icon feather-icon icon-file"></span>
         <span v-else class="tab-icon feather-icon icon-terminal"></span>
-        <span v-if="pane" v-i18n class="tab-name">{{ pane.title }}</span>
-        <span v-else class="tab-name">{{ title }}</span>
+        <span class="tab-name">{{ title }}</span>
       </div>
       <div class="right-side">
         <div v-if="idleState" :class="['idle-light', idleState]"></div>

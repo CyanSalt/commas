@@ -47,8 +47,12 @@ function updateNode(doc: Document, node: Node, data: any) {
   return node
 }
 
-export function updateDocument(content: string, value: any) {
+function updateDocument(content: string, value: any) {
   const doc = YAML.parseDocument(content)
   doc.contents = updateNode(doc, doc.contents!, value) as ParsedNode
   return doc.toString()
+}
+
+export {
+  updateDocument,
 }

@@ -96,6 +96,15 @@ commas.context.provide('cli', {
 })
 
 commas.context.provide('cli', {
+  command: 'edit',
+  handler({ argv }, event) {
+    event.sender.send('open-code-editor', {
+      file: argv[0],
+    })
+  },
+})
+
+commas.context.provide('cli', {
   command: 'select',
   handler({ argv }, event) {
     const index = Number.parseInt(argv[0], 10)

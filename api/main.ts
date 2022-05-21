@@ -1,6 +1,6 @@
 export * as app from './modules/app'
 export * as context from './modules/context'
-export * as directory from './modules/directory'
+export * as file from './modules/file'
 export * as frame from './modules/frame'
 export * as helperMain from './modules/helper-main'
 export * as i18n from './modules/i18n'
