@@ -18,7 +18,7 @@ const emit = defineEmits<{
   (event: 'update:open', value: boolean): void,
 }>()
 
-const isSimpleObject = $computed(() => {
+const isSimpleObject: boolean = $computed(() => {
   const schema = spec.schema
   if (accepts(schema, 'array')) {
     return !accepts(schema.items, ['array', 'object'])
@@ -30,18 +30,17 @@ const isSimpleObject = $computed(() => {
   return false
 })
 
-const isScalarEnum = $computed(() => {
+const isScalarEnum: boolean = $computed(() => {
   const schema = spec.schema
   return Boolean(schema?.enum?.every(item => typeof item !== 'object'))
 })
 
-const isNullableString = $computed(() => {
+const isNullableString: boolean = $computed(() => {
   const schema = spec.schema
   return schema?.['minLength'] === 0 && spec.default?.length !== 0
 })
 
 const placeholder = $computed(() => {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (isNullableString) return ''
   return String(stringify(spec.default))
 })
@@ -50,12 +49,10 @@ let model = $computed({
   get: () => {
     if (
       modelValue === undefined
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       && (isScalarEnum || isNullableString || accepts(spec.schema, ['boolean', 'array', 'object']))
     ) {
       return normalize(spec.default)
     }
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (isSimpleObject) {
       return normalize(modelValue)
     }

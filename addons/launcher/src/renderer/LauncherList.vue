@@ -17,12 +17,11 @@ const { vI18n, SortableList, TabItem } = commas.ui.vueAssets
 const launchers = $(useLaunchers())
 
 let searcher = $ref<HTMLInputElement>()
-let isCollapsed = $ref(false)
-let isFinding = $ref(false)
+let isCollapsed: boolean = $ref(false)
+let isFinding: boolean = $ref(false)
 let keyword = $ref('')
 
 const filteredLaunchers = $computed(() => {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!isFinding) return launchers
   const keywords = keyword.toLowerCase().split(/\s+/)
   return launchers.filter(
@@ -33,7 +32,6 @@ const filteredLaunchers = $computed(() => {
 })
 
 const isLauncherSortingDisabled = $computed(() => {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   return isCollapsed || isFinding
 })
 
@@ -43,7 +41,6 @@ function toggleCollapsing() {
 
 async function toggleFinding() {
   isFinding = !isFinding
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (isFinding) {
     await nextTick()
     searcher.focus()

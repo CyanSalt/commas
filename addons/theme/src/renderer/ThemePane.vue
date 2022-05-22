@@ -6,13 +6,12 @@ import type { ThemeEntry } from './utils'
 
 const { vI18n, LoadingSpinner, TerminalPane } = commas.ui.vueAssets
 
-let loading = $ref<string | false>(false)
-const keyword = $ref('')
+let loading: string | false = $ref<string | false>(false)
+const keyword: string = $ref('')
 
 const list = $(commas.helperRenderer.useAsyncComputed(() => fetchThemeList(), []))
 
 const filteredList = $computed(() => {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!keyword) return list
   const lowerCase = keyword.toLowerCase()
   return list.filter(item => item.name.toLowerCase().includes(lowerCase))
@@ -62,7 +61,6 @@ function openMarketplace() {
 }
 
 async function applyItem(item: ThemeEntry) {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (loading) return
   loading = item.name
   const result = await commas.remote.downloadUserFile(`themes/${item.name}.json`, item.url)

@@ -7,7 +7,7 @@ import SettingsLine from './SettingsLine.vue'
 const { vI18n, TerminalPane } = commas.ui.vueAssets
 
 let settings = $(commas.remote.useUserSettings())
-let paneTabURL = $(commas.workspace.usePaneTabURL())
+let paneTabURL: string = $(commas.workspace.usePaneTabURL())
 let values = $ref({})
 let open = $ref<Record<string, boolean>>({})
 let lines: Record<string, HTMLElement | undefined> = {}
@@ -55,7 +55,6 @@ const groups = $computed(() => {
 
 watchEffect(async () => {
   if (!specs.length) return
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (paneTabURL) {
     const url = new URL(paneTabURL)
     const target = url.hash.slice(1)

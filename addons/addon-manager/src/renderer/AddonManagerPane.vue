@@ -25,12 +25,11 @@ let enabledAddons = $computed<string[]>({
   },
 })
 
-let isBuiltinAddonsVisible = $ref(true)
+let isBuiltinAddonsVisible: boolean = $ref(true)
 
 const addonList = $computed(() => {
   return discoveredAddons
     .filter(addon => {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!isBuiltinAddonsVisible && addon.type === 'builtin') return false
       return true
     })

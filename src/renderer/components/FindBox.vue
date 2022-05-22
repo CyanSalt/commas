@@ -85,8 +85,7 @@ function toggle(key: keyof typeof options) {
   options[key] = !options[key]
 }
 
-watch($$(isFinding), value => {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+watch($$(isFinding), (value: boolean) => {
   if (!value && terminal?.pane) {
     ipcRenderer.invoke('stop-finding', 'clearSelection')
   }

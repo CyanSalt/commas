@@ -33,7 +33,7 @@ const isFullscreen = $(useFullscreen())
 const isTabListEnabled = $(useIsTabListEnabled())
 const terminal = $(useCurrentTerminal())
 const tabs = $(useTerminalTabs())
-const willQuit = $(useWillQuit())
+const willQuit: boolean = $(useWillQuit())
 const theme = $(useTheme())
 
 const slots = commas.proxy.context.getCollection('@ui-slot')
@@ -51,7 +51,6 @@ const initialPath = args[0]
 createTerminalTab({ cwd: initialPath })
 
 window.addEventListener('beforeunload', async event => {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!willQuit && tabs.length > 1) {
     event.returnValue = false
     const confirmed = await confirmClosing()

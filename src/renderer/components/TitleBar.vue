@@ -19,19 +19,18 @@ let isTabListEnabled = $(useIsTabListEnabled())
 
 let iconBuffer = $ref<Buffer | undefined>()
 
-const isEnabled = $computed(() => {
+const isEnabled: boolean = $computed(() => {
   return settings['terminal.view.frameType'] !== 'system'
 })
 
-const isDirectory = $computed(() => {
+const isDirectory: boolean = $computed(() => {
   if (!terminal) return false
   if (terminal.pane && terminal.shell) return false
   return true
 })
 
-const fileOrDirectory = $computed(() => {
+const fileOrDirectory: string = $computed(() => {
   if (!terminal) return ''
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (terminal.pane && terminal.shell) return terminal.shell
   return terminal.cwd
 })
@@ -43,7 +42,6 @@ const pane = $computed(() => {
 
 const title = $computed(() => {
   if (!terminal) return ''
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (fileOrDirectory) return omitHome(fileOrDirectory)
   if (terminal.title) return terminal.title
   const expr = settings['terminal.tab.titleFormat']
@@ -60,7 +58,6 @@ if (process.platform === 'darwin') {
 const isCustomControlEnabled = process.platform !== 'darwin'
 
 async function updateIcon() {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (fileOrDirectory && process.platform === 'darwin' && settings['terminal.tab.liveIcon']) {
     iconBuffer = await ipcRenderer.invoke('get-icon', fileOrDirectory)
   } else {
@@ -69,7 +66,6 @@ async function updateIcon() {
 }
 
 watchEffect(() => {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!isEnabled) return
   iconBuffer = defaultIconBuffer
   updateIcon()
@@ -86,7 +82,6 @@ const icon = $computed(() => {
 
 function openDirectory(event: MouseEvent) {
   if (event.detail > 1) return
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (isDirectory) {
     shell.openPath(fileOrDirectory)
   } else {
@@ -120,7 +115,6 @@ function toggleTabList() {
 
 watchEffect(() => {
   ipcRenderer.invoke('update-window', {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     title: `${pane && !fileOrDirectory ? translate(pane.title) : title}`,
     filename: fileOrDirectory,
   })

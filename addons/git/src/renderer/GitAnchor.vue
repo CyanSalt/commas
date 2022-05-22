@@ -7,13 +7,12 @@ const terminal = $(commas.workspace.useCurrentTerminal())
 
 let branch = $ref('')
 
-const directory = $computed(() => {
+const directory: string = $computed(() => {
   if (!terminal) return ''
   return terminal.cwd
 })
 
 async function updateBranch() {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (directory) {
     branch = await ipcRenderer.invoke('get-git-branch', directory)
   } else {
