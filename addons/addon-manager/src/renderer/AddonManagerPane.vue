@@ -82,7 +82,10 @@ onMounted(() => {
           <div class="addon-card-title">
             <span class="addon-primary-info">
               <span class="addon-name">{{ manifest.productName ?? manifest.name ?? addon.name }}</span>
-              <span v-if="manifest.productName ?? manifest.name !== addon.name" class="addon-id">{{ addon.name }}</span>
+              <span
+                v-if="(manifest.productName ?? manifest.name) !== addon.name"
+                class="addon-id"
+              >{{ addon.name }}</span>
               <span v-if="addon.type !== 'builtin'" class="addon-version">{{ manifest.version ?? '' }}</span>
             </span>
             <span class="link form-action">
