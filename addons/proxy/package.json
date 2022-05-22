@@ -12,5 +12,9 @@
       "productName": "代理",
       "description": "打开 HTTP 代理服务器"
     }
+  },
+  "dependencies": {
+    "address": "^1.2.0",
+    "whistle": "^2.9.17"
   }
 }

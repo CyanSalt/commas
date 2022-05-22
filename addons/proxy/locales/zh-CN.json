@@ -9,6 +9,10 @@
   "Certification installed#!proxy.8": "证书已安装",
   "Open Keychain Access#!proxy.9": "打开钥匙串访问",
   "Click this icon to start#!proxy.10": "点击此图标启动",
+  "Custom whistle Command#!settings.label.proxy.server.whistle": "自定义 whistle 命令",
+  "Specify a custom command for whistle#!settings.comments.0.proxy.server.whistle": "指定 whistle 的自定义命令",
+  "It will be automatically downgraded to the built-in version if not available#!settings.comments.1.proxy.server.whistle": "如果该命令不可用，将会自动降级为内置版本",
+  "For example if it is empty#!settings.comments.2.proxy.server.whistle": "例如为空",
   "Proxy Server Port#!settings.label.proxy.server.port": "代理服务器端口",
   "Specify HTTP port for proxy server#!settings.comments.0.proxy.server.port": "为代理服务器指定 HTTP 端口"
 }

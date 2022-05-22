@@ -32,10 +32,17 @@ const isSimpleObject = $computed(() => {
 
 const isScalarEnum = $computed(() => {
   const schema = spec.schema
-  return schema?.enum?.every(item => typeof item !== 'object')
+  return Boolean(schema?.enum?.every(item => typeof item !== 'object'))
+})
+
+const isNullableString = $computed(() => {
+  const schema = spec.schema
+  return schema?.['minLength'] === 0 && spec.default?.length !== 0
 })
 
 const placeholder = $computed(() => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (isNullableString) return ''
   return String(stringify(spec.default))
 })
 
@@ -43,7 +50,8 @@ let model = $computed({
   get: () => {
     if (
       modelValue === undefined
-      && (isScalarEnum || accepts(spec.schema, ['boolean', 'array', 'object']))
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      && (isScalarEnum || isNullableString || accepts(spec.schema, ['boolean', 'array', 'object']))
     ) {
       return normalize(spec.default)
     }

@@ -3,15 +3,13 @@ import * as commas from 'commas:api/renderer'
 import { ipcRenderer, shell } from 'electron'
 import { useProxyRootCAStatus, useProxyServerStatus, useProxyServerVersion, useSystemProxyStatus } from './compositions'
 
-const { vI18n, LoadingSpinner, SwitchControl, TerminalPane } = commas.ui.vueAssets
+const { vI18n, SwitchControl, TerminalPane } = commas.ui.vueAssets
 
 const settings = commas.remote.useSettings()
 const isSystemProxyEnabled = $(useSystemProxyStatus())
 const isCertInstalled = $(useProxyRootCAStatus())
 const version = $(useProxyServerVersion())
 let status = $(useProxyServerStatus())
-
-let isInstalling = $ref(false)
 
 const supportsSystemProxy = process.platform === 'darwin'
 const supportsKeyChain = process.platform === 'darwin'
@@ -22,7 +20,7 @@ const latestVersion = $(commas.helperRenderer.useAsyncComputed<string | undefine
 ))
 
 const isOutdated = $computed(() => {
-  return Boolean(latestVersion) && (version === null || version !== latestVersion)
+  return Boolean(latestVersion && version && version !== latestVersion)
 })
 
 const port = $computed(() => {
@@ -60,14 +58,8 @@ function openKeychainAccess() {
   return ipcRenderer.invoke('execute', `open -a 'Keychain Access'`)
 }
 
-async function install() {
-  isInstalling = true
-  try {
-    await ipcRenderer.invoke('install-proxy-server')
-  } catch {
-    // ignore error
-  }
-  isInstalling = false
+function update() {
+  shell.openExternal('https://github.com/avwo/whistle/blob/master/CHANGELOG.md')
 }
 </script>
 
@@ -88,12 +80,10 @@ async function install() {
         <SwitchControl v-model="isSystemProxyEnabled" />
       </div>
       <div class="form-line">
-        <span v-i18n="{ V: version ?? '--' }" class="text">Current version: %V#!preference.9</span>
-        <span v-if="isInstalling" class="form-action" @click="install">
-          <LoadingSpinner />
-        </span>
-        <span v-else-if="isOutdated" class="link form-action" @click="install">
-          <span :class="['feather-icon', version ? 'icon-arrow-up' : 'icon-download-cloud']"></span>
+        <span v-i18n="{ V: version ?? '--' }" class="form-label">Current version: %V#!preference.9</span>
+        <span v-if="isOutdated" class="update-link link form-action" @click="update">
+          <span class="feather-icon icon-arrow-up"></span>
+          <span class="latest-version">{{ latestVersion }}</span>
         </span>
       </div>
     </div>
@@ -130,5 +120,15 @@ async function install() {
 }
 .proxy-pane .form-line {
   margin-top: 0;
+}
+.update-link {
+  display: flex;
+  .feather-icon {
+    margin-top: -2px;
+  }
+}
+.latest-version {
+  margin-left: 0.5em;
+  font-size: 14px;
 }
 </style>

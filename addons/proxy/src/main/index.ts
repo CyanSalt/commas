@@ -3,7 +3,7 @@ import { effect, ref, stop } from '@vue/reactivity'
 import * as address from 'address'
 import * as commas from 'commas:api/main'
 import { checkRootCA, installRootCA, uninstallRootCA } from './cert'
-import { getLatestProxyServerVersion, getProxyServerVersion, installProxyServer, useProxyServerStatus } from './server'
+import { getLatestProxyServerVersion, getProxyServerVersion, useProxyServerStatus } from './server'
 import { useSystemProxyStatus } from './system'
 
 // Server
@@ -23,11 +23,6 @@ const serverVersionEffect = effect(async () => {
   serverVersionRef.value = await getProxyServerVersion()
 })
 commas.ipcMain.provide('proxy-server-version', serverVersionRef)
-
-commas.ipcMain.handle('install-proxy-server', async () => {
-  await installProxyServer()
-  return serverVersionEffect()
-})
 
 // System
 const systemStatusRef = useSystemProxyStatus()

@@ -8,17 +8,22 @@ export function useAsyncComputed<T>(factory: () => Promise<T>, defaultValue: T):
 export function useAsyncComputed<T>(factory: () => Promise<T>, defaultValue?: T) {
   return customRef<T | undefined>((track, trigger) => {
     let currentValue = defaultValue
-    effect(async () => {
+    let initialized = false
+    const update = effect(async () => {
+      initialized = true
       try {
         currentValue = await factory()
       } catch {
         currentValue = defaultValue
       }
       trigger()
-    })
+    }, { lazy: true })
     return {
       get() {
         track()
+        if (!initialized) {
+          update()
+        }
         return currentValue
       },
       set() {

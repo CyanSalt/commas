@@ -1,5 +1,19 @@
 [
   {
+    "key": "proxy.server.whistle",
+    "label": "Custom whistle Command",
+    "comments": [
+      "Specify a custom command for whistle",
+      "It will be automatically downgraded to the built-in version if not available",
+      "For example if it is empty"
+    ],
+    "schema": {
+      "type": "string",
+      "minLength": 0
+    },
+    "default": "whistle"
+  },
+  {
     "key": "proxy.server.port",
     "label": "Proxy Server Port",
     "comments": [

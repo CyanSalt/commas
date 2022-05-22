@@ -1,6 +1,37 @@
-import { customRef, stop } from '@vue/reactivity'
+import * as path from 'path'
+import { customRef, stop, unref } from '@vue/reactivity'
 import type { ReactiveEffectRunner } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
+import { app } from 'electron'
+import * as pkg from 'whistle/package.json'
+
+const builtinWhistlePath = path.join(path.dirname(require.resolve('whistle/package.json')), pkg.bin.whistle)
+
+const whistlePathRef = commas.helperMain.useAsyncComputed(async () => {
+  const settings = commas.settings.useSettings()
+  const whistlePath = settings['proxy.server.whistle']
+  if (!whistlePath) return builtinWhistlePath
+  if (path.isAbsolute(whistlePath)) return whistlePath
+  try {
+    await commas.shell.execute(`command -v ${whistlePath}`)
+    return whistlePath
+  } catch {
+    return builtinWhistlePath
+  }
+}, builtinWhistlePath)
+
+function whistle(command: string) {
+  const whistlePath = unref(whistlePathRef)
+  if (!path.isAbsolute(whistlePath)) {
+    return commas.shell.loginExecute(`${whistlePath} ${command}`)
+  }
+  if (whistlePath === builtinWhistlePath) {
+    const bin = app.getPath('exe')
+    const env = { ...process.env, ELECTRON_RUN_AS_NODE: '1' }
+    return commas.shell.execute(`${bin} ${whistlePath} ${command}`, { env })
+  }
+  return commas.shell.execute(`${whistlePath} ${command}`)
+}
 
 async function createServer(cancelation?: Promise<unknown>) {
   const settings = commas.settings.useSettings()
@@ -8,16 +39,16 @@ async function createServer(cancelation?: Promise<unknown>) {
   if (cancelation) {
     await cancelation
   }
-  return commas.shell.loginExecute(`whistle start -p ${port}`)
+  return whistle(`start -p ${port}`)
 }
 
 function closeServer() {
-  return commas.shell.loginExecute('whistle stop')
+  return whistle('stop')
 }
 
 async function getProxyServerVersion() {
   try {
-    const { stdout } = await commas.shell.loginExecute('whistle -V')
+    const { stdout } = await whistle('-V')
     return stdout.trim()
   } catch {
     return null
@@ -26,15 +57,11 @@ async function getProxyServerVersion() {
 
 async function getLatestProxyServerVersion() {
   try {
-    const { stdout } = await commas.shell.loginExecute('npm view whistle version')
-    return stdout.trim()
+    const data = await commas.shell.requestJSON('https://registry.npmjs.org/whistle/latest')
+    return data.version
   } catch {
     return null
   }
-}
-
-function installProxyServer() {
-  return commas.shell.loginExecute('npm install -g whistle')
 }
 
 const serverStatusRef = customRef<boolean | undefined>((track, trigger) => {
@@ -93,5 +120,4 @@ export {
   useProxyServerStatus,
   getProxyServerVersion,
   getLatestProxyServerVersion,
-  installProxyServer,
 }
