@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { ipcRenderer } from 'electron'
-import { onMounted, reactive, watch } from 'vue'
+import { reactive, watch, watchEffect } from 'vue'
 import { useIsFinding } from '../compositions/shell'
 import { useCurrentTerminal } from '../compositions/terminal'
 import { vI18n } from '../utils/i18n'
 
 const terminal = $(useCurrentTerminal())
 
-const root = $ref<HTMLElement>()
-const finder = $ref<HTMLInputElement>()
+const root = $ref<HTMLElement | undefined>()
+const finder = $ref<HTMLInputElement | undefined>()
 const keyword = $ref('')
 const options = reactive({
   caseSensitive: false,
@@ -28,16 +28,22 @@ watch($$(totalNumber), () => {
   currentNumber = 0
 })
 
-onMounted(() => {
-  new IntersectionObserver(([{ isIntersecting }]) => {
+watchEffect((onInvalidate) => {
+  if (!root) return
+  const observer = new IntersectionObserver(([{ isIntersecting }]) => {
     if (isIntersecting) {
-      finder.focus()
+      finder?.focus()
     } else {
       if (terminal?.xterm) {
         terminal.xterm.focus()
       }
     }
-  }).observe(root)
+  })
+  let el = root
+  observer.observe(el)
+  onInvalidate(() => {
+    observer.unobserve(el)
+  })
 })
 
 async function findPrevious() {
