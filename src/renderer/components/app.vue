@@ -65,7 +65,7 @@ window.addEventListener('beforeunload', async event => {
   }
 })
 
-commas.proxy.app.events.once('terminal-tab-effect', () => {
+commas.proxy.app.events.once('load-terminal-addons', () => {
   requestIdleCallback(() => {
     ipcRenderer.send('bootstrap')
   })

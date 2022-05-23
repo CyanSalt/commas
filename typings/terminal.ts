@@ -41,6 +41,7 @@ export interface TerminalTab extends TerminalInfo {
   title: string,
   xterm: Terminal,
   addons: TerminalTabAddons,
+  onStop: (() => void)[],
   links: XtermLink[],
   alerting?: boolean,
   pane?: TerminalTabPane,

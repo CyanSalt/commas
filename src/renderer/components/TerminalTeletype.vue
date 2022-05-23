@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import 'xterm/css/xterm.css'
 import { quote } from 'shell-quote'
-import { onActivated, onMounted } from 'vue'
+import { onActivated, watchEffect } from 'vue'
 import type { TerminalTab } from '../../../typings/terminal'
-import { mountTerminalTab, writeTerminalTab } from '../compositions/terminal'
+import { writeTerminalTab } from '../compositions/terminal'
 import { openContextMenu } from '../utils/frame'
 
 const { tab } = defineProps<{
   tab: TerminalTab,
 }>()
 
-const terminal = $ref<HTMLElement>()
+const terminal = $ref<HTMLElement | undefined>()
 
 function dragFileOver(event: DragEvent) {
   if (event.dataTransfer) {
@@ -48,8 +48,25 @@ function openEditingMenu(event: MouseEvent) {
   ], event)
 }
 
-onMounted(() => {
-  mountTerminalTab(tab, terminal)
+function fit() {
+  if (tab.xterm.element?.clientWidth) {
+    tab.addons.fit.fit()
+  }
+}
+
+const observer = new ResizeObserver(fit)
+
+watchEffect((onInvalidate) => {
+  const el = terminal
+  if (!el) return
+  const xterm = tab.xterm
+  xterm.open(el)
+  tab.addons.fit.fit()
+  xterm.focus()
+  observer.observe(el)
+  onInvalidate(() => {
+    observer.unobserve(el)
+  })
 })
 
 onActivated(() => {

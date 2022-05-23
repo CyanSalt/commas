@@ -40,15 +40,31 @@ function openPaneTab(name: string) {
   activateOrAddTerminalTab(pane)
 }
 
-function effectTerminalTab(
+function registerXtermAddon(
   this: RendererAPIContext,
-  callback: (tab: TerminalTab, active: boolean) => void,
+  key: string,
+  factory: (tab: TerminalTab) => ITerminalAddon | undefined,
   immediate?: boolean,
 ) {
+  const apply = (tab: TerminalTab, active: boolean) => {
+    const addon = factory(tab)
+    if (addon) {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (active && !tab.addons[key]) {
+        tab.addons[key] = addon
+        tab.xterm.loadAddon(tab.addons[key])
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      } else if (!active && tab.addons[key]) {
+        tab.addons[key].dispose()
+        delete tab.addons[key]
+      }
+    }
+  }
+
   let active = false
 
-  this.$.app.events.on('terminal-tab-effect', tab => {
-    callback(tab, active)
+  this.$.app.events.on('load-terminal-addons', tab => {
+    apply(tab, active)
   })
 
   const toggle = (enabled: boolean) => {
@@ -57,7 +73,7 @@ function effectTerminalTab(
     const tabs = unref(useTerminalTabs())
     tabs.forEach(tab => {
       if (!tab.pane) {
-        callback(tab, active)
+        apply(tab, active)
       }
     })
   }
@@ -72,35 +88,12 @@ function effectTerminalTab(
   return toggle
 }
 
-function registerXtermAddon(
-  this: RendererAPIContext,
-  key: string,
-  factory: (tab: TerminalTab) => ITerminalAddon | undefined,
-  immediate?: boolean,
-) {
-  return effectTerminalTab.call(this, (tab: TerminalTab, active: boolean) => {
-    const addon = factory(tab)
-    if (addon) {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (active && !tab.addons[key]) {
-        tab.addons[key] = addon
-        tab.xterm.loadAddon(tab.addons[key])
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      } else if (!active && tab.addons[key]) {
-        tab.addons[key].dispose()
-        delete tab.addons[key]
-      }
-    }
-  }, immediate)
-}
-
 export * from '../shim'
 
 export {
   registerTabPane,
   getPaneTab,
   openPaneTab,
-  effectTerminalTab,
   registerXtermAddon,
   activateOrAddTerminalTab,
   activateTerminalTab,

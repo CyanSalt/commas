@@ -1,8 +1,8 @@
 import * as os from 'os'
 import * as path from 'path'
 import { ipcRenderer, shell } from 'electron'
-import { memoize, debounce, isMatch, trim } from 'lodash'
-import { markRaw, reactive, toRaw, watch } from 'vue'
+import { debounce, isMatch, trim } from 'lodash'
+import { markRaw, reactive, toRaw, watch, watchEffect } from 'vue'
 import { Terminal } from 'xterm'
 import type { ITerminalOptions } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
@@ -113,6 +113,7 @@ export async function createTerminalTab({
     title: '',
     xterm: markRaw(xterm),
     addons: markRaw<any>({}),
+    onStop: [],
     links: markRaw([]),
     alerting: false,
     group,
@@ -187,13 +188,14 @@ export async function createTerminalTab({
     ipcRenderer.invoke('resume-terminal', tab.pid)
     return false
   })
-  watch($$(terminalOptions), options => {
-    const latestXterm = tab.xterm
-    for (const [key, value] of Object.entries(options)) {
-      latestXterm.options[key] = value
-    }
-    loadTerminalAddons(tab)
-  })
+  tab.onStop.push(
+    watchEffect(() => {
+      for (const [key, value] of Object.entries(terminalOptions)) {
+        xterm.options[key] = value
+      }
+      loadTerminalAddons(tab)
+    }),
+  )
   if (command) {
     executeTerminalTab(tab, command)
   }
@@ -201,15 +203,6 @@ export async function createTerminalTab({
   activeIndex = tabs.length - 1
   return tab
 }
-
-const createResizeObserver = memoize(() => {
-  return new ResizeObserver(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (currentTerminal?.xterm?.element) {
-      currentTerminal.addons.fit.fit()
-    }
-  })
-})
 
 export function getTerminalTabTitle(tab: TerminalTab) {
   if (tab.pane && !tab.shell) {
@@ -320,13 +313,10 @@ export function handleTerminalMessages() {
   ipcRenderer.on('exit-terminal', (event, data: Pick<TerminalTab, 'pid'>) => {
     const tab = tabs.find(item => item.pid === data.pid)
     if (!tab) return
+    tab.onStop.forEach(fn => {
+      fn()
+    })
     const xterm = tab.xterm
-    if (xterm.element) {
-      const observer: ReturnType<typeof createResizeObserver> | undefined = createResizeObserver.cache.get(undefined)
-      if (observer) {
-        observer.unobserve(xterm.element)
-      }
-    }
     xterm.dispose()
     removeTerminalTab(tab)
   })
@@ -383,7 +373,6 @@ export function handleTerminalMessages() {
 
 export function loadTerminalAddons(tab: TerminalTab) {
   const xterm = tab.xterm
-  if (!xterm.element) return
   const addons: Record<string, any> = tab.addons
   if (!addons.fit) {
     addons.fit = new FitAddon()
@@ -440,17 +429,7 @@ export function loadTerminalAddons(tab: TerminalTab) {
       delete addons.webgl
     }
   }
-  commas.proxy.app.events.emit('terminal-tab-effect', tab)
-}
-
-export function mountTerminalTab(tab: TerminalTab, element: HTMLElement) {
-  const xterm = tab.xterm
-  xterm.open(element)
-  loadTerminalAddons(tab)
-  const observer = createResizeObserver()
-  observer.observe(element)
-  tab.addons.fit.fit()
-  xterm.focus()
+  commas.proxy.app.events.emit('load-terminal-addons', tab)
 }
 
 export function writeTerminalTab(tab: TerminalTab, data: string) {
