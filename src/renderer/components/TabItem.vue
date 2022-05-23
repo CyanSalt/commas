@@ -33,8 +33,8 @@ const title = $computed(() => {
 
 const idleState = $computed(() => {
   if (!tab) return ''
-  if (pane && !tab.shell) return ''
   if (tab.alerting) return 'alerting'
+  if (pane) return ''
   if (tab.process === path.basename(tab.shell)) return 'idle'
   return 'busy'
 })

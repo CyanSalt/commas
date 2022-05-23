@@ -8,10 +8,12 @@ import { useFocusedWindow } from './frame'
 import { translate } from './i18n'
 import { useAddonKeyBindings, useUserKeyBindings } from './keybinding'
 
-const terminalMenuItems: MenuItem[] = require(resourceFile('terminal.menu.json'))
+const terminalKeyBindings: MenuItem[] = require(resourceFile('terminal.menu.json'))
+
+const hasFocusedWindowRef = computed(() => Boolean(unref(useFocusedWindow())))
 
 function resolveBindingCommand(binding: MenuItem) {
-  const focusedWindow = unref(useFocusedWindow())
+  const hasFocusedWindow = unref(hasFocusedWindowRef)
   const result: MenuItemConstructorOptions = { ...binding }
   if (binding.label) {
     result.label = translate(binding.label)
@@ -25,7 +27,7 @@ function resolveBindingCommand(binding: MenuItem) {
       result.click = (self, frame) => {
         frame?.webContents.send(binding.command!, ...(binding.args ?? []))
       }
-      result.enabled = Boolean(focusedWindow)
+      result.enabled = hasFocusedWindow
     }
   }
   if (binding.submenu) {
@@ -34,9 +36,9 @@ function resolveBindingCommand(binding: MenuItem) {
   return result
 }
 
-function getTerminalMenuItems() {
-  return terminalMenuItems.map(resolveBindingCommand)
-}
+const terminalMenuItemsRef = computed(() => {
+  return terminalKeyBindings.map(resolveBindingCommand)
+})
 
 const customMenuItemsRef = computed(() => {
   const userKeyBindings = unref(useUserKeyBindings())
@@ -52,9 +54,10 @@ const addonMenuItemsRef = computed(() => {
     .map(resolveBindingCommand)
 })
 
-async function createApplicationMenu() {
-  const loadingCustomMenuItems = unref(customMenuItemsRef)
-  const loadingAddonMenuItems = unref(addonMenuItemsRef)
+function createApplicationMenu() {
+  const terminalMenuItems = unref(terminalMenuItemsRef)
+  const customMenuItems = unref(customMenuItemsRef)
+  const addonMenuItems = unref(addonMenuItemsRef)
   const menu = Menu.buildFromTemplate([
     {
       label: app.name,
@@ -80,17 +83,17 @@ async function createApplicationMenu() {
     },
     {
       label: translate('Terminal#!menu.terminal'),
-      submenu: getTerminalMenuItems(),
+      submenu: terminalMenuItems,
     },
     { role: 'editMenu', label: translate('Edit#!menu.edit') },
     { role: 'windowMenu', label: translate('Window#!menu.window') },
     {
       label: translate('User#!menu.user'),
-      submenu: await loadingCustomMenuItems,
+      submenu: customMenuItems,
     },
     {
       label: translate('Addon#!menu.addon'),
-      submenu: await loadingAddonMenuItems,
+      submenu: addonMenuItems,
     },
     {
       label: translate('Help#!menu.help'),
@@ -110,23 +113,24 @@ async function createApplicationMenu() {
   Menu.setApplicationMenu(menu)
 }
 
-async function createWindowMenu(frame: BrowserWindow) {
-  const loadingCustomMenuItems = unref(customMenuItemsRef)
-  const loadingAddonMenuItems = unref(addonMenuItemsRef)
+function createWindowMenu(frame: BrowserWindow) {
+  const terminalMenuItems = unref(terminalMenuItemsRef)
+  const customMenuItems = unref(customMenuItemsRef)
+  const addonMenuItems = unref(addonMenuItemsRef)
   const menu = Menu.buildFromTemplate([
     {
       label: translate('Terminal#!menu.terminal'),
-      submenu: getTerminalMenuItems(),
+      submenu: terminalMenuItems,
     },
     { role: 'editMenu' },
     { role: 'windowMenu' },
     {
       label: translate('User#!menu.user'),
-      submenu: await loadingCustomMenuItems,
+      submenu: customMenuItems,
     },
     {
       label: translate('Addon#!menu.addon'),
-      submenu: await loadingAddonMenuItems,
+      submenu: addonMenuItems,
     },
     {
       label: translate('Help#!menu.help'),
@@ -146,7 +150,7 @@ async function createWindowMenu(frame: BrowserWindow) {
   frame.setMenuBarVisibility(false)
 }
 
-async function createTouchBar(frame: BrowserWindow) {
+function createTouchBar(frame: BrowserWindow) {
   const menu = [
     { icon: 'NSImageNameTouchBarListViewTemplate', command: 'show-tab-options' },
     { icon: 'NSImageNameTouchBarSidebarTemplate', command: 'toggle-tab-list' },
