@@ -97,10 +97,8 @@ commas.context.provide('cli', {
 
 commas.context.provide('cli', {
   command: 'edit',
-  handler({ argv }, event) {
-    event.sender.send('open-code-editor', {
-      file: argv[0],
-    })
+  handler({ argv, cwd }, event) {
+    event.sender.send('open-code-editor', path.join(cwd, argv[0]))
   },
 })
 

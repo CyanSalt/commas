@@ -39,16 +39,25 @@ function toCSSColor(rgba: RGBA) {
   return `rgb(${rgba.r} ${rgba.g} ${rgba.b} / ${rgba.a})`
 }
 
-function toHex(channel: number) {
+function toHexChannel(channel: number) {
   return channel.toString(16).toUpperCase().padStart(2, '0')
 }
 
-function toElectronColor(rgba: RGBA) {
+function toCSSHEX(rgba: RGBA) {
   return '#' + [
-    rgba.a < 1 ? toHex(Math.floor(256 * rgba.a)) : '',
-    toHex(rgba.r),
-    toHex(rgba.g),
-    toHex(rgba.b),
+    toHexChannel(rgba.r),
+    toHexChannel(rgba.g),
+    toHexChannel(rgba.b),
+    rgba.a < 1 ? toHexChannel(Math.floor(256 * rgba.a)) : '',
+  ].join('')
+}
+
+function toElectronHEX(rgba: RGBA) {
+  return '#' + [
+    rgba.a < 1 ? toHexChannel(Math.floor(256 * rgba.a)) : '',
+    toHexChannel(rgba.r),
+    toHexChannel(rgba.g),
+    toHexChannel(rgba.b),
   ].join('')
 }
 
@@ -74,7 +83,8 @@ export {
   toHSLA,
   toRGBAFromHSLA,
   toCSSColor,
-  toElectronColor,
+  toCSSHEX,
+  toElectronHEX,
   isDarkColor,
   mix,
 }

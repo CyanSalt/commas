@@ -2,7 +2,7 @@ import { computed, effect, ref, unref } from '@vue/reactivity'
 import { nativeTheme, systemPreferences } from 'electron'
 import type { BrowserWindowConstructorOptions } from 'electron'
 import type { Theme } from '../../../typings/theme'
-import { toRGBA, toCSSColor, toElectronColor, isDarkColor, mix, toHSLA, toRGBAFromHSLA } from '../utils/color'
+import { toRGBA, toCSSColor, toCSSHEX, toElectronHEX, isDarkColor, mix, toHSLA, toRGBAFromHSLA } from '../utils/color'
 import { provideIPC } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
 import { useDefaultSettings, useSettings } from './settings'
@@ -13,7 +13,6 @@ interface BrowserWindowThemeOptions {
 }
 
 const CSS_COLORS: Partial<Record<keyof Theme, string>> = {
-  // xterm
   foreground: '--theme-foreground',
   background: '--theme-background',
   selection: '--theme-selection',
@@ -33,7 +32,6 @@ const CSS_COLORS: Partial<Record<keyof Theme, string>> = {
   brightMagenta: '--theme-brightmagenta',
   brightCyan: '--theme-brightcyan',
   brightWhite: '--theme-brightwhite',
-  // extensions
   systemAccent: '--system-accent',
   materialBackground: '--material-background',
   secondaryBackground: '--secondary-background',
@@ -75,14 +73,17 @@ const themeRef = computed(async () => {
   }
   const opacity: number = settings['terminal.style.opacity']
   const backgroundRGBA = toRGBA(theme.background!)
+  const foregroundRGBA = toRGBA(theme.foreground!)
   theme.opacity = opacity
   theme.background = toCSSColor({ ...backgroundRGBA, a: 1 })
   if (!['dark', 'light'].includes(theme.type)) {
     const isDark = isDarkColor(backgroundRGBA)
     theme.type = isDark ? 'dark' : 'light'
   }
-  if (!theme.selection || toRGBA(theme.selection).a < 1) {
-    theme.selection = toCSSColor(mix(toRGBA(theme.foreground!), backgroundRGBA, 0.5))
+  let selectionRGBA = theme.selection ? toRGBA(theme.selection) : undefined
+  if (!selectionRGBA || selectionRGBA.a < 1) {
+    selectionRGBA = mix(foregroundRGBA, backgroundRGBA, 0.5)
+    theme.selection = toCSSColor(selectionRGBA)
   }
   if (!theme.cursor) {
     theme.cursor = theme.foreground
@@ -113,6 +114,15 @@ const themeRef = computed(async () => {
     }),
     ...Object.entries(CSS_PROPERTIES).map(([key, attr]) => [attr, theme[key]]),
   ].filter(([key, value]) => value !== undefined))
+  theme.editor = {
+    ...Object.fromEntries(Object.entries(CSS_COLORS).map(([key]) => {
+      return [key, toCSSHEX(toRGBA(theme[key]))]
+    })),
+    comment: toCSSHEX(mix(foregroundRGBA, backgroundRGBA, 0.5)),
+    lineHighlight: toCSSHEX(mix(foregroundRGBA, backgroundRGBA, 0.2)),
+    lineNumber: toCSSHEX(mix(foregroundRGBA, backgroundRGBA, 0.5)),
+    activeLineNumber: toCSSHEX(foregroundRGBA),
+  }
   return theme
 })
 
@@ -132,7 +142,7 @@ function handleThemeMessages() {
     const theme = await loadingTheme
     const backgroundRGBA = toRGBA(theme.background!)
     themeOptionsRef.value = {
-      backgroundColor: toElectronColor({ ...backgroundRGBA, a: 0 }),
+      backgroundColor: toElectronHEX({ ...backgroundRGBA, a: 0 }),
       vibrancy: theme.vibrancy ? 'sidebar' : undefined,
     }
     // Enable system dark mode

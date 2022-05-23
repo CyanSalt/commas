@@ -1,10 +1,8 @@
 <script lang="ts" setup>
-import * as path from 'path'
 import { computed, defineProps, watchEffect } from 'vue'
 import type { TerminalTab } from '../../../typings/terminal'
 import { useFile } from '../compositions/frame'
 import CodeEditor from './basic/CodeEditor.vue'
-import TerminalPane from './basic/TerminalPane.vue'
 
 const { tab } = defineProps<{
   tab: TerminalTab,
@@ -14,9 +12,6 @@ let code = $ref('')
 
 const file = $computed(() => tab.shell)
 
-const lang = $computed(() => {
-  return path.extname(file).slice(1)
-})
 
 const rawSource = $computed(() => useFile(file))
 let source = $computed({
@@ -60,7 +55,15 @@ defineExpose({
 </script>
 
 <template>
-  <TerminalPane class="code-editor-pane">
-    <CodeEditor v-model="code" :lang="lang" />
-  </TerminalPane>
+  <article class="code-editor-pane">
+    <CodeEditor v-model="code" :file="file" />
+  </article>
 </template>
+
+<style lang="scss" scoped>
+.code-editor-pane {
+  box-sizing: border-box;
+  height: 100%;
+  padding: 4px 8px;
+}
+</style>
