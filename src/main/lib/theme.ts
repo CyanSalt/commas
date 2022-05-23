@@ -1,7 +1,7 @@
 import { computed, effect, ref, unref } from '@vue/reactivity'
 import { nativeTheme, systemPreferences } from 'electron'
 import type { BrowserWindowConstructorOptions } from 'electron'
-import type { Theme } from '../../../typings/theme'
+import type { EditorTheme, Theme } from '../../../typings/theme'
 import { toRGBA, toCSSColor, toCSSHEX, toElectronHEX, isDarkColor, mix, toHSLA, toRGBAFromHSLA } from '../utils/color'
 import { provideIPC } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
@@ -13,6 +13,7 @@ interface BrowserWindowThemeOptions {
 }
 
 const CSS_COLORS: Partial<Record<keyof Theme, string>> = {
+  // xterm
   foreground: '--theme-foreground',
   background: '--theme-background',
   selection: '--theme-selection',
@@ -32,6 +33,7 @@ const CSS_COLORS: Partial<Record<keyof Theme, string>> = {
   brightMagenta: '--theme-brightmagenta',
   brightCyan: '--theme-brightcyan',
   brightWhite: '--theme-brightwhite',
+  // extensions
   systemAccent: '--system-accent',
   materialBackground: '--material-background',
   secondaryBackground: '--secondary-background',
@@ -46,7 +48,8 @@ const themeRef = computed(async () => {
   const settings = useSettings()
   const defaultSettings = useDefaultSettings()
   const defaultThemeName = defaultSettings['terminal.theme.name']
-  let originalTheme: Theme = require(resourceFile('themes', `${defaultThemeName}.json`))
+  const defaultTheme: Theme = require(resourceFile('themes', `${defaultThemeName}.json`))
+  let originalTheme = defaultTheme
   const name: string = settings['terminal.theme.name'] || defaultThemeName
   if (name !== defaultThemeName) {
     const path = `themes/${name}.json`
@@ -67,6 +70,7 @@ const themeRef = computed(async () => {
   }
   const customization: Partial<Theme> = settings['terminal.theme.customization']
   const theme: Theme = {
+    ...defaultTheme,
     ...originalTheme,
     ...customization,
     name,
@@ -118,11 +122,12 @@ const themeRef = computed(async () => {
     ...Object.fromEntries(Object.entries(CSS_COLORS).map(([key]) => {
       return [key, toCSSHEX(toRGBA(theme[key]))]
     })),
+    type: theme.type,
     comment: toCSSHEX(mix(foregroundRGBA, backgroundRGBA, 0.5)),
     lineHighlight: toCSSHEX(mix(foregroundRGBA, backgroundRGBA, 0.2)),
     lineNumber: toCSSHEX(mix(foregroundRGBA, backgroundRGBA, 0.5)),
     activeLineNumber: toCSSHEX(foregroundRGBA),
-  }
+  } as EditorTheme
   return theme
 })
 

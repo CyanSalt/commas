@@ -35,7 +35,7 @@ declare module '../../../typings/terminal' {
 }
 
 const settings = useSettings()
-const theme = $(useTheme())
+const theme = useTheme()
 
 const tabs = $ref<TerminalTab[]>([])
 export function useTerminalTabs() {
@@ -71,7 +71,7 @@ const terminalOptions = $computed<Partial<ITerminalOptions>>(() => {
     fontSize: settings['terminal.style.fontSize'],
     fontFamily: settings['terminal.style.fontFamily'],
     allowTransparency: theme.opacity < 1,
-    theme,
+    theme: { ...theme },
   }
 })
 

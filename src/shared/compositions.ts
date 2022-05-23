@@ -72,9 +72,10 @@ export function surface<T extends object>(valueRef: Ref<T>, lazy?: boolean) {
   if (lazy) {
     let initialized = false
     const lockEffect = effect(() => {
-      unref(valueRef)
+      const value = unref(valueRef)
       if (!initialized) {
         initialized = true
+        Object.assign(reactiveObject, value)
         return
       }
       stop(lockEffect)

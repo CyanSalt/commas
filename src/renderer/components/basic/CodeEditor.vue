@@ -2,7 +2,7 @@
 import { watchEffect } from 'vue'
 import * as monaco from '../../assets/monaco-editor'
 import { useSettings } from '../../compositions/settings'
-import { useTheme } from '../../compositions/theme'
+import { useEditorTheme } from '../../compositions/theme'
 
 const { modelValue = '', file } = defineProps<{
   modelValue?: string,
@@ -14,53 +14,52 @@ const emit = defineEmits<{
   (event: 'update:modelValue', code: string): void,
 }>()
 
-const theme = $(useTheme())
+const theme = useEditorTheme()
 const settings = useSettings()
 
-let el = $ref<HTMLDivElement | undefined>()
+let root = $ref<HTMLDivElement | undefined>()
 
 watchEffect(() => {
-  const colors = theme.editor
   monaco.editor.defineTheme('commas', {
     base: theme.type === 'light' ? 'vs' : 'vs-dark',
     inherit: false,
     rules: [
-      { token: 'invalid', foreground: '#FFFFFF', background: colors.red },
+      { token: 'invalid', foreground: '#FFFFFF', background: theme.red },
       { token: 'emphasis', fontStyle: 'italic' },
       { token: 'strong', fontStyle: 'bold' },
-      { token: 'variable', foreground: colors.blue },
-      { token: 'variable.predefined', foreground: colors.brightBlue },
-      { token: 'constant', foreground: colors.brightYellow },
-      { token: 'comment', foreground: colors.comment },
-      { token: 'number', foreground: colors.brightYellow },
-      { token: 'regexp', foreground: colors.brightBlue },
-      { token: 'annotation', foreground: colors.comment },
-      { token: 'type', foreground: colors.magenta },
-      { token: 'delimiter', foreground: colors.brightBlue },
-      { token: 'tag', foreground: colors.red },
-      { token: 'metatag', foreground: colors.red, fontStyle: 'bold' },
-      { token: 'key', foreground: colors.yellow },
-      { token: 'string.key.json', foreground: colors.yellow },
-      { token: 'attribute.name', foreground: colors.magenta },
-      { token: 'attribute.value', foreground: colors.brightGreen },
-      { token: 'string', foreground: colors.brightGreen },
-      { token: 'keyword', foreground: colors.magenta },
-      { token: 'operator', foreground: colors.brightBlue },
+      { token: 'variable', foreground: theme.blue },
+      { token: 'variable.predefined', foreground: theme.brightBlue },
+      { token: 'constant', foreground: theme.brightYellow },
+      { token: 'comment', foreground: theme.comment },
+      { token: 'number', foreground: theme.brightYellow },
+      { token: 'regexp', foreground: theme.brightBlue },
+      { token: 'annotation', foreground: theme.comment },
+      { token: 'type', foreground: theme.magenta },
+      { token: 'delimiter', foreground: theme.brightBlue },
+      { token: 'tag', foreground: theme.red },
+      { token: 'metatag', foreground: theme.red, fontStyle: 'bold' },
+      { token: 'key', foreground: theme.yellow },
+      { token: 'string.key.json', foreground: theme.yellow },
+      { token: 'attribute.name', foreground: theme.magenta },
+      { token: 'attribute.value', foreground: theme.brightGreen },
+      { token: 'string', foreground: theme.brightGreen },
+      { token: 'keyword', foreground: theme.magenta },
+      { token: 'operator', foreground: theme.brightBlue },
     ],
     colors: {
       'editor.background': '#00000000',
-      'editor.foreground': colors.foreground,
-      'editorLineNumber.foreground': colors.lineNumber,
-      'editorLineNumber.activeForeground': colors.foreground,
-      'editorCursor.foreground': colors.foreground,
-      'editor.selectionBackground': colors.selection,
-      'editor.lineHighlightBackground': colors.lineHighlight,
-      'editorLink.activeForeground': colors.blue,
-      'editorWidget.foreground': colors.foreground,
-      'editorWidget.background': colors.background,
-      'scrollbarSlider.activeBackground': `${colors.foreground}1A`,
-      'scrollbarSlider.background': `${colors.foreground}33`,
-      'scrollbarSlider.hoverBackground': `${colors.foreground}66`,
+      'editor.foreground': theme.foreground,
+      'editorLineNumber.foreground': theme.lineNumber,
+      'editorLineNumber.activeForeground': theme.foreground,
+      'editorCursor.foreground': theme.foreground,
+      'editor.selectionBackground': theme.selection,
+      'editor.lineHighlightBackground': theme.lineHighlight,
+      'editorLink.activeForeground': theme.blue,
+      'editorWidget.foreground': theme.foreground,
+      'editorWidget.background': theme.background,
+      'scrollbarSlider.activeBackground': `${theme.foreground}1A`,
+      'scrollbarSlider.background': `${theme.foreground}33`,
+      'scrollbarSlider.hoverBackground': `${theme.foreground}66`,
       'scrollbar.shadow': '#00000000',
     },
   })
@@ -80,8 +79,8 @@ watchEffect((onInvalidate) => {
 
 let editor = $shallowRef<monaco.editor.IStandaloneCodeEditor | undefined>()
 watchEffect((onInvalidate) => {
-  if (!el) return
-  const created = monaco.editor.create(el, {
+  if (!root) return
+  const created = monaco.editor.create(root, {
     model,
     theme: 'commas',
     fontFamily: settings['terminal.style.fontFamily'],
@@ -116,7 +115,7 @@ watchEffect(() => {
 </script>
 
 <template>
-  <div v-once ref="el" class="code-editor"></div>
+  <div v-once ref="root" class="code-editor"></div>
 </template>
 
 <style lang="scss" scoped>

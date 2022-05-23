@@ -198,7 +198,9 @@ async function refresh() {
   })
 }
 
-onMounted(refresh)
+onMounted(() => {
+  refresh()
+})
 </script>
 
 <template>

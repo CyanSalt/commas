@@ -34,7 +34,7 @@ const isTabListEnabled = $(useIsTabListEnabled())
 const terminal = $(useCurrentTerminal())
 const tabs = $(useTerminalTabs())
 const willQuit: boolean = $(useWillQuit())
-const theme = $(useTheme())
+const theme = useTheme()
 
 const slots = commas.proxy.context.getCollection('@ui-slot')
 
