@@ -11,7 +11,7 @@ import {
   useTerminalTabs,
 } from '../../src/renderer/compositions/terminal'
 import { createIDGenerator } from '../../src/shared/helper'
-import type { TerminalTab, TerminalTabPane } from '../../typings/terminal'
+import type { TerminalTab, TerminalTabPane } from '../../src/typings/terminal'
 import type { RendererAPIContext } from '../types'
 
 const paneTabs = shallowReactive<Record<string, TerminalTab | undefined>>({})

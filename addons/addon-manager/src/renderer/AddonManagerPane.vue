@@ -2,7 +2,7 @@
 import * as commas from 'commas:api/renderer'
 import { ipcRenderer } from 'electron'
 import { onMounted } from 'vue'
-import type { AddonInfo } from '../../../../typings/addon'
+import type { AddonInfo } from '../../../../src/typings/addon'
 import { useDiscoveredAddons } from './compositions'
 
 const { vI18n, TerminalPane, SwitchControl } = commas.ui.vueAssets

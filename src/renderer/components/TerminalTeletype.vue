@@ -2,7 +2,7 @@
 import 'xterm/css/xterm.css'
 import { quote } from 'shell-quote'
 import { onActivated, watchEffect } from 'vue'
-import type { TerminalTab } from '../../../typings/terminal'
+import type { TerminalTab } from '../../typings/terminal'
 import { writeTerminalTab } from '../compositions/terminal'
 import { openContextMenu } from '../utils/frame'
 

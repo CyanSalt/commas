@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron'
 import { computed, unref, watchEffect } from 'vue'
-import type { Theme } from '../../../typings/theme'
 import { surface } from '../../shared/compositions'
+import type { Theme } from '../../typings/theme'
 import { injectIPC } from '../utils/compositions'
 
 const themeRef = injectIPC('theme', {

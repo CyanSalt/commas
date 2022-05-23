@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { isEqual } from 'lodash'
-import type { SettingsSpec } from '../../../../typings/settings'
+import type { SettingsSpec } from '../../../../src/typings/settings'
 import { accepts, isObjectSchema } from './json-schema'
 
 const { vI18n, ObjectEditor, SwitchControl, ValueSelector } = commas.ui.vueAssets

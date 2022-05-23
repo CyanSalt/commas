@@ -1,7 +1,7 @@
 import * as os from 'os'
 import * as path from 'path'
 import { ipcRenderer } from 'electron'
-import type { TerminalTab } from '../../../typings/terminal'
+import type { TerminalTab } from '../../typings/terminal'
 import icons from '../assets/icons'
 
 const meta = {

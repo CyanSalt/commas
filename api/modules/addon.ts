@@ -1,5 +1,5 @@
 import * as path from 'path'
-import type { AddonInfo } from '../../typings/addon'
+import type { AddonInfo } from '../../src/typings/addon'
 import type { APIAddon, CompatableAPI } from '../types'
 import * as app from './app'
 

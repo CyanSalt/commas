@@ -1,6 +1,6 @@
 import * as commas from 'commas:api/renderer'
 import { shell, ipcRenderer } from 'electron'
-import type { TerminalTab, TerminalTabGroup } from '../../../../typings/terminal'
+import type { TerminalTab, TerminalTabGroup } from '../../../../src/typings/terminal'
 import type { Launcher } from '../../typings/launcher'
 import { getLauncherCommand } from './utils'
 

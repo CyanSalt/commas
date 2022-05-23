@@ -1,6 +1,6 @@
 import { markRaw, unref } from '@vue/reactivity'
 import { useAddonKeyBindings } from '../../src/main/lib/keybinding'
-import type { KeyBinding } from '../../typings/menu'
+import type { KeyBinding } from '../../src/typings/menu'
 import type { MainAPIContext } from '../types'
 
 function addKeyBinding(item: KeyBinding) {

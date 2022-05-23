@@ -7,7 +7,7 @@ import {
   useSettings,
   useSettingsSpecs,
 } from '../../src/main/lib/settings'
-import type { SettingsSpec } from '../../typings/settings'
+import type { SettingsSpec } from '../../src/typings/settings'
 import type { MainAPIContext } from '../types'
 
 function addSettingsSpecs(specs: SettingsSpec[]) {

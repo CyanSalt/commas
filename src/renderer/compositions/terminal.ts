@@ -12,9 +12,9 @@ import { Unicode11Addon } from 'xterm-addon-unicode11'
 import { WebLinksAddon } from 'xterm-addon-web-links'
 import { WebglAddon } from 'xterm-addon-webgl'
 import * as commas from '../../../api/core-renderer'
-import type { MenuItem } from '../../../typings/menu'
-import type { TerminalInfo, TerminalTab, TerminalTabGroup } from '../../../typings/terminal'
 import { createIDGenerator } from '../../shared/helper'
+import type { MenuItem } from '../../typings/menu'
+import type { TerminalInfo, TerminalTab, TerminalTabGroup } from '../../typings/terminal'
 import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
 import { translate } from '../utils/i18n'
@@ -23,7 +23,7 @@ import { useKeyBindings } from './keybinding'
 import { useSettings } from './settings'
 import { useTheme } from './theme'
 
-declare module '../../../typings/terminal' {
+declare module '../../typings/terminal' {
   export interface TerminalTabAddons {
     fit: FitAddon,
     ligatures: LigaturesAddon,

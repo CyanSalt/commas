@@ -4,7 +4,7 @@ import * as path from 'path'
 import { shallowRef } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import { uniq } from 'lodash'
-import type { AddonInfo } from '../../../../typings/addon'
+import type { AddonInfo } from '../../../../src/typings/addon'
 
 const discoveredAddonsRef = shallowRef<AddonInfo[]>([])
 

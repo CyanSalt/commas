@@ -1,5 +1,5 @@
 import type { ITerminalAddon, Terminal } from 'xterm'
-import type { IconEntry } from '../src/renderer/assets/icons'
+import type { IconEntry } from '../renderer/assets/icons'
 
 export interface TerminalTabPane {
   type?: string,

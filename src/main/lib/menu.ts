@@ -1,7 +1,7 @@
 import { computed, unref } from '@vue/reactivity'
 import { app, BrowserWindow, ipcMain, Menu, nativeImage, TouchBar } from 'electron'
 import type { MenuItemConstructorOptions, PopupOptions } from 'electron'
-import type { MenuItem } from '../../../typings/menu'
+import type { MenuItem } from '../../typings/menu'
 import { resourceFile } from '../utils/directory'
 import { globalHandler } from '../utils/handler'
 import { useFocusedWindow } from './frame'

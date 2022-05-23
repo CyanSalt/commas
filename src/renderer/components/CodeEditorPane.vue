@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, defineProps, watchEffect } from 'vue'
-import type { TerminalTab } from '../../../typings/terminal'
+import type { TerminalTab } from '../../typings/terminal'
 import { useFile } from '../compositions/frame'
 import CodeEditor from './basic/CodeEditor.vue'
 

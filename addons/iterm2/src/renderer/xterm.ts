@@ -3,7 +3,7 @@ import { clipboard, ipcRenderer, shell } from 'electron'
 import { findLast } from 'lodash'
 import { nextTick } from 'vue'
 import type { IDisposable, IMarker, ITerminalAddon, Terminal } from 'xterm'
-import type { TerminalTab, XtermBufferPosition, XtermLink } from '../../../../typings/terminal'
+import type { TerminalTab, XtermBufferPosition, XtermLink } from '../../../../src/typings/terminal'
 import { addFirework, useBadge } from './badge'
 import { calculateDOM, loadingElement, parseITerm2EscapeSequence } from './utils'
 
