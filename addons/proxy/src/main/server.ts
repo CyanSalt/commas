@@ -13,7 +13,7 @@ const whistlePathRef = commas.helperMain.useAsyncComputed(async () => {
   if (!whistlePath) return builtinWhistlePath
   if (path.isAbsolute(whistlePath)) return whistlePath
   try {
-    await commas.shell.execute(`command -v ${whistlePath}`)
+    await commas.shell.loginExecute(`command -v ${whistlePath}`)
     return whistlePath
   } catch {
     return builtinWhistlePath
@@ -27,7 +27,11 @@ function whistle(command: string) {
   }
   if (whistlePath === builtinWhistlePath) {
     const bin = app.getPath('exe')
-    const env = { ...process.env, ELECTRON_RUN_AS_NODE: '1' }
+    const env = {
+      ...process.env,
+      ELECTRON_RUN_AS_NODE: '1',
+      STARTING_EXEC_PATH: bin,
+    }
     return commas.shell.execute(`${bin} ${whistlePath} ${command}`, { env })
   }
   return commas.shell.execute(`${whistlePath} ${command}`)
