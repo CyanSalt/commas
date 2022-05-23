@@ -116,6 +116,21 @@ watchEffect(() => {
     model.setValue(modelValue)
   }
 })
+
+const observer = new ResizeObserver(() => {
+  if (editor) {
+    editor.layout()
+  }
+})
+
+watchEffect((onInvalidate) => {
+  const el = root
+  if (!el) return
+  observer.observe(el)
+  onInvalidate(() => {
+    observer.unobserve(el)
+  })
+})
 </script>
 
 <template>

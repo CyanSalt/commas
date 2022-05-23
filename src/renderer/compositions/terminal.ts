@@ -203,12 +203,12 @@ export async function createTerminalTab({
 }
 
 const createResizeObserver = memoize(() => {
-  return new ResizeObserver(debounce(() => {
+  return new ResizeObserver(() => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (currentTerminal?.xterm?.element) {
       currentTerminal.addons.fit.fit()
     }
-  }, 250))
+  })
 })
 
 export function getTerminalTabTitle(tab: TerminalTab) {
