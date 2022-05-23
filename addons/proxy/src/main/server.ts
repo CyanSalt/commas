@@ -9,7 +9,7 @@ const builtinWhistlePath = path.join(path.dirname(require.resolve('whistle/packa
 
 const whistlePathRef = commas.helperMain.useAsyncComputed(async () => {
   const settings = commas.settings.useSettings()
-  const whistlePath = settings['proxy.server.whistle']
+  const whistlePath: string = settings['proxy.server.whistle']
   if (!whistlePath) return builtinWhistlePath
   if (path.isAbsolute(whistlePath)) return whistlePath
   try {

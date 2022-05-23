@@ -23,7 +23,7 @@ const isOutdated = $computed(() => {
   return Boolean(latestVersion && version && version !== latestVersion)
 })
 
-const port = $computed(() => {
+const port = $computed<number>(() => {
   return settings['proxy.server.port']
 })
 

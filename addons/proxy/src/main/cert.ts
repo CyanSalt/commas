@@ -5,7 +5,7 @@ import * as commas from 'commas:api/main'
 
 async function installRootCA() {
   const settings = commas.settings.useSettings()
-  const port = settings['proxy.server.port']
+  const port: number = settings['proxy.server.port']
   const cert = path.join(os.tmpdir(), `whistle-root-ca.${Date.now()}.cert`)
   await commas.shell.requestFile(`http://localhost:${port}/cgi-bin/rootca`, cert)
   await commas.shell.sudoExecute(`security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ${cert}`)

@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { computed, effect, unref } from '@vue/reactivity'
+import { computed, effect, ref, unref } from '@vue/reactivity'
 import type { BrowserWindow } from 'electron'
 import { app } from 'electron'
 import { differenceBy } from 'lodash'
@@ -61,18 +61,20 @@ function checkAddon(addon: AddonInfo) {
   }
 }
 
-const addonsRef = computed(() => {
+const includedAddonsRef = computed(() => {
   const settings = useSettings()
-  const enabledAddons = settings['terminal.addon.includes']
+  const enabledAddons: string[] = settings['terminal.addon.includes']
   return enabledAddons
     .map(name => resolveAddon(name))
     .filter((item): item is AddonInfo => Boolean(item))
 })
 
+const loadedAddonsRef = ref<AddonInfo[]>([])
+
 function loadAddons() {
-  let loadedAddons: AddonInfo[] = []
   effect(() => {
-    const addons = unref(addonsRef)
+    const addons = unref(includedAddonsRef)
+    const loadedAddons = unref(loadedAddonsRef)
     differenceBy(loadedAddons, addons, (addon: AddonInfo) => addon.name).forEach(addon => {
       commas.addon.unloadAddon(addon)
     })
@@ -80,7 +82,7 @@ function loadAddons() {
       checkAddon(addon)
       commas.addon.loadAddon(addon, commas.raw)
     })
-    loadedAddons = [...addons]
+    loadedAddonsRef.value = [...addons]
   })
 }
 
@@ -104,7 +106,7 @@ function loadCustomCSS(frame: BrowserWindow) {
 }
 
 function handleAddonMessages() {
-  provideIPC('addons', addonsRef)
+  provideIPC('addons', loadedAddonsRef)
 }
 
 export {

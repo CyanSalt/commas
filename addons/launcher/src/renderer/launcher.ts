@@ -54,14 +54,14 @@ export async function openLauncher(launcher: Launcher, { command }: OpenLauncher
 }
 
 export async function startLauncher(launcher: Launcher) {
-  const shellPath = settings['terminal.shell.path']
+  const shellPath: string = settings['terminal.shell.path']
   return openLauncher(launcher, {
     command: getLauncherCommand(launcher, shellPath),
   })
 }
 
 export async function runLauncherScript(launcher: Launcher, index: number) {
-  const shellPath = settings['terminal.shell.path']
+  const shellPath: string = settings['terminal.shell.path']
   return openLauncher(launcher, {
     command: getLauncherCommand({
       ...launcher,
@@ -72,7 +72,7 @@ export async function runLauncherScript(launcher: Launcher, index: number) {
 
 export async function startLauncherExternally(launcher: Launcher) {
   const directory = launcher.directory ? commas.helperRenderer.resolveHome(launcher.directory) : ''
-  let explorer = launcher.explorer ?? (
+  let explorer: string | undefined = launcher.explorer ?? (
     launcher.remote
       ? settings['terminal.external.remoteExplorer']
       : settings['terminal.external.explorer']

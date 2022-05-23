@@ -27,7 +27,7 @@ function setupAutoUpdater() {
 function useAutoUpdaterEffect() {
   const reactiveEffect = commas.helperMain.useEffect((onInvalidate) => {
     const settings = commas.settings.useSettings()
-    const interval = settings['updater.polling.interval']
+    const interval: number = settings['updater.polling.interval']
     if (interval) {
       const timer = setInterval(() => {
         checkForUpdates()

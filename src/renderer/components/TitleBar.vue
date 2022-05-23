@@ -44,7 +44,7 @@ const title = $computed(() => {
   if (!terminal) return ''
   if (fileOrDirectory) return omitHome(fileOrDirectory)
   if (terminal.title) return terminal.title
-  const expr = settings['terminal.tab.titleFormat']
+  const expr: string = settings['terminal.tab.titleFormat']
   return getPrompt(expr, terminal)
 })
 

@@ -13,7 +13,7 @@ import { useThemeOptions } from './theme'
 async function createWindow(...args: string[]) {
   await whenSettingsReady()
   const settings = useSettings()
-  const frameType = settings['terminal.view.frameType']
+  const frameType: string = settings['terminal.view.frameType']
   const options: Partial<BrowserWindowConstructorOptions> = {
     show: false,
     title: app.name,

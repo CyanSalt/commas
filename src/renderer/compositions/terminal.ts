@@ -221,7 +221,7 @@ export function getTerminalTabTitle(tab: TerminalTab) {
   if (process.platform !== 'win32' && tab.title) {
     return tab.title
   }
-  const expr = settings['terminal.tab.titleFormat']
+  const expr: string = settings['terminal.tab.titleFormat']
   return getPrompt(expr, tab) || tab.process
 }
 

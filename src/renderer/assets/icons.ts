@@ -1,6 +1,6 @@
 export interface IconEntry {
   name: string,
-  patterns: (string | RegExp)[],
+  patterns?: (string | RegExp)[],
   color?: string,
 }
 
@@ -44,4 +44,4 @@ export default [
     patterns: ['aws'],
     color: '#232f3e',
   },
-] as IconEntry[]
+] as (IconEntry & { patterns: NonNullable<IconEntry['patterns']> })[]
