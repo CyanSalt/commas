@@ -47,6 +47,11 @@ watchEffect(() => {
       { token: 'operator', foreground: theme.brightBlue },
     ],
     colors: {
+      'input.background': '#7F7F7F33',
+      'scrollbarSlider.activeBackground': `${theme.foreground}1A`,
+      'scrollbarSlider.background': `${theme.foreground}33`,
+      'scrollbarSlider.hoverBackground': `${theme.foreground}66`,
+      'scrollbar.shadow': '#00000000',
       'editor.background': '#00000000',
       'editor.foreground': theme.foreground,
       'editorLineNumber.foreground': theme.lineNumber,
@@ -57,10 +62,8 @@ watchEffect(() => {
       'editorLink.activeForeground': theme.blue,
       'editorWidget.foreground': theme.foreground,
       'editorWidget.background': theme.background,
-      'scrollbarSlider.activeBackground': `${theme.foreground}1A`,
-      'scrollbarSlider.background': `${theme.foreground}33`,
-      'scrollbarSlider.hoverBackground': `${theme.foreground}66`,
-      'scrollbar.shadow': '#00000000',
+      'editorWidget.resizeBorder': theme.background,
+      'editorSuggestWidget.border': '#00000000',
     },
   })
 })
@@ -82,7 +85,6 @@ watchEffect((onInvalidate) => {
   if (!root) return
   const created = monaco.editor.create(root, {
     model,
-    theme: 'commas',
     fontFamily: settings['terminal.style.fontFamily'],
     fontSize: settings['terminal.style.fontSize'],
     fontLigatures: settings['terminal.style.fontLigatures'],
@@ -97,6 +99,8 @@ watchEffect((onInvalidate) => {
     minimap: {
       enabled: false,
     },
+    tabSize: 2,
+    theme: 'commas',
     wordWrap: 'on',
   })
   editor = created

@@ -30,7 +30,6 @@ export default (versions, tap) => vite.build(tap({
   build: {
     target: `chrome${versions.chrome.split('.')[0]}`,
     assetsDir: '.',
-    cssCodeSplit: false,
     minify: false,
     rollupOptions: {
       external: [
@@ -39,8 +38,6 @@ export default (versions, tap) => vite.build(tap({
         ...builtinModules,
         '@vue/reactivity',
         'lodash',
-        'prismjs',
-        /^prismjs\/.+(?<!\.css)$/,
         'vue',
       ],
       output: {
