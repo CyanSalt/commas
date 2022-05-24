@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { ipcRenderer, shell } from 'electron'
-import { useProxyRootCAStatus, useProxyServerStatus, useProxyServerVersion, useSystemProxyStatus } from './compositions'
+import { useProxyRootCAStatus, useProxyServerStatus, useProxyServerVersionInfo, useSystemProxyStatus } from './compositions'
 
 const { vI18n, SwitchControl, TerminalPane } = commas.ui.vueAssets
 
 const settings = commas.remote.useSettings()
 const isSystemProxyEnabled = $(useSystemProxyStatus())
 const isCertInstalled = $(useProxyRootCAStatus())
-const version = $(useProxyServerVersion())
+const versionInfo = $(useProxyServerVersionInfo())
 let status = $(useProxyServerStatus())
 
 const supportsSystemProxy = process.platform === 'darwin'
@@ -20,7 +20,8 @@ const latestVersion = $(commas.helperRenderer.useAsyncComputed<string | undefine
 ))
 
 const isOutdated = $computed(() => {
-  return Boolean(latestVersion && version && version !== latestVersion)
+  if (versionInfo.type === 'builtin') return false
+  return Boolean(versionInfo.version && latestVersion && versionInfo.version !== latestVersion)
 })
 
 const port = $computed<number>(() => {
@@ -80,7 +81,10 @@ function update() {
         <SwitchControl v-model="isSystemProxyEnabled" />
       </div>
       <div class="form-line">
-        <span v-i18n="{ V: version ?? '--' }" class="form-label">Current version: %V#!preference.9</span>
+        <span class="form-label">
+          <span v-i18n="{ V: versionInfo.version ?? '--' }">Current version: %V#!preference.9</span>
+          <span v-if="versionInfo.type !== 'builtin'" class="version-type feather-icon icon-external-link"></span>
+        </span>
         <span v-if="isOutdated" class="update-link link form-action" @click="update">
           <span class="feather-icon icon-arrow-up"></span>
           <span class="latest-version">{{ latestVersion }}</span>
@@ -130,5 +134,8 @@ function update() {
 .latest-version {
   margin-left: 0.5em;
   font-size: 14px;
+}
+.version-type {
+  margin-left: 0.5em;
 }
 </style>

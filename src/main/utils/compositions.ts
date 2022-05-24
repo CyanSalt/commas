@@ -90,7 +90,7 @@ function provideIPC<T>(key: string, valueRef: Ref<T>) {
   })
   let latestValuePromise
   const reactiveEffect = effect(async () => {
-    const valuePromise = Promise.resolve(unref(valueRef))
+    const valuePromise = Promise.resolve(toRaw(unref(valueRef)))
     latestValuePromise = valuePromise
     const value = await valuePromise
     if (valuePromise === latestValuePromise) {

@@ -1,20 +1,20 @@
 import { ipcRenderer } from 'electron'
-import { memoize } from 'lodash'
 import { injectIPC } from '../utils/compositions'
+import { diligent } from '../utils/helper'
 
 export function useFile(file: string) {
   return injectIPC('file', '', file)
 }
 
-export const useMinimized = memoize(() => {
+export const useMinimized = diligent(() => {
   return injectIPC('minimized', false)
 })
 
-export const useMaximized = memoize(() => {
+export const useMaximized = diligent(() => {
   return injectIPC('maximized', false)
 })
 
-export const useFullscreen = memoize(() => {
+export const useFullscreen = diligent(() => {
   return injectIPC('fullscreen', false)
 })
 

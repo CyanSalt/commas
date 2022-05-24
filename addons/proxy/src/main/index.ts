@@ -3,7 +3,7 @@ import { effect, ref, stop } from '@vue/reactivity'
 import * as address from 'address'
 import * as commas from 'commas:api/main'
 import { checkRootCA, installRootCA, uninstallRootCA } from './cert'
-import { getLatestProxyServerVersion, getProxyServerVersion, useProxyServerStatus } from './server'
+import { getLatestProxyServerVersion, useProxyServerStatus, useProxyServerVersionInfo } from './server'
 import { useSystemProxyStatus } from './system'
 
 // Server
@@ -18,11 +18,8 @@ commas.ipcMain.handle('get-ip', async () => {
   return address.ip()
 })
 
-const serverVersionRef = ref<string | null | undefined>(undefined)
-const serverVersionEffect = effect(async () => {
-  serverVersionRef.value = await getProxyServerVersion()
-})
-commas.ipcMain.provide('proxy-server-version', serverVersionRef)
+const serverVersionInfoRef = useProxyServerVersionInfo()
+commas.ipcMain.provide('proxy-server-version-info', serverVersionInfoRef)
 
 // System
 const systemStatusRef = useSystemProxyStatus()
@@ -45,7 +42,6 @@ commas.ipcMain.handle('uninstall-proxy-root-ca', async () => {
 })
 
 commas.app.onCleanup(() => {
-  stop(serverVersionEffect)
   stop(rootCAEffect)
   serverStatusRef.value = false
   systemStatusRef.value = false

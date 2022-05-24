@@ -1,11 +1,10 @@
-import { memoize } from 'lodash'
 import { injectIPC } from '../utils/compositions'
 
-export const useLanguage = memoize(() => {
-  return injectIPC<string | undefined>('language', undefined)
-})
+const language = $(injectIPC<string | undefined>('language', undefined))
 
-const language = $(useLanguage())
+export function useLanguage() {
+  return $$(language)
+}
 
 export function getAddonManifest(original: any) {
   let manifest = { ...original }

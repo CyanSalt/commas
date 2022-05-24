@@ -1,11 +1,16 @@
 import * as path from 'path'
-import { customRef, stop, unref } from '@vue/reactivity'
+import { computed, customRef, stop, unref } from '@vue/reactivity'
 import type { ReactiveEffectRunner } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import { app } from 'electron'
 import * as pkg from 'whistle/package.json'
 
 const builtinWhistlePath = path.join(path.dirname(require.resolve('whistle/package.json')), pkg.bin.whistle)
+
+const builtinServerVersionInfo = {
+  type: 'builtin' as const,
+  version: pkg.version,
+}
 
 const whistlePathRef = commas.helperMain.useAsyncComputed(async () => {
   const settings = commas.settings.useSettings()
@@ -20,12 +25,18 @@ const whistlePathRef = commas.helperMain.useAsyncComputed(async () => {
   }
 }, builtinWhistlePath)
 
+const isUsingBuiltinWhistleRef = computed(() => {
+  const whistlePath = unref(whistlePathRef)
+  return whistlePath === builtinWhistlePath
+})
+
 function whistle(command: string) {
   const whistlePath = unref(whistlePathRef)
+  const isUsingBuiltinWhistle = unref(isUsingBuiltinWhistleRef)
   if (!path.isAbsolute(whistlePath)) {
     return commas.shell.loginExecute(`${whistlePath} ${command}`)
   }
-  if (whistlePath === builtinWhistlePath) {
+  if (isUsingBuiltinWhistle) {
     const bin = app.getPath('exe')
     const env = {
       ...process.env,
@@ -66,6 +77,19 @@ async function getLatestProxyServerVersion() {
   } catch {
     return null
   }
+}
+
+const serverVersionInfoRef = commas.helperMain.useAsyncComputed(async () => {
+  const isUsingBuiltinWhistle = unref(isUsingBuiltinWhistleRef)
+  if (isUsingBuiltinWhistle) return builtinServerVersionInfo
+  return {
+    type: 'external' as const,
+    version: await getProxyServerVersion(),
+  }
+}, builtinServerVersionInfo)
+
+function useProxyServerVersionInfo() {
+  return serverVersionInfoRef
 }
 
 const serverStatusRef = customRef<boolean | undefined>((track, trigger) => {
@@ -121,7 +145,7 @@ function useProxyServerStatus() {
 }
 
 export {
-  useProxyServerStatus,
-  getProxyServerVersion,
   getLatestProxyServerVersion,
+  useProxyServerVersionInfo,
+  useProxyServerStatus,
 }
