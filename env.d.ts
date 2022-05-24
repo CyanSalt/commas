@@ -8,9 +8,11 @@ declare module '*.vue' {
 }
 
 declare module 'commas:api/main' {
-  export * from 'api/main'
+  export * from '@commas/api/main'
 }
 
 declare module 'commas:api/renderer' {
-  export * from 'api/renderer'
+  export * from '@commas/api/renderer'
 }
+
+export {}

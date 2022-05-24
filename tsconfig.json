@@ -1,8 +1,7 @@
 {
   "extends": "@cyansalt/tsconfig/tsconfig.app",
   "compilerOptions": {
-    "sourceMap": true,
-    "baseUrl": "."
+    "sourceMap": true
   },
   "exclude": [
     "**/dist",
