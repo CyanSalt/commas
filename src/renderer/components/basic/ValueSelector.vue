@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-const { modelValue, pinned = [] } = defineProps<{
+const { modelValue, pinned = [], unpinable = false } = defineProps<{
   modelValue: any,
-  pinned?: string[],
+  pinned?: any[],
+  unpinable?: boolean,
 }>()
 
 const emit = defineEmits<{
   (event: 'update:modelValue', value: any): void,
+  (event: 'update:pinned', value: any[]): void,
 }>()
 
 let isPinned = $ref(modelValue && pinned.includes(modelValue))
@@ -13,6 +15,10 @@ let isPinned = $ref(modelValue && pinned.includes(modelValue))
 function update(value, pinnedStatus: boolean) {
   isPinned = pinnedStatus
   emit('update:modelValue', value)
+}
+
+function unpin(value) {
+  emit('update:pinned', pinned.filter(item => item !== value))
 }
 </script>
 
@@ -24,6 +30,9 @@ function update(value, pinnedStatus: boolean) {
           <input :checked="value === modelValue" type="radio" class="pinned-control" @change="update(value, true)">
         </label>
         <input :value="value" readonly type="text" class="form-control">
+        <span v-if="unpinable" class="form-action link remove" @click="unpin(value)">
+          <span class="feather-icon icon-x"></span>
+        </span>
       </div>
     </template>
     <template v-if="pinned.length">

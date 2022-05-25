@@ -1,5 +1,5 @@
 import type { Ref } from '@vue/reactivity'
-import { customRef, effect, shallowReactive, stop, unref } from '@vue/reactivity'
+import { customRef, effect, shallowReactive, stop, toRaw, unref } from '@vue/reactivity'
 import { difference, intersection, isEqual } from 'lodash'
 
 export function useAsyncComputed<T>(factory: () => Promise<T>): Ref<T | undefined>
@@ -45,13 +45,14 @@ function initializeSurface<T>(valueRef: Ref<T>, reactiveObject: T) {
     const latest = unref(valueRef)
     if (running) return
     markRunning(1)
+    const rawObject = toRaw(reactiveObject)
     const latestKeys = Object.keys(latest)
-    const currentKeys = Object.keys(reactiveObject)
+    const currentKeys = Object.keys(rawObject)
     difference(latestKeys, currentKeys).forEach(key => {
       reactiveObject[key] = latest[key]
     })
     intersection(currentKeys, latestKeys).forEach(key => {
-      if (!isEqual(reactiveObject[key], latest[key])) {
+      if (!isEqual(rawObject[key], latest[key])) {
         reactiveObject[key] = latest[key]
       }
     })
