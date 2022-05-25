@@ -12,8 +12,9 @@ const builtinServerVersionInfo = {
   version: pkg.version,
 }
 
+const settings = commas.settings.useSettings()
+
 const whistlePathRef = commas.helperMain.useAsyncComputed(async () => {
-  const settings = commas.settings.useSettings()
   const whistlePath: string = settings['proxy.server.whistle']
   if (!whistlePath) return builtinWhistlePath
   if (path.isAbsolute(whistlePath)) return whistlePath
@@ -48,12 +49,7 @@ function whistle(command: string) {
   return commas.shell.execute(`${whistlePath} ${command}`)
 }
 
-async function createServer(cancelation?: Promise<unknown>) {
-  const settings = commas.settings.useSettings()
-  const port: number = settings['proxy.server.port']
-  if (cancelation) {
-    await cancelation
-  }
+function createServer(port: number) {
   return whistle(`start -p ${port}`)
 }
 
@@ -94,35 +90,37 @@ function useProxyServerVersionInfo() {
 
 const serverStatusRef = customRef<boolean | undefined>((track, trigger) => {
   let status: boolean | undefined = false
-  let cancelation: Promise<unknown> | undefined
-  let serverEffect: ReactiveEffectRunner
-  const createEffect = () => commas.helperMain.useEffect(async (onInvalidate) => {
-    const server = createServer(cancelation)
-    onInvalidate(async () => {
-      cancelation = closeServer()
-      const oldStatus = status
-      try {
-        status = undefined
-        trigger()
-        await cancelation
-        status = false
-        trigger()
-      } catch {
-        status = oldStatus
-        trigger()
-      }
-    })
+  let processing: Promise<unknown> | undefined
+  let serverEffect: ReactiveEffectRunner | undefined
+  let running: {}
+  const toggle = async (value: boolean, fn: () => Promise<unknown>) => {
+    const current = {}
+    running = current
     const oldStatus = status
     try {
+      if (processing) {
+        await processing
+        if (running !== current) return
+      }
       status = undefined
       trigger()
-      await server
-      status = true
+      processing = fn()
+      await processing
+      status = value
       trigger()
     } catch {
       status = oldStatus
       trigger()
+    } finally {
+      processing = undefined
     }
+  }
+  const createEffect = () => commas.helperMain.useEffect((onInvalidate) => {
+    const port = settings['proxy.server.port']
+    toggle(true, () => createServer(port))
+    onInvalidate(() => {
+      toggle(false, () => closeServer())
+    })
   })
   return {
     get() {
@@ -131,10 +129,12 @@ const serverStatusRef = customRef<boolean | undefined>((track, trigger) => {
     },
     set(value) {
       if (status === value) return
+      if (serverEffect) {
+        stop(serverEffect)
+        serverEffect = undefined
+      }
       if (value) {
         serverEffect = createEffect()
-      } else {
-        stop(serverEffect)
       }
     },
   }
