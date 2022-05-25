@@ -15,7 +15,7 @@ export interface CommandModule {
   handler: (context: CommandContext, event: IpcMainInvokeEvent) => any,
 }
 
-export async function executeCommand(
+async function executeCommand(
   event: IpcMainInvokeEvent,
   inputContext: CommandContext,
   commands: CommandModule[],
@@ -51,6 +51,11 @@ const externalURLCommandsRef = computed(() => {
   }) : []
 })
 
-export function useExternalURLCommands() {
+function useExternalURLCommands() {
   return externalURLCommandsRef
+}
+
+export {
+  executeCommand,
+  useExternalURLCommands,
 }

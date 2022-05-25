@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import chokidar from 'chokidar'
-import { debounce, trimEnd } from 'lodash'
+import { debounce } from 'lodash'
 import YAML from 'yaml'
 import { requestFile } from './net'
 import { updateDocument } from './yaml-updater'
@@ -31,7 +31,7 @@ async function writeFile(file: string, content: string | undefined) {
   } catch {
     // ignore error
   }
-  return fs.promises.writeFile(file, trimEnd(content) + '\n')
+  return fs.promises.writeFile(file, content.trim() + '\n')
 }
 
 function watchFile(file: string, callback: (event: string, filename: string) => void) {
@@ -50,7 +50,7 @@ async function writeYAMLFile(file: string, data: any) {
     return writeFile(file, '---\n' + created.trim() + '\n')
   } else {
     const updated = updateDocument(content, data)
-    return writeFile(file, updated.trim() + '\n')
+    return writeFile(file, updated)
   }
 }
 

@@ -10,7 +10,7 @@ import { executeCommand, useExternalURLCommands } from './command'
 
 const settings = commas.settings.useSettings()
 
-const commands = commas.context.getCollection('cli')
+const commands: CommandModule[] = commas.context.getCollection('cli')
 commas.ipcMain.handle('cli', (event, context) => {
   const aliases = settings['cli.command.aliases'] ?? {}
   return executeCommand(event, context, commands, aliases)

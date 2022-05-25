@@ -8,6 +8,7 @@ import {
   useUserSettings,
 } from '../../src/renderer/compositions/settings'
 import { openCodeEditorTab } from '../../src/renderer/compositions/terminal'
+import { translate } from '../../src/renderer/utils/i18n'
 
 export * from '../shim'
 
@@ -47,4 +48,5 @@ export {
   openSettingsFile,
   openUserFile,
   downloadUserFile,
+  translate,
 }

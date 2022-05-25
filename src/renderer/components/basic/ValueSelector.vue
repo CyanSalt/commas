@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-const { modelValue, pinned = [], unpinable = false } = defineProps<{
+const { modelValue, pinned = [], unpinable = false, placeholder = '' } = defineProps<{
   modelValue: any,
   pinned?: any[],
   unpinable?: boolean,
+  placeholder?: string,
 }>()
 
 const emit = defineEmits<{
@@ -10,7 +11,7 @@ const emit = defineEmits<{
   (event: 'update:pinned', value: any[]): void,
 }>()
 
-let isPinned = $ref(modelValue && pinned.includes(modelValue))
+let isPinned = $ref(Boolean(modelValue && pinned.includes(modelValue)))
 
 function update(value, pinnedStatus: boolean) {
   isPinned = pinnedStatus
@@ -27,9 +28,14 @@ function unpin(value) {
     <template v-for="value in pinned" :key="value">
       <div class="property-line">
         <label class="pinned-checker">
-          <input :checked="value === modelValue" type="radio" class="pinned-control" @change="update(value, true)">
+          <input
+            :checked="isPinned && value === modelValue"
+            type="radio"
+            class="pinned-control"
+            @change="update(value, true)"
+          >
         </label>
-        <input :value="value" readonly type="text" class="form-control">
+        <input :value="value" readonly type="text" :placeholder="placeholder" class="form-control">
         <span v-if="unpinable" class="form-action link remove" @click="unpin(value)">
           <span class="feather-icon icon-x"></span>
         </span>

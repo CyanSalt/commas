@@ -35,6 +35,26 @@ function useFile(file: string, { onTrigger }: { onTrigger?: () => void } = {}) {
   })
 }
 
+function useJSONFile<T>(file: string, defaultValue?: T, { onTrigger }: { onTrigger?: () => void } = {}) {
+  const contentRef = useFile(file, { onTrigger })
+  return computed<T>({
+    get: () => {
+      const content = unref(contentRef)
+      if (typeof content !== 'undefined') {
+        try {
+          return JSON.parse(content) as T
+        } catch {
+          // ignore error
+        }
+      }
+      return defaultValue as T
+    },
+    set: value => {
+      writeFile(file, JSON.stringify(value))
+    },
+  })
+}
+
 function useYAMLFile<T>(file: string, defaultValue?: T, { onTrigger }: { onTrigger?: () => void } = {}) {
   const contentRef = useFile(file, { onTrigger })
   return computed<T>({
@@ -106,6 +126,7 @@ function provideIPC<T>(key: string, valueRef: Ref<T>) {
 
 export {
   useFile,
+  useJSONFile,
   useYAMLFile,
   useEffect,
   provideIPC,
