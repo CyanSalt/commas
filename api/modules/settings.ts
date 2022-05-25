@@ -1,3 +1,4 @@
+import * as path from 'path'
 import { markRaw, unref } from '@vue/reactivity'
 import {
   downloadUserFile,
@@ -29,10 +30,16 @@ function addSpecs(this: MainAPIContext, specs: SettingsSpec[]) {
   })
 }
 
+function addSettingsSpecsFile(this: MainAPIContext, file: string) {
+  const specs = require(path.resolve(this.__entry__, file))
+  return addSpecs.call(this, specs)
+}
+
 export * from '../shim'
 
 export {
   addSpecs as addSettingsSpecs,
+  addSettingsSpecsFile,
   useSettings,
   useDefaultSettings,
   openSettingsFile,

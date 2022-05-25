@@ -1,5 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/naming-convention
+/* eslint-disable @typescript-eslint/naming-convention */
 export const __name__ = ''
+export const __entry__ = ''
 export const $ = Object.create(null)
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export const _ = undefined

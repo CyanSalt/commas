@@ -1,4 +1,3 @@
-import * as path from 'path'
 import * as commas from 'commas:api/renderer'
 import { watch } from 'vue'
 import LauncherLink from './LauncherLink.vue'
@@ -6,7 +5,7 @@ import LauncherList from './LauncherList.vue'
 import { startLauncher, runLauncherScript, useLaunchers } from './launcher'
 import { clearLauncherSessions, LauncherSessionAddon } from './session'
 
-commas.ui.addCSSFile(path.join(__dirname, '../../dist/renderer/style.css'))
+commas.ui.addCSSFile('dist/renderer/style.css')
 
 commas.ipcRenderer.on('start-launcher', (event, launcher) => {
   startLauncher(launcher)

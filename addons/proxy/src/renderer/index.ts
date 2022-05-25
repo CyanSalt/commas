@@ -1,10 +1,9 @@
-import * as path from 'path'
 import * as commas from 'commas:api/renderer'
 import ProxyAnchor from './ProxyAnchor.vue'
 import ProxyLink from './ProxyLink.vue'
 import ProxyPane from './ProxyPane.vue'
 
-commas.ui.addCSSFile(path.join(__dirname, '../../dist/renderer/style.css'))
+commas.ui.addCSSFile('dist/renderer/style.css')
 
 commas.workspace.registerTabPane('proxy', {
   title: 'Proxy#!proxy.1',

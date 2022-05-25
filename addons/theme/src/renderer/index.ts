@@ -1,9 +1,8 @@
-import * as path from 'path'
 import * as commas from 'commas:api/renderer'
 import ThemeLink from './ThemeLink.vue'
 import ThemePane from './ThemePane.vue'
 
-commas.ui.addCSSFile(path.join(__dirname, '../../dist/renderer/style.css'))
+commas.ui.addCSSFile('dist/renderer/style.css')
 
 commas.workspace.registerTabPane('theme', {
   title: 'Theme#!theme.1',

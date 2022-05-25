@@ -1,4 +1,3 @@
-import * as path from 'path'
 import { stop } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import { app, autoUpdater } from 'electron'
@@ -37,6 +36,6 @@ commas.ipcMain.handle('check-for-updates', () => {
   }
 })
 
-commas.settings.addSettingsSpecs(require('../../settings.spec.json'))
+commas.settings.addSettingsSpecsFile('settings.spec.json')
 
-commas.i18n.addTranslationDirectory(path.join(__dirname, '../../locales'))
+commas.i18n.addTranslationDirectory('locales')

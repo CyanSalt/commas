@@ -14,6 +14,7 @@ export type APIAddon = (api: CompatableAPI) => void
 
 export interface APIContext<T = API> {
   __name__: string,
+  __entry__: string,
   $: MixValues<T, APIContext>,
   _: unknown,
 }

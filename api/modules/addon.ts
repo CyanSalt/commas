@@ -1,9 +1,9 @@
 import * as path from 'path'
 import type { AddonInfo } from '../../src/typings/addon'
-import type { APIAddon, CompatableAPI } from '../types'
+import type { APIAddon, APIContext, CompatableAPI } from '../types'
 import * as app from './app'
 
-function cloneAPIMethod(method: Function, context: {} | undefined) {
+function cloneAPIMethod<T>(method: Function, context: Omit<APIContext<T>, '_'>) {
   return new Proxy(method, {
     apply(target, thisArg, argArray) {
       return Reflect.apply(target, { _: thisArg, ...context }, argArray)
@@ -11,7 +11,7 @@ function cloneAPIMethod(method: Function, context: {} | undefined) {
   })
 }
 
-function cloneAPIModule(object: object, context: {} | undefined) {
+function cloneAPIModule<T>(object: object, context: Omit<APIContext<T>, '_'>) {
   return new Proxy(object, {
     get(target, property, receiver) {
       const value = Reflect.get(target, property, receiver)
@@ -20,10 +20,14 @@ function cloneAPIModule(object: object, context: {} | undefined) {
   })
 }
 
-function cloneAPI<T extends CompatableAPI>(api: T, name: string) {
+function cloneAPI<T extends CompatableAPI>(api: T, name: string, entry: string) {
   return new Proxy(api, {
     get(target, property, receiver) {
-      const context = { $: receiver, __name__: name }
+      const context: Omit<APIContext<T>, '_'> = {
+        $: receiver,
+        __name__: name,
+        __entry__: entry,
+      }
       const value = Reflect.get(target, property, receiver)
       return typeof value === 'object' && value !== null ? cloneAPIModule(value, context) : value
     },
@@ -77,7 +81,7 @@ function loadAddon(addon: AddonInfo, api: CompatableAPI) {
   } else {
     processor = require(addon.entry)
   }
-  const clonedAPI = cloneAPI(api, addon.name)
+  const clonedAPI = cloneAPI(api, addon.name, addon.entry)
   addCommasModule(clonedAPI)
   processor(clonedAPI)
   unsetCommasModule()

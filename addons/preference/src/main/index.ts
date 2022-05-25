@@ -1,8 +1,7 @@
-import path from 'path'
 import * as commas from 'commas:api/main'
 import { ipcMain } from 'electron'
 
-commas.i18n.addTranslationDirectory(path.join(__dirname, '../../locales'))
+commas.i18n.addTranslationDirectory('locales')
 
 ipcMain.removeHandler('open-settings')
 

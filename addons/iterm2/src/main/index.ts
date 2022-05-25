@@ -1,4 +1,3 @@
-import * as path from 'path'
 import * as commas from 'commas:api/main'
 
 commas.context.provide('cli', {
@@ -8,6 +7,6 @@ commas.context.provide('cli', {
   },
 })
 
-commas.keybinding.addKeyBindings(require('../../keybindings.json'))
+commas.keybinding.addKeyBindingsFile('keybindings.json')
 
-commas.i18n.addTranslationDirectory(path.join(__dirname, '../../locales'))
+commas.i18n.addTranslationDirectory('locales')

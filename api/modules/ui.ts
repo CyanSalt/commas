@@ -1,3 +1,4 @@
+import * as path from 'path'
 import * as url from 'url'
 import TabItem from '../../src/renderer/components/TabItem.vue'
 import CodeEditor from '../../src/renderer/components/basic/CodeEditor.vue'
@@ -14,7 +15,7 @@ import type { RendererAPIContext } from '../types'
 function addCSSFile(this: RendererAPIContext, file: string) {
   const link = document.createElement('link')
   link.rel = 'stylesheet'
-  link.href = url.pathToFileURL(file).href
+  link.href = url.pathToFileURL(path.resolve(this.__entry__, file)).href
   document.head.append(link)
   this.$.app.onCleanup(() => {
     link.remove()

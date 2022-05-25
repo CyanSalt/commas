@@ -1,8 +1,7 @@
-import * as path from 'path'
 import * as commas from 'commas:api/renderer'
 import FunPane from './FunPane.vue'
 
-commas.ui.addCSSFile(path.join(__dirname, '../../dist/renderer/style.css'))
+commas.ui.addCSSFile('dist/renderer/style.css')
 
 commas.workspace.registerTabPane('fun', {
   title: 'Battle#!fun.1',

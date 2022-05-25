@@ -180,6 +180,6 @@ commas.app.onCleanup(() => {
   stop(reactiveEffect)
 })
 
-commas.settings.addSettingsSpecs(require('../../settings.spec.json'))
+commas.settings.addSettingsSpecsFile('settings.spec.json')
 
-commas.i18n.addTranslationDirectory(path.join(__dirname, '../../locales'))
+commas.i18n.addTranslationDirectory('locales')

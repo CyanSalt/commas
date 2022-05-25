@@ -1,4 +1,3 @@
-import * as path from 'path'
 import * as commas from 'commas:api/main'
 
 commas.ipcMain.handle('get-cache-size', event => {
@@ -9,4 +8,4 @@ commas.ipcMain.handle('clear-cache', event => {
   event.sender.session.clearCache()
 })
 
-commas.i18n.addTranslationDirectory(path.join(__dirname, '../../locales'))
+commas.i18n.addTranslationDirectory('locales')
