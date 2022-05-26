@@ -1,0 +1,16 @@
+{
+  "name": "unknown",
+  "productName": "Unknown",
+  "private": true,
+  "version": "0.1.0",
+  "description": "What is it?",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC",
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "未知",
+      "description": "这是什么？"
+    }
+  }
+}

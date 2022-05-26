@@ -2,7 +2,7 @@
 import * as commas from 'commas:api/renderer'
 import { sample, sampleSize } from 'lodash'
 import { nextTick, onMounted, reactive } from 'vue'
-import FunDial from './FunDial.vue'
+import UnknownDial from './UnknownDial.vue'
 
 const { vI18n, TerminalPane } = commas.ui.vueAssets
 const generateID = commas.helperRenderer.createIDGenerator()
@@ -204,8 +204,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <TerminalPane class="fun-pane">
-    <div class="fun-main">
+  <TerminalPane class="unknown-pane">
+    <div class="unknown-main">
       <div class="territory-area">
         <div v-for="(line, row) in territory" :key="row" class="territory-line">
           <span
@@ -223,7 +223,7 @@ onMounted(() => {
           :class="['player-card', { 'is-offline': player.offline }]"
           :style="{ 'border-color': `rgb(var(--theme-${player.color}))` }"
         >
-          <FunDial
+          <UnknownDial
             :items="mainDialItems"
             :position="player.mainPosition"
             :duration="3000 / player.speed"
@@ -234,12 +234,12 @@ onMounted(() => {
               :key="item.action"
               :class="['dial-text', item.action]"
             >{{ item.label }}</span>
-          </FunDial>
+          </UnknownDial>
           <div class="player-stats">
-            <div class="stats-line"><span v-i18n>Base#!fun.2</span> = {{ player.base }}×{{ player.army || player.scale }}</div>
-            <div class="stats-line"><span v-i18n>Speed#!fun.3</span> = {{ player.speed }}</div>
+            <div class="stats-line"><span v-i18n>Base#!unknown.2</span> = {{ player.base }}×{{ player.army || player.scale }}</div>
+            <div class="stats-line"><span v-i18n>Speed#!unknown.3</span> = {{ player.speed }}</div>
           </div>
-          <FunDial
+          <UnknownDial
             :items="benifitDialItems"
             :position="player.benifitPosition"
             :duration="3000 / player.speed"
@@ -250,7 +250,7 @@ onMounted(() => {
               :key="item.action"
               :class="['dial-text', item.action]"
             >{{ item.label }}</span>
-          </FunDial>
+          </UnknownDial>
         </div>
       </div>
     </div>
@@ -264,7 +264,7 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.fun-main {
+.unknown-main {
   display: flex;
   padding: 1em 0;
 }
@@ -295,7 +295,7 @@ onMounted(() => {
   &.is-offline {
     opacity: 0.5;
   }
-  :deep(.fun-dial) {
+  :deep(.unknown-dial) {
     --dial-size: 64px;
   }
 }

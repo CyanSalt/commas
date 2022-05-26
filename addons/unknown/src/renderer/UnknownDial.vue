@@ -48,7 +48,7 @@ watch($$(position), (value, oldValue) => {
 </script>
 
 <template>
-  <div class="fun-dial">
+  <div class="unknown-dial">
     <div class="semicircle end-semi"></div>
     <div
       v-for="(shape, index) in shapes"
@@ -77,7 +77,7 @@ watch($$(position), (value, oldValue) => {
 </template>
 
 <style lang="scss" scoped>
-.fun-dial {
+.unknown-dial {
   position: relative;
   width: var(--dial-size);
   height: var(--dial-size);

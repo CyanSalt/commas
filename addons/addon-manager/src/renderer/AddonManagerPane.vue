@@ -25,7 +25,7 @@ let enabledAddons = $computed<string[]>({
   },
 })
 
-let isBuiltinAddonsVisible: boolean = $ref(true)
+let isBuiltinAddonsVisible: boolean = $ref(false)
 
 const addonList = $computed(() => {
   return discoveredAddons

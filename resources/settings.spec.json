@@ -285,7 +285,7 @@
         "type": "string"
       }
     },
-    "recommendations": ["addon-manager", "cleaner", "cli", "fun", "git", "iterm2", "launcher", "menu", "power-mode", "preference", "proxy", "settings", "theme", "updater"],
-    "default": ["addon-manager", "cleaner", "cli", "fun", "git", "iterm2", "launcher", "menu", "power-mode", "preference", "proxy", "settings", "theme", "updater"]
+    "recommendations": ["addon-manager", "cleaner", "cli", "git", "iterm2", "launcher", "menu", "power-mode", "preference", "proxy", "settings", "theme", "unknown", "updater"],
+    "default": ["addon-manager", "cleaner", "cli", "git", "iterm2", "launcher", "menu", "power-mode", "preference", "proxy", "settings", "theme", "unknown", "updater"]
   }
 ]
