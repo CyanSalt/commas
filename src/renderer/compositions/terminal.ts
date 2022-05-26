@@ -12,7 +12,7 @@ import { Unicode11Addon } from 'xterm-addon-unicode11'
 import { WebLinksAddon } from 'xterm-addon-web-links'
 import { WebglAddon } from 'xterm-addon-webgl'
 import * as commas from '../../../api/core-renderer'
-import { createIDGenerator } from '../../shared/helper'
+import { createDeferred, createIDGenerator } from '../../shared/helper'
 import type { MenuItem } from '../../typings/menu'
 import type { TerminalInfo, TerminalTab, TerminalTabGroup } from '../../typings/terminal'
 import { toKeyEventPattern } from '../utils/accelerator'
@@ -113,7 +113,10 @@ export async function createTerminalTab({
     title: '',
     xterm: markRaw(xterm),
     addons: markRaw<any>({}),
-    onStop: [],
+    deferred: {
+      open: createDeferred(),
+      stop: createDeferred(),
+    },
     links: markRaw([]),
     alerting: false,
     group,
@@ -188,14 +191,15 @@ export async function createTerminalTab({
     ipcRenderer.invoke('resume-terminal', tab.pid)
     return false
   })
-  tab.onStop.push(
-    watchEffect(() => {
-      for (const [key, value] of Object.entries(terminalOptions)) {
-        xterm.options[key] = value
-      }
-      loadTerminalAddons(tab)
-    }),
-  )
+  const stopEffect = watchEffect(() => {
+    for (const [key, value] of Object.entries(terminalOptions)) {
+      xterm.options[key] = value
+    }
+    loadTerminalAddons(tab)
+  })
+  tab.deferred.stop.promise.then(() => {
+    stopEffect()
+  })
   if (command) {
     executeTerminalTab(tab, command)
   }
@@ -313,9 +317,7 @@ export function handleTerminalMessages() {
   ipcRenderer.on('exit-terminal', (event, data: Pick<TerminalTab, 'pid'>) => {
     const tab = tabs.find(item => item.pid === data.pid)
     if (!tab) return
-    tab.onStop.forEach(fn => {
-      fn()
-    })
+    tab.deferred.stop.resolve()
     const xterm = tab.xterm
     xterm.dispose()
     removeTerminalTab(tab)
@@ -377,6 +379,9 @@ export function loadTerminalAddons(tab: TerminalTab) {
   if (!addons.fit) {
     addons.fit = new FitAddon()
     xterm.loadAddon(addons.fit)
+    tab.deferred.open.promise.then(() => {
+      addons.fit.fit()
+    })
   }
   if (!addons.search) {
     addons.search = new SearchAddon()
@@ -409,8 +414,13 @@ export function loadTerminalAddons(tab: TerminalTab) {
   }
   if (settings['terminal.style.fontLigatures']) {
     if (!addons.ligatures) {
-      addons.ligatures = new LigaturesAddon()
-      xterm.loadAddon(addons.ligatures)
+      const ligatures = new LigaturesAddon()
+      addons.ligatures = ligatures
+      tab.deferred.open.promise.then(() => {
+        if (addons.ligatures === ligatures) {
+          xterm.loadAddon(ligatures)
+        }
+      })
     }
   } else {
     if (addons.ligatures) {

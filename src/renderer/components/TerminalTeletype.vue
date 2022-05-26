@@ -61,7 +61,7 @@ watchEffect((onInvalidate) => {
   if (!el) return
   const xterm = tab.xterm
   xterm.open(el)
-  tab.addons.fit.fit()
+  tab.deferred.open.resolve()
   xterm.focus()
   observer.observe(el)
   onInvalidate(() => {

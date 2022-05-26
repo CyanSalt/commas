@@ -1,5 +1,6 @@
 import type { ITerminalAddon, Terminal } from 'xterm'
 import type { IconEntry } from '../renderer/assets/icons'
+import type { Deferred } from '../shared/helper'
 
 export interface TerminalTabPane {
   type?: string,
@@ -41,7 +42,10 @@ export interface TerminalTab extends TerminalInfo {
   title: string,
   xterm: Terminal,
   addons: TerminalTabAddons,
-  onStop: (() => void)[],
+  deferred: {
+    open: Deferred,
+    stop: Deferred,
+  },
   links: XtermLink[],
   alerting?: boolean,
   pane?: TerminalTabPane,

@@ -6,6 +6,7 @@ import { ipcMain, shell } from 'electron'
 import { cloneDeep, isEqual } from 'lodash'
 import YAML from 'yaml'
 import { surface } from '../../shared/compositions'
+import { createDeferred } from '../../shared/helper'
 import type { Settings, SettingsSpec } from '../../typings/settings'
 import { provideIPC, useYAMLFile } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
@@ -54,21 +55,16 @@ function useDefaultSettings() {
   return reactiveDefaultSettings
 }
 
-let isReady = false
-let resolveWhenReady: (() => void) | undefined
-const whenReadyPromise = new Promise<void>(resolve => {
-  resolveWhenReady = () => {
-    isReady = true
-    resolve()
-  }
-})
+const deferredSettings = createDeferred()
 
 function whenSettingsReady() {
-  return whenReadyPromise
+  return deferredSettings.promise
 }
 
 const userSettingsRef = useYAMLFile<Settings>(userFile('settings.yaml'), {}, {
-  onTrigger: resolveWhenReady,
+  onTrigger() {
+    deferredSettings.resolve()
+  },
 })
 
 let oldSettings: Settings | undefined
@@ -93,7 +89,7 @@ const settingsRef = computed<Settings>({
     } else {
       actualSettings = settings
     }
-    if (isReady) {
+    if (deferredSettings.resolved) {
       oldSettings = actualSettings
     }
     return actualSettings

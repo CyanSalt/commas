@@ -10,3 +10,22 @@ export function createIDGenerator(iterator?: IDIterator) {
     return id
   }
 }
+
+export interface Deferred {
+  resolved: boolean,
+  promise: Promise<void>,
+  resolve: () => void,
+}
+
+export function createDeferred() {
+  const deferred = {
+    resolved: false,
+  } as Deferred
+  deferred.promise = new Promise<void>(resolve => {
+    deferred.resolve = () => {
+      deferred.resolved = true
+      resolve()
+    }
+  })
+  return deferred
+}
