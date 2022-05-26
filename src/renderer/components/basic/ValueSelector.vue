@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-const { modelValue, pinned = [], unpinable = false, placeholder = '' } = defineProps<{
+const { modelValue, pinned = [], disabled = false, unpinable = false, placeholder = '' } = defineProps<{
   modelValue: any,
   pinned?: any[],
+  disabled?: boolean,
   unpinable?: boolean,
   placeholder?: string,
 }>()
@@ -29,8 +30,9 @@ function unpin(value) {
       <div class="property-line">
         <label class="pinned-checker">
           <input
-            :checked="isPinned && value === modelValue"
             type="radio"
+            :checked="isPinned && value === modelValue"
+            :disabled="disabled"
             class="pinned-control"
             @change="update(value, true)"
           >
@@ -44,7 +46,13 @@ function unpin(value) {
     <template v-if="pinned.length">
       <div class="property-line">
         <label class="pinned-checker">
-          <input :checked="!isPinned" type="radio" class="pinned-control" @change="update(undefined, false)">
+          <input
+            type="radio"
+            :checked="!isPinned"
+            :disabled="disabled"
+            class="pinned-control"
+            @change="update(undefined, false)"
+          >
         </label>
         <span v-if="isPinned" class="customization-placeholder">...</span>
         <slot v-else></slot>

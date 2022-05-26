@@ -8,8 +8,6 @@ import { useSystemProxyStatus } from './system'
 // Server
 const serverStatusRef = useProxyServerStatus()
 commas.ipcMain.provide('proxy-server-status', serverStatusRef)
-// For other addons
-commas.context.provide('proxy-server-status', serverStatusRef)
 
 commas.ipcMain.handle('get-latest-proxy-server-version', async () => {
   return getLatestProxyServerVersion()

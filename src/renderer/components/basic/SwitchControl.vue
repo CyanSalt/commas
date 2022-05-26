@@ -60,6 +60,9 @@ export default {
       background: rgb(var(--system-accent));
       opacity: 1;
     }
+    .switch-checkbox:checked:disabled + & {
+      filter: grayscale(1);
+    }
   }
   &::after {
     content: '';

@@ -6,18 +6,31 @@ import { getStream, until } from './helper'
 
 type RequestOptions = string | ClientRequestConstructorOptions
 
-async function request(options: RequestOptions) {
+interface RequestData {
+  headers?: Record<string, string>,
+  body?: string | Buffer | undefined,
+}
+
+async function request(options: RequestOptions, data?: RequestData) {
   const req = net.request(options)
   const sending = until(req, 'response', 'error')
-  req.end()
+  if (data) {
+    const { headers = {}, body } = data
+    Object.entries(headers).forEach(([key, value]) => {
+      req.setHeader(key, value)
+    })
+    req.end(body)
+  } else {
+    req.end()
+  }
   const [response] = await sending
   return response as IncomingMessage & Readable
 }
 
-async function requestJSON(options: RequestOptions) {
-  const response = await request(options)
-  const data = await getStream(response, 'utf8')
-  return JSON.parse(data)
+async function requestJSON(options: RequestOptions, data?: RequestData) {
+  const response = await request(options, data)
+  const chunk = await getStream(response, 'utf8')
+  return JSON.parse(chunk)
 }
 
 async function requestFile(options: RequestOptions, file: string) {
