@@ -92,6 +92,11 @@ const options = {
     FileDescription: app.productName,
     OriginalFilename: `${app.name}.exe`,
   },
+  afterCopy: [
+    (buildPath, electronVersion, platform, arch, callback) => {
+      fs.rm(path.join(buildPath, 'node_modules/@commas'), { recursive: true }, callback)
+    },
+  ],
 }
 
 async function getMacOSCodeSign(name) {
