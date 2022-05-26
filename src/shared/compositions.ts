@@ -10,7 +10,6 @@ export function useAsyncComputed<T>(factory: () => Promise<T>, defaultValue?: T)
     let currentValue = defaultValue
     let initialized = false
     const update = effect(async () => {
-      initialized = true
       try {
         currentValue = await factory()
       } catch {
@@ -22,6 +21,7 @@ export function useAsyncComputed<T>(factory: () => Promise<T>, defaultValue?: T)
       get() {
         track()
         if (!initialized) {
+          initialized = true
           update()
         }
         return currentValue

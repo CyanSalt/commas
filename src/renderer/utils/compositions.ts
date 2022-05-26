@@ -8,6 +8,7 @@ export function injectIPC<T>(key: string, defaultValue: T, token?: string) {
     watchEffect((onInvalidate) => {
       const handler = (event, newValue: T, currentToken?: string) => {
         if (token && currentToken !== token) return
+        initialized = true
         currentValue = newValue
         trigger()
       }
