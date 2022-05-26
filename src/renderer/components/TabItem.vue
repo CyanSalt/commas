@@ -87,6 +87,9 @@ function close() {
   .sortable-item.dragging & {
     opacity: 1;
   }
+  .sortable-item.dragging & {
+    color: rgb(var(--design-yellow));
+  }
 }
 .tab-icon {
   display: inline-block;
@@ -102,9 +105,6 @@ function close() {
   text-overflow: ellipsis;
   overflow: hidden;
   transition: color 0.2s;
-  .sortable-item.dragging & {
-    color: rgb(var(--design-yellow));
-  }
 }
 .tab-overview {
   position: relative;
