@@ -1,16 +1,17 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
-import { ipcRenderer } from 'electron'
+import { ipcRenderer, shell } from 'electron'
 import { watchEffect } from 'vue'
 
 const terminal = $(commas.workspace.useCurrentTerminal())
-
-let branch = $ref('')
 
 const directory: string = $computed(() => {
   if (!terminal) return ''
   return terminal.cwd
 })
+
+let branch: string = $ref('')
+let remoteURL: string = $ref('')
 
 async function updateBranch() {
   if (directory) {
@@ -24,22 +25,62 @@ watchEffect(() => {
   branch = ''
   updateBranch()
 })
+
+async function updateRemoteURL() {
+  if (directory) {
+    remoteURL = await ipcRenderer.invoke('get-git-remote-url', directory)
+  } else {
+    remoteURL = ''
+  }
+}
+
+watchEffect(() => {
+  remoteURL = ''
+  updateRemoteURL()
+})
+
+const remoteExternalURL: string = $computed(() => {
+  if (!remoteURL) return ''
+  let targetURL = remoteURL
+  if (targetURL.endsWith('.git')) {
+    targetURL = targetURL.slice(0, -4)
+  }
+  const matches = targetURL.match(/^git@(.+):(.+)$/)
+  if (!matches) return targetURL
+  return `https://${matches[1]}/${matches[2]}${branch ? `/tree/${branch}` : ''}`
+})
+
+function openRemoteURL() {
+  if (!remoteExternalURL) return
+  shell.openExternal(remoteExternalURL)
+}
 </script>
 
 <template>
-  <div v-if="directory" class="git-anchor" @click="updateBranch">
+  <div v-if="remoteExternalURL" v-bind="$attrs" class="git-remote-anchor" @click="openRemoteURL">
+    <span class="feather-icon icon-github"></span>
+  </div>
+  <div v-if="directory" v-bind="$attrs" class="git-branch-anchor" @click="updateBranch">
     <span class="feather-icon icon-git-branch"></span>
     <span v-if="branch" class="branch-name">{{ branch }}</span>
   </div>
 </template>
 
+<script lang="ts">
+export default {
+  inheritAttrs: false,
+}
+</script>
+
 <style lang="scss" scoped>
-.git-anchor {
-  display: flex;
+.git-remote-anchor,
+.git-branch-anchor {
   order: 8;
-  box-sizing: border-box;
   margin-right: 0;
   margin-left: 8px;
+}
+.git-branch-anchor {
+  display: flex;
 }
 .branch-name {
   margin-left: 4px;

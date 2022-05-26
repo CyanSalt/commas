@@ -103,7 +103,7 @@ async function getMacOSCodeSign(name) {
   const { stdout } = await execa(
     `security find-identity -p codesigning -v | grep -o "\\"${name}: .*\\""`,
   )
-  return stdout.toString().trim()
+  return stdout.trim()
 }
 
 async function compressPackage(dir) {
