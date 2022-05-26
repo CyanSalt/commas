@@ -36,7 +36,7 @@ watchEffect(() => {
 <style lang="scss" scoped>
 .git-anchor {
   display: flex;
-  order: 1;
+  order: 8;
   box-sizing: border-box;
   margin-right: 0;
   margin-left: 8px;

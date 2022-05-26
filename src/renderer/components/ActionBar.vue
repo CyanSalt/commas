@@ -34,7 +34,7 @@ function configure() {
   line-height: 16px;
   background: rgb(var(--material-background) / var(--theme-opacity));
 }
-.anchor {
+:deep(.anchor) {
   margin-right: 8px;
   opacity: 0.5;
   transition: opacity 0.2s;
