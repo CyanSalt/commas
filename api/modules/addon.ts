@@ -1,3 +1,4 @@
+import { Module } from 'module'
 import * as path from 'path'
 import type { AddonInfo } from '../../src/typings/addon'
 import type { APIAddon, APIContext, CompatableAPI } from '../types'
@@ -35,19 +36,18 @@ function cloneAPI<T extends CompatableAPI>(api: T, name: string, entry: string) 
 }
 
 function addCommasModuleResolver() {
-  const Module = require('module')
   const modules = [
     'commas:api',
     'commas:api/main',
     'commas:api/renderer',
   ]
-  if (!Module._resolveFilename._original) {
+  if (!Module['_resolveFilename']._original) {
     const resolveFilename = function (this: any, request: string, ...args) {
       if (modules.includes(request)) return request
       return resolveFilename._original.call(this, request, ...args)
     }
-    resolveFilename._original = Module._resolveFilename
-    Module._resolveFilename = resolveFilename
+    resolveFilename._original = Module['_resolveFilename']
+    Module['_resolveFilename'] = resolveFilename
   }
 }
 

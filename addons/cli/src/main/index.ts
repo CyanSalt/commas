@@ -1,5 +1,6 @@
 import * as path from 'path'
 import * as util from 'util'
+import * as vm from 'vm'
 import { computed, effect, stop, unref } from '@vue/reactivity'
 import chalk from 'chalk'
 import * as commas from 'commas:api/main'
@@ -118,7 +119,6 @@ commas.context.provide('cli', {
   command: 'eval',
   handler({ argv }) {
     const script = argv[0]
-    const vm = require('vm')
     if (script === 'reset') {
       context = undefined
       return ''
