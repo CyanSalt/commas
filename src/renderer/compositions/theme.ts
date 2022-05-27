@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron'
-import { computed, unref, watchEffect } from 'vue'
+import { computed, readonly, unref, watchEffect } from 'vue'
 import { surface } from '../../shared/compositions'
 import type { Theme } from '../../typings/theme'
 import { injectIPC } from '../utils/compositions'
@@ -15,7 +15,7 @@ export function useTheme() {
 }
 
 const editorThemeRef = computed(() => unref(themeRef).editor)
-const editorTheme = surface(editorThemeRef)
+const editorTheme = readonly(surface(editorThemeRef))
 
 export function useEditorTheme() {
   return editorTheme

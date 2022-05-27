@@ -35,7 +35,7 @@ export function useAsyncComputed<T>(factory: () => Promise<T>, defaultValue?: T)
 
 
 function initializeSurface<T>(valueRef: Ref<T>, reactiveObject: T) {
-  let isUpdated = false
+  let isUpdated = true
   effect(() => {
     const latest = unref(valueRef)
     const rawObject = toRaw(reactiveObject)

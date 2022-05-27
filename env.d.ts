@@ -21,3 +21,11 @@ declare module 'commas:api/main' {
 declare module 'commas:api/renderer' {
   export * from '@commas/api/renderer'
 }
+
+declare module 'commas:external/@vue/reactivity' {
+  export * from '@vue/reactivity'
+}
+
+declare module 'commas:external/vue' {
+  export * from 'vue'
+}

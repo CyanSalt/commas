@@ -36,14 +36,9 @@ function cloneAPI<T extends CompatableAPI>(api: T, name: string, entry: string) 
 }
 
 function addCommasModuleResolver() {
-  const modules = [
-    'commas:api',
-    'commas:api/main',
-    'commas:api/renderer',
-  ]
   if (!Module['_resolveFilename']._original) {
     const resolveFilename = function (this: any, request: string, ...args) {
-      if (modules.includes(request)) return request
+      if (request.startsWith('commas:')) return request
       return resolveFilename._original.call(this, request, ...args)
     }
     resolveFilename._original = Module['_resolveFilename']
@@ -53,7 +48,7 @@ function addCommasModuleResolver() {
 
 function addCommasModule(exports) {
   addCommasModuleResolver()
-  const mod = { exports: { ...exports } } as any
+  const mod = { exports: { ...exports } } as NodeModule
   require.cache['commas:api'] = mod
   require.cache[app.isMainProcess() ? 'commas:api/main' : 'commas:api/renderer'] = mod
 }
@@ -61,6 +56,16 @@ function addCommasModule(exports) {
 function unsetCommasModule() {
   delete require.cache['commas:api']
   delete require.cache[app.isMainProcess() ? 'commas:api/main' : 'commas:api/renderer']
+}
+
+function addCommasExternalModules(modules: string[]) {
+  addCommasModuleResolver()
+  for (const id of modules) {
+    const request = `commas:external/${id}`
+    if (!(request in require.cache)) {
+      require.cache[request] = { exports: require(id) } as NodeModule
+    }
+  }
 }
 
 const loadedAddons: AddonInfo[] = []
@@ -82,6 +87,8 @@ function loadAddon(addon: AddonInfo, api: CompatableAPI) {
     processor = require(addon.entry)
   }
   const clonedAPI = cloneAPI(api, addon.name, addon.entry)
+  // Share reactivity system
+  addCommasExternalModules(['@vue/reactivity', 'vue'])
   addCommasModule(clonedAPI)
   processor(clonedAPI)
   unsetCommasModule()

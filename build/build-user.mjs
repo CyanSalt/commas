@@ -5,7 +5,7 @@ import getVersions from './utils/get-versions.mjs'
 
 getVersions().then(versions => Promise.all([
   getAddons('userdata/addons').then(dirs => Promise.all(dirs.flatMap(dir => [
-    buildAddonMain(versions, dir),
-    buildAddonRenderer(versions, dir),
+    buildAddonMain(versions, dir, true),
+    buildAddonRenderer(versions, dir, true),
   ]))),
 ]))

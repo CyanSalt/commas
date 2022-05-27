@@ -5,8 +5,9 @@ import buildRenderer from './build-renderer.mjs'
 /**
  * @param {NodeJS.ProcessVersions} versions
  * @param {string} dir
+ * @param {boolean} [external]
  */
-export default async (versions, dir) => {
+export default async (versions, dir, external) => {
   try {
     await fs.promises.access(path.join(dir, 'src/renderer/index.ts'))
   } catch {
@@ -19,6 +20,16 @@ export default async (versions, dir) => {
       entry: 'src/renderer/index.ts',
       formats: ['cjs'],
       fileName: () => 'index.js',
+    }
+    if (external) {
+      const alias = {
+        '@vue/reactivity': 'commas:external/@vue/reactivity',
+        vue: 'commas:external/vue',
+      }
+      options.resolve = { alias }
+      const moduleIds = Object.keys(alias)
+      const rollupOptions = options.build.rollupOptions
+      rollupOptions.external = rollupOptions.external.filter(item => !moduleIds.includes(item))
     }
     return options
   })
