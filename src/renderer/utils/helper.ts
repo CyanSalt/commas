@@ -24,8 +24,3 @@ export function handleMousePressing({ onMove, onEnd }: MousePressingOptions) {
   window.addEventListener('mouseup', cancel)
   return cancel
 }
-
-export function diligent<T>(fn: () => T) {
-  const value = fn()
-  return () => value
-}

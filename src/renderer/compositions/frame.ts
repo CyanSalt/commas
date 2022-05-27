@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron'
+import { diligent } from '../../shared/helper'
 import { injectIPC } from '../utils/compositions'
-import { diligent } from '../utils/helper'
 
 export function useFile(file: string) {
   return injectIPC('file', '', file)

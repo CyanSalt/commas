@@ -1,8 +1,8 @@
 import { surface } from '../../shared/compositions'
+import { diligent } from '../../shared/helper'
 import type { AddonInfo } from '../../typings/addon'
 import type { Settings, SettingsSpec } from '../../typings/settings'
 import { injectIPC } from '../utils/compositions'
-import { diligent } from '../utils/helper'
 
 export const useSettings = diligent(() => {
   const settingsRef = injectIPC<Settings>('settings', {})

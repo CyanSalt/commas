@@ -11,6 +11,11 @@ export function createIDGenerator(iterator?: IDIterator) {
   }
 }
 
+export function diligent<T>(fn: () => T) {
+  const value = fn()
+  return () => value
+}
+
 export interface Deferred {
   resolved: boolean,
   promise: Promise<void>,
