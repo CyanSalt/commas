@@ -1,5 +1,12 @@
 
 
+### [0.21.2](https://github.com/CyanSalt/commas/compare/v0.21.1...v0.21.2) (2022-05-27)
+
+
+### Bug Fixes
+
+* add external reactivity exports ([fc771b6](https://github.com/CyanSalt/commas/commit/fc771b6a2e0b8267fd89f185a32a8ba53678b357))
+
 ### [0.21.1](https://github.com/CyanSalt/commas/compare/v0.21.0...v0.21.1) (2022-05-27)
 
 
