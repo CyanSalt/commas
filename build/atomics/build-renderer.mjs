@@ -1,6 +1,9 @@
 import { builtinModules } from 'module'
 import vue from '@vitejs/plugin-vue'
 import vite from 'vite'
+import { requireCommonJS } from '../utils/common.mjs'
+
+const pkg = requireCommonJS(import.meta, '../../package.json')
 
 /**
  * @template T
@@ -36,9 +39,7 @@ export default (versions, tap) => vite.build(tap({
         /^commas:/,
         'electron',
         ...builtinModules,
-        '@vue/reactivity',
-        'lodash',
-        'vue',
+        ...Object.keys(pkg.dependencies),
       ],
       output: {
         format: 'cjs',

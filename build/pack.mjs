@@ -7,7 +7,7 @@ import packager from 'electron-packager'
 import png2icons from 'png2icons'
 import { requireCommonJS } from './utils/common.mjs'
 
-const app = requireCommonJS(import.meta, '../package.json')
+const pkg = requireCommonJS(import.meta, '../package.json')
 
 const execa = util.promisify(childProcess.exec)
 
@@ -52,7 +52,7 @@ const options = {
   dir: '.',
   platform: ['darwin', 'linux', 'win32'],
   executableName: process.platform === 'win32'
-    ? app.name : app.productName,
+    ? pkg.name : pkg.productName,
   out: 'release/',
   overwrite: true,
   asar: true,
@@ -65,14 +65,14 @@ const options = {
   extraResource: [
     'bin',
   ],
-  appVersion: app.version,
+  appVersion: pkg.version,
   appCopyright: [
-    'Copyright \u00a9', new Date().getFullYear(), app.author,
+    'Copyright \u00a9', new Date().getFullYear(), pkg.author,
   ].join(' '),
   appCategoryType: 'public.app-category.developer-tools',
   protocols: [
     {
-      name: app.productName,
+      name: pkg.productName,
       schemes: ['commas'],
     },
   ],
@@ -89,8 +89,8 @@ const options = {
     NSUserNotificationAlertStyle: 'alert',
   },
   win32metadata: {
-    FileDescription: app.productName,
-    OriginalFilename: `${app.name}.exe`,
+    FileDescription: pkg.productName,
+    OriginalFilename: `${pkg.name}.exe`,
   },
   afterCopy: [
     (buildPath, electronVersion, platform, arch, callback) => {

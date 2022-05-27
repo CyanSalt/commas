@@ -18,6 +18,7 @@ function getDefaultEnv() {
   const defaultEnv: NodeJS.ProcessEnv = {
     ...process.env,
     LANG: app.getLocale().replace('-', '_') + '.UTF-8',
+    COLORTERM: 'truecolor',
     TERM_PROGRAM: app.name,
     TERM_PROGRAM_VERSION: app.getVersion(),
     COMMAS_EXE: app.getPath('exe'),

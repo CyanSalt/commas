@@ -145,6 +145,7 @@ function useProxyServerStatus() {
 }
 
 export {
+  whistle,
   getLatestProxyServerVersion,
   useProxyServerVersionInfo,
   useProxyServerStatus,

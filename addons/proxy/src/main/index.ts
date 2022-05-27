@@ -1,11 +1,24 @@
 import { effect, ref, stop } from '@vue/reactivity'
 import * as address from 'address'
 import * as commas from 'commas:api/main'
+import { quote } from 'shell-quote'
 import { checkRootCA, installRootCA, uninstallRootCA } from './cert'
-import { getLatestProxyServerVersion, useProxyServerStatus, useProxyServerVersionInfo } from './server'
+import { getLatestProxyServerVersion, useProxyServerStatus, useProxyServerVersionInfo, whistle } from './server'
 import { useSystemProxyStatus } from './system'
 
 // Server
+commas.context.provide('cli', {
+  command: 'whistle',
+  async handler({ argv }) {
+    try {
+      const { stdout } = await whistle(quote(argv))
+      return stdout.trim()
+    } catch (err) {
+      return err.stderr
+    }
+  },
+})
+
 const serverStatusRef = useProxyServerStatus()
 commas.ipcMain.provide('proxy-server-status', serverStatusRef)
 
