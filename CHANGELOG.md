@@ -1,5 +1,12 @@
 
 
+### [0.21.1](https://github.com/CyanSalt/commas/compare/v0.21.0...v0.21.1) (2022-05-27)
+
+
+### Bug Fixes
+
+* batch operations in `surface` ([e8b2e8c](https://github.com/CyanSalt/commas/commit/e8b2e8c66d54360e4db40b1dc2ad3cb5499294c6))
+
 ## [0.21.0](https://github.com/CyanSalt/commas/compare/v0.20.0...v0.21.0) (2022-05-27)
 
 
