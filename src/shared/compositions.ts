@@ -1,5 +1,5 @@
 import type { Ref } from '@vue/reactivity'
-import { customRef, effect, shallowReactive, stop, toRaw, unref } from '@vue/reactivity'
+import { deferredComputed, customRef, effect, shallowReactive, stop, toRaw, unref } from '@vue/reactivity'
 import { difference, intersection, isEqual } from 'lodash'
 
 export function useAsyncComputed<T>(factory: () => Promise<T>): Ref<T | undefined>
@@ -35,35 +35,35 @@ export function useAsyncComputed<T>(factory: () => Promise<T>, defaultValue?: T)
 
 
 function initializeSurface<T>(valueRef: Ref<T>, reactiveObject: T) {
-  let running = 0
-  const markRunning = async (value: number) => {
-    running = value
-    await 'next tick'
-    running = 0
-  }
+  let isUpdated = false
   effect(() => {
     const latest = unref(valueRef)
-    if (running) return
-    markRunning(1)
     const rawObject = toRaw(reactiveObject)
     const latestKeys = Object.keys(latest)
     const currentKeys = Object.keys(rawObject)
     difference(latestKeys, currentKeys).forEach(key => {
+      isUpdated = true
       reactiveObject[key] = latest[key]
     })
     intersection(currentKeys, latestKeys).forEach(key => {
       if (!isEqual(rawObject[key], latest[key])) {
+        isUpdated = true
         reactiveObject[key] = latest[key]
       }
     })
     difference(currentKeys, latestKeys).forEach(key => {
+      isUpdated = true
       delete reactiveObject[key]
     })
   })
+  // Make `Object.assign` to trigger once only
+  const objectRef = deferredComputed(() => ({ ...reactiveObject }))
   effect(() => {
-    const value = { ...reactiveObject }
-    if (running) return
-    markRunning(2)
+    const value = unref(objectRef)
+    if (isUpdated) {
+      isUpdated = false
+      return
+    }
     valueRef.value = value
   })
 }

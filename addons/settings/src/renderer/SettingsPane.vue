@@ -6,6 +6,7 @@ import SettingsLine from './SettingsLine.vue'
 
 const { vI18n, TerminalPane } = commas.ui.vueAssets
 
+// TODO: this will not remove useless settings
 let settings = $(commas.remote.useUserSettings())
 let paneTabURL: string = $(commas.workspace.usePaneTabURL())
 let values = $ref({})
