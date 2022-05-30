@@ -9,10 +9,6 @@ export const useSettings = diligent(() => {
   return surface(settingsRef, true)
 })
 
-export const useUserSettings = diligent(() => {
-  return injectIPC<Settings>('user-settings', {})
-})
-
 export const useSettingsSpecs = diligent(() => {
   return injectIPC<SettingsSpec[]>('settings-specs', [])
 })

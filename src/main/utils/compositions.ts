@@ -1,7 +1,8 @@
 import * as fs from 'fs'
-import { computed, customRef, effect, stop, toRaw, unref } from '@vue/reactivity'
+import { computed, customRef, effect, stop, unref } from '@vue/reactivity'
 import type { ReactiveEffectOptions, Ref } from '@vue/reactivity'
 import { ipcMain } from 'electron'
+import { cloneDeep } from 'lodash'
 import YAML from 'yaml'
 import { broadcast } from '../lib/frame'
 import { watchFile, writeFile, writeYAMLFile } from './file'
@@ -104,17 +105,20 @@ function useEffect<T>(
 }
 
 function provideIPC<T>(key: string, valueRef: Ref<T>) {
-  ipcMain.handle(`get-ref:${key}`, () => toRaw(unref(valueRef)))
+  ipcMain.handle(`get-ref:${key}`, async () => {
+    const value = await Promise.resolve(unref(valueRef))
+    return cloneDeep(value)
+  })
   ipcMain.handle(`set-ref:${key}`, (event, value: T) => {
     valueRef.value = value
   })
   let latestValuePromise
   const reactiveEffect = effect(async () => {
-    const valuePromise = Promise.resolve(toRaw(unref(valueRef)))
+    const valuePromise = Promise.resolve(unref(valueRef))
     latestValuePromise = valuePromise
     const value = await valuePromise
     if (valuePromise === latestValuePromise) {
-      broadcast(`update-ref:${key}`, value)
+      broadcast(`update-ref:${key}`, cloneDeep(value))
     }
   })
   return () => {

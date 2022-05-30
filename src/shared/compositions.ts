@@ -1,5 +1,5 @@
 import type { Ref } from '@vue/reactivity'
-import { deferredComputed, customRef, effect, shallowReactive, stop, toRaw, unref } from '@vue/reactivity'
+import { customRef, deferredComputed, effect, shallowReactive, stop, toRaw, unref } from '@vue/reactivity'
 import { difference, intersection, isEqual } from 'lodash'
 
 export function useAsyncComputed<T>(factory: () => Promise<T>): Ref<T | undefined>
@@ -32,7 +32,6 @@ export function useAsyncComputed<T>(factory: () => Promise<T>, defaultValue?: T)
     }
   })
 }
-
 
 function initializeSurface<T>(valueRef: Ref<T>, reactiveObject: T) {
   let isUpdated = true

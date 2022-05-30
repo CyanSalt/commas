@@ -183,7 +183,6 @@ async function downloadUserFile(file: string, url: string, force?: boolean) {
 
 function handleSettingsMessages() {
   provideIPC('settings-specs', specsRef)
-  provideIPC('user-settings', userSettingsRef)
   provideIPC('settings', settingsRef)
   ipcMain.handle('open-settings', () => {
     return openSettingsFile()

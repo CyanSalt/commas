@@ -1,5 +1,6 @@
 import { ipcRenderer } from 'electron'
-import { customRef, toRaw, watchEffect } from 'vue'
+import { cloneDeep } from 'lodash'
+import { customRef, watchEffect } from 'vue'
 
 export function injectIPC<T>(key: string, defaultValue: T, token?: string) {
   return customRef<T>((track, trigger) => {
@@ -31,7 +32,7 @@ export function injectIPC<T>(key: string, defaultValue: T, token?: string) {
         return currentValue
       },
       set(newValue) {
-        ipcRenderer.invoke(`set-ref:${key}`, toRaw(newValue), token)
+        ipcRenderer.invoke(`set-ref:${key}`, cloneDeep(newValue), token)
       },
     }
   })

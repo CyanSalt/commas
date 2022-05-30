@@ -17,39 +17,33 @@ const filteredList = $computed(() => {
   return list.filter(item => item.name.toLowerCase().includes(lowerCase))
 })
 
-let userSettings = $(commas.remote.useUserSettings())
+const settings = commas.remote.useSettings()
 
 const currentTheme = $computed<string>(() => {
-  return userSettings['terminal.theme.name']
+  return settings['terminal.theme.name']
 })
 
 const themeType = $computed({
   get() {
-    return userSettings['terminal.theme.customization']?.type ?? ''
+    return settings['terminal.theme.customization'].type ?? ''
   },
   set(value) {
     if (!value) {
       value = undefined
     }
     let customization = {
-      ...userSettings['terminal.theme.customization'],
+      ...settings['terminal.theme.customization'],
       type: value,
     }
-    if (!value && Object.keys(customization).length <= 1) {
-      customization = undefined
+    if (!value) {
+      customization = {}
     }
-    userSettings = {
-      ...userSettings,
-      'terminal.theme.customization': customization,
-    }
+    settings['terminal.theme.customization'] = customization
   },
 })
 
 function updateTheme(name: string) {
-  userSettings = {
-    ...userSettings,
-    'terminal.theme.name': name,
-  }
+  settings['terminal.theme.name'] = name
 }
 
 function reset() {

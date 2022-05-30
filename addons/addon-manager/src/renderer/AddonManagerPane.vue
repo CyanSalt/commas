@@ -7,18 +7,13 @@ import { useDiscoveredAddons } from './compositions'
 
 const { vI18n, TerminalPane, SwitchControl } = commas.ui.vueAssets
 
-let settings = $(commas.remote.useUserSettings())
-const specs = $(commas.remote.useSettingsSpecs())
-
-const spec = $computed(() => {
-  return specs.find(item => item.key === 'terminal.addon.includes')
-})
+const settings = commas.remote.useSettings()
 
 const discoveredAddons = $(useDiscoveredAddons())
 
 let enabledAddons = $computed<string[]>({
   get() {
-    return settings['terminal.addon.includes'] ?? spec?.default ?? []
+    return settings['terminal.addon.includes']
   },
   set(value) {
     ipcRenderer.invoke('set-addons', value)

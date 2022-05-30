@@ -5,7 +5,6 @@ import {
   useAddons,
   useSettings,
   useSettingsSpecs,
-  useUserSettings,
 } from '../../src/renderer/compositions/settings'
 import { openCodeEditorTab } from '../../src/renderer/compositions/terminal'
 import { translate } from '../../src/renderer/utils/i18n'
@@ -40,7 +39,6 @@ export {
   useLanguage,
   useSettings,
   useSettingsSpecs,
-  useUserSettings,
   useFile,
   getAddonManifest,
   openUserDirectory,

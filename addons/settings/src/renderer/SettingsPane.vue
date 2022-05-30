@@ -6,8 +6,7 @@ import SettingsLine from './SettingsLine.vue'
 
 const { vI18n, TerminalPane } = commas.ui.vueAssets
 
-// TODO: this will not remove useless settings
-let settings = $(commas.remote.useUserSettings())
+const settings = commas.remote.useSettings()
 let paneTabURL: string = $(commas.workspace.usePaneTabURL())
 let values = $ref({})
 let open = $ref<Record<string, boolean>>({})
@@ -89,7 +88,7 @@ function revert() {
 }
 
 function confirm() {
-  settings = values
+  Object.assign(settings, values)
 }
 
 function toggleAll() {
