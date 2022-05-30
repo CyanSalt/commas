@@ -9,6 +9,8 @@ import { random } from 'lodash'
 import type { CommandModule } from './command'
 import { executeCommand, useExternalURLCommands } from './command'
 
+chalk.level = 3
+
 const settings = commas.settings.useSettings()
 
 const commands: CommandModule[] = commas.context.getCollection('cli')
