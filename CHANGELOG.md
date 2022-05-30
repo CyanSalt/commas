@@ -1,5 +1,12 @@
 
 
+### [0.21.3](https://github.com/CyanSalt/commas/compare/v0.21.2...v0.21.3) (2022-05-30)
+
+
+### Bug Fixes
+
+* hide user-settings ipc ref ([ad0b629](https://github.com/CyanSalt/commas/commit/ad0b62988ec741225749bf8ee2266a7a4ba787e5))
+
 ### [0.21.2](https://github.com/CyanSalt/commas/compare/v0.21.1...v0.21.2) (2022-05-27)
 
 
