@@ -158,9 +158,6 @@ onMounted(() => {
   line-height: 1.2;
   overflow: hidden;
   transition: background 0.2s;
-  &.is-opaque {
-    background: rgb(var(--theme-background));
-  }
   &.is-vibrancy {
     background: transparent;
   }
@@ -178,5 +175,8 @@ onMounted(() => {
   flex-direction: column;
   width: 0;
   background: rgb(var(--theme-background) / var(--theme-opacity));
+  .app.is-opaque & {
+    background: rgb(var(--theme-background));
+  }
 }
 </style>
