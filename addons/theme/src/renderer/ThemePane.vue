@@ -23,22 +23,21 @@ const currentTheme = $computed<string>(() => {
   return settings['terminal.theme.name']
 })
 
-const themeType = $computed({
+const themeType = $computed<string>({
   get() {
     return settings['terminal.theme.customization'].type ?? ''
   },
   set(value) {
-    if (!value) {
-      value = undefined
-    }
-    let customization = {
-      ...settings['terminal.theme.customization'],
+    let customization: Record<string, string> = {
       type: value,
     }
     if (!value) {
       customization = {}
     }
-    settings['terminal.theme.customization'] = customization
+    settings['terminal.theme.customization'] = {
+      ...settings['terminal.theme.customization'],
+      ...customization,
+    }
   },
 })
 
