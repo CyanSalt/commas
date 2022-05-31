@@ -43,6 +43,7 @@ export default (versions, tap) => vite.build(tap({
       ],
       output: {
         format: 'cjs',
+        exports: 'named',
         freeze: false,
       },
     },

@@ -1,14 +1,18 @@
 import * as commas from 'commas:api/renderer'
 import PreferencePane from './PreferencePane.vue'
 
-commas.workspace.registerTabPane('preference', {
-  title: 'Preferences#!preference.1',
-  component: PreferencePane,
-  icon: {
-    name: 'feather-icon icon-settings',
-  },
-})
+export default () => {
 
-commas.ipcRenderer.on('open-preference-pane', () => {
-  commas.workspace.openPaneTab('preference')
-})
+  commas.workspace.registerTabPane('preference', {
+    title: 'Preferences#!preference.1',
+    component: PreferencePane,
+    icon: {
+      name: 'feather-icon icon-settings',
+    },
+  })
+
+  commas.ipcRenderer.on('open-preference-pane', () => {
+    commas.workspace.openPaneTab('preference')
+  })
+
+}

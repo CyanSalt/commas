@@ -9,22 +9,26 @@ declare module '../../../../src/typings/terminal' {
   }
 }
 
-commas.ui.addCSSFile('dist/renderer/style.css')
+export default () => {
 
-commas.workspace.registerXtermAddon('iterm2', tab => new ITerm2Addon(tab), true)
+  commas.ui.addCSSFile('dist/renderer/style.css')
 
-commas.context.provide('@ui-slot', BadgeSlot)
+  commas.workspace.registerXtermAddon('iterm2', tab => new ITerm2Addon(tab), true)
 
-const currentTerminal = $(commas.workspace.useCurrentTerminal())
+  commas.context.provide('@ui-slot', BadgeSlot)
 
-commas.ipcRenderer.on('set-mark', () => {
-  if (!currentTerminal) return
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  currentTerminal.addons?.iterm2?.setMark()
-})
+  const currentTerminal = $(commas.workspace.useCurrentTerminal())
 
-commas.ipcRenderer.on('scroll-to-mark', (event, offset: number) => {
-  if (!currentTerminal) return
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  currentTerminal.addons?.iterm2?.scrollToMark(offset)
-})
+  commas.ipcRenderer.on('set-mark', () => {
+    if (!currentTerminal) return
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    currentTerminal.addons?.iterm2?.setMark()
+  })
+
+  commas.ipcRenderer.on('scroll-to-mark', (event, offset: number) => {
+    if (!currentTerminal) return
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    currentTerminal.addons?.iterm2?.scrollToMark(offset)
+  })
+
+}

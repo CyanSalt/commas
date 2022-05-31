@@ -2,17 +2,21 @@ import * as commas from 'commas:api/renderer'
 import AddonManagerLink from './AddonManagerLink.vue'
 import AddonManagerPane from './AddonManagerPane.vue'
 
-commas.ui.addCSSFile('dist/renderer/style.css')
+export default () => {
 
-commas.workspace.registerTabPane('addon-manager', {
-  title: 'Addons#!addon-manager.1',
-  component: AddonManagerPane,
-  icon: {
-    name: 'feather-icon icon-layers',
-  },
-})
+  commas.ui.addCSSFile('dist/renderer/style.css')
 
-commas.context.provide('preference', {
-  component: AddonManagerLink,
-  group: 'general',
-})
+  commas.workspace.registerTabPane('addon-manager', {
+    title: 'Addons#!addon-manager.1',
+    component: AddonManagerPane,
+    icon: {
+      name: 'feather-icon icon-layers',
+    },
+  })
+
+  commas.context.provide('preference', {
+    component: AddonManagerLink,
+    group: 'general',
+  })
+
+}

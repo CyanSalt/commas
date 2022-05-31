@@ -3,8 +3,8 @@
  */
 module.exports = function (commas) {
   if (commas.app.isMainProcess()) {
-    require('./dist/main')
+    require('./dist/main').default()
   } else {
-    require('./dist/renderer')
+    require('./dist/renderer').default()
   }
 }

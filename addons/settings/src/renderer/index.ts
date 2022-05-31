@@ -2,18 +2,22 @@ import * as commas from 'commas:api/renderer'
 import SettingsLink from './SettingsLink.vue'
 import SettingsPane from './SettingsPane.vue'
 
-commas.ui.addCSSFile('dist/renderer/style.css')
+export default () => {
 
-commas.workspace.registerTabPane('settings', {
-  title: 'Settings#!settings.1',
-  component: SettingsPane,
-  icon: {
-    name: 'feather-icon icon-sliders',
-  },
-})
+  commas.ui.addCSSFile('dist/renderer/style.css')
 
-commas.context.provide('preference', {
-  component: SettingsLink,
-  group: 'general',
-  priority: -1,
-})
+  commas.workspace.registerTabPane('settings', {
+    title: 'Settings#!settings.1',
+    component: SettingsPane,
+    icon: {
+      name: 'feather-icon icon-sliders',
+    },
+  })
+
+  commas.context.provide('preference', {
+    component: SettingsLink,
+    group: 'general',
+    priority: -1,
+  })
+
+}

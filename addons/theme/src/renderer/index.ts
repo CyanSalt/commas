@@ -2,17 +2,21 @@ import * as commas from 'commas:api/renderer'
 import ThemeLink from './ThemeLink.vue'
 import ThemePane from './ThemePane.vue'
 
-commas.ui.addCSSFile('dist/renderer/style.css')
+export default () => {
 
-commas.workspace.registerTabPane('theme', {
-  title: 'Theme#!theme.1',
-  component: ThemePane,
-  icon: {
-    name: 'feather-icon icon-feather',
-  },
-})
+  commas.ui.addCSSFile('dist/renderer/style.css')
 
-commas.context.provide('preference', {
-  component: ThemeLink,
-  group: 'general',
-})
+  commas.workspace.registerTabPane('theme', {
+    title: 'Theme#!theme.1',
+    component: ThemePane,
+    icon: {
+      name: 'feather-icon icon-feather',
+    },
+  })
+
+  commas.context.provide('preference', {
+    component: ThemeLink,
+    group: 'general',
+  })
+
+}

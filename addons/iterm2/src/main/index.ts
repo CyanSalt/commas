@@ -1,12 +1,16 @@
 import * as commas from 'commas:api/main'
 
-commas.context.provide('cli', {
-  command: 'attention',
-  handler() {
-    return '\x1b]1337;RequestAttention=fireworks\x1b\\'
-  },
-})
+export default () => {
 
-commas.keybinding.addKeyBindingsFile('keybindings.json')
+  commas.context.provide('cli', {
+    command: 'attention',
+    handler() {
+      return '\x1b]1337;RequestAttention=fireworks\x1b\\'
+    },
+  })
 
-commas.i18n.addTranslationDirectory('locales')
+  commas.keybinding.addKeyBindingsFile('keybindings.json')
+
+  commas.i18n.addTranslationDirectory('locales')
+
+}

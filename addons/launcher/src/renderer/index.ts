@@ -5,30 +5,34 @@ import LauncherList from './LauncherList.vue'
 import { startLauncher, runLauncherScript, useLaunchers } from './launcher'
 import { clearLauncherSessions, LauncherSessionAddon } from './session'
 
-commas.ui.addCSSFile('dist/renderer/style.css')
+export default () => {
 
-commas.ipcRenderer.on('start-launcher', (event, launcher) => {
-  startLauncher(launcher)
-})
-commas.ipcRenderer.on('run-script', (event, launcher, index) => {
-  runLauncherScript(launcher, index)
-})
+  commas.ui.addCSSFile('dist/renderer/style.css')
 
-watch(useLaunchers(), () => {
-  clearLauncherSessions()
-})
+  commas.ipcRenderer.on('start-launcher', (event, launcher) => {
+    startLauncher(launcher)
+  })
+  commas.ipcRenderer.on('run-script', (event, launcher, index) => {
+    runLauncherScript(launcher, index)
+  })
 
-commas.workspace.registerXtermAddon('launcherSession', tab => {
-  const settings = commas.remote.useSettings()
-  if (tab.group?.type === 'launcher' && settings['launcher.session.persist']) {
-    return new LauncherSessionAddon(tab.group.data)
-  }
-}, true)
+  watch(useLaunchers(), () => {
+    clearLauncherSessions()
+  })
 
-commas.context.provide('@ui-side-list', LauncherList)
+  commas.workspace.registerXtermAddon('launcherSession', tab => {
+    const settings = commas.remote.useSettings()
+    if (tab.group?.type === 'launcher' && settings['launcher.session.persist']) {
+      return new LauncherSessionAddon(tab.group.data)
+    }
+  }, true)
 
-commas.context.provide('preference', {
-  component: LauncherLink,
-  group: 'feature',
-  priority: 1,
-})
+  commas.context.provide('@ui-side-list', LauncherList)
+
+  commas.context.provide('preference', {
+    component: LauncherLink,
+    group: 'feature',
+    priority: 1,
+  })
+
+}

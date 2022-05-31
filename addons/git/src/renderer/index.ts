@@ -1,6 +1,10 @@
 import * as commas from 'commas:api/renderer'
 import GitAnchor from './GitAnchor.vue'
 
-commas.ui.addCSSFile('dist/renderer/style.css')
+export default () => {
 
-commas.context.provide('@ui-action-anchor', GitAnchor)
+  commas.ui.addCSSFile('dist/renderer/style.css')
+
+  commas.context.provide('@ui-action-anchor', GitAnchor)
+
+}
