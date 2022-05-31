@@ -6,8 +6,8 @@ export default () => {
 
   commas.ipcMain.handle('reset-theme', () => {
     const settings = commas.settings.useSettings()
-    const defaultSettings = commas.settings.useDefaultSettings()
-    settings['terminal.theme.name'] = defaultSettings['terminal.theme.name']
+    delete settings['terminal.theme.name']
+    delete settings['terminal.theme.customization']
   })
 
 }

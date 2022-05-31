@@ -28,16 +28,15 @@ const themeType = $computed<string>({
     return settings['terminal.theme.customization'].type ?? ''
   },
   set(value) {
-    let customization: Record<string, string> = {
-      type: value,
+    const customization: Record<string, string> = {
+      ...settings['terminal.theme.customization'],
     }
     if (!value) {
-      customization = {}
+      delete customization.type
+    } else {
+      customization.type = value
     }
-    settings['terminal.theme.customization'] = {
-      ...settings['terminal.theme.customization'],
-      ...customization,
-    }
+    settings['terminal.theme.customization'] = customization
   },
 })
 
