@@ -192,6 +192,7 @@ function reset() {
           v-model.lazy="model"
           :placeholder="placeholder"
           type="number"
+          autofocus
           class="form-control"
           :min="spec.schema.minimum"
           :max="spec.schema.maximum"

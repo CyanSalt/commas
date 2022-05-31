@@ -16,7 +16,9 @@ let isPinned = $ref(Boolean(modelValue && pinned.includes(modelValue)))
 
 function update(value, pinnedStatus: boolean) {
   isPinned = pinnedStatus
-  emit('update:modelValue', value)
+  if (pinnedStatus) {
+    emit('update:modelValue', value)
+  }
 }
 
 function unpin(value) {
