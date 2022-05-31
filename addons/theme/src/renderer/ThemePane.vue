@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { shell, ipcRenderer } from 'electron'
+import ThemeColorPicker from './ThemeColorPicker.vue'
 import { fetchThemeList } from './utils'
 import type { ThemeEntry } from './utils'
 
@@ -19,9 +20,7 @@ const filteredList = $computed(() => {
 
 const settings = commas.remote.useSettings()
 
-const currentTheme = $computed<string>(() => {
-  return settings['terminal.theme.name']
-})
+const currentTheme = $computed<string>(() => settings['terminal.theme.name'])
 
 const themeType = $computed<string>({
   get() {
@@ -40,9 +39,26 @@ const themeType = $computed<string>({
   },
 })
 
-function updateTheme(name: string) {
-  settings['terminal.theme.name'] = name
-}
+const fields = [
+  'foreground',
+  'background',
+  'black',
+  'brightBlack',
+  'red',
+  'brightRed',
+  'green',
+  'brightGreen',
+  'yellow',
+  'brightYellow',
+  'blue',
+  'brightBlue',
+  'magenta',
+  'brightMagenta',
+  'cyan',
+  'brightCyan',
+  'white',
+  'brightWhite',
+]
 
 function reset() {
   ipcRenderer.invoke('reset-theme')
@@ -57,7 +73,7 @@ async function applyItem(item: ThemeEntry) {
   loading = item.name
   const result = await commas.remote.downloadUserFile(`themes/${item.name}.json`, item.url)
   if (result) {
-    updateTheme(item.name)
+    settings['terminal.theme.name'] = item.name
   }
   loading = false
 }
@@ -68,6 +84,9 @@ async function applyItem(item: ThemeEntry) {
     <h2 v-i18n class="group-title">Configure theme#!theme.2</h2>
     <div class="group">
       <div class="form-line">
+        <span v-i18n class="link" @click="reset">Reset to default#!preference.12</span>
+      </div>
+      <div class="form-line dark-mode">
         <label v-i18n class="form-label">Dark Mode#!theme.4</label>
         <select v-model="themeType" class="form-control">
           <option v-i18n value="">Follow Theme#!theme.5</option>
@@ -75,10 +94,17 @@ async function applyItem(item: ThemeEntry) {
           <option v-i18n value="dark">Dark#!theme.7</option>
         </select>
       </div>
-      <span v-i18n class="link" @click="reset">Reset to default#!preference.12</span>
-      <div class="form-line">
-        <label v-i18n class="form-label">Search#!preference.11</label>
-        <input v-model="keyword" type="search" class="form-control">
+      <div class="form-line color-list">
+        <ThemeColorPicker v-for="field in fields" :key="field" :field="field" />
+      </div>
+      <div class="form-line theme-searcher">
+        <input
+          v-model="keyword"
+          v-i18n:placeholder
+          type="search"
+          placeholder="Find#!terminal.5"
+          class="form-control"
+        >
         <div class="form-line-tip">
           <span v-i18n>Theme will be downloaded from#!theme.3</span>
           <span class="link github-link" @click="openMarketplace">mbadolato/iTerm2-Color-Schemes</span>
@@ -102,6 +128,24 @@ async function applyItem(item: ThemeEntry) {
 </template>
 
 <style lang="scss" scoped>
+.color-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 24px;
+}
+.dark-mode .form-label,
+:deep(.theme-color-picker) .form-label {
+  width: 10em;
+}
+.theme-searcher {
+  width: 100%;
+  .form-control {
+    width: 50%;
+  }
+  .form-line-tip {
+    margin-top: 8px;
+  }
+}
 .theme-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(90px, 1fr));

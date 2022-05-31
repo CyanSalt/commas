@@ -7,6 +7,7 @@ import {
   useSettingsSpecs,
 } from '../../src/renderer/compositions/settings'
 import { openCodeEditorTab } from '../../src/renderer/compositions/terminal'
+import { useTheme } from '../../src/renderer/compositions/theme'
 import { translate } from '../../src/renderer/utils/i18n'
 
 export * from '../shim'
@@ -39,6 +40,7 @@ export {
   useLanguage,
   useSettings,
   useSettingsSpecs,
+  useTheme,
   useFile,
   getAddonManifest,
   openUserDirectory,
