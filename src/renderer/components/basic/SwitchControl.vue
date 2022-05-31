@@ -15,7 +15,6 @@ function change(event) {
 <template>
   <label class="switch-control">
     <input
-      v-bind="$attrs"
       type="checkbox"
       :checked="modelValue"
       class="switch-checkbox"
@@ -24,12 +23,6 @@ function change(event) {
     <span class="switch-content"></span>
   </label>
 </template>
-
-<script lang="ts">
-export default {
-  inheritAttrs: false,
-}
-</script>
 
 <style lang="scss" scoped>
 .switch-control {

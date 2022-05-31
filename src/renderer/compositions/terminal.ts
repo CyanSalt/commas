@@ -1,7 +1,7 @@
 import * as os from 'os'
 import * as path from 'path'
 import { ipcRenderer, shell } from 'electron'
-import { debounce, isMatch, trim } from 'lodash'
+import { isMatch, trim } from 'lodash'
 import { markRaw, reactive, toRaw, watch, watchEffect } from 'vue'
 import { Terminal } from 'xterm'
 import type { ITerminalOptions } from 'xterm'
@@ -155,16 +155,16 @@ export async function createTerminalTab({
       Object.assign(tab, getWindowsProcessInfo(tab.shell, title))
     }
   })
-  const updateCwd = debounce(async () => {
+  let latestPromise: Promise<string | undefined>
+  xterm.onLineFeed(async () => {
     if (settings['terminal.tab.liveCwd']) {
-      const latestCwd: string | undefined = await ipcRenderer.invoke('get-terminal-cwd', tab.pid)
-      if (latestCwd) {
+      const promise: Promise<string | undefined> = ipcRenderer.invoke('get-terminal-cwd', tab.pid)
+      latestPromise = promise
+      const latestCwd = await promise
+      if (latestCwd && latestPromise === promise) {
         tab.cwd = latestCwd
       }
     }
-  }, 250)
-  xterm.onLineFeed(() => {
-    updateCwd()
   })
   xterm.onBell(() => {
     tab.alerting = true

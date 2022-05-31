@@ -1,14 +1,9 @@
-import { debounce } from 'lodash'
-
 interface MousePressingOptions {
   onMove?: (event: MouseEvent) => void,
   onEnd?: (event?: MouseEvent) => void,
 }
 
 export function handleMousePressing({ onMove, onEnd }: MousePressingOptions) {
-  if (onMove) {
-    onMove = debounce(onMove)
-  }
   function cancel(event) {
     if (onMove) {
       window.removeEventListener('mousemove', onMove)

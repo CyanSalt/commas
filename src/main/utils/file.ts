@@ -1,7 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import chokidar from 'chokidar'
-import { debounce } from 'lodash'
 import YAML from 'yaml'
 import { requestFile } from './net'
 import { updateDocument } from './yaml-updater'
@@ -37,7 +36,7 @@ async function writeFile(file: string, content: string | undefined) {
 function watchFile(file: string, callback: (event: string, filename: string) => void) {
   const watcher = chokidar.watch(file)
   try {
-    return watcher.on('all', debounce(callback, 500))
+    return watcher.on('all', callback)
   } catch {
     return null
   }
