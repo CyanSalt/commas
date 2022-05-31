@@ -3,10 +3,11 @@ import { isEqual } from 'lodash'
 import { watch } from 'vue'
 import OrderedCheckbox from './OrderedCheckbox.vue'
 
-const { modelValue, withKeys, pinned } = defineProps<{
+const { modelValue, withKeys, pinned, lazy } = defineProps<{
   modelValue: object | undefined,
   withKeys?: boolean,
   pinned?: object | undefined,
+  lazy?: boolean,
 }>()
 
 const emit = defineEmits<{
@@ -106,12 +107,22 @@ function togglePinned(item: EditorEntryItem) {
           <span class="feather-icon icon-minus"></span>
         </span>
         <template v-if="withKeys">
-          <input v-model="item.entry.key" :readonly="item.pinned" type="text" class="form-control">
+          <template v-if="lazy">
+            <input v-model.lazy="item.entry.key" :readonly="item.pinned" type="text" class="form-control">
+          </template>
+          <template v-else>
+            <input v-model="item.entry.key" :readonly="item.pinned" type="text" class="form-control">
+          </template>
           <span class="property-arrow">
             <span class="feather-icon icon-arrow-right"></span>
           </span>
         </template>
-        <input v-model="item.entry.value" :readonly="item.pinned" type="text" class="form-control">
+        <template v-if="lazy">
+          <input v-model.lazy="item.entry.value" :readonly="item.pinned" type="text" class="form-control">
+        </template>
+        <template v-else>
+          <input v-model="item.entry.value" :readonly="item.pinned" type="text" class="form-control">
+        </template>
       </div>
       <slot name="note" :item="item"></slot>
     </template>

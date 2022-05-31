@@ -6,10 +6,9 @@ import { accepts, isObjectSchema } from './json-schema'
 
 const { vI18n, ObjectEditor, SwitchControl, ValueSelector } = commas.ui.vueAssets
 
-const { spec, modelValue, currentValue, open } = defineProps<{
+const { spec, modelValue, open } = defineProps<{
   spec: SettingsSpec,
   modelValue: any,
-  currentValue: any,
   open?: boolean,
 }>()
 
@@ -66,10 +65,6 @@ let model = $computed({
 const isCustomized = $computed(() => {
   if (modelValue === undefined) return false
   return !isEqual(modelValue, spec.default)
-})
-
-const isChanged = $computed(() => {
-  return !isEqual(modelValue, currentValue)
 })
 
 function normalize(value) {
@@ -149,7 +144,7 @@ function reset() {
     class="settings-line form-line block"
     @toggle="toggle"
   >
-    <summary :class="['line-summary', { customized: isCustomized, changed: isChanged }]">
+    <summary :class="['line-summary', { customized: isCustomized }]">
       <span class="link tree-node">
         <span class="feather-icon icon-chevron-down"></span>
       </span>
@@ -171,6 +166,7 @@ function reset() {
         v-model="model"
         :with-keys="accepts(spec.schema, 'object')"
         :pinned="spec.recommendations"
+        lazy
       >
         <template #extra>
           <span class="link reset" @click="reset">
@@ -193,7 +189,7 @@ function reset() {
       <ValueSelector v-else v-model="model" :pinned="spec.recommendations">
         <input
           v-if="accepts(spec.schema, ['number', 'integer'])"
-          v-model="model"
+          v-model.lazy="model"
           :placeholder="placeholder"
           type="number"
           class="form-control"
@@ -203,7 +199,7 @@ function reset() {
         >
         <input
           v-else-if="accepts(spec.schema, 'string')"
-          v-model="model"
+          v-model.lazy="model"
           :placeholder="placeholder"
           :pattern="spec.schema.pattern"
           type="text"
@@ -211,7 +207,7 @@ function reset() {
         >
         <textarea
           v-else
-          v-model="model"
+          v-model.lazy="model"
           :placeholder="placeholder"
           class="form-control"
         ></textarea>
@@ -236,9 +232,6 @@ function reset() {
   .line-summary.customized & {
     font-style: italic;
   }
-  .line-summary.changed & {
-    color: rgb(var(--design-yellow));
-  }
 }
 .item-key {
   margin-left: 16px;
@@ -248,9 +241,6 @@ function reset() {
   user-select: text;
   .line-summary.customized & {
     font-style: italic;
-  }
-  .line-summary.changed & {
-    color: rgb(var(--design-yellow));
   }
 }
 .tree-node {

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
-import { cloneDeep, groupBy, isEqual, startCase } from 'lodash'
+import { groupBy, startCase } from 'lodash'
 import { nextTick, onBeforeUpdate, watchEffect } from 'vue'
 import SettingsLine from './SettingsLine.vue'
 
@@ -8,13 +8,8 @@ const { vI18n, TerminalPane } = commas.ui.vueAssets
 
 const settings = commas.remote.useSettings()
 let paneTabURL: string = $(commas.workspace.usePaneTabURL())
-let values = $ref({})
 let open = $ref<Record<string, boolean>>({})
 let lines: Record<string, HTMLElement | undefined> = {}
-
-const isChanged = $computed(() => {
-  return !isEqual(settings, values)
-})
 
 const specs = $(commas.remote.useSettingsSpecs())
 const configurableSpecs = $computed(() => {
@@ -83,19 +78,9 @@ let isCollapsed = $computed<boolean>({
   },
 })
 
-function revert() {
-  values = cloneDeep(settings)
-}
-
-function confirm() {
-  Object.assign(settings, values)
-}
-
 function toggleAll() {
   isCollapsed = !isCollapsed
 }
-
-watchEffect(revert)
 
 onBeforeUpdate(() => {
   lines = {}
@@ -110,12 +95,6 @@ onBeforeUpdate(() => {
         <span :class="['link form-action toggle-all', { collapsed: isCollapsed }]" @click="toggleAll">
           <span class="feather-icon icon-chevrons-down"></span>
         </span>
-        <span :class="['link form-action revert', { disabled: !isChanged }]" @click="revert">
-          <span class="feather-icon icon-rotate-ccw"></span>
-        </span>
-        <span :class="['link form-action confirm', { disabled: !isChanged }]" @click="confirm">
-          <span class="feather-icon icon-check"></span>
-        </span>
       </div>
       <div
         v-for="group in groups"
@@ -128,7 +107,7 @@ onBeforeUpdate(() => {
           v-for="row in group.rows"
           :ref="item => lines[row.key] = item?.$el"
           :key="row.key"
-          v-model="values[row.key]"
+          v-model="settings[row.key]"
           v-model:open="open[row.key]"
           :spec="row"
           :current-value="settings[row.key]"
@@ -145,17 +124,6 @@ onBeforeUpdate(() => {
 .toggle-all.collapsed {
   opacity: 1;
   transform: rotate(-90deg);
-}
-.revert {
-  color: rgb(var(--design-red));
-}
-.confirm {
-  color: rgb(var(--design-green));
-}
-.revert.disabled,
-.confirm.disabled {
-  color: inherit;
-  opacity: 0.5;
 }
 .settings-group-title {
   margin: 8px 0;
