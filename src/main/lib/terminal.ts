@@ -107,7 +107,7 @@ function handleTerminalMessages() {
         const { stdout } = await execa(`lsof -p ${pid} | grep cwd`)
         return stdout.slice(stdout.indexOf('/'), -1)
       } else if (process.platform === 'linux') {
-        return fs.promises.readlink(`/proc/${pid}/cwd`)
+        return await fs.promises.readlink(`/proc/${pid}/cwd`)
       } else {
         // TODO: no command supported on Windows
         throw new Error('Cannot get working directory on Windows')
