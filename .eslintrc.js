@@ -23,6 +23,14 @@ module.exports = {
           paths: ['vue'],
         }],
       },
+    },
+    {
+      files: [
+        '!**/renderer/**/*.ts',
+      ],
+      rules: {
+        'vue/prefer-import-from-vue': 'off',
+      },
     }
   ],
 }

@@ -1,5 +1,4 @@
-import type { ReactiveEffectRunner } from '@vue/reactivity'
-import type { Directive, DirectiveHook } from 'vue'
+import type { ReactiveEffectRunner, Directive, DirectiveHook } from 'vue'
 import { effect, stop } from 'vue'
 
 export interface DirectiveEffectBinding<T> {
