@@ -283,7 +283,7 @@ onMounted(() => {
   flex: 1;
   flex-direction: column;
   justify-content: space-between;
-  width: 0;
+  min-width: 0;
   padding-left: 1em;
 }
 .player-card {
@@ -329,7 +329,7 @@ onMounted(() => {
 }
 .player-stats {
   flex: 1;
-  width: 0;
+  min-width: 0;
 }
 .form-line-tip {
   color: rgb(var(--theme-foreground) / 0.5);

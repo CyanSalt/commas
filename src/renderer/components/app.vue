@@ -19,7 +19,7 @@ import {
   handleTerminalMessages,
   createTerminalTab,
 } from '../compositions/terminal'
-import { injectTheme, useTheme } from '../compositions/theme'
+import { injectTheme } from '../compositions/theme'
 import ActionBar from './ActionBar.vue'
 import CodeEditorPane from './CodeEditorPane.vue'
 import FindBox from './FindBox.vue'
@@ -34,7 +34,6 @@ const isTabListEnabled = $(useIsTabListEnabled())
 const terminal = $(useCurrentTerminal())
 const tabs = $(useTerminalTabs())
 const willQuit: boolean = $(useWillQuit())
-const theme = useTheme()
 
 const slots = commas.proxy.context.getCollection('@ui-slot')
 
@@ -77,7 +76,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div :class="['app', { 'is-opaque': isFullscreen, 'is-vibrancy': theme.vibrancy }]">
+  <div :class="['app', { 'is-opaque': isFullscreen }]">
     <TitleBar />
     <div class="content">
       <TabList v-show="isTabListEnabled" />
@@ -158,9 +157,6 @@ onMounted(() => {
   line-height: 1.2;
   overflow: hidden;
   transition: background 0.2s;
-  &.is-vibrancy {
-    background: transparent;
-  }
 }
 .content {
   z-index: 1;
@@ -171,9 +167,9 @@ onMounted(() => {
 }
 .interface {
   display: flex;
-  flex: auto;
+  flex: 1;
   flex-direction: column;
-  width: 0;
+  min-width: 0;
   background: rgb(var(--theme-background) / var(--theme-opacity));
   .app.is-opaque & {
     background: rgb(var(--theme-background));

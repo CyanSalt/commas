@@ -96,14 +96,14 @@ onActivated(() => {
 .terminal-teletype {
   position: relative;
   display: flex;
-  flex: auto;
-  height: 0;
+  flex: 1;
+  min-height: 0;
 }
 .terminal-content {
-  flex: auto;
+  flex: 1;
   /* issue@xterm: fix bug of `xterm.fit()` */
   box-sizing: border-box;
-  width: 0;
+  min-width: 0;
   padding: 4px 8px;
   :deep(.xterm-viewport) {
     @include partials.scroll-container;

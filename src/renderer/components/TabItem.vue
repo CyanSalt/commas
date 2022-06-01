@@ -77,9 +77,9 @@ function close() {
 }
 .tab-title {
   display: flex;
-  flex: auto;
+  flex: 1;
   align-items: center;
-  width: 0;
+  min-width: 0;
   opacity: 0.5;
   transition: opacity 0.2s;
   // .tab-item:hover &,
