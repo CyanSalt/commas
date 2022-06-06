@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
-import { ipcRenderer } from 'electron'
+import { ipcRenderer, shell } from 'electron'
 import { onMounted } from 'vue'
 import type { AddonInfo } from '../../../../src/typings/addon'
 import { useDiscoveredAddons } from './compositions'
@@ -49,6 +49,11 @@ function refresh() {
   ipcRenderer.invoke('discover-addons')
 }
 
+function showInFolder(addon: AddonInfo) {
+  if (addon.type === 'builtin') return
+  shell.showItemInFolder(addon.entry)
+}
+
 onMounted(() => {
   refresh()
 })
@@ -78,16 +83,15 @@ onMounted(() => {
               <span class="addon-name">{{ manifest.productName ?? manifest.name ?? addon.name }}</span>
               <span
                 v-if="(manifest.productName ?? manifest.name) !== addon.name"
-                class="addon-id"
+                :class="['addon-id', { link: addon.type !== 'builtin' }]"
+                @click="showInFolder(addon)"
               >{{ addon.name }}</span>
               <span v-if="addon.type !== 'builtin'" class="addon-version">{{ manifest.version ?? '' }}</span>
             </span>
-            <span class="link form-action">
-              <span
-                :class="['feather-icon', enabled ? 'icon-zap-off' : 'icon-zap']"
-                @click="toggle(addon, !enabled)"
-              ></span>
-            </span>
+            <SwitchControl
+              :model-value="enabled"
+              @update:model-value="toggle(addon, $event)"
+            />
           </div>
           <div class="addon-description">{{ manifest.description ?? '' }}</div>
           <span v-if="addon.type === 'builtin'" v-i18n class="addon-tag">Built-in#!addon-manager.3</span>
@@ -118,12 +122,7 @@ onMounted(() => {
 .addon-card-title {
   display: flex;
   justify-content: space-between;
-  .form-action {
-    color: rgb(var(--system-red));
-    .addon-card.is-disabled & {
-      color: rgb(var(--system-yellow));
-    }
-  }
+  align-items: center;
 }
 .addon-primary-info {
   display: flex;
@@ -137,6 +136,7 @@ onMounted(() => {
   margin-left: 1em;
   color: rgb(var(--theme-foreground) / 0.5);
   font-size: 12px;
+  opacity: 1;
 }
 .addon-tag {
   color: rgb(var(--theme-green));
