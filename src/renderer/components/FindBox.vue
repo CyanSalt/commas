@@ -161,7 +161,7 @@ watch($$(isFinding), (value: boolean) => {
   font-family: inherit;
   font-size: inherit;
   line-height: 20px;
-  background: rgb(127 127 127 / 0.2);
+  background: var(--design-input-background);
   outline: none;
   &::placeholder {
     color: rgb(var(--theme-foreground));

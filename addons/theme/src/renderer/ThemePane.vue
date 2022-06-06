@@ -159,7 +159,7 @@ async function applyItem(item: ThemeEntry) {
   flex-direction: column;
   margin: 0;
   overflow: hidden;
-  background: rgb(var(--theme-foreground) / 0.1);
+  background: var(--design-card-background);
   border-radius: 4px;
 }
 .theme-screenshot {

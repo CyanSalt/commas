@@ -12,8 +12,7 @@ interface BrowserWindowThemeOptions {
   vibrancy: BrowserWindowConstructorOptions['vibrancy'],
 }
 
-const CSS_COLORS: Partial<Record<keyof Theme, string>> = {
-  // xterm
+const THEME_CSS_COLORS: Partial<Record<keyof Theme, string>> = {
   foreground: '--theme-foreground',
   background: '--theme-background',
   selection: '--theme-selection',
@@ -33,14 +32,21 @@ const CSS_COLORS: Partial<Record<keyof Theme, string>> = {
   brightMagenta: '--theme-brightmagenta',
   brightCyan: '--theme-brightcyan',
   brightWhite: '--theme-brightwhite',
-  // extensions
+}
+
+const EXTRA_CSS_COLORS: Partial<Record<keyof Theme, string>> = {
+  systemRed: '--system-red',
+  systemYellow: '--system-yellow',
+  systemGreen: '--system-green',
+  systemCyan: '--system-cyan',
+  systemBlue: '--system-blue',
+  systemMagenta: '--system-magenta',
   systemAccent: '--system-accent',
   materialBackground: '--material-background',
   secondaryBackground: '--secondary-background',
 }
 
 const CSS_PROPERTIES = {
-  // extensions
   opacity: '--theme-opacity',
 }
 
@@ -101,11 +107,17 @@ const themeRef = computed(async () => {
     l: backgroundHSLA.l - Math.min(backgroundHSLA.l * 0.2, 0.1),
   }))
   theme.secondaryBackground = toCSSColor(mix(backgroundRGBA, { r: 127, g: 127, b: 127, a: 1 }, 0.9))
+  theme.systemRed = systemPreferences.getSystemColor('red')
+  theme.systemYellow = systemPreferences.getSystemColor('yellow')
+  theme.systemGreen = systemPreferences.getSystemColor('green')
+  // theme.systemCyan = systemPreferences.getSystemColor('cyan')
+  theme.systemBlue = systemPreferences.getSystemColor('blue')
+  theme.systemMagenta = systemPreferences.getSystemColor('pink')
   const accentColor = systemPreferences.getAccentColor()
   theme.systemAccent = accentColor ? `#${accentColor.slice(0, 6)}` : ''
   theme.vibrancy = process.platform === 'darwin' ? settings['terminal.style.vibrancy'] : false
   theme.variables = Object.fromEntries([
-    ...Object.entries(CSS_COLORS).map(([key, attr]) => {
+    ...Object.entries({ ...THEME_CSS_COLORS, ...EXTRA_CSS_COLORS }).map(([key, attr]) => {
       let value = theme[key]
       if (value) {
         const rgba = toRGBA(theme[key])
@@ -116,7 +128,7 @@ const themeRef = computed(async () => {
     ...Object.entries(CSS_PROPERTIES).map(([key, attr]) => [attr, theme[key]]),
   ].filter(([key, value]) => value !== undefined))
   theme.editor = {
-    ...Object.fromEntries(Object.entries(CSS_COLORS).map(([key]) => {
+    ...Object.fromEntries(Object.entries(THEME_CSS_COLORS).map(([key]) => {
       return [key, toCSSHEX(toRGBA(theme[key]))]
     })),
     type: theme.type,

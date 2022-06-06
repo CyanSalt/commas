@@ -37,9 +37,9 @@ function configure() {
 <style lang="scss" scoped>
 .proxy-anchor {
   &.active {
-    color: rgb(var(--design-cyan));
+    color: rgb(var(--system-cyan));
     &.system {
-      color: rgb(var(--design-magenta));
+      color: rgb(var(--system-magenta));
     }
   }
 }

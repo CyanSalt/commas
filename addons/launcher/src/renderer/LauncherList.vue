@@ -162,7 +162,7 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
     opacity: 1;
   }
   &.active {
-    color: rgb(var(--design-yellow));
+    color: rgb(var(--system-yellow));
     opacity: 1;
   }
 }
@@ -171,7 +171,7 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
   opacity: 0.5;
   transition: opacity 0.2s, color 0.2s;
   &.collapsed {
-    color: rgb(var(--design-yellow));
+    color: rgb(var(--system-yellow));
     opacity: 1;
   }
   &:not(.collapsed):hover {
@@ -197,7 +197,7 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
   font-family: inherit;
   font-size: inherit;
   line-height: 20px;
-  background: rgb(127 127 127 / 0.2);
+  background: var(--design-input-background);
   outline: none;
   &::placeholder {
     color: rgb(var(--theme-foreground));
@@ -205,9 +205,9 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
   }
 }
 .launch:hover {
-  color: rgb(var(--design-green));
+  color: rgb(var(--system-green));
 }
 .launch-externally:hover {
-  color: rgb(var(--design-blue));
+  color: rgb(var(--system-blue));
 }
 </style>

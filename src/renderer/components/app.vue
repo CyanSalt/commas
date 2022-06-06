@@ -127,14 +127,18 @@ onMounted(() => {
   initial-value: 0;
 }
 
+// https://developer.apple.com/design/human-interface-guidelines/macos/visual-design/color#system-colors
 :global(:root) {
-  --design-green: 40 201 65;
-  --design-yellow: 255 189 46;
-  --design-red: 255 97 89;
-  --design-blue: 47 136 255;
-  --design-magenta: 207 150 253;
-  --design-cyan: 0 200 210;
-  --system-accent: var(--design-blue);
+  --system-red: 255 69 58;
+  --system-yellow: 255 214 10;
+  --system-green: 50 215 75;
+  --system-cyan: 102 212 207;
+  --system-blue: 10 132 255;
+  --system-magenta: 255 55 95;
+  --system-accent: var(--system-blue);
+  --design-card-background: rgb(var(--theme-foreground) / 0.15);
+  --design-input-background: rgb(127 127 127 / 0.2);
+  --design-separator: rgb(127 127 127 / 0.2);
 }
 :global(::selection) {
   background: rgb(var(--theme-selection));

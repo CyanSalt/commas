@@ -150,7 +150,7 @@ function togglePinned(item: EditorEntryItem) {
     margin-right: 4px;
   }
   &.remove:hover {
-    color: rgb(var(--design-red));
+    color: rgb(var(--system-red));
   }
 }
 .property-arrow {

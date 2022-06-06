@@ -205,10 +205,10 @@ watchEffect(() => {
   -webkit-app-region: no-drag;
 }
 .open-directory:hover {
-  color: rgb(var(--design-blue));
+  color: rgb(var(--system-blue));
 }
 .run-script:hover {
-  color: rgb(var(--design-green));
+  color: rgb(var(--system-green));
 }
 .directory-icon {
   width: 16px;
@@ -253,13 +253,13 @@ watchEffect(() => {
   cursor: pointer;
   -webkit-app-region: no-drag;
   &.minimize:hover {
-    color: rgb(var(--design-green));
+    color: rgb(var(--system-green));
   }
   &.maximize:hover {
-    color: rgb(var(--design-yellow));
+    color: rgb(var(--system-yellow));
   }
   &.close:hover {
-    color: rgb(var(--design-red));
+    color: rgb(var(--system-red));
   }
 }
 </style>

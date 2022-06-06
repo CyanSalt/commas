@@ -109,7 +109,7 @@ onMounted(() => {
 }
 .addon-card {
   padding: 8px 0;
-  border-top: 1px solid rgb(var(--theme-foreground) / 0.1);
+  border-top: 1px solid var(--design-separator);
   line-height: 24px;
   &.is-disabled {
     color: rgb(var(--theme-foreground) / 0.5);
@@ -119,9 +119,9 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   .form-action {
-    color: rgb(var(--design-red));
+    color: rgb(var(--system-red));
     .addon-card.is-disabled & {
-      color: rgb(var(--design-yellow));
+      color: rgb(var(--system-yellow));
     }
   }
 }

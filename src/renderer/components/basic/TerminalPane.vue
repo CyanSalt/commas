@@ -113,7 +113,7 @@ function openEditingMenu(event: MouseEvent) {
   font-family: inherit;
   font-size: inherit;
   line-height: 20px;
-  background: rgb(127 127 127 / 0.2);
+  background: var(--design-input-background);
   outline: none;
   &::placeholder {
     color: rgb(var(--theme-foreground));
@@ -141,10 +141,10 @@ function openEditingMenu(event: MouseEvent) {
   height: 24px;
   padding: 2px 6px;
   border: none;
-  color: var(--foreground-color);
+  color: var(--theme-foreground);
   font: inherit;
   line-height: 20px;
-  background: rgb(127 127 127 / 0.2);
+  background: var(--design-input-background);
   border-radius: 4px;
   outline: none;
 }

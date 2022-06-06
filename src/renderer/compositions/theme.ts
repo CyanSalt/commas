@@ -24,9 +24,9 @@ export function useEditorTheme() {
 export function injectTheme() {
   watchEffect((onInvalidate) => {
     const type = theme.type
-    document.body.dataset.themeType = type
+    document.documentElement.dataset.themeType = type
     onInvalidate(() => {
-      delete document.body.dataset.themeType
+      delete document.documentElement.dataset.themeType
     })
   })
   watchEffect((onInvalidate) => {

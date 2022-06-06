@@ -58,7 +58,7 @@ watch($$(position), (value, oldValue) => {
       <div
         class="semicircle item-semi"
         :style="{
-          color: `rgb(var(--design-${shape.item.color}))`,
+          color: `rgb(var(--system-${shape.item.color}))`,
           transform: `rotate(${shape.start}turn)`,
         }"
       ></div>
@@ -120,7 +120,7 @@ watch($$(position), (value, oldValue) => {
   left: 50%;
   width: 4px;
   margin-left: -2px;
-  background: rgb(var(--design-red));
+  background: rgb(var(--system-red));
   border-radius: 2px;
   transform-origin: bottom;
 }

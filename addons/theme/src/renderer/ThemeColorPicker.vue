@@ -45,7 +45,7 @@ const model = $computed({
 }
 .color-indicator {
   border: none;
-  background: rgb(127 127 127 / 0.2);
+  background: var(--design-input-background);
   border-radius: 4px;
 }
 </style>

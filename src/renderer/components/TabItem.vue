@@ -88,7 +88,7 @@ function close() {
     opacity: 1;
   }
   .sortable-item.dragging & {
-    color: rgb(var(--design-yellow));
+    color: rgb(var(--system-yellow));
   }
 }
 .tab-icon {
@@ -115,7 +115,7 @@ function close() {
   padding: 0 8px;
   border-radius: 8px;
   .tab-item.active & {
-    background: rgb(var(--theme-foreground) / 0.15);
+    background: var(--design-card-background);
   }
 }
 .right-side {
@@ -131,10 +131,10 @@ function close() {
   border-radius: 50%;
   transition: color 0.2s;
   &.busy {
-    color: rgb(var(--design-green));
+    color: rgb(var(--system-green));
   }
   &.alerting {
-    color: rgb(var(--design-yellow));
+    color: rgb(var(--system-yellow));
   }
   .tab-item:hover & {
     display: none;
@@ -154,6 +154,6 @@ function close() {
   cursor: pointer;
 }
 .close:hover {
-  color: rgb(var(--design-red));
+  color: rgb(var(--system-red));
 }
 </style>

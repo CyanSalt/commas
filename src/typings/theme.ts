@@ -16,9 +16,15 @@ export interface EditorTheme extends ColorTheme {
 
 export interface Theme extends ColorTheme {
   name: string,
-  systemAccent: string,
   opacity: number,
   variables: Record<string, string>,
   editor: EditorTheme,
+  systemRed: string,
+  systemYellow: string,
+  systemGreen: string,
+  systemCyan: string,
+  systemBlue: string,
+  systemMagenta: string,
+  systemAccent: string,
   vibrancy: boolean,
 }
