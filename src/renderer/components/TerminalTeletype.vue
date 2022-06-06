@@ -72,9 +72,8 @@ watchEffect((onInvalidate) => {
 onActivated(() => {
   const xterm = tab.xterm
   if (xterm['_core'].viewport) {
-    xterm['_core'].viewport.syncScrollArea()
+    xterm['_core'].viewport.syncScrollArea(true)
   }
-  xterm.scrollToBottom()
   xterm.focus()
 })
 </script>
