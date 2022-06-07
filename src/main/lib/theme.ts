@@ -1,6 +1,7 @@
 import { computed, effect, ref, unref } from '@vue/reactivity'
 import { nativeTheme, systemPreferences } from 'electron'
 import type { BrowserWindowConstructorOptions } from 'electron'
+import type { ITheme } from 'xterm'
 import type { EditorTheme, Theme } from '../../typings/theme'
 import { toRGBA, toCSSColor, toCSSHEX, toElectronHEX, isDarkColor, mix, toHSLA, toRGBAFromHSLA } from '../utils/color'
 import { provideIPC } from '../utils/compositions'
@@ -12,7 +13,7 @@ interface BrowserWindowThemeOptions {
   vibrancy: BrowserWindowConstructorOptions['vibrancy'],
 }
 
-const THEME_CSS_COLORS: Partial<Record<keyof Theme, string>> = {
+const THEME_CSS_COLORS: Partial<Record<keyof ITheme, string>> = {
   foreground: '--theme-foreground',
   background: '--theme-background',
   selection: '--theme-selection',
@@ -34,7 +35,7 @@ const THEME_CSS_COLORS: Partial<Record<keyof Theme, string>> = {
   brightWhite: '--theme-brightwhite',
 }
 
-const EXTRA_CSS_COLORS: Partial<Record<keyof Theme, string>> = {
+const EXTRA_CSS_COLORS: Partial<Record<Exclude<keyof Theme, keyof ITheme>, string>> = {
   systemRed: '--system-red',
   systemYellow: '--system-yellow',
   systemGreen: '--system-green',
@@ -46,7 +47,7 @@ const EXTRA_CSS_COLORS: Partial<Record<keyof Theme, string>> = {
   secondaryBackground: '--secondary-background',
 }
 
-const CSS_PROPERTIES = {
+const CSS_PROPERTIES: Partial<Record<Exclude<keyof Theme, keyof ITheme>, string>> = {
   opacity: '--theme-opacity',
 }
 
@@ -54,13 +55,13 @@ const themeRef = computed(async () => {
   const settings = useSettings()
   const defaultSettings = useDefaultSettings()
   const defaultThemeName = defaultSettings['terminal.theme.name']
-  const defaultTheme: Theme = require(resourceFile('themes', `${defaultThemeName}.json`))
-  let originalTheme = defaultTheme
+  const defaultTheme: Required<ITheme> = require(resourceFile('themes', `${defaultThemeName}.json`))
+  let originalTheme: ITheme = defaultTheme
   const name: string = settings['terminal.theme.name'] || defaultThemeName
   if (name !== defaultThemeName) {
     const path = `themes/${name}.json`
     // TODO: memoize
-    let source: Theme | undefined
+    let source: ITheme | undefined
     try {
       source = require(resourceFile(path))
     } catch {
@@ -74,22 +75,19 @@ const themeRef = computed(async () => {
       originalTheme = source
     }
   }
-  const customization: Partial<Theme> = settings['terminal.theme.customization']
-  const theme: Theme = {
+  const customization: Partial<ITheme> = settings['terminal.theme.customization']
+  const opacity: number = settings['terminal.style.opacity']
+  const theme = {
     ...defaultTheme,
     ...originalTheme,
     ...customization,
     name,
-  }
-  const opacity: number = settings['terminal.style.opacity']
+    opacity,
+  } as Theme
   const backgroundRGBA = toRGBA(theme.background!)
   const foregroundRGBA = toRGBA(theme.foreground!)
-  theme.opacity = opacity
   theme.background = toCSSColor({ ...backgroundRGBA, a: 1 })
-  if (!['dark', 'light'].includes(theme.type)) {
-    const isDark = isDarkColor(backgroundRGBA)
-    theme.type = isDark ? 'dark' : 'light'
-  }
+  theme.type = isDarkColor(backgroundRGBA) ? 'dark' : 'light'
   let selectionRGBA = theme.selection ? toRGBA(theme.selection) : undefined
   if (!selectionRGBA || selectionRGBA.a < 1) {
     selectionRGBA = mix(foregroundRGBA, backgroundRGBA, 0.5)

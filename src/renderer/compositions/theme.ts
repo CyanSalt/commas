@@ -23,13 +23,6 @@ export function useEditorTheme() {
 
 export function injectTheme() {
   watchEffect((onInvalidate) => {
-    const type = theme.type
-    document.documentElement.dataset.themeType = type
-    onInvalidate(() => {
-      delete document.documentElement.dataset.themeType
-    })
-  })
-  watchEffect((onInvalidate) => {
     const declarations = Object.entries(theme.variables)
       .map(([key, value]) => `${key}: ${value};`).join(' ')
     const injection: Promise<string> = ipcRenderer.invoke('inject-style', `:root[data-commas] { ${declarations} }`)

@@ -22,23 +22,6 @@ const settings = commas.remote.useSettings()
 
 const currentTheme = $computed<string>(() => settings['terminal.theme.name'])
 
-const themeType = $computed<string>({
-  get() {
-    return settings['terminal.theme.customization'].type ?? ''
-  },
-  set(value) {
-    const customization: Record<string, string> = {
-      ...settings['terminal.theme.customization'],
-    }
-    if (!value) {
-      delete customization.type
-    } else {
-      customization.type = value
-    }
-    settings['terminal.theme.customization'] = customization
-  },
-})
-
 const fields = [
   'foreground',
   'background',
@@ -86,14 +69,6 @@ async function applyItem(item: ThemeEntry) {
       <div class="form-line">
         <span v-i18n class="link" @click="reset">Reset to default#!preference.12</span>
       </div>
-      <div class="form-line dark-mode">
-        <label v-i18n class="form-label">Dark Mode#!theme.4</label>
-        <select v-model="themeType" class="form-control">
-          <option v-i18n value="">Follow Theme#!theme.5</option>
-          <option v-i18n value="light">Light#!theme.6</option>
-          <option v-i18n value="dark">Dark#!theme.7</option>
-        </select>
-      </div>
       <div class="form-line color-list">
         <ThemeColorPicker v-for="field in fields" :key="field" :field="field" />
       </div>
@@ -133,7 +108,6 @@ async function applyItem(item: ThemeEntry) {
   grid-template-columns: repeat(2, 1fr);
   gap: 0 24px;
 }
-.dark-mode .form-label,
 :deep(.theme-color-picker) .form-label {
   width: 10em;
 }

@@ -1,21 +1,16 @@
 import type { ITheme } from 'xterm'
 
-export interface ColorTheme extends Required<ITheme> {
+export interface EditorTheme extends Required<ITheme> {
   type: 'dark' | 'light',
-  systemAccent: string,
-  materialBackground: string,
-  secondaryBackground: string,
-}
-
-export interface EditorTheme extends ColorTheme {
   comment: string,
   lineHighlight: string,
   lineNumber: string,
   activeLineNumber: string,
 }
 
-export interface Theme extends ColorTheme {
+export interface Theme extends Required<ITheme> {
   name: string,
+  type: 'dark' | 'light',
   opacity: number,
   variables: Record<string, string>,
   editor: EditorTheme,
@@ -27,4 +22,6 @@ export interface Theme extends ColorTheme {
   systemMagenta: string,
   systemAccent: string,
   vibrancy: boolean,
+  materialBackground: string,
+  secondaryBackground: string,
 }
