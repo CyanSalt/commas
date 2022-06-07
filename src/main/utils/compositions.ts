@@ -63,7 +63,7 @@ function useYAMLFile<T>(file: string, defaultValue?: T, { onTrigger }: { onTrigg
       const content = unref(contentRef)
       if (typeof content !== 'undefined') {
         try {
-          return YAML.parse(content) as T
+          return YAML.parse(content) ?? defaultValue
         } catch {
           // ignore error
         }
