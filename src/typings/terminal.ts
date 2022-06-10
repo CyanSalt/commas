@@ -1,3 +1,4 @@
+import type { Component } from 'vue'
 import type { ITerminalAddon, Terminal } from 'xterm'
 import type { IconEntry } from '../renderer/assets/icons'
 import type { Deferred } from '../shared/helper'
@@ -6,7 +7,7 @@ export interface TerminalTabPane {
   type?: string,
   title: string,
   icon?: IconEntry,
-  component: any,
+  component: Component,
   instance?: any,
 }
 

@@ -1,5 +1,15 @@
 import * as commas from 'commas:api/renderer'
+import type { Component } from 'vue'
 import PreferencePane from './PreferencePane.vue'
+
+declare module '../../../../api/modules/context' {
+  export interface Context {
+    preference: {
+      component: Component,
+      group: string,
+    },
+  }
+}
 
 export default () => {
 

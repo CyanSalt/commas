@@ -44,9 +44,9 @@ function generateSettingsSource() {
     .join('\n')
 }
 
-const defaultSettingsRef = computed<Settings>(() => {
+const defaultSettingsRef = computed(() => {
   const currentSpecs = unref(specsRef)
-  return Object.fromEntries(currentSpecs.map(spec => [spec.key, spec.default]))
+  return Object.fromEntries(currentSpecs.map(spec => [spec.key, spec.default])) as Settings
 })
 
 const reactiveDefaultSettings = surface(defaultSettingsRef)
@@ -61,7 +61,7 @@ function whenSettingsReady() {
   return deferredSettings.promise
 }
 
-const userSettingsRef = useYAMLFile<Settings>(userFile('settings.yaml'), {}, {
+const userSettingsRef = useYAMLFile(userFile('settings.yaml'), {} as Settings, {
   onTrigger() {
     deferredSettings.resolve()
   },
@@ -76,7 +76,7 @@ const settingsRef = computed<Settings>({
       ...defaultSettings,
       ...userSettings,
     })
-    let actualSettings = {}
+    let actualSettings = {} as Settings
     if (oldSettings) {
       const specs = unref(specsRef)
       for (const spec of specs) {
@@ -100,7 +100,7 @@ const settingsRef = computed<Settings>({
       Object.entries(data).filter(
         ([key, value]) => !isEqual(value, defaultSettings[key]),
       ),
-    )
+    ) as Settings
   },
 })
 

@@ -5,7 +5,7 @@ import type { Settings, SettingsSpec } from '../../typings/settings'
 import { injectIPC } from '../utils/compositions'
 
 export const useSettings = diligent(() => {
-  const settingsRef = injectIPC<Settings>('settings', {})
+  const settingsRef = injectIPC('settings', {} as Settings)
   return surface(settingsRef, true)
 })
 

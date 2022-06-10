@@ -16,6 +16,12 @@ declare module '../../../../src/typings/settings' {
   }
 }
 
+declare module '../../../../api/modules/context' {
+  export interface Context {
+    cli: CommandModule,
+  }
+}
+
 chalk.level = 3
 
 export default () => {

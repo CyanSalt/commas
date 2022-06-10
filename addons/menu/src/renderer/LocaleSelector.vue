@@ -1,12 +1,8 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
+import type { LanguageOption } from './locales'
 
 const { vI18n } = commas.ui.vueAssets
-
-interface LanguageOption {
-  label: string,
-  value: string,
-}
 
 const language = $(commas.remote.useLanguage())
 const locales: LanguageOption[] = commas.context.getCollection('locales')

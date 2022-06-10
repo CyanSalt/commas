@@ -1,5 +1,12 @@
 import * as commas from 'commas:api/renderer'
 import LocaleSelector from './LocaleSelector.vue'
+import type { LanguageOption } from './locales'
+
+declare module '../../../../api/modules/context' {
+  export interface Context {
+    locales: LanguageOption,
+  }
+}
 
 export default () => {
 
