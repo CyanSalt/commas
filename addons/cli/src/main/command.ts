@@ -37,7 +37,7 @@ async function executeCommand(
 
 const externalURLCommandsRef = computed(() => {
   const settings = commas.settings.useSettings()
-  const entries: ({ command: string, url: string })[] | undefined = settings['cli.command.externalURLs']
+  const entries = settings['cli.command.externalURLs']
   return entries ? entries.map<CommandModule>(entry => {
     const { url, command } = entry
     return {

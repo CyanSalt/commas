@@ -23,10 +23,10 @@ async function createTerminal(webContents: WebContents, { shell, cwd }: CreateTe
     app.whenReady(),
   ])
   const settings = useSettings()
-  const env: Record<string, string> = {
+  const env = {
     ...getDefaultEnv(),
     ...settings['terminal.shell.env'],
-  }
+  } as Record<string, string>
   if (!shell) {
     shell = settings['terminal.shell.path'] || getDefaultShell()
   }
@@ -45,7 +45,7 @@ async function createTerminal(webContents: WebContents, { shell, cwd }: CreateTe
     cwd,
     env,
   }
-  let args: string[] = settings['terminal.shell.args']
+  let args = settings['terminal.shell.args']
   if (process.platform === 'win32') {
     args = settings['terminal.shell.windowsArgs']
   } else {

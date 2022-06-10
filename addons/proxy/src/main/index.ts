@@ -6,6 +6,13 @@ import { checkRootCA, installRootCA, uninstallRootCA } from './cert'
 import { getLatestProxyServerVersion, useProxyServerStatus, useProxyServerVersionInfo, whistle } from './server'
 import { useSystemProxyStatus } from './system'
 
+declare module '../../../../src/typings/settings' {
+  export interface Settings {
+    'proxy.server.whistle'?: string,
+    'proxy.server.port'?: number,
+  }
+}
+
 export default () => {
 
   // Server

@@ -9,6 +9,13 @@ import { random } from 'lodash'
 import type { CommandModule } from './command'
 import { executeCommand, useExternalURLCommands } from './command'
 
+declare module '../../../../src/typings/settings' {
+  export interface Settings {
+    'cli.command.externalURLs'?: { command: string, url: string }[],
+    'cli.command.aliases'?: Record<string, string>,
+  }
+}
+
 chalk.level = 3
 
 export default () => {

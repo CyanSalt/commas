@@ -57,7 +57,7 @@ const themeRef = computed(async () => {
   const defaultThemeName = defaultSettings['terminal.theme.name']
   const defaultTheme: Required<ITheme> = require(resourceFile('themes', `${defaultThemeName}.json`))
   let originalTheme: ITheme = defaultTheme
-  const name: string = settings['terminal.theme.name'] || defaultThemeName
+  const name = settings['terminal.theme.name'] || defaultThemeName
   if (name !== defaultThemeName) {
     const path = `themes/${name}.json`
     // TODO: memoize
@@ -75,8 +75,8 @@ const themeRef = computed(async () => {
       originalTheme = source
     }
   }
-  const customization: Partial<ITheme> = settings['terminal.theme.customization']
-  const opacity: number = settings['terminal.style.opacity']
+  const customization: ITheme = settings['terminal.theme.customization']
+  const opacity = settings['terminal.style.opacity']
   const theme = {
     ...defaultTheme,
     ...originalTheme,

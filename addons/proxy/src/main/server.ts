@@ -15,7 +15,7 @@ const builtinServerVersionInfo = {
 const settings = commas.settings.useSettings()
 
 const whistlePathRef = commas.helperMain.useAsyncComputed(async () => {
-  const whistlePath: string = settings['proxy.server.whistle']
+  const whistlePath = settings['proxy.server.whistle']
   if (!whistlePath) return builtinWhistlePath
   if (path.isAbsolute(whistlePath)) return whistlePath
   try {
@@ -116,7 +116,7 @@ const serverStatusRef = customRef<boolean | undefined>((track, trigger) => {
     }
   }
   const createEffect = () => commas.helperMain.useEffect((onInvalidate) => {
-    const port = settings['proxy.server.port']
+    const port = settings['proxy.server.port']!
     toggle(true, () => createServer(port))
     onInvalidate(() => {
       toggle(false, () => closeServer())

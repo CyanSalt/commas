@@ -7,8 +7,8 @@ const systemStatus = $(useSystemProxyStatus())
 
 let status = $(useProxyServerStatus())
 
-const port = $computed<number>(() => {
-  return settings['proxy.server.port']
+const port = $computed(() => {
+  return settings['proxy.server.port']!
 })
 
 function toggle() {

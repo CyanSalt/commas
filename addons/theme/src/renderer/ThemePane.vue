@@ -20,7 +20,7 @@ const filteredList = $computed(() => {
 
 const settings = commas.remote.useSettings()
 
-const currentTheme = $computed<string>(() => settings['terminal.theme.name'])
+const currentTheme = $computed(() => settings['terminal.theme.name'])
 
 const fields = [
   'foreground',

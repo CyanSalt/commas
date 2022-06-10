@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { startCase } from 'lodash'
+import type { ITheme } from 'xterm'
 
 const { vI18n } = commas.ui.vueAssets
 
@@ -18,7 +19,7 @@ const model = $computed({
     return settings['terminal.theme.customization'][field] ?? theme[field]
   },
   set: value => {
-    const customization: Record<string, string> = {
+    const customization: ITheme = {
       ...settings['terminal.theme.customization'],
     }
     if (theme[field] === value) {

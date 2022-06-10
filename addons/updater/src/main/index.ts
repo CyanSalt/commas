@@ -3,6 +3,12 @@ import * as commas from 'commas:api/main'
 import { app, autoUpdater } from 'electron'
 import { checkForUpdates, setupAutoUpdater, useAutoUpdaterEffect } from './updater'
 
+declare module '../../../../src/typings/settings' {
+  export interface Settings {
+    'updater.polling.interval'?: number,
+  }
+}
+
 export default () => {
 
   const supportsAutoUpdater = app.isPackaged && ['darwin', 'win32'].includes(process.platform)

@@ -24,8 +24,8 @@ const isOutdated = $computed(() => {
   return Boolean(versionInfo.version && latestVersion && versionInfo.version !== latestVersion)
 })
 
-const port = $computed<number>(() => {
-  return settings['proxy.server.port']
+const port = $computed(() => {
+  return settings['proxy.server.port']!
 })
 
 const ip = $(commas.helperRenderer.useAsyncComputed<string>(

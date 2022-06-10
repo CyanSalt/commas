@@ -70,6 +70,7 @@ const terminalOptions = $computed<Partial<ITerminalOptions>>(() => {
       ? 'canvas' : settings['terminal.view.rendererType'],
     fontSize: settings['terminal.style.fontSize'],
     fontFamily: settings['terminal.style.fontFamily'],
+    cursorStyle: settings['terminal.style.cursorStyle'],
     allowTransparency: theme.opacity < 1,
     theme: { ...theme },
   }
@@ -218,7 +219,7 @@ export function getTerminalTabTitle(tab: TerminalTab) {
   if (process.platform !== 'win32' && tab.title) {
     return tab.title
   }
-  const expr: string = settings['terminal.tab.titleFormat']
+  const expr = settings['terminal.tab.titleFormat']
   return getPrompt(expr, tab) || tab.process
 }
 
