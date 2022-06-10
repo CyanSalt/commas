@@ -1,7 +1,6 @@
 import type { ITheme, RendererType } from 'xterm'
 import type { JSONSchema } from './json-schema'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Settings {
   'terminal.shell.path': string,
   'terminal.shell.args': string[],

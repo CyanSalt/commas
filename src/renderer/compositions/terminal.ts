@@ -23,17 +23,6 @@ import { useKeyBindings } from './keybinding'
 import { useSettings } from './settings'
 import { useTheme } from './theme'
 
-declare module '../../typings/terminal' {
-  export interface TerminalTabAddons {
-    fit: FitAddon,
-    ligatures: LigaturesAddon,
-    search: SearchAddon,
-    unicode11: Unicode11Addon,
-    webgl: WebglAddon,
-    weblinks: WebLinksAddon,
-  }
-}
-
 const settings = useSettings()
 const theme = useTheme()
 

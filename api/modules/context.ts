@@ -2,7 +2,6 @@ import { shallowReactive } from '@vue/reactivity'
 import type { Component } from 'vue'
 import type { APIContext } from '../types'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Context {
   // Renderer
   '@ui-action-anchor': Component,
