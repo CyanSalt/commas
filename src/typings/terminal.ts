@@ -61,6 +61,7 @@ export interface TerminalTab extends TerminalInfo {
   },
   links: XtermLink[],
   alerting?: boolean,
+  thumbnail?: string,
   pane?: TerminalTabPane,
   group?: TerminalTabGroup,
 }

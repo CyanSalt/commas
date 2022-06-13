@@ -2,6 +2,7 @@ import * as os from 'os'
 import * as path from 'path'
 import { ipcRenderer, shell } from 'electron'
 import { isMatch, trim } from 'lodash'
+import stripAnsi from 'strip-ansi'
 import { markRaw, reactive, toRaw, watch, watchEffect } from 'vue'
 import { Terminal } from 'xterm'
 import type { ITerminalOptions } from 'xterm'
@@ -109,6 +110,7 @@ export async function createTerminalTab({
     },
     links: markRaw([]),
     alerting: false,
+    thumbnail: '',
     group,
   })
   xterm.attachCustomKeyEventHandler(event => {
@@ -302,6 +304,13 @@ export function handleTerminalMessages() {
     // data.process on Windows will be always equivalent to pty.name
     if (process.platform !== 'win32') {
       tab.process = data.process
+    }
+    const lines = stripAnsi(data.data)
+      .split(/[\r\n]+/)
+      .map(line => line.trim())
+      .filter(Boolean)
+    if (lines.length) {
+      tab.thumbnail = lines[lines.length - 1]
     }
   })
   ipcRenderer.on('exit-terminal', (event, data: Pick<TerminalTab, 'pid'>) => {

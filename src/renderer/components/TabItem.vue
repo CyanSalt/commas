@@ -39,6 +39,14 @@ const idleState = $computed(() => {
   return 'busy'
 })
 
+const thumbnail = $computed(() => {
+  if (!tab) return ''
+  if (pane) return ''
+  if (tab.process === path.basename(tab.shell)) return ''
+  if (tab.thumbnail) return tab.thumbnail
+  return ''
+})
+
 function close() {
   if (!tab) return
   closeTerminalTab(tab)
@@ -47,26 +55,29 @@ function close() {
 
 <template>
   <div :class="['tab-item', { active: isFocused }]">
-    <div class="tab-overview">
-      <div class="tab-title">
-        <span
-          v-if="iconEntry"
-          :style="{ color: isFocused ? iconEntry.color : undefined }"
-          :class="['tab-icon', iconEntry.name]"
-        ></span>
-        <span v-else-if="pane && tab!.shell" class="tab-icon feather-icon icon-file"></span>
-        <span v-else class="tab-icon feather-icon icon-terminal"></span>
-        <span class="tab-name">{{ title }}</span>
-      </div>
-      <div class="right-side">
-        <div v-if="idleState" :class="['idle-light', idleState]"></div>
-        <div class="operations">
-          <slot name="operations"></slot>
-          <div v-if="tab" class="button close" @click.stop="close">
-            <div class="feather-icon icon-x"></div>
+    <div class="tab-item-card">
+      <div class="tab-overview">
+        <div class="tab-title">
+          <span
+            v-if="iconEntry"
+            :style="{ color: isFocused ? iconEntry.color : undefined }"
+            :class="['tab-icon', iconEntry.name]"
+          ></span>
+          <span v-else-if="pane && tab!.shell" class="tab-icon feather-icon icon-file"></span>
+          <span v-else class="tab-icon feather-icon icon-terminal"></span>
+          <span class="tab-name">{{ title }}</span>
+        </div>
+        <div class="right-side">
+          <div v-if="idleState" :class="['idle-light', idleState]"></div>
+          <div class="operations">
+            <slot name="operations"></slot>
+            <div v-if="tab" class="button close" @click.stop="close">
+              <div class="feather-icon icon-x"></div>
+            </div>
           </div>
         </div>
       </div>
+      <div v-if="thumbnail" class="tab-thumbnail">{{ thumbnail }}</div>
     </div>
   </div>
 </template>
@@ -106,17 +117,19 @@ function close() {
   overflow: hidden;
   transition: color 0.2s;
 }
-.tab-overview {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: var(--tab-height);
+.tab-item-card {
   padding: 0 8px;
   border-radius: 8px;
   .tab-item.active & {
     background: var(--design-card-background);
   }
+}
+.tab-overview {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: var(--min-tab-height);
 }
 .right-side {
   flex: none;
@@ -155,5 +168,14 @@ function close() {
 }
 .close:hover {
   color: rgb(var(--system-red));
+}
+.tab-thumbnail {
+  padding-bottom: 8px;
+  color: rgb(var(--theme-foreground) / 0.5);
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 </style>

@@ -94,7 +94,7 @@ function resize(startingEvent: DragEvent) {
 @use '../assets/_partials';
 
 .tab-list {
-  --tab-height: 36px;
+  --min-tab-height: 36px;
   display: flex;
   flex: none;
   font-size: 14px;
@@ -115,9 +115,9 @@ function resize(startingEvent: DragEvent) {
 }
 .new-tab {
   display: flex;
-  height: var(--tab-height);
+  height: var(--min-tab-height);
   padding: 8px 16px 0;
-  line-height: var(--tab-height);
+  line-height: var(--min-tab-height);
   text-align: center;
 }
 .select-shell {
