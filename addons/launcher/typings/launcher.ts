@@ -1,10 +1,13 @@
-export interface Launcher {
-  id: number,
+export interface LauncherInfo {
   name: string,
   command: string,
   directory?: string,
   login?: boolean,
   remote?: string,
   explorer?: string,
-  scripts?: Omit<Launcher, 'id'>[],
+  scripts?: LauncherInfo[],
+}
+
+export interface Launcher extends LauncherInfo {
+  id: number,
 }

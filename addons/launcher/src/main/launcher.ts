@@ -1,10 +1,10 @@
 import { computed, unref } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
-import type { Launcher } from '../../typings/launcher'
+import type { Launcher, LauncherInfo } from '../../typings/launcher'
 
 const generateID = commas.helperMain.createIDGenerator()
 
-function fillLauncherIDs(launchers: Omit<Launcher, 'id'>[], old: Launcher[] | null) {
+function fillLauncherIDs(launchers: LauncherInfo[], old: Launcher[] | null) {
   const oldValues = old ? [...old] : []
   return launchers.map<Launcher>(launcher => {
     const index = oldValues.findIndex(item => {
@@ -24,17 +24,22 @@ function fillLauncherIDs(launchers: Omit<Launcher, 'id'>[], old: Launcher[] | nu
   })
 }
 
-const rawLaunchersRef = commas.file.useYAMLFile<Omit<Launcher, 'id'>[]>(
+const rawLaunchersRef = commas.file.useYAMLFile<LauncherInfo[]>(
   commas.file.userFile('launchers.yaml'),
   [],
 )
 
 let oldValue: Launcher[]
-const launchersRef = computed(() => {
-  const value = unref(rawLaunchersRef)
-  const launchers = fillLauncherIDs(value, oldValue)
-  oldValue = launchers
-  return launchers
+const launchersRef = computed({
+  get: () => {
+    const value = unref(rawLaunchersRef)
+    const launchers = fillLauncherIDs(value, oldValue)
+    oldValue = launchers
+    return launchers
+  },
+  set: value => {
+    rawLaunchersRef.value = value.map(({ id, ...launcher }) => launcher)
+  },
 })
 
 function useLaunchers() {

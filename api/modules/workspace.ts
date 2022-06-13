@@ -3,6 +3,7 @@ import type { ITerminalAddon } from 'xterm'
 import {
   activateOrAddTerminalTab,
   activateTerminalTab,
+  closeTerminalTab,
   createTerminalTab,
   executeTerminalTab,
   getTerminalTabTitle,
@@ -99,6 +100,7 @@ export {
   activateTerminalTab,
   createTerminalTab,
   executeTerminalTab,
+  closeTerminalTab,
   getTerminalTabTitle,
   useCurrentTerminal,
   useTerminalTabs,

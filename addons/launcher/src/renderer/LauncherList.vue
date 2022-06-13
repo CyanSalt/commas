@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
+import { ipcRenderer } from 'electron'
 import { nextTick } from 'vue'
 import type { Launcher } from '../../typings/launcher'
 import {
@@ -7,6 +8,7 @@ import {
   getTerminalTabByLauncher,
   moveLauncher,
   openLauncher,
+  removeLauncher,
   startLauncher,
   startLauncherExternally,
   useLaunchers,
@@ -18,40 +20,77 @@ const launchers = $(useLaunchers())
 
 let searcher = $ref<HTMLInputElement>()
 let isCollapsed: boolean = $ref(false)
-let isFinding: boolean = $ref(false)
+let isActionsVisible: boolean = $ref(false)
+let isEditing: boolean = $ref(false)
 let keyword = $ref('')
 
+const keywords = $computed(() => {
+  return keyword.trim().toLowerCase().split(/\s+/)
+    .map(item => item.trim())
+    .filter(Boolean)
+})
+
 const filteredLaunchers = $computed(() => {
-  if (!isFinding) return launchers
-  const keywords = keyword.toLowerCase().split(/\s+/)
-  return launchers.filter(
-    launcher => keywords.every(
-      item => Object.values(launcher).join(' ').toLowerCase().includes(item),
-    ),
-  )
+  return launchers.filter(launcher => {
+    if (isCollapsed) {
+      if (!getTerminalTabByLauncher(launcher)) return false
+    }
+    if (keywords.length) {
+      const matched = keywords.every(
+        item => Object.values(launcher).join(' ').toLowerCase().includes(item),
+      )
+      if (!matched) return false
+    }
+    return true
+  })
 })
 
 const isLauncherSortingDisabled = $computed(() => {
-  return isCollapsed || isFinding
+  return filteredLaunchers.length !== launchers.length
+})
+
+const isAnyActionEnabled = $computed(() => {
+  if (isActionsVisible) return true
+  return Boolean(keywords.length) || isEditing
 })
 
 function toggleCollapsing() {
   isCollapsed = !isCollapsed
 }
 
-async function toggleFinding() {
-  isFinding = !isFinding
-  if (isFinding) {
+async function toggleActions() {
+  isActionsVisible = !isActionsVisible
+  if (isActionsVisible) {
     await nextTick()
     searcher.focus()
   } else {
-    keyword = ''
     searcher.blur()
   }
 }
 
 function sortLaunchers(from: number, to: number) {
   moveLauncher(from, to)
+}
+
+function toggleEditing() {
+  isEditing = !isEditing
+}
+
+function createLauncher() {
+  ipcRenderer.invoke('create-launcher')
+}
+
+function closeLauncher(launcher: Launcher) {
+  const tab = getTerminalTabByLauncher(launcher)
+  if (isEditing) {
+    const index = launchers.findIndex(item => item.id === launcher.id)
+    removeLauncher(index)
+    if (tab) {
+      delete tab.group
+    }
+  } else if (tab) {
+    commas.workspace.closeTerminalTab(tab)
+  }
 }
 
 function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
@@ -84,13 +123,13 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
       </div>
       <div class="buttons" @click.stop>
         <div
-          :class="['button', 'find', { active: isFinding }]"
-          @click="toggleFinding"
+          :class="['button', 'more', { active: isAnyActionEnabled }]"
+          @click="toggleActions"
         >
-          <span class="feather-icon icon-filter"></span>
+          <span class="feather-icon icon-more-vertical"></span>
         </div>
       </div>
-      <div v-show="isFinding" class="find-launcher" @click.stop>
+      <div v-show="isActionsVisible" class="launcher-actions" @click.stop>
         <input
           ref="searcher"
           v-model="keyword"
@@ -99,8 +138,11 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
           class="keyword"
           placeholder="Find#!terminal.5"
           autofocus
-          @keyup.esc="toggleFinding"
+          @keyup.esc="toggleActions"
         >
+        <span :class="['button', 'edit', { active: isEditing }]" @click="toggleEditing">
+          <span class="feather-icon icon-edit-3"></span>
+        </span>
       </div>
     </div>
     <SortableList
@@ -112,12 +154,13 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
       @change="sortLaunchers"
     >
       <TabItem
-        v-show="!isCollapsed || getTerminalTabByLauncher(launcher)"
         :tab="getTerminalTabByLauncher(launcher)"
         :group="createLauncherGroup(launcher)"
+        closable
         @click="openLauncher(launcher)"
+        @close="closeLauncher(launcher)"
       >
-        <template #operations>
+        <template v-if="!isEditing" #operations>
           <div
             class="button launch"
             @click.stop="startLauncher(launcher)"
@@ -134,6 +177,9 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
         </template>
       </TabItem>
     </SortableList>
+    <div v-if="isEditing" class="new-launcher" @click="createLauncher">
+      <span class="feather-icon icon-plus"></span>
+    </div>
   </div>
 </template>
 
@@ -145,6 +191,12 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
   padding: 8px 16px;
   line-height: 16px;
   cursor: pointer;
+  .button {
+    opacity: 0.5;
+    &:hover {
+      opacity: 1;
+    }
+  }
 }
 .buttons {
   display: flex;
@@ -156,15 +208,10 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
   transition: opacity 0.2s, color 0.2s;
   cursor: pointer;
 }
-.find {
-  opacity: 0.5;
-  &:hover {
-    opacity: 1;
-  }
-  &.active {
-    color: rgb(var(--system-yellow));
-    opacity: 1;
-  }
+.more.active,
+.edit.active {
+  color: rgb(var(--system-yellow));
+  opacity: 1;
 }
 .group-name {
   flex: auto;
@@ -185,12 +232,16 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
     transform: rotate(-90deg);
   }
 }
-.find-launcher {
+.launcher-actions {
+  display: flex;
   flex-basis: 100%;
+  align-items: center;
   margin-top: 8px;
 }
 .keyword {
-  width: 100%;
+  flex: 1;
+  width: 0;
+  margin-right: 6px;
   padding: 2px 6px;
   border: none;
   color: inherit;
@@ -209,5 +260,18 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
 }
 .launch-externally:hover {
   color: rgb(var(--system-blue));
+}
+.new-launcher {
+  height: var(--tab-height);
+  padding: 8px 16px 0;
+  font-size: 21px;
+  line-height: var(--tab-height);
+  text-align: center;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  cursor: pointer;
+  &:hover {
+    opacity: 1;
+  }
 }
 </style>

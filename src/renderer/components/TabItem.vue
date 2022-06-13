@@ -4,9 +4,14 @@ import type { TerminalTab, TerminalTabGroup } from '../../typings/terminal'
 import { getTerminalTabTitle, useCurrentTerminal, closeTerminalTab } from '../compositions/terminal'
 import { getIconEntryByProcess } from '../utils/terminal'
 
-const { tab, group } = defineProps<{
+const { tab, group, closable = false } = defineProps<{
   tab?: TerminalTab | undefined,
   group?: TerminalTabGroup | undefined,
+  closable?: boolean,
+}>()
+
+const emit = defineEmits<{
+  (event: 'close', tab: TerminalTab | undefined): void,
 }>()
 
 const terminal = $(useCurrentTerminal())
@@ -40,8 +45,10 @@ const idleState = $computed(() => {
 })
 
 function close() {
-  if (!tab) return
-  closeTerminalTab(tab)
+  if (!closable && tab) {
+    closeTerminalTab(tab)
+  }
+  emit('close', tab)
 }
 </script>
 
@@ -62,7 +69,7 @@ function close() {
         <div v-if="idleState" :class="['idle-light', idleState]"></div>
         <div class="operations">
           <slot name="operations"></slot>
-          <div v-if="tab" class="button close" @click.stop="close">
+          <div v-if="closable || tab" class="button close" @click.stop="close">
             <div class="feather-icon icon-x"></div>
           </div>
         </div>

@@ -88,14 +88,20 @@ export async function startLauncherExternally(launcher: Launcher) {
 }
 
 export function moveLauncher(from: number, to: number) {
-  const sorted = [...launchers]
-  const rule = sorted[from]
+  const updated = [...launchers]
+  const rule = updated[from]
   if (from < to) {
-    sorted.splice(to + 1, 0, rule)
-    sorted.splice(from, 1)
+    updated.splice(to + 1, 0, rule)
+    updated.splice(from, 1)
   } else {
-    sorted.splice(from, 1)
-    sorted.splice(to, 0, rule)
+    updated.splice(from, 1)
+    updated.splice(to, 0, rule)
   }
-  launchers = sorted
+  launchers = updated
+}
+
+export function removeLauncher(index: number) {
+  const updated = [...launchers]
+  updated.splice(index, 1)
+  launchers = updated
 }
