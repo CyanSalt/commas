@@ -109,6 +109,7 @@ export async function createTerminalTab({
     },
     links: markRaw([]),
     alerting: false,
+    thumbnail: '',
     group,
   })
   xterm.attachCustomKeyEventHandler(event => {
@@ -297,7 +298,11 @@ export function handleTerminalMessages() {
     const tab = tabs.find(item => item.pid === data.pid)
     if (!tab) return
     const xterm = tab.xterm
-    xterm.write(data.data)
+    xterm.write(data.data, () => {
+      const activeBuffer = xterm.buffer.active
+      const line = activeBuffer.getLine(activeBuffer.baseY + activeBuffer.cursorY)
+      tab.thumbnail = line?.translateToString(true)
+    })
     // TODO: performance review
     // data.process on Windows will be always equivalent to pty.name
     if (process.platform !== 'win32') {

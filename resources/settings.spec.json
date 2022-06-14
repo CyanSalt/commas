@@ -121,6 +121,17 @@
     "default": true
   },
   {
+    "key": "terminal.tab.livePreview",
+    "label": "Enable Live Preview",
+    "comments": [
+      "Preview latest output in list"
+    ],
+    "schema": {
+      "type": "boolean"
+    },
+    "default": true
+  },
+  {
     "key": "terminal.tab.titleFormat",
     "label": "Tab Title Format",
     "comments": [
