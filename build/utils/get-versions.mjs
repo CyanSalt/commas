@@ -1,5 +1,5 @@
-import childProcess from 'child_process'
 import path from 'path'
+import { execa } from './child-process.mjs'
 import { getDirectory, resolveCommonJS } from './common.mjs'
 
 export default async function () {
@@ -10,7 +10,6 @@ export default async function () {
     electron = resolveCommonJS(import.meta, 'electron/cli.js')
   }
   const versionScript = path.resolve(getDirectory(import.meta), 'electron-versions.cjs')
-  return JSON.parse(
-    childProcess.execSync(`node ${electron} ${versionScript}`).toString(),
-  )
+  const { stdout: versions } = await execa(`node ${electron} ${versionScript}`)
+  return JSON.parse(versions)
 }

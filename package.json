@@ -10,7 +10,8 @@
   },
   "scripts": {
     "postinstall": "node post-install.js",
-    "dev": "node build/build.mjs && electron .",
+    "dev": "node build/build-git.mjs && electron .",
+    "dev:all": "node build/build.mjs && electron .",
     "dev:user": "node build/build-user.mjs && electron .",
     "build": "node build/build.mjs && node build/pack.mjs -- --local",
     "pack": "node build/build.mjs && node build/pack.mjs",
