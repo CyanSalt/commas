@@ -12,19 +12,26 @@ async function getModifiedFiles() {
   return files.trim().split('\n')
 }
 
-async function checkFiles(files, directory, factory) {
+function hasModified(files, directory) {
+  if (Array.isArray(directory)) {
+    return directory.some(item => hasModified(files, item))
+  }
   const dir = directory.endsWith(path.sep) ? directory : directory + path.sep
-  return files.some(file => file.startsWith(dir)) ? factory() : undefined
+  return files.some(file => file.startsWith(dir))
+}
+
+function only(condition, factory) {
+  return condition ? factory() : undefined
 }
 
 Promise.all([
   getModifiedFiles(),
   getVersions(),
 ]).then(([files, versions]) => Promise.all([
-  checkFiles(files, 'src/main', () => buildCoreMain(versions)),
-  checkFiles(files, 'src/renderer', () => buildCoreRenderer(versions)),
+  only(hasModified(files, ['api/modules', 'src/main']), () => buildCoreMain(versions)),
+  only(hasModified(files, ['api/modules', 'src/renderer']), () => buildCoreRenderer(versions)),
   getAddons('addons').then(dirs => Promise.all(dirs.flatMap(dir => [
-    checkFiles(files, `${dir}/src/main`, () => buildAddonMain(versions, dir)),
-    checkFiles(files, `${dir}/src/renderer`, () => buildAddonRenderer(versions, dir)),
+    only(hasModified(files, `${dir}/src/main`), () => buildAddonMain(versions, dir)),
+    only(hasModified(files, `${dir}/src/renderer`), () => buildAddonRenderer(versions, dir)),
   ]))),
 ]))

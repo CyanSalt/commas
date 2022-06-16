@@ -1,4 +1,4 @@
-import { computed, effect, ref, unref } from '@vue/reactivity'
+import { computed, effect, unref } from '@vue/reactivity'
 import { nativeTheme, systemPreferences } from 'electron'
 import type { BrowserWindowConstructorOptions } from 'electron'
 import type { ITheme } from 'xterm'
@@ -51,7 +51,7 @@ const CSS_PROPERTIES: Partial<Record<Exclude<keyof Theme, keyof ITheme>, string>
   opacity: '--theme-opacity',
 }
 
-const themeRef = computed(async () => {
+const themeRef = computed(() => {
   const settings = useSettings()
   const defaultSettings = useDefaultSettings()
   const defaultThemeName = defaultSettings['terminal.theme.name']
@@ -138,10 +138,14 @@ const themeRef = computed(async () => {
   return theme
 })
 
-const themeOptionsRef = ref<BrowserWindowThemeOptions>({
-  /** {@link https://github.com/electron/electron/issues/10420} */
-  backgroundColor: '#00000000',
-  vibrancy: undefined,
+const themeOptionsRef = computed<BrowserWindowThemeOptions>(() => {
+  const theme = unref(themeRef)
+  const backgroundRGBA = toRGBA(theme.background!)
+  return {
+    /** {@link https://github.com/electron/electron/issues/10420} */
+    backgroundColor: toElectronHEX({ ...backgroundRGBA, a: 0 }),
+    vibrancy: theme.vibrancy ? 'sidebar' : undefined,
+  }
 })
 
 function useThemeOptions() {
@@ -149,14 +153,8 @@ function useThemeOptions() {
 }
 
 function handleThemeMessages() {
-  effect(async () => {
-    const loadingTheme = unref(themeRef)
-    const theme = await loadingTheme
-    const backgroundRGBA = toRGBA(theme.background!)
-    themeOptionsRef.value = {
-      backgroundColor: toElectronHEX({ ...backgroundRGBA, a: 0 }),
-      vibrancy: theme.vibrancy ? 'sidebar' : undefined,
-    }
+  effect(() => {
+    const theme = unref(themeRef)
     // Enable system dark mode
     nativeTheme.themeSource = theme.type
   })
