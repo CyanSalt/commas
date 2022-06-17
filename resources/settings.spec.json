@@ -129,7 +129,7 @@
     "schema": {
       "type": "boolean"
     },
-    "default": true
+    "default": false
   },
   {
     "key": "terminal.tab.titleFormat",
