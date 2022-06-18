@@ -180,10 +180,10 @@ function close() {
   color: rgb(var(--system-red));
 }
 .tab-thumbnail {
-  margin-top: -4px;
-  padding-bottom: 8px;
-  color: rgb(var(--theme-foreground) / 0.375);
-  font-size: 10px;
+  padding-bottom: calc((var(--min-tab-height) - 16px) / 2);
+  color: rgb(var(--theme-foreground) / 0.5);
+  font-style: italic;
+  font-size: 12px;
   line-height: 12px;
   white-space: nowrap;
   text-overflow: ellipsis;

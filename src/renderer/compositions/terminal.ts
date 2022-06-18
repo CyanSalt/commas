@@ -300,8 +300,12 @@ export function handleTerminalMessages() {
     const xterm = tab.xterm
     xterm.write(data.data, () => {
       const activeBuffer = xterm.buffer.active
-      const line = activeBuffer.getLine(activeBuffer.baseY + activeBuffer.cursorY)
-      tab.thumbnail = line?.translateToString(true)
+      let thumbnail: string | undefined
+      for (let y = activeBuffer.baseY + activeBuffer.cursorY; y >= 0; y -= 1) {
+        thumbnail = activeBuffer.getLine(y)?.translateToString(true)
+        if (thumbnail) break
+      }
+      tab.thumbnail = thumbnail
     })
     // TODO: performance review
     // data.process on Windows will be always equivalent to pty.name
