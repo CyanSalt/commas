@@ -1,13 +1,8 @@
 import { shallowReactive } from '@vue/reactivity'
-import type { Component } from 'vue'
 import type { APIContext } from '../types'
 
-export interface Context {
-  // Renderer
-  '@ui-action-anchor': Component,
-  '@ui-side-list': Component,
-  '@ui-slot': Component,
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface Context {}
 
 const namespaces = shallowReactive<Record<string, any[]>>({})
 

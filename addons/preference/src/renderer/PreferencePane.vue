@@ -1,15 +1,9 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { shell } from 'electron'
-import type { Component } from 'vue'
+import type { PreferenceItem } from './preference'
 
 const { vI18n, TerminalPane } = commas.ui.vueAssets
-
-interface PreferenceItem {
-  component: Component,
-  group: string,
-  priority?: number,
-}
 
 const preferenceItems: PreferenceItem[] = commas.context.getCollection('preference')
 

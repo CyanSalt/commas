@@ -1,3 +1,13 @@
+import type { Component } from 'vue'
+
+declare module './modules/context' {
+  export interface Context {
+    '@ui-action-anchor': Component,
+    '@ui-side-list': Component,
+    '@ui-slot': Component,
+  }
+}
+
 export * as app from './modules/app'
 export * as context from './modules/context'
 export * as helperRenderer from './modules/helper-renderer'
