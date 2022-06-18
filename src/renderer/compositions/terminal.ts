@@ -2,7 +2,7 @@ import * as os from 'os'
 import * as path from 'path'
 import { ipcRenderer, shell } from 'electron'
 import { isMatch, trim } from 'lodash'
-import { markRaw, reactive, toRaw, watch, watchEffect } from 'vue'
+import { markRaw, reactive, shallowReactive, toRaw, watch, watchEffect } from 'vue'
 import { Terminal } from 'xterm'
 import type { ITerminalOptions } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
@@ -102,7 +102,7 @@ export async function createTerminalTab({
     ...info,
     title: '',
     xterm: markRaw(xterm),
-    addons: markRaw<any>({}),
+    addons: shallowReactive<any>({}),
     deferred: {
       open: createDeferred(),
       stop: createDeferred(),
