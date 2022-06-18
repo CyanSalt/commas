@@ -1,5 +1,4 @@
 import { shallowReactive, markRaw, unref } from 'vue'
-import type { ITerminalAddon } from 'xterm'
 import {
   activateOrAddTerminalTab,
   activateTerminalTab,
@@ -12,7 +11,7 @@ import {
   useTerminalTabs,
 } from '../../src/renderer/compositions/terminal'
 import { createIDGenerator } from '../../src/shared/helper'
-import type { TerminalTab, TerminalTabPane } from '../../src/typings/terminal'
+import type { TerminalTab, TerminalTabAddons, TerminalTabPane } from '../../src/typings/terminal'
 import type { RendererAPIContext } from '../types'
 
 const paneTabs = shallowReactive<Record<string, TerminalTab | undefined>>({})
@@ -41,10 +40,10 @@ function openPaneTab(name: string) {
   activateOrAddTerminalTab(pane)
 }
 
-function registerXtermAddon(
+function registerXtermAddon<T extends keyof TerminalTabAddons>(
   this: RendererAPIContext,
-  key: string,
-  factory: (tab: TerminalTab) => ITerminalAddon | undefined,
+  key: T,
+  factory: (tab: TerminalTab) => TerminalTabAddons[T] | undefined,
   immediate?: boolean,
 ) {
   const apply = (tab: TerminalTab, active: boolean) => {

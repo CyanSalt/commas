@@ -5,6 +5,12 @@ import LauncherList from './LauncherList.vue'
 import { startLauncher, runLauncherScript, useLaunchers } from './launcher'
 import { clearLauncherSessions, LauncherSessionAddon } from './session'
 
+declare module '../../../../src/typings/terminal' {
+  export interface TerminalTabAddons {
+    launcherSession: LauncherSessionAddon,
+  }
+}
+
 export default () => {
 
   commas.ui.addCSSFile('dist/renderer/style.css')

@@ -1,5 +1,5 @@
 import type { Component } from 'vue'
-import type { ITerminalAddon, Terminal } from 'xterm'
+import type { Terminal } from 'xterm'
 import type { FitAddon } from 'xterm-addon-fit'
 import type { LigaturesAddon } from 'xterm-addon-ligatures'
 import type { SearchAddon } from 'xterm-addon-search'
@@ -42,7 +42,7 @@ export interface XtermLink {
   end?: XtermBufferPosition,
 }
 
-export interface TerminalTabAddons extends Record<string, ITerminalAddon> {
+export interface TerminalTabAddons {
   fit: FitAddon,
   ligatures: LigaturesAddon,
   search: SearchAddon,
