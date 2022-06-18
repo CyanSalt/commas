@@ -12,26 +12,31 @@ export interface CommandContext {
 
 export interface CommandModule {
   command: string,
+  usage?: string,
   handler: (context: CommandContext, event: IpcMainInvokeEvent) => any,
+}
+
+function getCommandModule(command: string, commands: CommandModule[]) {
+  const settings = commas.settings.useSettings()
+  const aliases = settings['cli.command.aliases'] ?? {}
+  while (aliases[command]) {
+    command = aliases[command].trim()
+  }
+  return commands.find(item => item.command === command)
 }
 
 async function executeCommand(
   event: IpcMainInvokeEvent,
   inputContext: CommandContext,
   commands: CommandModule[],
-  aliases: Record<string, string>,
 ) {
   const [subcommand, ...argv] = inputContext.argv
-  let command = subcommand
-  while (aliases[command]) {
-    command = aliases[command].trim()
-  }
-  const controller = commands.find(item => item.command === command)
-  if (!controller) {
-    return executeCommand(event, { ...inputContext, argv: ['help'] }, commands, {})
+  const mod = getCommandModule(subcommand, commands)
+  if (!mod) {
+    return executeCommand(event, { ...inputContext, argv: ['help'] }, commands)
   }
   const context = { ...inputContext, argv }
-  const stdout = await controller.handler(context, event)
+  const stdout = await mod.handler(context, event)
   return typeof stdout === 'string' ? stdout : undefined
 }
 
@@ -56,6 +61,7 @@ function useExternalURLCommands() {
 }
 
 export {
+  getCommandModule,
   executeCommand,
   useExternalURLCommands,
 }

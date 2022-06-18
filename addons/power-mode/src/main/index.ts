@@ -4,6 +4,7 @@ export default () => {
 
   commas.context.provide('cli', {
     command: 'power',
+    usage: '[off]',
     async handler({ argv }, event) {
       const [status] = argv
       const enabled = status !== 'off'

@@ -18,6 +18,7 @@ export default () => {
   // Server
   commas.context.provide('cli', {
     command: 'whistle',
+    usage: '<command> [options]',
     async handler({ argv }) {
       try {
         const { stdout } = await whistle(quote(argv))

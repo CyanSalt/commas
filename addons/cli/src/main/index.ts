@@ -7,7 +7,7 @@ import * as commas from 'commas:api/main'
 import { app, BrowserWindow } from 'electron'
 import { random } from 'lodash'
 import type { CommandModule } from './command'
-import { executeCommand, useExternalURLCommands } from './command'
+import { getCommandModule, executeCommand, useExternalURLCommands } from './command'
 
 declare module '../../../../src/typings/settings' {
   export interface Settings {
@@ -30,8 +30,7 @@ export default () => {
 
   const commands: CommandModule[] = commas.context.getCollection('cli')
   commas.ipcMain.handle('cli', (event, context) => {
-    const aliases = settings['cli.command.aliases'] ?? {}
-    return executeCommand(event, context, commands, aliases)
+    return executeCommand(event, context, commands)
   })
 
   /** {@link https://github.com/npm/cli/blob/latest/lib/utils/npm-usage.js#L39-L55} */
@@ -62,7 +61,8 @@ export default () => {
 
   commas.context.provide('cli', {
     command: 'help',
-    handler() {
+    usage: '[command]',
+    handler({ argv }) {
       /** {@link https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=COMMAS} */
       const ansi = `
  ██████╗! ██████╗ !███╗   ███╗!███╗   ███╗! █████╗ !███████╗
@@ -88,6 +88,14 @@ export default () => {
         })
         .join('\n')
 
+      const helpingCommand = argv[0]
+      const manual = helpingCommand ? getCommandModule(argv[0], commands) : undefined
+      if (manual) {
+        return `${ansi}
+Usage: commas ${helpingCommand}${manual.usage ? ' ' + manual.usage : ''}
+`
+      }
+
       return `${ansi}
 Usage: commas <command>
 
@@ -106,8 +114,10 @@ where <command> is one of:
 
   commas.context.provide('cli', {
     command: 'run',
+    usage: '<...command-with-args>',
     handler({ argv }, event) {
       event.sender.send('open-tab', {
+        // TODO: shell quote
         command: argv.join(' '),
       })
     },
@@ -115,6 +125,7 @@ where <command> is one of:
 
   commas.context.provide('cli', {
     command: 'edit',
+    usage: '<file>',
     handler({ argv, cwd }, event) {
       event.sender.send('open-code-editor', path.join(cwd, argv[0]))
     },
@@ -122,6 +133,7 @@ where <command> is one of:
 
   commas.context.provide('cli', {
     command: 'select',
+    usage: '<nth-tab>',
     handler({ argv }, event) {
       const index = Number.parseInt(argv[0], 10)
       if (!Number.isNaN(index)) {
@@ -154,6 +166,7 @@ where <command> is one of:
 
   commas.context.provide('cli', {
     command: 'roll',
+    usage: '[n-times]',
     handler({ argv }) {
       let length = Number.parseInt(argv[0], 10)
       if (Number.isNaN(length)) {
@@ -166,6 +179,7 @@ where <command> is one of:
 
   commas.context.provide('cli', {
     command: 'preview',
+    usage: '[file]',
     handler({ argv, cwd }, event) {
       const frame = BrowserWindow.fromWebContents(event.sender)
       if (!frame) return
