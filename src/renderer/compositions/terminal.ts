@@ -307,7 +307,6 @@ export function handleTerminalMessages() {
       }
       tab.thumbnail = thumbnail
     })
-    // TODO: performance review
     // data.process on Windows will be always equivalent to pty.name
     if (process.platform !== 'win32') {
       tab.process = data.process

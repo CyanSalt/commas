@@ -6,6 +6,7 @@ import chalk from 'chalk'
 import * as commas from 'commas:api/main'
 import { app, BrowserWindow } from 'electron'
 import { random } from 'lodash'
+import { quote } from 'shell-quote'
 import type { CommandModule } from './command'
 import { getCommandModule, executeCommand, useExternalURLCommands } from './command'
 
@@ -117,8 +118,7 @@ where <command> is one of:
     usage: '<...command-with-args>',
     handler({ argv }, event) {
       event.sender.send('open-tab', {
-        // TODO: shell quote
-        command: argv.join(' '),
+        command: quote(argv),
       })
     },
   })

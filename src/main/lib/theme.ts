@@ -60,7 +60,6 @@ const themeRef = computed(() => {
   const name = settings['terminal.theme.name'] || defaultThemeName
   if (name !== defaultThemeName) {
     const path = `themes/${name}.json`
-    // TODO: memoize
     let source: ITheme | undefined
     try {
       source = require(resourceFile(path))
