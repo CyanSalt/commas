@@ -93,7 +93,10 @@ function openFile() {
   shell.openPath(fileOrDirectory)
 }
 
-function startDraggingDirectory() {
+function startDraggingDirectory(event: DragEvent) {
+  if (event.dataTransfer) {
+    event.dataTransfer.setData('text/plain', fileOrDirectory)
+  }
   ipcRenderer.invoke('drag-file', fileOrDirectory, iconBuffer)
 }
 

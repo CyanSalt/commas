@@ -19,10 +19,16 @@ function dragFileOver(event: DragEvent) {
 }
 
 function dropFile(event: DragEvent) {
-  const files = event.dataTransfer?.files
-  if (!files || !files.length) return
-  const paths = Array.from(files).map(({ path }) => path)
-  writeTerminalTab(tab, quote(paths))
+  const dataTransfer = event.dataTransfer
+  if (!dataTransfer) return
+  const files = dataTransfer.files
+  if (files.length) {
+    const paths = Array.from(files).map(({ path }) => path)
+    writeTerminalTab(tab, quote(paths))
+  } else {
+    const data = dataTransfer.getData('text')
+    writeTerminalTab(tab, data)
+  }
 }
 
 function openEditingMenu(event: MouseEvent) {
