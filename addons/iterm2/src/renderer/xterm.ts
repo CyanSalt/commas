@@ -251,12 +251,13 @@ export class ITerm2Addon implements ITerminalAddon {
 
   setMark() {
     const theme = commas.remote.useTheme()
+    const rgba = commas.helperRenderer.toRGBA(theme.blue)
     const xterm = this.tab.xterm
     const marker = xterm.registerMarker()!
     const decoration = xterm.registerDecoration({
       marker,
       overviewRulerOptions: {
-        color: theme.blue,
+        color: commas.helperRenderer.toCSSHEX({ ...rgba, a: 0.5 }),
         position: 'right',
       },
     })!

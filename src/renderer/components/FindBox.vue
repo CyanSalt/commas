@@ -1,11 +1,15 @@
 <script lang="ts" setup>
 import { ipcRenderer } from 'electron'
 import { reactive, watch, watchEffect } from 'vue'
+import type { ISearchOptions } from 'xterm-addon-search'
+import { toCSSHEX, toRGBA } from '../../shared/color'
 import { useIsFinding } from '../compositions/shell'
 import { useCurrentTerminal } from '../compositions/terminal'
+import { useTheme } from '../compositions/theme'
 import { vI18n } from '../utils/i18n'
 
 const terminal = $(useCurrentTerminal())
+const theme = useTheme()
 
 const root = $ref<HTMLElement | undefined>()
 const finder = $ref<HTMLInputElement | undefined>()
@@ -15,18 +19,22 @@ const options = reactive({
   wholeWord: false,
   regex: false,
 })
+
+const searchOptions = $computed<ISearchOptions>(() => {
+  const rgba = toRGBA(theme.yellow)
+  return {
+    ...options,
+    decorations: {
+      matchOverviewRuler: toCSSHEX({ ...rgba, a: 0.5 }),
+      activeMatchColorOverviewRuler: theme.foreground,
+    },
+  }
+})
+
 let currentNumber = $ref(0)
 let totalNumber = $ref(0)
 
 let isFinding = $(useIsFinding())
-
-watch([options, $$(keyword)], () => {
-  totalNumber = 0
-})
-
-watch($$(totalNumber), () => {
-  currentNumber = 0
-})
 
 watchEffect((onInvalidate) => {
   if (!root) return
@@ -46,17 +54,29 @@ watchEffect((onInvalidate) => {
   })
 })
 
+watchEffect((onInvalidate) => {
+  if (!terminal) return
+  const disposable = terminal.addons.search.onDidChangeResults(result => {
+    if (!result) return
+    currentNumber = result.resultIndex + 1
+    totalNumber = result.resultCount
+  })
+  onInvalidate(() => {
+    disposable.dispose()
+  })
+})
+
 async function findPrevious() {
   if (!terminal) return
   if (terminal.pane) {
     const result = await ipcRenderer.invoke('find', keyword, {
       forward: false,
-      matchCase: options.caseSensitive,
+      matchCase: searchOptions.caseSensitive,
     })
     totalNumber = result.matches
     currentNumber = result.activeMatchOrdinal
   } else {
-    terminal.addons.search.findPrevious(keyword, options)
+    terminal.addons.search.findPrevious(keyword, searchOptions)
   }
 }
 
@@ -65,12 +85,12 @@ async function findNext() {
   if (terminal.pane) {
     const result = await ipcRenderer.invoke('find', keyword, {
       forward: true,
-      matchCase: options.caseSensitive,
+      matchCase: searchOptions.caseSensitive,
     })
     totalNumber = result.matches
     currentNumber = result.activeMatchOrdinal
   } else {
-    terminal.addons.search.findNext(keyword, options)
+    terminal.addons.search.findNext(keyword, searchOptions)
   }
 }
 
@@ -92,8 +112,12 @@ function toggle(key: keyof typeof options) {
 }
 
 watch($$(isFinding), (value: boolean) => {
-  if (!value && terminal?.pane) {
+  if (!terminal || value) return
+  if (terminal.pane) {
     ipcRenderer.invoke('stop-finding', 'clearSelection')
+  } else {
+    terminal.addons.search.clearDecorations()
+    terminal.addons.search.clearActiveDecoration()
   }
 })
 </script>
