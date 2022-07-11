@@ -437,7 +437,7 @@ export function loadTerminalAddons(tab: TerminalTab) {
       delete addons.webgl
     }
   }
-  commas.proxy.app.events.emit('load-terminal-addons', tab)
+  commas.proxy.app.events.emit('terminal-addons-loaded', tab)
 }
 
 export function writeTerminalTab(tab: TerminalTab, data: string) {

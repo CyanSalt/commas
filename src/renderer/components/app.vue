@@ -64,7 +64,7 @@ window.addEventListener('beforeunload', async event => {
   }
 })
 
-commas.proxy.app.events.once('load-terminal-addons', () => {
+commas.proxy.app.events.once('terminal-addons-loaded', () => {
   requestIdleCallback(() => {
     ipcRenderer.send('bootstrap')
   })
