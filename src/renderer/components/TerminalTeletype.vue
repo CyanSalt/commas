@@ -112,7 +112,12 @@ onActivated(() => {
   padding: 4px 8px;
   :deep(.xterm-viewport) {
     @include partials.scroll-container;
+    z-index: 1;
     background-color: transparent !important;
+  }
+  /* issue@xterm: pointer behavior */
+  :deep(.xterm-screen) {
+    z-index: 0;
   }
 }
 </style>

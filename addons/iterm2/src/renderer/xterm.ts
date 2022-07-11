@@ -250,10 +250,15 @@ export class ITerm2Addon implements ITerminalAddon {
   }
 
   setMark() {
+    const theme = commas.remote.useTheme()
     const xterm = this.tab.xterm
     const marker = xterm.registerMarker()!
     const decoration = xterm.registerDecoration({
       marker,
+      overviewRulerOptions: {
+        color: theme.blue,
+        position: 'right',
+      },
     })!
     this.markMarkers.push(marker)
     this.markMarkers.sort((a, b) => b.line - a.line)

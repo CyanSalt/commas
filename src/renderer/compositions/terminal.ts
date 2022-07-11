@@ -61,6 +61,7 @@ const terminalOptions = $computed<Partial<ITerminalOptions>>(() => {
     fontFamily: settings['terminal.style.fontFamily'],
     cursorStyle: settings['terminal.style.cursorStyle'],
     allowTransparency: theme.opacity < 1,
+    overviewRulerWidth: 16,
     theme: { ...theme },
   }
 })
