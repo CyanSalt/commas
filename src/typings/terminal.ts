@@ -31,17 +31,6 @@ export interface TerminalInfo {
   shell: string,
 }
 
-export interface XtermBufferPosition {
-  x: number,
-  y: number,
-}
-
-export interface XtermLink {
-  uri: string,
-  start: XtermBufferPosition,
-  end?: XtermBufferPosition,
-}
-
 export interface TerminalTabAddons {
   fit: FitAddon,
   ligatures: LigaturesAddon,
@@ -59,7 +48,6 @@ export interface TerminalTab extends TerminalInfo {
     open: Deferred,
     stop: Deferred,
   },
-  links: XtermLink[],
   alerting?: boolean,
   thumbnail?: string,
   pane?: TerminalTabPane,

@@ -107,7 +107,6 @@ export async function createTerminalTab({
       open: createDeferred(),
       stop: createDeferred(),
     },
-    links: markRaw([]),
     alerting: false,
     thumbnail: '',
     group,

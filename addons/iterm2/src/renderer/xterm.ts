@@ -3,14 +3,26 @@ import { clipboard, ipcRenderer, shell } from 'electron'
 import { findLast } from 'lodash'
 import { nextTick } from 'vue'
 import type { IDisposable, IMarker, ITerminalAddon, Terminal } from 'xterm'
-import type { TerminalTab, XtermBufferPosition, XtermLink } from '../../../../src/typings/terminal'
+import type { TerminalTab } from '../../../../src/typings/terminal'
 import { addFirework, useBadge } from './badge'
 import { calculateDOM, loadingElement, parseITerm2EscapeSequence } from './utils'
+
+interface XtermBufferPosition {
+  x: number,
+  y: number,
+}
+
+interface XtermLink {
+  uri: string,
+  start: XtermBufferPosition,
+  end?: XtermBufferPosition,
+}
 
 export class ITerm2Addon implements ITerminalAddon {
 
   tab: TerminalTab
   disposables: IDisposable[]
+  links: XtermLink[]
   markMarkers: IMarker[]
   recentMarkMarker?: WeakRef<IMarker>
   highlightMarker?: IMarker
@@ -18,6 +30,7 @@ export class ITerm2Addon implements ITerminalAddon {
   constructor(tab: TerminalTab) {
     this.tab = tab
     this.disposables = []
+    this.links = []
     this.markMarkers = []
   }
 
@@ -171,9 +184,9 @@ export class ITerm2Addon implements ITerminalAddon {
           y: xterm.buffer.active.cursorY + 1,
         }
         if (args[1]) {
-          this.tab.links.push({ start: point, uri: args[1] })
+          this.links.push({ start: point, uri: args[1] })
         } else {
-          const activeLink = findLast(this.tab.links, item => !item.end)
+          const activeLink = findLast(this.links, item => !item.end)
           if (activeLink) {
             point.x -= 1
             activeLink.end = point
@@ -183,7 +196,7 @@ export class ITerm2Addon implements ITerminalAddon {
       }),
       xterm.registerLinkProvider({
         provideLinks: (y, callback) => {
-          const links = this.tab.links
+          const links = this.links
             .filter((link): link is Required<XtermLink> => {
               return Boolean(link.end && link.start.y <= y && link.end.y >= y)
             })
