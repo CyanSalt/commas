@@ -1,4 +1,3 @@
-import { stop } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import { app, autoUpdater } from 'electron'
 import { checkForUpdates, setupAutoUpdater, useAutoUpdaterEffect } from './updater'
@@ -31,9 +30,9 @@ export default () => {
     // Initialize
     setupAutoUpdater()
     // Enable checking automatically
-    const reactiveEffect = useAutoUpdaterEffect()
+    const stop = useAutoUpdaterEffect()
     commas.app.onCleanup(() => {
-      stop(reactiveEffect)
+      stop()
     })
   }
 

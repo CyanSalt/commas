@@ -1,6 +1,6 @@
 import * as commas from 'commas:api/renderer'
 
-const generateID = commas.helperRenderer.createIDGenerator()
+const generateID = commas.helper.createIDGenerator()
 
 export interface Firework {
   id: number,

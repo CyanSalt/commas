@@ -1,6 +1,5 @@
 import * as path from 'path'
-import { computed, customRef, stop, unref } from '@vue/reactivity'
-import type { ReactiveEffectRunner } from '@vue/reactivity'
+import { computed, customRef, unref } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import { app } from 'electron'
 import * as pkg from 'whistle/package.json'
@@ -14,7 +13,7 @@ const builtinServerVersionInfo = {
 
 const settings = commas.settings.useSettings()
 
-const whistlePathRef = commas.helperMain.useAsyncComputed(async () => {
+const whistlePathRef = commas.helper.useAsyncComputed(async () => {
   const whistlePath = settings['proxy.server.whistle']
   if (!whistlePath) return builtinWhistlePath
   if (path.isAbsolute(whistlePath)) return whistlePath
@@ -75,7 +74,7 @@ async function getLatestProxyServerVersion() {
   }
 }
 
-const serverVersionInfoRef = commas.helperMain.useAsyncComputed(async () => {
+const serverVersionInfoRef = commas.helper.useAsyncComputed(async () => {
   const isUsingBuiltinWhistle = unref(isUsingBuiltinWhistleRef)
   if (isUsingBuiltinWhistle) return builtinServerVersionInfo
   return {
@@ -91,7 +90,7 @@ function useProxyServerVersionInfo() {
 const serverStatusRef = customRef<boolean | undefined>((track, trigger) => {
   let status: boolean | undefined = false
   let processing: Promise<unknown> | undefined
-  let serverEffect: ReactiveEffectRunner | undefined
+  let stopServer: (() => void) | undefined
   let running: {}
   const toggle = async (value: boolean, fn: () => Promise<unknown>) => {
     const current = {}
@@ -115,7 +114,7 @@ const serverStatusRef = customRef<boolean | undefined>((track, trigger) => {
       processing = undefined
     }
   }
-  const createEffect = () => commas.helperMain.useEffect((onInvalidate) => {
+  const startServer = () => commas.helper.watchBaseEffect((onInvalidate) => {
     const port = settings['proxy.server.port']!
     toggle(true, () => createServer(port))
     onInvalidate(() => {
@@ -129,12 +128,12 @@ const serverStatusRef = customRef<boolean | undefined>((track, trigger) => {
     },
     set(value) {
       if (status === value) return
-      if (serverEffect) {
-        stop(serverEffect)
-        serverEffect = undefined
+      if (stopServer) {
+        stopServer()
+        stopServer = undefined
       }
       if (value) {
-        serverEffect = createEffect()
+        stopServer = startServer()
       }
     },
   }

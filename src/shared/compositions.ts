@@ -1,4 +1,4 @@
-import type { Ref } from '@vue/reactivity'
+import type { ReactiveEffectOptions, Ref } from '@vue/reactivity'
 import { customRef, deferredComputed, effect, shallowReactive, stop, toRaw, unref } from '@vue/reactivity'
 import { difference, intersection, isEqual } from 'lodash'
 
@@ -65,6 +65,37 @@ function initializeSurface<T>(valueRef: Ref<T>, reactiveObject: T) {
     }
     valueRef.value = value
   })
+}
+
+export function watchBaseEffect<T>(
+  fn: (onInvalidate: (cleanupFn: () => void) => void) => T,
+  options?: ReactiveEffectOptions,
+) {
+  let cleanup: (() => void) | undefined
+  const onInvalidate = (cleanupFn) => {
+    cleanup = cleanupFn
+  }
+  const reactiveEffect = effect(() => {
+    if (cleanup) {
+      cleanup()
+    }
+    cleanup = undefined
+    return fn(onInvalidate)
+  }, {
+    ...options,
+    onStop() {
+      if (cleanup) {
+        cleanup()
+      }
+      const onStop = options?.onStop
+      if (onStop) {
+        onStop()
+      }
+    },
+  })
+  return () => {
+    stop(reactiveEffect)
+  }
 }
 
 export function surface<T extends object>(valueRef: Ref<T>, lazy?: boolean) {

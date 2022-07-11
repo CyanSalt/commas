@@ -2,7 +2,7 @@ import { computed, unref } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import type { Launcher, LauncherInfo } from '../../typings/launcher'
 
-const generateID = commas.helperMain.createIDGenerator()
+const generateID = commas.helper.createIDGenerator()
 
 function fillLauncherIDs(launchers: LauncherInfo[], old: Launcher[] | null) {
   const oldValues = old ? [...old] : []

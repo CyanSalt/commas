@@ -2,9 +2,9 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { computed, effect, shallowReactive, unref } from '@vue/reactivity'
 import { app } from 'electron'
-import { useAsyncComputed } from '../../shared/compositions'
+import { watchBaseEffect, useAsyncComputed } from '../../shared/compositions'
 import type { Dictionary, TranslationVariables } from '../../typings/i18n'
-import { provideIPC, useEffect, useYAMLFile } from '../utils/compositions'
+import { provideIPC, useYAMLFile } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
 
 export interface TranslationFileEntry {
@@ -71,7 +71,7 @@ function loadDictionary(entry: TranslationFileEntry, priority: Priority) {
 }
 
 function addTranslations(entries: TranslationFileEntry[], priority: Priority) {
-  return useEffect(async (onInvalidate) => {
+  return watchBaseEffect(async (onInvalidate) => {
     const language = unref(languageRef)
     if (!language) return
     let matched = entries.find(item => item.locale === language)

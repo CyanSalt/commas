@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import { computed, customRef, effect, stop, unref } from '@vue/reactivity'
-import type { ReactiveEffectOptions, Ref } from '@vue/reactivity'
+import type { Ref } from '@vue/reactivity'
 import { ipcMain } from 'electron'
 import { cloneDeep } from 'lodash'
 import YAML from 'yaml'
@@ -76,34 +76,6 @@ function useYAMLFile<T>(file: string, defaultValue?: T, { onTrigger }: { onTrigg
   })
 }
 
-function useEffect<T>(
-  fn: (onInvalidate: (cleanupFn: () => void) => void) => T,
-  options?: ReactiveEffectOptions,
-) {
-  let cleanup: (() => void) | undefined
-  const onInvalidate = (cleanupFn) => {
-    cleanup = cleanupFn
-  }
-  return effect(() => {
-    if (cleanup) {
-      cleanup()
-    }
-    cleanup = undefined
-    return fn(onInvalidate)
-  }, {
-    ...options,
-    onStop() {
-      if (cleanup) {
-        cleanup()
-      }
-      const onStop = options?.onStop
-      if (onStop) {
-        onStop()
-      }
-    },
-  })
-}
-
 function provideIPC<T>(key: string, valueRef: Ref<T>) {
   ipcMain.handle(`get-ref:${key}`, async () => {
     const value = await Promise.resolve(unref(valueRef))
@@ -132,6 +104,5 @@ export {
   useFile,
   useJSONFile,
   useYAMLFile,
-  useEffect,
   provideIPC,
 }

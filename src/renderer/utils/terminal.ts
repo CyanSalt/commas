@@ -1,32 +1,16 @@
 import * as os from 'os'
 import * as path from 'path'
 import { ipcRenderer } from 'electron'
+import { omitHome, resolveWindowsDisk } from '../../shared/terminal'
 import type { TerminalTab } from '../../typings/terminal'
 import icons from '../assets/icons'
-
-const meta = {
-  homedir: os.homedir(),
-  hostname: os.hostname(),
-  username: os.userInfo().username,
-}
-
-export function resolveHome(directory: string) {
-  return directory.startsWith('~')
-    ? meta.homedir + directory.slice(1) : directory
-}
-
-export function omitHome(directory: string) {
-  if (!directory || process.platform === 'win32') return directory
-  return directory.startsWith(meta.homedir)
-    ? '~' + directory.slice(meta.homedir.length) : directory
-}
 
 export function getPrompt(expr: string, tab: TerminalTab | null) {
   if (!expr) return ''
   const result = expr
-    .replace(/\\h/g, meta.hostname.split('.')[0])
-    .replace(/\\H/g, meta.hostname)
-    .replace(/\\u/g, meta.username)
+    .replace(/\\h/g, () => os.hostname().split('.')[0])
+    .replace(/\\H/g, () => os.hostname())
+    .replace(/\\u/g, () => os.userInfo().username)
   if (tab) {
     return result
       .replace(/\\l/g, tab.pid ? String(tab.pid) : '')
@@ -56,23 +40,6 @@ export function getIconEntryByProcess(process: string) {
       ? item === name
       : item.test(name)
   }))
-}
-
-/**
- * Supports WSL Style `/mnt/c/Users` and MinGW Style `/c/Users`
- */
-export function resolveWindowsDisk(directory: string) {
-  if (!directory) return directory
-  const slices = directory.split('/')
-  if (slices[0] === '') {
-    let start = 1
-    if (slices[start] === 'mnt') {
-      start += 1
-    }
-    const disk = slices[start].toUpperCase() + ':'
-    return [disk].concat(slices.slice(start + 1)).join(path.sep)
-  }
-  return directory
 }
 
 export function getShells() {

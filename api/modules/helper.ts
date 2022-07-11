@@ -1,9 +1,10 @@
-import { resolveHome } from '../../src/renderer/utils/terminal'
 import { toRGBA, toCSSHEX } from '../../src/shared/color'
-import { surface, useAsyncComputed } from '../../src/shared/compositions'
+import { watchBaseEffect, surface, useAsyncComputed } from '../../src/shared/compositions'
 import { createIDGenerator, diligent } from '../../src/shared/helper'
+import { resolveHome } from '../../src/shared/terminal'
 
 export {
+  watchBaseEffect,
   surface,
   useAsyncComputed,
   createIDGenerator,

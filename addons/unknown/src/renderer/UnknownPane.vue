@@ -5,7 +5,7 @@ import { nextTick, onMounted, reactive } from 'vue'
 import UnknownDial from './UnknownDial.vue'
 
 const { vI18n, TerminalPane } = commas.ui.vueAssets
-const generateID = commas.helperRenderer.createIDGenerator()
+const generateID = commas.helper.createIDGenerator()
 
 interface Player {
   id: number,

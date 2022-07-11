@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { ipcRenderer, nativeImage, shell } from 'electron'
 import { watchEffect } from 'vue'
+import { omitHome } from '../../shared/terminal'
 import { useMinimized, useMaximized } from '../compositions/frame'
 import { useSettings } from '../compositions/settings'
 import { useIsTabListEnabled } from '../compositions/shell'
 import { showTabOptions, useCurrentTerminal, useTerminalActiveIndex, useTerminalTabs } from '../compositions/terminal'
 import { translate, vI18n } from '../utils/i18n'
-import { getPrompt, omitHome } from '../utils/terminal'
+import { getPrompt } from '../utils/terminal'
 
 const settings = useSettings()
 const tabs = $(useTerminalTabs())

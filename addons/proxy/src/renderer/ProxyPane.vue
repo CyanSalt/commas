@@ -14,7 +14,7 @@ let status = $(useProxyServerStatus())
 const supportsSystemProxy = process.platform === 'darwin'
 const supportsKeyChain = process.platform === 'darwin'
 
-const latestVersion = $(commas.helperRenderer.useAsyncComputed<string | undefined>(
+const latestVersion = $(commas.helper.useAsyncComputed<string | undefined>(
   () => ipcRenderer.invoke('get-latest-proxy-server-version'),
   undefined,
 ))
@@ -28,7 +28,7 @@ const port = $computed(() => {
   return settings['proxy.server.port']!
 })
 
-const ip = $(commas.helperRenderer.useAsyncComputed<string>(
+const ip = $(commas.helper.useAsyncComputed<string>(
   () => ipcRenderer.invoke('get-ip'),
   'localhost',
 ))

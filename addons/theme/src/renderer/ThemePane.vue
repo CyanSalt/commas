@@ -10,7 +10,7 @@ const { vI18n, LoadingSpinner, TerminalPane } = commas.ui.vueAssets
 let loading: string | false = $ref<string | false>(false)
 const keyword: string = $ref('')
 
-const list = $(commas.helperRenderer.useAsyncComputed(() => fetchThemeList(), []))
+const list = $(commas.helper.useAsyncComputed(() => fetchThemeList(), []))
 
 const filteredList = $computed(() => {
   if (!keyword) return list

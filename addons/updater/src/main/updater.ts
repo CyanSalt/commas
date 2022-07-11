@@ -1,5 +1,4 @@
 import * as fs from 'fs'
-import { stop } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import { app, autoUpdater } from 'electron'
 
@@ -25,7 +24,7 @@ function setupAutoUpdater() {
 }
 
 function useAutoUpdaterEffect() {
-  const reactiveEffect = commas.helperMain.useEffect((onInvalidate) => {
+  const stop = commas.helper.watchBaseEffect((onInvalidate) => {
     const settings = commas.settings.useSettings()
     const interval = settings['updater.polling.interval']!
     if (interval) {
@@ -41,9 +40,9 @@ function useAutoUpdaterEffect() {
     }
   })
   autoUpdater.on('update-available', () => {
-    stop(reactiveEffect)
+    stop()
   })
-  return reactiveEffect
+  return stop
 }
 
 export {

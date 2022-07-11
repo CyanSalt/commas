@@ -46,7 +46,7 @@ export async function openLauncher(launcher: Launcher, { command }: OpenLauncher
   } else {
     const directory = launcher.remote ? undefined : launcher.directory
     await commas.workspace.createTerminalTab({
-      cwd: directory && commas.helperRenderer.resolveHome(directory),
+      cwd: directory && commas.helper.resolveHome(directory),
       command,
       group: createLauncherGroup(launcher),
     })
@@ -71,7 +71,7 @@ export async function runLauncherScript(launcher: Launcher, index: number) {
 }
 
 export async function startLauncherExternally(launcher: Launcher) {
-  const directory = launcher.directory ? commas.helperRenderer.resolveHome(launcher.directory) : ''
+  const directory = launcher.directory ? commas.helper.resolveHome(launcher.directory) : ''
   let explorer = launcher.explorer ?? (
     launcher.remote
       ? settings['terminal.external.remoteExplorer']
