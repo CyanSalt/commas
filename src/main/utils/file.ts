@@ -2,7 +2,6 @@ import * as fs from 'fs'
 import * as path from 'path'
 import chokidar from 'chokidar'
 import YAML from 'yaml'
-import { requestFile } from './net'
 import { updateDocument } from './yaml-updater'
 
 async function ensureFile(file: string) {
@@ -53,17 +52,10 @@ async function writeYAMLFile(file: string, data: any) {
   }
 }
 
-async function downloadFile(file: string, url: string) {
-  await ensureFile(file)
-  await requestFile(url, file)
-  return readFile(file)
-}
-
 export {
   ensureFile,
   readFile,
   writeFile,
   watchFile,
   writeYAMLFile,
-  downloadFile,
 }

@@ -1,9 +1,8 @@
 import { computed, effect, unref } from '@vue/reactivity'
 import { nativeTheme, systemPreferences } from 'electron'
 import type { BrowserWindowConstructorOptions } from 'electron'
-import type { ITheme } from 'xterm'
 import { toRGBA, toCSSColor, toCSSHEX, toElectronHEX, isDarkColor, mix, toHSLA, toRGBAFromHSLA } from '../../shared/color'
-import type { EditorTheme, Theme } from '../../typings/theme'
+import type { EditorTheme, Theme, ThemeDefinition } from '../../typings/theme'
 import { provideIPC } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
 import { useDefaultSettings, useSettings } from './settings'
@@ -13,7 +12,7 @@ interface BrowserWindowThemeOptions {
   vibrancy: BrowserWindowConstructorOptions['vibrancy'],
 }
 
-const THEME_CSS_COLORS: Partial<Record<keyof ITheme, string>> = {
+const THEME_CSS_COLORS: Partial<Record<keyof ThemeDefinition, string>> = {
   foreground: '--theme-foreground',
   background: '--theme-background',
   selection: '--theme-selection',
@@ -35,7 +34,7 @@ const THEME_CSS_COLORS: Partial<Record<keyof ITheme, string>> = {
   brightWhite: '--theme-brightwhite',
 }
 
-const EXTRA_CSS_COLORS: Partial<Record<Exclude<keyof Theme, keyof ITheme>, string>> = {
+const EXTRA_CSS_COLORS: Partial<Record<Exclude<keyof Theme, keyof ThemeDefinition>, string>> = {
   systemRed: '--system-red',
   systemYellow: '--system-yellow',
   systemGreen: '--system-green',
@@ -47,7 +46,7 @@ const EXTRA_CSS_COLORS: Partial<Record<Exclude<keyof Theme, keyof ITheme>, strin
   secondaryBackground: '--secondary-background',
 }
 
-const CSS_PROPERTIES: Partial<Record<Exclude<keyof Theme, keyof ITheme>, string>> = {
+const CSS_PROPERTIES: Partial<Record<Exclude<keyof Theme, keyof ThemeDefinition>, string>> = {
   opacity: '--theme-opacity',
 }
 
@@ -55,12 +54,12 @@ const themeRef = computed(() => {
   const settings = useSettings()
   const defaultSettings = useDefaultSettings()
   const defaultThemeName = defaultSettings['terminal.theme.name']
-  const defaultTheme: Required<ITheme> = require(resourceFile('themes', `${defaultThemeName}.json`))
-  let originalTheme: ITheme = defaultTheme
+  const defaultTheme: Required<ThemeDefinition> = require(resourceFile('themes', `${defaultThemeName}.json`))
+  let originalTheme: ThemeDefinition = defaultTheme
   const name = settings['terminal.theme.name'] || defaultThemeName
   if (name !== defaultThemeName) {
     const path = `themes/${name}.json`
-    let source: ITheme | undefined
+    let source: ThemeDefinition | undefined
     try {
       source = require(resourceFile(path))
     } catch {
@@ -74,7 +73,7 @@ const themeRef = computed(() => {
       originalTheme = source
     }
   }
-  const customization: ITheme = settings['terminal.theme.customization']
+  const customization: ThemeDefinition = settings['terminal.theme.customization']
   const opacity = settings['terminal.style.opacity']
   const theme = {
     ...defaultTheme,

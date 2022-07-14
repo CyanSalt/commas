@@ -1,7 +1,7 @@
 import * as path from 'path'
 import { markRaw, unref } from '@vue/reactivity'
 import {
-  downloadUserFile,
+  writeUserFile,
   openSettingsFile,
   openUserDirectory,
   useDefaultSettings,
@@ -44,5 +44,5 @@ export {
   useDefaultSettings,
   openSettingsFile,
   openUserDirectory,
-  downloadUserFile,
+  writeUserFile,
 }

@@ -12,7 +12,6 @@ let code = $ref('')
 
 const file = $computed(() => tab.shell)
 
-
 const rawSource = $computed(() => useFile(file))
 let source = $computed({
   get: () => rawSource.value,

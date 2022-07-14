@@ -1,6 +1,13 @@
 import type { ITheme } from 'xterm'
 
-export interface EditorTheme extends Required<ITheme> {
+export interface ThemeDefinition extends ITheme {
+  purple?: string,
+  brightPurple?: string,
+  cursorColor?: string,
+  selectionBackground?: string,
+}
+
+export interface EditorTheme extends Required<ThemeDefinition> {
   type: 'dark' | 'light',
   comment: string,
   lineHighlight: string,
@@ -8,7 +15,7 @@ export interface EditorTheme extends Required<ITheme> {
   activeLineNumber: string,
 }
 
-export interface Theme extends Required<ITheme> {
+export interface Theme extends Required<ThemeDefinition> {
   name: string,
   type: 'dark' | 'light',
   opacity: number,

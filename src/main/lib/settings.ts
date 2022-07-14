@@ -10,7 +10,7 @@ import { createDeferred } from '../../shared/helper'
 import type { Settings, SettingsSpec } from '../../typings/settings'
 import { provideIPC, useYAMLFile } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
-import { downloadFile, readFile, writeFile } from '../utils/file'
+import { writeFile } from '../utils/file'
 import { globalHandler } from '../utils/handler'
 import { translate } from './i18n'
 
@@ -145,8 +145,7 @@ async function prepareSettingsFile() {
 
 async function prepareDefaultSettings() {
   const file = path.join(os.tmpdir(), 'commas-default-settings.yaml')
-  const source = generateSettingsSource()
-  await fs.promises.writeFile(file, source)
+  await writeFile(file, generateSettingsSource())
   return file
 }
 
@@ -172,13 +171,9 @@ function openUserDirectory() {
   return shell.openPath(userFile())
 }
 
-async function downloadUserFile(file: string, url: string, force?: boolean) {
+export function writeUserFile(file: string, content?: string) {
   const filePath = userFile(file)
-  if (force) {
-    const data = await readFile(filePath)
-    if (data) return data
-  }
-  return downloadFile(filePath, url)
+  return writeFile(filePath, content)
 }
 
 function handleSettingsMessages() {
@@ -202,8 +197,8 @@ function handleSettingsMessages() {
   ipcMain.handle('prepare-user-file', (event, file: string, example?: string) => {
     return prepareUserFile(file, example)
   })
-  ipcMain.handle('download-user-file', async (event, file: string, url: string, force?: boolean) => {
-    return downloadUserFile(file, url, force)
+  ipcMain.handle('write-user-file', (event, file: string, content?: string) => {
+    return writeUserFile(file, content)
   })
 }
 
@@ -215,6 +210,5 @@ export {
   useEnabledAddons,
   openSettingsFile,
   openUserDirectory,
-  downloadUserFile,
   handleSettingsMessages,
 }

@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { shell, ipcRenderer } from 'electron'
+import type { ThemeDefinition } from '../../../../src/typings/theme'
+import ThemeCard from './ThemeCard.vue'
 import ThemeColorPicker from './ThemeColorPicker.vue'
 import { fetchThemeList } from './utils'
-import type { ThemeEntry } from './utils'
 
 const { vI18n, LoadingSpinner, TerminalPane } = commas.ui.vueAssets
 
-let loading: string | false = $ref<string | false>(false)
 const keyword: string = $ref('')
 
 const list = $(commas.helper.useAsyncComputed(() => fetchThemeList(), []))
@@ -48,17 +48,12 @@ function reset() {
 }
 
 function openMarketplace() {
-  shell.openExternal('https://github.com/mbadolato/iTerm2-Color-Schemes/tree/master/windowsterminal')
+  shell.openExternal('https://windowsterminalthemes.dev')
 }
 
-async function applyItem(item: ThemeEntry) {
-  if (loading) return
-  loading = item.name
-  const result = await commas.remote.downloadUserFile(`themes/${item.name}.json`, item.url)
-  if (result) {
-    settings['terminal.theme.name'] = item.name
-  }
-  loading = false
+async function applyTheme(item: ThemeDefinition & { name: string }) {
+  await commas.remote.writeUserFile(`themes/${item.name}.json`, JSON.stringify(item, null, 2))
+  settings['terminal.theme.name'] = item.name
 }
 </script>
 
@@ -82,18 +77,17 @@ async function applyItem(item: ThemeEntry) {
         >
         <div class="form-line-tip">
           <span v-i18n>Theme will be downloaded from#!theme.3</span>
-          <span class="link github-link" @click="openMarketplace">mbadolato/iTerm2-Color-Schemes</span>
+          <span class="link marketplace-link" @click="openMarketplace">windowsterminalthemes.dev</span>
         </div>
       </div>
       <LoadingSpinner v-if="!list.length" class="theme-loading" />
       <div v-else class="theme-list">
         <figure v-for="item in filteredList" :key="item.name" class="theme-item">
-          <img class="theme-screenshot" :src="item.screenshot">
+          <ThemeCard :theme="item" />
           <figcaption class="theme-action">
             <span class="theme-name">{{ item.name }}</span>
-            <span v-if="item.name !== currentTheme" class="link" @click="applyItem(item)">
-              <LoadingSpinner v-if="loading === item.name" />
-              <span v-else class="feather-icon icon-check"></span>
+            <span v-if="item.name !== currentTheme" class="link" @click="applyTheme(item)">
+              <span class="feather-icon icon-check"></span>
             </span>
           </figcaption>
         </figure>
@@ -136,11 +130,6 @@ async function applyItem(item: ThemeEntry) {
   background: var(--design-card-background);
   border-radius: 4px;
 }
-.theme-screenshot {
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-}
 .theme-action {
   display: flex;
   justify-content: space-between;
@@ -151,7 +140,7 @@ async function applyItem(item: ThemeEntry) {
 .theme-loading {
   margin: 12px 0;
 }
-.github-link {
+.marketplace-link {
   margin-left: 0.5em;
 }
 </style>

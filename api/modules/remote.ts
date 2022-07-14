@@ -31,8 +31,8 @@ async function openUserFile(file: string, example?: string) {
   openCodeEditorTab(filePath)
 }
 
-function downloadUserFile(file: string, url: string, force?: boolean) {
-  return ipcRenderer.invoke('download-user-file', file, url, force)
+function writeUserFile(file: string, content?: string) {
+  return ipcRenderer.invoke('write-user-file', file, content)
 }
 
 export {
@@ -47,6 +47,6 @@ export {
   openDefaultSettings,
   openSettingsFile,
   openUserFile,
-  downloadUserFile,
+  writeUserFile,
   translate,
 }

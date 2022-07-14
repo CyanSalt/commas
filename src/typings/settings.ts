@@ -1,5 +1,6 @@
-import type { ITheme, RendererType } from 'xterm'
+import type { RendererType } from 'xterm'
 import type { JSONSchema } from './json-schema'
+import type { ThemeDefinition } from './theme'
 
 export interface Settings {
   'terminal.shell.path': string,
@@ -23,7 +24,7 @@ export interface Settings {
   'terminal.style.fontLigatures': boolean,
   'terminal.style.cursorStyle': 'block' | 'bar' | 'underline',
   'terminal.theme.name': string,
-  'terminal.theme.customization': ITheme,
+  'terminal.theme.customization': ThemeDefinition,
   'terminal.addon.includes': string[],
 }
 
