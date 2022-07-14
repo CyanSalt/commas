@@ -55,7 +55,7 @@ watchEffect((onInvalidate) => {
 })
 
 watchEffect((onInvalidate) => {
-  if (!terminal) return
+  if (!terminal || terminal.pane) return
   const disposable = terminal.addons.search.onDidChangeResults(result => {
     if (!result) return
     currentNumber = result.resultIndex + 1
