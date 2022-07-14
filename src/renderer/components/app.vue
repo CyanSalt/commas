@@ -35,6 +35,19 @@ const terminal = $(useCurrentTerminal())
 const tabs = $(useTerminalTabs())
 const willQuit: boolean = $(useWillQuit())
 
+const TerminalComponent = $computed(() => {
+  if (!terminal) return undefined
+  if (terminal.pane) {
+    if (terminal.pane.type === 'editor') {
+      return CodeEditorPane
+    } else {
+      return terminal.pane.component
+    }
+  } else {
+    return TerminalTeletype
+  }
+})
+
 const slots = commas.proxy.context.getCollection('@ui-slot')
 
 loadAddons()
@@ -84,26 +97,10 @@ onMounted(() => {
         <FindBox />
         <template v-if="terminal">
           <keep-alive>
-            <template v-if="terminal.pane">
-              <template v-if="terminal.pane.type === 'editor'">
-                <CodeEditorPane
-                  :key="terminal.pid"
-                  :tab="terminal"
-                />
-              </template>
-              <template v-else>
-                <component
-                  :is="terminal.pane.component"
-                  :key="terminal.pid"
-                />
-              </template>
-            </template>
-            <template v-else>
-              <TerminalTeletype
-                :key="terminal.pid"
-                :tab="terminal"
-              />
-            </template>
+            <TerminalComponent
+              :key="terminal.pid"
+              :tab="terminal"
+            />
           </keep-alive>
         </template>
       </main>

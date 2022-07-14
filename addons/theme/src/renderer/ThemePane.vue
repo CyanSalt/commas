@@ -1,16 +1,22 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { shell, ipcRenderer } from 'electron'
+import { onMounted } from 'vue'
+import type { TerminalTab } from '../../../../src/typings/terminal'
 import ThemeCard from './ThemeCard.vue'
 import ThemeColorPicker from './ThemeColorPicker.vue'
 import type { RemoteTheme } from './utils'
 import { fetchThemeList } from './utils'
 
+defineProps<{
+  tab: TerminalTab,
+}>()
+
 const { vI18n, LoadingSpinner, TerminalPane } = commas.ui.vueAssets
 
 const keyword: string = $ref('')
 
-const list = $(commas.helper.useAsyncComputed(() => fetchThemeList(), []))
+let list = $ref<RemoteTheme[]>([])
 
 const filteredList = $computed(() => {
   if (!keyword) return list
@@ -42,6 +48,15 @@ const fields = [
   'white',
   'brightWhite',
 ]
+
+async function load() {
+  list = []
+  list = await fetchThemeList()
+}
+
+onMounted(() => {
+  load()
+})
 
 function reset() {
   ipcRenderer.invoke('reset-theme')
@@ -75,6 +90,9 @@ async function applyTheme(item: RemoteTheme) {
           placeholder="Find#!terminal.5"
           class="form-control"
         >
+        <span class="link form-action" @click="load">
+          <span class="feather-icon icon-refresh-cw"></span>
+        </span>
         <div class="form-line-tip">
           <span v-i18n>Theme will be downloaded from#!theme.3</span>
           <span class="link marketplace-link" @click="openMarketplace">windowsterminalthemes.dev</span>

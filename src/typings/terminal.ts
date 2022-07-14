@@ -13,7 +13,7 @@ export interface TerminalTabPane {
   type?: string,
   title: string,
   icon?: IconEntry,
-  component: Component,
+  component: Component<{ tab: TerminalTab }>,
   instance?: any,
 }
 

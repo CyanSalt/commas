@@ -1,7 +1,12 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { ipcRenderer, shell } from 'electron'
+import type { TerminalTab } from '../../../../src/typings/terminal'
 import { useProxyRootCAStatus, useProxyServerStatus, useProxyServerVersionInfo, useSystemProxyStatus } from './compositions'
+
+defineProps<{
+  tab: TerminalTab,
+}>()
 
 const { vI18n, SwitchControl, TerminalPane } = commas.ui.vueAssets
 

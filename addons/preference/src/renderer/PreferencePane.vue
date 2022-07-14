@@ -1,7 +1,12 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { shell } from 'electron'
+import type { TerminalTab } from '../../../../src/typings/terminal'
 import type { PreferenceItem } from './preference'
+
+defineProps<{
+  tab: TerminalTab,
+}>()
 
 const { vI18n, TerminalPane } = commas.ui.vueAssets
 

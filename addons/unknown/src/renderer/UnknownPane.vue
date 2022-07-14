@@ -2,7 +2,12 @@
 import * as commas from 'commas:api/renderer'
 import { sample, sampleSize } from 'lodash'
 import { nextTick, onMounted, reactive } from 'vue'
+import type { TerminalTab } from '../../../../src/typings/terminal'
 import UnknownDial from './UnknownDial.vue'
+
+defineProps<{
+  tab: TerminalTab,
+}>()
 
 const { vI18n, TerminalPane } = commas.ui.vueAssets
 const generateID = commas.helper.createIDGenerator()

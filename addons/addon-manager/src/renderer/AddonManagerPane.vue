@@ -3,7 +3,12 @@ import * as commas from 'commas:api/renderer'
 import { ipcRenderer, shell } from 'electron'
 import { onMounted } from 'vue'
 import type { AddonInfo } from '../../../../src/typings/addon'
+import type { TerminalTab } from '../../../../src/typings/terminal'
 import { useDiscoveredAddons } from './compositions'
+
+defineProps<{
+  tab: TerminalTab,
+}>()
 
 const { vI18n, TerminalPane, SwitchControl } = commas.ui.vueAssets
 
