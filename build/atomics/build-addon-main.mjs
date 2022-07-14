@@ -20,6 +20,7 @@ export default async (versions, dir, external) => {
     ]
     options.outfile = path.join(dir, 'dist/main/index.js')
     if (external) {
+      options.plugins = options.plugins ?? []
       options.plugins.unshift(alias({
         '@vue/reactivity': 'commas:external/@vue/reactivity',
         vue: 'commas:external/vue',

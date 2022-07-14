@@ -12,6 +12,11 @@ async function getModifiedFiles() {
   return files.trim().split('\n')
 }
 
+/**
+ * @param {string[]} files
+ * @param {string | string[]} directory
+ * @returns {boolean}
+ */
 function hasModified(files, directory) {
   if (Array.isArray(directory)) {
     return directory.some(item => hasModified(files, item))
@@ -20,6 +25,12 @@ function hasModified(files, directory) {
   return files.some(file => file.startsWith(dir))
 }
 
+/**
+ * @template T
+ * @param {boolean} condition
+ * @param {() => T} factory
+ * @returns
+ */
 function only(condition, factory) {
   return condition ? factory() : undefined
 }

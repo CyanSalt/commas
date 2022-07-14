@@ -2,13 +2,12 @@ import esbuild from 'esbuild'
 import externalNodeModules from '../utils/esbuild-external-node-modules.mjs'
 
 /**
- * @template T
- * @type {(value: T) => T} Pipe<T>
+ * @typedef {import('esbuild').BuildOptions} BuildOptions
  */
 
 /**
  * @param {NodeJS.ProcessVersions} versions
- * @param {Pipe<import('esbuild').BuildOptions>} tap
+ * @param {(value: BuildOptions) => BuildOptions} tap
  */
 export default (versions, tap) => esbuild.build(tap({
   bundle: true,

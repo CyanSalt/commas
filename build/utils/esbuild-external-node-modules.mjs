@@ -1,3 +1,6 @@
+/**
+ * @returns {import('esbuild').Plugin}
+ */
 export default () => ({
   name: 'esbuild-external-node-modules',
   setup(pluginBuild) {

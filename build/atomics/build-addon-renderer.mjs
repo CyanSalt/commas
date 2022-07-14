@@ -15,6 +15,7 @@ export default async (versions, dir, external) => {
   }
   return buildRenderer(versions, options => {
     options.root = dir
+    options.build = options.build ?? {}
     options.build.outDir = 'dist/renderer'
     options.build.lib = {
       entry: 'src/renderer/index.ts',
@@ -27,9 +28,12 @@ export default async (versions, dir, external) => {
         vue: 'commas:external/vue',
       }
       options.resolve = { alias }
+      /** @type {(string | RegExp)[]} */
       const moduleIds = Object.keys(alias)
       const rollupOptions = options.build.rollupOptions
-      rollupOptions.external = rollupOptions.external.filter(item => !moduleIds.includes(item))
+      if (rollupOptions?.external && Array.isArray(rollupOptions.external)) {
+        rollupOptions.external = rollupOptions.external.filter(item => !moduleIds.includes(item))
+      }
     }
     return options
   })

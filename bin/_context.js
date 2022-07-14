@@ -1,3 +1,6 @@
+/**
+ * @param {string} [stdin]
+ */
 function writeContext(stdin) {
   process.stdout.end(JSON.stringify({
     argv: process.argv.slice(2),

@@ -1,5 +1,6 @@
 /**
  * @param {Record<string, string>} options
+ * @returns {import('esbuild').Plugin}
  */
 export default (options) => ({
   name: 'esbuild-alias',

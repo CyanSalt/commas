@@ -1,18 +1,17 @@
 import { builtinModules } from 'module'
 import vue from '@vitejs/plugin-vue'
-import vite from 'vite'
+import * as vite from 'vite'
 import { requireCommonJS } from '../utils/common.mjs'
 
 const pkg = requireCommonJS(import.meta, '../../package.json')
 
 /**
- * @template T
- * @type {(value: T) => T} Pipe<T>
+ * @typedef {import('vite').InlineConfig} InlineConfig
  */
 
 /**
  * @param {NodeJS.ProcessVersions} versions
- * @param {Pipe<import('vite').InlineConfig>} tap
+ * @param {(value: InlineConfig) => InlineConfig} tap
  */
 export default (versions, tap) => vite.build(tap({
   configFile: false,
@@ -48,11 +47,12 @@ export default (versions, tap) => vite.build(tap({
       },
     },
     commonjsOptions: {
-      ignore: [
-        id => /^commas:/.test(id),
-        'electron',
-        ...builtinModules,
-      ],
+      ignore: id => {
+        return /^commas:/.test(id) || [
+          'electron',
+          ...builtinModules,
+        ].includes(id)
+      },
     },
   },
 }))

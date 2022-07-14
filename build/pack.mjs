@@ -12,20 +12,37 @@ const pkg = requireCommonJS(import.meta, '../package.json')
 const execa = util.promisify(childProcess.exec)
 
 const logger = {
+  /**
+   * @param {string} message
+   */
   info(message) {
     console.log(chalk.inverse(chalk.blue(' INFO ')) + ' ' + message)
   },
+  /**
+   * @param {string} message
+   */
   done(message) {
     console.log(chalk.inverse(chalk.green(' DONE ')) + ' ' + message)
   },
+  /**
+   * @param {string} message
+   */
   warn(message) {
     console.log(chalk.inverse(chalk.yellow(' WARN ')) + ' ' + chalk.yellow(message))
   },
+  /**
+   * @param {string} message
+   */
   error(message) {
     console.error(chalk.inverse(chalk.red(' ERROR ')) + ' ' + chalk.red(message))
   },
 }
 
+/**
+ * @param {Buffer} input
+ * @param {string} icon
+ * @param {string} suffix
+ */
 async function generateAppIcon(input, icon, suffix) {
   // Check icon file
   const iconPath = `${icon}.${suffix}`
@@ -39,7 +56,9 @@ async function generateAppIcon(input, icon, suffix) {
     logger.info(`Generating ${suffix.toUpperCase()} icon for application...`)
     const builder = suffix === 'icns' ? png2icons.createICNS : png2icons.createICO
     const output = builder(input, png2icons.BICUBIC2, 0, false, true)
-    await fs.promises.writeFile(iconPath, output)
+    if (output) {
+      await fs.promises.writeFile(iconPath, output)
+    }
   } catch {
     // ignore error
   }
@@ -58,9 +77,9 @@ const options = {
   asar: true,
   icon: 'resources/images/icon',
   ignore: [
-    '^/(?!addons|dist|node_modules|resources|package\\.json)',
-    '^/addon/[^/]+/src',
-    '^/resources/.*\\.(ico|icns)$',
+    /^\/(?!addons|dist|node_modules|resources|package\.json)/,
+    /^\/addon\/[^/]+\/src/,
+    /^\/resources\/.*\.(ico|icns)$/,
   ],
   extraResource: [
     'bin',
@@ -99,6 +118,9 @@ const options = {
   ],
 }
 
+/**
+ * @param {string} name
+ */
 async function getMacOSCodeSign(name) {
   const { stdout } = await execa(
     `security find-identity -p codesigning -v | grep -o "\\"${name}: .*\\""`,
@@ -106,6 +128,9 @@ async function getMacOSCodeSign(name) {
   return stdout.trim()
 }
 
+/**
+ * @param {string} dir
+ */
 async function compressPackage(dir) {
   logger.info(`Packing ${dir}...`)
   try {
@@ -120,11 +145,17 @@ async function pack() {
   const local = process.argv.includes('--local')
   // Generate icons
   const startedAt = Date.now()
-  const input = await fs.promises.readFile(`${options.icon}.png`)
-  await Promise.all([
-    generateAppIcon(input, options.icon, 'ico'),
-    generateAppIcon(input, options.icon, 'icns'),
-  ])
+  if (options.icon) {
+    const extname = path.extname(options.icon)
+    if (extname === '.png') {
+      const input = await fs.promises.readFile(options.icon)
+      const icon = path.basename(options.icon, extname)
+      await Promise.all([
+        generateAppIcon(input, icon, 'ico'),
+        generateAppIcon(input, icon, 'icns'),
+      ])
+    }
+  }
   // Equivalent to { type: 'development' } for electron-osx-sign
   if (process.platform === 'darwin') {
     options.osxSign = {
@@ -139,11 +170,14 @@ async function pack() {
   const appPaths = await packager(options)
   if (!local) {
     const cwd = process.cwd()
-    process.chdir(options.out)
-    await Promise.all(
-      appPaths.map(dir => compressPackage(path.relative(options.out, dir))),
-    )
-    process.chdir(cwd)
+    if (options.out) {
+      const outDir = options.out
+      process.chdir(outDir)
+      await Promise.all(
+        appPaths.map(dir => compressPackage(path.relative(outDir, dir))),
+      )
+      process.chdir(cwd)
+    }
   }
   return Date.now() - startedAt
 }
