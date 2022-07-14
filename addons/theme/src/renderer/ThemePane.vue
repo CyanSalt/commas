@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { shell, ipcRenderer } from 'electron'
-import type { ThemeDefinition } from '../../../../src/typings/theme'
 import ThemeCard from './ThemeCard.vue'
 import ThemeColorPicker from './ThemeColorPicker.vue'
+import type { RemoteTheme } from './utils'
 import { fetchThemeList } from './utils'
 
 const { vI18n, LoadingSpinner, TerminalPane } = commas.ui.vueAssets
@@ -51,7 +51,7 @@ function openMarketplace() {
   shell.openExternal('https://windowsterminalthemes.dev')
 }
 
-async function applyTheme(item: ThemeDefinition & { name: string }) {
+async function applyTheme(item: RemoteTheme) {
   await commas.remote.writeUserFile(`themes/${item.name}.json`, JSON.stringify(item, null, 2))
   settings['terminal.theme.name'] = item.name
 }
