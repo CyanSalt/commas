@@ -106,10 +106,10 @@ onActivated(() => {
 }
 .terminal-content {
   flex: 1;
-  /* issue@xterm: fix bug of `xterm.fit()` */
-  box-sizing: border-box;
   min-width: 0;
-  padding: 4px 8px;
+  :deep(.xterm) {
+    padding: 4px 8px;
+  }
   :deep(.xterm-viewport) {
     @include partials.scroll-container;
     z-index: 1;
