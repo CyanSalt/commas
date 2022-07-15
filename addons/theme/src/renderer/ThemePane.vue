@@ -100,15 +100,11 @@ async function applyTheme(item: RemoteTheme) {
       </div>
       <LoadingSpinner v-if="!list.length" class="theme-loading" />
       <div v-else class="theme-list">
-        <figure v-for="item in filteredList" :key="item.name" class="theme-item">
-          <ThemeCard :theme="item" />
-          <figcaption class="theme-action">
-            <span class="theme-name">{{ item.name }}</span>
-            <span v-if="item.name !== currentTheme" class="link" @click="applyTheme(item)">
-              <span class="feather-icon icon-check"></span>
-            </span>
-          </figcaption>
-        </figure>
+        <ThemeCard v-for="item in filteredList" :key="item.name" :theme="item">
+          <span v-if="item.name !== currentTheme" class="link" @click="applyTheme(item)">
+            <span class="feather-icon icon-check"></span>
+          </span>
+        </ThemeCard>
       </div>
     </div>
   </TerminalPane>
@@ -138,22 +134,6 @@ async function applyTheme(item: RemoteTheme) {
   grid-gap: 24px;
   width: 100%;
   padding: 12px 0;
-}
-.theme-item {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  overflow: hidden;
-  background: var(--design-card-background);
-  border-radius: 4px;
-}
-.theme-action {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 48px;
-  padding: 0 12px;
 }
 .theme-loading {
   margin: 12px 0;

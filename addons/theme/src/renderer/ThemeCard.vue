@@ -7,48 +7,66 @@ const { theme } = defineProps<{
 </script>
 
 <template>
-  <div class="theme-card" :style="{ 'background-color': theme.background, color: theme.foreground }">
-    <div class="theme-line"></div>
-    <div class="theme-line" :style="{ color: theme.brightRed }">
-      <div class="theme-line" :style="{ color: theme.red }"></div>
+  <figure class="theme-card" :style="{ 'background-color': theme.background, color: theme.foreground }">
+    <figcaption class="card-action">
+      <span class="theme-name">{{ theme.name }}</span>
+      <slot></slot>
+    </figcaption>
+    <div class="theme-preview">
+      <div class="preview-line" :style="{ color: theme.brightRed }">
+        <div class="preview-line" :style="{ color: theme.red }"></div>
+      </div>
+      <div class="preview-line" :style="{ color: theme.brightGreen }">
+        <div class="preview-line" :style="{ color: theme.green }"></div>
+      </div>
+      <div class="preview-line" :style="{ color: theme.brightYellow }">
+        <div class="preview-line" :style="{ color: theme.yellow }"></div>
+      </div>
+      <div class="preview-line" :style="{ color: theme.brightBlue }">
+        <div class="preview-line" :style="{ color: theme.blue }"></div>
+      </div>
+      <div class="preview-line" :style="{ color: theme.brightMagenta ?? theme.brightPurple }">
+        <div class="preview-line" :style="{ color: theme.magenta ?? theme.purple }"></div>
+      </div>
+      <div class="preview-line" :style="{ color: theme.brightCyan }">
+        <div class="preview-line" :style="{ color: theme.cyan }"></div>
+      </div>
+      <div class="preview-line" :style="{ color: theme.meta.isDark ? theme.white : theme.black }">
+        <div class="preview-line" :style="{ color: theme.meta.isDark ? theme.brightWhite : theme.brightBlack }"></div>
+      </div>
+      <!-- Invert brightWhite and white for light themes -->
+      <div class="preview-line" :style="{ color: theme.meta.isDark ? theme.black : theme.brightWhite }">
+        <div class="preview-line" :style="{ color: theme.meta.isDark ? theme.brightBlack : theme.white }"></div>
+      </div>
     </div>
-    <div class="theme-line" :style="{ color: theme.brightGreen }">
-      <div class="theme-line" :style="{ color: theme.green }"></div>
-    </div>
-    <div class="theme-line" :style="{ color: theme.brightYellow }">
-      <div class="theme-line" :style="{ color: theme.yellow }"></div>
-    </div>
-    <div class="theme-line" :style="{ color: theme.brightBlue }">
-      <div class="theme-line" :style="{ color: theme.blue }"></div>
-    </div>
-    <div class="theme-line" :style="{ color: theme.brightMagenta ?? theme.brightPurple }">
-      <div class="theme-line" :style="{ color: theme.magenta ?? theme.purple }"></div>
-    </div>
-    <div class="theme-line" :style="{ color: theme.brightCyan }">
-      <div class="theme-line" :style="{ color: theme.cyan }"></div>
-    </div>
-    <div class="theme-line" :style="{ color: theme.meta.isDark ? theme.white : theme.black }">
-      <div class="theme-line" :style="{ color: theme.meta.isDark ? theme.brightWhite : theme.brightBlack }"></div>
-    </div>
-    <!-- Invert brightWhite and white for light themes -->
-    <div class="theme-line" :style="{ color: theme.meta.isDark ? theme.black : theme.brightWhite }">
-      <div class="theme-line" :style="{ color: theme.meta.isDark ? theme.brightBlack : theme.white }"></div>
-    </div>
-  </div>
+  </figure>
 </template>
 
 <style lang="scss" scoped>
 @use 'sass:math';
 
 .theme-card {
-  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 4px;
 }
-.theme-line {
+.card-action {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5em 1em 0;
+}
+.theme-preview {
+  padding: 0.5em 1em 1em;
+}
+.preview-line {
   height: 0.5em;
   background: currentColor;
   border-radius: 2px;
   @for $i from 1 through 7 {
-    .theme-card > &:nth-child(#{$i}) {
+    .theme-preview > &:nth-child(#{$i}) {
       width: #{math.abs(math.sin($i)) * 100} + '%';
     }
   }
