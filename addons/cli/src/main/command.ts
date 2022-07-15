@@ -2,7 +2,7 @@ import * as util from 'util'
 import { computed } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import { shell } from 'electron'
-import type { IpcMainInvokeEvent } from 'electron'
+import type { Generable } from '../../../../src/shared/helper'
 
 export interface CommandContext {
   argv: string[],
@@ -13,7 +13,7 @@ export interface CommandContext {
 export interface CommandModule {
   command: string,
   usage?: string,
-  handler: (context: CommandContext, event: IpcMainInvokeEvent) => any,
+  handler: (context: CommandContext) => Generable<string, string | undefined>,
 }
 
 function getCommandModule(command: string, commands: CommandModule[]) {
@@ -25,19 +25,17 @@ function getCommandModule(command: string, commands: CommandModule[]) {
   return commands.find(item => item.command === command)
 }
 
-async function executeCommand(
-  event: IpcMainInvokeEvent,
+function executeCommand(
   inputContext: CommandContext,
   commands: CommandModule[],
-) {
+): AsyncGenerator<string, string | undefined, never> {
   const [subcommand, ...argv] = inputContext.argv
   const mod = getCommandModule(subcommand, commands)
   if (!mod) {
-    return executeCommand(event, { ...inputContext, argv: ['help'] }, commands)
+    return executeCommand({ ...inputContext, argv: ['help'] }, commands)
   }
   const context = { ...inputContext, argv }
-  const stdout = await mod.handler(context, event)
-  return typeof stdout === 'string' ? stdout : undefined
+  return commas.helper.iterate(mod.handler(context))
 }
 
 const externalURLCommandsRef = computed(() => {

@@ -1,4 +1,3 @@
 #!/bin/sh
 
-payload=$(ELECTRON_RUN_AS_NODE=1 ${COMMAS_EXE:-node} $(dirname $0)/_context.js cli "$@")
-printf '\x1b]539;%s\x1b\\' "$payload"
+ELECTRON_RUN_AS_NODE=1 exec ${COMMAS_EXE:-node} $(dirname $0)/_ipc.js "$@"

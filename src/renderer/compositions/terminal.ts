@@ -161,27 +161,6 @@ export async function createTerminalTab({
     tab.alerting = true
     ipcRenderer.invoke('beep')
   })
-  // Commas protocol
-  xterm.parser.registerOscHandler(539, data => {
-    try {
-      const { argv, cwd, stdin } = JSON.parse(data)
-      switch (argv[0]) {
-        case 'cli':
-          ipcRenderer.invoke('cli', { argv: argv.slice(1), cwd, stdin }).then(result => {
-            if (typeof result === 'string') {
-              xterm.writeln(result.replace(/(?<!\r)\n/g, '\r\n'))
-            }
-          }).finally(() => {
-            ipcRenderer.invoke('resume-terminal', tab.pid)
-          })
-          return true
-      }
-    } catch {
-      // ignore error
-    }
-    ipcRenderer.invoke('resume-terminal', tab.pid)
-    return false
-  })
   const stopEffect = watchEffect(() => {
     for (const [key, value] of Object.entries(terminalOptions)) {
       xterm.options[key] = value

@@ -6,6 +6,7 @@ import chalk from 'chalk'
 import * as commas from 'commas:api/main'
 import { app, BrowserWindow } from 'electron'
 import { random } from 'lodash'
+import ipc from 'node-ipc'
 import { quote } from 'shell-quote'
 import type { CommandModule } from './command'
 import { getCommandModule, executeCommand, useExternalURLCommands } from './command'
@@ -30,8 +31,27 @@ export default () => {
   const settings = commas.settings.useSettings()
 
   const commands: CommandModule[] = commas.context.getCollection('cli')
-  commas.ipcMain.handle('cli', (event, context) => {
-    return executeCommand(event, context, commands)
+
+  ipc.config.id = 'commas-ipc-server'
+  ipc.config.silent = true
+  ipc.serve(() => {
+    ipc.server.on('request', async (context, socket) => {
+      const execution = executeCommand(context, commands)
+      let done: boolean | undefined
+      while (!done) {
+        const result = await execution.next()
+        const stdout = result.value
+        if (typeof stdout === 'string') {
+          ipc.server.emit(socket, 'data', stdout)
+        }
+        done = result.done
+      }
+      ipc.server.emit(socket, 'end')
+    })
+  })
+  ipc.server.start()
+  commas.app.onCleanup(() => {
+    ipc.server.stop()
   })
 
   /** {@link https://github.com/npm/cli/blob/latest/lib/utils/npm-usage.js#L39-L55} */
@@ -116,8 +136,10 @@ where <command> is one of:
   commas.context.provide('cli', {
     command: 'run',
     usage: '<...command-with-args>',
-    handler({ argv }, event) {
-      event.sender.send('open-tab', {
+    handler({ argv }) {
+      const frame = BrowserWindow.getFocusedWindow()
+      if (!frame) return
+      frame.webContents.send('open-tab', {
         command: quote(argv),
       })
     },
@@ -126,18 +148,22 @@ where <command> is one of:
   commas.context.provide('cli', {
     command: 'edit',
     usage: '<file>',
-    handler({ argv, cwd }, event) {
-      event.sender.send('open-code-editor', path.join(cwd, argv[0]))
+    handler({ argv, cwd }) {
+      const frame = BrowserWindow.getFocusedWindow()
+      if (!frame) return
+      frame.webContents.send('open-code-editor', path.join(cwd, argv[0]))
     },
   })
 
   commas.context.provide('cli', {
     command: 'select',
     usage: '<nth-tab>',
-    handler({ argv }, event) {
+    handler({ argv }) {
+      const frame = BrowserWindow.getFocusedWindow()
+      if (!frame) return
       const index = Number.parseInt(argv[0], 10)
       if (!Number.isNaN(index)) {
-        event.sender.send('select-tab', index)
+        frame.webContents.send('select-tab', index)
       }
     },
   })
@@ -180,8 +206,8 @@ where <command> is one of:
   commas.context.provide('cli', {
     command: 'preview',
     usage: '[file]',
-    handler({ argv, cwd }, event) {
-      const frame = BrowserWindow.fromWebContents(event.sender)
+    handler({ argv, cwd }) {
+      const frame = BrowserWindow.getFocusedWindow()
       if (!frame) return
       const file = argv[0] ? path.resolve(cwd, argv[0]) : cwd
       frame.previewFile(file, argv[0] || file)
@@ -190,8 +216,8 @@ where <command> is one of:
 
   commas.context.provide('cli', {
     command: 'trick',
-    handler(payload, event) {
-      const frame = BrowserWindow.fromWebContents(event.sender)
+    handler() {
+      const frame = BrowserWindow.getFocusedWindow()
       if (!frame) return
       const [width, height] = frame.getSize()
       frame.setSize(width - 1, height - 1)

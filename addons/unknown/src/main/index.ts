@@ -1,4 +1,5 @@
 import * as commas from 'commas:api/main'
+import { BrowserWindow } from 'electron'
 
 export default () => {
 
@@ -6,8 +7,10 @@ export default () => {
 
   commas.context.provide('cli', {
     command: ',',
-    handler(payload, event) {
-      event.sender.send('unknown-start')
+    handler() {
+      const frame = BrowserWindow.getFocusedWindow()
+      if (!frame) return
+      frame.webContents.send('unknown-start')
     },
   })
 
