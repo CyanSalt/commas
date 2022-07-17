@@ -32,9 +32,12 @@ async function createWindow(...args: string[]) {
   }
   if (frameType === 'immersive') {
     options.titleBarStyle = process.platform === 'darwin' ? 'hiddenInset' : 'hidden'
-    options.titleBarOverlay = true
-    // Transparent window on Windows will lose border and shadow
-    options.transparent = process.platform !== 'win32'
+    if (process.platform === 'win32') {
+      options.titleBarOverlay = true
+    } else {
+      // Transparent window on Windows will lose border and shadow
+      options.transparent = true
+    }
   }
   // frame offset
   if (hasWindow()) {
@@ -77,7 +80,7 @@ async function createWindow(...args: string[]) {
     const themeOptions = unref(themeOptionsRef)
     frame.setBackgroundColor(themeOptions.backgroundColor)
     frame.setVibrancy(themeOptions.vibrancy ?? null)
-    if (frameType === 'immersive') {
+    if (process.platform === 'win32' && frameType === 'immersive') {
       frame.setTitleBarOverlay(themeOptions.titleBarOverlay)
     }
   })
