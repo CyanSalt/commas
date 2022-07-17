@@ -54,33 +54,11 @@ const addonMenuItemsRef = computed(() => {
     .map(resolveBindingCommand)
 })
 
-function createApplicationMenu() {
+const menuTemplateRef = computed<MenuItemConstructorOptions[]>(() => {
   const terminalMenuItems = unref(terminalMenuItemsRef)
   const customMenuItems = unref(customMenuItemsRef)
   const addonMenuItems = unref(addonMenuItemsRef)
-  const menu = Menu.buildFromTemplate([
-    {
-      label: app.name,
-      submenu: [
-        { role: 'about', label: translate('About %A#!menu.about', { A: app.name }) },
-        { type: 'separator' },
-        {
-          label: translate('Preferences...#!menu.preference'),
-          accelerator: 'Command+,',
-          click() {
-            globalHandler.invoke('global:open-settings')
-          },
-        },
-        { type: 'separator' },
-        { role: 'services', label: translate('Services#!menu.services') },
-        { type: 'separator' },
-        { role: 'hide', label: translate('Hide %A#!menu.hide', { A: app.name }) },
-        { role: 'hideOthers', label: translate('Hide Others#!menu.hideothers') },
-        { role: 'unhide', label: translate('Show All#!menu.unhide') },
-        { type: 'separator' },
-        { role: 'quit', label: translate('Quit %A#!menu.quit', { A: app.name }) },
-      ],
-    },
+  return [
     {
       label: translate('Terminal#!menu.terminal'),
       submenu: terminalMenuItems,
@@ -109,42 +87,43 @@ function createApplicationMenu() {
         },
       ],
     },
+  ]
+})
+
+function createApplicationMenu() {
+  const menuTemplate = unref(menuTemplateRef)
+  const menu = Menu.buildFromTemplate([
+    {
+      label: app.name,
+      submenu: [
+        { role: 'about', label: translate('About %A#!menu.about', { A: app.name }) },
+        { type: 'separator' },
+        {
+          label: translate('Preferences...#!menu.preference'),
+          accelerator: 'Command+,',
+          click() {
+            globalHandler.invoke('global:open-settings')
+          },
+        },
+        { type: 'separator' },
+        { role: 'services', label: translate('Services#!menu.services') },
+        { type: 'separator' },
+        { role: 'hide', label: translate('Hide %A#!menu.hide', { A: app.name }) },
+        { role: 'hideOthers', label: translate('Hide Others#!menu.hideothers') },
+        { role: 'unhide', label: translate('Show All#!menu.unhide') },
+        { type: 'separator' },
+        { role: 'quit', label: translate('Quit %A#!menu.quit', { A: app.name }) },
+      ],
+    },
+    ...menuTemplate,
   ])
   Menu.setApplicationMenu(menu)
 }
 
 function createWindowMenu(frame: BrowserWindow) {
-  const terminalMenuItems = unref(terminalMenuItemsRef)
-  const customMenuItems = unref(customMenuItemsRef)
-  const addonMenuItems = unref(addonMenuItemsRef)
+  const menuTemplate = unref(menuTemplateRef)
   const menu = Menu.buildFromTemplate([
-    {
-      label: translate('Terminal#!menu.terminal'),
-      submenu: terminalMenuItems,
-    },
-    { role: 'editMenu' },
-    { role: 'windowMenu' },
-    {
-      label: translate('User#!menu.user'),
-      submenu: customMenuItems,
-    },
-    {
-      label: translate('Addon#!menu.addon'),
-      submenu: addonMenuItems,
-    },
-    {
-      label: translate('Help#!menu.help'),
-      submenu: [
-        { role: 'toggleDevTools' },
-        {
-          label: translate('Relaunch %A#!menu.relaunch', { A: app.name }),
-          accelerator: 'CmdOrCtrl+Shift+R',
-          click() {
-            app.relaunch()
-          },
-        },
-      ],
-    },
+    ...menuTemplate,
   ])
   frame.setMenu(menu)
 }
