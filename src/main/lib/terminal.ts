@@ -26,6 +26,7 @@ async function createTerminal(webContents: WebContents, { shell, cwd }: CreateTe
   const env = {
     ...getDefaultEnv(),
     ...settings['terminal.shell.env'],
+    COMMAS_SENDER_ID: String(webContents.id),
   } as Record<string, string>
   if (!shell) {
     shell = settings['terminal.shell.path'] || getDefaultShell()

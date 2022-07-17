@@ -4,7 +4,7 @@ import * as vm from 'vm'
 import { computed, effect, stop, unref } from '@vue/reactivity'
 import chalk from 'chalk'
 import * as commas from 'commas:api/main'
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, webContents } from 'electron'
 import { random } from 'lodash'
 import ipc from 'node-ipc'
 import { quote } from 'shell-quote'
@@ -36,6 +36,7 @@ export default () => {
   ipc.config.silent = true
   ipc.serve(() => {
     ipc.server.on('request', async (context, socket) => {
+      context.sender = webContents.fromId(context.sender)
       const execution = executeCommand(context, commands)
       let done: boolean | undefined
       while (!done) {
@@ -136,10 +137,8 @@ where <command> is one of:
   commas.context.provide('cli', {
     command: 'run',
     usage: '<...command-with-args>',
-    handler({ argv }) {
-      const frame = BrowserWindow.getFocusedWindow()
-      if (!frame) return
-      frame.webContents.send('open-tab', {
+    handler({ sender, argv }) {
+      sender.send('open-tab', {
         command: quote(argv),
       })
     },
@@ -148,22 +147,18 @@ where <command> is one of:
   commas.context.provide('cli', {
     command: 'edit',
     usage: '<file>',
-    handler({ argv, cwd }) {
-      const frame = BrowserWindow.getFocusedWindow()
-      if (!frame) return
-      frame.webContents.send('open-code-editor', path.join(cwd, argv[0]))
+    handler({ sender, argv, cwd }) {
+      sender.send('open-code-editor', path.join(cwd, argv[0]))
     },
   })
 
   commas.context.provide('cli', {
     command: 'select',
     usage: '<nth-tab>',
-    handler({ argv }) {
-      const frame = BrowserWindow.getFocusedWindow()
-      if (!frame) return
+    handler({ sender, argv }) {
       const index = Number.parseInt(argv[0], 10)
       if (!Number.isNaN(index)) {
-        frame.webContents.send('select-tab', index)
+        sender.send('select-tab', index)
       }
     },
   })
@@ -206,8 +201,8 @@ where <command> is one of:
   commas.context.provide('cli', {
     command: 'preview',
     usage: '[file]',
-    handler({ argv, cwd }) {
-      const frame = BrowserWindow.getFocusedWindow()
+    handler({ sender, argv, cwd }) {
+      const frame = BrowserWindow.fromWebContents(sender)
       if (!frame) return
       const file = argv[0] ? path.resolve(cwd, argv[0]) : cwd
       frame.previewFile(file, argv[0] || file)
@@ -216,8 +211,8 @@ where <command> is one of:
 
   commas.context.provide('cli', {
     command: 'trick',
-    handler() {
-      const frame = BrowserWindow.getFocusedWindow()
+    handler({ sender }) {
+      const frame = BrowserWindow.fromWebContents(sender)
       if (!frame) return
       const [width, height] = frame.getSize()
       frame.setSize(width - 1, height - 1)

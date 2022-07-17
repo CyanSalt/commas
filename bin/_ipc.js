@@ -49,6 +49,8 @@ async function connect() {
     }
   })
   server.emit('request', {
+    sender: Number(process.env.COMMAS_SENDER_ID),
+    ppid: process.ppid,
     argv: process.argv.slice(2),
     cwd: process.cwd(),
     stdin,

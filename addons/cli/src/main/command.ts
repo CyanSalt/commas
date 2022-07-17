@@ -1,10 +1,14 @@
 import * as util from 'util'
 import { computed } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
+import type { WebContents } from 'electron'
 import { shell } from 'electron'
 import type { Generable } from '../../../../src/shared/helper'
 
 export interface CommandContext {
+  sender: WebContents,
+  command: string,
+  ppid: number,
   argv: string[],
   cwd: string,
   stdin?: string,
@@ -29,12 +33,12 @@ function executeCommand(
   inputContext: CommandContext,
   commands: CommandModule[],
 ): AsyncGenerator<string, string | undefined, never> {
-  const [subcommand, ...argv] = inputContext.argv
-  const mod = getCommandModule(subcommand, commands)
+  const [command, ...argv] = inputContext.argv
+  const mod = getCommandModule(command, commands)
   if (!mod) {
     return executeCommand({ ...inputContext, argv: ['help'] }, commands)
   }
-  const context = { ...inputContext, argv }
+  const context = { ...inputContext, command, argv }
   return commas.helper.iterate(mod.handler(context))
 }
 
