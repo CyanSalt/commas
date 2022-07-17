@@ -175,12 +175,12 @@
     "label": "Frame Type",
     "comments": [
       "Frame type of window",
-      "Options: 'system' or 'immersive'",
+      "Options: 'system', 'system-with-menu' or 'immersive'",
       "Changing this setting will take effect after reloading the app"
     ],
     "schema": {
       "type": "string",
-      "enum": ["system", "immersive"]
+      "enum": ["system", "system-with-menu", "immersive"]
     },
     "reload": true,
     "default": "immersive"

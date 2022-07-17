@@ -147,7 +147,6 @@ function createWindowMenu(frame: BrowserWindow) {
     },
   ])
   frame.setMenu(menu)
-  frame.setMenuBarVisibility(false)
 }
 
 function createTouchBar(frame: BrowserWindow) {

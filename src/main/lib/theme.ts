@@ -1,6 +1,6 @@
 import { computed, effect, unref } from '@vue/reactivity'
 import { nativeTheme, systemPreferences } from 'electron'
-import type { BrowserWindowConstructorOptions } from 'electron'
+import type { BrowserWindowConstructorOptions, TitleBarOverlay } from 'electron'
 import { toRGBA, toCSSColor, toCSSHEX, toElectronHEX, isDarkColor, mix, toHSLA, toRGBAFromHSLA } from '../../shared/color'
 import type { EditorTheme, Theme, ThemeDefinition } from '../../typings/theme'
 import { provideIPC } from '../utils/compositions'
@@ -10,6 +10,7 @@ import { useDefaultSettings, useSettings } from './settings'
 interface BrowserWindowThemeOptions {
   backgroundColor: string,
   vibrancy: BrowserWindowConstructorOptions['vibrancy'],
+  titleBarOverlay: TitleBarOverlay,
 }
 
 const THEME_CSS_COLORS: Partial<Record<keyof ThemeDefinition, string>> = {
@@ -98,17 +99,20 @@ const themeRef = computed(() => {
     theme.cursorAccent = theme.background
   }
   const backgroundHSLA = toHSLA(backgroundRGBA)
-  theme.materialBackground = toCSSColor(toRGBAFromHSLA({
+  const materialBackgroundRGBA = toRGBAFromHSLA({
     ...backgroundHSLA,
     l: backgroundHSLA.l - Math.min(backgroundHSLA.l * 0.2, 0.1),
-  }))
+  })
+  theme.materialBackground = toCSSColor(materialBackgroundRGBA)
   theme.secondaryBackground = toCSSColor(mix(backgroundRGBA, { r: 127, g: 127, b: 127, a: 1 }, 0.9))
-  theme.systemRed = systemPreferences.getSystemColor('red')
-  theme.systemYellow = systemPreferences.getSystemColor('yellow')
-  theme.systemGreen = systemPreferences.getSystemColor('green')
-  // theme.systemCyan = systemPreferences.getSystemColor('cyan')
-  theme.systemBlue = systemPreferences.getSystemColor('blue')
-  theme.systemMagenta = systemPreferences.getSystemColor('pink')
+  if (process.platform === 'darwin') {
+    theme.systemRed = systemPreferences.getSystemColor('red')
+    theme.systemYellow = systemPreferences.getSystemColor('yellow')
+    theme.systemGreen = systemPreferences.getSystemColor('green')
+    // theme.systemCyan = systemPreferences.getSystemColor('cyan')
+    theme.systemBlue = systemPreferences.getSystemColor('blue')
+    theme.systemMagenta = systemPreferences.getSystemColor('pink')
+  }
   const accentColor = systemPreferences.getAccentColor()
   theme.systemAccent = accentColor ? `#${accentColor.slice(0, 6)}` : ''
   theme.vibrancy = process.platform === 'darwin' ? settings['terminal.style.vibrancy'] : false
@@ -138,13 +142,24 @@ const themeRef = computed(() => {
 
 const themeOptionsRef = computed<BrowserWindowThemeOptions>(() => {
   const theme = unref(themeRef)
+  const foregroundRGBA = toRGBA(theme.foreground!)
   const backgroundRGBA = toRGBA(theme.background!)
+  const materialBackgroundRGBA = toRGBA(theme.materialBackground!)
   return {
     /** {@link https://github.com/electron/electron/issues/10420} */
-    backgroundColor: toElectronHEX({ ...backgroundRGBA, a: 0 }),
+    backgroundColor: toElectronHEX({ ...backgroundRGBA, a: process.platform !== 'win32' ? 0 : 1 }),
     vibrancy: theme.vibrancy ? 'sidebar' : undefined,
+    titleBarOverlay: {
+      color: toElectronHEX(materialBackgroundRGBA),
+      symbolColor: toElectronHEX({ ...foregroundRGBA, a: 1 }),
+      height: 36,
+    },
   }
 })
+
+function useTheme() {
+  return themeRef
+}
 
 function useThemeOptions() {
   return themeOptionsRef
@@ -160,6 +175,7 @@ function handleThemeMessages() {
 }
 
 export {
+  useTheme,
   useThemeOptions,
   handleThemeMessages,
 }

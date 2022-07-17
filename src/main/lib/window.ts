@@ -30,8 +30,9 @@ async function createWindow(...args: string[]) {
       ],
     },
   }
-  if (frameType !== 'system') {
+  if (frameType === 'immersive') {
     options.titleBarStyle = process.platform === 'darwin' ? 'hiddenInset' : 'hidden'
+    options.titleBarOverlay = true
     // Transparent window on Windows will lose border and shadow
     options.transparent = process.platform !== 'win32'
   }
@@ -63,18 +64,26 @@ async function createWindow(...args: string[]) {
   handleEvents(frame)
   // reactive effects
   const themeOptionsRef = useThemeOptions()
-  const reactiveEffect = effect(() => {
-    const themeOptions = unref(themeOptionsRef)
+  const menuEffect = effect(() => {
     if (process.platform === 'darwin') {
       createTouchBar(frame)
     } else {
       createWindowMenu(frame)
+      const latestFrameType = settings['terminal.view.frameType']
+      frame.setMenuBarVisibility(latestFrameType === 'system-with-menu')
     }
+  })
+  const themeEffect = effect(() => {
+    const themeOptions = unref(themeOptionsRef)
     frame.setBackgroundColor(themeOptions.backgroundColor)
     frame.setVibrancy(themeOptions.vibrancy ?? null)
+    if (frameType === 'immersive') {
+      frame.setTitleBarOverlay(themeOptions.titleBarOverlay)
+    }
   })
   frame.on('closed', () => {
-    stop(reactiveEffect)
+    stop(menuEffect)
+    stop(themeEffect)
   })
   return frame
 }

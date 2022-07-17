@@ -16,7 +16,7 @@ export interface Settings {
   'terminal.tab.titleFormat': string,
   'terminal.view.linkModifier': 'any' | 'CmdOrCtrl' | 'Alt',
   'terminal.view.rendererType': RendererType | 'webgl',
-  'terminal.view.frameType': 'system' | 'immersive',
+  'terminal.view.frameType': 'system' | 'system-with-menu' | 'immersive',
   'terminal.style.opacity': number,
   'terminal.style.vibrancy': boolean,
   'terminal.style.fontSize': number,

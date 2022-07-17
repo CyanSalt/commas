@@ -21,7 +21,7 @@ let isTabListEnabled = $(useIsTabListEnabled())
 let iconBuffer = $ref<Buffer | undefined>()
 
 const isEnabled: boolean = $computed(() => {
-  return settings['terminal.view.frameType'] !== 'system'
+  return settings['terminal.view.frameType'] === 'immersive'
 })
 
 const isDirectory: boolean = $computed(() => {
@@ -56,7 +56,7 @@ if (process.platform === 'darwin') {
     .toPNG()
 }
 
-const isCustomControlEnabled = process.platform !== 'darwin'
+const isCustomControlEnabled = !['darwin', 'win32'].includes(process.platform)
 
 async function updateIcon() {
   if (fileOrDirectory && process.platform === 'darwin' && settings['terminal.tab.liveIcon']) {
@@ -179,8 +179,8 @@ watchEffect(() => {
   display: flex;
   flex: none;
   justify-content: space-between;
-  height: 36px;
-  line-height: 36px;
+  height: env(titlebar-area-height, 36px);
+  line-height: env(titlebar-area-height, 36px);
   text-align: center;
   background: rgb(var(--material-background) / var(--theme-opacity));
   -webkit-app-region: drag;
@@ -188,16 +188,15 @@ watchEffect(() => {
 .controls,
 .symmetrical-space {
   display: flex;
-  flex: 1 0 auto;
-  width: 108px;
+  flex: none;
+  width: 120px;
 }
 .title-wrapper {
   display: flex;
-  flex: 2 0 auto;
+  flex: 1;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  max-width: calc(100vw - 216px);
   padding: 0 8px;
   font-size: 12px;
 }

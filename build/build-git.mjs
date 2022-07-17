@@ -21,7 +21,7 @@ function hasModified(files, directory) {
   if (Array.isArray(directory)) {
     return directory.some(item => hasModified(files, item))
   }
-  const dir = directory.endsWith(path.sep) ? directory : directory + path.sep
+  const dir = directory.endsWith(path.posix.sep) ? directory : directory + path.posix.sep
   return files.some(file => file.startsWith(dir))
 }
 
