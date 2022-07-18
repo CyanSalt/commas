@@ -13,6 +13,8 @@ defineProps<{
 
 const { vI18n, TerminalPane } = commas.ui.vueAssets
 
+const keyword: string = $ref('')
+
 const settings = commas.remote.useSettings()
 let paneTabURL: string = $(commas.workspace.usePaneTabURL())
 let open = $ref<Record<string, boolean>>({})
@@ -50,9 +52,9 @@ const groups = $computed(() => {
       key,
       name,
       from,
-      rows,
+      rows: keyword ? rows.filter(row => row.key.includes(keyword)) : rows,
     }
-  })
+  }).filter(group => group.rows.length)
 })
 
 watchEffect(async () => {
@@ -98,10 +100,17 @@ onBeforeUpdate(() => {
   <TerminalPane class="settings-pane">
     <h2 v-i18n class="group-title">Settings#!settings.1</h2>
     <form class="group">
-      <div class="action-line">
+      <div class="action-line settings-searcher">
         <span :class="['link form-action toggle-all', { collapsed: isCollapsed }]" @click="toggleAll">
           <span class="feather-icon icon-chevrons-down"></span>
         </span>
+        <input
+          v-model="keyword"
+          v-i18n:placeholder
+          type="search"
+          placeholder="Find#!terminal.5"
+          class="form-control"
+        >
       </div>
       <div
         v-for="group in groups"
@@ -112,7 +121,7 @@ onBeforeUpdate(() => {
         <h3 v-else v-i18n class="settings-group-title">{{ group.name }}#!settings.group.{{ group.key }}</h3>
         <SettingsLine
           v-for="row in group.rows"
-          :ref="item => lines[row.key] = (item as ComponentPublicInstance).$el"
+          :ref="item => lines[row.key] = (item as ComponentPublicInstance | null)?.$el"
           :key="row.key"
           v-model="settings[row.key]"
           v-model:open="open[row.key]"
@@ -136,5 +145,11 @@ onBeforeUpdate(() => {
   margin: 8px 0;
   font-size: 16px;
   line-height: 24px;
+}
+.settings-searcher {
+  width: 100%;
+  .form-control {
+    width: 50%;
+  }
 }
 </style>
