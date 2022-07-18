@@ -82,15 +82,11 @@ function add() {
   entries.push({ key: '', value: '' })
 }
 
-function remove(item: EditorEntryItem) {
-  entries.splice(item.index, 1)
-}
-
 function togglePinned(item: EditorEntryItem) {
   if (item.index === -1) {
     entries.push({ ...item.entry })
   } else {
-    remove(item)
+    entries.splice(item.index, 1)
   }
 }
 </script>
@@ -100,12 +96,9 @@ function togglePinned(item: EditorEntryItem) {
   <div class="object-editor">
     <template v-for="item in entryItems" :key="item.id">
       <div class="property-line">
-        <label v-if="item.pinned" class="pinned-checker">
+        <label class="pinned-checker">
           <OrderedCheckbox :index="item.index" class="pinned-control" @change="togglePinned(item)" />
         </label>
-        <span v-else class="link remove" @click="remove(item)">
-          <span class="feather-icon icon-minus"></span>
-        </span>
         <template v-if="withKeys">
           <template v-if="lazy">
             <input v-model.lazy="item.entry.key" :readonly="item.pinned" type="text" class="form-control">
@@ -148,9 +141,6 @@ function togglePinned(item: EditorEntryItem) {
   text-align: center;
   &:first-child {
     margin-right: 4px;
-  }
-  &.remove:hover {
-    color: rgb(var(--system-red));
   }
 }
 .property-arrow {
