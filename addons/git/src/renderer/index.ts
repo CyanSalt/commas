@@ -5,6 +5,6 @@ export default () => {
 
   commas.ui.addCSSFile('dist/renderer/style.css')
 
-  commas.context.provide('@ui-action-anchor', GitAnchor)
+  commas.context.provide('terminal.ui-action-anchor', GitAnchor)
 
 }

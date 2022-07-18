@@ -48,7 +48,7 @@ const TerminalComponent = $computed(() => {
   }
 })
 
-const slots = commas.proxy.context.getCollection('@ui-slot')
+const slots = commas.proxy.context.getCollection('terminal.ui-slot')
 
 loadAddons()
 loadCustomJS()

@@ -15,9 +15,9 @@ export default () => {
     },
   })
 
-  commas.context.provide('@ui-action-anchor', ProxyAnchor)
+  commas.context.provide('terminal.ui-action-anchor', ProxyAnchor)
 
-  commas.context.provide('preference', {
+  commas.context.provide('preference.item', {
     component: ProxyLink,
     group: 'feature',
   })

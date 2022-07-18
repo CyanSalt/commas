@@ -14,7 +14,7 @@ export default () => {
     },
   })
 
-  commas.context.provide('preference', {
+  commas.context.provide('preference.item', {
     component: AddonManagerLink,
     group: 'general',
   })

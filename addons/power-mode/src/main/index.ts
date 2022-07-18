@@ -2,7 +2,7 @@ import commas from 'commas:api/main'
 
 export default () => {
 
-  commas.context.provide('cli', {
+  commas.context.provide('cli.command', {
     command: 'power',
     usage: '[off]',
     async handler({ sender, argv }) {

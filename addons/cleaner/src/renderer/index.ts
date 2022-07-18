@@ -5,7 +5,7 @@ export default () => {
 
   commas.ui.addCSSFile('dist/renderer/style.css')
 
-  commas.context.provide('preference', {
+  commas.context.provide('preference.item', {
     component: CleanerLink,
     group: 'about',
   })

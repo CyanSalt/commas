@@ -2,7 +2,7 @@ import * as commas from 'commas:api/main'
 
 export default () => {
 
-  commas.context.provide('cli', {
+  commas.context.provide('cli.command', {
     command: 'attention',
     handler() {
       return '\x1b]1337;RequestAttention=fireworks\x1b\\'

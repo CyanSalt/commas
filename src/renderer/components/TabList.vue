@@ -15,7 +15,7 @@ import { getShells } from '../utils/terminal'
 import TabItem from './TabItem.vue'
 import SortableList from './basic/SortableList.vue'
 
-const lists = commas.proxy.context.getCollection('@ui-side-list')
+const lists = commas.proxy.context.getCollection('terminal.ui-side-list')
 const shells = $(useAsyncComputed(() => getShells(), []))
 
 const tabs = $(useTerminalTabs())

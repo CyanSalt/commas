@@ -20,7 +20,7 @@ declare module '../../../../src/typings/settings' {
 
 declare module '../../../../api/modules/context' {
   export interface Context {
-    cli: CommandModule,
+    'cli.command': CommandModule,
   }
 }
 
@@ -30,7 +30,7 @@ export default () => {
 
   const settings = commas.settings.useSettings()
 
-  const commands: CommandModule[] = commas.context.getCollection('cli')
+  const commands: CommandModule[] = commas.context.getCollection('cli.command')
 
   ipc.config.id = 'commas-ipc-server'
   ipc.config.silent = true
@@ -81,7 +81,7 @@ export default () => {
     ]
   })
 
-  commas.context.provide('cli', {
+  commas.context.provide('cli.command', {
     command: 'help',
     usage: '[command]',
     handler({ argv }) {
@@ -127,14 +127,14 @@ where <command> is one of:
     },
   })
 
-  commas.context.provide('cli', {
+  commas.context.provide('cli.command', {
     command: 'version',
     handler() {
       return app.getVersion()
     },
   })
 
-  commas.context.provide('cli', {
+  commas.context.provide('cli.command', {
     command: 'run',
     usage: '<...command-with-args>',
     handler({ sender, argv }) {
@@ -144,7 +144,7 @@ where <command> is one of:
     },
   })
 
-  commas.context.provide('cli', {
+  commas.context.provide('cli.command', {
     command: 'edit',
     usage: '<file>',
     handler({ sender, argv, cwd }) {
@@ -152,7 +152,7 @@ where <command> is one of:
     },
   })
 
-  commas.context.provide('cli', {
+  commas.context.provide('cli.command', {
     command: 'select',
     usage: '<nth-tab>',
     handler({ sender, argv }) {
@@ -165,7 +165,7 @@ where <command> is one of:
 
   let context
 
-  commas.context.provide('cli', {
+  commas.context.provide('cli.command', {
     command: 'eval',
     handler({ argv }) {
       const script = argv[0]
@@ -185,7 +185,7 @@ where <command> is one of:
     },
   })
 
-  commas.context.provide('cli', {
+  commas.context.provide('cli.command', {
     command: 'roll',
     usage: '[n-times]',
     handler({ argv }) {
@@ -198,7 +198,7 @@ where <command> is one of:
     },
   })
 
-  commas.context.provide('cli', {
+  commas.context.provide('cli.command', {
     command: 'preview',
     usage: '[file]',
     handler({ sender, argv, cwd }) {
@@ -209,7 +209,7 @@ where <command> is one of:
     },
   })
 
-  commas.context.provide('cli', {
+  commas.context.provide('cli.command', {
     command: 'trick',
     handler({ sender }) {
       const frame = BrowserWindow.fromWebContents(sender)
@@ -224,8 +224,8 @@ where <command> is one of:
   let loadedExternalURLCommands: CommandModule[] = []
   const reactiveEffect = effect(() => {
     const externalURLCommands = unref(externalURLCommandsRef)
-    commas.context.cancelProviding('cli', ...loadedExternalURLCommands)
-    commas.context.provide('cli', ...externalURLCommands)
+    commas.context.cancelProviding('cli.command', ...loadedExternalURLCommands)
+    commas.context.provide('cli.command', ...externalURLCommands)
     loadedExternalURLCommands = externalURLCommands
   })
   commas.app.onCleanup(() => {

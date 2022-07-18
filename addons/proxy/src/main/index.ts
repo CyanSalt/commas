@@ -16,7 +16,7 @@ declare module '../../../../src/typings/settings' {
 export default () => {
 
   // Server
-  commas.context.provide('cli', {
+  commas.context.provide('cli.command', {
     command: 'whistle',
     usage: '<command> [options]',
     async handler({ argv }) {

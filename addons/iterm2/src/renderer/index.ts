@@ -15,7 +15,7 @@ export default () => {
 
   commas.workspace.registerXtermAddon('iterm2', tab => new ITerm2Addon(tab), true)
 
-  commas.context.provide('@ui-slot', BadgeSlot)
+  commas.context.provide('terminal.ui-slot', BadgeSlot)
 
   const currentTerminal = $(commas.workspace.useCurrentTerminal())
 

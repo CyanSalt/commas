@@ -33,9 +33,9 @@ export default () => {
     }
   }, true)
 
-  commas.context.provide('@ui-side-list', LauncherList)
+  commas.context.provide('terminal.ui-side-list', LauncherList)
 
-  commas.context.provide('preference', {
+  commas.context.provide('preference.item', {
     component: LauncherLink,
     group: 'feature',
     priority: 1,

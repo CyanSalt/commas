@@ -10,7 +10,7 @@ defineProps<{
 
 const { vI18n, TerminalPane } = commas.ui.vueAssets
 
-const preferenceItems: PreferenceItem[] = commas.context.getCollection('preference')
+const preferenceItems: PreferenceItem[] = commas.context.getCollection('preference.item')
 
 function getItems(group: string) {
   const list = preferenceItems.filter(item => item.group === group)

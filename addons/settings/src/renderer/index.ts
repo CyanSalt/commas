@@ -14,7 +14,7 @@ export default () => {
     },
   })
 
-  commas.context.provide('preference', {
+  commas.context.provide('preference.item', {
     component: SettingsLink,
     group: 'general',
     priority: -1,

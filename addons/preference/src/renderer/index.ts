@@ -4,7 +4,7 @@ import type { PreferenceItem } from './preference'
 
 declare module '../../../../api/modules/context' {
   export interface Context {
-    preference: PreferenceItem,
+    'preference.item': PreferenceItem,
   }
 }
 

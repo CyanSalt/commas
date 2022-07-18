@@ -2,7 +2,7 @@
 import { ipcRenderer } from 'electron'
 import * as commas from '../../../api/core-renderer'
 
-const anchors = commas.proxy.context.getCollection('@ui-action-anchor')
+const anchors = commas.proxy.context.getCollection('terminal.ui-action-anchor')
 
 function configure() {
   ipcRenderer.invoke('open-settings')
