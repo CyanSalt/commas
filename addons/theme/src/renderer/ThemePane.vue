@@ -74,7 +74,7 @@ async function applyTheme(item: RemoteTheme) {
 
 <template>
   <TerminalPane class="theme-pane">
-    <h2 v-i18n class="group-title">Configure theme#!theme.2</h2>
+    <h2 v-i18n class="group-title">Configure Theme#!theme.2</h2>
     <div class="group">
       <div class="form-line">
         <span v-i18n class="link" @click="reset">Reset to default#!preference.12</span>
