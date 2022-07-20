@@ -8,7 +8,7 @@ import getAddons from './utils/get-addons.mjs'
 import getVersions from './utils/get-versions.mjs'
 
 async function getModifiedFiles() {
-  const { stdout: files } = await execa(`git ls-files --modified`)
+  const { stdout: files } = await execa(`git ls-files --modified --others --exclude-standard`)
   return files.trim().split('\n')
 }
 
