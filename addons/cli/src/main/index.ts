@@ -30,7 +30,7 @@ export default () => {
 
   const settings = commas.settings.useSettings()
 
-  const commands: CommandModule[] = commas.context.getCollection('cli.command')
+  const commands = commas.context.getCollection('cli.command')
 
   ipc.config.id = 'commas-ipc-server'
   ipc.config.silent = true

@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
-import type { LanguageOption } from './locales'
 
 const { vI18n } = commas.ui.vueAssets
 
 const language = $(commas.remote.useLanguage())
-const locales: LanguageOption[] = commas.context.getCollection('locales')
+const locales = commas.context.getCollection('menu.locale')
 const supportedLanguages = $computed(() => {
   const languages = [...locales]
   if (language && !languages.some(item => item.value === language)) {

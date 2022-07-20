@@ -2,7 +2,6 @@
 import * as commas from 'commas:api/renderer'
 import { shell } from 'electron'
 import type { TerminalTab } from '../../../../src/typings/terminal'
-import type { PreferenceItem } from './preference'
 
 defineProps<{
   tab: TerminalTab,
@@ -10,7 +9,7 @@ defineProps<{
 
 const { vI18n, TerminalPane } = commas.ui.vueAssets
 
-const preferenceItems: PreferenceItem[] = commas.context.getCollection('preference.item')
+const preferenceItems = commas.context.getCollection('preference.item')
 
 function getItems(group: string) {
   const list = preferenceItems.filter(item => item.group === group)
