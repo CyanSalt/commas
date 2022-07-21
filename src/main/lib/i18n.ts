@@ -44,10 +44,10 @@ const languageRef = computed<string | undefined>({
   },
   set(value) {
     const userDictionary = unref(userDictionaryRef)
-    const language = unref(languageRef)
+    const locale = unref(localeRef)
     userDictionaryRef.value = {
       ...userDictionary,
-      '@use': value === language ? '' : value,
+      '@use': value === locale ? '' : value,
     }
   },
 })
