@@ -4,6 +4,7 @@ import type { SyncData } from '../../typings/data'
 const syncDataRef = commas.ipcRenderer.inject<SyncData>('sync-data', {
   token: null,
   gistURL: null,
+  updatedAt: null,
   uploadedAt: null,
   downloadedAt: null,
 })

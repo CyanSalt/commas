@@ -87,14 +87,22 @@ function formatTime(time: string | null) {
           <span class="feather-icon icon-github"></span>
         </span>
       </div>
-      <div
-        v-i18n="{ T: formatTime(syncData.uploadedAt) }"
-        class="uploaded-at"
-      >Last uploaded At: %T#!sync.5</div>
-      <div
-        v-i18n="{ T: formatTime(syncData.downloadedAt) }"
-        class="downloaded-at"
-      >Last downloaded At: %T#!sync.6</div>
+      <table class="history">
+        <tbody>
+          <tr>
+            <td v-i18n>Recently uploaded at:#!sync.5</td>
+            <td>{{ formatTime(syncData.uploadedAt) }}</td>
+          </tr>
+          <tr>
+            <td v-i18n>Recently downloaded at:#!sync.6</td>
+            <td>{{ formatTime(syncData.downloadedAt) }}</td>
+          </tr>
+          <tr>
+            <td v-i18n>Recently synced version:#!sync.7</td>
+            <td>{{ formatTime(syncData.updatedAt) }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </TerminalPane>
 </template>
@@ -109,5 +117,14 @@ function formatTime(time: string | null) {
 }
 .confirm:hover {
   color: rgb(var(--system-green));
+}
+.history {
+  border-spacing: 0;
+  td {
+    padding: 0;
+    &:first-child {
+      padding-right: 1em;
+    }
+  }
 }
 </style>

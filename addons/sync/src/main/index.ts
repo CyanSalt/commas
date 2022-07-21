@@ -70,6 +70,7 @@ export default () => {
       }),
     })
     syncData.gistURL = result.html_url
+    syncData.updatedAt = result.updated_at
     syncData.uploadedAt = new Date().toISOString()
   })
 
@@ -87,6 +88,7 @@ export default () => {
       },
     })
     syncData.gistURL = result.html_url
+    syncData.updatedAt = result.updated_at
     syncData.downloadedAt = new Date().toISOString()
     const entries: Record<string, { content: string }> = result.files
     await Promise.all(Object.entries(entries).map(([file, data]) => {

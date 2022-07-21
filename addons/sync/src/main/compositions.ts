@@ -10,6 +10,7 @@ interface RawSyncData extends Omit<SyncData, 'token'> {
 const rawSyncDataRef = commas.file.useJSONFile<RawSyncData>(commas.file.userFile('sync-data.json'), {
   _token: null,
   gistURL: null,
+  updatedAt: null,
   uploadedAt: null,
   downloadedAt: null,
 })
