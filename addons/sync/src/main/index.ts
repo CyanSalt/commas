@@ -1,12 +1,16 @@
-import * as path from 'path'
-import { effect, stop } from '@vue/reactivity'
+import { effect, stop, unref } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
+import { BrowserWindow, dialog } from 'electron'
+import type { SyncPlan } from '../../typings/sync'
 import { getSyncDataRef, useSyncData } from './compositions'
+import { downloadFiles, uploadFiles } from './gist'
+import { createSyncPlan, useDefaultSyncPlan } from './plan'
 
 declare module '../../../../src/typings/settings' {
   export interface Settings {
     'sync.plan.gist': string,
     'sync.plan.ignores': string[],
+    'sync.plan.extraPlans': SyncPlan[],
   }
 }
 
@@ -40,68 +44,44 @@ export default () => {
     stop(dynamicFilesEffect)
   })
 
-  const files = commas.context.getCollection('sync.file')
+  const defaultPlanRef = useDefaultSyncPlan()
 
   commas.ipcMain.provide('sync-data', getSyncDataRef())
 
   commas.ipcMain.handle('upload-sync-files', async () => {
-    const token = syncData.token
-    const gist = settings['sync.plan.gist']
-    const ignores = settings['sync.plan.ignores']
-    if (!token || !gist) return
-    const entries: Record<string, { content: string }> = {}
-    await Promise.all(files.map(async file => {
-      if (ignores.includes(file)) return
-      const key = file.replace(path.sep, '__')
-      const content = await commas.file.readFile(commas.file.userFile(file))
-      if (content) {
-        entries[key] = { content }
-      }
-    }))
-    const result = await commas.shell.requestJSON({
-      url: `https://api.github.com/gists/${gist}`,
-      method: 'PATCH',
-    }, {
-      headers: {
-        Accept: 'application/vnd.github+json',
-        Authorization: `token ${token}`,
-      },
-      body: JSON.stringify({
-        description: 'Commas Sync',
-        files: entries,
-      }),
-    })
+    const defaultPlan = unref(defaultPlanRef)
+    const result = await uploadFiles(defaultPlan)
     syncData.gistURL = result.html_url
     syncData.updatedAt = result.updated_at
-    syncData.uploadedAt = new Date().toISOString()
+    syncData.uploadedAt = result.updated_at
   })
 
   commas.ipcMain.handle('download-sync-files', async () => {
-    const token = syncData.token
-    const gist = settings['sync.plan.gist']
-    const ignores = settings['sync.plan.ignores']
-    if (!token || !gist) return
-    const result = await commas.shell.requestJSON({
-      url: `https://api.github.com/gists/${gist}`,
-      method: 'GET',
-    }, {
-      headers: {
-        Accept: 'application/vnd.github+json',
-        Authorization: `token ${token}`,
-      },
-    })
+    const defaultPlan = unref(defaultPlanRef)
+    const result = await downloadFiles(defaultPlan)
     syncData.gistURL = result.html_url
     syncData.updatedAt = result.updated_at
     syncData.downloadedAt = new Date().toISOString()
-    const entries: Record<string, { content: string }> = result.files
-    await Promise.all(Object.entries(entries).map(([key, data]) => {
-      const file = key.replace('__', path.sep)
-      if (ignores.includes(file)) return undefined
-      return commas.file.writeFile(
-        commas.file.userFile(file),
-        data.content,
-      )
-    }))
+  })
+
+  commas.ipcMain.handle('add-sync-plan', async (event) => {
+    const frame = BrowserWindow.fromWebContents(event.sender)
+    if (!frame) return
+    const result = await dialog.showOpenDialog(frame, {
+      properties: process.platform === 'darwin'
+        ? ['openFile', 'openDirectory', 'multiSelections', 'showHiddenFiles', 'createDirectory']
+        : ['openFile', 'multiSelections', 'showHiddenFiles', 'dontAddToRecent'],
+    })
+    const plan = await createSyncPlan(result.filePaths)
+    settings['sync.plan.extraPlans'] = settings['sync.plan.extraPlans'].concat(plan)
+  })
+
+  commas.ipcMain.handle('upload-sync-plan', (event, plan: SyncPlan) => {
+    return uploadFiles(plan)
+  })
+
+  commas.ipcMain.handle('download-sync-plan', (event, plan: SyncPlan) => {
+    return downloadFiles(plan)
   })
 
 }

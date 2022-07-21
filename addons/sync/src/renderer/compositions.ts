@@ -1,5 +1,5 @@
 import * as commas from 'commas:api/renderer'
-import type { SyncData } from '../../typings/data'
+import type { SyncData } from '../../typings/sync'
 
 const syncDataRef = commas.ipcRenderer.inject<SyncData>('sync-data', {
   token: null,

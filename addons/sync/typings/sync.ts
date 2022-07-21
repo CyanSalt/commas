@@ -5,3 +5,10 @@ export interface SyncData {
   uploadedAt: string | null,
   downloadedAt: string | null,
 }
+
+export interface SyncPlan {
+  name: string,
+  gist: string,
+  directory: string,
+  files: string[],
+}

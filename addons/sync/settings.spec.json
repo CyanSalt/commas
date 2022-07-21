@@ -23,5 +23,36 @@
       }
     },
     "default": []
+  },
+  {
+    "key": "sync.plan.extraPlans",
+    "label": "Extra Sync Plans",
+    "comments": [
+      "Specify extra sync plans for files in other directories"
+    ],
+    "schema": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "gist": {
+            "type": "string"
+          },
+          "directory": {
+            "type": "string"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "default": []
   }
 ]

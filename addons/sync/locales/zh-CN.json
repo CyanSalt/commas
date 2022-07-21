@@ -6,9 +6,12 @@
   "Recently uploaded at:#!sync.5": "最近上传于:",
   "Recently downloaded at:#!sync.6": "最近下载于:",
   "Recently synced version:#!sync.7": "最近同步的版本:",
+  "Plans#!sync.8": "计划",
   "Sync Gist#!settings.label.sync.plan.gist": "同步 Gist",
   "Target GitHub Gist to synchronize#!settings.comments.0.sync.plan.gist": "要同步的目标 GitHub Gist",
   "Shaped like CyanSalt/d41d8cd98f00b204e9800998ecf8427e#!settings.comments.1.sync.plan.gist": "形如 CyanSalt/d41d8cd98f00b204e9800998ecf8427e",
   "Ignored Sync Files#!settings.label.sync.plan.ignores": "忽略的同步文件",
-  "List of files to ignore when syncing#!settings.comments.0.sync.plan.ignores": "同步时要忽略的文件列表"
+  "List of files to ignore when syncing#!settings.comments.0.sync.plan.ignores": "同步时要忽略的文件列表",
+  "Extra Sync Plans#!settings.label.sync.plan.extraPlans": "额外的同步计划",
+  "Specify extra sync plans for files in other directories#!settings.comments.0.sync.plan.extraPlans": "为其他目录中的文件指定额外的同步计划"
 }
