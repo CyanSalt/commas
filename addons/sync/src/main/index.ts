@@ -6,7 +6,6 @@ import { getSyncDataRef, useSyncData } from './compositions'
 declare module '../../../../src/typings/settings' {
   export interface Settings {
     'sync.plan.gist': string,
-    'sync.plan.mode': 'read-write' | 'read-only' | 'disabled',
     'sync.plan.ignoredFiles': string[],
   }
 }
