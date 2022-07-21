@@ -51,7 +51,7 @@ function useJSONFile<T>(file: string, defaultValue?: T, { onTrigger }: { onTrigg
       return defaultValue as T
     },
     set: value => {
-      writeFile(file, JSON.stringify(value))
+      writeFile(file, JSON.stringify(value, null, 2))
     },
   })
 }

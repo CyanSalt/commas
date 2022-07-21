@@ -1,0 +1,16 @@
+{
+  "name": "sync",
+  "private": true,
+  "version": "0.1.0",
+  "productName": "Sync",
+  "description": "Sync files with GitHub Gist",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC",
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "同步",
+      "description": "使用 GitHub Gist 同步文件"
+    }
+  }
+}

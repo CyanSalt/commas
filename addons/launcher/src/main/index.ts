@@ -12,6 +12,8 @@ declare module '../../../../src/typings/settings' {
 
 export default () => {
 
+  commas.context.provide('sync.file', 'launchers.yaml')
+
   const launchersRef = useLaunchers()
   commas.ipcMain.provide('launchers', launchersRef)
 

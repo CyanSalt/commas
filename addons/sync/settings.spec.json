@@ -1,0 +1,40 @@
+[
+  {
+    "key": "sync.plan.gist",
+    "label": "Sync Gist",
+    "comments": [
+      "Target GitHub Gist to synchronize"
+    ],
+    "schema": {
+      "type": "string"
+    },
+    "default": ""
+  },
+  {
+    "key": "sync.plan.mode",
+    "label": "Sync Mode",
+    "comments": [
+      "Sync mode for user settings",
+      "Options: 'read-write', 'read-only' or 'disabled'"
+    ],
+    "schema": {
+      "type": "string",
+      "enum": ["read-write", "read-only", "disabled"]
+    },
+    "default": "read-write"
+  },
+  {
+    "key": "sync.plan.ignoredFiles",
+    "label": "Ignored Sync Files",
+    "comments": [
+      "List of files to ignore when syncing"
+    ],
+    "schema": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "default": []
+  }
+]
