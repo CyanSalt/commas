@@ -6,7 +6,7 @@ import { getSyncDataRef, useSyncData } from './compositions'
 declare module '../../../../src/typings/settings' {
   export interface Settings {
     'sync.plan.gist': string,
-    'sync.plan.ignoredFiles': string[],
+    'sync.plan.ignores': string[],
   }
 }
 
@@ -47,12 +47,15 @@ export default () => {
   commas.ipcMain.handle('upload-sync-files', async () => {
     const token = syncData.token
     const gist = settings['sync.plan.gist']
+    const ignores = settings['sync.plan.ignores']
     if (!token || !gist) return
     const entries: Record<string, { content: string }> = {}
     await Promise.all(files.map(async file => {
+      if (ignores.includes(file)) return
+      const key = file.replace(path.sep, '__')
       const content = await commas.file.readFile(commas.file.userFile(file))
       if (content) {
-        entries[file.replace(path.sep, '__')] = { content }
+        entries[key] = { content }
       }
     }))
     const result = await commas.shell.requestJSON({
@@ -76,6 +79,7 @@ export default () => {
   commas.ipcMain.handle('download-sync-files', async () => {
     const token = syncData.token
     const gist = settings['sync.plan.gist']
+    const ignores = settings['sync.plan.ignores']
     if (!token || !gist) return
     const result = await commas.shell.requestJSON({
       url: `https://api.github.com/gists/${gist}`,
@@ -90,9 +94,11 @@ export default () => {
     syncData.updatedAt = result.updated_at
     syncData.downloadedAt = new Date().toISOString()
     const entries: Record<string, { content: string }> = result.files
-    await Promise.all(Object.entries(entries).map(([file, data]) => {
+    await Promise.all(Object.entries(entries).map(([key, data]) => {
+      const file = key.replace('__', path.sep)
+      if (ignores.includes(file)) return undefined
       return commas.file.writeFile(
-        commas.file.userFile(file.replace('__', path.sep)),
+        commas.file.userFile(file),
         data.content,
       )
     }))

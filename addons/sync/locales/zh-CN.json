@@ -9,6 +9,6 @@
   "Sync Gist#!settings.label.sync.plan.gist": "同步 Gist",
   "Target GitHub Gist to synchronize#!settings.comments.0.sync.plan.gist": "要同步的目标 GitHub Gist",
   "Shaped like CyanSalt/d41d8cd98f00b204e9800998ecf8427e#!settings.comments.1.sync.plan.gist": "形如 CyanSalt/d41d8cd98f00b204e9800998ecf8427e",
-  "Ignored Sync Files#!settings.label.sync.plan.ignoredFiles": "忽略的同步文件",
-  "List of files to ignore when syncing#!settings.comments.0.sync.plan.ignoredFiles": "同步时要忽略的文件列表"
+  "Ignored Sync Files#!settings.label.sync.plan.ignores": "忽略的同步文件",
+  "List of files to ignore when syncing#!settings.comments.0.sync.plan.ignores": "同步时要忽略的文件列表"
 }

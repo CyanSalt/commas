@@ -11,7 +11,7 @@
     "default": ""
   },
   {
-    "key": "sync.plan.ignoredFiles",
+    "key": "sync.plan.ignores",
     "label": "Ignored Sync Files",
     "comments": [
       "List of files to ignore when syncing"
