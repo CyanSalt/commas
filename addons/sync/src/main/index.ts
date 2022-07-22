@@ -51,6 +51,9 @@ export default () => {
   commas.ipcMain.handle('upload-sync-files', async () => {
     const defaultPlan = unref(defaultPlanRef)
     const result = await uploadFiles(defaultPlan)
+    if (!settings['sync.plan.gist']) {
+      settings['sync.plan.gist'] = result.id
+    }
     syncData.gistURL = result.html_url
     syncData.updatedAt = result.updated_at
     syncData.uploadedAt = result.updated_at

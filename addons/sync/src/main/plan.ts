@@ -31,6 +31,7 @@ async function createSyncPlan(paths: string[]): Promise<SyncPlan> {
     if (stats.isDirectory()) {
       directory = file
     } else {
+      directory = path.dirname(file)
       files.push(file)
     }
   } else if (paths.length > 0) {

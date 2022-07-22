@@ -11,7 +11,7 @@ const syncData = useSyncData()
 
 async function uploadFiles(plan: SyncPlan) {
   const token = syncData.token
-  if (!token || !plan.gist) return
+  if (!token) return
   const entries: Record<string, FileData> = {}
   await Promise.all(plan.files.map(async file => {
     const key = file.replaceAll(path.sep, '__')
@@ -20,9 +20,12 @@ async function uploadFiles(plan: SyncPlan) {
       entries[key] = { content }
     }
   }))
-  const result = await commas.shell.requestJSON({
+  const result = await commas.shell.requestJSON(plan.gist ? {
     url: `https://api.github.com/gists/${plan.gist}`,
     method: 'PATCH',
+  } : {
+    url: `https://api.github.com/gists`,
+    method: 'POST',
   }, {
     headers: {
       Accept: 'application/vnd.github+json',
@@ -30,6 +33,7 @@ async function uploadFiles(plan: SyncPlan) {
     },
     body: JSON.stringify({
       description: plan.name,
+      public: plan.gist ? undefined : false,
       files: entries,
     }),
   })

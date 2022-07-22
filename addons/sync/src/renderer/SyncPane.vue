@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { ipcRenderer, shell } from 'electron'
+import { toRef } from 'vue'
 import type { TerminalTab } from '../../../../src/typings/terminal'
 import type { SyncPlan } from '../../typings/sync'
 import { useSyncData } from './compositions'
@@ -12,18 +13,14 @@ defineProps<{
 const { vI18n, ObjectEditor, TerminalPane } = commas.ui.vueAssets
 
 const settings = commas.remote.useSettings()
-let paneTabURL: string = $(commas.workspace.usePaneTabURL())
 let syncData = useSyncData()
 const omitHome = commas.helper.omitHome
 
-const extraPlans = $computed({
-  get() {
-    return settings['sync.plan.extraPlans']
-  },
-  set(value) {
-    settings['sync.plan.extraPlans'] = value
-  },
+const defaultPlanGist = $computed(() => {
+  return settings['sync.plan.gist']
 })
+
+const extraPlans = commas.helper.reactify(toRef(settings, 'sync.plan.extraPlans'))
 
 let isAddingToken = $ref(false)
 let stagingToken: string = $ref('')
@@ -68,12 +65,6 @@ function downloadSyncPlan(plan: SyncPlan) {
   ipcRenderer.invoke('download-sync-plan', plan)
 }
 
-function configureSyncPlan() {
-  commas.workspace.openPaneTab('settings')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  paneTabURL = 'commas://settings/#sync.plan.extraPlans'
-}
-
 function openSyncPlanDirectory(plan: SyncPlan) {
   shell.openPath(plan.directory)
 }
@@ -84,6 +75,10 @@ function formatTime(time: string | null) {
 
 function addSyncPlan() {
   ipcRenderer.invoke('add-sync-plan')
+}
+
+function removeSyncPlan(index: number) {
+  extraPlans.splice(index, 1)
 }
 </script>
 
@@ -115,7 +110,7 @@ function addSyncPlan() {
         <span class="link form-action" @click="uploadDefaultSyncPlan">
           <span class="feather-icon icon-upload-cloud"></span>
         </span>
-        <span class="link form-action" @click="downloadDefaultSyncPlan">
+        <span v-if="defaultPlanGist" class="link form-action" @click="downloadDefaultSyncPlan">
           <span class="feather-icon icon-download-cloud"></span>
         </span>
         <span v-if="syncData.gistURL" class="link form-action" @click="openDefaultSyncPlanGist">
@@ -143,6 +138,9 @@ function addSyncPlan() {
     <div class="group">
       <div v-for="(plan, index) in extraPlans" :key="index" class="extra-plan">
         <div class="form-line">
+          <span class="link form-action remove-plan" @click="removeSyncPlan(index)">
+            <span class="feather-icon icon-minus"></span>
+          </span>
           <span class="plan-name">{{ plan.name }}</span>
           <span class="plan-directory" @click="openSyncPlanDirectory(plan)">
             <span class="feather-icon icon-at-sign"></span>
@@ -151,19 +149,12 @@ function addSyncPlan() {
         </div>
         <ObjectEditor v-model="plan.files" lazy>
           <template #extra>
-            <template v-if="plan.gist">
-              <span class="link form-action" @click="uploadSyncPlan(plan)">
-                <span class="feather-icon icon-upload-cloud"></span>
-              </span>
-              <span class="link form-action" @click="downloadSyncPlan(plan)">
-                <span class="feather-icon icon-download-cloud"></span>
-              </span>
-            </template>
-            <template v-else>
-              <span class="link form-action" @click="configureSyncPlan">
-                <span class="feather-icon icon-edit-3"></span>
-              </span>
-            </template>
+            <span class="link form-action" @click="uploadSyncPlan(plan)">
+              <span class="feather-icon icon-upload-cloud"></span>
+            </span>
+            <span v-if="plan.gist" class="link form-action" @click="downloadSyncPlan(plan)">
+              <span class="feather-icon icon-download-cloud"></span>
+            </span>
           </template>
         </ObjectEditor>
       </div>
@@ -207,6 +198,12 @@ function addSyncPlan() {
   }
   .feather-icon {
     margin: 0 0.5em;
+  }
+}
+.remove-plan {
+  margin-right: 4px;
+  &:hover {
+    color: rgb(var(--system-red));
   }
 }
 </style>
