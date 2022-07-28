@@ -156,7 +156,7 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
       <TabItem
         :tab="getTerminalTabByLauncher(launcher)"
         :group="createLauncherGroup(launcher)"
-        closable
+        :closable="isEditing"
         @click="openLauncher(launcher)"
         @close="closeLauncher(launcher)"
       >
