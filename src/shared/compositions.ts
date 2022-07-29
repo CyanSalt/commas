@@ -1,5 +1,5 @@
 import type { ReactiveEffectOptions, Ref } from '@vue/reactivity'
-import { customRef, deferredComputed, effect, shallowReactive, reactive, stop, toRaw, unref } from '@vue/reactivity'
+import { customRef, deferredComputed, effect, shallowReactive, ref, stop, toRaw, unref } from '@vue/reactivity'
 import { cloneDeep, difference, intersection, isEqual } from 'lodash'
 
 export function useAsyncComputed<T>(factory: () => Promise<T>): Ref<T | undefined>
@@ -118,16 +118,20 @@ export function surface<T extends object>(valueRef: Ref<T>, lazy?: boolean) {
   return reactiveObject
 }
 
-export function reactify<T extends object>(valueRef: Ref<T>) {
-  const reactiveObject = reactive<T>(unref(valueRef)) as T
+export function deepRef<T extends object>(valueRef: Ref<T>) {
+  const reactiveRef = ref() as Ref<T>
   let initialized = false
   effect(() => {
-    const value = cloneDeep(reactiveObject)
+    initialized = false
+    reactiveRef.value = unref(valueRef)
+  })
+  effect(() => {
+    const value = cloneDeep(unref(reactiveRef))
     if (!initialized) {
       initialized = true
       return
     }
     valueRef.value = value
   })
-  return reactiveObject
+  return reactiveRef
 }

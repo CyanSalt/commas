@@ -52,19 +52,18 @@ export default () => {
     const defaultPlan = unref(defaultPlanRef)
     const result = await uploadFiles(defaultPlan)
     if (!settings['sync.plan.gist']) {
-      settings['sync.plan.gist'] = result.id
+      settings['sync.plan.gist'] = `${result.owner.login}/${result.id}`
     }
-    syncData.gistURL = result.html_url
     syncData.updatedAt = result.updated_at
-    syncData.uploadedAt = result.updated_at
   })
 
   commas.ipcMain.handle('download-sync-files', async () => {
     const defaultPlan = unref(defaultPlanRef)
     const result = await downloadFiles(defaultPlan)
-    syncData.gistURL = result.html_url
-    syncData.updatedAt = result.updated_at
-    syncData.downloadedAt = new Date().toISOString()
+    if (!settings['sync.plan.gist'].includes('/')) {
+      settings['sync.plan.gist'] = `${result.owner.login}/${result.id}`
+    }
+    syncData.updatedAt = new Date().toISOString()
   })
 
   commas.ipcMain.handle('add-sync-plan', async (event) => {
@@ -79,12 +78,28 @@ export default () => {
     settings['sync.plan.extraPlans'] = settings['sync.plan.extraPlans'].concat(plan)
   })
 
-  commas.ipcMain.handle('upload-sync-plan', (event, plan: SyncPlan) => {
-    return uploadFiles(plan)
+  commas.ipcMain.handle('upload-sync-plan', async (
+    event,
+    plan: SyncPlan,
+  ): Promise<Partial<SyncPlan> | undefined> => {
+    const result = await uploadFiles(plan)
+    if (!plan.gist.includes('/')) {
+      return {
+        gist: `${result.owner.login}/${result.id}`,
+      }
+    }
   })
 
-  commas.ipcMain.handle('download-sync-plan', (event, plan: SyncPlan) => {
-    return downloadFiles(plan)
+  commas.ipcMain.handle('download-sync-plan', async (
+    event,
+    plan: SyncPlan,
+  ): Promise<Partial<SyncPlan> | undefined> => {
+    const result = await downloadFiles(plan)
+    if (!plan.gist.includes('/')) {
+      return {
+        gist: `${result.owner.login}/${result.id}`,
+      }
+    }
   })
 
 }

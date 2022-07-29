@@ -1,10 +1,10 @@
 import { toRGBA, toCSSHEX } from '../../src/shared/color'
-import { reactify, surface, useAsyncComputed, watchBaseEffect } from '../../src/shared/compositions'
+import { deepRef, surface, useAsyncComputed, watchBaseEffect } from '../../src/shared/compositions'
 import { createIDGenerator, diligent, iterate } from '../../src/shared/helper'
 import { omitHome, resolveHome } from '../../src/shared/terminal'
 
 export {
-  reactify,
+  deepRef,
   surface,
   useAsyncComputed,
   watchBaseEffect,

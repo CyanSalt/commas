@@ -3,10 +3,7 @@ import type { SyncData } from '../../typings/sync'
 
 const syncDataRef = commas.ipcRenderer.inject<SyncData>('sync-data', {
   token: null,
-  gistURL: null,
   updatedAt: null,
-  uploadedAt: null,
-  downloadedAt: null,
 })
 
 const syncData = commas.helper.surface(syncDataRef, true)

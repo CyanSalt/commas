@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { ipcRenderer, shell } from 'electron'
-import { toRef } from 'vue'
+import { toRaw, toRef } from 'vue'
 import type { TerminalTab } from '../../../../src/typings/terminal'
 import type { SyncPlan } from '../../typings/sync'
 import { useSyncData } from './compositions'
@@ -20,7 +20,7 @@ const defaultPlanGist = $computed(() => {
   return settings['sync.plan.gist']
 })
 
-const extraPlans = commas.helper.reactify(toRef(settings, 'sync.plan.extraPlans'))
+const extraPlans = $(commas.helper.deepRef(toRef(settings, 'sync.plan.extraPlans')))
 
 let isAddingToken = $ref(false)
 let stagingToken: string = $ref('')
@@ -53,16 +53,22 @@ function downloadDefaultSyncPlan() {
   ipcRenderer.invoke('download-sync-files')
 }
 
-function openDefaultSyncPlanGist() {
-  shell.openExternal(syncData.gistURL!)
+function openSyncPlanGist(gist: string) {
+  shell.openExternal(`https://gist.github.com/${gist}`)
 }
 
-function uploadSyncPlan(plan: SyncPlan) {
-  ipcRenderer.invoke('upload-sync-plan', plan)
+async function uploadSyncPlan(plan: SyncPlan) {
+  const patch = await ipcRenderer.invoke('upload-sync-plan', toRaw(plan))
+  if (patch) {
+    Object.assign(plan, patch)
+  }
 }
 
-function downloadSyncPlan(plan: SyncPlan) {
-  ipcRenderer.invoke('download-sync-plan', plan)
+async function downloadSyncPlan(plan: SyncPlan) {
+  const patch = await ipcRenderer.invoke('download-sync-plan', toRaw(plan))
+  if (patch) {
+    Object.assign(plan, patch)
+  }
 }
 
 function openSyncPlanDirectory(plan: SyncPlan) {
@@ -113,26 +119,18 @@ function removeSyncPlan(index: number) {
         <span v-if="defaultPlanGist" class="link form-action" @click="downloadDefaultSyncPlan">
           <span class="feather-icon icon-download-cloud"></span>
         </span>
-        <span v-if="syncData.gistURL" class="link form-action" @click="openDefaultSyncPlanGist">
+        <span
+          v-if="defaultPlanGist.includes('/')"
+          class="link form-action"
+          @click="openSyncPlanGist(defaultPlanGist)"
+        >
           <span class="feather-icon icon-github"></span>
         </span>
       </div>
-      <table class="history">
-        <tbody>
-          <tr>
-            <td v-i18n>Recently uploaded at:#!sync.5</td>
-            <td>{{ formatTime(syncData.uploadedAt) }}</td>
-          </tr>
-          <tr>
-            <td v-i18n>Recently downloaded at:#!sync.6</td>
-            <td>{{ formatTime(syncData.downloadedAt) }}</td>
-          </tr>
-          <tr>
-            <td v-i18n>Recently synced version:#!sync.7</td>
-            <td>{{ formatTime(syncData.updatedAt) }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="history">
+        <label v-i18n>Recently synced at:#!sync.5</label>
+        <span>{{ formatTime(syncData.updatedAt) }}</span>
+      </div>
     </div>
     <h2 v-i18n class="group-title">Plans#!sync.8</h2>
     <div class="group">
@@ -154,6 +152,13 @@ function removeSyncPlan(index: number) {
             </span>
             <span v-if="plan.gist" class="link form-action" @click="downloadSyncPlan(plan)">
               <span class="feather-icon icon-download-cloud"></span>
+            </span>
+            <span
+              v-if="plan.gist.includes('/')"
+              class="link form-action"
+              @click="openSyncPlanGist(plan.gist)"
+            >
+              <span class="feather-icon icon-github"></span>
             </span>
           </template>
         </ObjectEditor>
@@ -177,14 +182,8 @@ function removeSyncPlan(index: number) {
 .confirm:hover {
   color: rgb(var(--system-green));
 }
-.history {
-  border-spacing: 0;
-  td {
-    padding: 0;
-    &:first-child {
-      padding-right: 1em;
-    }
-  }
+.history label {
+  padding-right: 1em;
 }
 .action-line {
   margin: 0;
