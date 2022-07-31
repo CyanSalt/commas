@@ -25,6 +25,7 @@ export default () => {
         ? ['openFile', 'openDirectory', 'multiSelections', 'createDirectory']
         : ['openFile', 'multiSelections', 'dontAddToRecent'],
     })
+    if (result.canceled) return
     const launchers = await Promise.all(result.filePaths.map(entry => createLauncher(entry))) as Launcher[]
     launchersRef.value = [...launchersRef.value, ...launchers]
   })

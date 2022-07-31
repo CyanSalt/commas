@@ -20,7 +20,7 @@ const defaultPlanGist = $computed(() => {
   return settings['sync.plan.gist']
 })
 
-const extraPlans = $(commas.helper.deepRef(toRef(settings, 'sync.plan.extraPlans')))
+let extraPlans = $(commas.helper.deepRef(toRef(settings, 'sync.plan.extraPlans')))
 
 let isAddingToken = $ref(false)
 let stagingToken: string = $ref('')
@@ -84,7 +84,11 @@ function addSyncPlan() {
 }
 
 function removeSyncPlan(index: number) {
-  extraPlans.splice(index, 1)
+  // extraPlans.splice(index, 1)
+  extraPlans = ([] as typeof extraPlans).concat(
+    extraPlans.slice(0, index),
+    extraPlans.slice(index + 1),
+  )
 }
 </script>
 
@@ -139,7 +143,7 @@ function removeSyncPlan(index: number) {
           <span class="link form-action remove-plan" @click="removeSyncPlan(index)">
             <span class="feather-icon icon-minus"></span>
           </span>
-          <span class="plan-name">{{ plan.name }}</span>
+          <input v-model.lazy="plan.name" class="immersive-control plan-name">
           <span class="plan-directory" @click="openSyncPlanDirectory(plan)">
             <span class="feather-icon icon-at-sign"></span>
             <span class="directory-path">{{ omitHome(plan.directory) }}</span>
@@ -176,7 +180,7 @@ function removeSyncPlan(index: number) {
 .form-action {
   &:first-child,
   :deep(.extra-line .add) + & {
-    margin: 0;
+    margin-left: 0;
   }
 }
 .confirm:hover {
@@ -187,6 +191,9 @@ function removeSyncPlan(index: number) {
 }
 .action-line {
   margin: 0;
+}
+.plan-name {
+  padding: 0 6px;
 }
 .plan-directory {
   opacity: 0.5;

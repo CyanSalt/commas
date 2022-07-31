@@ -74,6 +74,7 @@ export default () => {
         ? ['openFile', 'openDirectory', 'multiSelections', 'showHiddenFiles', 'createDirectory']
         : ['openFile', 'multiSelections', 'showHiddenFiles', 'dontAddToRecent'],
     })
+    if (result.canceled) return
     const plan = await createSyncPlan(result.filePaths)
     settings['sync.plan.extraPlans'] = settings['sync.plan.extraPlans'].concat(plan)
   })
