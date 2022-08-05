@@ -77,7 +77,7 @@ function loadAddon(addon: AddonInfo, api: CompatableAPI) {
   if (addon.name === 'custom.js') {
     try {
       const userDataPath = app.isPackaged()
-        ? app.getPath('userData')
+        ? path.join(app.getPath('userData'), 'User')
         : path.resolve('../../userdata')
       processor = require(path.join(userDataPath, addon.name))
     } catch {

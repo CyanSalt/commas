@@ -4,7 +4,8 @@ import { app } from 'electron'
 const rootDir = path.join(__dirname, '../../')
 
 const userDataDir = app.isPackaged
-  ? app.getPath('userData') : path.join(rootDir, 'userdata/')
+  ? path.join(app.getPath('userData'), 'User')
+  : path.join(rootDir, 'userdata/')
 const resourcesDir = path.join(rootDir, 'resources/')
 
 function userFile(...paths: string[]) {
