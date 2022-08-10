@@ -2,5 +2,5 @@
 setlocal
 set ELECTRON_RUN_AS_NODE=1
 if not defined COMMAS_EXE set COMMAS_EXE=node
-call %COMMAS_EXE% %~dp0_ipc.js %*
+call %COMMAS_EXE% %~dp0.ipc.js %*
 endlocal
