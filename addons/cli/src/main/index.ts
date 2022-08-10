@@ -37,17 +37,24 @@ export default () => {
   ipc.serve(() => {
     ipc.server.on('request', async (context, socket) => {
       context.sender = webContents.fromId(context.sender)
-      const execution = executeCommand(context, commands)
-      let done: boolean | undefined
-      while (!done) {
-        const result = await execution.next()
-        const stdout = result.value
-        if (typeof stdout === 'string') {
-          ipc.server.emit(socket, 'data', stdout)
+      try {
+        const execution = executeCommand(context, commands)
+        let done: boolean | undefined
+        while (!done) {
+          const result = await execution.next()
+          const stdout = result.value
+          if (typeof stdout === 'string') {
+            ipc.server.emit(socket, 'data', stdout)
+          }
+          done = result.done
         }
-        done = result.done
+        ipc.server.emit(socket, 'end', 0)
+      } catch (err) {
+        ipc.server.emit(socket, 'error', util.inspect(err, {
+          colors: true,
+        }))
+        ipc.server.emit(socket, 'end', 1)
       }
-      ipc.server.emit(socket, 'end')
     })
   })
   ipc.server.start()

@@ -43,7 +43,12 @@ async function connect() {
     process.stdout.write(data)
     output = true
   })
-  server.on('end', () => {
+  server.on('error', (data) => {
+    process.stderr.write(data)
+    output = true
+  })
+  server.on('end', (exitCode) => {
+    process.exitCode = exitCode
     if (output) {
       process.stdout.write('\n')
     }
