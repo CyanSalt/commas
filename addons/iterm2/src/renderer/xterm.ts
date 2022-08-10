@@ -266,9 +266,10 @@ export class ITerm2Addon implements ITerminalAddon {
     const dimensions = xterm['_core']._renderService.dimensions
     decoration.onRender(() => {
       const el = decoration.element!
-      el.style.setProperty('--width', `${dimensions.actualCellWidth}px`)
-      el.style.setProperty('--height', `${dimensions.actualCellHeight}px`)
-      el.classList.add('terminal-mark')
+      el.style.setProperty('--cell-width', `${dimensions.actualCellWidth}px`)
+      el.style.setProperty('--cell-height', `${dimensions.actualCellHeight}px`)
+      el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
+      el.classList.add('iterm2-mark')
     })
   }
 
@@ -282,7 +283,7 @@ export class ITerm2Addon implements ITerminalAddon {
     })!
     decoration.onRender(() => {
       const el = decoration.element!
-      el.classList.add('terminal-mark-highlight-line')
+      el.classList.add('iterm2-mark-highlight-line')
       el.addEventListener('animationend', () => {
         decoration.dispose()
       })
@@ -298,7 +299,7 @@ export class ITerm2Addon implements ITerminalAddon {
       width: xterm.cols,
     })!
     highlightDecoration.onRender(() => {
-      highlightDecoration.element!.classList.add('terminal-cursor-highlight-line')
+      highlightDecoration.element!.classList.add('iterm2-cursor-highlight-line')
     })
     this.highlightMarker.onDispose(() => {
       highlightDecoration.dispose()
