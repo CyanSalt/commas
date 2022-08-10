@@ -6,7 +6,7 @@ import * as pty from 'node-pty'
 import type { IPty, IPtyForkOptions } from 'node-pty'
 import type { TerminalInfo } from '../../typings/terminal'
 import { execa } from '../utils/helper'
-import { getDefaultEnv, getDefaultShell } from '../utils/shell'
+import { applyShellIntegration, getDefaultEnv, getDefaultShell } from '../utils/shell'
 import { useSettings, whenSettingsReady } from './settings'
 
 const ptyProcessMap = new Map<number, IPty>()
@@ -23,11 +23,6 @@ async function createTerminal(webContents: WebContents, { shell, cwd }: CreateTe
     app.whenReady(),
   ])
   const settings = useSettings()
-  const env = {
-    ...getDefaultEnv(),
-    ...settings['terminal.shell.env'],
-    COMMAS_SENDER_ID: String(webContents.id),
-  } as Record<string, string>
   if (!shell) {
     shell = settings['terminal.shell.path'] || getDefaultShell()
   }
@@ -41,15 +36,25 @@ async function createTerminal(webContents: WebContents, { shell, cwd }: CreateTe
   if (!cwd) {
     cwd = os.homedir()
   }
+  let env = {
+    ...getDefaultEnv(),
+    ...settings['terminal.shell.env'],
+    COMMAS_SENDER_ID: String(webContents.id),
+  } as Record<string, string>
+  let args = process.platform === 'win32'
+    ? settings['terminal.shell.windowsArgs']
+    : settings['terminal.shell.args']
+  if (settings['terminal.shell.integration']) {
+    const result = applyShellIntegration(shell!, args)
+    args = [...args, ...result.args]
+    env = { ...env, ...result.env }
+  }
   const options: IPtyForkOptions = {
     name: 'xterm-256color',
     cwd,
     env,
   }
-  let args = settings['terminal.shell.args']
-  if (process.platform === 'win32') {
-    args = settings['terminal.shell.windowsArgs']
-  } else {
+  if (process.platform !== 'win32') {
     options.encoding = 'utf8'
   }
   const ptyProcess = pty.spawn(shell!, args, options)

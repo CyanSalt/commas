@@ -34,6 +34,31 @@ function getDefaultEnv() {
   return defaultEnv
 }
 
+function applyShellIntegration(shell: string, args: string[]) {
+  shell = path.basename(shell)
+  const extraArgs: string[] = []
+  const extraEnv = {
+    COMMAS_SHELL_INTEGRATION: '1',
+  }
+  switch (shell) {
+    case 'bash': {
+      extraArgs.push('--init-file', `${BIN_PATH}/.shell-integration/bash.sh`)
+      if (['-login', '-l'].some(arg => args.includes(arg))) {
+        extraEnv['COMMAS_SHELL_LOGIN'] = '1'
+      }
+      break
+    }
+    case 'zsh':
+      extraArgs.push('-i')
+      extraEnv['ZDOTDIR'] = `${BIN_PATH}/.shell-integration/zsh`
+      break
+  }
+  return {
+    args: extraArgs,
+    env: extraEnv,
+  }
+}
+
 function loginExecute(command: string) {
   const env = getDefaultEnv()
   if (process.platform === 'win32') {
@@ -47,5 +72,6 @@ function loginExecute(command: string) {
 export {
   getDefaultShell,
   getDefaultEnv,
+  applyShellIntegration,
   loginExecute,
 }

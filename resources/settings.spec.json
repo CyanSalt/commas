@@ -43,7 +43,7 @@
   },
   {
     "key": "terminal.shell.env",
-    "label": "Extra environment variables",
+    "label": "Extra Environment Variables",
     "comments": [
       "Extra environment variables"
     ],
@@ -54,6 +54,17 @@
       }
     },
     "default": {}
+  },
+  {
+    "key": "terminal.shell.integration",
+    "label": "Enable Shell Integration",
+    "comments": [
+      "Allow the terminal to inject scripts into the shell for enhanced functionality"
+    ],
+    "schema": {
+      "type": "boolean"
+    },
+    "default": true
   },
   {
     "key": "terminal.external.openPathIn",
@@ -101,7 +112,8 @@
     "label": "Enable Live CWD",
     "comments": [
       "Support dynamic \\w and \\W in formatting",
-      "Disabling this feature will slightly improved performance."
+      "Disabling this feature will slightly improved performance",
+      "This will be automatically disabled when shell integration is enabled"
     ],
     "schema": {
       "type": "boolean"
@@ -113,7 +125,7 @@
     "label": "Enable Live Icon",
     "comments": [
       "Support real-time icon (currently for macOS only)",
-      "Disabling this feature will slightly improved performance."
+      "Disabling this feature will slightly improved performance"
     ],
     "schema": {
       "type": "boolean"

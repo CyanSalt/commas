@@ -26,8 +26,8 @@ import FindBox from './FindBox.vue'
 import TabList from './TabList.vue'
 import TerminalTeletype from './TerminalTeletype.vue'
 import TitleBar from './TitleBar.vue'
-import '../assets/fonts/feather.css'
 import '../assets/fonts/devicon.css'
+import '../assets/fonts/feather.css'
 
 const isFullscreen = $(useFullscreen())
 const isTabListEnabled = $(useIsTabListEnabled())

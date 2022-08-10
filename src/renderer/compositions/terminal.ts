@@ -18,6 +18,7 @@ import type { TerminalInfo, TerminalTab, TerminalTabGroup } from '../../typings/
 import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
 import { translate } from '../utils/i18n'
+import { ShellIntegrationAddon } from '../utils/shell-integration'
 import { getPrompt, getWindowsProcessInfo } from '../utils/terminal'
 import { useKeyBindings } from './keybinding'
 import { useSettings } from './settings'
@@ -148,7 +149,7 @@ export async function createTerminalTab({
   })
   let latestPromise: Promise<string | undefined>
   xterm.onLineFeed(async () => {
-    if (settings['terminal.tab.liveCwd']) {
+    if (settings['terminal.tab.liveCwd'] && !settings['terminal.shell.integration']) {
       const promise: Promise<string | undefined> = ipcRenderer.invoke('get-terminal-cwd', tab.pid)
       latestPromise = promise
       const latestCwd = await promise
@@ -353,6 +354,17 @@ export function handleTerminalMessages() {
 export function loadTerminalAddons(tab: TerminalTab) {
   const xterm = tab.xterm
   const addons: Record<string, any> = tab.addons
+  if (settings['terminal.shell.integration']) {
+    if (!addons.shellIntegration) {
+      addons.shellIntegration = new ShellIntegrationAddon(tab)
+      xterm.loadAddon(addons.shellIntegration)
+    }
+  } else {
+    if (addons.shellIntegration) {
+      addons.shellIntegration.dispose()
+      delete addons.shellIntegration
+    }
+  }
   if (!addons.fit) {
     addons.fit = new FitAddon()
     xterm.loadAddon(addons.fit)

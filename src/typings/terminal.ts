@@ -7,6 +7,7 @@ import type { Unicode11Addon } from 'xterm-addon-unicode11'
 import type { WebLinksAddon } from 'xterm-addon-web-links'
 import type { WebglAddon } from 'xterm-addon-webgl'
 import type { IconEntry } from '../renderer/assets/icons'
+import type { ShellIntegrationAddon } from '../renderer/utils/shell-integration'
 import type { Deferred } from '../shared/helper'
 
 export interface TerminalTabPane {
@@ -32,6 +33,7 @@ export interface TerminalInfo {
 }
 
 export interface TerminalTabAddons {
+  shellIntegration: ShellIntegrationAddon,
   fit: FitAddon,
   ligatures: LigaturesAddon,
   search: SearchAddon,
