@@ -11,7 +11,7 @@ export function createIDGenerator(iterator?: IDIterator) {
   }
 }
 
-export function diligent<T>(fn: () => T) {
+export function reuse<T>(fn: () => T) {
   const value = fn()
   return () => value
 }

@@ -1,20 +1,20 @@
 import { ipcRenderer } from 'electron'
-import { diligent } from '../../shared/helper'
+import { reuse } from '../../shared/helper'
 import { injectIPC } from '../utils/compositions'
 
 export function useFile(file: string) {
   return injectIPC('file', '', file)
 }
 
-export const useMinimized = diligent(() => {
+export const useMinimized = reuse(() => {
   return injectIPC('minimized', false)
 })
 
-export const useMaximized = diligent(() => {
+export const useMaximized = reuse(() => {
   return injectIPC('maximized', false)
 })
 
-export const useFullscreen = diligent(() => {
+export const useFullscreen = reuse(() => {
   return injectIPC('fullscreen', false)
 })
 
