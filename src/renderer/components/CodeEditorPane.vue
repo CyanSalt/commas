@@ -63,6 +63,5 @@ defineExpose({
 .code-editor-pane {
   box-sizing: border-box;
   height: 100%;
-  padding: 4px 8px;
 }
 </style>

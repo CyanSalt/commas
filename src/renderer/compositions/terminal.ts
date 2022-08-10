@@ -207,7 +207,7 @@ export function showTabOptions(event?: MouseEvent) {
   openContextMenu(options, event ?? [0, 36], options.findIndex(item => item.args?.[0] === activeIndex))
 }
 
-const generateID = createIDGenerator()
+const generateID = createIDGenerator(id => id - 1)
 
 export function openCodeEditorTab(file: string) {
   let tab = tabs.find(item => {
