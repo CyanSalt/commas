@@ -6,7 +6,7 @@ import * as pty from 'node-pty'
 import type { IPty, IPtyForkOptions } from 'node-pty'
 import type { TerminalInfo } from '../../typings/terminal'
 import { execa } from '../utils/helper'
-import { applyShellIntegration, getDefaultEnv, getDefaultShell } from '../utils/shell'
+import { integrateShell, getDefaultEnv, getDefaultShell } from '../utils/shell'
 import { useSettings, whenSettingsReady } from './settings'
 
 const ptyProcessMap = new Map<number, IPty>()
@@ -45,7 +45,7 @@ async function createTerminal(webContents: WebContents, { shell, cwd }: CreateTe
     ? settings['terminal.shell.windowsArgs']
     : settings['terminal.shell.args']
   if (settings['terminal.shell.integration']) {
-    const result = applyShellIntegration(shell!, args)
+    const result = integrateShell(shell!, args)
     args = [...args, ...result.args]
     env = { ...env, ...result.env }
   }

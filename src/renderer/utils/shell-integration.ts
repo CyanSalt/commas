@@ -29,6 +29,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
 
   constructor(tab: TerminalTab) {
     this.tab = tab
+    this.tab.idle = true
     this.disposables = []
     this.commands = []
   }
@@ -66,9 +67,11 @@ export class ShellIntegrationAddon implements ITerminalAddon {
           }
           case 'C':
             // CommandExecuted
+            this.tab.idle = false
             return true
           case 'D':
             // CommandFinished
+            this.tab.idle = true
             if (this.currentCommand) {
               const exitCode = args[0] ? Number(args[0]) : undefined
               if (typeof exitCode === 'number') {
@@ -148,6 +151,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   }
 
   dispose() {
+    delete this.tab.idle
     const disposables = [
       ...this.disposables,
       ...this.commands.map(command => command.marker),

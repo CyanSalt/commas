@@ -51,6 +51,7 @@ export interface TerminalTab extends TerminalInfo {
     stop: Deferred,
   },
   alerting?: boolean,
+  idle?: boolean,
   thumbnail?: string,
   pane?: TerminalTabPane,
   group?: TerminalTabGroup,

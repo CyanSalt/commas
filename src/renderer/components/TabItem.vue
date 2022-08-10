@@ -41,6 +41,7 @@ const title = $computed(() => {
 const idleState = $computed(() => {
   if (!tab) return ''
   if (tab.alerting) return 'alerting'
+  if (typeof tab.idle === 'boolean') return tab.idle ? 'idle' : 'busy'
   if (pane) return ''
   if (tab.process === path.basename(tab.shell)) return 'idle'
   return 'busy'

@@ -34,7 +34,7 @@ function getDefaultEnv() {
   return defaultEnv
 }
 
-function applyShellIntegration(shell: string, args: string[]) {
+function integrateShell(shell: string, args: string[]) {
   shell = path.basename(shell)
   const extraArgs: string[] = []
   const extraEnv = {
@@ -72,6 +72,6 @@ function loginExecute(command: string) {
 export {
   getDefaultShell,
   getDefaultEnv,
-  applyShellIntegration,
+  integrateShell,
   loginExecute,
 }
