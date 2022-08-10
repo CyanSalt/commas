@@ -258,7 +258,7 @@ export class ITerm2Addon implements ITerminalAddon {
       marker,
       overviewRulerOptions: {
         color: commas.helper.toCSSHEX({ ...rgba, a: 0.5 }),
-        position: 'right',
+        position: 'left',
       },
     })!
     this.markMarkers.push(marker)

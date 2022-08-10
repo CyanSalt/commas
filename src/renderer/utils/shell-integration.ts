@@ -43,19 +43,25 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             return true
           case 'B': {
             // CommandStart
-            const theme = useTheme()
             const marker = xterm.registerMarker()!
+            const theme = useTheme()
             const decoration = this.createCommandDecoration(
               xterm,
               marker,
               theme.foreground,
               false,
             )
-            this.currentCommand = {
-              marker,
-              decoration,
+            if (this.currentCommand) {
+              this.currentCommand.marker.dispose()
+              this.currentCommand.marker = marker
+              this.currentCommand.decoration = decoration
+            } else {
+              this.currentCommand = {
+                marker,
+                decoration,
+              }
+              this.commands.push(this.currentCommand)
             }
-            this.commands.push(this.currentCommand)
             return true
           }
           case 'C':
@@ -65,18 +71,19 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             // CommandFinished
             if (this.currentCommand) {
               const exitCode = args[0] ? Number(args[0]) : undefined
-              const theme = useTheme()
-              const color = typeof exitCode === 'number'
-                ? (exitCode ? theme.red : theme.green)
-                : theme.foreground
-              this.currentCommand.exitCode = exitCode
-              this.currentCommand.decoration.dispose()
-              this.currentCommand.decoration = this.createCommandDecoration(
-                xterm,
-                this.currentCommand.marker,
-                color,
-                true,
-              )
+              if (typeof exitCode === 'number') {
+                this.currentCommand.exitCode = exitCode
+                const theme = useTheme()
+                const color = exitCode ? theme.red : theme.green
+                this.currentCommand.decoration.dispose()
+                this.currentCommand.decoration = this.createCommandDecoration(
+                  xterm,
+                  this.currentCommand.marker,
+                  color,
+                  true,
+                )
+              }
+              this.currentCommand = undefined
             }
             return true
           case 'E':
