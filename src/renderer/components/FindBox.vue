@@ -174,7 +174,7 @@ watch($$(isFinding), (value: boolean) => {
   display: flex;
   flex: none;
   height: 26px;
-  padding: 4px 8px;
+  padding: 4px 12px;
   line-height: 26px;
 }
 .keyword {

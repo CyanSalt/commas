@@ -108,7 +108,7 @@ onActivated(() => {
   flex: 1;
   min-width: 0;
   :deep(.xterm) {
-    padding: 4px 8px;
+    padding: 4px 12px;
   }
   :deep(.xterm-viewport) {
     @include partials.scroll-container;
@@ -119,5 +119,13 @@ onActivated(() => {
   :deep(.xterm-screen) {
     z-index: 0;
   }
+}
+:deep(.terminal-command-mark) {
+  width: 6px !important;
+  height: 6px !important;
+  margin-top: calc(var(--cell-height) / 2 - 3px);
+  margin-left: calc(0px - var(--cell-width));
+  background: rgb(var(--color) / var(--opacity));
+  border-radius: 50%;
 }
 </style>
