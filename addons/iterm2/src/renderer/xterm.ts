@@ -326,6 +326,11 @@ export class ITerm2Addon implements ITerminalAddon {
     if (targetIndex > this.markMarkers.length - 1) {
       targetIndex = 0
     }
+    const targetMarker = this.markMarkers[targetIndex]
+    if (targetMarker.isDisposed) {
+      this.markMarkers.splice(targetIndex, 1)
+      return this.scrollToMark(offset)
+    }
     this._scrollToMarker(this.markMarkers[targetIndex])
   }
 

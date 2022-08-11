@@ -76,15 +76,17 @@ export class ShellIntegrationAddon implements ITerminalAddon {
               const exitCode = args[0] ? Number(args[0]) : undefined
               if (typeof exitCode === 'number') {
                 this.currentCommand.exitCode = exitCode
-                const theme = useTheme()
-                const color = exitCode ? theme.red : theme.green
-                this.currentCommand.decoration.dispose()
-                this.currentCommand.decoration = this.createCommandDecoration(
-                  xterm,
-                  this.currentCommand.marker,
-                  color,
-                  true,
-                )
+                if (!this.currentCommand.marker.isDisposed) {
+                  const theme = useTheme()
+                  const color = exitCode ? theme.red : theme.green
+                  this.currentCommand.decoration.dispose()
+                  this.currentCommand.decoration = this.createCommandDecoration(
+                    xterm,
+                    this.currentCommand.marker,
+                    color,
+                    true,
+                  )
+                }
               }
               this.currentCommand = undefined
             }
@@ -94,9 +96,11 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             if (this.currentCommand) {
               const executedCommand = args[0]
               this.currentCommand.command = executedCommand
-              updateDecorationElement(this.currentCommand.decoration, el => {
-                el.dataset.command = executedCommand
-              })
+              if (!this.currentCommand.marker.isDisposed) {
+                updateDecorationElement(this.currentCommand.decoration, el => {
+                  el.dataset.command = executedCommand
+                })
+              }
             }
             return true
           case 'F':
