@@ -1,5 +1,13 @@
 
 
+### [0.22.1](https://github.com/CyanSalt/commas/compare/v0.22.0...v0.22.1) (2022-08-11)
+
+
+### Bug Fixes
+
+* ipc error after packaged ([6af6ca5](https://github.com/CyanSalt/commas/commit/6af6ca50144d9448d5f47e4cdfbdd58f8ad36469))
+* macOS code sign ([11cfb7e](https://github.com/CyanSalt/commas/commit/11cfb7e09a54d61e76d4dfa5e2b890244a66b1ba))
+
 ## [0.22.0](https://github.com/CyanSalt/commas/compare/v0.21.3...v0.22.0) (2022-08-11)
 
 
