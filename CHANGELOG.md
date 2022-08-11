@@ -1,5 +1,12 @@
 
 
+### [0.22.2](https://github.com/CyanSalt/commas/compare/v0.22.1...v0.22.2) (2022-08-11)
+
+
+### Bug Fixes
+
+* mark error after screen cleared ([801800c](https://github.com/CyanSalt/commas/commit/801800c4855fea9a34ae5b1c441cf552da6ed805))
+
 ### [0.22.1](https://github.com/CyanSalt/commas/compare/v0.22.0...v0.22.1) (2022-08-11)
 
 
