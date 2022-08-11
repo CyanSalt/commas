@@ -12,14 +12,14 @@ import { Unicode11Addon } from 'xterm-addon-unicode11'
 import { WebLinksAddon } from 'xterm-addon-web-links'
 import { WebglAddon } from 'xterm-addon-webgl'
 import * as commas from '../../../api/core-renderer'
-import { createDeferred, createIDGenerator } from '../../shared/helper'
+import { createDeferred } from '../../shared/helper'
 import type { MenuItem } from '../../typings/menu'
 import type { TerminalInfo, TerminalTab, TerminalTabGroup } from '../../typings/terminal'
 import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
 import { translate } from '../utils/i18n'
 import { ShellIntegrationAddon } from '../utils/shell-integration'
-import { getPrompt, getWindowsProcessInfo } from '../utils/terminal'
+import { getPrompt, getTerminalTabID, getWindowsProcessInfo } from '../utils/terminal'
 import { useKeyBindings } from './keybinding'
 import { useSettings } from './settings'
 import { useTheme } from './theme'
@@ -207,15 +207,13 @@ export function showTabOptions(event?: MouseEvent) {
   openContextMenu(options, event ?? [0, 36], options.findIndex(item => item.args?.[0] === activeIndex))
 }
 
-const generateID = createIDGenerator(id => id - 1)
-
 export function openCodeEditorTab(file: string) {
   let tab = tabs.find(item => {
     return item.pane?.type === 'editor' && item.shell === file
   })
   if (!tab) {
     tab = reactive({
-      pid: generateID(),
+      pid: 0,
       process: path.basename(file),
       title: '',
       cwd: path.dirname(file),
@@ -233,18 +231,18 @@ function handleTerminalTabHistory() {
   let navigating: number | null = null
   window.addEventListener('popstate', event => {
     if (!event.state) return
-    const targetIndex = tabs.findIndex(item => item.pid === event.state.pid)
+    const targetIndex = tabs.findIndex(item => getTerminalTabID(item) === event.state.id)
     if (targetIndex !== -1) {
-      navigating = event.state.pid
+      navigating = event.state.id
       activeIndex = targetIndex
     }
   })
   watch($$(currentTerminal), (value, oldValue) => {
-    if (value && navigating === value.pid) {
+    if (value && navigating === getTerminalTabID(value)) {
       navigating = null
       return
     }
-    const state = value ? { pid: value.pid } : null
+    const state = value ? { id: getTerminalTabID(value) } : null
     if (oldValue && getTerminalTabIndex(oldValue) !== -1) {
       history.pushState(state, '')
     } else {

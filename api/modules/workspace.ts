@@ -10,17 +10,15 @@ import {
   usePaneTabURL,
   useTerminalTabs,
 } from '../../src/renderer/compositions/terminal'
-import { createIDGenerator } from '../../src/shared/helper'
 import type { TerminalTab, TerminalTabAddons, TerminalTabPane } from '../../src/typings/terminal'
 import type { RendererAPIContext } from '../types'
 
 const paneTabs = shallowReactive<Record<string, TerminalTab | undefined>>({})
-const generateID = createIDGenerator()
 
 function registerTabPane(this: RendererAPIContext, name: string, pane: TerminalTabPane) {
   paneTabs[name] = markRaw({
-    pid: generateID(),
-    process: '',
+    pid: 0,
+    process: name,
     title: '',
     cwd: '',
     pane,

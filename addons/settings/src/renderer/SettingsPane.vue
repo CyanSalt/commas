@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { groupBy, startCase } from 'lodash'
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import type { ComponentPublicInstance } from 'vue'
 import { nextTick, onBeforeUpdate, watchEffect } from 'vue'
 import type { TerminalTab } from '../../../../src/typings/terminal'
 import SettingsLine from './SettingsLine.vue'
@@ -121,7 +119,7 @@ onBeforeUpdate(() => {
         <h3 v-else v-i18n class="settings-group-title">{{ group.name }}#!settings.group.{{ group.key }}</h3>
         <SettingsLine
           v-for="row in group.rows"
-          :ref="item => lines[row.key] = (item as ComponentPublicInstance | null)?.$el"
+          :ref="item => lines[row.key] = (item as InstanceType<typeof SettingsLine> | null)?.$el"
           :key="row.key"
           v-model="settings[row.key]"
           v-model:open="open[row.key]"

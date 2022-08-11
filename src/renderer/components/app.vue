@@ -20,6 +20,7 @@ import {
   createTerminalTab,
 } from '../compositions/terminal'
 import { injectTheme } from '../compositions/theme'
+import { getTerminalTabID } from '../utils/terminal'
 import ActionBar from './ActionBar.vue'
 import CodeEditorPane from './CodeEditorPane.vue'
 import FindBox from './FindBox.vue'
@@ -46,6 +47,11 @@ const TerminalComponent = $computed(() => {
   } else {
     return TerminalTeletype
   }
+})
+
+const tabId = $computed(() => {
+  if (!terminal) return ''
+  return getTerminalTabID(terminal)
 })
 
 const slots = commas.proxy.context.getCollection('terminal.ui-slot')
@@ -98,7 +104,7 @@ onMounted(() => {
         <template v-if="terminal">
           <keep-alive>
             <TerminalComponent
-              :key="terminal.pid"
+              :key="tabId"
               :tab="terminal"
             />
           </keep-alive>

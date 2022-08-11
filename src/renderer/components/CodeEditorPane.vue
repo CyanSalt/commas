@@ -8,12 +8,13 @@ const { tab } = defineProps<{
   tab: TerminalTab,
 }>()
 
-let code = $ref('')
+let editor = $ref<InstanceType<typeof CodeEditor>>()
+let code: string = $ref('')
 
 const file = $computed(() => tab.shell)
 
 const rawSource = $computed(() => useFile(file))
-let source = $computed({
+let source: string = $computed({
   get: () => rawSource.value,
   set: (value: string) => {
     rawSource.value = value
@@ -22,18 +23,18 @@ let source = $computed({
 
 watchEffect((onInvalidate) => {
   // eslint-disable-next-line vue/no-mutating-props
-  tab.alerting = computed(() => code !== source) as unknown as boolean
+  tab.alerting = computed(() => Boolean(editor?.isDirty)) as unknown as boolean
   onInvalidate(() => {
     delete tab.alerting
   })
 })
 
 watchEffect(() => {
-  code = source as string
+  code = source
 })
 
 function save() {
-  source = code as string
+  editor.save()
 }
 
 watchEffect((onInvalidate) => {
@@ -55,7 +56,11 @@ defineExpose({
 
 <template>
   <article class="code-editor-pane">
-    <CodeEditor v-model="code" :file="file" />
+    <CodeEditor
+      ref="editor"
+      v-model="code"
+      :file="file"
+    />
   </article>
 </template>
 

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { DiffComputer } from 'monaco-editor/esm/vs/editor/common/diff/diffComputer'
 import { watchEffect } from 'vue'
 import * as monaco from '../../assets/monaco-editor'
 import { useSettings } from '../../compositions/settings'
@@ -16,6 +17,8 @@ const emit = defineEmits<{
 
 const theme = useEditorTheme()
 const settings = useSettings()
+
+let isDirty = $ref(false)
 
 let root = $ref<HTMLDivElement | undefined>()
 
@@ -68,11 +71,58 @@ watchEffect(() => {
   })
 })
 
+function computeDiffDecorations(model: monaco.editor.ITextModel, defaultModel: monaco.editor.ITextModel) {
+  const diffComputer = new DiffComputer(defaultModel.getLinesContent(), model.getLinesContent(), {
+    shouldComputeCharChanges: false,
+    shouldPostProcessCharChanges: false,
+    shouldIgnoreTrimWhitespace: false,
+    shouldMakePrettyDiff: true,
+  })
+  const diff = diffComputer.computeDiff()
+  return diff.changes.map<monaco.editor.IModelDeltaDecoration>(change => {
+    const range: monaco.IRange = {
+      startLineNumber: change.modifiedStartLineNumber,
+      endLineNumber: change.modifiedEndLineNumber || change.modifiedStartLineNumber,
+      startColumn: 1,
+      endColumn: 1,
+    }
+    let linesDecorationsClasses = ['dirty-diff-glyph']
+    if (!change.originalEndLineNumber) {
+      // Add
+      linesDecorationsClasses.push('is-added')
+    } else if (!change.modifiedEndLineNumber) {
+      // Delete
+      linesDecorationsClasses.push('is-deleted')
+    } else {
+      // Modified
+      linesDecorationsClasses.push('is-modified')
+    }
+    return {
+      range,
+      options: {
+        linesDecorationsClassName: linesDecorationsClasses.join(' '),
+      },
+    }
+  })
+}
+
+let defaultModel = $shallowRef<monaco.editor.ITextModel | undefined>()
+watchEffect((onInvalidate) => {
+  const created = monaco.editor.createModel(modelValue, undefined, undefined)
+  defaultModel = created
+  onInvalidate(() => {
+    created.dispose()
+  })
+})
+
 let model = $shallowRef<monaco.editor.ITextModel | undefined>()
+let currentDecorations: string[] = []
 watchEffect((onInvalidate) => {
   const created = monaco.editor.createModel('', undefined, file ? monaco.Uri.file(file) : undefined)
   created.onDidChangeContent(() => {
-    emit('update:modelValue', created.getValue())
+    const decorations = computeDiffDecorations(created, defaultModel!)
+    currentDecorations = created.deltaDecorations(currentDecorations, decorations)
+    isDirty = Boolean(currentDecorations.length)
   })
   model = created
   onInvalidate(() => {
@@ -131,6 +181,16 @@ watchEffect((onInvalidate) => {
     observer.unobserve(el)
   })
 })
+
+function save() {
+  if (!model) return
+  emit('update:modelValue', model.getValue())
+}
+
+defineExpose({
+  isDirty: $$(isDirty),
+  save,
+})
 </script>
 
 <template>
@@ -142,6 +202,23 @@ watchEffect((onInvalidate) => {
   height: 100%;
   :deep(.monaco-editor) {
     font-family: inherit;
+    .dirty-diff-glyph.is-added {
+      border-left: 3px solid rgb(var(--theme-green));
+      transform: translateX(6px);
+    }
+    .dirty-diff-glyph.is-modified {
+      border-left: 3px solid rgb(var(--theme-blue));
+      transform: translateX(6px);
+    }
+    .dirty-diff-glyph.is-deleted {
+      bottom: -5px;
+      width: 0px !important;
+      height: 0px !important;
+      border-width: 5px solid transparent;
+      border-right: 0;
+      border-left: 4px solid rgb(var(--theme-red));
+      transform: translateX(6px);
+    }
   }
 }
 </style>
