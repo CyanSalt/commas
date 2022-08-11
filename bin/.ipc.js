@@ -1,4 +1,6 @@
-const { default: ipc } = require('node-ipc')
+const $require = require('module').createRequire(process.env.COMMAS_MAIN_FILE)
+
+const { default: ipc } = $require('node-ipc')
 
 async function readInput() {
   if (process.stdin.isTTY) {
