@@ -123,9 +123,13 @@ const options = {
  */
 async function getMacOSCodeSign(name) {
   const { stdout } = await execa(
-    `security find-identity -p codesigning -v | grep -o "\\"${name}: .*\\""`,
+    `security find-identity -p codesigning -v | grep "\\"${name}: .*\\"" | cut -d ' ' -f 4`,
   )
-  return stdout.trim()
+  const sign = stdout.trim()
+  if (!/^[0-9A-Fa-f]{40}$/.test(sign)) {
+    throw new Error(`Invalid code sign: ${sign}`)
+  }
+  return sign
 }
 
 /**
@@ -187,6 +191,7 @@ pack().then(
     logger.done(`Build finished after ${duration / 1000}s.`)
   },
   err => {
+    process.exitCode = 1
     logger.error(err)
   },
 )
