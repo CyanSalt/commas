@@ -29,7 +29,7 @@ export default () => {
   commas.workspace.registerXtermAddon('launcherSession', tab => {
     const settings = commas.remote.useSettings()
     if (tab.group?.type === 'launcher' && settings['launcher.session.persist']) {
-      return new LauncherSessionAddon(tab.group.data)
+      return new LauncherSessionAddon(tab.group.id)
     }
   }, true)
 

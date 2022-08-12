@@ -20,9 +20,9 @@ export interface TerminalTabPane {
 
 export interface TerminalTabGroup {
   type: string,
+  id: number,
   title: string,
   icon?: IconEntry,
-  data: any,
 }
 
 export interface TerminalInfo {

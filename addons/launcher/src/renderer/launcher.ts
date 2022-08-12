@@ -14,21 +14,21 @@ export function useLaunchers() {
 }
 
 export function getTerminalTabByLauncher(launcher: Launcher) {
-  return tabs.find(tab => tab.group?.type === 'launcher' && tab.group.data === launcher.id)
+  return tabs.find(tab => tab.group?.type === 'launcher' && tab.group.id === launcher.id)
 }
 
 export function getLauncherByTerminalTab(tab: TerminalTab) {
-  return launchers.find(launcher => tab.group?.type === 'launcher' && tab.group.data === launcher.id)
+  return launchers.find(launcher => tab.group?.type === 'launcher' && tab.group.id === launcher.id)
 }
 
 export function createLauncherGroup(launcher: Launcher): TerminalTabGroup {
   return {
     type: 'launcher',
+    id: launcher.id,
     title: launcher.name,
     icon: {
       name: `feather-icon ${launcher.remote ? 'icon-link' : 'icon-hash'}`,
     },
-    data: launcher.id,
   }
 }
 
