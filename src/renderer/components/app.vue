@@ -2,6 +2,7 @@
 import { ipcRenderer } from 'electron'
 import { onMounted } from 'vue'
 import * as commas from '../../../api/core-renderer'
+import type { TerminalTab } from '../../typings/terminal'
 import { loadAddons, loadCustomJS } from '../compositions/addon'
 import {
   useFullscreen,
@@ -35,6 +36,8 @@ const isTabListEnabled = $(useIsTabListEnabled())
 const terminal = $(useCurrentTerminal())
 const tabs = $(useTerminalTabs())
 const willQuit: boolean = $(useWillQuit())
+
+let keepAlive = $ref<any>()
 
 const TerminalComponent = $computed(() => {
   if (!terminal) return undefined
@@ -89,6 +92,12 @@ commas.proxy.app.events.once('terminal-addons-loaded', () => {
   })
 })
 
+// Revalidate KeepAlive manually
+commas.proxy.app.events.on('terminal-unmounted', (tab: TerminalTab) => {
+  const id = getTerminalTabID(tab)
+  keepAlive.$.__v_cache.delete(id)
+})
+
 onMounted(() => {
   commas.proxy.app.events.emit('ready')
 })
@@ -102,7 +111,7 @@ onMounted(() => {
       <main class="interface">
         <FindBox />
         <template v-if="terminal">
-          <keep-alive>
+          <keep-alive ref="keepAlive">
             <TerminalComponent
               :key="tabId"
               :tab="terminal"

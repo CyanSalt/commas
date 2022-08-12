@@ -455,6 +455,7 @@ export function removeTerminalTab(tab: TerminalTab) {
     activeIndex = activeIndex > index
       ? activeIndex - 1 : Math.min(index, length - 1)
   }
+  commas.proxy.app.events.emit('terminal-unmounted', tab)
 }
 
 export function activateTerminalTab(tab: TerminalTab) {
