@@ -91,6 +91,28 @@ async function createWindow(...args: string[]) {
   return frame
 }
 
+let cwd: string
+
+function createDefaultWindow() {
+  createWindow(cwd)
+}
+
+async function openFile(file: string) {
+  await whenSettingsReady()
+  const settings = useSettings()
+  if (!app.isReady()) {
+    cwd = file
+    return
+  }
+  if (settings['terminal.external.openPathIn'] === 'new-window' || !hasWindow()) {
+    createWindow(file)
+    return
+  }
+  const frame = getLastWindow()
+  frame.webContents.send('open-tab', { cwd: file })
+  frame.show()
+}
+
 function handleWindowMessages() {
   ipcMain.handle('open-window', () => {
     createWindow()
@@ -102,5 +124,7 @@ function handleWindowMessages() {
 
 export {
   createWindow,
+  createDefaultWindow,
+  openFile,
   handleWindowMessages,
 }
