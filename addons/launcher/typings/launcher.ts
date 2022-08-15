@@ -9,5 +9,5 @@ export interface LauncherInfo {
 }
 
 export interface Launcher extends LauncherInfo {
-  id: number,
+  id: string,
 }

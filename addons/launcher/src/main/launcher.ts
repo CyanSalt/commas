@@ -19,7 +19,7 @@ function fillLauncherIDs(launchers: LauncherInfo[], old: Launcher[] | null) {
     }
     return {
       ...launcher,
-      id: matched ? matched.id : generateID(),
+      id: matched ? matched.id : `launcher@${generateID()}`,
     }
   })
 }

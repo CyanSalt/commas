@@ -26,7 +26,7 @@ import ActionBar from './ActionBar.vue'
 import CodeEditorPane from './CodeEditorPane.vue'
 import FindBox from './FindBox.vue'
 import TabList from './TabList.vue'
-import TerminalTeletype from './TerminalTeletype.vue'
+import TerminalGroup from './TerminalGroup.vue'
 import TitleBar from './TitleBar.vue'
 import '../assets/fonts/devicon.css'
 import '../assets/fonts/feather.css'
@@ -48,12 +48,15 @@ const TerminalComponent = $computed(() => {
       return terminal.pane.component
     }
   } else {
-    return TerminalTeletype
+    return TerminalGroup
   }
 })
 
 const tabId = $computed(() => {
   if (!terminal) return ''
+  if (terminal.group) {
+    return terminal.group.id
+  }
   return getTerminalTabID(terminal)
 })
 

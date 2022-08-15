@@ -5,14 +5,19 @@
     "command": "open-tab"
   },
   {
-    "label": "Duplicate Tab#!menu.duplicatetab",
-    "accelerator": "CmdOrCtrl+Shift+D",
-    "command": "duplicate-tab"
-  },
-  {
     "label": "New Window#!menu.newwindow",
     "accelerator": "CmdOrCtrl+N",
     "command": "global:open-window"
+  },
+  {
+    "label": "Duplicate Tab#!menu.duplicatetab",
+    "accelerator": "CmdOrCtrl+D",
+    "command": "duplicate-tab"
+  },
+  {
+    "label": "Split Tab#!menu.splittab",
+    "accelerator": "CmdOrCtrl+Shift+D",
+    "command": "split-tab"
   },
   {
     "type": "separator"

@@ -17,8 +17,16 @@ const emit = defineEmits<{
 
 const settings = useSettings()
 const terminal = $(useCurrentTerminal())
+
 const isFocused: boolean = $computed(() => {
   return Boolean(tab) && terminal === tab
+})
+
+const isActive = $computed(() => {
+  if (isFocused) return true
+  return terminal?.group && tab?.group
+    && terminal.group.type === tab.group.type
+    && terminal.group.id === tab.group.id
 })
 
 const pane = $computed(() => {
@@ -34,7 +42,7 @@ const iconEntry = $computed(() => {
 })
 
 const title = $computed(() => {
-  if (group) return group.title
+  if (group?.title) return group.title
   return tab ? getTerminalTabTitle(tab) : ''
 })
 
@@ -65,7 +73,7 @@ function close() {
 </script>
 
 <template>
-  <div :class="['tab-item', { active: isFocused }]">
+  <div :class="['tab-item', { active: isActive, focused: isFocused }]">
     <div class="tab-item-card">
       <div class="tab-overview">
         <div class="tab-title">
@@ -104,8 +112,7 @@ function close() {
   min-width: 0;
   opacity: 0.5;
   transition: opacity 0.2s;
-  // .tab-item:hover &,
-  .tab-item.active &,
+  .tab-item.focused &,
   .sortable-item.dragging & {
     opacity: 1;
   }
@@ -132,6 +139,9 @@ function close() {
   padding: 0 8px;
   border-radius: 8px;
   .tab-item.active & {
+    background: linear-gradient(to right, transparent, var(--design-card-background));
+  }
+  .tab-item.focused & {
     background: var(--design-card-background);
   }
 }

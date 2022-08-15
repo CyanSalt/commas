@@ -15,6 +15,7 @@
   "Terminal#!menu.terminal": "终端",
   "New Tab#!menu.newtab": "新建标签页",
   "Duplicate Tab#!menu.duplicatetab": "复制标签页",
+  "Split Tab#!menu.splittab": "拆分标签页",
   "New Window#!menu.newwindow": "新建窗口",
   "Go Back#!menu.goback": "后退",
   "Go Forward#!menu.goforward": "前进",

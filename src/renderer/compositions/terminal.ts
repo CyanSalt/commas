@@ -2,7 +2,7 @@ import * as os from 'os'
 import * as path from 'path'
 import { ipcRenderer, shell } from 'electron'
 import { isMatch, trim } from 'lodash'
-import { markRaw, reactive, shallowReactive, toRaw, watch, watchEffect } from 'vue'
+import { markRaw, nextTick, reactive, shallowReactive, toRaw, watch, watchEffect } from 'vue'
 import { Terminal } from 'xterm'
 import type { ITerminalOptions } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
@@ -183,7 +183,7 @@ export function getTerminalTabTitle(tab: TerminalTab) {
   if (tab.pane && !tab.shell) {
     return translate(tab.pane.title)
   }
-  if (tab.group) {
+  if (tab.group?.title) {
     return tab.group.title
   }
   if (process.platform !== 'win32' && tab.title) {
@@ -228,7 +228,7 @@ export function openCodeEditorTab(file: string) {
 }
 
 function handleTerminalTabHistory() {
-  let navigating: number | null = null
+  let navigating: string | null = null
   window.addEventListener('popstate', event => {
     if (!event.state) return
     const targetIndex = tabs.findIndex(item => getTerminalTabID(item) === event.state.id)
@@ -256,6 +256,12 @@ export function handleTerminalMessages() {
   watch($$(currentTerminal), () => {
     paneTabURL = ''
   }, { flush: 'sync' })
+  watch($$(currentTerminal), async tab => {
+    await nextTick()
+    if (tab && !tab.pane) {
+      tab.xterm.focus()
+    }
+  })
   ipcRenderer.on('open-tab', (event, options: CreateTerminalTabOptions) => {
     createTerminalTab(options)
   })
@@ -265,6 +271,11 @@ export function handleTerminalMessages() {
         cwd: currentTerminal.cwd,
         shell: currentTerminal.shell,
       })
+    }
+  })
+  ipcRenderer.on('split-tab', () => {
+    if (currentTerminal) {
+      splitTerminalTab(currentTerminal)
     }
   })
   ipcRenderer.on('close-tab', () => {
@@ -490,4 +501,21 @@ export function moveTerminalTab(tab: TerminalTab, index: number) {
   } else if (activeIndex < fromIndex && activeIndex > index) {
     activeIndex += 1
   }
+}
+
+export function splitTerminalTab(tab: TerminalTab) {
+  if (tab.pane) {
+    return tab
+  }
+  if (!tab.group) {
+    tab.group = {
+      type: 'default',
+      id: getTerminalTabID(tab),
+    }
+  }
+  return createTerminalTab({
+    cwd: tab.cwd,
+    shell: tab.shell,
+    group: tab.group,
+  })
 }

@@ -10,7 +10,7 @@ const { tab } = defineProps<{
   tab: TerminalTab,
 }>()
 
-const terminal = $ref<HTMLElement | undefined>()
+const element = $ref<HTMLElement | undefined>()
 
 function dragFileOver(event: DragEvent) {
   if (event.dataTransfer) {
@@ -63,7 +63,7 @@ function fit() {
 const observer = new ResizeObserver(fit)
 
 watchEffect((onInvalidate) => {
-  const el = terminal
+  const el = element
   if (!el) return
   const xterm = tab.xterm
   xterm.open(el)
@@ -80,19 +80,18 @@ onActivated(() => {
   if (xterm['_core'].viewport) {
     xterm['_core'].viewport.syncScrollArea(true)
   }
-  xterm.focus()
 })
 </script>
 
 <template>
-  <article
+  <div
     class="terminal-teletype"
     @contextmenu="openEditingMenu"
     @dragover.prevent="dragFileOver"
     @drop.prevent="dropFile"
   >
-    <div ref="terminal" class="terminal-content"></div>
-  </article>
+    <div ref="element" class="terminal-content"></div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -102,11 +101,12 @@ onActivated(() => {
   position: relative;
   display: flex;
   flex: 1;
-  min-height: 0;
+  min-width: 0;
 }
 .terminal-content {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
   :deep(.xterm) {
     padding: 4px 12px;
   }

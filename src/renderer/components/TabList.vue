@@ -3,11 +3,13 @@ import * as path from 'path'
 import * as commas from '../../../api/core-renderer'
 import { useAsyncComputed } from '../../shared/compositions'
 import {
-  useTerminalTabs,
-  createTerminalTab,
-  moveTerminalTab,
   activateTerminalTab,
+  createTerminalTab,
   getTerminalTabIndex,
+  moveTerminalTab,
+  splitTerminalTab,
+  useCurrentTerminal,
+  useTerminalTabs,
 } from '../compositions/terminal'
 import { openContextMenu } from '../utils/frame'
 import { handleMousePressing } from '../utils/helper'
@@ -19,11 +21,15 @@ const lists = commas.proxy.context.getCollection('terminal.ui-side-list')
 const shells = $(useAsyncComputed(() => getShells(), []))
 
 const tabs = $(useTerminalTabs())
+const terminal = $(useCurrentTerminal())
 
 let width = $ref(176)
 
 const standaloneTabs = $computed(() => {
-  return tabs.filter(tab => !tab.group)
+  return tabs.filter(tab => {
+    if (!tab.group) return true
+    return tab.group.type === 'default'
+  })
 })
 
 function sortTabs(from: number, to: number) {
@@ -38,6 +44,16 @@ function selectShell(event: MouseEvent) {
     command: 'open-tab',
     args: [{ shell }],
   })), event)
+}
+
+function selectDefaultShell(event: MouseEvent) {
+  if (process.platform === 'darwin' ? event.metaKey : event.ctrlKey) {
+    if (terminal) {
+      splitTerminalTab(terminal)
+    }
+  } else {
+    createTerminalTab()
+  }
 }
 
 function resize(startingEvent: DragEvent) {
@@ -74,7 +90,7 @@ function resize(startingEvent: DragEvent) {
         </div>
         <div
           class="default-shell anchor"
-          @click="createTerminalTab()"
+          @click="selectDefaultShell"
           @contextmenu="selectShell"
         >
           <span class="feather-icon icon-plus"></span>
