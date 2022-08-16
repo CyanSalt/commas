@@ -120,6 +120,18 @@ onActivated(() => {
     z-index: 0;
   }
 }
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+:deep(.terminal-marker-highlight-line) {
+  background: rgb(var(--theme-magenta) / 0.5);
+  animation: fade-out 1s;
+}
 :deep(.terminal-command-mark) {
   width: 6px !important;
   height: 6px !important;

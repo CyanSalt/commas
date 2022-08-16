@@ -74,6 +74,21 @@
     "type": "separator"
   },
   {
+    "label": "Previous Command#!menu.previouscommand",
+    "accelerator": "CmdOrCtrl+Up",
+    "command": "scroll-to-command",
+    "args": [-1]
+  },
+  {
+    "label": "Next Command#!menu.nextcommand",
+    "accelerator": "CmdOrCtrl+Down",
+    "command": "scroll-to-command",
+    "args": [1]
+  },
+  {
+    "type": "separator"
+  },
+  {
     "label": "Close Tab#!menu.closetab",
     "accelerator": "CmdOrCtrl+W",
     "command": "close-tab"

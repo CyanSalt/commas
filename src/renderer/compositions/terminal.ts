@@ -4,7 +4,7 @@ import { ipcRenderer, shell } from 'electron'
 import { isMatch, trim } from 'lodash'
 import { markRaw, nextTick, reactive, shallowReactive, toRaw, watch, watchEffect } from 'vue'
 import { Terminal } from 'xterm'
-import type { ITerminalOptions } from 'xterm'
+import type { ITerminalOptions, IMarker } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
 import { LigaturesAddon } from 'xterm-addon-ligatures'
 import { SearchAddon } from 'xterm-addon-search'
@@ -179,6 +179,21 @@ export async function createTerminalTab({
   return tab
 }
 
+export function scrollToMarker(xterm: Terminal, marker: IMarker) {
+  xterm.scrollLines(marker.line - xterm.buffer.active.viewportY)
+  const decoration = xterm.registerDecoration({
+    marker,
+    width: xterm.cols,
+  })!
+  decoration.onRender(() => {
+    const el = decoration.element!
+    el.classList.add('terminal-marker-highlight-line')
+    el.addEventListener('animationend', () => {
+      decoration.dispose()
+    })
+  })
+}
+
 export function getTerminalTabTitle(tab: TerminalTab) {
   if (tab.pane && !tab.shell) {
     return translate(tab.pane.title)
@@ -335,6 +350,11 @@ export function handleTerminalMessages() {
     if (activeIndex < tabs.length - 1) {
       activeIndex += 1
     }
+  })
+  ipcRenderer.on('scroll-to-command', (event, offset: number) => {
+    if (!currentTerminal) return
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    currentTerminal.addons?.shellIntegration?.scrollToCommand(offset)
   })
   ipcRenderer.on('go-back', () => {
     history.back()

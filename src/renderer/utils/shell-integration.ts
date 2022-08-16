@@ -26,6 +26,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   disposables: IDisposable[]
   commands: IntegratedShellCommand[]
   currentCommand?: IntegratedShellCommand
+  recentMarker?: WeakRef<IMarker>
 
   constructor(tab: TerminalTab) {
     this.tab = tab
@@ -46,7 +47,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             // CommandStart
             const marker = xterm.registerMarker()!
             const theme = useTheme()
-            const decoration = this.createCommandDecoration(
+            const decoration = this._createCommandDecoration(
               xterm,
               marker,
               theme.foreground,
@@ -80,7 +81,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
                   const theme = useTheme()
                   const color = exitCode ? theme.red : theme.green
                   this.currentCommand.decoration.dispose()
-                  this.currentCommand.decoration = this.createCommandDecoration(
+                  this.currentCommand.decoration = this._createCommandDecoration(
                     xterm,
                     this.currentCommand.marker,
                     color,
@@ -130,10 +131,26 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             return false
         }
       }),
+      xterm.onLineFeed(() => {
+        this.recentMarker = undefined
+      }),
     )
   }
 
-  createCommandDecoration(xterm: Terminal, marker: IMarker, color: string, finished: boolean) {
+  dispose() {
+    delete this.tab.idle
+    const disposables = [
+      ...this.disposables,
+      ...this.commands.map(command => command.marker),
+    ]
+    disposables.forEach(disposable => {
+      disposable.dispose()
+    })
+    this.disposables = []
+    this.commands = []
+  }
+
+  _createCommandDecoration(xterm: Terminal, marker: IMarker, color: string, finished: boolean) {
     const rgba = toRGBA(color)
     const decoration = xterm.registerDecoration({
       marker,
@@ -154,17 +171,42 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     return decoration
   }
 
-  dispose() {
-    delete this.tab.idle
-    const disposables = [
-      ...this.disposables,
-      ...this.commands.map(command => command.marker),
-    ]
-    disposables.forEach(disposable => {
-      disposable.dispose()
+  scrollToMarker(marker: IMarker) {
+    const { xterm } = this.tab
+    xterm.scrollLines(marker.line - xterm.buffer.active.viewportY)
+    const decoration = xterm.registerDecoration({
+      marker,
+      width: xterm.cols,
+    })!
+    decoration.onRender(() => {
+      const el = decoration.element!
+      el.classList.add('terminal-marker-highlight-line')
+      el.addEventListener('animationend', () => {
+        decoration.dispose()
+      })
     })
-    this.disposables = []
-    this.commands = []
+  }
+
+  scrollToCommand(offset: number) {
+    const markers = this.commands
+      .map(item => item.marker)
+      .filter(marker => !marker.isDisposed)
+      .sort((a, b) => a.line - b.line)
+    if (!markers.length) return
+    const index = this.recentMarker
+      // @ts-expect-error also find undefined
+      ? markers.indexOf(this.recentMarker.deref())
+      : markers.length
+    let targetIndex = index + offset
+    if (targetIndex < 0) {
+      targetIndex = markers.length - 1
+    }
+    if (targetIndex > markers.length - 1) {
+      targetIndex = 0
+    }
+    const targetMarker = markers[targetIndex]
+    this.recentMarker = new WeakRef(targetMarker)
+    this.scrollToMarker(targetMarker)
   }
 
 }

@@ -25,6 +25,8 @@
   "Find#!menu.find": "查找",
   "Save#!menu.save": "保存",
   "Toggle Tab List#!menu.toggletablist": "切换标签页列表",
+  "Previous Command#!menu.previouscommand": "上一个命令",
+  "Next Command#!menu.nextcommand": "下一个命令",
   "Close Tab#!menu.closetab": "关闭标签页",
   "Close Window#!menu.closewindow": "关闭窗口",
   "Edit#!menu.edit": "编辑",

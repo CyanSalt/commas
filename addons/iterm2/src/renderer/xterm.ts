@@ -230,6 +230,7 @@ export class ITerm2Addon implements ITerminalAddon {
         return true
       }),
       xterm.onLineFeed(() => {
+        this.recentMarkMarker = undefined
         if (this._deactivateHighlight()) {
           this._activateHighlight()
         }
@@ -262,7 +263,7 @@ export class ITerm2Addon implements ITerminalAddon {
       },
     })!
     this.markMarkers.push(marker)
-    this.markMarkers.sort((a, b) => b.line - a.line)
+    this.markMarkers.sort((a, b) => a.line - b.line)
     const dimensions = xterm['_core']._renderService.dimensions
     decoration.onRender(() => {
       const el = decoration.element!
@@ -270,23 +271,6 @@ export class ITerm2Addon implements ITerminalAddon {
       el.style.setProperty('--cell-height', `${dimensions.actualCellHeight}px`)
       el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
       el.classList.add('iterm2-mark')
-    })
-  }
-
-  _scrollToMarker(marker: IMarker) {
-    this.recentMarkMarker = new WeakRef(marker)
-    const { xterm } = this.tab
-    xterm.scrollLines(marker.line - xterm.buffer.active.viewportY)
-    const decoration = xterm.registerDecoration({
-      marker,
-      width: xterm.cols,
-    })!
-    decoration.onRender(() => {
-      const el = decoration.element!
-      el.classList.add('iterm2-mark-highlight-line')
-      el.addEventListener('animationend', () => {
-        decoration.dispose()
-      })
     })
   }
 
@@ -318,7 +302,7 @@ export class ITerm2Addon implements ITerminalAddon {
     const index = this.recentMarkMarker
       // @ts-expect-error also find undefined
       ? this.markMarkers.indexOf(this.recentMarkMarker.deref())
-      : -1
+      : this.markMarkers.length
     let targetIndex = index + offset
     if (targetIndex < 0) {
       targetIndex = this.markMarkers.length - 1
@@ -331,7 +315,8 @@ export class ITerm2Addon implements ITerminalAddon {
       this.markMarkers.splice(targetIndex, 1)
       return this.scrollToMark(offset)
     }
-    this._scrollToMarker(this.markMarkers[targetIndex])
+    this.recentMarkMarker = new WeakRef(targetMarker)
+    commas.workspace.scrollToMarker(this.tab.xterm, targetMarker)
   }
 
 }

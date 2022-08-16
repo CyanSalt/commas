@@ -6,6 +6,7 @@ import {
   createTerminalTab,
   executeTerminalTab,
   getTerminalTabTitle,
+  scrollToMarker,
   useCurrentTerminal,
   usePaneTabURL,
   useTerminalTabs,
@@ -102,4 +103,5 @@ export {
   useCurrentTerminal,
   useTerminalTabs,
   usePaneTabURL,
+  scrollToMarker,
 }

@@ -6,18 +6,6 @@
   border-bottom: calc(var(--cell-height) / 3) solid transparent;
   border-left: calc(var(--cell-width) * 2 / 3) solid rgb(var(--color));
 }
-@keyframes fade-out {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-.iterm2-mark-highlight-line {
-  background: rgb(var(--theme-magenta) / 0.5);
-  animation: fade-out 1s;
-}
 .iterm2-cursor-highlight-line {
   border: 1px solid rgb(var(--theme-blue));
   background: rgb(var(--theme-blue) / 0.5);
