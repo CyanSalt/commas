@@ -230,7 +230,6 @@ export class ITerm2Addon implements ITerminalAddon {
         return true
       }),
       xterm.onLineFeed(() => {
-        this.recentMarkMarker = undefined
         if (this._deactivateHighlight()) {
           this._activateHighlight()
         }
@@ -248,6 +247,7 @@ export class ITerm2Addon implements ITerminalAddon {
     })
     this.disposables = []
     this.markMarkers = []
+    this.recentMarkMarker = undefined
   }
 
   setMark() {
@@ -264,6 +264,7 @@ export class ITerm2Addon implements ITerminalAddon {
     })!
     this.markMarkers.push(marker)
     this.markMarkers.sort((a, b) => a.line - b.line)
+    this.recentMarkMarker = undefined
     const dimensions = xterm['_core']._renderService.dimensions
     decoration.onRender(() => {
       const el = decoration.element!

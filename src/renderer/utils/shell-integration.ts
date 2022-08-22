@@ -63,6 +63,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
                 decoration,
               }
               this.commands.push(this.currentCommand)
+              this.recentMarker = undefined
             }
             return true
           }
@@ -131,9 +132,6 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             return false
         }
       }),
-      xterm.onLineFeed(() => {
-        this.recentMarker = undefined
-      }),
     )
   }
 
@@ -148,6 +146,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     })
     this.disposables = []
     this.commands = []
+    this.recentMarker = undefined
   }
 
   _createCommandDecoration(xterm: Terminal, marker: IMarker, color: string, finished: boolean) {
