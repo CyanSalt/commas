@@ -79,7 +79,7 @@ function computeDiffDecorations(model: monaco.editor.ITextModel, defaultModel: m
     shouldMakePrettyDiff: true,
   })
   const diff = diffComputer.computeDiff()
-  return diff.changes.map<monaco.editor.IModelDeltaDecoration>(change => {
+  return diff.changes.map(change => {
     const range: monaco.IRange = {
       startLineNumber: change.modifiedStartLineNumber,
       endLineNumber: change.modifiedEndLineNumber || change.modifiedStartLineNumber,
@@ -103,7 +103,7 @@ function computeDiffDecorations(model: monaco.editor.ITextModel, defaultModel: m
         linesDecorationsClassName: linesDecorationsClasses.join(' '),
       },
     }
-  })
+  }) as monaco.editor.IModelDeltaDecoration[]
 }
 
 let defaultModel = $shallowRef<monaco.editor.ITextModel | undefined>()
@@ -116,14 +116,8 @@ watchEffect((onInvalidate) => {
 })
 
 let model = $shallowRef<monaco.editor.ITextModel | undefined>()
-let currentDecorations: string[] = []
 watchEffect((onInvalidate) => {
   const created = monaco.editor.createModel('', undefined, file ? monaco.Uri.file(file) : undefined)
-  created.onDidChangeContent(() => {
-    const decorations = computeDiffDecorations(created, defaultModel!)
-    currentDecorations = created.deltaDecorations(currentDecorations, decorations)
-    isDirty = Boolean(currentDecorations.length)
-  })
   model = created
   onInvalidate(() => {
     created.dispose()
@@ -152,6 +146,12 @@ watchEffect((onInvalidate) => {
     tabSize: 2,
     theme: 'commas',
     wordWrap: 'on',
+  })
+  const decorationCollections = created.createDecorationsCollection([])
+  created.onDidChangeModelContent(() => {
+    const decorations = computeDiffDecorations(created.getModel()!, defaultModel!)
+    decorationCollections.set(decorations)
+    isDirty = Boolean(decorationCollections.length)
   })
   editor = created
   onInvalidate(() => {
