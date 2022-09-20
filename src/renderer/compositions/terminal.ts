@@ -63,7 +63,7 @@ const terminalOptions = $computed<Partial<ITerminalOptions>>(() => {
     fontFamily: settings['terminal.style.fontFamily'],
     fontSize: settings['terminal.style.fontSize'],
     overviewRulerWidth: 16,
-    smoothScrollDuration: 125,
+    smoothScrollDuration: 50,
     theme: { ...theme },
   }
 })

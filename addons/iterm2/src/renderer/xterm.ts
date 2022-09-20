@@ -156,16 +156,22 @@ export class ITerm2Addon implements ITerminalAddon {
               el.style.height = dimension
               return el.clientHeight
             }, sequence.args.height, dimensions.actualCellHeight * baseScale)
-            const marker = xterm.registerMarker()!
-            const decoration = xterm.registerDecoration({
-              marker,
-              width,
-              height,
-            })!
+            let rest = height
+            while (rest > 0) {
+              const offset = height - rest
+              const marker = xterm.registerMarker(offset)!
+              const decoration = xterm.registerDecoration({
+                marker,
+                width,
+                height,
+              })!
+              decoration.onRender(() => {
+                decoration.element!.style.background = `url('${url}') no-repeat center/${sequence.args.preserveAspectRatio === '0' ? '100%' : 'contain'}`
+                decoration.element!.style.transform = `translateY(-${offset * dimensions.actualCellHeight}px)`
+              })
+              rest -= Math.min(rest, xterm.rows)
+            }
             xterm.write('\r\n'.repeat(height - 1))
-            decoration.onRender(() => {
-              decoration.element!.style.background = `url('${url}') no-repeat center/${sequence.args.preserveAspectRatio === '0' ? '100%' : 'contain'}`
-            })
             break
           }
           case 'SetBadgeFormat': {
