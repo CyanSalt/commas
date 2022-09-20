@@ -1,4 +1,3 @@
-import type { RendererType } from 'xterm'
 import type { JSONSchema } from './json-schema'
 import type { ThemeDefinition } from './theme'
 
@@ -15,7 +14,7 @@ export interface Settings {
   'terminal.tab.livePreview': boolean,
   'terminal.tab.titleFormat': string,
   'terminal.view.linkModifier': 'any' | 'CmdOrCtrl' | 'Alt',
-  'terminal.view.rendererType': RendererType | 'webgl',
+  'terminal.view.rendererType': 'dom' | 'canvas' | 'webgl',
   'terminal.view.frameType': 'system' | 'system-with-menu' | 'immersive',
   'terminal.style.opacity': number,
   'terminal.style.vibrancy': boolean,

@@ -1,5 +1,6 @@
 import type { Component } from 'vue'
 import type { Terminal } from 'xterm'
+import type { CanvasAddon } from 'xterm-addon-canvas'
 import type { FitAddon } from 'xterm-addon-fit'
 import type { LigaturesAddon } from 'xterm-addon-ligatures'
 import type { SearchAddon } from 'xterm-addon-search'
@@ -39,6 +40,7 @@ export interface TerminalTabAddons {
   search: SearchAddon,
   unicode11: Unicode11Addon,
   webgl: WebglAddon,
+  canvas: CanvasAddon,
   weblinks: WebLinksAddon,
 }
 

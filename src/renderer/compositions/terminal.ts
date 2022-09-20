@@ -5,6 +5,7 @@ import { isMatch, trim } from 'lodash'
 import { markRaw, nextTick, reactive, shallowReactive, toRaw, watch, watchEffect } from 'vue'
 import { Terminal } from 'xterm'
 import type { ITerminalOptions, IMarker } from 'xterm'
+import { CanvasAddon } from 'xterm-addon-canvas'
 import { FitAddon } from 'xterm-addon-fit'
 import { LigaturesAddon } from 'xterm-addon-ligatures'
 import { SearchAddon } from 'xterm-addon-search'
@@ -56,13 +57,13 @@ export function getTerminalTabIndex(tab: TerminalTab) {
 
 const terminalOptions = $computed<Partial<ITerminalOptions>>(() => {
   return {
-    rendererType: settings['terminal.view.rendererType'] === 'webgl'
-      ? 'canvas' : settings['terminal.view.rendererType'],
-    fontSize: settings['terminal.style.fontSize'],
-    fontFamily: settings['terminal.style.fontFamily'],
-    cursorStyle: settings['terminal.style.cursorStyle'],
+    allowProposedApi: true,
     allowTransparency: theme.opacity < 1,
+    cursorStyle: settings['terminal.style.cursorStyle'],
+    fontFamily: settings['terminal.style.fontFamily'],
+    fontSize: settings['terminal.style.fontSize'],
     overviewRulerWidth: 16,
+    smoothScrollDuration: 125,
     theme: { ...theme },
   }
 })
@@ -422,7 +423,7 @@ export function loadTerminalAddons(tab: TerminalTab) {
       if (shouldOpen) {
         shell.openExternal(uri)
       }
-    }, {}, true)
+    }, {})
     xterm.loadAddon(addons.weblinks)
   }
   if (!addons.unicode11) {
@@ -446,15 +447,35 @@ export function loadTerminalAddons(tab: TerminalTab) {
       delete addons.ligatures
     }
   }
-  if (settings['terminal.renderer.type'] === 'webgl' && !xterm.options.allowTransparency) {
-    if (!addons.webgl) {
-      addons.webgl = new WebglAddon()
-      xterm.loadAddon(addons.webgl)
-    }
-  } else {
+  const rendererType = settings['terminal.view.rendererType'] === 'webgl'
+    ? (xterm.options.allowTransparency ? 'canvas' : 'webgl')
+    : settings['terminal.view.rendererType']
+  if (rendererType !== 'webgl') {
     if (addons.webgl) {
       addons.webgl.dispose()
       delete addons.webgl
+    }
+  }
+  if (rendererType !== 'canvas') {
+    if (addons.canvas) {
+      addons.canvas.dispose()
+      delete addons.canvas
+    }
+  }
+  if (rendererType === 'webgl') {
+    if (!addons.webgl) {
+      addons.webgl = new WebglAddon()
+      tab.deferred.open.promise.then(() => {
+        xterm.loadAddon(addons.webgl)
+      })
+    }
+  }
+  if (rendererType === 'canvas') {
+    if (!addons.canvas) {
+      addons.canvas = new CanvasAddon()
+      tab.deferred.open.promise.then(() => {
+        xterm.loadAddon(addons.canvas)
+      })
     }
   }
   commas.proxy.app.events.emit('terminal-addons-loaded', tab)

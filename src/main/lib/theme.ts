@@ -16,7 +16,7 @@ interface BrowserWindowThemeOptions {
 const THEME_CSS_COLORS: Partial<Record<keyof ThemeDefinition, string>> = {
   foreground: '--theme-foreground',
   background: '--theme-background',
-  selection: '--theme-selection',
+  selectionBackground: '--theme-selectionbackground',
   black: '--theme-black',
   red: '--theme-red',
   green: '--theme-green',
@@ -87,10 +87,10 @@ const themeRef = computed(() => {
   const foregroundRGBA = toRGBA(theme.foreground!)
   theme.background = toCSSColor({ ...backgroundRGBA, a: 1 })
   theme.type = isDarkColor(backgroundRGBA) ? 'dark' : 'light'
-  let selectionRGBA = theme.selection ? toRGBA(theme.selection) : undefined
-  if (!selectionRGBA || selectionRGBA.a < 1) {
-    selectionRGBA = mix(foregroundRGBA, backgroundRGBA, 0.5)
-    theme.selection = toCSSColor(selectionRGBA)
+  let selectionBackgroundRGBA = theme.selectionBackground ? toRGBA(theme.selectionBackground) : undefined
+  if (!selectionBackgroundRGBA || selectionBackgroundRGBA.a < 1) {
+    selectionBackgroundRGBA = mix(foregroundRGBA, backgroundRGBA, 0.5)
+    theme.selectionBackground = toCSSColor(selectionBackgroundRGBA)
   }
   if (!theme.cursor) {
     theme.cursor = theme.foreground

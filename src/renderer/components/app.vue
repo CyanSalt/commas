@@ -156,7 +156,7 @@ onMounted(() => {
   --design-separator: rgb(127 127 127 / 0.2);
 }
 :global(::selection) {
-  background: rgb(var(--theme-selection));
+  background: rgb(var(--theme-selectionbackground));
 }
 :global(body) {
   margin: 0;

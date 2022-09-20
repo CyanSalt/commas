@@ -4,7 +4,6 @@ export interface ThemeDefinition extends ITheme {
   purple?: string,
   brightPurple?: string,
   cursorColor?: string,
-  selectionBackground?: string,
 }
 
 export interface EditorTheme extends Required<ThemeDefinition> {
