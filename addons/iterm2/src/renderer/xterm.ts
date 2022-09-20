@@ -36,6 +36,7 @@ export class ITerm2Addon implements ITerminalAddon {
 
   activate(xterm: Terminal) {
     const settings = commas.remote.useSettings()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let badge = $(useBadge())
     // iTerm2 escape codes
     this.disposables.push(

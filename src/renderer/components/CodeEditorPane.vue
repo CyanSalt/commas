@@ -25,6 +25,7 @@ watchEffect((onInvalidate) => {
   // eslint-disable-next-line vue/no-mutating-props
   tab.alerting = computed(() => Boolean(editor?.isDirty)) as unknown as boolean
   onInvalidate(() => {
+    // eslint-disable-next-line vue/no-mutating-props
     delete tab.alerting
   })
 })
@@ -43,6 +44,7 @@ watchEffect((onInvalidate) => {
     tab.pane.instance = { save }
     onInvalidate(() => {
       if (tab.pane) {
+        // eslint-disable-next-line vue/no-mutating-props
         delete tab.pane.instance
       }
     })
