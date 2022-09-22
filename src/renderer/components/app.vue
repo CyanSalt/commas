@@ -175,7 +175,7 @@ onMounted(() => {
   /* Default line height of xterm.js */
   line-height: 1.2;
   overflow: hidden;
-  transition: background 0.2s;
+  transition: color 0.2s;
 }
 .content {
   z-index: 1;
@@ -190,6 +190,7 @@ onMounted(() => {
   flex-direction: column;
   min-width: 0;
   background: rgb(var(--theme-background) / var(--theme-opacity));
+  transition: background 0.2s;
   .app.is-opaque & {
     background: rgb(var(--theme-background));
   }
