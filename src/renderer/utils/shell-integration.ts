@@ -13,6 +13,7 @@ interface IntegratedShellCommand {
   exitCode?: number,
   marker: IMarker,
   decoration: IDecoration,
+  actions?: IntegratedShellCommandAction[],
 }
 
 function updateDecorationElement(decoration: IDecoration, callback: (el: HTMLElement) => void) {
@@ -51,23 +52,9 @@ export class ShellIntegrationAddon implements ITerminalAddon {
           case 'B': {
             // PromptEnd
             const marker = xterm.registerMarker()!
-            let actions: IntegratedShellCommandAction[] | undefined
-            const lastCommand = this.commands.length
-              ? this.commands[this.commands.length - 1]
-              : undefined
-            if (lastCommand?.command && lastCommand.exitCode) {
-              const lastCommandLine = lastCommand.marker.line
-              let lastOutput = ''
-              // TODO: use actual command start
-              for (let line = lastCommandLine + 1; line < marker.line; line += 1) {
-                const bufferLine = xterm.buffer.active.getLine(line)
-                if (bufferLine) {
-                  lastOutput += (bufferLine.isWrapped || !lastOutput ? '' : '\n')
-                    + bufferLine.translateToString(true)
-                }
-              }
-              actions = this._getQuickFixActions(lastCommand.command, lastOutput)
-            }
+            const actions = this.currentCommand
+              ? this.currentCommand.actions
+              : this._generateQuickFixActions(marker)
             const theme = useTheme()
             const decoration = this._createCommandDecoration(
               xterm,
@@ -83,6 +70,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
               this.currentCommand = {
                 marker,
                 decoration,
+                actions,
               }
               this.commands.push(this.currentCommand)
               this.recentMarker = undefined
@@ -247,7 +235,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     this.scrollToMarker(targetMarker)
   }
 
-  _getQuickFixActions(command: string, output: string) {
+  _getQuickFixActionsByOutput(command: string, output: string) {
     // Git push for upstream
     const gitUpstreamMatches = output.match(/git push --set-upstream origin (\S+)/)
     if (gitUpstreamMatches && /\bgit\b/.test(command)) {
@@ -286,6 +274,42 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       })
       return actions
     }
+  }
+
+  _generateQuickFixActions(marker: IMarker) {
+    const { xterm } = this.tab
+    const lastCommand = this.commands.length
+      ? this.commands[this.commands.length - 1]
+      : undefined
+    if (lastCommand?.command && lastCommand.exitCode) {
+      const lastCommandLine = lastCommand.marker.line
+      let lastOutput = ''
+      // TODO: use actual command start
+      for (let line = lastCommandLine + 1; line < marker.line; line += 1) {
+        const bufferLine = xterm.buffer.active.getLine(line)
+        if (bufferLine) {
+          lastOutput += (bufferLine.isWrapped || !lastOutput ? '' : '\n')
+            + bufferLine.translateToString(true)
+        }
+      }
+      return this._getQuickFixActionsByOutput(lastCommand.command, lastOutput)
+    }
+  }
+
+  getQuickFixActions() {
+    return this.currentCommand?.actions
+  }
+
+  triggerQuickFixMenu() {
+    if (!this.currentCommand?.actions) return
+    const el = this.currentCommand.decoration.element
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    const event = new MouseEvent('click', {
+      clientX: rect.left,
+      clientY: rect.top,
+    })
+    el.dispatchEvent(event)
   }
 
 }

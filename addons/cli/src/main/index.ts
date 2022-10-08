@@ -240,6 +240,13 @@ where <command> is one of:
   })
 
   commas.context.provide('cli.command', {
+    command: 'fuck',
+    handler({ sender }) {
+      sender.send('fuck')
+    },
+  })
+
+  commas.context.provide('cli.command', {
     command: 'trick',
     handler({ sender }) {
       const frame = BrowserWindow.fromWebContents(sender)

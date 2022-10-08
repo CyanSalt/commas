@@ -383,6 +383,18 @@ export function handleTerminalMessages() {
     if (!currentTerminal) return
     executeTerminalTab(currentTerminal, command, true)
   })
+  ipcRenderer.on('fuck', () => {
+    if (!currentTerminal) return
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!currentTerminal.addons.shellIntegration) return
+    const actions = currentTerminal.addons.shellIntegration.getQuickFixActions()
+    if (!actions) return
+    if (actions.length === 1) {
+      executeTerminalTab(currentTerminal, actions[0].command)
+    } else {
+      currentTerminal.addons.shellIntegration.triggerQuickFixMenu()
+    }
+  })
 }
 
 export function loadTerminalAddons(tab: TerminalTab) {
