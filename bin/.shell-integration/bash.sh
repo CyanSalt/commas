@@ -34,6 +34,19 @@ if [ -z "$COMMAS_SHELL_INTEGRATION_RUNNING" ]; then
   builtin return
 fi
 
+# Send the IsWindows property if the environment looks like Windows
+if [[ "$(uname -s)" =~ ^CYGWIN*|MINGW*|MSYS* ]]; then
+  builtin printf "\x1b]633;P;IsWindows=True\x07"
+fi
+
+# Allow verifying $BASH_COMMAND doesn't have aliases resolved via history when the right HISTCONTROL
+# configuration is used
+if [[ "$HISTCONTROL" =~ .*(erasedups|ignoreboth|ignoredups).* ]]; then
+  __commas_history_verify=0
+else
+  __commas_history_verify=1
+fi
+
 __commas_initialized=0
 __commas_original_PS1="$PS1"
 __commas_original_PS2="$PS2"
@@ -82,7 +95,7 @@ __commas_update_prompt() {
     # means the user re-exported the PS1 so we should re-wrap it
     if [[ "$__commas_custom_PS1" == "" || "$__commas_custom_PS1" != "$PS1" ]]; then
       __commas_original_PS1=$PS1
-      __commas_custom_PS1="\[$(__commas_prompt_start)\]$PREFIX$__commas_original_PS1\[$(__commas_prompt_end)\]"
+      __commas_custom_PS1="\[$(__commas_prompt_start)\]$__commas_original_PS1\[$(__commas_prompt_end)\]"
       PS1="$__commas_custom_PS1"
     fi
     if [[ "$__commas_custom_PS2" == "" || "$__commas_custom_PS2" != "$PS2" ]]; then
@@ -103,7 +116,13 @@ __commas_precmd() {
 __commas_preexec() {
   __commas_initialized=1
   if [[ ! "$BASH_COMMAND" =~ ^__commas_prompt* ]]; then
-    __commas_current_command=$BASH_COMMAND
+    # Use history if it's available to verify the command as BASH_COMMAND comes in with aliases
+    # resolved
+    if [ "$__commas_history_verify" = "1" ]; then
+      __commas_current_command="$(builtin history 1 | sed 's/ *[0-9]* *//')"
+    else
+      __commas_current_command=$BASH_COMMAND
+    fi
   else
     __commas_current_command=""
   fi
@@ -122,10 +141,12 @@ if [[ -n "${bash_preexec_imported:-}" ]]; then
   preexec_functions+=(__commas_preexec_only)
 else
   __commas_dbg_trap="$(trap -p DEBUG)"
-  if [[ "$__commas_db_trap" =~ .*\[\[.* ]]; then
+  if [[ "$__commas_dbg_trap" =~ .*\[\[.* ]]; then
     #HACK - is there a better way to do this?
     __commas_dbg_trap=${__commas_dbg_trap#'trap -- '*}
-    __commas_dbg_trap=${__commas_dbg_trap%'DEBUG'}
+    __commas_dbg_trap=${__commas_dbg_trap%' DEBUG'}
+    __commas_dbg_trap=${__commas_dbg_trap#"'"*}
+    __commas_dbg_trap=${__commas_dbg_trap%"'"}
   else
     __commas_dbg_trap="$(trap -p DEBUG | cut -d' ' -f3 | tr -d \')"
   fi
@@ -151,18 +172,18 @@ fi
 
 __commas_update_prompt
 
+__commas_restore_exit_code() {
+  return "$1"
+}
+
 __commas_prompt_cmd_original() {
   __commas_status="$?"
+  __commas_restore_exit_code "${__commas_status}"
   # Evaluate the original PROMPT_COMMAND similarly to how bash would normally
   # See https://unix.stackexchange.com/a/672843 for technique
-  if [[ ${#__commas_original_prompt_command[@]} -gt 1 ]]; then
-    for cmd in "${__commas_original_prompt_command[@]}"; do
-      __commas_status="$?"
-      eval "${cmd:-}"
-    done
-  else
-    eval "${__commas_original_prompt_command:-}"
-  fi
+  for cmd in "${__commas_original_prompt_command[@]}"; do
+    eval "${cmd:-}"
+  done
   __commas_precmd
 }
 

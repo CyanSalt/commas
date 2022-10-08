@@ -1,12 +1,11 @@
 # Inspired by microsoft/vscode
 
-COMMAS_ZDOTDIR=$ZDOTDIR
-if [[ -f ~/.zshenv ]]; then
-  . ~/.zshenv
-fi
-if [[ "$ZDOTDIR" != "$COMMAS_ZDOTDIR" ]]; then
+if [[ -f $USER_ZDOTDIR/.zshenv ]]; then
+  COMMAS_ZDOTDIR=$ZDOTDIR
+  ZDOTDIR=$USER_ZDOTDIR
+
+  . $USER_ZDOTDIR/.zshenv
+
   USER_ZDOTDIR=$ZDOTDIR
   ZDOTDIR=$COMMAS_ZDOTDIR
-else
-  USER_ZDOTDIR=$HOME
 fi

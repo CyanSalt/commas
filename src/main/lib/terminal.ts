@@ -45,9 +45,9 @@ async function createTerminal(webContents: WebContents, { shell, cwd }: CreateTe
     ? settings['terminal.shell.windowsArgs']
     : settings['terminal.shell.args']
   if (settings['terminal.shell.integration']) {
-    const result = integrateShell(shell!, args)
-    args = [...args, ...result.args]
-    env = { ...env, ...result.env }
+    const result = integrateShell({ shell: shell!, args, env })
+    args = result.args
+    env = result.env
   }
   const options: IPtyForkOptions = {
     name: 'xterm-256color',

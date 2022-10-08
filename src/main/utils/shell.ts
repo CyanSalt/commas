@@ -1,3 +1,4 @@
+import * as os from 'os'
 import * as path from 'path'
 import { app } from 'electron'
 import { userFile } from './directory'
@@ -35,28 +36,49 @@ function getDefaultEnv() {
   return defaultEnv
 }
 
-function integrateShell(shell: string, args: string[]) {
-  shell = path.basename(shell)
-  const extraArgs: string[] = []
-  const extraEnv = {
+interface ShellContext {
+  shell: string,
+  args: string[],
+  env: Record<string, string | undefined>,
+}
+
+function integrateShell(context: ShellContext) {
+  const shell = path.basename(context.shell)
+  let args = [...context.args]
+  let env: Record<string, string | undefined> = {
+    ...context.env,
     COMMAS_SHELL_INTEGRATION: '1',
   }
   switch (shell) {
     case 'bash': {
-      extraArgs.push('--init-file', `${BIN_PATH}/.shell-integration/bash.sh`)
-      if (['-login', '-l'].some(arg => args.includes(arg))) {
-        extraEnv['COMMAS_SHELL_LOGIN'] = '1'
+      let isLoginShell = false
+      let newArgs: string[] = []
+      for (const arg of args) {
+        if (arg === '--login') {
+          isLoginShell = true
+        } else if (/^-[a-z]/.test(arg) && arg.includes('l')) {
+          isLoginShell = true
+          newArgs.push(arg.replace('l', ''))
+        } else {
+          newArgs.push(arg)
+        }
       }
+      args = newArgs
+      if (isLoginShell) {
+        env['COMMAS_SHELL_LOGIN'] = '1'
+      }
+      args.push('--init-file', `${BIN_PATH}/.shell-integration/bash.sh`)
       break
     }
     case 'zsh':
-      extraArgs.push('-i')
-      extraEnv['ZDOTDIR'] = `${BIN_PATH}/.shell-integration/zsh`
+      args.push('-i')
+      env['USER_ZDOTDIR'] = env.ZDOTDIR ?? os.homedir()
+      env['ZDOTDIR'] = `${BIN_PATH}/.shell-integration/zsh`
       break
   }
   return {
-    args: extraArgs,
-    env: extraEnv,
+    args,
+    env,
   }
 }
 

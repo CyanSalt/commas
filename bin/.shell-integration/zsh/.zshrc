@@ -4,6 +4,7 @@ builtin autoload -Uz add-zsh-hook
 
 # Prevent the script recursing when setting up
 if [ -n "$COMMAS_SHELL_INTEGRATION_RUNNING" ]; then
+  ZDOTDIR=$USER_ZDOTDIR
   builtin return
 fi
 
@@ -81,14 +82,12 @@ if [[ -o NOUNSET ]]; then
   if [ -z "${RPROMPT-}" ]; then
     RPROMPT=""
   fi
-  if [ -z "${PREFIX-}" ]; then
-    PREFIX=""
-  fi
 fi
 __commas_update_prompt() {
   __commas_prior_prompt="$PS1"
+  __commas_prior_prompt2="$PS2"
   __commas_in_command_execution=""
-  PS1="%{$(__commas_prompt_start)%}$PREFIX$PS1%{$(__commas_prompt_end)%}"
+  PS1="%{$(__commas_prompt_start)%}$PS1%{$(__commas_prompt_end)%}"
   PS2="%{$(__commas_continuation_start)%}$PS2%{$(__commas_continuation_end)%}"
   if [ -n "$RPROMPT" ]; then
     __commas_prior_rprompt="$RPROMPT"
@@ -115,6 +114,7 @@ __commas_precmd() {
 
 __commas_preexec() {
   PS1="$__commas_prior_prompt"
+  PS2="$__commas_prior_prompt2"
   if [ -n "$RPROMPT" ]; then
     RPROMPT="$__commas_prior_rprompt"
   fi
