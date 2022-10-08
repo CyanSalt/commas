@@ -39,13 +39,13 @@ function getDefaultEnv() {
 interface ShellContext {
   shell: string,
   args: string[],
-  env: Record<string, string | undefined>,
+  env: Record<string, string>,
 }
 
 function integrateShell(context: ShellContext) {
   const shell = path.basename(context.shell)
   let args = [...context.args]
-  let env: Record<string, string | undefined> = {
+  let env: Record<string, string> = {
     ...context.env,
     COMMAS_SHELL_INTEGRATION: '1',
   }
@@ -72,7 +72,8 @@ function integrateShell(context: ShellContext) {
     }
     case 'zsh':
       args.push('-i')
-      env['USER_ZDOTDIR'] = env.ZDOTDIR ?? os.homedir()
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      env['USER_ZDOTDIR'] = env.ZDOTDIR ?? os.homedir() ?? '~'
       env['ZDOTDIR'] = `${BIN_PATH}/.shell-integration/zsh`
       break
   }

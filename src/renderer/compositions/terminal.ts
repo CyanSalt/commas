@@ -379,6 +379,10 @@ export function handleTerminalMessages() {
     if (!currentTerminal) return
     currentTerminal.pane?.instance?.save?.()
   })
+  ipcRenderer.on('execute-command', (event, command: string) => {
+    if (!currentTerminal) return
+    executeTerminalTab(currentTerminal, command, true)
+  })
 }
 
 export function loadTerminalAddons(tab: TerminalTab) {

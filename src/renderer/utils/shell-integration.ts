@@ -2,6 +2,11 @@ import type { IDecoration, IDisposable, IMarker, ITerminalAddon, Terminal } from
 import { toCSSHEX, toRGBA } from '../../shared/color'
 import type { TerminalTab } from '../../typings/terminal'
 import { useTheme } from '../compositions/theme'
+import { openContextMenu } from './frame'
+
+interface IntegratedShellCommandAction {
+  command: string,
+}
 
 interface IntegratedShellCommand {
   command?: string,
@@ -44,14 +49,31 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             // PromptStart
             return true
           case 'B': {
-            // CommandStart
+            // PromptEnd
             const marker = xterm.registerMarker()!
+            let actions: IntegratedShellCommandAction[] | undefined
+            const lastCommand = this.commands.length
+              ? this.commands[this.commands.length - 1]
+              : undefined
+            if (lastCommand?.command && lastCommand.exitCode) {
+              const lastCommandLine = lastCommand.marker.line
+              let lastOutput = ''
+              // TODO: use actual command start
+              for (let line = lastCommandLine + 1; line < marker.line; line += 1) {
+                const bufferLine = xterm.buffer.active.getLine(line)
+                if (bufferLine) {
+                  lastOutput += (bufferLine.isWrapped || !lastOutput ? '' : '\n')
+                    + bufferLine.translateToString(true)
+                }
+              }
+              actions = this._getQuickFixActions(lastCommand.command, lastOutput)
+            }
             const theme = useTheme()
             const decoration = this._createCommandDecoration(
               xterm,
               marker,
-              theme.foreground,
-              false,
+              actions ? theme.yellow : theme.foreground,
+              { actions },
             )
             if (this.currentCommand) {
               this.currentCommand.marker.dispose()
@@ -68,11 +90,11 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             return true
           }
           case 'C':
-            // CommandExecuted
+            // OutputStart
             this.tab.idle = false
             return true
           case 'D':
-            // CommandFinished
+            // CommandComplete
             this.tab.idle = true
             if (this.currentCommand) {
               const exitCode = args[0] ? Number(args[0]) : undefined
@@ -80,13 +102,14 @@ export class ShellIntegrationAddon implements ITerminalAddon {
                 this.currentCommand.exitCode = exitCode
                 if (!this.currentCommand.marker.isDisposed) {
                   const theme = useTheme()
-                  const color = exitCode ? theme.red : theme.green
                   this.currentCommand.decoration.dispose()
                   this.currentCommand.decoration = this._createCommandDecoration(
                     xterm,
                     this.currentCommand.marker,
-                    color,
-                    true,
+                    exitCode ? theme.red : theme.green,
+                    {
+                      isFinished: true,
+                    },
                   )
                 }
               }
@@ -149,11 +172,17 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     this.recentMarker = undefined
   }
 
-  _createCommandDecoration(xterm: Terminal, marker: IMarker, color: string, finished: boolean) {
+  _createCommandDecoration(
+    xterm: Terminal,
+    marker: IMarker,
+    color: string,
+    extra: { actions?: IntegratedShellCommandAction[], isFinished?: boolean },
+  ) {
+    const { actions, isFinished } = extra
     const rgba = toRGBA(color)
     const decoration = xterm.registerDecoration({
       marker,
-      overviewRulerOptions: finished ? {
+      overviewRulerOptions: isFinished ? {
         color: toCSSHEX({ ...rgba, a: 0.5 }),
         position: 'right',
       } : undefined,
@@ -164,8 +193,18 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       el.style.setProperty('--cell-width', `${dimensions.actualCellWidth}px`)
       el.style.setProperty('--cell-height', `${dimensions.actualCellHeight}px`)
       el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
-      el.style.setProperty('--opacity', finished ? '1' : '0.25')
+      el.style.setProperty('--opacity', isFinished || actions ? '1' : '0.25')
       el.classList.add('terminal-command-mark')
+      if (actions) {
+        el.classList.add('is-interactive')
+        el.addEventListener('click', event => {
+          openContextMenu(actions.map(action => ({
+            label: action.command,
+            command: 'execute-command',
+            args: [action.command],
+          })), event)
+        })
+      }
     })
     return decoration
   }
@@ -206,6 +245,32 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     const targetMarker = markers[targetIndex]
     this.recentMarker = new WeakRef(targetMarker)
     this.scrollToMarker(targetMarker)
+  }
+
+  _getQuickFixActions(command: string, output: string) {
+    // Git style recommendations
+    const gitMatches = output.match(/most similar (?:command is|commands are)((?:\n\s*\S+)+)/)
+    if (gitMatches) {
+      const name = output.match(/^[^\s:]+/)?.[0] ?? 'git'
+      const subcommands = gitMatches[1].split('\n').map(line => line.trim()).filter(Boolean)
+      const actions = subcommands.map(subcommand => {
+        return { command: `${name} ${subcommand}` }
+      })
+      return actions
+    }
+    // NPM style recommendations
+    const npmMatches = output.match(/Did you mean (?:this|one of these)\?((?:\n\s*.+)+)(?=\n+[A-Z])/)
+    if (npmMatches) {
+      const commands = npmMatches[1].split('\n').map(line => {
+        const subcommand = line.trim()
+        const index = subcommand.indexOf(' # ')
+        return index === -1 ? subcommand : subcommand.slice(0, index)
+      }).filter(Boolean)
+      const actions = commands.map(subcommand => {
+        return { command: `${subcommand}` }
+      })
+      return actions
+    }
   }
 
 }

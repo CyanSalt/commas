@@ -114,6 +114,8 @@ onActivated(() => {
     @include partials.scroll-container;
     z-index: 1;
     background-color: transparent !important;
+    /* Make decoration interactive */
+    pointer-events: none;
   }
   /* issue@xterm: pointer behavior */
   :deep(.xterm-screen) {
@@ -133,11 +135,18 @@ onActivated(() => {
   animation: fade-out 1s;
 }
 :deep(.terminal-command-mark) {
-  width: 6px !important;
-  height: 6px !important;
-  margin-top: calc(var(--cell-height) / 2 - 3px);
   margin-left: calc(0px - var(--cell-width));
-  background: rgb(var(--color) / var(--opacity));
-  border-radius: 50%;
+  &::before {
+    content: '';
+    display: block;
+    width: 6px !important;
+    height: 6px !important;
+    margin-top: calc(var(--cell-height) / 2 - 3px);
+    background: rgb(var(--color) / var(--opacity));
+    border-radius: 50%;
+  }
+  &.is-interactive {
+    cursor: pointer;
+  }
 }
 </style>
