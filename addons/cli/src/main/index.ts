@@ -217,6 +217,29 @@ where <command> is one of:
   })
 
   commas.context.provide('cli.command', {
+    command: 'free',
+    usage: '<port>',
+    async handler({ argv }) {
+      const port = Number.parseInt(argv[0], 10)
+      if (!Number.isNaN(port)) {
+        const { stdout } = await commas.shell.execute(
+          process.platform === 'win32'
+            ? `netstat -ano | findstr "${port}"`
+            : `lsof -nP -iTCP -sTCP:LISTEN | grep ${port}`,
+        )
+        const pid = stdout.split('\n')[0]?.match(/\s+(\d+)\s+/)?.[1]
+        if (pid) {
+          try {
+            process.kill(Number(pid))
+          } catch {
+            // ignore error
+          }
+        }
+      }
+    },
+  })
+
+  commas.context.provide('cli.command', {
     command: 'trick',
     handler({ sender }) {
       const frame = BrowserWindow.fromWebContents(sender)

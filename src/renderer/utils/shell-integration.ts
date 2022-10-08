@@ -248,10 +248,25 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   }
 
   _getQuickFixActions(command: string, output: string) {
+    // Git push for upstream
+    const gitUpstreamMatches = output.match(/git push --set-upstream origin (\S+)/)
+    if (gitUpstreamMatches && /\bgit\b/.test(command)) {
+      return [{ command: gitUpstreamMatches[0] }]
+    }
+    // Free port
+    const portMatches = output.match(/address already in use (?:0\.0\.0\.0|127\.0\.0\.1|localhost|::):(\d{4,5})|Unable to bind \S*:(\d{4,5})|can't listen on port (\d{4,5})|listen EADDRINUSE \S*:(\d{4,5})/)
+    if (portMatches) {
+      return [{ command: `commas free ${portMatches[1]}` }]
+    }
     // Git style recommendations
-    const gitMatches = output.match(/most similar (?:command is|commands are)((?:\n\s*\S+)+)/)
+    const gitMessages = [
+      'most similar command is',
+      'most similar commands are',
+      '最相似的命令是',
+    ]
+    const gitMatches = output.match(new RegExp(`(?:${gitMessages.join('|')})((?:\\n\\s*\\S+)+)`))
     if (gitMatches) {
-      const name = output.match(/^[^\s:]+/)?.[0] ?? 'git'
+      const name = output.match(/^[^\s:]+(?=:|\uff1a)/)?.[0] ?? 'git'
       const subcommands = gitMatches[1].split('\n').map(line => line.trim()).filter(Boolean)
       const actions = subcommands.map(subcommand => {
         return { command: `${name} ${subcommand}` }
