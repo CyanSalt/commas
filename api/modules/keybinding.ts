@@ -1,16 +1,16 @@
 import * as path from 'path'
-import { markRaw, unref } from '@vue/reactivity'
-import { useAddonKeyBindings } from '../../src/main/lib/keybinding'
+import { markRaw } from '@vue/reactivity'
+import { useAddonKeyBindings } from '../../src/main/lib/menu'
 import type { KeyBinding } from '../../src/typings/menu'
 import type { MainAPIContext } from '../types'
 
+const addonKeyBindings = $(useAddonKeyBindings())
+
 function addKeyBinding(item: KeyBinding) {
-  const addonKeyBindings = unref(useAddonKeyBindings())
   addonKeyBindings.push(markRaw(item))
 }
 
 function removeKeyBinding(item: KeyBinding) {
-  const addonKeyBindings = unref(useAddonKeyBindings())
   const index = addonKeyBindings.indexOf(item)
   if (index !== -1) {
     addonKeyBindings.splice(index, 1)

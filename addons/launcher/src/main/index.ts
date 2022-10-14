@@ -14,8 +14,8 @@ export default () => {
 
   commas.context.provide('sync.file', 'launchers.yaml')
 
-  const launchersRef = useLaunchers()
-  commas.ipcMain.provide('launchers', launchersRef)
+  let launchers = $(useLaunchers())
+  commas.ipcMain.provide('launchers', $$(launchers))
 
   commas.ipcMain.handle('create-launcher', async (event) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
@@ -26,8 +26,8 @@ export default () => {
         : ['openFile', 'multiSelections', 'dontAddToRecent'],
     })
     if (result.canceled) return
-    const launchers = await Promise.all(result.filePaths.map(entry => createLauncher(entry))) as Launcher[]
-    launchersRef.value = [...launchersRef.value, ...launchers]
+    const created = await Promise.all(result.filePaths.map(entry => createLauncher(entry))) as Launcher[]
+    launchers = [...launchers, ...created]
   })
 
   commas.settings.addSettingsSpecsFile('settings.spec.json')

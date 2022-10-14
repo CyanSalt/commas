@@ -1,4 +1,3 @@
-import { customRef } from '@vue/reactivity'
 import { app, BrowserWindow } from 'electron'
 
 function hasWindow() {
@@ -16,25 +15,25 @@ function broadcast(event: string, ...args: any[]) {
   })
 }
 
-const focusedWindowRef = customRef<BrowserWindow | null>((track, trigger) => {
-  let focusedWindow: BrowserWindow | null = null
+const focusedWindow = $customRef<BrowserWindow | null>((track, trigger) => {
+  let value: BrowserWindow | null = null
   app.on('browser-window-focus', (event, frame) => {
-    if (focusedWindow !== frame) {
-      focusedWindow = frame
+    if (value !== frame) {
+      value = frame
       trigger()
     }
   })
   app.on('browser-window-blur', (event, frame) => {
-    if (focusedWindow === frame) {
-      focusedWindow = null
+    if (value === frame) {
+      value = null
       trigger()
     }
   })
   // Electron will not trigger 'browser-window-blur' when the window is closed
   app.on('browser-window-created', (event, frame) => {
     frame.on('closed', () => {
-      if (focusedWindow === frame) {
-        focusedWindow = null
+      if (value === frame) {
+        value = null
         trigger()
       }
     })
@@ -42,20 +41,20 @@ const focusedWindowRef = customRef<BrowserWindow | null>((track, trigger) => {
   return {
     get() {
       track()
-      return focusedWindow
+      return value
     },
     set(frame) {
       if (frame) {
         frame.focus()
-      } else if (focusedWindow) {
-        focusedWindow.blur()
+      } else if (value) {
+        value.blur()
       }
     },
   }
 })
 
 function useFocusedWindow() {
-  return focusedWindowRef
+  return $$(focusedWindow)
 }
 
 export {

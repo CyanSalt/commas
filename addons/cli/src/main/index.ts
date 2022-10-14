@@ -1,7 +1,7 @@
 import * as path from 'path'
 import * as util from 'util'
 import * as vm from 'vm'
-import { computed, effect, stop, unref } from '@vue/reactivity'
+import { effect, stop } from '@vue/reactivity'
 import chalk from 'chalk'
 import * as commas from 'commas:api/main'
 import { app, BrowserWindow, webContents } from 'electron'
@@ -80,7 +80,7 @@ export default () => {
     return out.join('\n    ').slice(2)
   }
 
-  const commandListRef = computed(() => {
+  const commandList = $computed(() => {
     const aliases = settings['cli.command.aliases'] ?? {}
     return [
       ...commands.map(item => item.command),
@@ -129,7 +129,7 @@ Usage: commas ${helpingCommand}${manual.usage ? ' ' + manual.usage : ''}
 Usage: commas <command>
 
 where <command> is one of:
-    ${wrap(unref(commandListRef))}
+    ${wrap(commandList)}
 `
     },
   })
@@ -257,10 +257,9 @@ where <command> is one of:
     },
   })
 
-  const externalURLCommandsRef = useExternalURLCommands()
+  const externalURLCommands = $(useExternalURLCommands())
   let loadedExternalURLCommands: CommandModule[] = []
   const reactiveEffect = effect(() => {
-    const externalURLCommands = unref(externalURLCommandsRef)
     commas.context.cancelProviding('cli.command', ...loadedExternalURLCommands)
     commas.context.provide('cli.command', ...externalURLCommands)
     loadedExternalURLCommands = externalURLCommands

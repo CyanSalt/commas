@@ -1,19 +1,34 @@
-import { computed, unref } from '@vue/reactivity'
-import { app, BrowserWindow, ipcMain, Menu, nativeImage, TouchBar } from 'electron'
+import { app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, TouchBar } from 'electron'
 import type { MenuItemConstructorOptions, PopupOptions } from 'electron'
-import type { MenuItem } from '../../typings/menu'
-import { resourceFile } from '../utils/directory'
+import type { KeyBinding, MenuItem } from '../../typings/menu'
+import { provideIPC, useYAMLFile } from '../utils/compositions'
+import { resourceFile, userFile } from '../utils/directory'
 import { globalHandler } from '../utils/handler'
+import { execa } from '../utils/helper'
 import { useFocusedWindow } from './frame'
 import { translate } from './i18n'
-import { useAddonKeyBindings, useUserKeyBindings } from './keybinding'
+import { openFile } from './window'
+
+const userKeyBindings = $(useYAMLFile<KeyBinding[]>(userFile('keybindings.yaml'), []))
+const addonKeyBindings = $ref<KeyBinding[]>([])
+
+function useAddonKeyBindings() {
+  return $$(addonKeyBindings)
+}
+
+const keyBindings = $computed(() => {
+  return [
+    ...userKeyBindings,
+    ...addonKeyBindings,
+  ]
+})
 
 const terminalKeyBindings: MenuItem[] = require(resourceFile('terminal.menu.json'))
 
-const hasFocusedWindowRef = computed(() => Boolean(unref(useFocusedWindow())))
+const focusedWindow = $(useFocusedWindow())
+const hasFocusedWindow = $computed(() => Boolean(focusedWindow))
 
 function resolveBindingCommand(binding: MenuItem) {
-  const hasFocusedWindow = unref(hasFocusedWindowRef)
   const result: MenuItemConstructorOptions = { ...binding }
   if (binding.label) {
     result.label = translate(binding.label)
@@ -36,28 +51,23 @@ function resolveBindingCommand(binding: MenuItem) {
   return result
 }
 
-const terminalMenuItemsRef = computed(() => {
+const terminalMenuItems = $computed(() => {
   return terminalKeyBindings.map(resolveBindingCommand)
 })
 
-const customMenuItemsRef = computed(() => {
-  const userKeyBindings = unref(useUserKeyBindings())
+const customMenuItems = $computed(() => {
   return userKeyBindings
     .filter(item => item.command && !item.command.startsWith('xterm:'))
     .map(resolveBindingCommand)
 })
 
-const addonMenuItemsRef = computed(() => {
-  const addonKeyBindings = unref(useAddonKeyBindings())
+const addonMenuItems = $computed(() => {
   return addonKeyBindings
     .filter(item => item.command && !item.command.startsWith('xterm:'))
     .map(resolveBindingCommand)
 })
 
-const menuTemplateRef = computed<MenuItemConstructorOptions[]>(() => {
-  const terminalMenuItems = unref(terminalMenuItemsRef)
-  const customMenuItems = unref(customMenuItemsRef)
-  const addonMenuItems = unref(addonMenuItemsRef)
+const menuTemplate = $computed<MenuItemConstructorOptions[]>(() => {
   return [
     {
       label: translate('Terminal#!menu.terminal'),
@@ -91,7 +101,6 @@ const menuTemplateRef = computed<MenuItemConstructorOptions[]>(() => {
 })
 
 function createApplicationMenu() {
-  const menuTemplate = unref(menuTemplateRef)
   const menu = Menu.buildFromTemplate([
     {
       label: app.name,
@@ -121,7 +130,6 @@ function createApplicationMenu() {
 }
 
 function createWindowMenu(frame: BrowserWindow) {
-  const menuTemplate = unref(menuTemplateRef)
   const menu = Menu.buildFromTemplate([
     ...menuTemplate,
   ])
@@ -159,7 +167,20 @@ function createDockMenu() {
   app.dock.setMenu(menu)
 }
 
+function registerGlobalShortcuts() {
+  if (process.platform === 'darwin') {
+    globalShortcut.register('CmdOrCtrl+Alt+T', async () => {
+      const { stdout: frontmost } = await execa(`osascript -e 'tell application "System Events" to get name of application processes whose frontmost is true and visible is true'`)
+      if (frontmost.trim() === 'Finder') {
+        const { stdout } = await execa(`osascript -e 'tell application "Finder" to get the POSIX path of (target of front window as alias)'`)
+        openFile(stdout.trim())
+      }
+    })
+  }
+}
+
 function handleMenuMessages() {
+  provideIPC('keybindings', $$(keyBindings))
   ipcMain.handle('contextmenu', (event, template: MenuItem[], options: PopupOptions) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     const menu = Menu.buildFromTemplate(
@@ -173,9 +194,11 @@ function handleMenuMessages() {
 }
 
 export {
+  useAddonKeyBindings,
   createApplicationMenu,
   createWindowMenu,
   createDockMenu,
   createTouchBar,
+  registerGlobalShortcuts,
   handleMenuMessages,
 }

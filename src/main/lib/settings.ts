@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
-import { computed, customRef, effect, ref, unref } from '@vue/reactivity'
+import { effect } from '@vue/reactivity'
 import { ipcMain, shell } from 'electron'
 import { cloneDeep, isEqual } from 'lodash'
 import YAML from 'yaml'
@@ -16,16 +16,15 @@ import { translate } from './i18n'
 
 const defaultSpecs: SettingsSpec[] = require(resourceFile('settings.spec.json'))
 
-const specsRef = ref(defaultSpecs)
+const specs = $ref(defaultSpecs)
 
 function useSettingsSpecs() {
-  return specsRef
+  return $$(specs)
 }
 
 function generateSettingsSource() {
-  const currentSpecs = unref(specsRef)
   const sources: string[] = []
-  for (const spec of currentSpecs) {
+  for (const spec of specs) {
     if (spec.comments) {
       for (let i = 0; i < spec.comments.length; i += 1) {
         sources.push(`# ${translate(`${spec.comments[i]}#!settings.comments.${i}.${spec.key}`)}`)
@@ -44,12 +43,11 @@ function generateSettingsSource() {
     .join('\n')
 }
 
-const defaultSettingsRef = computed(() => {
-  const currentSpecs = unref(specsRef)
-  return Object.fromEntries(currentSpecs.map(spec => [spec.key, spec.default])) as Settings
+const defaultSettings = $computed(() => {
+  return Object.fromEntries(specs.map(spec => [spec.key, spec.default])) as Settings
 })
 
-const reactiveDefaultSettings = surface(defaultSettingsRef)
+const reactiveDefaultSettings = surface($$(defaultSettings))
 
 function useDefaultSettings() {
   return reactiveDefaultSettings
@@ -61,33 +59,30 @@ function whenSettingsReady() {
   return deferredSettings.promise
 }
 
-const userSettingsRef = useYAMLFile(userFile('settings.yaml'), {} as Settings, {
+let userSettings = $(useYAMLFile(userFile('settings.yaml'), {} as Settings, {
   onTrigger() {
     deferredSettings.resolve()
   },
-})
+}))
 
 let oldSettings: Settings | undefined
-const settingsRef = computed<Settings>({
+const settings = $computed<Settings>({
   get() {
-    const defaultSettings = unref(defaultSettingsRef)
-    const userSettings = unref(userSettingsRef)
-    const settings = cloneDeep({
+    const definition = cloneDeep({
       ...defaultSettings,
       ...userSettings,
     })
     let actualSettings = {} as Settings
     if (oldSettings) {
-      const specs = unref(specsRef)
       for (const spec of specs) {
-        if (settings[spec.key] !== oldSettings[spec.key] && spec.reload) {
+        if (definition[spec.key] !== oldSettings[spec.key] && spec.reload) {
           actualSettings[spec.key] = oldSettings[spec.key]
         } else {
-          actualSettings[spec.key] = settings[spec.key]
+          actualSettings[spec.key] = definition[spec.key]
         }
       }
     } else {
-      actualSettings = settings
+      actualSettings = definition
     }
     if (deferredSettings.resolved) {
       oldSettings = actualSettings
@@ -95,8 +90,7 @@ const settingsRef = computed<Settings>({
     return actualSettings
   },
   set(data) {
-    const defaultSettings = unref(defaultSettingsRef)
-    userSettingsRef.value = Object.fromEntries(
+    userSettings = Object.fromEntries(
       Object.entries(data).filter(
         ([key, value]) => !isEqual(value, defaultSettings[key]),
       ),
@@ -104,13 +98,13 @@ const settingsRef = computed<Settings>({
   },
 })
 
-const reactiveSettings = surface(settingsRef)
+const reactiveSettings = surface($$(settings))
 
 function useSettings() {
   return reactiveSettings
 }
 
-const enabledAddonsRef = customRef<string[]>((track, trigger) => {
+const enabledAddons = $customRef<string[]>((track, trigger) => {
   let addons: string[] = []
   whenSettingsReady().then(() => {
     effect(() => {
@@ -130,7 +124,7 @@ const enabledAddonsRef = customRef<string[]>((track, trigger) => {
 })
 
 function useEnabledAddons() {
-  return enabledAddonsRef
+  return $$(enabledAddons)
 }
 
 async function prepareSettingsFile() {
@@ -177,8 +171,8 @@ export function writeUserFile(file: string, content?: string) {
 }
 
 function handleSettingsMessages() {
-  provideIPC('settings-specs', specsRef)
-  provideIPC('settings', settingsRef)
+  provideIPC('settings-specs', $$(specs))
+  provideIPC('settings', $$(settings))
   ipcMain.handle('open-settings', () => {
     return openSettingsFile()
   })

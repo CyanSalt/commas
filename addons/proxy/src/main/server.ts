@@ -1,5 +1,4 @@
 import * as path from 'path'
-import { computed, customRef, unref } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import { app } from 'electron'
 import * as pkg from 'whistle/package.json'
@@ -13,26 +12,23 @@ const builtinServerVersionInfo = {
 
 const settings = commas.settings.useSettings()
 
-const whistlePathRef = commas.helper.useAsyncComputed(async () => {
-  const whistlePath = settings['proxy.server.whistle']
-  if (!whistlePath) return builtinWhistlePath
-  if (path.isAbsolute(whistlePath)) return whistlePath
+const whistlePath = $(commas.helper.useAsyncComputed(async () => {
+  const specifiedPath = settings['proxy.server.whistle']
+  if (!specifiedPath) return builtinWhistlePath
+  if (path.isAbsolute(specifiedPath)) return specifiedPath
   try {
-    await commas.shell.loginExecute(`command -v ${whistlePath}`)
-    return whistlePath
+    await commas.shell.loginExecute(`command -v ${specifiedPath}`)
+    return specifiedPath
   } catch {
     return builtinWhistlePath
   }
-}, builtinWhistlePath)
+}, builtinWhistlePath))
 
-const isUsingBuiltinWhistleRef = computed(() => {
-  const whistlePath = unref(whistlePathRef)
+const isUsingBuiltinWhistle: boolean = $computed(() => {
   return whistlePath === builtinWhistlePath
 })
 
 function whistle(command: string) {
-  const whistlePath = unref(whistlePathRef)
-  const isUsingBuiltinWhistle = unref(isUsingBuiltinWhistleRef)
   if (!path.isAbsolute(whistlePath)) {
     return commas.shell.loginExecute(`${whistlePath} ${command}`)
   }
@@ -74,20 +70,19 @@ async function getLatestProxyServerVersion() {
   }
 }
 
-const serverVersionInfoRef = commas.helper.useAsyncComputed(async () => {
-  const isUsingBuiltinWhistle = unref(isUsingBuiltinWhistleRef)
+const serverVersionInfo = $(commas.helper.useAsyncComputed(async () => {
   if (isUsingBuiltinWhistle) return builtinServerVersionInfo
   return {
     type: 'external' as const,
     version: await getProxyServerVersion(),
   }
-}, builtinServerVersionInfo)
+}, builtinServerVersionInfo))
 
 function useProxyServerVersionInfo() {
-  return serverVersionInfoRef
+  return $$(serverVersionInfo)
 }
 
-const serverStatusRef = customRef<boolean | undefined>((track, trigger) => {
+const serverStatus = $customRef<boolean | undefined>((track, trigger) => {
   let status: boolean | undefined = false
   let processing: Promise<unknown> | undefined
   let stopServer: (() => void) | undefined
@@ -140,7 +135,7 @@ const serverStatusRef = customRef<boolean | undefined>((track, trigger) => {
 })
 
 function useProxyServerStatus() {
-  return serverStatusRef
+  return $$(serverStatus)
 }
 
 export {

@@ -1,5 +1,6 @@
 import esbuild from 'esbuild'
 import externalNodeModules from '../utils/esbuild-external-node-modules.mjs'
+import reactivityTransform from '../utils/esbuild-reactivity-transform.mjs'
 
 /**
  * @typedef {import('esbuild').BuildOptions} BuildOptions
@@ -14,6 +15,7 @@ export default (versions, tap) => esbuild.build(tap({
   platform: 'node',
   plugins: [
     externalNodeModules(),
+    reactivityTransform(),
   ],
   target: `node${versions.node}`,
   define: {

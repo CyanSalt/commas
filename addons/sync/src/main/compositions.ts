@@ -1,4 +1,3 @@
-import { computed, unref } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import { safeStorage } from 'electron'
 import type { SyncData } from '../../typings/sync'
@@ -7,14 +6,14 @@ interface RawSyncData extends Omit<SyncData, 'token'> {
   _token: string | null,
 }
 
-const rawSyncDataRef = commas.file.useJSONFile<RawSyncData>(commas.file.userFile('sync-data.json'), {
+let rawSyncData = $(commas.file.useJSONFile<RawSyncData>(commas.file.userFile('sync-data.json'), {
   _token: null,
   updatedAt: null,
-})
+}))
 
-const syncDataRef = computed<SyncData>({
+const syncData = $computed<SyncData>({
   get() {
-    const { _token: encryption, ...data } = unref(rawSyncDataRef) as SyncData & RawSyncData
+    const { _token: encryption, ...data } = rawSyncData as SyncData & RawSyncData
     data.token = null
     if (encryption) {
       try {
@@ -31,18 +30,18 @@ const syncDataRef = computed<SyncData>({
     if (token) {
       data._token = safeStorage.encryptString(token).toString('base64')
     }
-    rawSyncDataRef.value = data
+    rawSyncData = data
   },
 })
 
-const syncData = commas.helper.surface(syncDataRef)
+const reactiveSyncData = commas.helper.surface($$(syncData))
 
 function getSyncDataRef() {
-  return syncDataRef
+  return $$(syncData)
 }
 
 function useSyncData() {
-  return syncData
+  return reactiveSyncData
 }
 
 export {

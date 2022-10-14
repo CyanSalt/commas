@@ -1,4 +1,4 @@
-import { computed, effect, unref } from '@vue/reactivity'
+import { effect } from '@vue/reactivity'
 import { nativeTheme, systemPreferences } from 'electron'
 import type { BrowserWindowConstructorOptions, TitleBarOverlay } from 'electron'
 import { toRGBA, toCSSColor, toCSSHEX, toElectronHEX, isDarkColor, mix, toHSLA, toRGBAFromHSLA } from '../../shared/color'
@@ -51,7 +51,7 @@ const CSS_PROPERTIES: Partial<Record<Exclude<keyof Theme, keyof ThemeDefinition>
   opacity: '--theme-opacity',
 }
 
-const themeRef = computed(() => {
+const theme = $computed(() => {
   const settings = useSettings()
   const defaultSettings = useDefaultSettings()
   const defaultThemeName = defaultSettings['terminal.theme.name']
@@ -76,72 +76,71 @@ const themeRef = computed(() => {
   }
   const customization: ThemeDefinition = settings['terminal.theme.customization']
   const opacity = settings['terminal.style.opacity']
-  const theme = {
+  const definition = {
     ...defaultTheme,
     ...originalTheme,
     ...customization,
     name,
     opacity,
   } as Theme
-  const backgroundRGBA = toRGBA(theme.background!)
-  const foregroundRGBA = toRGBA(theme.foreground!)
-  theme.background = toCSSColor({ ...backgroundRGBA, a: 1 })
-  theme.type = isDarkColor(backgroundRGBA) ? 'dark' : 'light'
-  let selectionBackgroundRGBA = theme.selectionBackground ? toRGBA(theme.selectionBackground) : undefined
+  const backgroundRGBA = toRGBA(definition.background!)
+  const foregroundRGBA = toRGBA(definition.foreground!)
+  definition.background = toCSSColor({ ...backgroundRGBA, a: 1 })
+  definition.type = isDarkColor(backgroundRGBA) ? 'dark' : 'light'
+  let selectionBackgroundRGBA = definition.selectionBackground ? toRGBA(definition.selectionBackground) : undefined
   if (!selectionBackgroundRGBA || selectionBackgroundRGBA.a < 1) {
     selectionBackgroundRGBA = mix(foregroundRGBA, backgroundRGBA, 0.5)
-    theme.selectionBackground = toCSSColor(selectionBackgroundRGBA)
+    definition.selectionBackground = toCSSColor(selectionBackgroundRGBA)
   }
-  if (!theme.cursor) {
-    theme.cursor = theme.foreground
+  if (!definition.cursor) {
+    definition.cursor = definition.foreground
   }
-  if (!theme.cursorAccent) {
-    theme.cursorAccent = theme.background
+  if (!definition.cursorAccent) {
+    definition.cursorAccent = definition.background
   }
   const backgroundHSLA = toHSLA(backgroundRGBA)
   const materialBackgroundRGBA = toRGBAFromHSLA({
     ...backgroundHSLA,
     l: backgroundHSLA.l - Math.min(backgroundHSLA.l * 0.2, 0.1),
   })
-  theme.materialBackground = toCSSColor(materialBackgroundRGBA)
-  theme.secondaryBackground = toCSSColor(mix(backgroundRGBA, { r: 127, g: 127, b: 127, a: 1 }, 0.9))
+  definition.materialBackground = toCSSColor(materialBackgroundRGBA)
+  definition.secondaryBackground = toCSSColor(mix(backgroundRGBA, { r: 127, g: 127, b: 127, a: 1 }, 0.9))
   if (process.platform === 'darwin') {
-    theme.systemRed = systemPreferences.getSystemColor('red')
-    theme.systemYellow = systemPreferences.getSystemColor('yellow')
-    theme.systemGreen = systemPreferences.getSystemColor('green')
-    // theme.systemCyan = systemPreferences.getSystemColor('cyan')
-    theme.systemBlue = systemPreferences.getSystemColor('blue')
-    theme.systemMagenta = systemPreferences.getSystemColor('pink')
+    definition.systemRed = systemPreferences.getSystemColor('red')
+    definition.systemYellow = systemPreferences.getSystemColor('yellow')
+    definition.systemGreen = systemPreferences.getSystemColor('green')
+    // definition.systemCyan = systemPreferences.getSystemColor('cyan')
+    definition.systemBlue = systemPreferences.getSystemColor('blue')
+    definition.systemMagenta = systemPreferences.getSystemColor('pink')
   }
   const accentColor = systemPreferences.getAccentColor()
-  theme.systemAccent = accentColor ? `#${accentColor.slice(0, 6)}` : ''
-  theme.vibrancy = process.platform === 'darwin' ? settings['terminal.style.vibrancy'] : false
-  theme.variables = Object.fromEntries([
+  definition.systemAccent = accentColor ? `#${accentColor.slice(0, 6)}` : ''
+  definition.vibrancy = process.platform === 'darwin' ? settings['terminal.style.vibrancy'] : false
+  definition.variables = Object.fromEntries([
     ...Object.entries({ ...THEME_CSS_COLORS, ...EXTRA_CSS_COLORS }).map(([key, attr]) => {
-      let value = theme[key]
+      let value = definition[key]
       if (value) {
-        const rgba = toRGBA(theme[key])
+        const rgba = toRGBA(definition[key])
         value = `${rgba.r} ${rgba.g} ${rgba.b}`
       }
       return [attr, value]
     }),
-    ...Object.entries(CSS_PROPERTIES).map(([key, attr]) => [attr, theme[key]]),
+    ...Object.entries(CSS_PROPERTIES).map(([key, attr]) => [attr, definition[key]]),
   ].filter(([key, value]) => value !== undefined))
-  theme.editor = {
+  definition.editor = {
     ...Object.fromEntries(Object.entries(THEME_CSS_COLORS).map(([key]) => {
-      return [key, toCSSHEX(toRGBA(theme[key]))]
+      return [key, toCSSHEX(toRGBA(definition[key]))]
     })),
-    type: theme.type,
+    type: definition.type,
     comment: toCSSHEX(mix(foregroundRGBA, backgroundRGBA, 0.5)),
     lineHighlight: toCSSHEX(mix(foregroundRGBA, backgroundRGBA, 0.2)),
     lineNumber: toCSSHEX(mix(foregroundRGBA, backgroundRGBA, 0.5)),
     activeLineNumber: toCSSHEX(foregroundRGBA),
   } as EditorTheme
-  return theme
+  return definition
 })
 
-const themeOptionsRef = computed<BrowserWindowThemeOptions>(() => {
-  const theme = unref(themeRef)
+const themeOptions = $computed<BrowserWindowThemeOptions>(() => {
   const foregroundRGBA = toRGBA(theme.foreground!)
   const backgroundRGBA = toRGBA(theme.background!)
   const materialBackgroundRGBA = toRGBA(theme.materialBackground!)
@@ -158,20 +157,19 @@ const themeOptionsRef = computed<BrowserWindowThemeOptions>(() => {
 })
 
 function useTheme() {
-  return themeRef
+  return $$(theme)
 }
 
 function useThemeOptions() {
-  return themeOptionsRef
+  return $$(themeOptions)
 }
 
 function handleThemeMessages() {
   effect(() => {
-    const theme = unref(themeRef)
     // Enable system dark mode
     nativeTheme.themeSource = theme.type
   })
-  provideIPC('theme', themeRef)
+  provideIPC('theme', $$(theme))
 }
 
 export {

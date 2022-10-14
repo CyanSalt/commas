@@ -1,4 +1,4 @@
-import { customRef, effect } from '@vue/reactivity'
+import { effect } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 
 async function getMacOSCurrentNetworkService() {
@@ -71,7 +71,7 @@ async function setSystemProxy(value: boolean) {
   return setGlobalWebProxy(proxy)
 }
 
-const systemStatusRef = customRef<boolean>((track, trigger) => {
+const systemStatus = $customRef<boolean>((track, trigger) => {
   let value = false
   const reactiveEffect = effect(async () => {
     value = await loadSystemProxy()
@@ -90,7 +90,7 @@ const systemStatusRef = customRef<boolean>((track, trigger) => {
 })
 
 function useSystemProxyStatus() {
-  return systemStatusRef
+  return $$(systemStatus)
 }
 
 export {

@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { computed, effect, ref, unref } from '@vue/reactivity'
+import { effect } from '@vue/reactivity'
 import type { BrowserWindow } from 'electron'
 import { app } from 'electron'
 import { differenceBy } from 'lodash'
@@ -61,7 +61,7 @@ function checkAddon(addon: AddonInfo) {
   }
 }
 
-const includedAddonsRef = computed(() => {
+const includedAddons = $computed(() => {
   const settings = useSettings()
   const enabledAddons = settings['terminal.addon.includes']
   return enabledAddons
@@ -69,20 +69,18 @@ const includedAddonsRef = computed(() => {
     .filter((item): item is AddonInfo => Boolean(item))
 })
 
-const loadedAddonsRef = ref<AddonInfo[]>([])
+let loadedAddons = $ref<AddonInfo[]>([])
 
 function loadAddons() {
   effect(() => {
-    const addons = unref(includedAddonsRef)
-    const loadedAddons = unref(loadedAddonsRef)
-    differenceBy(loadedAddons, addons, (addon: AddonInfo) => addon.name).forEach(addon => {
+    differenceBy(loadedAddons, includedAddons, (addon: AddonInfo) => addon.name).forEach(addon => {
       commas.addon.unloadAddon(addon)
     })
-    differenceBy(addons, loadedAddons, (addon: AddonInfo) => addon.name).forEach(addon => {
+    differenceBy(includedAddons, loadedAddons, (addon: AddonInfo) => addon.name).forEach(addon => {
       checkAddon(addon)
       commas.addon.loadAddon(addon, commas.raw)
     })
-    loadedAddonsRef.value = [...addons]
+    loadedAddons = [...includedAddons]
   })
 }
 
@@ -106,7 +104,7 @@ function loadCustomCSS(frame: BrowserWindow) {
 }
 
 function handleAddonMessages() {
-  provideIPC('addons', loadedAddonsRef)
+  provideIPC('addons', $$(loadedAddons))
 }
 
 export {

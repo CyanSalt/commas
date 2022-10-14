@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { markRaw, unref } from '@vue/reactivity'
+import { markRaw } from '@vue/reactivity'
 import {
   writeUserFile,
   openSettingsFile,
@@ -11,15 +11,14 @@ import {
 import type { SettingsSpec } from '../../src/typings/settings'
 import type { MainAPIContext } from '../types'
 
+let currentSpecs = $(useSettingsSpecs())
+
 function addSettingsSpecs(specs: SettingsSpec[]) {
-  const currentSpecs = unref(useSettingsSpecs())
   currentSpecs.push(...specs.map(markRaw))
 }
 
 function removeSettingsSpecs(specs: SettingsSpec[]) {
-  const specsRef = useSettingsSpecs()
-  const currentSpecs = unref(specsRef)
-  specsRef.value = currentSpecs.filter(item => specs.some(spec => spec.key !== item.key))
+  currentSpecs = currentSpecs.filter(item => specs.some(spec => spec.key !== item.key))
 }
 
 function addSpecs(this: MainAPIContext, specs: SettingsSpec[]) {

@@ -1,4 +1,4 @@
-import { effect, stop, unref } from '@vue/reactivity'
+import { effect, stop } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import { BrowserWindow, dialog } from 'electron'
 import type { SyncPlan } from '../../typings/sync'
@@ -44,12 +44,11 @@ export default () => {
     stop(dynamicFilesEffect)
   })
 
-  const defaultPlanRef = useDefaultSyncPlan()
+  const defaultPlan = $(useDefaultSyncPlan())
 
   commas.ipcMain.provide('sync-data', getSyncDataRef())
 
   commas.ipcMain.handle('upload-sync-files', async () => {
-    const defaultPlan = unref(defaultPlanRef)
     const result = await uploadFiles(defaultPlan)
     if (!settings['sync.plan.gist']) {
       settings['sync.plan.gist'] = `${result.owner.login}/${result.id}`
@@ -58,7 +57,6 @@ export default () => {
   })
 
   commas.ipcMain.handle('download-sync-files', async () => {
-    const defaultPlan = unref(defaultPlanRef)
     const result = await downloadFiles(defaultPlan)
     if (!settings['sync.plan.gist'].includes('/')) {
       settings['sync.plan.gist'] = `${result.owner.login}/${result.id}`

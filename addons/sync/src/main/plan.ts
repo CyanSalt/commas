@@ -1,13 +1,12 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { computed } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import type { SyncPlan } from '../../typings/sync'
 
 const settings = commas.settings.useSettings()
 const defaultFiles = commas.context.getCollection('sync.file')
 
-const defaultPlanRef = computed<SyncPlan>(() => {
+const defaultPlan = $computed<SyncPlan>(() => {
   const ignores = settings['sync.plan.ignores']
   return {
     name: 'Commas Sync',
@@ -19,7 +18,7 @@ const defaultPlanRef = computed<SyncPlan>(() => {
 })
 
 function useDefaultSyncPlan() {
-  return defaultPlanRef
+  return $$(defaultPlan)
 }
 
 async function createSyncPlan(paths: string[]): Promise<SyncPlan> {

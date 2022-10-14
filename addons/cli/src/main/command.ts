@@ -1,5 +1,4 @@
 import * as util from 'util'
-import { computed } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import type { WebContents } from 'electron'
 import { shell } from 'electron'
@@ -42,7 +41,7 @@ function executeCommand(
   return commas.helper.iterate(mod.handler(context))
 }
 
-const externalURLCommandsRef = computed(() => {
+const externalURLCommands = $computed(() => {
   const settings = commas.settings.useSettings()
   const entries = settings['cli.command.externalURLs']
   return entries ? entries.map<CommandModule>(entry => {
@@ -59,7 +58,7 @@ const externalURLCommandsRef = computed(() => {
 })
 
 function useExternalURLCommands() {
-  return externalURLCommandsRef
+  return $$(externalURLCommands)
 }
 
 export {

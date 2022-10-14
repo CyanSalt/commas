@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { effect, stop, unref } from '@vue/reactivity'
+import { effect, stop } from '@vue/reactivity'
 import type { BrowserWindowConstructorOptions } from 'electron'
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { globalHandler } from '../utils/handler'
@@ -9,6 +9,8 @@ import { createTouchBar, createWindowMenu } from './menu'
 import { handleEvents } from './message'
 import { useSettings, whenSettingsReady } from './settings'
 import { useThemeOptions } from './theme'
+
+const themeOptions = $(useThemeOptions())
 
 async function createWindow(...args: string[]) {
   await whenSettingsReady()
@@ -66,7 +68,6 @@ async function createWindow(...args: string[]) {
   // these handler must be bound in main process
   handleEvents(frame)
   // reactive effects
-  const themeOptionsRef = useThemeOptions()
   const menuEffect = effect(() => {
     if (process.platform === 'darwin') {
       createTouchBar(frame)
@@ -77,7 +78,6 @@ async function createWindow(...args: string[]) {
     }
   })
   const themeEffect = effect(() => {
-    const themeOptions = unref(themeOptionsRef)
     frame.setBackgroundColor(themeOptions.backgroundColor)
     frame.setVibrancy(themeOptions.vibrancy ?? null)
     if (process.platform === 'win32' && frameType === 'immersive') {

@@ -1,15 +1,14 @@
 import type { Dirent } from 'fs'
 import * as fs from 'fs'
 import * as path from 'path'
-import { shallowRef } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import { uniq } from 'lodash'
 import type { AddonInfo } from '../../../../src/typings/addon'
 
-const discoveredAddonsRef = shallowRef<AddonInfo[]>([])
+let discoveredAddons = $shallowRef<AddonInfo[]>([])
 
 function useDiscoveredAddons() {
-  return discoveredAddonsRef
+  return $$(discoveredAddons)
 }
 
 async function discoverAddons() {
@@ -29,7 +28,7 @@ async function discoverAddons() {
   const result = uniq(names)
     .map(name => commas.file.resolveAddon(name))
     .filter((item): item is AddonInfo => Boolean(item))
-  discoveredAddonsRef.value = result
+  discoveredAddons = result
 }
 
 export {

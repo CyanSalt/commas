@@ -1,4 +1,3 @@
-import { computed, unref } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import type { Launcher, LauncherInfo } from '../../typings/launcher'
 
@@ -24,26 +23,25 @@ function fillLauncherIDs(launchers: LauncherInfo[], old: Launcher[] | null) {
   })
 }
 
-const rawLaunchersRef = commas.file.useYAMLFile<LauncherInfo[]>(
+let rawLaunchers = $(commas.file.useYAMLFile<LauncherInfo[]>(
   commas.file.userFile('launchers.yaml'),
   [],
-)
+))
 
 let oldValue: Launcher[]
-const launchersRef = computed({
+const launchers = $computed({
   get: () => {
-    const value = unref(rawLaunchersRef)
-    const launchers = fillLauncherIDs(value, oldValue)
-    oldValue = launchers
-    return launchers
+    const value = fillLauncherIDs(rawLaunchers, oldValue)
+    oldValue = value
+    return value
   },
   set: value => {
-    rawLaunchersRef.value = value.map(({ id, ...launcher }) => launcher)
+    rawLaunchers = value.map(({ id, ...launcher }) => launcher)
   },
 })
 
 function useLaunchers() {
-  return launchersRef
+  return $$(launchers)
 }
 
 export {

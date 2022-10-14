@@ -5,8 +5,8 @@ export default () => {
 
   commas.i18n.addTranslationDirectory('locales')
 
-  const discoveredAddonsRef = useDiscoveredAddons()
-  commas.ipcMain.provide('discovered-addons', discoveredAddonsRef)
+  const discoveredAddons = $(useDiscoveredAddons())
+  commas.ipcMain.provide('discovered-addons', $$(discoveredAddons))
 
   commas.ipcMain.handle('discover-addons', () => {
     discoverAddons()

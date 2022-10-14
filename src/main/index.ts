@@ -4,8 +4,7 @@ import * as commas from '../../api/core-main'
 import { handleAddonMessages, loadAddons, loadCustomJS } from './lib/addon'
 import { hasWindow, getLastWindow } from './lib/frame'
 import { loadTranslations, handleI18NMessages } from './lib/i18n'
-import { handleKeyBindingMessages, registerGlobalShortcuts } from './lib/keybinding'
-import { createApplicationMenu, createDockMenu, handleMenuMessages } from './lib/menu'
+import { createApplicationMenu, createDockMenu, handleMenuMessages, registerGlobalShortcuts } from './lib/menu'
 import { handleMessages } from './lib/message'
 import { handleSettingsMessages } from './lib/settings'
 import { handleTerminalMessages } from './lib/terminal'
@@ -20,7 +19,6 @@ handleAddonMessages()
 handleSettingsMessages()
 handleThemeMessages()
 handleTerminalMessages()
-handleKeyBindingMessages()
 
 async function initialize() {
   loadAddons()

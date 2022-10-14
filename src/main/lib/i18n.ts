@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { computed, effect, shallowReactive, unref } from '@vue/reactivity'
+import { effect, shallowReactive } from '@vue/reactivity'
 import { app } from 'electron'
 import { watchBaseEffect, useAsyncComputed } from '../../shared/compositions'
 import type { Dictionary, TranslationVariables } from '../../typings/i18n'
@@ -26,26 +26,23 @@ interface Translation {
 
 const DELIMITER = '#!'
 
-const localeRef = useAsyncComputed(async () => {
+const locale = $(useAsyncComputed(async () => {
   await app.whenReady()
   return app.getLocale()
-})
+}))
 
-const userDictionaryRef = useYAMLFile<Dictionary>(userFile('translation.yaml'), {})
+let userDictionary = $(useYAMLFile<Dictionary>(userFile('translation.yaml'), {}))
 
-const languageRef = computed<string | undefined>({
+const language = $computed<string | undefined>({
   get() {
-    const userDictionary = unref(userDictionaryRef)
     if (userDictionary['@use']) {
       return userDictionary['@use']
     } else {
-      return unref(localeRef)
+      return locale
     }
   },
   set(value) {
-    const userDictionary = unref(userDictionaryRef)
-    const locale = unref(localeRef)
-    userDictionaryRef.value = {
+    userDictionary = {
       ...userDictionary,
       '@use': value === locale ? '' : value,
     }
@@ -54,25 +51,24 @@ const languageRef = computed<string | undefined>({
 
 const translations = shallowReactive(new Set<Translation>())
 
-const dictionaryRef = computed(() => {
+const dictionary = $computed(() => {
   const sources = [...translations]
     .sort((a, b) => a.priority - b.priority)
     .map(item => item.dictionary)
-  const dictionary: Dictionary = Object.assign({}, ...sources)
-  return dictionary
+  const value: Dictionary = Object.assign({}, ...sources)
+  return value
 })
 
-function loadDictionary(entry: TranslationFileEntry, priority: Priority) {
+function loadTranslationEntry(entry: TranslationFileEntry, priority: Priority) {
   const file = entry.file
-  const dictionary = require(file) as Dictionary
-  const translation: Translation = { file, dictionary, priority }
+  const source = require(file) as Dictionary
+  const translation: Translation = { file, dictionary: source, priority }
   translations.add(translation)
   return translation
 }
 
 function addTranslations(entries: TranslationFileEntry[], priority: Priority) {
   return watchBaseEffect(async (onInvalidate) => {
-    const language = unref(languageRef)
     if (!language) return
     let matched = entries.find(item => item.locale === language)
     if (!matched) {
@@ -91,8 +87,8 @@ function addTranslations(entries: TranslationFileEntry[], priority: Priority) {
           removeTranslation(item)
         })
       })
-      await 'Avoid tracking the translationsRef'
-      loadedTranslations = matchedEntries.map(item => loadDictionary(item, priority))
+      await 'Avoid tracking the translations'
+      loadedTranslations = matchedEntries.map(item => loadTranslationEntry(item, priority))
     }
   })
 }
@@ -118,7 +114,6 @@ function loadBuiltinTranslations() {
 }
 
 async function loadCustomTranslation() {
-  const userDictionary = unref(userDictionaryRef)
   const translation: Translation = {
     file: userFile('translation.yaml'),
     dictionary: userDictionary,
@@ -137,7 +132,6 @@ async function loadTranslations() {
 
 function translateText(text: string) {
   if (!text) return text
-  const dictionary = unref(dictionaryRef)
   const translated = dictionary[text]
   if (translated) return translated
   return text.split(DELIMITER)[0]
@@ -152,8 +146,8 @@ function translate(text: string, variables?: TranslationVariables) {
 }
 
 function handleI18NMessages() {
-  provideIPC('language', languageRef)
-  provideIPC('dictionary', dictionaryRef)
+  provideIPC('language', $$(language))
+  provideIPC('dictionary', $$(dictionary))
 }
 
 export {

@@ -5,8 +5,10 @@ import type { Settings, SettingsSpec } from '../../typings/settings'
 import { injectIPC } from '../utils/compositions'
 
 export const useSettings = reuse(() => {
-  const settingsRef = injectIPC('settings', {} as Settings)
-  return surface(settingsRef, true)
+  return surface(
+    injectIPC('settings', {} as Settings),
+    true,
+  )
 })
 
 export const useSettingsSpecs = reuse(() => {

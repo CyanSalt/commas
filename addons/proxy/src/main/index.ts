@@ -1,4 +1,4 @@
-import { effect, ref, stop } from '@vue/reactivity'
+import { effect, stop } from '@vue/reactivity'
 import * as address from 'address'
 import * as commas from 'commas:api/main'
 import { quote } from 'shell-quote'
@@ -29,8 +29,8 @@ export default () => {
     },
   })
 
-  const serverStatusRef = useProxyServerStatus()
-  commas.ipcMain.provide('proxy-server-status', serverStatusRef)
+  let serverStatus = $(useProxyServerStatus())
+  commas.ipcMain.provide('proxy-server-status', $$(serverStatus))
 
   commas.ipcMain.handle('get-latest-proxy-server-version', async () => {
     return getLatestProxyServerVersion()
@@ -40,18 +40,18 @@ export default () => {
     return address.ip()
   })
 
-  const serverVersionInfoRef = useProxyServerVersionInfo()
-  commas.ipcMain.provide('proxy-server-version-info', serverVersionInfoRef)
+  const serverVersionInfo = $(useProxyServerVersionInfo())
+  commas.ipcMain.provide('proxy-server-version-info', $$(serverVersionInfo))
 
   // System
-  const systemStatusRef = useSystemProxyStatus()
-  commas.ipcMain.provide('system-proxy-status', systemStatusRef)
+  let systemStatus = $(useSystemProxyStatus())
+  commas.ipcMain.provide('system-proxy-status', $$(systemStatus))
 
-  const rootCAStatusRef = ref(false)
+  let rootCAStatus = $ref(false)
   const rootCAEffect = effect(async () => {
-    rootCAStatusRef.value = await checkRootCA()
+    rootCAStatus = await checkRootCA()
   })
-  commas.ipcMain.provide('proxy-root-ca-status', rootCAStatusRef)
+  commas.ipcMain.provide('proxy-root-ca-status', $$(rootCAStatus))
 
   commas.ipcMain.handle('install-proxy-root-ca', async () => {
     await installRootCA()
@@ -65,8 +65,8 @@ export default () => {
 
   commas.app.onCleanup(() => {
     stop(rootCAEffect)
-    serverStatusRef.value = false
-    systemStatusRef.value = false
+    serverStatus = false
+    systemStatus = false
   })
 
   commas.settings.addSettingsSpecsFile('settings.spec.json')
