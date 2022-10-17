@@ -1,5 +1,5 @@
 import type { ReactiveEffectOptions, Ref } from '@vue/reactivity'
-import { customRef, deferredComputed, effect, shallowReactive, ref, stop, toRaw, unref } from '@vue/reactivity'
+import { customRef, deferredComputed, effect, getCurrentScope, onScopeDispose, shallowReactive, ref, stop, toRaw, unref } from '@vue/reactivity'
 import { cloneDeep, difference, intersection, isEqual } from 'lodash'
 
 export function useAsyncComputed<T>(factory: () => Promise<T>): Ref<T | undefined>
@@ -68,34 +68,40 @@ function initializeSurface<T extends object>(valueRef: Ref<T>, reactiveObject: T
 }
 
 export function watchBaseEffect<T>(
-  fn: (onInvalidate: (cleanupFn: () => void) => void) => T,
+  fn: (onInvalidate: (callback: () => void) => void) => T,
   options?: ReactiveEffectOptions,
 ) {
-  let cleanup: (() => void) | undefined
-  const onInvalidate = (cleanupFn) => {
-    cleanup = cleanupFn
+  const onStop = options?.onStop
+  let cleanupFn: (() => void) | undefined
+  const onInvalidate = (callback: () => void) => {
+    cleanupFn = callback
+  }
+  const cleanupEffect = () => {
+    if (cleanupFn) {
+      cleanupFn()
+      cleanupFn = undefined
+    }
   }
   const reactiveEffect = effect(() => {
-    if (cleanup) {
-      cleanup()
-    }
-    cleanup = undefined
+    cleanupEffect()
     return fn(onInvalidate)
   }, {
     ...options,
     onStop() {
-      if (cleanup) {
-        cleanup()
-      }
-      const onStop = options?.onStop
+      cleanupEffect()
       if (onStop) {
         onStop()
       }
     },
   })
-  return () => {
+  const dispose = () => {
     stop(reactiveEffect)
   }
+  const scope = getCurrentScope()
+  if (scope) {
+    onScopeDispose(dispose)
+  }
+  return dispose
 }
 
 export function surface<T extends object>(valueRef: Ref<T>, lazy?: boolean) {
