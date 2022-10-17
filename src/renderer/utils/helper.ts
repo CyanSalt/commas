@@ -1,4 +1,4 @@
-import type { Ref } from 'vue'
+import type { ComponentPublicInstance, KeepAlive, Ref, VNode } from 'vue'
 import { onActivated, unref, watchEffect } from 'vue'
 
 interface MousePressingOptions {
@@ -40,4 +40,26 @@ export function usePersistScrollPosition(elementRef: Ref<HTMLElement | undefined
     const el = unref(elementRef);
     [el!.scrollLeft, el!.scrollTop] = scrollPosition
   })
+}
+
+export function unmountKeptAlive(instance: InstanceType<typeof KeepAlive>, key: VNode['key']) {
+  const internalInstance = (instance as ComponentPublicInstance).$
+  const cache: Map<typeof key, VNode> = internalInstance['__v_cache']
+  if (!cache.has(key)) return
+  const vnode = cache.get(key)!
+  let shapeFlag = vnode.shapeFlag
+  // eslint-disable-next-line no-bitwise
+  if (shapeFlag & 256 /* ShapeFlags.COMPONENT_SHOULD_KEEP_ALIVE */) {
+    shapeFlag -= 256 /* ShapeFlags.COMPONENT_SHOULD_KEEP_ALIVE */
+  }
+  // eslint-disable-next-line no-bitwise
+  if (shapeFlag & 512 /* ShapeFlags.COMPONENT_KEPT_ALIVE */) {
+    shapeFlag -= 512 /* ShapeFlags.COMPONENT_KEPT_ALIVE */
+  }
+  vnode.shapeFlag = shapeFlag
+  const sharedContext = internalInstance['ctx']
+  const parentSuspense = internalInstance['suspense']
+  const { renderer: { um: unmount } } = sharedContext
+  unmount(vnode, instance, parentSuspense, true)
+  cache.delete(key)
 }

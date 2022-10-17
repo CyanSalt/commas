@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ipcRenderer } from 'electron'
+import type { KeepAlive } from 'vue'
 import { onMounted } from 'vue'
 import * as commas from '../../../api/core-renderer'
 import type { TerminalTab } from '../../typings/terminal'
@@ -21,6 +22,7 @@ import {
   createTerminalTab,
 } from '../compositions/terminal'
 import { injectTheme } from '../compositions/theme'
+import { unmountKeptAlive } from '../utils/helper'
 import { getTerminalTabID } from '../utils/terminal'
 import ActionBar from './ActionBar.vue'
 import CodeEditorPane from './CodeEditorPane.vue'
@@ -37,7 +39,7 @@ const terminal = $(useCurrentTerminal())
 const tabs = $(useTerminalTabs())
 const willQuit: boolean = $(useWillQuit())
 
-let keepAlive = $ref<any>()
+let keepAlive = $ref<InstanceType<typeof KeepAlive>>()
 
 const TerminalComponent = $computed(() => {
   if (!terminal) return undefined
@@ -98,7 +100,7 @@ commas.proxy.app.events.once('terminal-addons-loaded', () => {
 // Revalidate KeepAlive manually
 commas.proxy.app.events.on('terminal-unmounted', (tab: TerminalTab) => {
   const id = getTerminalTabID(tab)
-  keepAlive.$.__v_cache.delete(id)
+  unmountKeptAlive(keepAlive, id)
 })
 
 onMounted(() => {
@@ -114,6 +116,7 @@ onMounted(() => {
       <main class="interface">
         <FindBox />
         <template v-if="terminal">
+          <!-- eslint-disable-next-line vue/component-name-in-template-casing -->
           <keep-alive ref="keepAlive">
             <TerminalComponent
               :key="tabId"

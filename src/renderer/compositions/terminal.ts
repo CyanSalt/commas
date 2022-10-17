@@ -513,7 +513,7 @@ export function closeTerminalTab(tab: TerminalTab) {
   }
 }
 
-export function removeTerminalTab(tab: TerminalTab) {
+export async function removeTerminalTab(tab: TerminalTab) {
   const index = getTerminalTabIndex(tab)
   tabs.splice(index, 1)
   if (!tabs.length) {
@@ -531,6 +531,8 @@ export function removeTerminalTab(tab: TerminalTab) {
     const entries = groupEntries.length ? groupEntries : allEntries
     activeIndex = entries[entries.length - 1][0]
   }
+  // Unmount after flushed
+  await nextTick()
   commas.proxy.app.events.emit('terminal-unmounted', tab)
 }
 
