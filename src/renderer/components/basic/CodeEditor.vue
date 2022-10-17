@@ -18,8 +18,6 @@ const emit = defineEmits<{
 const theme = useEditorTheme()
 const settings = useSettings()
 
-let isDirty = $ref(false)
-
 let root = $ref<HTMLDivElement | undefined>()
 
 watchEffect(() => {
@@ -125,6 +123,16 @@ watchEffect((onInvalidate) => {
 })
 
 let editor = $shallowRef<monaco.editor.IStandaloneCodeEditor | undefined>()
+let decorationCollections = $shallowRef<monaco.editor.IEditorDecorationsCollection | undefined>()
+let isDirty = $ref(false)
+
+function renderDiffDecorations() {
+  if (!model || !defaultModel || !decorationCollections) return
+  const decorations = computeDiffDecorations(model, defaultModel)
+  decorationCollections!.set(decorations)
+  isDirty = Boolean(decorationCollections!.length)
+}
+
 watchEffect((onInvalidate) => {
   if (!root) return
   const created = monaco.editor.create(root, {
@@ -147,11 +155,9 @@ watchEffect((onInvalidate) => {
     theme: 'commas',
     wordWrap: 'on',
   })
-  const decorationCollections = created.createDecorationsCollection([])
+  decorationCollections = created.createDecorationsCollection([])
   created.onDidChangeModelContent(() => {
-    const decorations = computeDiffDecorations(created.getModel()!, defaultModel!)
-    decorationCollections.set(decorations)
-    isDirty = Boolean(decorationCollections.length)
+    renderDiffDecorations()
   })
   editor = created
   onInvalidate(() => {
@@ -167,10 +173,11 @@ watchEffect(() => {
   }
 })
 
+watchEffect(renderDiffDecorations)
+
 const observer = new ResizeObserver(() => {
-  if (editor) {
-    editor.layout()
-  }
+  if (!editor) return
+  editor.layout()
 })
 
 watchEffect((onInvalidate) => {
