@@ -516,12 +516,20 @@ export function closeTerminalTab(tab: TerminalTab) {
 export function removeTerminalTab(tab: TerminalTab) {
   const index = getTerminalTabIndex(tab)
   tabs.splice(index, 1)
-  const length = tabs.length
-  if (!length) {
+  if (!tabs.length) {
     window.close()
-  } else {
-    activeIndex = activeIndex > index
-      ? activeIndex - 1 : Math.min(index, length - 1)
+  } else if (activeIndex > index) {
+    activeIndex -= 1
+  } else if (activeIndex === index) {
+    const allEntries = Array.from(tabs.entries())
+    const groupEntries = allEntries.filter(entry => {
+      const item = entry[1]
+      return item.group && tab.group
+        && item.group.type === tab.group.type
+        && item.group.id === tab.group.id
+    })
+    const entries = groupEntries.length ? groupEntries : allEntries
+    activeIndex = entries[entries.length - 1][0]
   }
   commas.proxy.app.events.emit('terminal-unmounted', tab)
 }
