@@ -1,7 +1,6 @@
 import * as path from 'path'
 import * as util from 'util'
 import * as vm from 'vm'
-import { effect, stop } from '@vue/reactivity'
 import chalk from 'chalk'
 import * as commas from 'commas:api/main'
 import { app, BrowserWindow, webContents } from 'electron'
@@ -259,13 +258,10 @@ where <command> is one of:
 
   const externalURLCommands = $(useExternalURLCommands())
   let loadedExternalURLCommands: CommandModule[] = []
-  const reactiveEffect = effect(() => {
+  commas.helper.watchBaseEffect(() => {
     commas.context.cancelProviding('cli.command', ...loadedExternalURLCommands)
     commas.context.provide('cli.command', ...externalURLCommands)
     loadedExternalURLCommands = externalURLCommands
-  })
-  commas.app.onCleanup(() => {
-    stop(reactiveEffect)
   })
 
   commas.settings.addSettingsSpecsFile('settings.spec.json')

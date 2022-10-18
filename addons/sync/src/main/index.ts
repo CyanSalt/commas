@@ -1,4 +1,3 @@
-import { effect, stop } from '@vue/reactivity'
 import * as commas from 'commas:api/main'
 import { BrowserWindow, dialog } from 'electron'
 import type { SyncPlan } from '../../typings/sync'
@@ -36,12 +35,9 @@ export default () => {
 
   const syncData = useSyncData()
 
-  const dynamicFilesEffect = effect(() => {
+  commas.helper.watchBaseEffect(() => {
     commas.context.provide('sync.file', `themes/${settings['terminal.theme.name']}.json`)
     // TODO: shall we sync addons?
-  })
-  commas.app.onCleanup(() => {
-    stop(dynamicFilesEffect)
   })
 
   const defaultPlan = $(useDefaultSyncPlan())

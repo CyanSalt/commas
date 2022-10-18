@@ -9,7 +9,7 @@ export function useAsyncComputed<T>(factory: () => Promise<T>, defaultValue?: T)
   return customRef<T | undefined>((track, trigger) => {
     let currentValue = defaultValue
     let initialized = false
-    const update = effect(async () => {
+    const update = watchBaseEffect(async () => {
       try {
         currentValue = await factory()
       } catch {
@@ -35,7 +35,7 @@ export function useAsyncComputed<T>(factory: () => Promise<T>, defaultValue?: T)
 
 function initializeSurface<T extends object>(valueRef: Ref<T>, reactiveObject: T) {
   let isUpdated = true
-  effect(() => {
+  watchBaseEffect(() => {
     const latest = unref(valueRef)
     const rawObject = toRaw(reactiveObject)
     const latestKeys = Object.keys(latest)
@@ -57,7 +57,7 @@ function initializeSurface<T extends object>(valueRef: Ref<T>, reactiveObject: T
   })
   // Make `Object.assign` to trigger once only
   const objectRef = deferredComputed(() => ({ ...reactiveObject }))
-  effect(() => {
+  watchBaseEffect(() => {
     const value = unref(objectRef)
     if (isUpdated) {
       isUpdated = false
@@ -108,14 +108,14 @@ export function surface<T extends object>(valueRef: Ref<T>, lazy?: boolean) {
   const reactiveObject = shallowReactive({} as T) as T
   if (lazy) {
     let initialized = false
-    const lockEffect = effect(() => {
+    const stopEffect = watchBaseEffect(() => {
       const value = unref(valueRef)
       if (!initialized) {
         initialized = true
         Object.assign(reactiveObject, value)
         return
       }
-      stop(lockEffect)
+      stopEffect()
       initializeSurface(valueRef, reactiveObject)
     })
   } else {
@@ -127,11 +127,11 @@ export function surface<T extends object>(valueRef: Ref<T>, lazy?: boolean) {
 export function deepRef<T extends object>(valueRef: Ref<T>) {
   const reactiveRef = ref() as Ref<T>
   let initialized = false
-  effect(() => {
+  watchBaseEffect(() => {
     initialized = false
     reactiveRef.value = unref(valueRef)
   })
-  effect(() => {
+  watchBaseEffect(() => {
     const value = cloneDeep(unref(reactiveRef))
     if (!initialized) {
       initialized = true

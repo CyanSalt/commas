@@ -12,8 +12,8 @@ export default () => {
 
   const supportsAutoUpdater = app.isPackaged && ['darwin', 'win32'].includes(process.platform)
   if (supportsAutoUpdater) {
-  // Notification
-    autoUpdater.on('update-downloaded', async (event, notes, name) => {
+    // Notification
+    const handleUpdateDownloaded = async (event, notes, name) => {
       const response = await commas.frame.notify({
         type: 'info',
         title: name,
@@ -26,12 +26,14 @@ export default () => {
       if (response === 0) {
         autoUpdater.quitAndInstall()
       }
-    })
+    }
+    autoUpdater.on('update-downloaded', handleUpdateDownloaded)
     // Initialize
     setupAutoUpdater()
     // Enable checking automatically
     const stop = useAutoUpdaterEffect()
     commas.app.onCleanup(() => {
+      autoUpdater.off('update-downloaded', handleUpdateDownloaded)
       stop()
     })
   }

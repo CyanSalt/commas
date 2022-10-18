@@ -39,10 +39,14 @@ function useAutoUpdaterEffect() {
       checkForUpdates()
     }
   })
-  autoUpdater.on('update-available', () => {
+  const handleUpdateAvailable = () => {
     stop()
-  })
-  return stop
+  }
+  autoUpdater.on('update-available', handleUpdateAvailable)
+  return () => {
+    autoUpdater.off('update-available', handleUpdateAvailable)
+    stop()
+  }
 }
 
 export {

@@ -1,7 +1,6 @@
 import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
-import { effect } from '@vue/reactivity'
 import { ipcMain, shell } from 'electron'
 import { cloneDeep, isEqual } from 'lodash'
 import YAML from 'yaml'
@@ -104,29 +103,6 @@ function useSettings() {
   return reactiveSettings
 }
 
-const enabledAddons = $customRef<string[]>((track, trigger) => {
-  let addons: string[] = []
-  whenSettingsReady().then(() => {
-    effect(() => {
-      addons = reactiveSettings['terminal.addon.includes']
-      trigger()
-    })
-  })
-  return {
-    get() {
-      track()
-      return addons
-    },
-    set(value) {
-      reactiveSettings['terminal.addon.includes'] = value
-    },
-  }
-})
-
-function useEnabledAddons() {
-  return $$(enabledAddons)
-}
-
 async function prepareSettingsFile() {
   const file = userFile('settings.yaml')
   try {
@@ -201,7 +177,6 @@ export {
   useSettings,
   useDefaultSettings,
   useSettingsSpecs,
-  useEnabledAddons,
   openSettingsFile,
   openUserDirectory,
   handleSettingsMessages,

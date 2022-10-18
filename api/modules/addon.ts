@@ -1,5 +1,7 @@
 import { Module } from 'module'
 import * as path from 'path'
+import type { EffectScope } from '@vue/reactivity'
+import { effectScope } from '@vue/reactivity'
 import type { AddonInfo } from '../../src/typings/addon'
 import type { APIAddon, APIContext, CompatableAPI } from '../types'
 import * as app from './app'
@@ -68,43 +70,58 @@ function addCommasExternalModules(modules: string[]) {
   }
 }
 
-const loadedAddons: AddonInfo[] = []
+interface AddonContext {
+  addon: AddonInfo,
+  scope: EffectScope,
+}
+
+const loadedAddonContexts: AddonContext[] = []
+
 function loadAddon(addon: AddonInfo, api: CompatableAPI) {
-  if (loadedAddons.some(item => item.name === addon.name)) return
+  if (loadedAddonContexts.some(item => item.addon.name === addon.name)) return
   // Reserved names
   if (addon.name === 'terminal') return
-  let processor: APIAddon
-  if (addon.name === 'custom.js') {
-    try {
-      const userDataPath = app.isPackaged()
-        ? path.join(app.getPath('userData'), 'User')
-        : path.resolve('../../userdata')
-      processor = require(path.join(userDataPath, addon.name))
-    } catch {
-      processor = () => {/* noop */}
-    }
-  } else {
-    processor = require(addon.entry)
-  }
+  // Create addon API
   const clonedAPI = cloneAPI(api, addon.name, addon.entry)
   // Share reactivity system
   addCommasExternalModules(['@vue/reactivity', 'vue'])
   addCommasModule(clonedAPI)
-  processor(clonedAPI)
+  // Reactivity scope
+  const scope = effectScope()
+  scope.run(() => {
+    let processor: APIAddon
+    if (addon.name === 'custom.js') {
+      try {
+        const userDataPath = app.isPackaged()
+          ? path.join(app.getPath('userData'), 'User')
+          : path.resolve('../../userdata')
+        processor = require(path.join(userDataPath, addon.name))
+      } catch {
+        processor = () => {/* noop */}
+      }
+    } else {
+      processor = require(addon.entry)
+    }
+    processor(clonedAPI)
+  })
   unsetCommasModule()
-  loadedAddons.push(addon)
+  loadedAddonContexts.push({ addon, scope })
 }
 
 function unloadAddon(addon: AddonInfo) {
-  const index = loadedAddons.findIndex(item => item.name === addon.name)
+  const index = loadedAddonContexts.findIndex(item => item.addon.name === addon.name)
   if (index !== -1) {
-    loadedAddons.splice(index, 1)
+    const context = loadedAddonContexts[index]
+    loadedAddonContexts.splice(index, 1)
     app.events.emit(`unload:${addon.name}`)
+    context.scope.stop()
   }
 }
 
 function unloadAddons() {
-  loadedAddons.forEach(unloadAddon)
+  loadedAddonContexts.forEach(context => {
+    unloadAddon(context.addon)
+  })
 }
 
 export * from '../shim'
