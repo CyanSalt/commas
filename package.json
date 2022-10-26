@@ -48,7 +48,7 @@
     "@vitejs/plugin-vue": "^3.1.0",
     "@vue/reactivity-transform": "^3.2.40",
     "electron": "^19.0.17",
-    "electron-packager": "^16.0.0",
+    "electron-packager": "^17.0.0",
     "esbuild": "^0.15.8",
     "monaco-editor": "^0.34.0",
     "png2icons": "^2.0.1",

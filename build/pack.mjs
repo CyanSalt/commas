@@ -74,7 +74,9 @@ const options = {
     ? pkg.name : pkg.productName,
   out: 'release/',
   overwrite: true,
-  asar: true,
+  asar: {
+    unpack: '**/*.node',
+  },
   icon: 'resources/images/icon',
   ignore: [
     /^\/(?!addons|dist|node_modules|resources|package\.json)/,
@@ -164,7 +166,6 @@ async function pack() {
   if (process.platform === 'darwin') {
     options.osxSign = {
       identity: await getMacOSCodeSign('Apple Development'),
-      'gatekeeper-assess': false,
     }
   }
   if (local) {
