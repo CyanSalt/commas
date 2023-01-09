@@ -9,6 +9,7 @@ import {
   useFullscreen,
   handleFrameMessages,
 } from '../compositions/frame'
+import { handleI18NMessages } from '../compositions/i18n'
 import {
   useIsTabListEnabled,
   useWillQuit,
@@ -68,6 +69,7 @@ loadAddons()
 loadCustomJS()
 injectTheme()
 handleFrameMessages()
+handleI18NMessages()
 handleShellMessages()
 handleTerminalMessages()
 

@@ -1,3 +1,4 @@
+import { watchEffect } from 'vue'
 import { injectIPC } from '../utils/compositions'
 
 const language = $(injectIPC<string | undefined>('language', undefined))
@@ -25,4 +26,14 @@ export function getAddonManifest(original: any) {
     }
   }
   return manifest
+}
+
+export function handleI18NMessages() {
+  watchEffect(() => {
+    if (language) {
+      document.documentElement.lang = language
+    } else {
+      document.documentElement.removeAttribute('lang')
+    }
+  })
 }
