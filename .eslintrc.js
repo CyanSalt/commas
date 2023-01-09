@@ -5,7 +5,7 @@ module.exports = {
   ],
   ignorePatterns: [
     '.eslintrc.js',
-    "examples",
+    'examples',
   ],
   rules: {
     'vue/no-setup-props-destructure': 'off',

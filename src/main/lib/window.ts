@@ -63,12 +63,15 @@ async function createWindow(...args: string[]) {
       frame.show()
     })
   }
-  // insert custom css
+  // Insert custom css
   loadCustomCSS(frame)
-  // these handler must be bound in main process
+  // These handler must be bound in main process
   handleEvents(frame)
-  // reactive effects
+  // Reactive Effects
+  // Some reactive values such as `focusedWindow` may be triggered
+  // even if the frame has been destroyed
   const menuEffect = effect(() => {
+    if (frame.isDestroyed()) return
     if (process.platform === 'darwin') {
       createTouchBar(frame)
     } else {
@@ -78,6 +81,7 @@ async function createWindow(...args: string[]) {
     }
   })
   const themeEffect = effect(() => {
+    if (frame.isDestroyed()) return
     frame.setBackgroundColor(themeOptions.backgroundColor)
     frame.setVibrancy(themeOptions.vibrancy ?? null)
     if (process.platform === 'win32' && frameType === 'immersive') {
