@@ -4,18 +4,18 @@ import type { LanguageOption } from './locales'
 
 declare module '../../../../api/modules/context' {
   export interface Context {
-    'menu.locale': LanguageOption,
+    'l10n-ext.locale': LanguageOption,
   }
 }
 
 export default () => {
 
-  commas.context.provide('menu.locale', {
+  commas.context.provide('l10n-ext.locale', {
     label: 'English',
     value: 'en-US',
   })
 
-  commas.context.provide('menu.locale', {
+  commas.context.provide('l10n-ext.locale', {
     label: 'Chinese (Simplified)',
     value: 'zh-CN',
   })

@@ -4,7 +4,7 @@ import * as commas from 'commas:api/renderer'
 const { vI18n } = commas.ui.vueAssets
 
 const language = $(commas.remote.useLanguage())
-const locales = commas.context.getCollection('menu.locale')
+const locales = commas.context.getCollection('l10n-ext.locale')
 const supportedLanguages = $computed(() => {
   const languages = [...locales]
   if (language && !languages.some(item => item.value === language)) {
@@ -16,14 +16,14 @@ const supportedLanguages = $computed(() => {
 
 <template>
   <div class="locale-selector form-line">
-    <label v-i18n class="form-label">Language#!menu.locale.1</label>
+    <label v-i18n class="form-label">Language#!l10n-ext.locale.1</label>
     <select v-model="language" class="form-control">
       <option
         v-for="option in supportedLanguages"
         :key="option.value"
         v-i18n
         :value="option.value"
-      >{{ option.label }}#!menu.locale.{{ option.value }}</option>
+      >{{ option.label }}#!l10n-ext.locale.{{ option.value }}</option>
     </select>
   </div>
 </template>

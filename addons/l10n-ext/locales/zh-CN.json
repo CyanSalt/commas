@@ -1,7 +1,7 @@
 {
-  "Language#!menu.locale.1": "语言",
-  "English#!menu.locale.en-US": "英语",
-  "Chinese (Simplified)#!menu.locale.zh-CN": "中文 (简体)",
+  "Language#!l10n-ext.locale.1": "语言",
+  "English#!l10n-ext.locale.en-US": "英语",
+  "Chinese (Simplified)#!l10n-ext.locale.zh-CN": "中文 (简体)",
   "Copy#!menu.copy": "复制",
   "Paste#!menu.paste": "粘贴",
   "Clear#!menu.clear": "清除",
