@@ -152,6 +152,10 @@ function openEditingMenu(event: MouseEvent) {
   background: var(--design-input-background);
   border-radius: 4px;
   outline: none;
+  // Fix windows native control style
+  option {
+    color: initial;
+  }
 }
 :deep(.form-tips) {
   margin: 4px 0;
