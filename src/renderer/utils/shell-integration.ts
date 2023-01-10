@@ -175,11 +175,11 @@ export class ShellIntegrationAddon implements ITerminalAddon {
         position: 'right',
       } : undefined,
     })!
-    const dimensions = xterm['_core']._renderService.dimensions
+    const cell = xterm['_core']._renderService.dimensions.css.cell
     decoration.onRender(() => {
       const el = decoration.element!
-      el.style.setProperty('--cell-width', `${dimensions.actualCellWidth}px`)
-      el.style.setProperty('--cell-height', `${dimensions.actualCellHeight}px`)
+      el.style.setProperty('--cell-width', `${cell.width}px`)
+      el.style.setProperty('--cell-height', `${cell.height}px`)
       el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
       el.style.setProperty('--opacity', isFinished || actions ? '1' : '0.25')
       el.classList.add('terminal-command-mark')

@@ -43,10 +43,10 @@ export class PowerMode implements ITerminalAddon {
     this.spawnParticles()
   }
 
-  handleTermResize({ cols, rows }: { cols: number, rows: number }) {
-    const dimensions = this.xterm['_core']._renderService.dimensions
-    this._canvas.width = cols * dimensions.actualCellWidth
-    this._canvas.height = rows * dimensions.actualCellHeight
+  handleTermResize() {
+    const dimensions = this.xterm['_core']._renderService.dimensions.css.canvas
+    this._canvas.width = dimensions.width
+    this._canvas.height = dimensions.height
   }
 
   shake() {
@@ -64,9 +64,9 @@ export class PowerMode implements ITerminalAddon {
 
   createCanvas() {
     const canvas = document.createElement('canvas')
-    const initialDimensions = this.xterm['_core']._renderService.dimensions
-    canvas.width = this.xterm.cols * initialDimensions.actualCellWidth
-    canvas.height = this.xterm.rows * initialDimensions.actualCellHeight
+    const dimensions = this.xterm['_core']._renderService.dimensions.css.canvas
+    canvas.width = dimensions.width
+    canvas.height = dimensions.height
     Object.assign(canvas.style, {
       position: 'absolute',
       top: '0',
@@ -80,10 +80,10 @@ export class PowerMode implements ITerminalAddon {
   }
 
   spawnParticles() {
-    const dimensions = this.xterm['_core']._renderService.dimensions
+    const cell = this.xterm['_core']._renderService.dimensions.css.cell
     const { cursorX, cursorY } = this.xterm.buffer.active
-    const x = (cursorX + 0.5) * dimensions.actualCellWidth
-    const y = (cursorY + 0.5) * dimensions.actualCellHeight
+    const x = (cursorX + 0.5) * cell.width
+    const y = (cursorY + 0.5) * cell.height
     const count = 5 + Math.round(Math.random() * 5)
     for (let i = 0; i < count; i += 1) {
       const velocity = {

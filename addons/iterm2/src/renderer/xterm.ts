@@ -106,11 +106,11 @@ export class ITerm2Addon implements ITerminalAddon {
                 nextTick(() => {
                   const element = xterm.element!
                   const bounds = element.getBoundingClientRect()
-                  const dimensions = xterm['_core']._renderService.dimensions
+                  const cell = xterm['_core']._renderService.dimensions.css.cell
                   const { cursorX, cursorY } = xterm.buffer.active
                   addFirework({
-                    x: bounds.x + (cursorX + 0.5) * dimensions.actualCellWidth,
-                    y: bounds.y + (cursorY + 0.5) * dimensions.actualCellHeight,
+                    x: bounds.x + (cursorX + 0.5) * cell.width,
+                    y: bounds.y + (cursorY + 0.5) * cell.height,
                   })
                 })
                 break
@@ -135,7 +135,7 @@ export class ITerm2Addon implements ITerminalAddon {
             const image = new Image()
             image.src = url
             await loadingElement(image)
-            const dimensions = xterm['_core']._renderService.dimensions
+            const cell = xterm['_core']._renderService.dimensions.css.cell
             const getImageDimension = (
               targetImage: HTMLImageElement,
               fn: (el: HTMLImageElement, dimension: string) => number,
@@ -151,11 +151,11 @@ export class ITerm2Addon implements ITerminalAddon {
             const width = getImageDimension(image, (el, dimension) => {
               el.style.width = dimension
               return el.clientWidth
-            }, sequence.args.width, dimensions.actualCellWidth * baseScale)
+            }, sequence.args.width, cell.width * baseScale)
             const height = getImageDimension(image, (el, dimension) => {
               el.style.height = dimension
               return el.clientHeight
-            }, sequence.args.height, dimensions.actualCellHeight * baseScale)
+            }, sequence.args.height, cell.height * baseScale)
             let rest = height
             while (rest > 0) {
               const offset = height - rest
@@ -167,7 +167,7 @@ export class ITerm2Addon implements ITerminalAddon {
               })!
               decoration.onRender(() => {
                 decoration.element!.style.background = `url('${url}') no-repeat center/${sequence.args.preserveAspectRatio === '0' ? '100%' : 'contain'}`
-                decoration.element!.style.transform = `translateY(-${offset * dimensions.actualCellHeight}px)`
+                decoration.element!.style.transform = `translateY(-${offset * cell.height}px)`
               })
               rest -= Math.min(rest, xterm.rows)
             }
@@ -272,11 +272,11 @@ export class ITerm2Addon implements ITerminalAddon {
     this.markMarkers.push(marker)
     this.markMarkers.sort((a, b) => a.line - b.line)
     this.recentMarkMarker = undefined
-    const dimensions = xterm['_core']._renderService.dimensions
+    const cell = xterm['_core']._renderService.dimensions.css.cell
     decoration.onRender(() => {
       const el = decoration.element!
-      el.style.setProperty('--cell-width', `${dimensions.actualCellWidth}px`)
-      el.style.setProperty('--cell-height', `${dimensions.actualCellHeight}px`)
+      el.style.setProperty('--cell-width', `${cell.width}px`)
+      el.style.setProperty('--cell-height', `${cell.height}px`)
       el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
       el.classList.add('iterm2-mark')
     })
