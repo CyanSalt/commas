@@ -67,6 +67,10 @@ watchEffect((onInvalidate) => {
   if (!el) return
   const xterm = tab.xterm
   xterm.open(el)
+  // Add cell size properties
+  const cell = xterm['_core']._renderService.dimensions.css.cell
+  el.style.setProperty('--cell-width', `${cell.width}px`)
+  el.style.setProperty('--cell-height', `${cell.height}px`)
   tab.deferred.open.resolve()
   xterm.focus()
   observer.observe(el)
@@ -148,5 +152,11 @@ onActivated(() => {
   &.is-interactive {
     cursor: pointer;
   }
+}
+:deep(.terminal-highlight-block) {
+  box-sizing: border-box;
+  border: 1px solid rgb(var(--color));
+  background: rgb(var(--color) / 0.1);
+  border-radius: 4px;
 }
 </style>

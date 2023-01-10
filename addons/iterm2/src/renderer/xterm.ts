@@ -155,7 +155,7 @@ export class ITerm2Addon implements ITerminalAddon {
               return el.clientHeight
             }, sequence.args.height, cell.height * baseScale)
             let rest = height
-            while (rest > 0) {
+            while (rest >= 0) {
               const offset = height - rest
               const marker = xterm.registerMarker(offset)!
               const decoration = xterm.registerDecoration({
@@ -163,10 +163,11 @@ export class ITerm2Addon implements ITerminalAddon {
                 width,
                 height,
               })!
-              decoration.onRender(() => {
-                decoration.element!.style.background = `url('${url}') no-repeat center/${sequence.args.preserveAspectRatio === '0' ? '100%' : 'contain'}`
-                decoration.element!.style.transform = `translateY(-${offset * cell.height}px)`
+              decoration.onRender(el => {
+                el.style.background = `url('${url}') no-repeat center/${sequence.args.preserveAspectRatio === '0' ? '100%' : 'contain'}`
+                el.style.transform = `translateY(-${offset * cell.height}px)`
               })
+              if (!rest) break
               rest -= Math.min(rest, xterm.rows)
             }
             xterm.write('\r\n'.repeat(height - 1))
@@ -224,11 +225,7 @@ export class ITerm2Addon implements ITerminalAddon {
     this.markMarkers.push(marker)
     this.markMarkers.sort((a, b) => a.line - b.line)
     this.recentMarkMarker = undefined
-    const cell = xterm['_core']._renderService.dimensions.css.cell
-    decoration.onRender(() => {
-      const el = decoration.element!
-      el.style.setProperty('--cell-width', `${cell.width}px`)
-      el.style.setProperty('--cell-height', `${cell.height}px`)
+    decoration.onRender(el => {
       el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
       el.classList.add('iterm2-mark')
     })
@@ -242,8 +239,8 @@ export class ITerm2Addon implements ITerminalAddon {
       marker: this.highlightMarker,
       width: xterm.cols,
     })!
-    highlightDecoration.onRender(() => {
-      highlightDecoration.element!.classList.add('iterm2-cursor-highlight-line')
+    highlightDecoration.onRender(el => {
+      el.classList.add('iterm2-cursor-highlight-line')
     })
     this.highlightMarker.onDispose(() => {
       highlightDecoration.dispose()

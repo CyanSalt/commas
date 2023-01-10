@@ -1,6 +1,8 @@
 import type { IDecoration, IDisposable, IMarker, ITerminalAddon, Terminal } from 'xterm'
 import { toCSSHEX, toRGBA } from '../../shared/color'
 import type { TerminalTab } from '../../typings/terminal'
+import { useSettings } from '../compositions/settings'
+import { scrollToMarker } from '../compositions/terminal'
 import { useTheme } from '../compositions/theme'
 import { openContextMenu } from './frame'
 
@@ -20,9 +22,7 @@ function updateDecorationElement(decoration: IDecoration, callback: (el: HTMLEle
   if (decoration.element) {
     callback(decoration.element)
   } else {
-    decoration.onRender(() => {
-      callback(decoration.element!)
-    })
+    decoration.onRender(callback)
   }
 }
 
@@ -42,6 +42,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   }
 
   activate(xterm: Terminal) {
+    const settings = useSettings()
     this.disposables.push(
       xterm.parser.registerOscHandler(633, data => {
         const [command, ...args] = data.split(';')
@@ -99,6 +100,14 @@ export class ShellIntegrationAddon implements ITerminalAddon {
                       isFinished: true,
                     },
                   )
+                  if (exitCode && settings['terminal.shell.highlightErrors']) {
+                    this._createHighlightDecoration(
+                      xterm,
+                      this.currentCommand.marker,
+                      theme.red,
+                      xterm.buffer.active.baseY + xterm.buffer.active.cursorY - this.currentCommand.marker.line,
+                    )
+                  }
                 }
               }
               this.currentCommand = undefined
@@ -175,11 +184,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
         position: 'right',
       } : undefined,
     })!
-    const cell = xterm['_core']._renderService.dimensions.css.cell
-    decoration.onRender(() => {
-      const el = decoration.element!
-      el.style.setProperty('--cell-width', `${cell.width}px`)
-      el.style.setProperty('--cell-height', `${cell.height}px`)
+    decoration.onRender(el => {
       el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
       el.style.setProperty('--opacity', isFinished || actions ? '1' : '0.25')
       el.classList.add('terminal-command-mark')
@@ -197,20 +202,23 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     return decoration
   }
 
-  scrollToMarker(marker: IMarker) {
-    const { xterm } = this.tab
-    xterm.scrollLines(marker.line - xterm.buffer.active.viewportY)
+  _createHighlightDecoration(
+    xterm: Terminal,
+    marker: IMarker,
+    color: string,
+    height: number,
+  ) {
+    const rgba = toRGBA(color)
     const decoration = xterm.registerDecoration({
       marker,
       width: xterm.cols,
+      height,
     })!
-    decoration.onRender(() => {
-      const el = decoration.element!
-      el.classList.add('terminal-marker-highlight-line')
-      el.addEventListener('animationend', () => {
-        decoration.dispose()
-      })
+    decoration.onRender(el => {
+      el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
+      el.classList.add('terminal-highlight-block')
     })
+    return decoration
   }
 
   scrollToCommand(offset: number) {
@@ -232,7 +240,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
     const targetMarker = markers[targetIndex]
     this.recentMarker = new WeakRef(targetMarker)
-    this.scrollToMarker(targetMarker)
+    scrollToMarker(this.tab.xterm, targetMarker)
   }
 
   _getQuickFixActionsByOutput(command: string, output: string) {

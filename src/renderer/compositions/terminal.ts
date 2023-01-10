@@ -207,8 +207,7 @@ export function scrollToMarker(xterm: Terminal, marker: IMarker) {
     marker,
     width: xterm.cols,
   })!
-  decoration.onRender(() => {
-    const el = decoration.element!
+  decoration.onRender(el => {
     el.classList.add('terminal-marker-highlight-line')
     el.addEventListener('animationend', () => {
       decoration.dispose()
