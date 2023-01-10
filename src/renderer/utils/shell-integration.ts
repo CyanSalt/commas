@@ -86,7 +86,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             this.tab.idle = true
             if (this.currentCommand) {
               const exitCode = args[0] ? Number(args[0]) : undefined
-              if (typeof exitCode === 'number') {
+              if (typeof exitCode === 'number' && exitCode < 128) {
                 this.currentCommand.exitCode = exitCode
                 if (!this.currentCommand.marker.isDisposed) {
                   const theme = useTheme()
