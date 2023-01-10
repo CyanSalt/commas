@@ -55,6 +55,24 @@ export function getTerminalTabIndex(tab: TerminalTab) {
   return tabs.indexOf(toRaw(tab))
 }
 
+function handleTerminalLink(event: MouseEvent, uri: string) {
+  let shouldOpen = false
+  switch (settings['terminal.view.linkModifier']) {
+    case 'Alt':
+      shouldOpen = event.altKey
+      break
+    case 'CmdOrCtrl':
+      shouldOpen = process.platform === 'darwin' ? event.metaKey : event.ctrlKey
+      break
+    default:
+      shouldOpen = event.altKey || (process.platform === 'darwin' ? event.metaKey : event.ctrlKey)
+      break
+  }
+  if (shouldOpen) {
+    shell.openExternal(uri)
+  }
+}
+
 const terminalOptions = $computed<Partial<ITerminalOptions>>(() => {
   return {
     allowProposedApi: true,
@@ -65,6 +83,9 @@ const terminalOptions = $computed<Partial<ITerminalOptions>>(() => {
     overviewRulerWidth: 16,
     smoothScrollDuration: 50,
     theme: { ...theme },
+    linkHandler: {
+      activate: handleTerminalLink,
+    },
   }
 })
 
@@ -423,23 +444,7 @@ export function loadTerminalAddons(tab: TerminalTab) {
     xterm.loadAddon(addons.search)
   }
   if (!addons.weblinks) {
-    addons.weblinks = new WebLinksAddon((event, uri) => {
-      let shouldOpen = false
-      switch (settings['terminal.view.linkModifier']) {
-        case 'Alt':
-          shouldOpen = event.altKey
-          break
-        case 'CmdOrCtrl':
-          shouldOpen = process.platform === 'darwin' ? event.metaKey : event.ctrlKey
-          break
-        default:
-          shouldOpen = event.altKey || (process.platform === 'darwin' ? event.metaKey : event.ctrlKey)
-          break
-      }
-      if (shouldOpen) {
-        shell.openExternal(uri)
-      }
-    }, {})
+    addons.weblinks = new WebLinksAddon(handleTerminalLink)
     xterm.loadAddon(addons.weblinks)
   }
   if (!addons.unicode11) {

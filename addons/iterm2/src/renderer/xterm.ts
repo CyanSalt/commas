@@ -1,6 +1,5 @@
 import * as commas from 'commas:api/renderer'
-import { clipboard, ipcRenderer, shell } from 'electron'
-import { findLast } from 'lodash'
+import { clipboard, ipcRenderer } from 'electron'
 import { nextTick } from 'vue'
 import type { IDisposable, IMarker, ITerminalAddon, Terminal } from 'xterm'
 import type { TerminalTab } from '../../../../src/typings/terminal'
@@ -35,7 +34,6 @@ export class ITerm2Addon implements ITerminalAddon {
   }
 
   activate(xterm: Terminal) {
-    const settings = commas.remote.useSettings()
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let badge = $(useBadge())
     // iTerm2 escape codes
@@ -181,52 +179,6 @@ export class ITerm2Addon implements ITerminalAddon {
           }
         }
         return true
-      }),
-      // iTerm2 style link
-      xterm.parser.registerOscHandler(8, data => {
-        const args = data.split(';')
-        if (args.length !== 2) return false
-        const point: XtermBufferPosition = {
-          x: xterm.buffer.active.cursorX + 1,
-          y: xterm.buffer.active.cursorY + 1,
-        }
-        if (args[1]) {
-          this.links.push({ start: point, uri: args[1] })
-        } else {
-          const activeLink = findLast(this.links, item => !item.end)
-          if (activeLink) {
-            point.x -= 1
-            activeLink.end = point
-          }
-        }
-        return true
-      }),
-      xterm.registerLinkProvider({
-        provideLinks: (y, callback) => {
-          const links = this.links
-            .filter((link): link is Required<XtermLink> => {
-              return Boolean(link.end && link.start.y <= y && link.end.y >= y)
-            })
-            .map(link => ({
-              range: {
-                start: link.start,
-                end: link.end,
-              },
-              text: xterm.buffer.active.getLine(y)!.translateToString(
-                false,
-                link.start.y < y ? undefined : link.start.x,
-                link.end.y > y ? undefined : link.end.x,
-              ),
-              activate(event) {
-                const shouldOpen = settings['terminal.view.linkModifier'] === 'Alt' ? event.altKey
-                  : (process.platform === 'darwin' ? event.metaKey : event.ctrlKey)
-                if (shouldOpen) {
-                  shell.openExternal(link.uri)
-                }
-              },
-            }))
-          callback(links)
-        },
       }),
       // iTerm2 style notification
       xterm.parser.registerOscHandler(9, data => {
