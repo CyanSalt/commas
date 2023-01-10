@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig",
+  "include": [
+    "**/*.cjs",
+    "**/*.mjs",
+    "**/*.js",
+    "**/*.ts",
+    "**/*.vue",
+    ".eslintrc.js"
+  ]
+}

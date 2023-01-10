@@ -3,10 +3,9 @@ module.exports = {
   extends: [
     '@cyansalt/preset',
   ],
-  ignorePatterns: [
-    '.eslintrc.js',
-    'examples',
-  ],
+  parserOptions: {
+    project: './tsconfig.tools.json',
+  },
   rules: {
     'vue/no-setup-props-destructure': 'off',
     'vue/no-undef-components': 'error',
@@ -31,6 +30,6 @@ module.exports = {
       rules: {
         'vue/prefer-import-from-vue': 'off',
       },
-    }
+    },
   ],
 }
