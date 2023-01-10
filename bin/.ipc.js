@@ -1,5 +1,6 @@
 const $require = require('module').createRequire(process.env.COMMAS_MAIN_FILE)
 
+/** @type {{ default: import('node-ipc') }} */
 const { default: ipc } = $require('node-ipc')
 
 async function readInput() {

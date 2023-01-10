@@ -7,7 +7,8 @@ export function accepts<T extends JSONSchemaType>(
   // `true` as `any` and `false` as `never`
   if (typeof schema === 'boolean') return schema
   // `undefined` and `{}` as `any`
-  if (!schema || !schema.type) return true
+  if (!schema) return true
+  if (!schema.type) return true
   // Combining
   if (schema.allOf?.every(rule => !accepts(rule, input))) return false
   if (schema.anyOf?.some(rule => !accepts(rule, input))) return false
