@@ -1,14 +1,14 @@
 import type { Terminal } from 'xterm'
 import { SerializeAddon } from 'xterm-addon-serialize'
 
-const launcherSessionMap = new Map<number, string>()
+const launcherSessionMap = new Map<string, string>()
 
 export class LauncherSessionAddon {
 
-  id: number
+  id: string
   serializeAddon: SerializeAddon
 
-  constructor(id: number) {
+  constructor(id: string) {
     this.id = id
     this.serializeAddon = new SerializeAddon()
   }

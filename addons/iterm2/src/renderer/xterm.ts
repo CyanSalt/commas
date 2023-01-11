@@ -226,8 +226,8 @@ export class ITerm2Addon implements ITerminalAddon {
     this.markMarkers.sort((a, b) => a.line - b.line)
     this.recentMarkMarker = undefined
     decoration.onRender(el => {
-      el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
       el.classList.add('iterm2-mark')
+      el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
     })
   }
 

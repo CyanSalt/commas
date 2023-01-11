@@ -85,6 +85,60 @@ onActivated(() => {
     xterm['_core'].viewport.syncScrollArea(true)
   }
 })
+
+function applyCompletion(event: MouseEvent) {
+  const item = event.target instanceof HTMLElement
+    ? event.target.closest<HTMLElement>('.terminal-completion-item')
+    : undefined
+  if (item) {
+    event.stopPropagation()
+    event.preventDefault()
+    if (item.dataset.value) {
+      writeTerminalTab(tab, item.dataset.value)
+    }
+  }
+}
+
+function startCompletion(event: KeyboardEvent) {
+  const item = event.target instanceof HTMLElement
+    && event.target.matches('.terminal-completion-item')
+    ? event.target
+    : undefined
+  if (item) {
+    event.stopPropagation()
+    event.preventDefault()
+    switch (event.key) {
+      case 'Tab':
+        if (item.dataset.value) {
+          writeTerminalTab(tab, item.dataset.value)
+        }
+        break
+      case 'Escape':
+        item.blur()
+        break
+      case 'ArrowUp': {
+        const previousSibling = item.previousElementSibling
+        if (previousSibling) {
+          (previousSibling as HTMLElement).focus()
+        } else {
+          const parent = item.parentElement!;
+          (parent.children[parent.childElementCount - 1] as HTMLElement).focus()
+        }
+        break
+      }
+      case 'ArrowDown': {
+        const nextSibling = item.nextElementSibling
+        if (nextSibling) {
+          (nextSibling as HTMLElement).focus()
+        } else {
+          const parent = item.parentElement!;
+          (parent.children[0] as HTMLElement).focus()
+        }
+        break
+      }
+    }
+  }
+}
 </script>
 
 <template>
@@ -93,8 +147,22 @@ onActivated(() => {
     @contextmenu="openEditingMenu"
     @dragover.prevent="dragFileOver"
     @drop.prevent="dropFile"
+    @click="applyCompletion"
+    @keydown="startCompletion"
   >
     <div ref="element" class="terminal-content"></div>
+    <div v-if="tab.completions" id="terminal-completion-source">
+      <div
+        v-for="(item, index) in tab.completions"
+        :key="index"
+        class="terminal-completion-item"
+        tabindex="0"
+        :data-value="item.value"
+      >
+        <div class="terminal-completion-item-name">{{ item.label ?? item.value }}</div>
+        <div v-if="item.description" class="terminal-completion-item-desc">{{ item.description }}</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -125,6 +193,9 @@ onActivated(() => {
   :deep(.xterm-screen) {
     z-index: 0;
   }
+}
+#terminal-completion-source {
+  display: none;
 }
 @keyframes fade-out {
   from {
@@ -158,5 +229,50 @@ onActivated(() => {
   border: 1px solid rgb(var(--color));
   background: rgb(var(--color) / 0.1);
   border-radius: 4px;
+}
+:deep(.terminal-completion) {
+  margin-left: calc(var(--column) * var(--cell-width));
+  border: 1px solid rgb(var(--theme-foreground) / 0.5);
+  overflow: auto;
+  background: rgb(var(--theme-background));
+  border-radius: 2px;
+  &.is-right {
+    transform: translateX(-100%);
+  }
+  &.is-top {
+    transform: translateY(-100%);
+    &.is-right {
+      transform: translateX(-100%) translateY(-100%);
+    }
+  }
+  &.is-bottom {
+    margin-top: var(--cell-height);
+  }
+}
+:deep(.terminal-completion-item) {
+  display: flex;
+  gap: var(--cell-width);
+  padding: 0 0.25ch;
+  white-space: nowrap;
+  cursor: pointer;
+  &:hover, &:focus {
+    background: var(--design-card-background);
+  }
+  &:focus {
+    outline: none;
+  }
+}
+:deep(.terminal-completion-item-name) {
+  flex: none;
+  flex: 1;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+:deep(.terminal-completion-item-desc) {
+  flex: 1;
+  color: rgb(var(--theme-foreground) / 0.5);
+  font-style: italic;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 </style>

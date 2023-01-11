@@ -70,7 +70,19 @@
     "key": "terminal.shell.highlightErrors",
     "label": "Highlight Command Errors",
     "comments": [
-      "Whether to highlight commands that were executed with errors",
+      "Highlight commands that were executed with errors",
+      "Requires Shell Integration to be enabled"
+    ],
+    "schema": {
+      "type": "boolean"
+    },
+    "default": true
+  },
+  {
+    "key": "terminal.shell.autoCompletion",
+    "label": "Auto Trigger Completion",
+    "comments": [
+      "Trigger intelligent completion automatically when inputing",
       "Requires Shell Integration to be enabled"
     ],
     "schema": {

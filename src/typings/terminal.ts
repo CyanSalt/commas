@@ -34,14 +34,20 @@ export interface TerminalInfo {
 }
 
 export interface TerminalTabAddons {
-  shellIntegration: ShellIntegrationAddon,
+  shellIntegration?: ShellIntegrationAddon,
   fit: FitAddon,
-  ligatures: LigaturesAddon,
+  ligatures?: LigaturesAddon,
   search: SearchAddon,
   unicode11: Unicode11Addon,
-  webgl: WebglAddon,
-  canvas: CanvasAddon,
+  webgl?: WebglAddon,
+  canvas?: CanvasAddon,
   weblinks: WebLinksAddon,
+}
+
+export interface CommandCompletion {
+  value: string,
+  label?: string,
+  description?: string,
 }
 
 export interface TerminalTab extends TerminalInfo {
@@ -57,4 +63,5 @@ export interface TerminalTab extends TerminalInfo {
   thumbnail?: string,
   pane?: TerminalTabPane,
   group?: TerminalTabGroup,
+  completions?: CommandCompletion[],
 }

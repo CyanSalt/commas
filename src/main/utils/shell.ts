@@ -1,6 +1,7 @@
 import * as os from 'os'
 import * as path from 'path'
 import { app } from 'electron'
+import { quote } from 'shell-quote'
 import { userFile } from './directory'
 import { execa } from './helper'
 
@@ -89,7 +90,7 @@ function loginExecute(command: string) {
     return execa(command, { env })
   } else {
     const shell = getDefaultShell()
-    return execa(`${shell} -lic '${command}'`, { env })
+    return execa(quote([shell!, '-lic', command]), { env })
   }
 }
 

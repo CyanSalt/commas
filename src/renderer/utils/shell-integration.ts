@@ -1,6 +1,9 @@
+import { ipcRenderer } from 'electron'
+import { isEqual } from 'lodash'
+import { toRaw } from 'vue'
 import type { IDecoration, IDisposable, IMarker, ITerminalAddon, Terminal } from 'xterm'
 import { toCSSHEX, toRGBA } from '../../shared/color'
-import type { TerminalTab } from '../../typings/terminal'
+import type { CommandCompletion, TerminalTab } from '../../typings/terminal'
 import { useSettings } from '../compositions/settings'
 import { scrollToMarker } from '../compositions/terminal'
 import { useTheme } from '../compositions/theme'
@@ -15,14 +18,27 @@ interface IntegratedShellCommand {
   exitCode?: number,
   marker: IMarker,
   decoration: IDecoration,
+  cursorX: number,
   actions?: IntegratedShellCommandAction[],
+}
+
+interface IntegratedShellCompletion {
+  marker: IMarker,
+  decoration: IDecoration,
+  position: {
+    x: number,
+    y: number,
+  },
 }
 
 function updateDecorationElement(decoration: IDecoration, callback: (el: HTMLElement) => void) {
   if (decoration.element) {
     callback(decoration.element)
   } else {
-    decoration.onRender(callback)
+    const disposable = decoration.onRender(el => {
+      callback(el)
+      disposable.dispose()
+    })
   }
 }
 
@@ -33,6 +49,8 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   commands: IntegratedShellCommand[]
   currentCommand?: IntegratedShellCommand
   recentMarker?: WeakRef<IMarker>
+  completion?: IntegratedShellCompletion
+  completionKey?: symbol
 
   constructor(tab: TerminalTab) {
     this.tab = tab
@@ -71,6 +89,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
               this.currentCommand = {
                 marker,
                 decoration,
+                cursorX: xterm.buffer.active.cursorX,
                 actions,
               }
               this.commands.push(this.currentCommand)
@@ -152,6 +171,12 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             return false
         }
       }),
+      xterm.onCursorMove(() => {
+        this.clearCompletion()
+        if (settings['terminal.shell.autoCompletion']) {
+          this.triggerCompletion()
+        }
+      }),
     )
   }
 
@@ -184,7 +209,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
         position: 'right',
       } : undefined,
     })!
-    decoration.onRender(el => {
+    updateDecorationElement(decoration, el => {
       el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
       el.style.setProperty('--opacity', isFinished || actions ? '1' : '0.25')
       el.classList.add('terminal-command-mark')
@@ -318,6 +343,104 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       clientY: rect.top,
     })
     el.dispatchEvent(event)
+  }
+
+  async _getCompletions(input: string | undefined) {
+    if (!input) return []
+    return ipcRenderer.invoke('get-completions', input, this.tab.cwd) as Promise<CommandCompletion[]>
+  }
+
+  _createCompletionDecoration(height: number): IntegratedShellCompletion {
+    const { xterm } = this.tab
+    const marker = xterm.registerMarker()!
+    const decoration = xterm.registerDecoration({
+      marker,
+      width: Math.floor(xterm.cols / 2),
+      height: Math.min(height, Math.floor(xterm.rows / 2)),
+    })!
+    let renderedCompletions: CommandCompletion[] | undefined
+    decoration.onRender(el => {
+      const renderingCompletions = toRaw(this.tab.completions)
+      if (renderingCompletions === renderedCompletions) return
+      renderedCompletions = renderingCompletions
+      el.classList.add('terminal-completion')
+      el.classList.add(xterm.buffer.active.cursorY < xterm.rows / 2 ? 'is-bottom' : 'is-top')
+      el.classList.add(xterm.buffer.active.cursorX < xterm.cols / 2 ? 'is-left' : 'is-right')
+      el.style.setProperty('--column', `${xterm.buffer.active.cursorX}`)
+      const source = document.getElementById('terminal-completion-source')
+      if (source) {
+        el.replaceChildren(...[...source.children].map(node => node.cloneNode(true)))
+      }
+    })
+    return {
+      marker,
+      decoration,
+      position: this._getCurrentPosition(),
+    }
+  }
+
+  _getCurrentPosition() {
+    const { xterm } = this.tab
+    return {
+      x: xterm.buffer.active.cursorX,
+      y: xterm.buffer.active.baseY + xterm.buffer.active.cursorY,
+    }
+  }
+
+  async triggerCompletion(autofocus?: boolean) {
+    if (this.completion) {
+      if (isEqual(this.completion.position, this._getCurrentPosition())) {
+        if (autofocus) {
+          this.activateCompletion()
+        }
+        return
+      } else {
+        this.clearCompletion()
+      }
+    }
+    const { xterm } = this.tab
+    const activeBuffer = xterm.buffer.active
+    let line: string | undefined
+    if (
+      this.currentCommand && !this.currentCommand.command
+      && activeBuffer.baseY + activeBuffer.cursorY === this.currentCommand.marker.line
+      && activeBuffer.cursorX > this.currentCommand.cursorX
+    ) {
+      line = xterm.buffer.active.getLine(this.currentCommand.marker.line)
+        ?.translateToString(true, this.currentCommand.cursorX, activeBuffer.cursorX)
+    }
+    const key = Symbol('COMPLETION_SESSION')
+    this.completionKey = key
+    const completions = await this._getCompletions(line)
+    if (!completions.length) return
+    if (this.completionKey === key) {
+      const result = this._createCompletionDecoration(completions.length)
+      this.completion = result
+      this.tab.completions = completions
+      if (autofocus) {
+        this.activateCompletion()
+      }
+    }
+  }
+
+  async clearCompletion() {
+    const completion = this.completion
+    if (completion) {
+      completion.marker.dispose()
+      this.completion = undefined
+    }
+  }
+
+  activateCompletion() {
+    const completion = this.completion
+    if (completion) {
+      updateDecorationElement(completion.decoration, el => {
+        const item = el.querySelector<HTMLElement>('[tabindex]')
+        if (item) {
+          item.focus()
+        }
+      })
+    }
   }
 
 }

@@ -13,4 +13,9 @@ export default [
     command: 'xterm:send',
     args: ['\u0017'],
   },
+  {
+    label: 'Trigger Completion',
+    accelerator: 'CmdOrCtrl+I',
+    command: 'xterm:completion',
+  },
 ] as KeyBinding[]

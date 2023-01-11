@@ -148,6 +148,11 @@ export async function createTerminalTab({
         writeTerminalTab(tab, matchedItem.args ? matchedItem.args.join('') : '')
         return false
       }
+      case 'xterm:completion': {
+        if (!tab.addons.shellIntegration) return true
+        tab.addons.shellIntegration.triggerCompletion(true)
+        return false
+      }
       default:
         return true
     }
