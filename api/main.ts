@@ -1,3 +1,14 @@
+import type { CommandCompletion } from '../src/typings/terminal'
+
+declare module './modules/context' {
+  export interface Context {
+    'terminal.completion': {
+      command: string,
+      completions: CommandCompletion[],
+    },
+  }
+}
+
 export * as app from './modules/app'
 export * as context from './modules/context'
 export * as file from './modules/file'

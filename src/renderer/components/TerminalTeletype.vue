@@ -147,6 +147,10 @@ function startCompletion(event: KeyboardEvent) {
         break
       }
       default:
+        // FIXME: don't know why
+        if (event.key === ' ') {
+          writeTerminalTab(tab, event.key)
+        }
         tab.xterm.textarea!.dispatchEvent(
           new (event.constructor as typeof Event)(event.type, event),
         )

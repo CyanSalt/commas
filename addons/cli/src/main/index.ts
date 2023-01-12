@@ -7,6 +7,7 @@ import { app, BrowserWindow, webContents } from 'electron'
 import { random } from 'lodash'
 import ipc from 'node-ipc'
 import { quote } from 'shell-quote'
+import type { CommandCompletion } from '../../../../src/typings/terminal'
 import type { CommandModule } from './command'
 import { getCommandModule, executeCommand, useExternalURLCommands } from './command'
 
@@ -262,6 +263,22 @@ where <command> is one of:
     commas.context.cancelProviding('cli.command', ...loadedExternalURLCommands)
     commas.context.provide('cli.command', ...externalURLCommands)
     loadedExternalURLCommands = externalURLCommands
+  })
+
+  commas.helper.watchBaseEffect(onInvalidate => {
+    const completions: CommandCompletion[] = commands.map(item => ({
+      label: item.command,
+      value: item.command,
+      description: item.usage,
+    }))
+    const declaration = {
+      command: 'commas',
+      completions,
+    }
+    commas.context.provide('terminal.completion', declaration)
+    onInvalidate(() => {
+      commas.context.cancelProviding('terminal.completion', declaration)
+    })
   })
 
   commas.settings.addSettingsSpecsFile('settings.spec.json')
