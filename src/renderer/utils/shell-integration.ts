@@ -174,7 +174,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       xterm.onCursorMove(() => {
         this.clearCompletion()
         if (settings['terminal.shell.autoCompletion']) {
-          this.triggerCompletion()
+          this.triggerCompletion(true)
         }
       }),
     )

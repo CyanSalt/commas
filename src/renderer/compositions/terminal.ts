@@ -141,6 +141,7 @@ export async function createTerminalTab({
       if (event.key === 'c' && xterm.hasSelection()) return false
       if (event.key === 'f') return false
     }
+    if (event.type !== 'keydown') return true
     const matchedItem = rendererKeybindings.find(item => isMatch(event, item.pattern))
     if (!matchedItem) return true
     switch (matchedItem.command) {

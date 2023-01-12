@@ -86,6 +86,12 @@ onActivated(() => {
   }
 })
 
+function getCompletionItem(target: EventTarget | null): HTMLElement | null {
+  return target instanceof HTMLElement
+    ? target.closest<HTMLElement>('.terminal-completion-item')
+    : null
+}
+
 function applyCompletionItem(item: HTMLElement) {
   if (item.dataset.value) {
     writeTerminalTab(tab, item.dataset.value)
@@ -94,9 +100,7 @@ function applyCompletionItem(item: HTMLElement) {
 }
 
 function selectCompletion(event: MouseEvent) {
-  const item = event.target instanceof HTMLElement
-    ? event.target.closest<HTMLElement>('.terminal-completion-item')
-    : undefined
+  const item = getCompletionItem(event.target)
   if (item) {
     event.stopPropagation()
     event.preventDefault()
@@ -105,10 +109,7 @@ function selectCompletion(event: MouseEvent) {
 }
 
 function startCompletion(event: KeyboardEvent) {
-  const item = event.target instanceof HTMLElement
-    && event.target.matches('.terminal-completion-item')
-    ? event.target
-    : undefined
+  const item = getCompletionItem(event.target)
   if (item) {
     event.stopPropagation()
     event.preventDefault()
@@ -118,7 +119,7 @@ function startCompletion(event: KeyboardEvent) {
         applyCompletionItem(item)
         break
       case 'Escape':
-        item.blur()
+        tab.xterm.focus()
         break
       case 'ArrowUp': {
         const previousSibling = item.previousElementSibling
@@ -140,6 +141,12 @@ function startCompletion(event: KeyboardEvent) {
         }
         break
       }
+      default:
+        tab.xterm.textarea!.dispatchEvent(
+          new (event.constructor as typeof Event)(event.type, event),
+        )
+        tab.xterm.focus()
+        break
     }
   }
 }
