@@ -86,16 +86,21 @@ onActivated(() => {
   }
 })
 
-function applyCompletion(event: MouseEvent) {
+function applyCompletionItem(item: HTMLElement) {
+  if (item.dataset.value) {
+    writeTerminalTab(tab, item.dataset.value)
+    tab.xterm.focus()
+  }
+}
+
+function selectCompletion(event: MouseEvent) {
   const item = event.target instanceof HTMLElement
     ? event.target.closest<HTMLElement>('.terminal-completion-item')
     : undefined
   if (item) {
     event.stopPropagation()
     event.preventDefault()
-    if (item.dataset.value) {
-      writeTerminalTab(tab, item.dataset.value)
-    }
+    applyCompletionItem(item)
   }
 }
 
@@ -108,10 +113,9 @@ function startCompletion(event: KeyboardEvent) {
     event.stopPropagation()
     event.preventDefault()
     switch (event.key) {
+      case 'Enter':
       case 'Tab':
-        if (item.dataset.value) {
-          writeTerminalTab(tab, item.dataset.value)
-        }
+        applyCompletionItem(item)
         break
       case 'Escape':
         item.blur()
@@ -147,7 +151,7 @@ function startCompletion(event: KeyboardEvent) {
     @contextmenu="openEditingMenu"
     @dragover.prevent="dragFileOver"
     @drop.prevent="dropFile"
-    @click="applyCompletion"
+    @click="selectCompletion"
     @keydown="startCompletion"
   >
     <div ref="element" class="terminal-content"></div>
@@ -159,7 +163,7 @@ function startCompletion(event: KeyboardEvent) {
         tabindex="0"
         :data-value="item.value"
       >
-        <div class="terminal-completion-item-name">{{ item.label ?? item.value }}</div>
+        <div class="terminal-completion-item-label" v-html="item.label"></div>
         <div v-if="item.description" class="terminal-completion-item-desc">{{ item.description }}</div>
       </div>
     </div>
@@ -262,11 +266,14 @@ function startCompletion(event: KeyboardEvent) {
     outline: none;
   }
 }
-:deep(.terminal-completion-item-name) {
+:deep(.terminal-completion-item-label) {
   flex: none;
   flex: 1;
   text-overflow: ellipsis;
   overflow: hidden;
+  strong {
+    color: rgb(var(--theme-blue));
+  }
 }
 :deep(.terminal-completion-item-desc) {
   flex: 1;

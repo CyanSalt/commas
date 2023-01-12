@@ -1,11 +1,27 @@
 import * as fs from 'fs'
 import * as path from 'path'
+import fuzzaldrin from 'fuzzaldrin-plus'
 import { findLastIndex } from 'lodash'
 import type { ParseEntry } from 'shell-quote'
 import { parse, quote } from 'shell-quote'
 import { resolveHome } from '../../shared/terminal'
 import type { CommandCompletion } from '../../typings/terminal'
 import { execa, memoizeAsync } from './helper'
+
+function highlightLabel(label: string, query: string) {
+  return query ? fuzzaldrin.wrap(label, query) : label
+}
+
+function sortCompletions<T>(collection: T[], query: string, iteratee?: (value: T) => string) {
+  if (!query) return collection
+  return collection
+    .map(item => {
+      return [item, fuzzaldrin.score(iteratee ? iteratee(item) : String(item), query)] as const
+    })
+    .filter(([item, score]) => score > 0)
+    .sort(([itemA, scoreA], [itemB, scoreB]) => scoreB - scoreA)
+    .map(([item]) => item)
+}
 
 async function getFileCompletions(
   currentWord: string,
@@ -32,14 +48,15 @@ async function getFileCompletions(
   } catch {
     return []
   }
-  if (currentWord) {
-    files = files.filter(entity => entity.name.startsWith(prefix))
+  if (prefix) {
+    files = sortCompletions(files, prefix, entity => entity.name)
   } else {
     files = files.filter(entity => !entity.name.startsWith('.'))
   }
+  const suffix = directoryOnly ? path.sep : ''
   return files.map<CommandCompletion>(entity => ({
-    label: entity.name,
-    value: entity.name.slice(prefix.length) + (directoryOnly ? path.sep : ''),
+    label: highlightLabel(entity.name + suffix, prefix),
+    value: entity.name.slice(prefix.length) + suffix,
   }))
 }
 
@@ -87,8 +104,13 @@ const getManPageRawCompletions = memoizeAsync(async (command: string) => {
 })
 
 async function getManPageCompletions(currentWord: string, command: string) {
-  const completions = await getManPageRawCompletions(command)
-  return completions.map(item => ({ ...item, value: item.value.slice(currentWord.length) }))
+  let completions = await getManPageRawCompletions(command)
+  return sortCompletions(completions, currentWord, item => item.value)
+    .map(item => ({
+      ...item,
+      label: highlightLabel(item.label, currentWord),
+      value: item.value.slice(currentWord.length),
+    }))
 }
 
 async function getCompletions(input: string, cwd: string) {
