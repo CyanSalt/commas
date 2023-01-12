@@ -7,6 +7,7 @@ import { parse, quote } from 'shell-quote'
 import { resolveHome } from '../../shared/terminal'
 import type { CommandCompletion } from '../../typings/terminal'
 import { execa, memoizeAsync } from './helper'
+import { loginExecute } from './shell'
 
 function highlightLabel(label: string, query: string) {
   return query ? fuzzaldrin.wrap(label, query) : label
@@ -64,11 +65,25 @@ async function getFileCompletions(
 const getManPageRawCompletions = memoizeAsync(async (command: string) => {
   // Not supported yet
   if (process.platform === 'win32') return []
+  let manpath = ''
   try {
-    const { stdout } = await execa(quote(['man', command]), { env: {} })
+    const { stdout } = await loginExecute('manpath')
+    manpath = stdout.trim()
+  } catch {
+    // ignore error
+  }
+  try {
+    const { stdout } = await execa(quote(['man', command]), { env: {
+      MANPATH: manpath,
+    } })
     // eslint-disable-next-line no-control-regex
     const lines = stdout.replace(/.\x08/g, '').trim().split('\n')
-    const titleIndex = lines.indexOf('DESCRIPTION')
+    // Nodejs
+    let titleIndex = lines.indexOf('OPTIONS')
+    if (titleIndex === -1) {
+      // Default man pages
+      titleIndex = lines.indexOf('DESCRIPTION')
+    }
     if (titleIndex === -1) return []
     const paragraphs: string[][] = []
     let currentParagraph: string[] = []
@@ -87,7 +102,7 @@ const getManPageRawCompletions = memoizeAsync(async (command: string) => {
     }
     const completions: CommandCompletion[] = []
     for (const paragraph of paragraphs) {
-      const matches = paragraph[0].match(/^\s*(-{1,2}\w),?\s*(.*)$/)
+      const matches = paragraph[0].match(/^\s*(-[\w-]+=?),?\s*(.*)$/)
       if (matches) {
         completions.push({
           label: matches[1],
@@ -129,31 +144,34 @@ async function getCompletions(input: string, cwd: string) {
     : undefined
   const args = entries.slice(tokenIndex + 2)
   const currentWord = isWordStart ? '' : entries[entries.length - 1] as string
-  const isInputingArgs = currentWord === '-' || currentWord.startsWith('--')
+  const isInputingArgs = currentWord.startsWith('-')
   // Commands
   if (!isWordStart && !args.length) {
     // TODO:
     return []
   }
-  let completions: CommandCompletion[] = []
   // Files
   const fileCommands: ParseEntry[] = ['cat', 'sh', 'diff', 'head', 'more', 'tail']
   const directoryCommands: ParseEntry[] = ['cd', 'ls', 'rmdir']
   const fileOrDirectoryCommands: ParseEntry[] = ['chmod', 'chown', 'cp', 'file', 'ln', 'mv', 'rm']
+  let asyncCompletionLists: Promise<CommandCompletion[]>[] = []
   if (command && !isInputingArgs && [
     ...fileCommands,
     ...directoryCommands,
     ...fileOrDirectoryCommands,
   ].includes(command)) {
     const directoryOnly = directoryCommands.includes(command)
-    const result = await getFileCompletions(currentWord, cwd, directoryOnly)
-    completions = completions.concat(result)
+    asyncCompletionLists.push(
+      getFileCompletions(currentWord, cwd, directoryOnly),
+    )
   }
   if (command && (isInputingArgs || isWordStart)) {
-    const result = await getManPageCompletions(currentWord, command)
-    completions = completions.concat(result)
+    asyncCompletionLists.push(
+      getManPageCompletions(currentWord, command),
+    )
   }
-  return completions
+  const lists = await Promise.all(asyncCompletionLists)
+  return lists.flat()
 }
 
 export {
