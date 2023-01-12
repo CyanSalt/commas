@@ -56,7 +56,8 @@ async function getFileCompletions(
   const suffix = directoryOnly ? path.sep : ''
   return files.map<CommandCompletion>(entity => ({
     label: highlightLabel(entity.name + suffix, prefix),
-    value: entity.name.slice(prefix.length) + suffix,
+    value: entity.name + suffix,
+    back: prefix.length,
   }))
 }
 
@@ -106,11 +107,12 @@ const getManPageRawCompletions = memoizeAsync(async (command: string) => {
 async function getManPageCompletions(currentWord: string, command: string) {
   let completions = await getManPageRawCompletions(command)
   return sortCompletions(completions, currentWord, item => item.value)
-    .map(item => ({
-      ...item,
-      label: highlightLabel(item.label, currentWord),
-      value: item.value.slice(currentWord.length),
-    }))
+    .map<CommandCompletion>(item => ({
+    ...item,
+    label: highlightLabel(item.label, currentWord),
+    value: item.value,
+    back: currentWord.length,
+  }))
 }
 
 async function getCompletions(input: string, cwd: string) {

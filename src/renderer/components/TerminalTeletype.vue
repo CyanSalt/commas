@@ -94,7 +94,8 @@ function getCompletionItem(target: EventTarget | null): HTMLElement | null {
 
 function applyCompletionItem(item: HTMLElement) {
   if (item.dataset.value) {
-    writeTerminalTab(tab, item.dataset.value)
+    const back = Number(item.dataset.back ?? 0)
+    writeTerminalTab(tab, '\x7F'.repeat(back) + item.dataset.value)
     tab.xterm.focus()
   }
 }
@@ -169,6 +170,7 @@ function startCompletion(event: KeyboardEvent) {
         class="terminal-completion-item"
         tabindex="0"
         :data-value="item.value"
+        :data-back="item.back ?? 0"
       >
         <div class="terminal-completion-item-label" v-html="item.label"></div>
         <div v-if="item.description" class="terminal-completion-item-desc">{{ item.description }}</div>
@@ -286,6 +288,7 @@ function startCompletion(event: KeyboardEvent) {
   flex: 1;
   color: rgb(var(--theme-foreground) / 0.5);
   font-style: italic;
+  font-size: 12px;
   text-overflow: ellipsis;
   overflow: hidden;
 }
