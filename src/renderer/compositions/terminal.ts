@@ -55,20 +55,19 @@ export function getTerminalTabIndex(tab: TerminalTab) {
   return tabs.indexOf(toRaw(tab))
 }
 
-function handleTerminalLink(event: MouseEvent, uri: string) {
-  let shouldOpen = false
+export function isMatchLinkModifier(event: MouseEvent) {
   switch (settings['terminal.view.linkModifier']) {
     case 'Alt':
-      shouldOpen = event.altKey
-      break
+      return event.altKey
     case 'CmdOrCtrl':
-      shouldOpen = process.platform === 'darwin' ? event.metaKey : event.ctrlKey
-      break
+      return process.platform === 'darwin' ? event.metaKey : event.ctrlKey
     default:
-      shouldOpen = event.altKey || (process.platform === 'darwin' ? event.metaKey : event.ctrlKey)
-      break
+      return event.altKey || (process.platform === 'darwin' ? event.metaKey : event.ctrlKey)
   }
-  if (shouldOpen) {
+}
+
+function handleTerminalLink(event: MouseEvent, uri: string) {
+  if (isMatchLinkModifier(event)) {
     shell.openExternal(uri)
   }
 }

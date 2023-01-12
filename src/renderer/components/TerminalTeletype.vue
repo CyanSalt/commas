@@ -3,7 +3,7 @@ import 'xterm/css/xterm.css'
 import { quote } from 'shell-quote'
 import { onActivated, watchEffect } from 'vue'
 import type { TerminalTab } from '../../typings/terminal'
-import { writeTerminalTab } from '../compositions/terminal'
+import { isMatchLinkModifier, writeTerminalTab } from '../compositions/terminal'
 import { openContextMenu } from '../utils/frame'
 
 const { tab } = defineProps<{
@@ -105,7 +105,11 @@ function selectCompletion(event: MouseEvent) {
   if (item) {
     event.stopPropagation()
     event.preventDefault()
-    applyCompletionItem(item)
+    if (isMatchLinkModifier(event)) {
+      item.focus()
+    } else {
+      applyCompletionItem(item)
+    }
   }
 }
 
@@ -151,6 +155,28 @@ function startCompletion(event: KeyboardEvent) {
     }
   }
 }
+
+function setCompletionDescription(item: HTMLElement, content: string | undefined) {
+  item.parentElement!.nextElementSibling!.textContent = content ?? ''
+}
+
+function showCompletionDescription(event: FocusEvent) {
+  const item = getCompletionItem(event.target)
+  if (item) {
+    event.stopPropagation()
+    event.preventDefault()
+    setCompletionDescription(item, item.dataset.desc)
+  }
+}
+
+function clearCompletionDescription(event: FocusEvent) {
+  const item = getCompletionItem(event.target)
+  if (item) {
+    event.stopPropagation()
+    event.preventDefault()
+    setCompletionDescription(item, '')
+  }
+}
 </script>
 
 <template>
@@ -161,20 +187,24 @@ function startCompletion(event: KeyboardEvent) {
     @drop.prevent="dropFile"
     @click="selectCompletion"
     @keydown="startCompletion"
+    @focusin="showCompletionDescription"
+    @focusout="clearCompletionDescription"
   >
     <div ref="element" class="terminal-content"></div>
     <div v-if="tab.completions" id="terminal-completion-source">
-      <div
-        v-for="(item, index) in tab.completions"
-        :key="index"
-        class="terminal-completion-item"
-        tabindex="0"
-        :data-value="item.value"
-        :data-back="item.back ?? 0"
-      >
-        <div class="terminal-completion-item-label" v-html="item.label"></div>
-        <div v-if="item.description" class="terminal-completion-item-desc">{{ item.description }}</div>
-      </div>
+      <ul class="terminal-completion-list">
+        <li
+          v-for="(item, index) in tab.completions"
+          :key="index"
+          class="terminal-completion-item"
+          tabindex="0"
+          :data-value="item.value"
+          :data-desc="item.description ?? ''"
+          :data-back="item.back ?? 0"
+          v-html="item.label"
+        ></li>
+      </ul>
+      <div class="terminal-completion-desc"></div>
     </div>
   </div>
 </template>
@@ -244,6 +274,7 @@ function startCompletion(event: KeyboardEvent) {
   border-radius: 4px;
 }
 :deep(.terminal-completion) {
+  display: flex !important;
   margin-left: calc(var(--column) * var(--cell-width));
   border: 1px solid rgb(var(--theme-foreground) / 0.5);
   overflow: auto;
@@ -262,11 +293,17 @@ function startCompletion(event: KeyboardEvent) {
     margin-top: var(--cell-height);
   }
 }
-:deep(.terminal-completion-item) {
-  display: flex;
-  gap: var(--cell-width);
+.terminal-completion-list {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+}
+.terminal-completion-item {
   padding: 0 0.25ch;
   white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
   cursor: pointer;
   &:hover, &:focus {
     background: var(--design-card-background);
@@ -274,22 +311,21 @@ function startCompletion(event: KeyboardEvent) {
   &:focus {
     outline: none;
   }
-}
-:deep(.terminal-completion-item-label) {
-  flex: none;
-  flex: 1;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  strong {
+  :deep(strong) {
     color: rgb(var(--theme-blue));
   }
 }
-:deep(.terminal-completion-item-desc) {
+.terminal-completion-desc {
+  position: sticky;
+  top: 0;
   flex: 1;
+  padding: 0 0.25ch;
   color: rgb(var(--theme-foreground) / 0.5);
   font-style: italic;
   font-size: 12px;
-  text-overflow: ellipsis;
   overflow: hidden;
+  &:empty {
+    display: none;
+  }
 }
 </style>

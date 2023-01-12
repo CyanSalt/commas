@@ -2,7 +2,6 @@ import * as fs from 'fs'
 import * as path from 'path'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { findLastIndex } from 'lodash'
-import type { ParseEntry } from 'shell-quote'
 import { parse, quote } from 'shell-quote'
 import { resolveHome } from '../../shared/terminal'
 import type { CommandCompletion } from '../../typings/terminal'
@@ -102,7 +101,7 @@ const getManPageRawCompletions = memoizeAsync(async (command: string) => {
     }
     const completions: CommandCompletion[] = []
     for (const paragraph of paragraphs) {
-      const matches = paragraph[0].match(/^\s*(-[\w-]+=?),?\s*(.*)$/)
+      const matches = paragraph[0].match(/^\s*(-[\w-.]+=?),?\s*(.*)$/)
       if (matches) {
         completions.push({
           label: matches[1],
@@ -151,12 +150,10 @@ async function getCompletions(input: string, cwd: string) {
     return []
   }
   // Files
-  const fileCommands: ParseEntry[] = ['cat', 'sh', 'diff', 'head', 'more', 'tail']
-  const directoryCommands: ParseEntry[] = ['cd', 'ls', 'rmdir']
-  const fileOrDirectoryCommands: ParseEntry[] = ['chmod', 'chown', 'cp', 'file', 'ln', 'mv', 'rm']
+  const directoryCommands = ['cd', 'ls']
+  const fileOrDirectoryCommands = ['cat', 'chmod', 'chown', 'cp', 'diff', 'file', 'head', 'ln', 'more', 'mv', 'rm', 'sh', 'tail']
   let asyncCompletionLists: Promise<CommandCompletion[]>[] = []
   if (command && !isInputingArgs && [
-    ...fileCommands,
     ...directoryCommands,
     ...fileOrDirectoryCommands,
   ].includes(command)) {

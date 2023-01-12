@@ -435,7 +435,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     const completion = this.completion
     if (completion) {
       updateDecorationElement(completion.decoration, el => {
-        const item = el.querySelector<HTMLElement>('[tabindex]')
+        const item = el.querySelector<HTMLElement>('.terminal-completion-item')
         if (item) {
           item.focus()
         }
