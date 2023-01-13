@@ -1,5 +1,45 @@
 
 
+## [0.23.0](https://github.com/CyanSalt/commas/compare/v0.22.2...v0.23.0) (2023-01-13)
+
+
+### Features
+
+* add `commas fuck` ([4d71e8a](https://github.com/CyanSalt/commas/commit/4d71e8accb79ffaa3dfa80d81f7c9e5b5f0a1ae6))
+* add dirty diff gutter to code editor ([68cd608](https://github.com/CyanSalt/commas/commit/68cd6087e8ef1b324b57adb14a62dd9e6fe31a2e))
+* add global shortcut for macOS ([218914c](https://github.com/CyanSalt/commas/commit/218914cf9d2086bc1c244ae5adb8559e619e56dd))
+* add html lang ([e9b3c00](https://github.com/CyanSalt/commas/commit/e9b3c0019303e11c4ab52738071481de357e1d8a))
+* add more quick fixes ([60c5cdd](https://github.com/CyanSalt/commas/commit/60c5cddc46f7b4bbb6bf7017e7637d69e5b7e173))
+* add terminal group ([b8a1268](https://github.com/CyanSalt/commas/commit/b8a126825edd2ff625e1e1d9590698005e008de7))
+* highlight completion matches ([4e7207f](https://github.com/CyanSalt/commas/commit/4e7207f9ec5a2268cf5764feebe7e1ab11698bb6))
+* quick fix for shell integration ([a6efc9c](https://github.com/CyanSalt/commas/commit/a6efc9c748c85d070ba2320f1377efa221a784e9))
+* rename menu to l10n-ext ([cc696e0](https://github.com/CyanSalt/commas/commit/cc696e02a3fba16458ca84e7decf0026875913bd))
+* support auto completion ([6445db8](https://github.com/CyanSalt/commas/commit/6445db87df4822a155d2f400d6986ad6295d9e3e))
+* support effect scope ([70ed7ef](https://github.com/CyanSalt/commas/commit/70ed7efd1bfaa897722f5b4bc3604306630be7b4))
+* support error highlighting ([b7c4088](https://github.com/CyanSalt/commas/commit/b7c40886a07011cd83f65c75af8f70c6a402795a))
+* support jumping to command ([977479f](https://github.com/CyanSalt/commas/commit/977479f8e021922a0bf2d9a650b4b11d05884d16))
+* support more commands ([33ba93d](https://github.com/CyanSalt/commas/commit/33ba93d19d14ff50bed06a37ac16460b217fdd68))
+* transfer keyboard events ([587a77f](https://github.com/CyanSalt/commas/commit/587a77f128f0c69b654e875c736664138922f3c4))
+
+
+### Bug Fixes
+
+* add user man paths ([4b97b8f](https://github.com/CyanSalt/commas/commit/4b97b8fd8721623206a47664fdb2e2112d783b56))
+* avoid memory leak ([0f0b1ee](https://github.com/CyanSalt/commas/commit/0f0b1ee7af9da0552f6a8be2bbad58c922a9f69d))
+* code editor diffs ([86d2b9e](https://github.com/CyanSalt/commas/commit/86d2b9e20a5b691d0978ad5177e930dc257677b1))
+* destroyed frames ([8841e37](https://github.com/CyanSalt/commas/commit/8841e37b34386e2eeb8ca26f3d735b2a93495fb0))
+* eslint issues ([6693815](https://github.com/CyanSalt/commas/commit/6693815e02cd2cc93ca8d7d810173cab247ef3c0))
+* focus in group after removing tabs ([93ad7cc](https://github.com/CyanSalt/commas/commit/93ad7cc60117f70c4310f910b960369a9ba895d2))
+* insert backspaces ([22b0891](https://github.com/CyanSalt/commas/commit/22b089119b62cd8d40c7a88d033a0de8dce0efb9))
+* **iterm2:** inline image across screen ([e90e281](https://github.com/CyanSalt/commas/commit/e90e281b13b1274fd8c9069bdccf2fed51cc1b6f))
+* marker reset logics ([fd4784f](https://github.com/CyanSalt/commas/commit/fd4784f6922d74946b855ed3d3aa2df4cc446373))
+* refine completion desc style ([ca78afe](https://github.com/CyanSalt/commas/commit/ca78afe66a323af167563226e17ee5ed8d1be575))
+* shell integration ([f93bcf9](https://github.com/CyanSalt/commas/commit/f93bcf9fdd2b92ec126114179f52f9d5c86c28e1))
+* terminal teletype life cycle ([e4e5499](https://github.com/CyanSalt/commas/commit/e4e5499a2b7144cbe4c453884ce94dd6a2c24b39))
+* **theme:** switch api ([85b803b](https://github.com/CyanSalt/commas/commit/85b803b8ca7c11e5c44bd0d6b3457176af7aa923))
+* user signal integration ([a298733](https://github.com/CyanSalt/commas/commit/a298733c86270e5b0bd759f5b6f1fed1d7d32367))
+* windows native control style ([e63ea81](https://github.com/CyanSalt/commas/commit/e63ea81b26aa1b2187556fbd28a58594923631fd))
+
 ### [0.22.2](https://github.com/CyanSalt/commas/compare/v0.22.1...v0.22.2) (2022-08-11)
 
 
