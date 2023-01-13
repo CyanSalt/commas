@@ -18,4 +18,9 @@ export default [
     accelerator: 'CmdOrCtrl+I',
     command: 'xterm:completion',
   },
+  {
+    label: 'Exit',
+    accelerator: 'Escape',
+    command: 'xterm:exit',
+  },
 ] as KeyBinding[]

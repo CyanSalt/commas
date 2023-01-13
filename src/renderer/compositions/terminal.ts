@@ -153,6 +153,10 @@ export async function createTerminalTab({
         tab.addons.shellIntegration.triggerCompletion(true)
         return false
       }
+      case 'xterm:exit': {
+        if (!tab.addons.shellIntegration) return true
+        return !tab.addons.shellIntegration.clearCompletion()
+      }
       default:
         return true
     }

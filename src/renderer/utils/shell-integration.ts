@@ -422,12 +422,15 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
   }
 
-  async clearCompletion() {
+  clearCompletion() {
     this.completionKey = undefined
     const completion = this.completion
     if (completion) {
       completion.marker.dispose()
       this.completion = undefined
+      return true
+    } else {
+      return false
     }
   }
 

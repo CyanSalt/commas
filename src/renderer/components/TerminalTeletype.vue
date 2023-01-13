@@ -128,6 +128,7 @@ function startCompletion(event: KeyboardEvent) {
         applyCompletionItem(item)
         break
       case 'Escape':
+        tab.addons.shellIntegration!.clearCompletion()
         tab.xterm.focus()
         break
       case 'ArrowUp': {
