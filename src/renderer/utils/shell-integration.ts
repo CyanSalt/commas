@@ -1,4 +1,5 @@
 import { ipcRenderer } from 'electron'
+import fuzzaldrin from 'fuzzaldrin-plus'
 import { isEqual } from 'lodash'
 import { toRaw } from 'vue'
 import type { IDecoration, IDisposable, IMarker, ITerminalAddon, Terminal } from 'xterm'
@@ -39,6 +40,16 @@ function updateDecorationElement(decoration: IDecoration, callback: (el: HTMLEle
       disposable.dispose()
     })
   }
+}
+
+function filterAndSortCompletions(completions: CommandCompletion[]) {
+  return completions
+    .map(item => {
+      return [item, item.query ? fuzzaldrin.score(item.value, item.query) : 1] as const
+    })
+    .filter(([item, score]) => score > 0)
+    .sort(([itemA, scoreA], [itemB, scoreB]) => scoreB - scoreA)
+    .map(([item]) => item)
 }
 
 export class ShellIntegrationAddon implements ITerminalAddon {
@@ -395,6 +406,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
     const realtimeCompletions = await this._getCompletions(line)
     completions = completions.concat(realtimeCompletions)
+    completions = filterAndSortCompletions(completions)
     if (!completions.length) return
     if (
       isEqual(this.recentCompletionAppliedPosition, currentPosition)

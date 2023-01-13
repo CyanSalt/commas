@@ -1,6 +1,5 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import fuzzaldrin from 'fuzzaldrin-plus'
 import { findLastIndex } from 'lodash'
 import { parse, quote } from 'shell-quote'
 import * as commas from '../../../api/core-main'
@@ -8,17 +7,6 @@ import { resolveHome } from '../../shared/terminal'
 import type { CommandCompletion } from '../../typings/terminal'
 import { execa, memoizeAsync } from './helper'
 import { loginExecute } from './shell'
-
-function sortCompletions<T>(collection: T[], query: string, iteratee?: (value: T) => string) {
-  if (!query) return collection
-  return collection
-    .map(item => {
-      return [item, fuzzaldrin.score(iteratee ? iteratee(item) : String(item), query)] as const
-    })
-    .filter(([item, score]) => score > 0)
-    .sort(([itemA, scoreA], [itemB, scoreB]) => scoreB - scoreA)
-    .map(([item]) => item)
-}
 
 async function getFileCompletions(
   currentWord: string,
@@ -45,9 +33,7 @@ async function getFileCompletions(
   } catch {
     return []
   }
-  if (prefix) {
-    files = sortCompletions(files, prefix, entity => entity.name)
-  } else {
+  if (!prefix) {
     files = files.filter(entity => !entity.name.startsWith('.'))
   }
   const suffix = directoryOnly ? path.sep : ''
@@ -247,11 +233,9 @@ const getManPageRawCompletions = memoizeAsync(async (command: string, subcommand
 
 async function getManPageCompletions(currentWord: string, command: string, subcommand?: string) {
   let completions = await getManPageRawCompletions(command, subcommand)
-  return sortCompletions(completions, currentWord, item => item.value)
-    .map<CommandCompletion>(item => ({
+  return completions.map<CommandCompletion>(item => ({
     ...item,
     query: currentWord,
-    value: item.value,
   }))
 }
 
@@ -291,10 +275,9 @@ async function getCompletions(input: string, cwd: string) {
   if (completionDeclaration) {
     asyncCompletionLists.push(
       Promise.resolve(
-        sortCompletions(completionDeclaration.completions, currentWord, item => item.value)
-          .map<CommandCompletion>(item => ({
+        completionDeclaration.completions.map<CommandCompletion>(item => ({
+          ...item,
           query: currentWord,
-          value: item.value,
         })),
       ),
     )

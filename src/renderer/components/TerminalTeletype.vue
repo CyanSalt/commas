@@ -8,10 +8,6 @@ import { isMatchLinkModifier, writeTerminalTab } from '../compositions/terminal'
 import { openContextMenu } from '../utils/frame'
 import { escapeHTML } from '../utils/helper'
 
-function highlightLabel(label: string, query: string) {
-  return query ? fuzzaldrin.wrap(escapeHTML(label), escapeHTML(query)) : label
-}
-
 const { tab } = defineProps<{
   tab: TerminalTab,
 }>()
@@ -91,6 +87,10 @@ onActivated(() => {
     xterm['_core'].viewport.syncScrollArea(true)
   }
 })
+
+function highlightLabel(label: string, query: string) {
+  return query ? fuzzaldrin.wrap(escapeHTML(label), escapeHTML(query)) : label
+}
 
 function getCompletionItem(target: EventTarget | null): HTMLElement | null {
   return target instanceof HTMLElement
@@ -283,7 +283,6 @@ function clearCompletionDescription(event: FocusEvent) {
 :deep(.terminal-completion) {
   margin-left: calc(var(--column) * var(--cell-width));
   border: 1px solid rgb(var(--theme-foreground) / 0.5);
-  overflow: auto;
   background: rgb(var(--theme-background));
   border-radius: 2px;
   &.is-right {
@@ -301,6 +300,8 @@ function clearCompletionDescription(event: FocusEvent) {
 }
 .terminal-completion-wrapper {
   display: flex;
+  height: 100%;
+  overflow: auto;
 }
 .terminal-completion-list {
   flex: 1;
