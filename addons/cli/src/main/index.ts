@@ -260,7 +260,7 @@ where <command> is one of:
 
   commas.helper.watchBaseEffect(onInvalidate => {
     const completions: CommandCompletion[] = commands.map(item => ({
-      label: item.command,
+      query: '',
       value: item.command,
       description: item.usage,
     }))

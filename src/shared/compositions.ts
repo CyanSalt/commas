@@ -9,7 +9,7 @@ export function useAsyncComputed<T>(factory: () => Promise<T>, defaultValue?: T)
   return customRef<T | undefined>((track, trigger) => {
     let currentValue = defaultValue
     let initialized = false
-    const update = watchBaseEffect(async () => {
+    const { runner } = watchBaseEffect(async () => {
       try {
         currentValue = await factory()
       } catch {
@@ -22,7 +22,7 @@ export function useAsyncComputed<T>(factory: () => Promise<T>, defaultValue?: T)
         track()
         if (!initialized) {
           initialized = true
-          update()
+          runner()
         }
         return currentValue
       },
@@ -101,6 +101,7 @@ export function watchBaseEffect<T>(
   if (scope) {
     onScopeDispose(dispose)
   }
+  dispose.runner = reactiveEffect
   return dispose
 }
 
