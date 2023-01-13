@@ -299,6 +299,7 @@ function clearCompletionDescription(event: FocusEvent) {
   }
 }
 .terminal-completion-wrapper {
+  @include partials.scroll-container(8px);
   display: flex;
   height: 100%;
   overflow: auto;
