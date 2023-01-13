@@ -9,10 +9,6 @@ import type { CommandCompletion } from '../../typings/terminal'
 import { execa, memoizeAsync } from './helper'
 import { loginExecute } from './shell'
 
-function highlightLabel(label: string, query: string) {
-  return query ? fuzzaldrin.wrap(label, query) : label
-}
-
 function sortCompletions<T>(collection: T[], query: string, iteratee?: (value: T) => string) {
   if (!query) return collection
   return collection
@@ -56,9 +52,8 @@ async function getFileCompletions(
   }
   const suffix = directoryOnly ? path.sep : ''
   return files.map<CommandCompletion>(entity => ({
-    label: highlightLabel(entity.name + suffix, prefix),
+    query: prefix,
     value: entity.name + suffix,
-    back: prefix.length,
   }))
 }
 
@@ -121,7 +116,7 @@ const getManPageRawCompletions = memoizeAsync(async (command: string, subcommand
       // ignore error
     }
     return commands.map<CommandCompletion>(item => ({
-      label: item,
+      query: '',
       value: item,
     }))
   }
@@ -165,7 +160,7 @@ const getManPageRawCompletions = memoizeAsync(async (command: string, subcommand
         const matches = paragraph[index].match(/^\s*git-([\w-]+)/)
         if (matches) {
           completions.push({
-            label: matches[1],
+            query: '',
             value: matches[1],
             description: paragraph.slice(index + 1)
               .map(line => line.trim()).join(' '),
@@ -180,7 +175,7 @@ const getManPageRawCompletions = memoizeAsync(async (command: string, subcommand
         const matches = paragraph[0].match(/^\s{3}([\w-]+)\s*(.*)$/)
         if (matches) {
           completions.push({
-            label: matches[1],
+            query: '',
             value: matches[1],
             description: (matches[2] ? [matches[2], ...paragraph.slice(1)] : paragraph.slice(1))
               .map(line => line.trim()).join(' '),
@@ -240,7 +235,7 @@ const getManPageRawCompletions = memoizeAsync(async (command: string, subcommand
     const matches = paragraph[0].match(/^\s*(-[\w-.]+=?),?\s*(.*)$/)
     if (matches) {
       completions.push({
-        label: matches[1],
+        query: '',
         value: matches[1],
         description: (matches[2] ? [matches[2], ...paragraph.slice(1)] : paragraph.slice(1))
           .map(line => line.trim()).join(' '),
@@ -255,9 +250,8 @@ async function getManPageCompletions(currentWord: string, command: string, subco
   return sortCompletions(completions, currentWord, item => item.value)
     .map<CommandCompletion>(item => ({
     ...item,
-    label: highlightLabel(item.label, currentWord),
+    query: currentWord,
     value: item.value,
-    back: currentWord.length,
   }))
 }
 
@@ -277,6 +271,7 @@ async function getCompletions(input: string, cwd: string) {
   const undeterminedSubcommand = args.find((item): item is string => typeof item === 'string' && !item.startsWith('-'))
   const currentWord = isWordStart ? '' : entries[entries.length - 1] as string
   const isInputingArgs = currentWord.startsWith('-')
+    || (process.platform === 'win32' && currentWord.startsWith('/'))
   const command = isWordStart || args.length > 0
     ? undeterminedCommand
     : ''
@@ -298,9 +293,8 @@ async function getCompletions(input: string, cwd: string) {
       Promise.resolve(
         sortCompletions(completionDeclaration.completions, currentWord, item => item.value)
           .map<CommandCompletion>(item => ({
-          label: highlightLabel(item.label, currentWord),
+          query: currentWord,
           value: item.value,
-          back: currentWord.length,
         })),
       ),
     )
@@ -309,7 +303,13 @@ async function getCompletions(input: string, cwd: string) {
   const directoryCommands = ['cd', 'ls']
   const frequentlyUsedFileCommands = ['cat', 'cp', 'diff', 'more', 'mv', 'rm', 'source', 'vi']
     .concat(directoryCommands)
-  if (!isInputingArgs && (frequentlyUsedFileCommands.includes(command) || /^(~|\.{1,2})\//.test(currentWord))) {
+  if (!isInputingArgs && (
+    frequentlyUsedFileCommands.includes(command) || (
+      process.platform === 'win32'
+        ? /^\.{1,2}\\/.test(currentWord)
+        : /^(~|\.{1,2})?\//.test(currentWord)
+    )
+  )) {
     const directoryOnly = directoryCommands.includes(command)
     asyncCompletionLists.push(
       getFileCompletions(currentWord, cwd, directoryOnly),

@@ -46,9 +46,8 @@ export interface TerminalTabAddons {
 
 export interface CommandCompletion {
   value: string,
-  label: string,
+  query: string,
   description?: string,
-  back?: number,
 }
 
 export interface TerminalTab extends TerminalInfo {

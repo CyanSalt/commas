@@ -5,9 +5,8 @@ import type { IDecoration, IDisposable, IMarker, ITerminalAddon, Terminal } from
 import { toCSSHEX, toRGBA } from '../../shared/color'
 import type { CommandCompletion, TerminalTab } from '../../typings/terminal'
 import { useSettings } from '../compositions/settings'
-import { scrollToMarker } from '../compositions/terminal'
+import { scrollToMarker, writeTerminalTab } from '../compositions/terminal'
 import { useTheme } from '../compositions/theme'
-import { openContextMenu } from './frame'
 
 interface IntegratedShellCommandAction {
   command: string,
@@ -51,6 +50,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   recentMarker?: WeakRef<IMarker>
   completion?: IntegratedShellCompletion
   completionKey?: symbol
+  recentCompletionAppliedPosition?: IntegratedShellCompletion['position']
 
   constructor(tab: TerminalTab) {
     this.tab = tab
@@ -79,7 +79,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
               xterm,
               marker,
               actions ? theme.yellow : theme.foreground,
-              { actions },
+              Boolean(actions),
             )
             if (this.currentCommand) {
               this.currentCommand.marker.dispose()
@@ -115,9 +115,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
                     xterm,
                     this.currentCommand.marker,
                     exitCode ? theme.red : theme.green,
-                    {
-                      isFinished: true,
-                    },
+                    true,
                   )
                   if (exitCode && settings['terminal.shell.highlightErrors']) {
                     this._createHighlightDecoration(
@@ -172,9 +170,10 @@ export class ShellIntegrationAddon implements ITerminalAddon {
         }
       }),
       xterm.onCursorMove(() => {
-        this.clearCompletion()
         if (settings['terminal.shell.autoCompletion']) {
           this.triggerCompletion(true)
+        } else {
+          this.clearCompletion()
         }
       }),
     )
@@ -198,31 +197,20 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     xterm: Terminal,
     marker: IMarker,
     color: string,
-    extra: { actions?: IntegratedShellCommandAction[], isFinished?: boolean },
+    strong?: boolean,
   ) {
-    const { actions, isFinished } = extra
     const rgba = toRGBA(color)
     const decoration = xterm.registerDecoration({
       marker,
-      overviewRulerOptions: isFinished ? {
+      overviewRulerOptions: strong ? {
         color: toCSSHEX({ ...rgba, a: 0.5 }),
         position: 'right',
       } : undefined,
     })!
     updateDecorationElement(decoration, el => {
       el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
-      el.style.setProperty('--opacity', isFinished || actions ? '1' : '0.25')
+      el.style.setProperty('--opacity', strong ? '1' : '0.25')
       el.classList.add('terminal-command-mark')
-      if (actions) {
-        el.classList.add('is-interactive')
-        el.addEventListener('click', event => {
-          openContextMenu(actions.map(action => ({
-            label: action.command,
-            command: 'execute-command',
-            args: [action.command],
-          })), event)
-        })
-      }
     })
     return decoration
   }
@@ -329,22 +317,6 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
   }
 
-  getQuickFixActions() {
-    return this.currentCommand?.actions
-  }
-
-  triggerQuickFixMenu() {
-    if (!this.currentCommand?.actions) return
-    const el = this.currentCommand.decoration.element
-    if (!el) return
-    const rect = el.getBoundingClientRect()
-    const event = new MouseEvent('click', {
-      clientX: rect.left,
-      clientY: rect.top,
-    })
-    el.dispatchEvent(event)
-  }
-
   async _getCompletions(input: string | undefined) {
     if (!input) return []
     return ipcRenderer.invoke('get-completions', input, this.tab.cwd) as Promise<CommandCompletion[]>
@@ -388,8 +360,9 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   }
 
   async triggerCompletion(autofocus?: boolean) {
+    const currentPosition = this._getCurrentPosition()
     if (this.completion) {
-      if (isEqual(this.completion.position, this._getCurrentPosition())) {
+      if (isEqual(this.completion.position, currentPosition)) {
         if (autofocus) {
           this.activateCompletion()
         }
@@ -400,19 +373,33 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
     const { xterm } = this.tab
     const activeBuffer = xterm.buffer.active
-    let line: string | undefined
+    let line = ''
     if (
       this.currentCommand && !this.currentCommand.command
       && activeBuffer.baseY + activeBuffer.cursorY === this.currentCommand.marker.line
-      && activeBuffer.cursorX > this.currentCommand.cursorX
+      && activeBuffer.cursorX >= this.currentCommand.cursorX
     ) {
       line = xterm.buffer.active.getLine(this.currentCommand.marker.line)
         ?.translateToString(true, this.currentCommand.cursorX, activeBuffer.cursorX)
+        ?? ''
     }
+    let completions: CommandCompletion[] = []
     const key = Symbol('COMPLETION_SESSION')
     this.completionKey = key
-    const completions = await this._getCompletions(line)
+    if (this.currentCommand?.actions) {
+      const actionCompletions: CommandCompletion[] = this.currentCommand.actions.map(action => ({
+        query: line,
+        value: action.command,
+      }))
+      completions = completions.concat(actionCompletions)
+    }
+    const realtimeCompletions = await this._getCompletions(line)
+    completions = completions.concat(realtimeCompletions)
     if (!completions.length) return
+    if (
+      isEqual(this.recentCompletionAppliedPosition, currentPosition)
+      && completions.some(item => item.value === item.query)
+    ) return
     if (this.completionKey === key) {
       const result = this._createCompletionDecoration(completions.length)
       this.completion = result
@@ -424,6 +411,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   }
 
   async clearCompletion() {
+    this.completionKey = undefined
     const completion = this.completion
     if (completion) {
       completion.marker.dispose()
@@ -441,6 +429,18 @@ export class ShellIntegrationAddon implements ITerminalAddon {
         }
       })
     }
+  }
+
+  applyCompletion(value: string, back = 0) {
+    const { xterm } = this.tab
+    const position = this._getCurrentPosition()
+    position.x += value.length - back
+    while (position.x > xterm.cols) {
+      position.x -= xterm.cols
+    }
+    this.recentCompletionAppliedPosition = position
+    writeTerminalTab(this.tab, '\x7F'.repeat(back) + value)
+    xterm.focus()
   }
 
 }

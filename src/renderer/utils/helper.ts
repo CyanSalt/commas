@@ -1,3 +1,4 @@
+import { memoize } from 'lodash'
 import type { ComponentPublicInstance, KeepAlive, Ref, VNode } from 'vue'
 import { onActivated, unref, watchEffect } from 'vue'
 
@@ -62,4 +63,12 @@ export function unmountKeptAlive(instance: InstanceType<typeof KeepAlive>, key: 
   const { renderer: { um: unmount } } = sharedContext
   unmount(vnode, instance, parentSuspense, true)
   cache.delete(key)
+}
+
+const getHTMLWrapper = memoize(() => document.createElement('div'))
+
+export function escapeHTML(text: string) {
+  const wrapper = getHTMLWrapper()
+  wrapper.textContent = text
+  return wrapper.innerHTML
 }

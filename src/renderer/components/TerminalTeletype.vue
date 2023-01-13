@@ -1,10 +1,16 @@
 <script lang="ts" setup>
 import 'xterm/css/xterm.css'
+import fuzzaldrin from 'fuzzaldrin-plus'
 import { quote } from 'shell-quote'
 import { onActivated, watchEffect } from 'vue'
 import type { TerminalTab } from '../../typings/terminal'
 import { isMatchLinkModifier, writeTerminalTab } from '../compositions/terminal'
 import { openContextMenu } from '../utils/frame'
+import { escapeHTML } from '../utils/helper'
+
+function highlightLabel(label: string, query: string) {
+  return query ? fuzzaldrin.wrap(escapeHTML(label), escapeHTML(query)) : label
+}
 
 const { tab } = defineProps<{
   tab: TerminalTab,
@@ -94,9 +100,7 @@ function getCompletionItem(target: EventTarget | null): HTMLElement | null {
 
 function applyCompletionItem(item: HTMLElement) {
   if (item.dataset.value) {
-    const back = Number(item.dataset.back ?? 0)
-    writeTerminalTab(tab, '\x7F'.repeat(back) + item.dataset.value)
-    tab.xterm.focus()
+    tab.addons.shellIntegration!.applyCompletion(item.dataset.value, Number(item.dataset.back ?? 0))
   }
 }
 
@@ -196,19 +200,21 @@ function clearCompletionDescription(event: FocusEvent) {
   >
     <div ref="element" class="terminal-content"></div>
     <div v-if="tab.completions" id="terminal-completion-source">
-      <ul class="terminal-completion-list">
-        <li
-          v-for="(item, index) in tab.completions"
-          :key="index"
-          class="terminal-completion-item"
-          tabindex="0"
-          :data-value="item.value"
-          :data-desc="item.description ?? ''"
-          :data-back="item.back ?? 0"
-          v-html="item.label"
-        ></li>
-      </ul>
-      <div class="terminal-completion-desc"></div>
+      <div class="terminal-completion-wrapper">
+        <ul class="terminal-completion-list">
+          <li
+            v-for="(item, index) in tab.completions"
+            :key="index"
+            class="terminal-completion-item"
+            tabindex="0"
+            :data-value="item.value"
+            :data-desc="item.description ?? ''"
+            :data-back="item.query.length"
+            v-html="highlightLabel(item.value, item.query)"
+          ></li>
+        </ul>
+        <div class="terminal-completion-desc"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -267,9 +273,6 @@ function clearCompletionDescription(event: FocusEvent) {
     background: rgb(var(--color) / var(--opacity));
     border-radius: 50%;
   }
-  &.is-interactive {
-    cursor: pointer;
-  }
 }
 :deep(.terminal-highlight-block) {
   box-sizing: border-box;
@@ -278,7 +281,6 @@ function clearCompletionDescription(event: FocusEvent) {
   border-radius: 4px;
 }
 :deep(.terminal-completion) {
-  display: flex !important;
   margin-left: calc(var(--column) * var(--cell-width));
   border: 1px solid rgb(var(--theme-foreground) / 0.5);
   overflow: auto;
@@ -296,6 +298,9 @@ function clearCompletionDescription(event: FocusEvent) {
   &.is-bottom {
     margin-top: var(--cell-height);
   }
+}
+.terminal-completion-wrapper {
+  display: flex;
 }
 .terminal-completion-list {
   flex: 1;
