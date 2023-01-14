@@ -283,9 +283,7 @@ async function getCompletions(input: string, cwd: string) {
     )
   }
   // Files
-  const directoryCommands = ['cd', 'ls']
-  const frequentlyUsedFileCommands = ['cat', 'cp', 'diff', 'more', 'mv', 'rm', 'source', 'vi']
-    .concat(directoryCommands)
+  const frequentlyUsedFileCommands = ['cat', 'cd', 'cp', 'diff', 'more', 'mv', 'rm', 'source', 'vi']
   if (!isInputingArgs && (
     frequentlyUsedFileCommands.includes(command) || (
       process.platform === 'win32'
@@ -293,6 +291,7 @@ async function getCompletions(input: string, cwd: string) {
         : /^(~|\.{1,2})?\//.test(currentWord)
     )
   )) {
+    const directoryCommands = ['cd', 'dir', 'ls']
     const directoryOnly = directoryCommands.includes(command)
     asyncCompletionLists.push(
       getFileCompletions(currentWord, cwd, directoryOnly),
