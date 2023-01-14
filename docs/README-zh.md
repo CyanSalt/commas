@@ -6,13 +6,19 @@
 
 **Commas** 是一款可定制、插件化的终端，同时也是命令行执行工具。这个名字源于 **Com**mand **Mas**ter (命令大师)。
 
-![Screenshot](https://user-images.githubusercontent.com/5101076/142576956-b3805845-032f-4f28-bc2e-18d0cc69eb28.png)
+![Screenshot](https://user-images.githubusercontent.com/5101076/174989877-7f4e4b38-7c1f-4d57-b32e-d08eb0731f2d.png)
 
 ## 安装
 
 ### 预构建版本
 
 [下载最新版本](https://github.com/CyanSalt/commas/releases)
+
+也可以通过 [Homebrew](https://brew.sh/) 安装 (尤其是在 macOS 上)
+
+```shell
+brew install --cask cyansalt/cask/commas
+```
 
 ### 手动构建
 
@@ -55,6 +61,7 @@
 - [@vue/reactivity](https://github.com/vuejs/vue-next/tree/master/packages/reactivity)
 - [electron](https://github.com/electron/electron)
 - [node-pty](https://github.com/microsoft/node-pty)
+- [vscode](https://github.com/microsoft/vscode)
 - [xterm](https://github.com/xtermjs/xterm.js)
 
 ## 许可

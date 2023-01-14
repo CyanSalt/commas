@@ -14,6 +14,12 @@ EN | [中文](docs/README-zh.md)
 
 [Download the latest version](https://github.com/CyanSalt/commas/releases)
 
+It can also be installed via [Homebrew](https://brew.sh/) (especially on macOS)
+
+```shell
+brew install --cask cyansalt/cask/commas
+```
+
 ### Build manually
 
 You can clone or download the repository and build Commas locally.
