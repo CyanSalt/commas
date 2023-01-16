@@ -140,7 +140,32 @@ export async function createTerminalTab({
       if (event.key === 'c' && xterm.hasSelection()) return false
       if (event.key === 'f') return false
     }
-    if (event.type !== 'keydown') return true
+    if (tab.addons.shellIntegration?.completion) {
+      switch (event.key) {
+        case 'Enter':
+        case 'Tab':
+          event.preventDefault()
+          if (event.type === 'keydown') {
+            tab.addons.shellIntegration.applySelectedCompletionElement()
+          }
+          return false
+        case 'Escape':
+          if (event.type === 'keydown') {
+            tab.addons.shellIntegration.clearCompletion()
+          }
+          return false
+        case 'ArrowUp':
+          if (event.type === 'keydown') {
+            tab.addons.shellIntegration.selectPreviousCompletionElement()
+          }
+          return false
+        case 'ArrowDown':
+          if (event.type === 'keydown') {
+            tab.addons.shellIntegration.selectNextCompletionElement()
+          }
+          return false
+      }
+    }
     const matchedItem = rendererKeybindings.find(item => isMatch(event, item.pattern))
     if (!matchedItem) return true
     switch (matchedItem.command) {
@@ -150,12 +175,8 @@ export async function createTerminalTab({
       }
       case 'xterm:completion': {
         if (!tab.addons.shellIntegration) return true
-        tab.addons.shellIntegration.triggerCompletion(true)
+        tab.addons.shellIntegration.triggerCompletion()
         return false
-      }
-      case 'xterm:exit': {
-        if (!tab.addons.shellIntegration) return true
-        return !tab.addons.shellIntegration.clearCompletion()
       }
       default:
         return true

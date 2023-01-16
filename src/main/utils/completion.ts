@@ -33,7 +33,7 @@ async function getFileCompletions(
   } catch {
     return []
   }
-  if (!prefix) {
+  if (!prefix.startsWith('.')) {
     files = files.filter(entity => !entity.name.startsWith('.'))
   }
   const suffix = directoryOnly ? path.sep : ''
@@ -284,13 +284,7 @@ async function getCompletions(input: string, cwd: string) {
   }
   // Files
   const frequentlyUsedFileCommands = ['cat', 'cd', 'cp', 'diff', 'more', 'mv', 'rm', 'source', 'vi']
-  if (!isInputingArgs && (
-    frequentlyUsedFileCommands.includes(command) || (
-      process.platform === 'win32'
-        ? /^\.{1,2}\\/.test(currentWord)
-        : /^(~|\.{1,2})?\//.test(currentWord)
-    )
-  )) {
+  if (!isInputingArgs && (currentWord || frequentlyUsedFileCommands.includes(command))) {
     const directoryCommands = ['cd', 'dir', 'ls']
     const directoryOnly = directoryCommands.includes(command)
     asyncCompletionLists.push(

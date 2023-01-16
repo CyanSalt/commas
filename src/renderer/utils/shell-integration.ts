@@ -182,7 +182,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       }),
       xterm.onCursorMove(() => {
         if (settings['terminal.shell.autoCompletion']) {
-          this.triggerCompletion(true)
+          this.triggerCompletion()
         } else {
           this.clearCompletion()
         }
@@ -370,13 +370,10 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
   }
 
-  async triggerCompletion(autofocus?: boolean) {
+  async triggerCompletion() {
     const currentPosition = this._getCurrentPosition()
     if (this.completion) {
       if (isEqual(this.completion.position, currentPosition)) {
-        if (autofocus) {
-          this.activateCompletion()
-        }
         return
       } else {
         this.clearCompletion()
@@ -411,14 +408,14 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     if (
       isEqual(this.recentCompletionAppliedPosition, currentPosition)
       && completions.some(item => item.value === item.query)
-    ) return
+    ) {
+      this.recentCompletionAppliedPosition = undefined
+      return
+    }
     if (this.completionKey === key) {
       const result = this._createCompletionDecoration(completions.length)
       this.completion = result
       this.tab.completions = completions
-      if (autofocus) {
-        this.activateCompletion()
-      }
     }
   }
 
@@ -428,21 +425,6 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     if (completion) {
       completion.marker.dispose()
       this.completion = undefined
-      return true
-    } else {
-      return false
-    }
-  }
-
-  activateCompletion() {
-    const completion = this.completion
-    if (completion) {
-      updateDecorationElement(completion.decoration, el => {
-        const item = el.querySelector<HTMLElement>('.terminal-completion-item')
-        if (item) {
-          item.focus()
-        }
-      })
     }
   }
 
@@ -455,7 +437,79 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
     this.recentCompletionAppliedPosition = position
     writeTerminalTab(this.tab, '\x7F'.repeat(back) + value)
-    xterm.focus()
+  }
+
+  setCompletionDescription(content: string | undefined) {
+    if (this.completion?.decoration.element) {
+      const el = this.completion.decoration.element.querySelector<HTMLDivElement>('.terminal-completion-desc')
+      if (el) {
+        el.textContent = content ?? ''
+      }
+    }
+  }
+
+  getCompletionElement(target: EventTarget | null) {
+    return target instanceof HTMLElement
+      ? target.closest<HTMLElement>('.terminal-completion-item')
+      : null
+  }
+
+  applyCompletionElement(item: HTMLElement) {
+    if (item.dataset.value) {
+      this.applyCompletion(item.dataset.value, Number(item.dataset.back ?? 0))
+    }
+  }
+
+  selectCompletionElement(item: HTMLElement) {
+    const parent = item.parentElement
+    if (parent) {
+      for (const el of parent.children) {
+        el.classList.remove('is-active')
+      }
+    }
+    this.setCompletionDescription(item.dataset.desc)
+    item.classList.add('is-active')
+  }
+
+  getSelectedCompletionElement() {
+    return this.completion?.decoration.element
+      ? this.completion.decoration.element.querySelector<HTMLDivElement>(
+        '.terminal-completion-item.is-active',
+      )
+      : null
+  }
+
+  applySelectedCompletionElement() {
+    const item = this.getSelectedCompletionElement()
+    if (item) {
+      this.applyCompletionElement(item)
+    }
+  }
+
+  selectPreviousCompletionElement() {
+    const item = this.getSelectedCompletionElement()
+    if (item) {
+      const previousSibling = item.previousElementSibling
+      if (previousSibling) {
+        this.selectCompletionElement(previousSibling as HTMLElement)
+      } else {
+        const parent = item.parentElement!
+        this.selectCompletionElement(parent.children[parent.childElementCount - 1] as HTMLElement)
+      }
+    }
+  }
+
+  selectNextCompletionElement() {
+    const item = this.getSelectedCompletionElement()
+    if (item) {
+      const nextSibling = item.nextElementSibling
+      if (nextSibling) {
+        this.selectCompletionElement(nextSibling as HTMLElement)
+      } else {
+        const parent = item.parentElement!
+        this.selectCompletionElement(parent.children[0] as HTMLElement)
+      }
+    }
   }
 
 }

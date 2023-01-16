@@ -92,98 +92,17 @@ function highlightLabel(label: string, query: string) {
   return query ? fuzzaldrin.wrap(escapeHTML(label), escapeHTML(query)) : label
 }
 
-function getCompletionItem(target: EventTarget | null): HTMLElement | null {
-  return target instanceof HTMLElement
-    ? target.closest<HTMLElement>('.terminal-completion-item')
-    : null
-}
-
-function applyCompletionItem(item: HTMLElement) {
-  if (item.dataset.value) {
-    tab.addons.shellIntegration!.applyCompletion(item.dataset.value, Number(item.dataset.back ?? 0))
-  }
-}
-
 function selectCompletion(event: MouseEvent) {
-  const item = getCompletionItem(event.target)
+  const item = tab.addons.shellIntegration!.getCompletionElement(event.target)
   if (item) {
     event.stopPropagation()
     event.preventDefault()
     if (isMatchLinkModifier(event)) {
-      item.focus()
+      tab.addons.shellIntegration!.selectCompletionElement(item)
     } else {
-      applyCompletionItem(item)
+      tab.addons.shellIntegration!.applyCompletionElement(item)
     }
-  }
-}
-
-function startCompletion(event: KeyboardEvent) {
-  const item = getCompletionItem(event.target)
-  if (item) {
-    event.stopPropagation()
-    event.preventDefault()
-    switch (event.key) {
-      case 'Enter':
-      case 'Tab':
-        applyCompletionItem(item)
-        break
-      case 'Escape':
-        tab.addons.shellIntegration!.clearCompletion()
-        tab.xterm.focus()
-        break
-      case 'ArrowUp': {
-        const previousSibling = item.previousElementSibling
-        if (previousSibling) {
-          (previousSibling as HTMLElement).focus()
-        } else {
-          const parent = item.parentElement!;
-          (parent.children[parent.childElementCount - 1] as HTMLElement).focus()
-        }
-        break
-      }
-      case 'ArrowDown': {
-        const nextSibling = item.nextElementSibling
-        if (nextSibling) {
-          (nextSibling as HTMLElement).focus()
-        } else {
-          const parent = item.parentElement!;
-          (parent.children[0] as HTMLElement).focus()
-        }
-        break
-      }
-      default:
-        // FIXME: don't know why
-        if (event.key === ' ') {
-          writeTerminalTab(tab, event.key)
-        }
-        tab.xterm.textarea!.dispatchEvent(
-          new (event.constructor as typeof Event)(event.type, event),
-        )
-        tab.xterm.focus()
-        break
-    }
-  }
-}
-
-function setCompletionDescription(item: HTMLElement, content: string | undefined) {
-  item.parentElement!.nextElementSibling!.textContent = content ?? ''
-}
-
-function showCompletionDescription(event: FocusEvent) {
-  const item = getCompletionItem(event.target)
-  if (item) {
-    event.stopPropagation()
-    event.preventDefault()
-    setCompletionDescription(item, item.dataset.desc)
-  }
-}
-
-function clearCompletionDescription(event: FocusEvent) {
-  const item = getCompletionItem(event.target)
-  if (item) {
-    event.stopPropagation()
-    event.preventDefault()
-    setCompletionDescription(item, '')
+    tab.xterm.focus()
   }
 }
 </script>
@@ -195,9 +114,6 @@ function clearCompletionDescription(event: FocusEvent) {
     @dragover.prevent="dragFileOver"
     @drop.prevent="dropFile"
     @click="selectCompletion"
-    @keydown="startCompletion"
-    @focusin="showCompletionDescription"
-    @focusout="clearCompletionDescription"
   >
     <div ref="element" class="terminal-content"></div>
     <div v-if="tab.completions" id="terminal-completion-source">
@@ -206,8 +122,7 @@ function clearCompletionDescription(event: FocusEvent) {
           <li
             v-for="(item, index) in tab.completions"
             :key="index"
-            class="terminal-completion-item"
-            tabindex="0"
+            :class="['terminal-completion-item', { 'is-active': !index }]"
             :data-value="item.value"
             :data-desc="item.description ?? ''"
             :data-back="item.query.length"
@@ -317,11 +232,8 @@ function clearCompletionDescription(event: FocusEvent) {
   text-overflow: ellipsis;
   overflow: hidden;
   cursor: pointer;
-  &:hover, &:focus {
+  &:hover, &.is-active {
     background: var(--design-card-background);
-  }
-  &:focus {
-    outline: none;
   }
   :deep(strong) {
     color: rgb(var(--theme-blue));
