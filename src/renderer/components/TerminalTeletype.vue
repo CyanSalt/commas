@@ -94,6 +94,8 @@ function highlightLabel(label: string, query: string) {
 
 function getCompletionIcon(type: CommandCompletion['type']) {
   switch (type) {
+    case 'history':
+      return 'feather-icon icon-clock'
     case 'file':
       return 'feather-icon icon-file-text'
     case 'directory':

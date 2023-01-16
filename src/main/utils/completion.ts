@@ -1,6 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { findLastIndex } from 'lodash'
+import { findLastIndex, uniq } from 'lodash'
+import shellHistory from 'shell-history'
 import { parse, quote } from 'shell-quote'
 import * as commas from '../../../api/core-main'
 import { resolveHome } from '../../shared/terminal'
@@ -265,38 +266,46 @@ async function getCompletions(input: string, cwd: string) {
   const subcommand = command && isWordStart || subcommandArgs.length > 0
     ? undeterminedSubcommand
     : ''
-  // Commands
-  if (!command) {
-    // TODO:
-    return []
-  }
   let asyncCompletionLists: Promise<CommandCompletion[]>[] = []
   // Registered
   const queryCommand = subcommand ? `${command} ${subcommand}` : command
   const declarations = commas.proxy.context.getCollection('terminal.completion')
   const completionDeclaration = declarations.find(item => item.command === queryCommand)
   if (completionDeclaration) {
-    asyncCompletionLists.push(
-      Promise.resolve(
-        completionDeclaration.completions.map<CommandCompletion>(item => ({
-          ...item,
-          query: currentWord,
-        })),
-      ),
-    )
+    asyncCompletionLists.push(Promise.resolve(
+      completionDeclaration.completions.map<CommandCompletion>(item => ({
+        ...item,
+        query: currentWord,
+      })),
+    ))
+  }
+  // History
+  const history = uniq((shellHistory() as string[]).reverse()).slice(0, 100)
+  asyncCompletionLists.push(Promise.resolve(
+    history.map<CommandCompletion>(item => ({
+      type: 'history',
+      value: item,
+      query: input,
+    })),
+  ))
+  // Commands
+  if (!command) {
+    // TODO:
   }
   // Files
-  const frequentlyUsedFileCommands = ['cat', 'cd', 'cp', 'diff', 'more', 'mv', 'rm', 'source', 'vi']
-  if (!isInputingArgs && (currentWord || frequentlyUsedFileCommands.includes(command))) {
+  const frequentlyUsedFileCommands = ['.', 'cat', 'cd', 'cp', 'diff', 'more', 'mv', 'rm', 'source', 'vi']
+  if (command && !isInputingArgs && (currentWord || frequentlyUsedFileCommands.includes(command))) {
     const directoryCommands = ['cd', 'dir', 'ls']
     const directoryOnly = directoryCommands.includes(command)
     asyncCompletionLists.push(
       getFileCompletions(currentWord, cwd, directoryOnly),
     )
   }
-  asyncCompletionLists.push(
-    getManPageCompletions(currentWord, command, subcommand),
-  )
+  if (command) {
+    asyncCompletionLists.push(
+      getManPageCompletions(currentWord, command, subcommand),
+    )
+  }
   const lists = await Promise.all(asyncCompletionLists)
   return lists.flat()
 }

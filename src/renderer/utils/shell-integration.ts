@@ -48,7 +48,11 @@ function filterAndSortCompletions(completions: CommandCompletion[]) {
       return [item, item.query ? fuzzaldrin.score(item.value, item.query) : 1] as const
     })
     .filter(([item, score]) => score > 0)
-    .sort(([itemA, scoreA], [itemB, scoreB]) => scoreB - scoreA)
+    .sort(([itemA, scoreA], [itemB, scoreB]) => {
+      if (itemA.type === 'history' && itemB.type !== 'history') return 1
+      if (itemA.type !== 'history' && itemB.type === 'history') return -1
+      return scoreB - scoreA
+    })
     .map(([item]) => item)
 }
 

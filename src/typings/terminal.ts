@@ -47,7 +47,7 @@ export interface TerminalTabAddons {
 export interface CommandCompletion {
   value: string,
   query: string,
-  type?: 'file' | 'directory' | 'recommendation' | 'command',
+  type?: 'history' | 'file' | 'directory' | 'recommendation' | 'command',
   description?: string,
 }
 

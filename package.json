@@ -80,6 +80,7 @@
     "node-ipc": "^10.1.0",
     "node-pty": "^0.10.1",
     "semver": "^7.3.7",
+    "shell-history": "^1.1.0",
     "shell-quote": "^1.7.4",
     "sudo-prompt": "^9.2.1",
     "vue": "^3.2.45",
