@@ -252,14 +252,16 @@ async function getCompletions(input: string, cwd: string) {
     ? (entries[tokenIndex + 1] as string).toLowerCase()
     : undefined
   const args = entries.slice(tokenIndex + 2)
-  const undeterminedSubcommand = args.find((item): item is string => typeof item === 'string' && !item.startsWith('-'))
+  const subcommandIndex = args.findIndex(item => typeof item === 'string' && !item.startsWith('-'))
+  const undeterminedSubcommand = subcommandIndex !== -1 ? args[subcommandIndex] as string : undefined
+  const subcommandArgs = subcommandIndex !== -1 ? args.slice(subcommandIndex + 1) : []
   const currentWord = isWordStart ? '' : entries[entries.length - 1] as string
   const isInputingArgs = currentWord.startsWith('-')
     || (process.platform === 'win32' && currentWord.startsWith('/'))
   const command = isWordStart || args.length > 0
     ? undeterminedCommand
     : ''
-  const subcommand = command && isWordStart || args.length > 1
+  const subcommand = command && isWordStart || subcommandArgs.length > 0
     ? undeterminedSubcommand
     : ''
   // Commands
