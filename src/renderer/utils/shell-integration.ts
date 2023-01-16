@@ -85,6 +85,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             return true
           case 'B': {
             // PromptEnd
+            ipcRenderer.send('terminal-prompt-end')
             const marker = xterm.registerMarker()!
             const actions = this.currentCommand
               ? this.currentCommand.actions

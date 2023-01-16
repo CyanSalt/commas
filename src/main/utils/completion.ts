@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { findLastIndex, uniq } from 'lodash'
+import { findLastIndex, memoize, uniq } from 'lodash'
 import shellHistory from 'shell-history'
 import { parse, quote } from 'shell-quote'
 import * as commas from '../../../api/core-main'
@@ -8,6 +8,10 @@ import { resolveHome } from '../../shared/terminal'
 import type { CommandCompletion } from '../../typings/terminal'
 import { execa, memoizeAsync } from './helper'
 import { loginExecute } from './shell'
+
+const getDirectoryEntries = memoizeAsync(async (dir: string) => {
+  return fs.promises.readdir(dir, { withFileTypes: true })
+})
 
 async function getFileCompletions(
   currentWord: string,
@@ -29,7 +33,7 @@ async function getFileCompletions(
   }
   let files: fs.Dirent[]
   try {
-    const entities = await fs.promises.readdir(context, { withFileTypes: true })
+    const entities = await getDirectoryEntries(context)
     files = directoryOnly ? entities.filter(entity => entity.isDirectory()) : entities
   } catch {
     return []
@@ -241,6 +245,10 @@ async function getManPageCompletions(currentWord: string, command: string, subco
   }))
 }
 
+const getShellHistory = memoize(() => {
+  return uniq((shellHistory() as string[]).reverse()).slice(0, 100)
+})
+
 async function getCompletions(input: string, cwd: string) {
   const entries = parse(input).filter(item => {
     return !(typeof item === 'object' && 'comment' in item)
@@ -280,9 +288,9 @@ async function getCompletions(input: string, cwd: string) {
     ))
   }
   // History
-  const history = uniq((shellHistory() as string[]).reverse()).slice(0, 100)
+  const history = getShellHistory()
   asyncCompletionLists.push(Promise.resolve(
-    history.map<CommandCompletion>(item => ({
+    history.filter(item => item.startsWith(input)).map<CommandCompletion>(item => ({
       type: 'history',
       value: item,
       query: input,
@@ -310,6 +318,12 @@ async function getCompletions(input: string, cwd: string) {
   return lists.flat()
 }
 
+function refreshCompletions() {
+  getDirectoryEntries.cache.clear()
+  getShellHistory.cache.clear!()
+}
+
 export {
   getCompletions,
+  refreshCompletions,
 }

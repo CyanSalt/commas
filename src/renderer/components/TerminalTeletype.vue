@@ -247,9 +247,6 @@ function selectCompletion(event: MouseEvent) {
   display: flex;
   align-items: center;
   padding: 0 0.25ch;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
   cursor: pointer;
   &:hover, &.is-active {
     background: var(--design-card-background);
@@ -259,6 +256,7 @@ function selectCompletion(event: MouseEvent) {
   }
 }
 .completion-item-icon {
+  flex: none;
   margin-right: 0.25ch;
   color: rgb(var(--theme-magenta));
   font-size: 12px;
@@ -269,6 +267,13 @@ function selectCompletion(event: MouseEvent) {
   .terminal-completion-item.recommendation & {
     color: rgb(var(--theme-green));
   }
+}
+.completion-item-label {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .terminal-completion-desc {
   position: sticky;

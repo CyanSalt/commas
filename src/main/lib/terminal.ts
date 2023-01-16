@@ -5,7 +5,7 @@ import type { WebContents } from 'electron'
 import * as pty from 'node-pty'
 import type { IPty, IPtyForkOptions } from 'node-pty'
 import type { TerminalInfo } from '../../typings/terminal'
-import { getCompletions } from '../utils/completion'
+import { getCompletions, refreshCompletions } from '../utils/completion'
 import { execa } from '../utils/helper'
 import { integrateShell, getDefaultEnv, getDefaultShell } from '../utils/shell'
 import { useSettings, whenSettingsReady } from './settings'
@@ -134,6 +134,9 @@ function handleTerminalMessages() {
   })
   ipcMain.handle('get-completions', (event, input: string, cwd: string) => {
     return getCompletions(input, cwd)
+  })
+  ipcMain.handle('terminal-prompt-end', () => {
+    refreshCompletions()
   })
 }
 
