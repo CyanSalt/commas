@@ -3,7 +3,7 @@ import 'xterm/css/xterm.css'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { quote } from 'shell-quote'
 import { onActivated, watchEffect } from 'vue'
-import type { TerminalTab } from '../../typings/terminal'
+import type { CommandCompletion, TerminalTab } from '../../typings/terminal'
 import { isMatchLinkModifier, writeTerminalTab } from '../compositions/terminal'
 import { openContextMenu } from '../utils/frame'
 import { escapeHTML } from '../utils/helper'
@@ -92,6 +92,19 @@ function highlightLabel(label: string, query: string) {
   return query ? fuzzaldrin.wrap(escapeHTML(label), escapeHTML(query)) : label
 }
 
+function getCompletionIcon(type: CommandCompletion['type']) {
+  switch (type) {
+    case 'file':
+      return 'feather-icon icon-file-text'
+    case 'directory':
+      return 'feather-icon icon-folder'
+    case 'recommendation':
+      return 'feather-icon icon-fast-forward'
+    default:
+      return 'feather-icon icon-terminal'
+  }
+}
+
 function selectCompletion(event: MouseEvent) {
   const item = tab.addons.shellIntegration!.getCompletionElement(event.target)
   if (item) {
@@ -122,12 +135,14 @@ function selectCompletion(event: MouseEvent) {
           <li
             v-for="(item, index) in tab.completions"
             :key="index"
-            :class="['terminal-completion-item', { 'is-active': !index }]"
+            :class="['terminal-completion-item', item.type ?? 'command', { 'is-active': !index }]"
             :data-value="item.value"
             :data-desc="item.description ?? ''"
             :data-back="item.query.length"
-            v-html="highlightLabel(item.value, item.query)"
-          ></li>
+          >
+            <span :class="['completion-item-icon', getCompletionIcon(item.type)]"></span>
+            <span class="completion-item-label" v-html="highlightLabel(item.value, item.query)"></span>
+          </li>
         </ul>
         <div class="terminal-completion-desc"></div>
       </div>
@@ -227,6 +242,8 @@ function selectCompletion(event: MouseEvent) {
   padding: 0;
 }
 .terminal-completion-item {
+  display: flex;
+  align-items: center;
   padding: 0 0.25ch;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -237,6 +254,18 @@ function selectCompletion(event: MouseEvent) {
   }
   :deep(strong) {
     color: rgb(var(--theme-blue));
+  }
+}
+.completion-item-icon {
+  margin-right: 0.25ch;
+  color: rgb(var(--theme-magenta));
+  font-size: 12px;
+  .terminal-completion-item.file &,
+  .terminal-completion-item.directory & {
+    color: rgb(var(--theme-cyan));
+  }
+  .terminal-completion-item.recommendation & {
+    color: rgb(var(--theme-green));
   }
 }
 .terminal-completion-desc {

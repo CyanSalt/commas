@@ -38,6 +38,7 @@ async function getFileCompletions(
   }
   const suffix = directoryOnly ? path.sep : ''
   return files.map<CommandCompletion>(entity => ({
+    type: entity.isDirectory() ? 'directory' : 'file',
     query: prefix,
     value: entity.name + suffix,
   }))

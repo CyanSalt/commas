@@ -396,6 +396,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     this.completionKey = key
     if (this.currentCommand?.actions) {
       const actionCompletions: CommandCompletion[] = this.currentCommand.actions.map(action => ({
+        type: 'recommendation',
         query: line,
         value: action.command,
       }))
