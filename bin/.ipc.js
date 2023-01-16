@@ -39,7 +39,7 @@ function connectServer(id) {
 async function connect() {
   const [stdin, server] = await Promise.all([
     readInput(),
-    connectServer('commas-ipc-server'),
+    connectServer(process.env.COMMAS_MAIN_PID),
   ])
   let output = false
   server.on('data', (data) => {
@@ -65,6 +65,7 @@ async function connect() {
   })
 }
 
-ipc.config.id = 'commas-ipc-client'
+ipc.config.appspace = 'ipc.commas.'
+ipc.config.id = String(process.pid)
 ipc.config.silent = true
 connect()

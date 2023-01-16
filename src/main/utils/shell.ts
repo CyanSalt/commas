@@ -25,6 +25,7 @@ function getDefaultEnv() {
     TERM_PROGRAM_VERSION: app.getVersion(),
     COMMAS_EXE: app.getPath('exe'),
     COMMAS_MAIN_FILE: __filename,
+    COMMAS_MAIN_PID: String(process.pid),
     COMMAS_USERDATA: userFile(),
     // Overwrite the real `Path` on Windows
     Path: process.env.PATH ? `${process.env.PATH}${PATH_SEP}${BIN_PATH}` : BIN_PATH,

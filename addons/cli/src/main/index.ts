@@ -32,7 +32,8 @@ export default () => {
 
   const commands = commas.context.getCollection('cli.command')
 
-  ipc.config.id = 'commas-ipc-server'
+  ipc.config.appspace = 'ipc.commas.'
+  ipc.config.id = String(process.pid)
   ipc.config.silent = true
   ipc.serve(() => {
     ipc.server.on('request', async (context, socket) => {
