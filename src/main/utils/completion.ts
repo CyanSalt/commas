@@ -261,7 +261,7 @@ async function getHistoryCompletions(currentWord: string, command: string) {
   const tokenLists = getShellHistoryTokenLists()
   const tokens = command
     ? tokenLists.flatMap(list => list.slice(1))
-    : tokenLists.flatMap(list => list.slice(0, 1))
+    : tokenLists.flat()
   return uniq(tokens).map<CommandCompletion>(item => ({
     type: 'history',
     value: item,
