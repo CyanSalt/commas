@@ -6,20 +6,11 @@ export interface ThemeDefinition extends ITheme {
   cursorColor?: string,
 }
 
-export interface EditorTheme extends Required<ThemeDefinition> {
-  type: 'dark' | 'light',
-  comment: string,
-  lineHighlight: string,
-  lineNumber: string,
-  activeLineNumber: string,
-}
-
 export interface Theme extends Required<ThemeDefinition> {
   name: string,
   type: 'dark' | 'light',
   opacity: number,
   variables: Record<string, string>,
-  editor: EditorTheme,
   systemRed: string,
   systemYellow: string,
   systemGreen: string,

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
+import * as commas from 'commas:api/renderer'
 import { DiffComputer } from 'monaco-editor/esm/vs/editor/common/diff/diffComputer'
 import { watchEffect } from 'vue'
-import * as monaco from '../../assets/monaco-editor'
-import { useSettings } from '../../compositions/settings'
-import { useEditorTheme } from '../../compositions/theme'
+import { useEditorTheme } from './compositions'
+import * as monaco from './monaco-editor'
 
 const { modelValue = '', file } = defineProps<{
   modelValue?: string,
@@ -16,7 +16,7 @@ const emit = defineEmits<{
 }>()
 
 const theme = useEditorTheme()
-const settings = useSettings()
+const settings = commas.remote.useSettings()
 
 let root = $ref<HTMLDivElement | undefined>()
 

@@ -1,8 +1,8 @@
 import { effect } from '@vue/reactivity'
 import { nativeTheme, systemPreferences } from 'electron'
 import type { BrowserWindowConstructorOptions, TitleBarOverlay } from 'electron'
-import { toRGBA, toCSSColor, toCSSHEX, toElectronHEX, isDarkColor, mix, toHSLA, toRGBAFromHSLA } from '../../shared/color'
-import type { EditorTheme, Theme, ThemeDefinition } from '../../typings/theme'
+import { toRGBA, toCSSColor, toElectronHEX, isDarkColor, mix, toHSLA, toRGBAFromHSLA } from '../../shared/color'
+import type { Theme, ThemeDefinition } from '../../typings/theme'
 import { provideIPC } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
 import { useDefaultSettings, useSettings } from './settings'
@@ -127,16 +127,6 @@ const theme = $computed(() => {
     }),
     ...Object.entries(CSS_PROPERTIES).map(([key, attr]) => [attr, definition[key]]),
   ].filter(([key, value]) => value !== undefined))
-  definition.editor = {
-    ...Object.fromEntries(Object.entries(THEME_CSS_COLORS).map(([key]) => {
-      return [key, toCSSHEX(toRGBA(definition[key]))]
-    })),
-    type: definition.type,
-    comment: toCSSHEX(mix(foregroundRGBA, backgroundRGBA, 0.5)),
-    lineHighlight: toCSSHEX(mix(foregroundRGBA, backgroundRGBA, 0.2)),
-    lineNumber: toCSSHEX(mix(foregroundRGBA, backgroundRGBA, 0.5)),
-    activeLineNumber: toCSSHEX(foregroundRGBA),
-  } as EditorTheme
   return definition
 })
 
@@ -173,6 +163,7 @@ function handleThemeMessages() {
 }
 
 export {
+  THEME_CSS_COLORS,
   useTheme,
   useThemeOptions,
   handleThemeMessages,

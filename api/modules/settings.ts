@@ -8,6 +8,7 @@ import {
   useSettings,
   useSettingsSpecs,
 } from '../../src/main/lib/settings'
+import { THEME_CSS_COLORS, useTheme } from '../../src/main/lib/theme'
 import type { SettingsSpec } from '../../src/typings/settings'
 import type { MainAPIContext } from '../types'
 
@@ -37,6 +38,7 @@ function addSettingsSpecsFile(this: MainAPIContext, file: string) {
 export * from '../shim'
 
 export {
+  THEME_CSS_COLORS,
   addSpecs as addSettingsSpecs,
   addSettingsSpecsFile,
   useSettings,
@@ -44,4 +46,5 @@ export {
   openSettingsFile,
   openUserDirectory,
   writeUserFile,
+  useTheme,
 }

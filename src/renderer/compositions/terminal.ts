@@ -1,5 +1,4 @@
 import * as os from 'os'
-import * as path from 'path'
 import { ipcRenderer, shell } from 'electron'
 import { isMatch, trim } from 'lodash'
 import { markRaw, nextTick, reactive, shallowReactive, toRaw, watch, watchEffect } from 'vue'
@@ -273,26 +272,6 @@ export function showTabOptions(event?: MouseEvent) {
   openContextMenu(options, event ?? [0, 36], options.findIndex(item => item.args?.[0] === activeIndex))
 }
 
-export function openCodeEditorTab(file: string) {
-  let tab = tabs.find(item => {
-    return item.pane?.type === 'editor' && item.shell === file
-  })
-  if (!tab) {
-    tab = reactive({
-      pid: 0,
-      process: path.basename(file),
-      title: '',
-      cwd: path.dirname(file),
-      shell: file,
-      pane: {
-        type: 'editor',
-        title: '',
-      },
-    } as TerminalTab)
-  }
-  activateOrAddTerminalTab(tab)
-}
-
 function handleTerminalTabHistory() {
   let navigating: string | null = null
   window.addEventListener('popstate', event => {
@@ -421,9 +400,6 @@ export function handleTerminalMessages() {
     const paths = trim(url.pathname, '/').split('/')
     commas.proxy.workspace.openPaneTab(paths[0])
     paneTabURL = address
-  })
-  ipcRenderer.on('open-code-editor', (event, file: string) => {
-    openCodeEditorTab(file)
   })
   ipcRenderer.on('save', () => {
     if (!currentTerminal) return

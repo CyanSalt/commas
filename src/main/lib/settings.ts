@@ -5,12 +5,12 @@ import { ipcMain, shell } from 'electron'
 import { cloneDeep, isEqual } from 'lodash'
 import YAML from 'yaml'
 import { surface } from '../../shared/compositions'
+import { globalHandler } from '../../shared/handler'
 import { createDeferred } from '../../shared/helper'
 import type { Settings, SettingsSpec } from '../../typings/settings'
 import { provideIPC, useYAMLFile } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
 import { writeFile } from '../utils/file'
-import { globalHandler } from '../utils/handler'
 import { translate } from './i18n'
 
 const defaultSpecs: SettingsSpec[] = require(resourceFile('settings.spec.json'))

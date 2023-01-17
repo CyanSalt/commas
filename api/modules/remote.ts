@@ -6,9 +6,9 @@ import {
   useSettings,
   useSettingsSpecs,
 } from '../../src/renderer/compositions/settings'
-import { openCodeEditorTab } from '../../src/renderer/compositions/terminal'
 import { useTheme } from '../../src/renderer/compositions/theme'
 import { translate } from '../../src/renderer/utils/i18n'
+import { globalHandler } from '../../src/shared/handler'
 
 export * from '../shim'
 
@@ -18,17 +18,17 @@ function openUserDirectory() {
 
 async function openDefaultSettings() {
   const filePath: string = await ipcRenderer.invoke('prepare-default-settings')
-  openCodeEditorTab(filePath)
+  globalHandler.invoke('global:open-file', filePath)
 }
 
 async function openSettingsFile() {
   const filePath: string = await ipcRenderer.invoke('prepare-settings-file')
-  openCodeEditorTab(filePath)
+  globalHandler.invoke('global:open-file', filePath)
 }
 
 async function openUserFile(file: string, example?: string) {
   const filePath: string = await ipcRenderer.invoke('prepare-user-file', file, example)
-  openCodeEditorTab(filePath)
+  globalHandler.invoke('global:open-file', filePath)
 }
 
 function writeUserFile(file: string, content?: string) {

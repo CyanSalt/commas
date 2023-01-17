@@ -26,7 +26,6 @@ import { injectTheme } from '../compositions/theme'
 import { unmountKeptAlive } from '../utils/helper'
 import { getTerminalTabID } from '../utils/terminal'
 import ActionBar from './ActionBar.vue'
-import CodeEditorPane from './CodeEditorPane.vue'
 import FindBox from './FindBox.vue'
 import TabList from './TabList.vue'
 import TerminalGroup from './TerminalGroup.vue'
@@ -45,11 +44,7 @@ let keepAlive = $ref<InstanceType<typeof KeepAlive>>()
 const TerminalComponent = $computed(() => {
   if (!terminal) return undefined
   if (terminal.pane) {
-    if (terminal.pane.type === 'editor') {
-      return CodeEditorPane
-    } else {
-      return terminal.pane.component
-    }
+    return terminal.pane.component
   } else {
     return TerminalGroup
   }
@@ -102,7 +97,7 @@ commas.proxy.app.events.once('terminal-addons-loaded', () => {
 // Revalidate KeepAlive manually
 commas.proxy.app.events.on('terminal-unmounted', (tab: TerminalTab) => {
   const id = getTerminalTabID(tab)
-  unmountKeptAlive(keepAlive, id)
+  unmountKeptAlive(keepAlive!, id)
 })
 
 onMounted(() => {

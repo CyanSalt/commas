@@ -50,14 +50,9 @@ function addCommasModuleResolver() {
 
 function addCommasModule(exports) {
   addCommasModuleResolver()
-  const mod = { exports: { ...exports } } as NodeModule
+  const mod = { exports: exports ? { ...exports } : exports } as NodeModule
   require.cache['commas:api'] = mod
   require.cache[app.isMainProcess() ? 'commas:api/main' : 'commas:api/renderer'] = mod
-}
-
-function unsetCommasModule() {
-  delete require.cache['commas:api']
-  delete require.cache[app.isMainProcess() ? 'commas:api/main' : 'commas:api/renderer']
 }
 
 function addCommasExternalModules(modules: string[]) {
@@ -104,7 +99,7 @@ function loadAddon(addon: AddonInfo, api: CompatableAPI) {
     }
     processor(clonedAPI)
   })
-  unsetCommasModule()
+  addCommasModule(undefined)
   loadedAddonContexts.push({ addon, scope })
 }
 

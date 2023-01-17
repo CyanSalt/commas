@@ -1,4 +1,5 @@
 import { shallowReactive } from '@vue/reactivity'
+import { globalHandler } from '../../src/shared/handler'
 import type { APIContext } from '../types'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -33,10 +34,30 @@ function provide<T extends keyof Context>(this: APIContext, name: keyof Context,
   }
 }
 
+function handle(this: APIContext, channel: string, listener: (...args: any[]) => any) {
+  globalHandler.handle(channel, listener)
+}
+
+function handleOnce(this: APIContext, channel: string, listener: (...args: any[]) => any) {
+  globalHandler.handleOnce(channel, listener)
+}
+
+function removeHandler(channel: string) {
+  globalHandler.removeHandler(channel)
+}
+
+function invoke(channel: string, ...args: any[]) {
+  return globalHandler.invoke(channel, ...args)
+}
+
 export * from '../shim'
 
 export {
   getCollection,
   provide,
   cancelProviding,
+  handle,
+  handleOnce,
+  removeHandler,
+  invoke,
 }

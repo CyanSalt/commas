@@ -1,8 +1,8 @@
 <script lang="ts" setup>
+import * as commas from 'commas:api/renderer'
 import { computed, defineProps, watchEffect } from 'vue'
-import type { TerminalTab } from '../../typings/terminal'
-import { useFile } from '../compositions/frame'
-import CodeEditor from './basic/CodeEditor.vue'
+import type { TerminalTab } from '../../../../src/typings/terminal'
+import CodeEditor from './CodeEditor.vue'
 
 const { tab } = defineProps<{
   tab: TerminalTab,
@@ -13,7 +13,7 @@ let code: string = $ref('')
 
 const file = $computed(() => tab.shell)
 
-const rawSource = $computed(() => useFile(file))
+const rawSource = $computed(() => commas.remote.useFile(file))
 let source: string = $computed({
   get: () => rawSource.value,
   set: (value: string) => {
@@ -35,7 +35,7 @@ watchEffect(() => {
 })
 
 function save() {
-  editor.save()
+  editor!.save()
 }
 
 watchEffect((onInvalidate) => {

@@ -1,4 +1,5 @@
-import { ipcRenderer } from 'electron'
+import { ipcRenderer, shell } from 'electron'
+import { globalHandler } from '../../shared/handler'
 import { translate } from '../utils/i18n'
 
 let isTabListEnabled = $ref(true)
@@ -44,5 +45,8 @@ export function handleShellMessages() {
   })
   ipcRenderer.on('before-quit', () => {
     willQuit = true
+  })
+  globalHandler.handle('global:open-file', (file: string) => {
+    shell.showItemInFolder(file)
   })
 }

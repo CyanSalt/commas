@@ -1,0 +1,16 @@
+{
+  "name": "editor",
+  "private": true,
+  "version": "0.1.0",
+  "productName": "Editor",
+  "description": "Built-in File Editor",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC",
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "编辑器",
+      "description": "内置文件编辑器"
+    }
+  }
+}

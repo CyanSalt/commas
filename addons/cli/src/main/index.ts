@@ -153,14 +153,6 @@ where <command> is one of:
   })
 
   commas.context.provide('cli.command', {
-    command: 'edit',
-    usage: '<file>',
-    handler({ sender, argv, cwd }) {
-      sender.send('open-code-editor', path.join(cwd, argv[0]))
-    },
-  })
-
-  commas.context.provide('cli.command', {
     command: 'select',
     usage: '<nth-tab>',
     handler({ sender, argv }) {

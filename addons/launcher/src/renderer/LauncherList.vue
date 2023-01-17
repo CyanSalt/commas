@@ -62,9 +62,9 @@ async function toggleActions() {
   isActionsVisible = !isActionsVisible
   if (isActionsVisible) {
     await nextTick()
-    searcher.focus()
+    searcher!.focus()
   } else {
-    searcher.blur()
+    searcher!.blur()
   }
 }
 
