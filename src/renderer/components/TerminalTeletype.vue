@@ -146,7 +146,7 @@ function selectCompletion(event: MouseEvent) {
             <span class="completion-item-label" v-html="highlightLabel(item.value, item.query)"></span>
           </li>
         </ul>
-        <div class="terminal-completion-desc"></div>
+        <div class="terminal-completion-desc">{{ tab.completions[0]?.description ?? '' }}</div>
       </div>
     </div>
   </div>
