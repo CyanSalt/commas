@@ -7,8 +7,12 @@ function isEqual(a, b) {
 
 function updateNode(doc: Document, node: Node, data: any) {
   if (!YAML.isCollection(node)) {
-    (node as Scalar).value = data
-    return node
+    if (!data || typeof data !== 'object') {
+      (node as Scalar).value = data
+      return node
+    } else {
+      return doc.createNode(data)
+    }
   }
   if (!data || typeof data !== 'object' || Array.isArray(data) !== YAML.isSeq(node)) {
     return doc.createNode(data)
