@@ -1,7 +1,7 @@
 import { effect } from '@vue/reactivity'
 import { nativeTheme, systemPreferences } from 'electron'
 import type { BrowserWindowConstructorOptions, TitleBarOverlay } from 'electron'
-import { toRGBA, toCSSColor, toElectronHEX, isDarkColor, mix, toHSLA, toRGBAFromHSLA } from '../../shared/color'
+import { isDarkColor, mix, toCSSColor, toCSSHEX, toElectronHEX, toHSLA, toRGBA, toRGBAFromHSLA } from '../../shared/color'
 import type { Theme, ThemeDefinition } from '../../typings/theme'
 import { provideIPC } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
@@ -85,7 +85,7 @@ const theme = $computed(() => {
   } as Theme
   const backgroundRGBA = toRGBA(definition.background!)
   const foregroundRGBA = toRGBA(definition.foreground!)
-  definition.background = toCSSColor({ ...backgroundRGBA, a: 1 })
+  definition.background = toCSSHEX({ ...backgroundRGBA, a: 1 })
   definition.type = isDarkColor(backgroundRGBA) ? 'dark' : 'light'
   let selectionBackgroundRGBA = definition.selectionBackground ? toRGBA(definition.selectionBackground) : undefined
   if (!selectionBackgroundRGBA || selectionBackgroundRGBA.a < 1) {
