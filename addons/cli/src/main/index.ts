@@ -7,7 +7,6 @@ import { app, BrowserWindow, webContents } from 'electron'
 import { random } from 'lodash'
 import ipc from 'node-ipc'
 import { quote } from 'shell-quote'
-import type { CommandCompletion } from '../../../../src/typings/terminal'
 import type { CommandModule } from './command'
 import { getCommandModule, executeCommand, useExternalURLCommands } from './command'
 
@@ -121,7 +120,7 @@ export default () => {
       const helpingCommand = argv[0]
       const manual = helpingCommand ? getCommandModule(argv[0], commands) : undefined
       if (manual) {
-        return `${ansi}
+        return `
 Usage: commas ${helpingCommand}${manual.usage ? ' ' + manual.usage : ''}
 `
       }
@@ -251,20 +250,15 @@ where <command> is one of:
     loadedExternalURLCommands = externalURLCommands
   })
 
-  commas.helper.watchBaseEffect(onInvalidate => {
-    const completions: CommandCompletion[] = commands.map(item => ({
-      query: '',
-      value: item.command,
-      description: item.usage,
-    }))
-    const declaration = {
-      command: 'commas',
-      completions,
+  commas.context.provide('terminal.completion', async (query: string, command: string) => {
+    if (command === 'commas') {
+      return commands.map(item => ({
+        query,
+        value: item.command,
+        description: item.usage,
+      }))
     }
-    commas.context.provide('terminal.completion', declaration)
-    onInvalidate(() => {
-      commas.context.cancelProviding('terminal.completion', declaration)
-    })
+    return []
   })
 
   commas.settings.addSettingsSpecsFile('settings.spec.json')

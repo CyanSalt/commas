@@ -13,16 +13,12 @@ const getDirectoryEntries = memoizeAsync(async (dir: string) => {
   return fs.promises.readdir(dir, { withFileTypes: true })
 })
 
-async function getFileCompletions(
-  currentWord: string,
-  cwd: string,
-  directoryOnly: boolean,
-) {
+async function getFileCompletions(query: string, cwd: string, directoryOnly: boolean) {
   let context = cwd
-  let prefix = currentWord
-  if (currentWord.includes(path.sep)) {
-    const joined = path.resolve(cwd, resolveHome(currentWord + '0')).slice(0, -1)
-    if (currentWord.endsWith(path.sep)) {
+  let prefix = query
+  if (query.includes(path.sep)) {
+    const joined = path.resolve(cwd, resolveHome(query + '0')).slice(0, -1)
+    if (query.endsWith(path.sep)) {
       context = joined.slice(0, -1)
       prefix = ''
     } else {
@@ -241,11 +237,11 @@ const getManPageRawCompletions = memoizeAsync(async (command: string, subcommand
   return completions
 }, (command, subcommand) => (subcommand ? `${command} ${subcommand}` : command))
 
-async function getManPageCompletions(currentWord: string, command: string, subcommand?: string) {
+async function getManPageCompletions(query: string, command: string, subcommand?: string) {
   const completions = await getManPageRawCompletions(command, subcommand)
   return completions.map<CommandCompletion>(item => ({
     ...item,
-    query: currentWord,
+    query,
   }))
 }
 
@@ -257,7 +253,7 @@ const getShellHistoryTokenLists = memoize(() => {
   })
 })
 
-async function getHistoryCompletions(currentWord: string, command: string) {
+async function getHistoryCompletions(query: string, command: string) {
   const tokenLists = getShellHistoryTokenLists()
   const tokens = command
     ? tokenLists.flatMap(list => list.slice(1))
@@ -265,7 +261,7 @@ async function getHistoryCompletions(currentWord: string, command: string) {
   return uniq(tokens).map<CommandCompletion>(item => ({
     type: 'history',
     value: item,
-    query: currentWord,
+    query,
   }))
 }
 
@@ -284,11 +280,11 @@ const getCommandRawCompletions = memoizeAsync(async () => {
   }))
 })
 
-async function getCommandCompletions(currentWord: string) {
+async function getCommandCompletions(query: string) {
   const completions = await getCommandRawCompletions()
   return completions.map<CommandCompletion>(item => ({
     ...item,
-    query: currentWord,
+    query,
   }))
 }
 
@@ -319,17 +315,10 @@ async function getCompletions(input: string, cwd: string) {
     : ''
   let asyncCompletionLists: Promise<CommandCompletion[]>[] = []
   // Registered
-  const queryCommand = subcommand ? `${command} ${subcommand}` : command
-  const declarations = commas.proxy.context.getCollection('terminal.completion')
-  const completionDeclaration = declarations.find(item => item.command === queryCommand)
-  if (completionDeclaration) {
-    asyncCompletionLists.push(Promise.resolve(
-      completionDeclaration.completions.map<CommandCompletion>(item => ({
-        ...item,
-        query: currentWord,
-      })),
-    ))
-  }
+  const factories = commas.proxy.context.getCollection('terminal.completion')
+  asyncCompletionLists = asyncCompletionLists.concat(
+    factories.map(factory => factory(currentWord, command)),
+  )
   // History
   if (currentWord) {
     asyncCompletionLists.push(
