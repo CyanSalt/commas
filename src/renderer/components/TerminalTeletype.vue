@@ -260,6 +260,10 @@ function selectCompletion(event: MouseEvent) {
   margin-right: 0.25ch;
   color: rgb(var(--theme-magenta));
   font-size: 12px;
+  opacity: 0.75;
+  .terminal-completion-item.history & {
+    color: rgb(var(--theme-yellow));
+  }
   .terminal-completion-item.file &,
   .terminal-completion-item.directory & {
     color: rgb(var(--theme-cyan));

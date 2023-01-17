@@ -249,9 +249,25 @@ async function getManPageCompletions(currentWord: string, command: string, subco
   }))
 }
 
-const getShellHistory = memoize(() => {
-  return uniq((shellHistory() as string[]).reverse()).slice(0, 100)
+const getShellHistoryTokenLists = memoize(() => {
+  const history = uniq((shellHistory() as string[]).reverse()).slice(0, 100)
+  return history.map(line => {
+    return parse(line)
+      .filter((item): item is string => (typeof item === 'string' && Boolean(item)))
+  })
 })
+
+async function getHistoryCompletions(currentWord: string, command: string) {
+  const tokenLists = getShellHistoryTokenLists()
+  const tokens = command
+    ? tokenLists.flatMap(list => list.slice(1))
+    : tokenLists.flatMap(list => list.slice(0, 1))
+  return uniq(tokens).map<CommandCompletion>(item => ({
+    type: 'history',
+    value: item,
+    query: currentWord,
+  }))
+}
 
 const getCommandRawCompletions = memoizeAsync(async () => {
   if (process.platform === 'win32') return []
@@ -315,14 +331,11 @@ async function getCompletions(input: string, cwd: string) {
     ))
   }
   // History
-  const history = getShellHistory()
-  asyncCompletionLists.push(Promise.resolve(
-    history.filter(item => item.startsWith(input)).map<CommandCompletion>(item => ({
-      type: 'history',
-      value: item,
-      query: input,
-    })),
-  ))
+  if (currentWord) {
+    asyncCompletionLists.push(
+      getHistoryCompletions(currentWord, command),
+    )
+  }
   // Commands
   if (!command) {
     asyncCompletionLists.push(
@@ -349,7 +362,7 @@ async function getCompletions(input: string, cwd: string) {
 
 function refreshCompletions() {
   getDirectoryEntries.cache.clear()
-  getShellHistory.cache.clear!()
+  getShellHistoryTokenLists.cache.clear!()
 }
 
 export {
