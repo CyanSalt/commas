@@ -1,3 +1,4 @@
+import type { ExecOptions } from 'child_process'
 import * as os from 'os'
 import * as path from 'path'
 import { app } from 'electron'
@@ -85,13 +86,18 @@ function integrateShell(context: ShellContext) {
   }
 }
 
-function loginExecute(command: string) {
+function loginExecute(command: string, options: Pick<ExecOptions, 'shell' | 'env'> = {}) {
   const env = getDefaultEnv()
   if (process.platform === 'win32') {
-    return execa(command, { env })
+    return execa(command, {
+      env: { ...env, ...options.env },
+    })
   } else {
-    const shell = getDefaultShell()
-    return execa(quote([shell!, '-lic', command]), { env })
+    const shell = options.shell ?? getDefaultShell()
+    const expression = options.env
+      ? Object.entries(options.env).map(kv => kv.join('=')).concat(command).join(' ')
+      : command
+    return execa(quote([shell!, '-lic', expression]), { env })
   }
 }
 

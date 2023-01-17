@@ -115,7 +115,11 @@ const getManPageRawCompletions = memoizeAsync(async (command: string, subcommand
   let sections: ManpageSection[] = []
   if (command === 'npm' && subcommand) {
     try {
-      const { stdout } = await loginExecute(`MANPAGER= npm help ${subcommand}`)
+      const { stdout } = await loginExecute(`npm help ${subcommand}`, {
+        env: {
+          MANPAGER: '',
+        },
+      })
       sections = getManPageSections(stdout)
     } catch {
       // ignore error
@@ -235,10 +239,10 @@ const getManPageRawCompletions = memoizeAsync(async (command: string, subcommand
     }
   }
   return completions
-}, (command, subcommand) => `${command} ${subcommand ?? ''}`)
+}, (command, subcommand) => (subcommand ? `${command} ${subcommand}` : command))
 
 async function getManPageCompletions(currentWord: string, command: string, subcommand?: string) {
-  let completions = await getManPageRawCompletions(command, subcommand)
+  const completions = await getManPageRawCompletions(command, subcommand)
   return completions.map<CommandCompletion>(item => ({
     ...item,
     query: currentWord,
@@ -248,6 +252,29 @@ async function getManPageCompletions(currentWord: string, command: string, subco
 const getShellHistory = memoize(() => {
   return uniq((shellHistory() as string[]).reverse()).slice(0, 100)
 })
+
+const getCommandRawCompletions = memoizeAsync(async () => {
+  if (process.platform === 'win32') return []
+  let commands: string[] = []
+  try {
+    const { stdout } = await loginExecute('compgen -c', { shell: 'bash' })
+    commands = stdout.trim().split('\n')
+  } catch {
+    // ignore error
+  }
+  return uniq(commands).sort().map<CommandCompletion>(item => ({
+    query: '',
+    value: item,
+  }))
+})
+
+async function getCommandCompletions(currentWord: string) {
+  const completions = await getCommandRawCompletions()
+  return completions.map<CommandCompletion>(item => ({
+    ...item,
+    query: currentWord,
+  }))
+}
 
 async function getCompletions(input: string, cwd: string) {
   const entries = parse(input).filter(item => {
@@ -259,17 +286,17 @@ async function getCompletions(input: string, cwd: string) {
     return typeof item === 'object' && 'op' in item && item.op !== 'glob'
   })
   const undeterminedCommand = tokenIndex !== entries.length - 1
-    ? (entries[tokenIndex + 1] as string).toLowerCase()
+    ? entries[tokenIndex + 1] as string
     : undefined
   const args = entries.slice(tokenIndex + 2)
-  const subcommandIndex = args.findIndex(item => typeof item === 'string' && !item.startsWith('-'))
+  const subcommandIndex = args.findIndex(item => typeof item === 'string' && /^\w/.test(item))
   const undeterminedSubcommand = subcommandIndex !== -1 ? args[subcommandIndex] as string : undefined
   const subcommandArgs = subcommandIndex !== -1 ? args.slice(subcommandIndex + 1) : []
   const currentWord = isWordStart ? '' : entries[entries.length - 1] as string
   const isInputingArgs = currentWord.startsWith('-')
     || (process.platform === 'win32' && currentWord.startsWith('/'))
   const command = isWordStart || args.length > 0
-    ? undeterminedCommand
+    ? undeterminedCommand!.toLowerCase()
     : ''
   const subcommand = command && isWordStart || subcommandArgs.length > 0
     ? undeterminedSubcommand
@@ -298,7 +325,9 @@ async function getCompletions(input: string, cwd: string) {
   ))
   // Commands
   if (!command) {
-    // TODO:
+    asyncCompletionLists.push(
+      getCommandCompletions(currentWord),
+    )
   }
   // Files
   const frequentlyUsedFileCommands = ['.', 'cat', 'cd', 'cp', 'diff', 'more', 'mv', 'rm', 'source', 'vi']

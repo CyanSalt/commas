@@ -17,7 +17,9 @@ const whistlePath = $(commas.helper.useAsyncComputed(async () => {
   if (!specifiedPath) return builtinWhistlePath
   if (path.isAbsolute(specifiedPath)) return specifiedPath
   try {
-    await commas.shell.loginExecute(`command -v ${specifiedPath}`)
+    if (process.platform !== 'win32') {
+      await commas.shell.loginExecute(`command -v ${specifiedPath}`)
+    }
     return specifiedPath
   } catch {
     return builtinWhistlePath
