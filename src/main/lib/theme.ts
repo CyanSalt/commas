@@ -75,11 +75,14 @@ const theme = $computed(() => {
     }
   }
   const customization: ThemeDefinition = settings['terminal.theme.customization']
+  const userTheme: ThemeDefinition = {
+    ...originalTheme,
+    ...customization,
+  }
   const opacity = settings['terminal.style.opacity']
   const definition = {
     ...defaultTheme,
-    ...originalTheme,
-    ...customization,
+    ...userTheme,
     name,
     opacity,
   } as Theme
@@ -92,10 +95,16 @@ const theme = $computed(() => {
     selectionBackgroundRGBA = mix(foregroundRGBA, backgroundRGBA, 0.5)
     definition.selectionBackground = toCSSColor(selectionBackgroundRGBA)
   }
-  if (!definition.cursor) {
-    definition.cursor = definition.foreground
+  if (!userTheme.magenta && userTheme.purple) {
+    definition.magenta = userTheme.purple
   }
-  if (!definition.cursorAccent) {
+  if (!userTheme.brightMagenta && userTheme.brightPurple) {
+    definition.brightMagenta = userTheme.brightPurple
+  }
+  if (!userTheme.cursor) {
+    definition.cursor = userTheme.cursorColor ?? definition.foreground
+  }
+  if (!userTheme.cursorAccent) {
     definition.cursorAccent = definition.background
   }
   const backgroundHSLA = toHSLA(backgroundRGBA)

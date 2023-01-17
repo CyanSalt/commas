@@ -54,9 +54,15 @@ const { theme } = defineProps<{
 }
 .card-action {
   display: flex;
+  gap: 1em;
   justify-content: space-between;
   align-items: center;
   padding: 0.5em 1em 0;
+}
+.theme-name {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .theme-preview {
   padding: 0.5em 1em 1em;
