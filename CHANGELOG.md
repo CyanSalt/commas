@@ -1,5 +1,37 @@
 
 
+## [0.24.0](https://github.com/CyanSalt/commas/compare/v0.23.0...v0.24.0) (2023-01-18)
+
+
+### Features
+
+* add command completions ([32c4840](https://github.com/CyanSalt/commas/commit/32c48406cc321b7be47e87af030074b098422ae7))
+* add icons to completions ([aa0491b](https://github.com/CyanSalt/commas/commit/aa0491b451c9bc6ee09e16a5859a421e7189d432))
+* completion for stream ([f136ba2](https://github.com/CyanSalt/commas/commit/f136ba2ad626d3b1957825d12996fce2ca8e7ada))
+* history completion ([69e301f](https://github.com/CyanSalt/commas/commit/69e301f4aeed1bc7876d9d08d81e0a1eb5edf277))
+* history token completion ([39be551](https://github.com/CyanSalt/commas/commit/39be551aacb01f563bd597477a69039b23546fd7))
+* refine completion icons ([cab09f6](https://github.com/CyanSalt/commas/commit/cab09f6738e98fe65a1545403e8b24cd8be4d05d))
+
+
+### Bug Fixes
+
+* arg history ([71a3629](https://github.com/CyanSalt/commas/commit/71a36297120f224a7b794be9dd723c89a8990c69))
+* clear completion when esc pressed ([75b555b](https://github.com/CyanSalt/commas/commit/75b555baea3cfe230f2a37919ae1dca9220ab8ea))
+* completion description ([499bc29](https://github.com/CyanSalt/commas/commit/499bc29167ef86d51544477aa5d2e994b866693f))
+* completion scroll bar ([43dd499](https://github.com/CyanSalt/commas/commit/43dd4995eec84cd640ac6730c1582570ca16564d))
+* completion sort ([0e55b3b](https://github.com/CyanSalt/commas/commit/0e55b3be311d34d0ce7d3a4dcb5b8f57afede467))
+* completions after cleared ([203ed63](https://github.com/CyanSalt/commas/commit/203ed63dc1a71c6b872ef924bedfb2e7bf49995a))
+* completions for man ([c4bea29](https://github.com/CyanSalt/commas/commit/c4bea296e5c6ad5be306b125e902fb903a4a2669))
+* ipc connection on production ([69e48a4](https://github.com/CyanSalt/commas/commit/69e48a42d1f6d94acbaab1d147f9a59423c2fcae))
+* locale error ([ccbe766](https://github.com/CyanSalt/commas/commit/ccbe76618fb88049998412d84a159e74697f7ca1))
+* remove cli banner when arg passed ([b16b60f](https://github.com/CyanSalt/commas/commit/b16b60f7026c3fce97612142b0b38d05d2e650fc))
+* remove file completions for ls ([8582996](https://github.com/CyanSalt/commas/commit/85829968d735d8aee078e88e439ac790d581e960))
+* subcommand args ([23a15e5](https://github.com/CyanSalt/commas/commit/23a15e5c88ff9b4d9e671d48fce4eb0b9402d1b9))
+* theme background editing ([114625b](https://github.com/CyanSalt/commas/commit/114625b43586db83eb52549b51fa87a6b23bee52))
+* unavailable IME when completions triggered ([6c814bf](https://github.com/CyanSalt/commas/commit/6c814bf8258ed8582080b705b293f8ae41969b8a))
+* use public themes ([0064ef6](https://github.com/CyanSalt/commas/commit/0064ef63e58cf1d856282dce9565a0bd46bc3242))
+* yaml updater ([0186f2d](https://github.com/CyanSalt/commas/commit/0186f2d73e59b7f4cac862a1666ac4615bca97af))
+
 ## [0.23.0](https://github.com/CyanSalt/commas/compare/v0.22.2...v0.23.0) (2023-01-13)
 
 
