@@ -1,5 +1,9 @@
 /// <reference types="vue/macros-global" />
 
+interface Element {
+  scrollIntoViewIfNeeded(centerIfNeeded?: boolean): void,
+}
+
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'
 

@@ -572,6 +572,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
     this.setCompletionDescription(item.dataset.desc)
     item.classList.add('is-active')
+    item.scrollIntoViewIfNeeded()
   }
 
   getSelectedCompletionElement() {
