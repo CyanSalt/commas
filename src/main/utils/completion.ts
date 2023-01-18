@@ -10,6 +10,11 @@ import type { CommandCompletion } from '../../typings/terminal'
 import { execa, memoizeAsync } from './helper'
 import { loginExecute } from './shell'
 
+function isCommandLineArgument(query: string) {
+  return query.startsWith('-')
+    || (process.platform === 'win32' && query.startsWith('/'))
+}
+
 const getDirectoryEntries = memoizeAsync(async (dir: string) => {
   return fs.promises.readdir(dir, { withFileTypes: true })
 })
@@ -260,9 +265,12 @@ const getShellHistoryTokenLists = memoize(() => {
 
 async function getHistoryCompletions(query: string, command: string) {
   const tokenLists = getShellHistoryTokenLists()
-  const tokens = command
+  let tokens = command
     ? tokenLists.flatMap(list => list.slice(1))
     : tokenLists.flat()
+  if (isCommandLineArgument(query)) {
+    tokens = tokens.filter(item => item[0] === query[0])
+  }
   return uniq(tokens).map<CommandCompletion>(item => ({
     type: 'history',
     value: item,
@@ -320,8 +328,7 @@ async function getCompletions(input: string, cwd: string) {
   const undeterminedSubcommand = subcommandIndex !== -1 ? args[subcommandIndex] as string : undefined
   const subcommandArgs = subcommandIndex !== -1 ? args.slice(subcommandIndex + 1) : []
   const currentWord = isWordStart ? '' : lastToken
-  const isInputingArgs = currentWord.startsWith('-')
-    || (process.platform === 'win32' && currentWord.startsWith('/'))
+  const isInputingArgs = isCommandLineArgument(currentWord)
   const command = undeterminedCommand && (isWordStart || args.length > 0)
     ? undeterminedCommand.toLowerCase()
     : ''
