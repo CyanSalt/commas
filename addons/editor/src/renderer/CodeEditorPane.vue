@@ -9,15 +9,15 @@ const { tab } = defineProps<{
 }>()
 
 let editor = $ref<InstanceType<typeof CodeEditor>>()
-let code: string = $ref('')
 
 const file = $computed(() => tab.shell)
 
-const rawSource = $computed(() => commas.remote.useFile(file))
-let source: string = $computed({
-  get: () => rawSource.value,
+const source = $computed(() => commas.remote.useFile(file))
+
+let code: string = $computed({
+  get: () => source.value,
   set: (value: string) => {
-    rawSource.value = value
+    source.value = value
   },
 })
 
@@ -28,10 +28,6 @@ watchEffect((onInvalidate) => {
     // eslint-disable-next-line vue/no-mutating-props
     delete tab.alerting
   })
-})
-
-watchEffect(() => {
-  code = source
 })
 
 function save() {
