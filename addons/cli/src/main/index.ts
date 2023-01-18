@@ -1,3 +1,4 @@
+import * as os from 'os'
 import * as path from 'path'
 import * as util from 'util'
 import * as vm from 'vm'
@@ -77,7 +78,7 @@ export default () => {
         out[l] = c
       }
     }
-    return out.join('\n    ').slice(2)
+    return out.join(os.EOL + '    ').slice(2)
   }
 
   const commandList = $computed(() => {
@@ -115,7 +116,7 @@ export default () => {
           ]
           return cols.map((col, index) => colors[index % colors.length](col)).join('')
         })
-        .join('\n')
+        .join(os.EOL)
 
       const helpingCommand = argv[0]
       const manual = helpingCommand ? getCommandModule(argv[0], commands) : undefined
@@ -193,7 +194,7 @@ where <command> is one of:
         length = 1
       }
       return Array.from({ length })
-        .map(() => random(1, 100)).join('\n')
+        .map(() => random(1, 100)).join(os.EOL)
     },
   })
 
@@ -253,6 +254,7 @@ where <command> is one of:
   commas.context.provide('terminal.completion', async (query: string, command: string) => {
     if (command === 'commas') {
       return commands.map(item => ({
+        type: 'command' as const,
         query,
         value: item.command,
         description: item.usage,

@@ -135,7 +135,7 @@ function handleTerminalMessages() {
   ipcMain.handle('get-completions', (event, input: string, cwd: string) => {
     return getCompletions(input, cwd)
   })
-  ipcMain.handle('terminal-prompt-end', () => {
+  ipcMain.on('terminal-prompt-end', () => {
     refreshCompletions()
   })
 }

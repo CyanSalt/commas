@@ -105,6 +105,7 @@ const getManPageRawCompletions = memoizeAsync(async (command: string, subcommand
       // ignore error
     }
     return commands.map<CommandCompletion>(item => ({
+      type: 'command',
       query: '',
       value: item,
     }))
@@ -153,6 +154,7 @@ const getManPageRawCompletions = memoizeAsync(async (command: string, subcommand
         const matches = paragraph[index].match(/^\s*git-([\w-]+)/)
         if (matches) {
           completions.push({
+            type: 'command',
             query: '',
             value: matches[1],
             description: paragraph.slice(index + 1)
@@ -168,6 +170,7 @@ const getManPageRawCompletions = memoizeAsync(async (command: string, subcommand
         const matches = paragraph[0].match(/^\s{3}([\w-]+)\s*(.*)$/)
         if (matches) {
           completions.push({
+            type: 'command',
             query: '',
             value: matches[1],
             description: (matches[2] ? [matches[2], ...paragraph.slice(1)] : paragraph.slice(1))
@@ -228,6 +231,7 @@ const getManPageRawCompletions = memoizeAsync(async (command: string, subcommand
     const matches = paragraph[0].match(/^\s*(-[\w-.]+=?),?\s*(.*)$/)
     if (matches) {
       completions.push({
+        type: 'command',
         query: '',
         value: matches[1],
         description: (matches[2] ? [matches[2], ...paragraph.slice(1)] : paragraph.slice(1))
@@ -276,6 +280,7 @@ const getCommandRawCompletions = memoizeAsync(async () => {
     // ignore error
   }
   return uniq(commands).sort().map<CommandCompletion>(item => ({
+    type: 'command',
     query: '',
     value: item,
   }))
@@ -293,6 +298,10 @@ function isControlOperatorEntry(entry: ParseEntry): entry is Extract<ParseEntry,
   return typeof entry === 'object' && 'op' in entry && entry.op !== 'glob'
 }
 
+function isCommandEntry(entry: ParseEntry): entry is string {
+  return typeof entry === 'string' && /^\w/.test(entry)
+}
+
 async function getCompletions(input: string, cwd: string) {
   const entries = parse(input).filter(item => {
     return !(typeof item === 'object' && 'comment' in item)
@@ -303,18 +312,18 @@ async function getCompletions(input: string, cwd: string) {
   const tokenIndex = findLastIndex(entries, item => {
     return isControlOperatorEntry(item) && item.op !== '>'
   })
-  const undeterminedCommand = tokenIndex !== entries.length - 1
+  const undeterminedCommand = tokenIndex !== entries.length - 1 && isCommandEntry(entries[tokenIndex + 1])
     ? entries[tokenIndex + 1] as string
     : undefined
   const args = entries.slice(tokenIndex + 2)
-  const subcommandIndex = args.findIndex(item => typeof item === 'string' && /^\w/.test(item))
+  const subcommandIndex = args.findIndex(isCommandEntry)
   const undeterminedSubcommand = subcommandIndex !== -1 ? args[subcommandIndex] as string : undefined
   const subcommandArgs = subcommandIndex !== -1 ? args.slice(subcommandIndex + 1) : []
   const currentWord = isWordStart ? '' : lastToken
   const isInputingArgs = currentWord.startsWith('-')
     || (process.platform === 'win32' && currentWord.startsWith('/'))
-  const command = isWordStart || args.length > 0
-    ? undeterminedCommand!.toLowerCase()
+  const command = undeterminedCommand && (isWordStart || args.length > 0)
+    ? undeterminedCommand.toLowerCase()
     : ''
   const subcommand = command && isWordStart || subcommandArgs.length > 0
     ? undeterminedSubcommand

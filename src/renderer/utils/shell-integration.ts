@@ -46,9 +46,47 @@ function updateDecorationElement(decoration: IDecoration, callback: (el: HTMLEle
 }
 
 function filterAndSortCompletions(completions: CommandCompletion[]) {
-  return completions
+  const duplicatedTimes: (Pick<CommandCompletion, 'value' | 'query'> & { times: number })[] = []
+  const deduplicatedCompletions: CommandCompletion[] = []
+  for (const completion of completions) {
+    const existingIndex = deduplicatedCompletions.findIndex(item => {
+      return item.value === completion.value
+        && item.query === completion.query
+    })
+    if (existingIndex === -1) {
+      deduplicatedCompletions.push(completion)
+    } else {
+      const duplicatedTimesItem = duplicatedTimes.find(item => {
+        return item.value === completion.value
+          && item.query === completion.query
+      })
+      if (duplicatedTimesItem) {
+        duplicatedTimesItem.times += 1
+      } else {
+        duplicatedTimes.push({
+          value: completion.value,
+          query: completion.query,
+          times: 2,
+        })
+      }
+      const existingItem = deduplicatedCompletions[existingIndex]
+      const replacement: CommandCompletion = {
+        ...existingItem,
+        type: 'default',
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        description: existingItem.description || completion.description,
+      }
+      deduplicatedCompletions.splice(existingIndex, 1, replacement)
+    }
+  }
+  return deduplicatedCompletions
     .map(item => {
-      return [item, item.query ? fuzzaldrin.score(item.value, item.query) : 1] as const
+      const duplicatedTimesItem = duplicatedTimes.find(record => {
+        return record.value === item.value
+          && record.query === item.query
+      })
+      const scale = duplicatedTimesItem ? duplicatedTimesItem.times : 1
+      return [item, (item.query ? fuzzaldrin.score(item.value, item.query) : 1) * scale] as const
     })
     .filter(([item, score]) => score > 0)
     .sort(([itemA, scoreA], [itemB, scoreB]) => scoreB - scoreA)
@@ -488,12 +526,15 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   applyCompletion(value: string, back = 0) {
     const { xterm } = this.tab
     const position = this._getCurrentPosition()
+    const input = this._getCurrentCommandInput(position)
     position.x += value.length - back
     while (position.x > xterm.cols) {
       position.x -= xterm.cols
     }
     this.recentCompletionAppliedPosition = position
     writeTerminalTab(this.tab, '\x7F'.repeat(back) + value)
+    // Preload completions
+    this._getRealtimeCompletions(input.slice(0, -back) + value + ' ')
   }
 
   setCompletionDescription(content: string | undefined) {
@@ -511,10 +552,15 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       : null
   }
 
-  applyCompletionElement(item: HTMLElement) {
-    if (item.dataset.value) {
-      this.applyCompletion(item.dataset.value, Number(item.dataset.back ?? 0))
+  applyCompletionElement(item: HTMLElement, isEnterPressing?: boolean) {
+    let value = item.dataset.value
+    if (value) {
+      const back = Number(item.dataset.back ?? 0)
+      if (isEnterPressing && value.length === back) return false
+      this.applyCompletion(value, back)
+      return true
     }
+    return false
   }
 
   selectCompletionElement(item: HTMLElement) {
@@ -536,11 +582,12 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       : null
   }
 
-  applySelectedCompletionElement() {
+  applySelectedCompletionElement(isEnterPressing?: boolean) {
     const item = this.getSelectedCompletionElement()
     if (item) {
-      this.applyCompletionElement(item)
+      return this.applyCompletionElement(item, isEnterPressing)
     }
+    return false
   }
 
   selectPreviousCompletionElement() {

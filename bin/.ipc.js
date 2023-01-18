@@ -1,4 +1,5 @@
 const $require = require('module').createRequire(process.env.COMMAS_MAIN_FILE)
+const os = require('os')
 
 /** @type {{ default: import('node-ipc') }} */
 const { default: ipc } = $require('node-ipc')
@@ -53,7 +54,7 @@ async function connect() {
   server.on('end', (exitCode) => {
     process.exitCode = exitCode
     if (output) {
-      process.stdout.write('\n')
+      process.stdout.write(os.EOL)
     }
   })
   server.emit('request', {

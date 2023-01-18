@@ -92,8 +92,9 @@ function highlightLabel(label: string, query: string) {
   return query ? fuzzaldrin.wrap(escapeHTML(label), escapeHTML(query)) : label
 }
 
-function getCompletionIcon(type: CommandCompletion['type']) {
-  switch (type) {
+function getCompletionIcon(item: CommandCompletion) {
+  if (item.value === item.query) return 'feather-icon icon-corner-down-left'
+  switch (item.type) {
     case 'history':
       return 'feather-icon icon-clock'
     case 'file':
@@ -102,8 +103,10 @@ function getCompletionIcon(type: CommandCompletion['type']) {
       return 'feather-icon icon-folder'
     case 'recommendation':
       return 'feather-icon icon-fast-forward'
-    default:
+    case 'command':
       return 'feather-icon icon-terminal'
+    default:
+      return 'feather-icon icon-more-horizontal'
   }
 }
 
@@ -137,12 +140,17 @@ function selectCompletion(event: MouseEvent) {
           <li
             v-for="(item, index) in tab.completions"
             :key="index"
-            :class="['terminal-completion-item', item.type ?? 'command', { 'is-active': !index }]"
+            :class="[
+              'terminal-completion-item',
+              item.type ?? 'default',
+              { 'is-passthrough': item.value === item.query },
+              { 'is-active': !index },
+            ]"
             :data-value="item.value"
             :data-desc="item.description ?? ''"
             :data-back="item.query.length"
           >
-            <span :class="['completion-item-icon', getCompletionIcon(item.type)]"></span>
+            <span :class="['completion-item-icon', getCompletionIcon(item)]"></span>
             <span class="completion-item-label" v-html="highlightLabel(item.value, item.query)"></span>
           </li>
         </ul>
@@ -219,6 +227,8 @@ function selectCompletion(event: MouseEvent) {
   border: 1px solid rgb(var(--theme-foreground) / 0.5);
   background: rgb(var(--theme-background));
   border-radius: 2px;
+  // TODO: This may slightly slow down, but is friendlier visually
+  transition: transform 50ms, margin-left 50ms;
   &.is-right {
     transform: translateX(-100%);
   }
@@ -259,7 +269,6 @@ function selectCompletion(event: MouseEvent) {
 .completion-item-icon {
   flex: none;
   margin-right: 0.25ch;
-  color: rgb(var(--theme-magenta));
   font-size: 12px;
   opacity: 0.75;
   .terminal-completion-item.history & {
@@ -271,6 +280,12 @@ function selectCompletion(event: MouseEvent) {
   }
   .terminal-completion-item.recommendation & {
     color: rgb(var(--theme-green));
+  }
+  .terminal-completion-item.command & {
+    color: rgb(var(--theme-magenta));
+  }
+  .terminal-completion-item.is-passthrough & {
+    color: rgb(var(--theme-red));
   }
 }
 .completion-item-label {

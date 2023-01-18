@@ -145,7 +145,7 @@ export async function createTerminalTab({
         case 'Tab':
           event.preventDefault()
           if (event.type === 'keydown') {
-            tab.addons.shellIntegration.applySelectedCompletionElement()
+            return !tab.addons.shellIntegration.applySelectedCompletionElement(event.key === 'Enter')
           }
           return false
         case 'Escape':
