@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { findLastIndex, memoize, uniq } from 'lodash'
 import shellHistory from 'shell-history'
+import type { ControlOperator, ParseEntry } from 'shell-quote'
 import { parse, quote } from 'shell-quote'
 import * as commas from '../../../api/core-main'
 import { resolveHome } from '../../shared/terminal'
@@ -288,14 +289,19 @@ async function getCommandCompletions(query: string) {
   }))
 }
 
+function isControlOperatorEntry(entry: ParseEntry): entry is Extract<ParseEntry, { op: ControlOperator }> {
+  return typeof entry === 'object' && 'op' in entry && entry.op !== 'glob'
+}
+
 async function getCompletions(input: string, cwd: string) {
   const entries = parse(input).filter(item => {
     return !(typeof item === 'object' && 'comment' in item)
   })
   if (!entries.length) return []
-  const isWordStart = /\s$/.test(input) || typeof entries[entries.length - 1] !== 'string'
+  const lastToken = entries[entries.length - 1]
+  const isWordStart = /\s$/.test(input) || typeof lastToken !== 'string'
   const tokenIndex = findLastIndex(entries, item => {
-    return typeof item === 'object' && 'op' in item && item.op !== 'glob'
+    return isControlOperatorEntry(item) && item.op !== '>'
   })
   const undeterminedCommand = tokenIndex !== entries.length - 1
     ? entries[tokenIndex + 1] as string
@@ -304,7 +310,7 @@ async function getCompletions(input: string, cwd: string) {
   const subcommandIndex = args.findIndex(item => typeof item === 'string' && /^\w/.test(item))
   const undeterminedSubcommand = subcommandIndex !== -1 ? args[subcommandIndex] as string : undefined
   const subcommandArgs = subcommandIndex !== -1 ? args.slice(subcommandIndex + 1) : []
-  const currentWord = isWordStart ? '' : entries[entries.length - 1] as string
+  const currentWord = isWordStart ? '' : lastToken
   const isInputingArgs = currentWord.startsWith('-')
     || (process.platform === 'win32' && currentWord.startsWith('/'))
   const command = isWordStart || args.length > 0
@@ -333,7 +339,11 @@ async function getCompletions(input: string, cwd: string) {
   }
   // Files
   const frequentlyUsedFileCommands = ['.', 'cat', 'cd', 'cp', 'diff', 'more', 'mv', 'rm', 'source', 'vi']
-  if (command && !isInputingArgs && (currentWord || frequentlyUsedFileCommands.includes(command))) {
+  if (command && !isInputingArgs && (
+    currentWord
+    || frequentlyUsedFileCommands.includes(command)
+    || (isControlOperatorEntry(lastToken) && lastToken.op === '>')
+  )) {
     const directoryCommands = ['cd', 'dir', 'ls']
     const directoryOnly = directoryCommands.includes(command)
     asyncCompletionLists.push(
