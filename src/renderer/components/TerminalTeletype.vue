@@ -214,6 +214,7 @@ function selectCompletion(event: MouseEvent) {
   border-radius: 4px;
 }
 :deep(.terminal-completion) {
+  max-height: calc(var(--cell-height) * var(--row-span));
   margin-left: calc(var(--column) * var(--cell-width));
   border: 1px solid rgb(var(--theme-foreground) / 0.5);
   background: rgb(var(--theme-background));

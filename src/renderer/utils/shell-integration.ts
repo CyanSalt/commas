@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { isEqual } from 'lodash'
-import { toRaw } from 'vue'
+import { nextTick, toRaw } from 'vue'
 import type { IDecoration, IDisposable, IMarker, ITerminalAddon, Terminal } from 'xterm'
 import { toCSSHEX, toRGBA } from '../../shared/color'
 import type { CommandCompletion, TerminalTab } from '../../typings/terminal'
@@ -22,13 +22,16 @@ interface IntegratedShellCommand {
   actions?: IntegratedShellCommandAction[],
 }
 
+interface IntegratedShellPosition {
+  x: number,
+  y: number,
+}
+
 interface IntegratedShellCompletion {
   marker: IMarker,
   decoration: IDecoration,
-  position: {
-    x: number,
-    y: number,
-  },
+  renderer: IDisposable,
+  position: IntegratedShellPosition,
 }
 
 function updateDecorationElement(decoration: IDecoration, callback: (el: HTMLElement) => void) {
@@ -329,21 +332,29 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
   }
 
-  async _getCompletions(input: string | undefined) {
-    if (!input) return []
-    return ipcRenderer.invoke('get-completions', input, this.tab.cwd) as Promise<CommandCompletion[]>
-  }
-
-  _createCompletionDecoration(height: number): IntegratedShellCompletion {
+  _createCompletionDecoration(
+    height: number,
+    reusingCompletion?: IntegratedShellCompletion,
+  ): IntegratedShellCompletion {
     const { xterm } = this.tab
-    const marker = xterm.registerMarker()!
-    const decoration = xterm.registerDecoration({
-      marker,
-      width: Math.floor(xterm.cols / 2),
-      height: Math.min(height, Math.floor(xterm.rows / 2)),
-    })!
+    let marker: IMarker
+    let decoration: IDecoration
+    if (reusingCompletion) {
+      marker = reusingCompletion.marker
+      decoration = reusingCompletion.decoration
+    } else {
+      marker = xterm.registerMarker()!
+      decoration = xterm.registerDecoration({
+        marker,
+        width: Math.floor(xterm.cols / 2),
+        height: Math.floor(xterm.rows / 2),
+      })!
+    }
+    if (reusingCompletion) {
+      reusingCompletion.renderer.dispose()
+    }
     let renderedCompletions: CommandCompletion[] | undefined
-    decoration.onRender(el => {
+    const renderer = decoration.onRender(el => {
       const renderingCompletions = toRaw(this.tab.completions)
       if (renderingCompletions === renderedCompletions) return
       renderedCompletions = renderingCompletions
@@ -351,19 +362,21 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       el.classList.add(xterm.buffer.active.cursorY < xterm.rows / 2 ? 'is-bottom' : 'is-top')
       el.classList.add(xterm.buffer.active.cursorX < xterm.cols / 2 ? 'is-left' : 'is-right')
       el.style.setProperty('--column', `${xterm.buffer.active.cursorX}`)
+      el.style.setProperty('--row-span', `${height}`)
       const source = document.getElementById('terminal-completion-source')
       if (source) {
         el.replaceChildren(...[...source.children].map(node => node.cloneNode(true)))
       }
     })
-    return {
+    return Object.assign(reusingCompletion ?? {}, {
       marker,
       decoration,
+      renderer,
       position: this._getCurrentPosition(),
-    }
+    })
   }
 
-  _getCurrentPosition() {
+  _getCurrentPosition(): IntegratedShellPosition {
     const { xterm } = this.tab
     return {
       x: xterm.buffer.active.cursorX,
@@ -371,53 +384,93 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
   }
 
-  async triggerCompletion() {
-    const currentPosition = this._getCurrentPosition()
-    if (this.completion) {
-      if (isEqual(this.completion.position, currentPosition)) {
-        return
-      } else {
-        this.clearCompletion()
-      }
-    }
+  _getCurrentCommandInput(position: IntegratedShellPosition) {
     const { xterm } = this.tab
-    const activeBuffer = xterm.buffer.active
-    let line = ''
     if (
       this.currentCommand && !this.currentCommand.command
-      && activeBuffer.baseY + activeBuffer.cursorY === this.currentCommand.marker.line
-      && activeBuffer.cursorX >= this.currentCommand.cursorX
+      && position.y >= this.currentCommand.marker.line
+      && position.x >= this.currentCommand.cursorX
     ) {
-      line = xterm.buffer.active.getLine(this.currentCommand.marker.line)
-        ?.translateToString(true, this.currentCommand.cursorX, activeBuffer.cursorX)
-        ?? ''
+      const rowspan = position.y - this.currentCommand.marker.line + 1
+      return Array.from(
+        { length: rowspan },
+        (_, index) => {
+          const trimRight = rowspan <= 1 || index !== rowspan - 1
+          const startColumn = index === 0 ? this.currentCommand!.cursorX : 0
+          const endColumn = index === rowspan - 1 ? position.x : undefined
+          return xterm.buffer.active.getLine(this.currentCommand!.marker.line + index)
+            ?.translateToString(trimRight, startColumn, endColumn)
+            ?? ''
+        },
+      ).join('')
     }
+    return ''
+  }
+
+  async _getRealtimeCompletions(input: string) {
+    if (!input) return []
+    return ipcRenderer.invoke('get-completions', input, this.tab.cwd) as Promise<CommandCompletion[]>
+  }
+
+  async _getCompletions(input: string) {
     let completions: CommandCompletion[] = []
-    const key = Symbol('COMPLETION_SESSION')
-    this.completionKey = key
     if (this.currentCommand?.actions) {
       const actionCompletions: CommandCompletion[] = this.currentCommand.actions.map(action => ({
         type: 'recommendation',
-        query: line,
+        query: input,
         value: action.command,
       }))
       completions = completions.concat(actionCompletions)
     }
-    const realtimeCompletions = await this._getCompletions(line)
+    const realtimeCompletions = await this._getRealtimeCompletions(input)
     completions = completions.concat(realtimeCompletions)
-    completions = filterAndSortCompletions(completions)
-    if (!completions.length) return
+    return filterAndSortCompletions(completions)
+  }
+
+  async triggerCompletion() {
+    const currentPosition = this._getCurrentPosition()
+    const input = this._getCurrentCommandInput(currentPosition)
+    let shouldReuseDecoration = false
+    if (this.completion) {
+      if (isEqual(this.completion.position, currentPosition)) {
+        return
+      } else if (this.completion.marker.line === currentPosition.y) {
+        shouldReuseDecoration = true
+      } else {
+        this.clearCompletion()
+      }
+    }
+    const key = Symbol('COMPLETION_SESSION')
+    this.completionKey = key
+    const completions = await this._getCompletions(input)
+    if (!completions.length) {
+      if (shouldReuseDecoration) {
+        this.clearCompletion()
+      }
+      return
+    }
     if (
       isEqual(this.recentCompletionAppliedPosition, currentPosition)
       && completions.some(item => item.value === item.query)
     ) {
       this.recentCompletionAppliedPosition = undefined
+      if (shouldReuseDecoration) {
+        this.clearCompletion()
+      }
       return
     }
     if (this.completionKey === key) {
-      const result = this._createCompletionDecoration(completions.length)
+      const result = this._createCompletionDecoration(
+        completions.length,
+        shouldReuseDecoration ? this.completion : undefined,
+      )
       this.completion = result
       this.tab.completions = completions
+      // Refresh immediately
+      if (shouldReuseDecoration && result.decoration.element) {
+        await nextTick()
+        result.decoration['onRenderEmitter'].fire(result.decoration.element)
+      }
     }
   }
 
