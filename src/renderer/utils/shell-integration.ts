@@ -386,19 +386,21 @@ export class ShellIntegrationAddon implements ITerminalAddon {
 
   _getCurrentCommandInput(position: IntegratedShellPosition) {
     const { xterm } = this.tab
+    if (!this.currentCommand || this.currentCommand.command) return ''
+    const cursorX = this.currentCommand.cursorX
+    const promptLine = Math.max(this.currentCommand.marker.line, 0)
     if (
-      this.currentCommand && !this.currentCommand.command
-      && position.y >= this.currentCommand.marker.line
-      && position.x >= this.currentCommand.cursorX
+      position.y >= promptLine
+      && position.x >= cursorX
     ) {
-      const rowspan = position.y - this.currentCommand.marker.line + 1
+      const rowspan = position.y - promptLine + 1
       return Array.from(
         { length: rowspan },
         (_, index) => {
           const trimRight = rowspan <= 1 || index !== rowspan - 1
-          const startColumn = index === 0 ? this.currentCommand!.cursorX : 0
+          const startColumn = index === 0 ? cursorX : 0
           const endColumn = index === rowspan - 1 ? position.x : undefined
-          return xterm.buffer.active.getLine(this.currentCommand!.marker.line + index)
+          return xterm.buffer.active.getLine(promptLine + index)
             ?.translateToString(trimRight, startColumn, endColumn)
             ?? ''
         },
