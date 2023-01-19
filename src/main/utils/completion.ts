@@ -348,17 +348,17 @@ async function getCompletions(input: string, cwd: string) {
     )
   }
   // Commands
-  if (!command) {
+  if (!command && !/^(.+|~)?[\\/]/.test(currentWord)) {
     asyncCompletionLists.push(
       getCommandCompletions(currentWord),
     )
   }
   // Files
   const frequentlyUsedFileCommands = ['.', 'cat', 'cd', 'cp', 'diff', 'more', 'mv', 'rm', 'source', 'vi']
-  if (command && !isInputingArgs && (
-    currentWord
-    || frequentlyUsedFileCommands.includes(command)
-    || (isControlOperatorEntry(lastToken) && lastToken.op === '>')
+  if (!isInputingArgs && (
+    isControlOperatorEntry(lastToken) && lastToken.op === '>'
+    || command && (currentWord || frequentlyUsedFileCommands.includes(command))
+    || !command && /^(.+|~)?[\\/]/.test(currentWord)
   )) {
     const directoryCommands = ['cd', 'dir', 'ls']
     const directoryOnly = directoryCommands.includes(command)
