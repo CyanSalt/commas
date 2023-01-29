@@ -44,11 +44,19 @@ async function getFileCompletions(query: string, cwd: string, directoryOnly: boo
     files = files.filter(entity => !entity.name.startsWith('.'))
   }
   const suffix = directoryOnly ? path.sep : ''
-  return files.map<CommandCompletion>(entity => ({
+  const completions = files.map<CommandCompletion>(entity => ({
     type: entity.isDirectory() ? 'directory' : 'file',
     query: prefix,
     value: entity.name + suffix,
   }))
+  if (files.length && query && !prefix) {
+    completions.unshift({
+      type: 'directory',
+      query: prefix,
+      value: '',
+    })
+  }
+  return completions
 }
 
 interface ManpageSection {

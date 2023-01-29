@@ -86,7 +86,11 @@ function filterAndSortCompletions(completions: CommandCompletion[]) {
           && record.query === item.query
       })
       const scale = duplicatedTimesItem ? duplicatedTimesItem.times : 1
-      return [item, (item.query ? fuzzaldrin.score(item.value, item.query) : 1) * scale] as const
+      const score = item.query
+        // First character must be matched
+        ? (item.query[0] === item.value[0] ? fuzzaldrin.score(item.value, item.query) : 0)
+        : 1
+      return [item, score * scale] as const
     })
     .filter(([item, score]) => score > 0)
     .sort(([itemA, scoreA], [itemB, scoreB]) => scoreB - scoreA)
@@ -244,6 +248,8 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     this.disposables = []
     this.commands = []
     this.recentMarker = undefined
+    this.clearCompletion()
+    this.recentCompletionAppliedPosition = undefined
   }
 
   _createCommandDecoration(
@@ -491,7 +497,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
     if (
       isEqual(this.recentCompletionAppliedPosition, currentPosition)
-      && completions.some(item => item.value === item.query)
+      && completions.some(item => item.query && item.value === item.query)
     ) {
       this.recentCompletionAppliedPosition = undefined
       if (shouldReuseDecoration) {
@@ -519,6 +525,11 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     const completion = this.completion
     if (completion) {
       completion.marker.dispose()
+      // FIXME: I don't know why
+      if (!completion.decoration.isDisposed) {
+        completion.decoration.dispose()
+        this.tab.xterm['_core']._decorationService._onDecorationRemoved.fire(completion.decoration)
+      }
       this.completion = undefined
     }
   }
