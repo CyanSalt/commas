@@ -73,7 +73,7 @@ function close() {
 </script>
 
 <template>
-  <div :class="['tab-item', { active: isActive, focused: isFocused }]">
+  <div :class="['tab-item', { active: isActive, focused: isFocused, virtual: !tab }]">
     <div class="tab-item-card">
       <div class="tab-overview">
         <div class="tab-title">
@@ -110,8 +110,11 @@ function close() {
   flex: 1;
   align-items: center;
   min-width: 0;
-  opacity: 0.5;
+  opacity: 0.75;
   transition: opacity 0.2s;
+  .tab-item.virtual & {
+    opacity: 0.5;
+  }
   .tab-item.focused &,
   .sortable-item.dragging & {
     opacity: 1;
