@@ -294,6 +294,18 @@
     "default": "block"
   },
   {
+    "key": "terminal.style.tabListPosition",
+    "label": "Tab List Position",
+    "comments": [
+      "Position of terminal tab list"
+    ],
+    "schema": {
+      "type": "string",
+      "enum": ["left", "right"]
+    },
+    "default": "left"
+  },
+  {
     "key": "terminal.theme.name",
     "label": "Theme Name",
     "comments": [

@@ -2,6 +2,7 @@
 import * as path from 'path'
 import * as commas from '../../../api/core-renderer'
 import { useAsyncComputed } from '../../shared/compositions'
+import { useSettings } from '../compositions/settings'
 import {
   activateTerminalTab,
   createTerminalTab,
@@ -24,6 +25,9 @@ const tabs = $(useTerminalTabs())
 const terminal = $(useCurrentTerminal())
 
 let width = $ref(176)
+
+const settings = useSettings()
+const position = $computed(() => settings['terminal.style.tabListPosition'])
 
 const standaloneTabs = $computed(() => {
   return tabs.filter(tab => {
@@ -62,7 +66,8 @@ function resize(startingEvent: DragEvent) {
   const max = document.body.clientWidth / 2
   handleMousePressing({
     onMove(event) {
-      const target = original + event.clientX - start
+      const diff = event.clientX - start
+      const target = original + (position === 'right' ? -diff : diff)
       width = Math.min(Math.max(target, 120), max)
     },
   })
@@ -70,7 +75,7 @@ function resize(startingEvent: DragEvent) {
 </script>
 
 <template>
-  <nav class="tab-list">
+  <nav :class="['tab-list', position]">
     <div class="list" :style="{ width: width + 'px' }">
       <SortableList
         v-slot="{ value }"
@@ -115,6 +120,9 @@ function resize(startingEvent: DragEvent) {
   flex: none;
   font-size: 14px;
   background: rgb(var(--secondary-background) / var(--theme-opacity));
+  &.right {
+    order: 1;
+  }
 }
 .list {
   @include partials.scroll-container(8px);
@@ -128,6 +136,9 @@ function resize(startingEvent: DragEvent) {
   flex: none;
   width: 4px;
   cursor: col-resize;
+  .tab-list.right & {
+    order: -1;
+  }
 }
 .new-tab {
   display: flex;

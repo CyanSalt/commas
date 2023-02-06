@@ -25,6 +25,7 @@ export interface Settings {
   'terminal.style.fontFamily': string,
   'terminal.style.fontLigatures': boolean,
   'terminal.style.cursorStyle': 'block' | 'bar' | 'underline',
+  'terminal.style.tabListPosition': 'left' | 'right',
   'terminal.theme.name': string,
   'terminal.theme.customization': ThemeDefinition,
   'terminal.addon.includes': string[],
