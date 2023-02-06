@@ -5,14 +5,14 @@ import type { MainAPIContext } from '../types'
 
 async function noConflictAddTranslations(this: MainAPIContext, entries: TranslationFileEntry[]) {
   const stop = addTranslations(entries, Priority.addon)
-  this.$.app.onCleanup(() => {
+  this.$.app.onInvalidate(() => {
     stop()
   })
 }
 
 async function noConflictAddTranslationDirectory(this: MainAPIContext, directory: string) {
   const stop = await addTranslationDirectory(path.resolve(this.__entry__, directory), Priority.addon)
-  this.$.app.onCleanup(() => {
+  this.$.app.onInvalidate(() => {
     stop()
   })
 }

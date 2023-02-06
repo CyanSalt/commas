@@ -25,7 +25,7 @@ function removeSettingsSpecs(specs: SettingsSpec[]) {
 function addSpecs(this: MainAPIContext, specs: SettingsSpec[]) {
   const validSpecs = specs.filter(spec => spec.key.startsWith(`${this.__name__}.`))
   addSettingsSpecs(validSpecs)
-  this.$.app.onCleanup(() => {
+  this.$.app.onInvalidate(() => {
     removeSettingsSpecs(validSpecs)
   })
 }

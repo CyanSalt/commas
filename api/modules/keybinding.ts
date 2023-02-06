@@ -21,7 +21,7 @@ function addKeyBindings(this: MainAPIContext, bindings: KeyBinding[]) {
   bindings.forEach(binding => {
     addKeyBinding(binding)
   })
-  this.$.app.onCleanup(() => {
+  this.$.app.onInvalidate(() => {
     bindings.forEach(binding => {
       removeKeyBinding(binding)
     })

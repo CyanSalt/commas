@@ -5,7 +5,7 @@ import type { RendererAPIContext } from '../types'
 
 function on(this: RendererAPIContext, channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) {
   ipcRenderer.on(channel, listener)
-  this.$.app.onCleanup(() => {
+  this.$.app.onInvalidate(() => {
     ipcRenderer.removeListener(channel, listener)
   })
 }

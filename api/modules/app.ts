@@ -1,6 +1,8 @@
 import { EventEmitter } from 'events'
+import type { ReactiveEffectOptions } from '@vue/reactivity'
 import { app, ipcRenderer } from 'electron'
 import type { APIContext } from '../types'
+import { watchBaseEffect } from './helper'
 
 const events = new EventEmitter()
 events.setMaxListeners(0)
@@ -31,6 +33,37 @@ function onCleanup(this: APIContext, callback: () => void) {
   events.once(`unload:${this.__name__}`, callback)
 }
 
+let currentContext: { invalidateFns: (() => void)[] } | undefined
+
+function effect<T>(
+  fn: (onInvalidate: (callback: () => void) => void) => T,
+  options?: ReactiveEffectOptions,
+) {
+  return watchBaseEffect(onEffectInvalidate => {
+    const previousContext = currentContext
+    let invalidateFns: (() => void)[] = []
+    currentContext = { invalidateFns }
+    const value = fn(callback => {
+      onEffectInvalidate(() => {
+        callback()
+        invalidateFns.forEach(invalidate => {
+          invalidate()
+        })
+      })
+    })
+    currentContext = previousContext
+    return value
+  }, options)
+}
+
+function onInvalidate(this: APIContext, callback: () => void) {
+  if (currentContext) {
+    currentContext.invalidateFns.push(callback)
+  } else {
+    onCleanup.call(this, callback)
+  }
+}
+
 export * from '../shim'
 
 export {
@@ -40,4 +73,6 @@ export {
   getPath,
   getVersion,
   onCleanup,
+  effect,
+  onInvalidate,
 }

@@ -1,4 +1,3 @@
-import { effect, stop } from '@vue/reactivity'
 import * as address from 'address'
 import * as commas from 'commas:api/main'
 import { quote } from 'shell-quote'
@@ -48,23 +47,22 @@ export default () => {
   commas.ipcMain.provide('system-proxy-status', $$(systemStatus))
 
   let rootCAStatus = $ref(false)
-  const rootCAEffect = effect(async () => {
+  const rootCAEffect = commas.helper.watchBaseEffect(async () => {
     rootCAStatus = await checkRootCA()
   })
   commas.ipcMain.provide('proxy-root-ca-status', $$(rootCAStatus))
 
   commas.ipcMain.handle('install-proxy-root-ca', async () => {
     await installRootCA()
-    return rootCAEffect()
+    return rootCAEffect.runner()
   })
 
   commas.ipcMain.handle('uninstall-proxy-root-ca', async () => {
     await uninstallRootCA()
-    return rootCAEffect()
+    return rootCAEffect.runner()
   })
 
   commas.app.onCleanup(() => {
-    stop(rootCAEffect)
     serverStatus = false
     systemStatus = false
   })

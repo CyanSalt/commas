@@ -28,7 +28,7 @@ function provide<T extends keyof Context>(this: APIContext, name: keyof Context,
   const collection = getCollection(name)
   collection.push(...data)
   if (data.length) {
-    this.$.app.onCleanup(() => {
+    this.$.app.onInvalidate(() => {
       cancelProviding(name, ...data)
     })
   }
@@ -55,7 +55,6 @@ export * from '../shim'
 export {
   getCollection,
   provide,
-  cancelProviding,
   handle,
   handleOnce,
   removeHandler,

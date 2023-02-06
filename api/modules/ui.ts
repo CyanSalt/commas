@@ -16,7 +16,7 @@ function addCSSFile(this: RendererAPIContext, file: string) {
   link.rel = 'stylesheet'
   link.href = url.pathToFileURL(path.resolve(this.__entry__, file)).href
   document.head.append(link)
-  this.$.app.onCleanup(() => {
+  this.$.app.onInvalidate(() => {
     link.remove()
   })
 }

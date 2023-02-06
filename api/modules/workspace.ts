@@ -24,7 +24,7 @@ function registerTabPane(this: RendererAPIContext, name: string, pane: TerminalT
     cwd: '',
     pane,
   } as TerminalTab)
-  this.$.app.onCleanup(() => {
+  this.$.app.onInvalidate(() => {
     delete paneTabs[name]
   })
 }
@@ -51,10 +51,10 @@ function registerXtermAddon<T extends keyof TerminalTabAddons>(
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (active && !tab.addons[key]) {
         tab.addons[key] = addon
-        tab.xterm.loadAddon(tab.addons[key])
+        tab.xterm.loadAddon(tab.addons[key]!)
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       } else if (!active && tab.addons[key]) {
-        tab.addons[key].dispose()
+        tab.addons[key]!.dispose()
         delete tab.addons[key]
       }
     }
@@ -77,7 +77,7 @@ function registerXtermAddon<T extends keyof TerminalTabAddons>(
     })
   }
 
-  this.$.app.onCleanup(() => {
+  this.$.app.onInvalidate(() => {
     toggle(false)
   })
   if (immediate) {

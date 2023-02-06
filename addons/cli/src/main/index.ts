@@ -244,11 +244,8 @@ where <command> is one of:
   })
 
   const externalURLCommands = $(useExternalURLCommands())
-  let loadedExternalURLCommands: CommandModule[] = []
-  commas.helper.watchBaseEffect(() => {
-    commas.context.cancelProviding('cli.command', ...loadedExternalURLCommands)
+  commas.app.effect(() => {
     commas.context.provide('cli.command', ...externalURLCommands)
-    loadedExternalURLCommands = externalURLCommands
   })
 
   commas.context.provide('terminal.completion', async (query: string, command: string) => {

@@ -6,21 +6,21 @@ import type { MainAPIContext } from '../types'
 
 function on(this: MainAPIContext, channel: string, listener: (event: IpcMainEvent, ...args: any[]) => void) {
   ipcMain.on(channel, listener)
-  this.$.app.onCleanup(() => {
+  this.$.app.onInvalidate(() => {
     ipcMain.removeListener(channel, listener)
   })
 }
 
 function handle(this: MainAPIContext, channel: string, listener: (event: IpcMainInvokeEvent, ...args: any[]) => void) {
   ipcMain.handle(channel, listener)
-  this.$.app.onCleanup(() => {
+  this.$.app.onInvalidate(() => {
     ipcMain.removeHandler(channel)
   })
 }
 
 function provide<T>(this: MainAPIContext, key: string, valueRef: Ref<T>) {
   const cleanup = provideIPC(key, valueRef)
-  this.$.app.onCleanup(() => {
+  this.$.app.onInvalidate(() => {
     cleanup()
   })
 }

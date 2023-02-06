@@ -1,4 +1,4 @@
-import type { ReactiveEffectOptions, Ref } from '@vue/reactivity'
+import type { ReactiveEffectOptions, ReactiveEffectRunner, Ref } from '@vue/reactivity'
 import { customRef, deferredComputed, effect, getCurrentScope, onScopeDispose, shallowReactive, ref, stop, toRaw, unref } from '@vue/reactivity'
 import { cloneDeep, difference, intersection, isEqual } from 'lodash'
 
@@ -82,7 +82,7 @@ export function watchBaseEffect<T>(
       cleanupFn = undefined
     }
   }
-  const reactiveEffect = effect(() => {
+  const reactiveEffect: ReactiveEffectRunner<T> = effect(() => {
     cleanupEffect()
     return fn(onInvalidate)
   }, {
