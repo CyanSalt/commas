@@ -332,7 +332,7 @@
         "type": "string"
       }
     },
-    "recommendations": ["addon-manager", "cleaner", "cli", "editor", "git", "iterm2", "l10n-ext", "launcher", "power-mode", "preference", "proxy", "settings", "sync", "theme", "unknown", "updater"],
-    "default": ["addon-manager", "cleaner", "cli", "editor", "git", "iterm2", "l10n-ext", "launcher", "power-mode", "preference", "proxy", "settings", "sync", "theme", "unknown", "updater"]
+    "recommendations": ["addon-manager", "cleaner", "cli", "editor", "git", "iterm2", "l10n-ext", "launcher", "power-mode", "preference", "proxy", "settings", "sync", "theme", "updater"],
+    "default": ["addon-manager", "cleaner", "cli", "clippy", "editor", "git", "iterm2", "l10n-ext", "launcher", "power-mode", "preference", "proxy", "settings", "sync", "theme", "updater"]
   }
 ]

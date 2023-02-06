@@ -1,0 +1,16 @@
+{
+  "name": "clippy",
+  "private": true,
+  "version": "0.1.0",
+  "productName": "Clippy",
+  "description": "Play with your friend",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC",
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "大眼夹",
+      "description": "和朋友一起玩"
+    }
+  }
+}

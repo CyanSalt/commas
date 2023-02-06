@@ -14,7 +14,13 @@ import type { RendererAPIContext } from '../types'
 function addCSSFile(this: RendererAPIContext, file: string) {
   const link = document.createElement('link')
   link.rel = 'stylesheet'
-  link.href = url.pathToFileURL(path.resolve(this.__entry__, file)).href
+  let fileURL: URL
+  try {
+    fileURL = new URL(file)
+  } catch {
+    fileURL = url.pathToFileURL(path.resolve(this.__entry__, file))
+  }
+  link.href = fileURL.href
   document.head.append(link)
   this.$.app.onInvalidate(() => {
     link.remove()

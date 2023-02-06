@@ -48,6 +48,7 @@
     "@types/shell-quote": "^1.7.1",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/reactivity-transform": "^3.2.45",
+    "clippyjs": "^0.0.3",
     "electron": "^22.0.0",
     "electron-packager": "^17.1.1",
     "esbuild": "^0.16.16",

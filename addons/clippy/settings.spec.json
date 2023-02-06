@@ -1,0 +1,25 @@
+[
+  {
+    "key": "clippy.assets.path",
+    "label": "Clippy Assets Path",
+    "comments": [
+      "External URL for assets of Clippy"
+    ],
+    "schema": {
+      "type": "string"
+    },
+    "default": "https://raw.githack.com/pi0/clippyjs/master/assets/"
+  },
+  {
+    "key": "clippy.agent.name",
+    "label": "Clippy Agent Name",
+    "comments": [
+      "Role of your Clippy friend"
+    ],
+    "schema": {
+      "type": "string"
+    },
+    "recommendations": ["Bonzi", "Clippy", "F1", "Genie", "Genius", "Links", "Merlin", "Peedy", "Rocky", "Rover"],
+    "default": "Clippy"
+  }
+]
