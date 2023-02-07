@@ -2,7 +2,8 @@ import type { Component } from 'vue'
 
 declare module './modules/context' {
   export interface Context {
-    'terminal.ui-action-anchor': Component,
+    'terminal.ui-left-action-anchor': Component,
+    'terminal.ui-right-action-anchor': Component,
     'terminal.ui-side-list': Component,
     'terminal.ui-slot': Component,
   }

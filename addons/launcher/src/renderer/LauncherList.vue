@@ -16,6 +16,14 @@ import {
 
 const { vI18n, SortableList, TabItem } = commas.ui.vueAssets
 
+const settings = commas.remote.useSettings()
+
+const position = $computed(() => settings['terminal.style.tabListPosition'])
+
+const isHorizontal = $computed(() => {
+  return position === 'top' || position === 'bottom'
+})
+
 const launchers = $(useLaunchers())
 
 let searcher = $ref<HTMLInputElement>()
@@ -111,75 +119,96 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
     })),
   ], event)
 }
+
+function showLauncherMenu(event: MouseEvent) {
+  commas.ui.openContextMenu(launchers.map(launcher => {
+    return {
+      type: 'checkbox',
+      checked: Boolean(getTerminalTabByLauncher(launcher)),
+      label: launcher.name,
+      command: 'open-launcher', // TODO
+      args: [launcher],
+    }
+  }), event)
+}
 </script>
 
 <template>
   <div class="launcher-list">
-    <div class="launcher-folder" @click="toggleCollapsing">
-      <div :class="['group-name', { collapsed: isCollapsed }]">
-        <span class="folder-icon">
+    <template v-if="isHorizontal">
+      <div class="launcher-folder">
+        <span class="button menu" @click="showLauncherMenu">
           <span class="feather-icon icon-chevrons-down"></span>
         </span>
       </div>
-      <div class="buttons" @click.stop>
-        <div
-          :class="['button', 'more', { active: isAnyActionEnabled }]"
-          @click="toggleActions"
-        >
-          <span class="feather-icon icon-more-vertical"></span>
+    </template>
+    <template v-else>
+      <div class="launcher-folder" @click="toggleCollapsing">
+        <div :class="['group-name', { collapsed: isCollapsed }]">
+          <span class="folder-icon">
+            <span class="feather-icon icon-chevrons-down"></span>
+          </span>
+        </div>
+        <div class="buttons" @click.stop>
+          <div
+            :class="['button', 'more', { active: isAnyActionEnabled }]"
+            @click="toggleActions"
+          >
+            <span class="feather-icon icon-more-vertical"></span>
+          </div>
+        </div>
+        <div v-show="isActionsVisible" class="launcher-actions" @click.stop>
+          <input
+            ref="searcher"
+            v-model="keyword"
+            v-i18n:placeholder
+            type="search"
+            class="keyword"
+            placeholder="Find#!terminal.5"
+            autofocus
+            @keyup.esc="toggleActions"
+          >
+          <span :class="['button', 'edit', { active: isEditing }]" @click="toggleEditing">
+            <span class="feather-icon icon-edit-3"></span>
+          </span>
         </div>
       </div>
-      <div v-show="isActionsVisible" class="launcher-actions" @click.stop>
-        <input
-          ref="searcher"
-          v-model="keyword"
-          v-i18n:placeholder
-          type="search"
-          class="keyword"
-          placeholder="Find#!terminal.5"
-          autofocus
-          @keyup.esc="toggleActions"
-        >
-        <span :class="['button', 'edit', { active: isEditing }]" @click="toggleEditing">
-          <span class="feather-icon icon-edit-3"></span>
-        </span>
-      </div>
-    </div>
-    <SortableList
-      v-slot="{ value: launcher }"
-      :value="filteredLaunchers"
-      value-key="id"
-      class="launchers"
-      :disabled="isLauncherSortingDisabled"
-      @change="sortLaunchers"
-    >
-      <TabItem
-        :tab="getTerminalTabByLauncher(launcher)"
-        :group="createLauncherGroup(launcher)"
-        :closable="isEditing"
-        @click="openLauncher(launcher)"
-        @close="closeLauncher(launcher)"
+      <SortableList
+        v-slot="{ value: launcher }"
+        :value="filteredLaunchers"
+        value-key="id"
+        class="launchers"
+        :disabled="isLauncherSortingDisabled"
+        @change="sortLaunchers"
       >
-        <template v-if="!isEditing" #operations>
-          <div
-            class="button launch"
-            @click.stop="startLauncher(launcher)"
-            @contextmenu="showLauncherScripts(launcher, $event)"
-          >
-            <span class="feather-icon icon-play"></span>
-          </div>
-          <div
-            class="button launch-externally"
-            @click.stop="startLauncherExternally(launcher)"
-          >
-            <span class="feather-icon icon-external-link"></span>
-          </div>
-        </template>
-      </TabItem>
-    </SortableList>
-    <div v-if="isEditing" class="new-launcher" @click="createLauncher">
-      <span class="feather-icon icon-plus"></span>
-    </div>
+        <TabItem
+          :tab="getTerminalTabByLauncher(launcher)"
+          :group="createLauncherGroup(launcher)"
+          :closable="isEditing"
+          @click="openLauncher(launcher)"
+          @close="closeLauncher(launcher)"
+        >
+          <template v-if="!isEditing" #operations>
+            <div
+              class="button launch"
+              @click.stop="startLauncher(launcher)"
+              @contextmenu="showLauncherScripts(launcher, $event)"
+            >
+              <span class="feather-icon icon-play"></span>
+            </div>
+            <div
+              class="button launch-externally"
+              @click.stop="startLauncherExternally(launcher)"
+            >
+              <span class="feather-icon icon-external-link"></span>
+            </div>
+          </template>
+        </TabItem>
+      </SortableList>
+      <div v-if="isEditing" class="new-launcher" @click="createLauncher">
+        <span class="feather-icon icon-plus"></span>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -196,6 +225,11 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
     &:hover {
       opacity: 1;
     }
+  }
+  .tab-list.horizontal & {
+    height: var(--min-tab-height);
+    padding-left: 0;
+    line-height: var(--min-tab-height);
   }
 }
 .buttons {
@@ -232,6 +266,9 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
     transform: rotate(-90deg);
   }
 }
+.menu {
+  font-size: var(--primary-icon-size);
+}
 .launcher-actions {
   display: flex;
   flex-basis: 100%;
@@ -264,7 +301,7 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
 .new-launcher {
   height: var(--tab-height);
   padding: 8px 16px 0;
-  font-size: 21px;
+  font-size: var(--primary-icon-size);
   line-height: var(--tab-height);
   text-align: center;
   opacity: 0.5;

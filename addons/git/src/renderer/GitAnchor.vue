@@ -73,12 +73,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.git-remote-anchor,
-.git-branch-anchor {
-  order: 8;
-  margin-right: 0;
-  margin-left: 8px;
-}
 .git-branch-anchor {
   display: flex;
 }

@@ -42,16 +42,16 @@ function startDragging(event: DragEvent, index: number) {
   draggingIndex = index
   startingBounds = draggingElement.getBoundingClientRect()
   startingEvent = event
-  startingParentBounds = root.getBoundingClientRect()
+  startingParentBounds = root!.getBoundingClientRect()
 }
 
 function getMovingTarget(event: MouseEvent) {
-  const min = startingParentBounds.top - startingBounds.top
-  const max = startingParentBounds.bottom - startingBounds.bottom
-  let distance = event.clientY - startingEvent.clientY
+  const min = startingParentBounds!.top - startingBounds!.top
+  const max = startingParentBounds!.bottom - startingBounds!.bottom
+  let distance = event.clientY - startingEvent!.clientY
   distance = Math.max(Math.min(max, distance), min)
   const bounds = draggingElement.getBoundingClientRect()
-  let offset = distance + startingBounds.top - bounds.top
+  let offset = distance + startingBounds!.top - bounds.top
   let currentIndex = items.findIndex(child => {
     const childBounds = child.getBoundingClientRect()
     return childBounds.bottom > event.clientY
@@ -75,7 +75,7 @@ function handleDraggingMove(event: MouseEvent) {
   if (index !== draggingIndex) {
     const currentBounds = target.getBoundingClientRect()
     style.order = String(index * 2 + (offset > 0 ? 1 : -1))
-    offset -= currentBounds.top - startingBounds.top
+    offset -= currentBounds.top - startingBounds!.top
   }
   style.transform = `translateY(${offset}px)`
 }

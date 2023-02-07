@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useMinimized, useMaximized } from '../compositions/frame'
 import { useSettings } from '../compositions/settings'
+import TabList from './TabList.vue'
 import TerminalTitle from './TerminalTitle.vue'
 
 const settings = useSettings()
@@ -35,7 +36,8 @@ function close() {
   >
     <div class="symmetrical-space"></div>
     <div class="title-wrapper">
-      <TerminalTitle />
+      <TabList v-if="settings['terminal.style.tabListPosition'] === 'top'" />
+      <TerminalTitle v-else />
     </div>
     <div class="controls">
       <template v-if="isCustomControlEnabled">
@@ -64,20 +66,25 @@ function close() {
   justify-content: space-between;
   height: env(titlebar-area-height, 36px);
   line-height: env(titlebar-area-height, 36px);
-  text-align: center;
   background: rgb(var(--material-background) / var(--theme-opacity));
   -webkit-app-region: drag;
+  &:has(.tab-list) {
+    height: 52px; // 36 + 2 * 8
+    line-height: 52px;
+  }
 }
 .controls,
 .symmetrical-space {
   display: flex;
   flex: none;
-  width: 120px;
 }
 .title-wrapper {
   display: flex;
   flex: 1;
-  justify-content: center;
+  min-width: 0;
+  &:has(.terminal-title) {
+    justify-content: center;
+  }
 }
 .title-bar.no-controls .symmetrical-space {
   order: 1;
@@ -87,9 +94,14 @@ function close() {
 }
 .controls {
   justify-content: flex-end;
+  // TODO: get the min size
+  width: 120px;
   .title-bar.no-controls & {
     order: -1;
   }
+}
+.title-bar:has(.terminal-title) .symmetrical-space {
+  width: 120px;
 }
 .button {
   width: 36px;

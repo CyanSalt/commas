@@ -10,6 +10,7 @@ import {
   handleFrameMessages,
 } from '../compositions/frame'
 import { handleI18NMessages } from '../compositions/i18n'
+import { useSettings } from '../compositions/settings'
 import {
   useIsTabListEnabled,
   useWillQuit,
@@ -33,6 +34,7 @@ import TitleBar from './TitleBar.vue'
 import '../assets/fonts/devicon.css'
 import '../assets/fonts/feather.css'
 
+const settings = useSettings()
 const isFullscreen = $(useFullscreen())
 const isTabListEnabled = $(useIsTabListEnabled())
 const terminal = $(useCurrentTerminal())
@@ -40,6 +42,11 @@ const tabs = $(useTerminalTabs())
 const willQuit: boolean = $(useWillQuit())
 
 let keepAlive = $ref<InstanceType<typeof KeepAlive>>()
+
+const hasHorizontalTabList = $computed(() => {
+  const position = settings['terminal.style.tabListPosition']
+  return position === 'top' || position === 'bottom'
+})
 
 const TerminalComponent = $computed(() => {
   if (!terminal) return undefined
@@ -109,7 +116,7 @@ onMounted(() => {
   <div :class="['app', { 'is-opaque': isFullscreen }]">
     <TitleBar />
     <div class="content">
-      <TabList v-show="isTabListEnabled" />
+      <TabList v-if="!hasHorizontalTabList" v-show="isTabListEnabled" />
       <main class="interface">
         <FindBox />
         <template v-if="terminal">

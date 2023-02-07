@@ -1,6 +1,6 @@
 import { effect } from '@vue/reactivity'
 import { nativeTheme, systemPreferences } from 'electron'
-import type { BrowserWindowConstructorOptions, TitleBarOverlay } from 'electron'
+import type { BrowserWindowConstructorOptions } from 'electron'
 import { isDarkColor, mix, toCSSColor, toCSSHEX, toElectronHEX, toHSLA, toRGBA, toRGBAFromHSLA } from '../../shared/color'
 import type { Theme, ThemeDefinition } from '../../typings/theme'
 import { provideIPC } from '../utils/compositions'
@@ -8,9 +8,10 @@ import { resourceFile, userFile } from '../utils/directory'
 import { useDefaultSettings, useSettings } from './settings'
 
 interface BrowserWindowThemeOptions {
-  backgroundColor: string,
+  backgroundColor: NonNullable<BrowserWindowConstructorOptions['backgroundColor']>,
   vibrancy: BrowserWindowConstructorOptions['vibrancy'],
-  titleBarOverlay: TitleBarOverlay,
+  titleBarOverlay: Extract<BrowserWindowConstructorOptions['titleBarOverlay'], object>,
+  trafficLightPosition: NonNullable<BrowserWindowConstructorOptions['trafficLightPosition']>,
 }
 
 const THEME_CSS_COLORS: Partial<Record<keyof ThemeDefinition, string>> = {
@@ -51,8 +52,9 @@ const CSS_PROPERTIES: Partial<Record<Exclude<keyof Theme, keyof ThemeDefinition>
   opacity: '--theme-opacity',
 }
 
+const settings = useSettings()
+
 const theme = $computed(() => {
-  const settings = useSettings()
   const defaultSettings = useDefaultSettings()
   const defaultThemeName = defaultSettings['terminal.theme.name']
   const defaultTheme: Required<ThemeDefinition> = require(resourceFile('themes', `${defaultThemeName}.json`))
@@ -139,10 +141,17 @@ const theme = $computed(() => {
   return definition
 })
 
+const defaultTrafficLightPosition = {
+  x: 12,
+  y: 11,
+  // width: 68,
+}
+
 const themeOptions = $computed<BrowserWindowThemeOptions>(() => {
   const foregroundRGBA = toRGBA(theme.foreground!)
   const backgroundRGBA = toRGBA(theme.background!)
   const materialBackgroundRGBA = toRGBA(theme.materialBackground!)
+  const trafficLightOffset = ((36 + 8 * 2) - 36) / 2
   return {
     /** {@link https://github.com/electron/electron/issues/10420} */
     backgroundColor: toElectronHEX({ ...backgroundRGBA, a: process.platform !== 'win32' ? 0 : 1 }),
@@ -152,6 +161,9 @@ const themeOptions = $computed<BrowserWindowThemeOptions>(() => {
       symbolColor: toElectronHEX({ ...foregroundRGBA, a: 1 }),
       height: 36,
     },
+    trafficLightPosition: settings['terminal.style.tabListPosition'] === 'top'
+      ? { x: defaultTrafficLightPosition.x + trafficLightOffset, y: defaultTrafficLightPosition.y + trafficLightOffset }
+      : defaultTrafficLightPosition,
   }
 })
 

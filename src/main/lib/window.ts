@@ -15,13 +15,14 @@ const themeOptions = $(useThemeOptions())
 async function createWindow(...args: string[]) {
   await whenSettingsReady()
   const settings = useSettings()
+  const tabListPosition = settings['terminal.style.tabListPosition']
   const frameType = settings['terminal.view.frameType']
   const options: Partial<BrowserWindowConstructorOptions> = {
     show: false,
     title: app.name,
     width: (8 * 80) + (2 * 8) + 180,
     minWidth: (8 * 40) + (2 * 8) + 180,
-    height: (18 * 24) + (2 * 4) + 36 + 32,
+    height: (18 * 24) + (2 * 4) + (tabListPosition === 'top' ? 52 : 36) + (tabListPosition === 'bottom' ? 52 : 32),
     acceptFirstMouse: true,
     webPreferences: {
       nodeIntegration: true,
@@ -87,6 +88,7 @@ async function createWindow(...args: string[]) {
     if (process.platform === 'win32' && frameType === 'immersive') {
       frame.setTitleBarOverlay(themeOptions.titleBarOverlay)
     }
+    frame.setTrafficLightPosition(themeOptions.trafficLightPosition)
   })
   frame.on('closed', () => {
     stop(menuEffect)

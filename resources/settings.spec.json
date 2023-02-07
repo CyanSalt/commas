@@ -160,7 +160,8 @@
     "key": "terminal.tab.livePreview",
     "label": "Enable Live Preview",
     "comments": [
-      "Preview latest output in list"
+      "Preview latest output in list",
+      "It will not work if the tab list is at the top or bottom"
     ],
     "schema": {
       "type": "boolean"
@@ -301,7 +302,7 @@
     ],
     "schema": {
       "type": "string",
-      "enum": ["left", "right"]
+      "enum": ["left", "right", "top", "bottom"]
     },
     "default": "left"
   },

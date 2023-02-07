@@ -27,9 +27,15 @@ const terminal = $(useCurrentTerminal())
 let width = $ref(176)
 
 const settings = useSettings()
+
 const position = $computed(() => settings['terminal.style.tabListPosition'])
 
+const isHorizontal: boolean = $computed(() => {
+  return position === 'top' || position === 'bottom'
+})
+
 const standaloneTabs = $computed(() => {
+  if (isHorizontal) return tabs
   return tabs.filter(tab => {
     if (!tab.group) return true
     return tab.group.type === 'default'
@@ -75,8 +81,8 @@ function resize(startingEvent: DragEvent) {
 </script>
 
 <template>
-  <nav :class="['tab-list', position]">
-    <div class="list" :style="{ width: width + 'px' }">
+  <nav :class="['tab-list', position, isHorizontal ? 'horizontal' : 'vertical']">
+    <div class="list" :style="{ width: isHorizontal ? '' : width + 'px' }">
       <SortableList
         v-slot="{ value }"
         :value="standaloneTabs"
@@ -107,7 +113,7 @@ function resize(startingEvent: DragEvent) {
         :key="index"
       />
     </div>
-    <div draggable="true" class="sash" @dragstart.prevent="resize"></div>
+    <div v-if="!isHorizontal" draggable="true" class="sash" @dragstart.prevent="resize"></div>
   </nav>
 </template>
 
@@ -116,12 +122,30 @@ function resize(startingEvent: DragEvent) {
 
 .tab-list {
   --min-tab-height: 36px;
+  --primary-icon-size: 21px;
   display: flex;
   flex: none;
   font-size: 14px;
-  background: rgb(var(--secondary-background) / var(--theme-opacity));
+  &.vertical {
+    background: rgb(var(--secondary-background) / var(--theme-opacity));
+  }
   &.right {
     order: 1;
+  }
+  &.horizontal {
+    --primary-icon-size: 18px;
+    flex: 1;
+    min-width: 0;
+    :deep(.sortable-list) {
+      flex: 0 1 auto;
+      flex-direction: row;
+      min-width: 0;
+    }
+    :deep(.sortable-item) {
+      flex: 1;
+      width: 176px;
+      min-width: 0;
+    }
   }
 }
 .list {
@@ -129,8 +153,10 @@ function resize(startingEvent: DragEvent) {
   position: relative;
   display: flex;
   flex: auto;
-  flex-direction: column;
-  width: 176px;
+  .tab-list.vertical & {
+    flex-direction: column;
+    width: 176px;
+  }
 }
 .sash {
   flex: none;
@@ -143,25 +169,38 @@ function resize(startingEvent: DragEvent) {
 .new-tab {
   display: flex;
   height: var(--min-tab-height);
-  padding: 8px 16px 0;
+  padding: 8px 16px;
   line-height: var(--min-tab-height);
   text-align: center;
+  .tab-list.vertical & {
+    padding-bottom: 0;
+  }
+  tab-list.horizontal & {
+    padding: 8px 12px;
+  }
 }
 .select-shell {
   flex: none;
   width: 18px;
-  visibility: hidden;
-  .new-tab:hover & {
+  .tab-list.vertical & {
+    visibility: hidden;
+  }
+  .tab-list.vertical .new-tab:hover & {
     visibility: visible;
+  }
+  .tab-list.horizontal & {
+    margin-left: 12px;
   }
 }
 .default-shell {
   flex: auto;
-  font-size: 21px;
+  font-size: var(--primary-icon-size);
 }
 .select-shell + .default-shell {
   order: -1;
-  padding-left: 18px;
+  .tab-list.vertical & {
+    padding-left: 12px;
+  }
 }
 .anchor {
   opacity: 0.5;

@@ -59,6 +59,8 @@ const thumbnail = $computed(() => {
   if (!tab) return ''
   if (pane) return ''
   if (!settings['terminal.tab.livePreview']) return ''
+  const tabListPosition = settings['terminal.style.tabListPosition']
+  if (tabListPosition === 'top' || tabListPosition === 'bottom') return ''
   if (tab.process === path.basename(tab.shell)) return ''
   if (tab.thumbnail) return tab.thumbnail
   return ''
@@ -103,7 +105,13 @@ function close() {
 
 <style lang="scss" scoped>
 .tab-item {
-  padding: 8px 8px 0;
+  padding: 8px;
+  .tab-list.vertical & {
+    padding-bottom: 0;
+  }
+  .tab-list.horizontal & {
+    padding-right: 0;
+  }
 }
 .tab-title {
   display: flex;

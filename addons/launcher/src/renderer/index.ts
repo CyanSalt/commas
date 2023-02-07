@@ -2,7 +2,7 @@ import * as commas from 'commas:api/renderer'
 import { watch } from 'vue'
 import LauncherLink from './LauncherLink.vue'
 import LauncherList from './LauncherList.vue'
-import { startLauncher, runLauncherScript, useLaunchers } from './launcher'
+import { startLauncher, runLauncherScript, useLaunchers, openLauncher } from './launcher'
 import { clearLauncherSessions, LauncherSessionAddon } from './session'
 
 declare module '../../../../src/typings/terminal' {
@@ -15,6 +15,9 @@ export default () => {
 
   commas.ui.addCSSFile('dist/renderer/style.css')
 
+  commas.ipcRenderer.on('open-launcher', (event, launcher) => {
+    openLauncher(launcher)
+  })
   commas.ipcRenderer.on('start-launcher', (event, launcher) => {
     startLauncher(launcher)
   })
