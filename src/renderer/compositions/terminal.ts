@@ -139,30 +139,38 @@ export async function createTerminalTab({
       if (event.key === 'c' && xterm.hasSelection()) return false
       if (event.key === 'f') return false
     }
-    if (tab.addons.shellIntegration?.completion) {
-      switch (event.key) {
-        case 'Enter':
-        case 'Tab':
-          event.preventDefault()
-          if (event.type === 'keydown') {
-            return !tab.addons.shellIntegration.applySelectedCompletionElement(event.key === 'Enter')
-          }
-          return false
-        case 'Escape':
-          if (event.type === 'keydown') {
-            tab.addons.shellIntegration.clearCompletion()
-          }
-          return false
-        case 'ArrowUp':
-          if (event.type === 'keydown') {
-            tab.addons.shellIntegration.selectPreviousCompletionElement()
-          }
-          return false
-        case 'ArrowDown':
-          if (event.type === 'keydown') {
-            tab.addons.shellIntegration.selectNextCompletionElement()
-          }
-          return false
+    const shellIntegration = tab.addons.shellIntegration
+    if (shellIntegration) {
+      if (shellIntegration.completion) {
+        switch (event.key) {
+          case 'Enter':
+          case 'Tab':
+            event.preventDefault()
+            if (event.type === 'keydown') {
+              return !shellIntegration.applySelectedCompletionElement(event.key === 'Enter')
+            }
+            return false
+          case 'Escape':
+            if (event.type === 'keydown') {
+              shellIntegration.clearCompletion()
+            }
+            return false
+          case 'ArrowUp':
+            if (event.type === 'keydown') {
+              shellIntegration.selectPreviousCompletionElement()
+            }
+            return false
+          case 'ArrowDown':
+            if (event.type === 'keydown') {
+              shellIntegration.selectNextCompletionElement()
+            }
+            return false
+        }
+      } else {
+        if (['ArrowUp', 'ArrowDown'].includes(event.key) && event.type === 'keydown') {
+          shellIntegration.skipCompletion()
+          return true
+        }
       }
     }
     const matchedItem = rendererKeybindings.find(item => isMatch(event, item.pattern))

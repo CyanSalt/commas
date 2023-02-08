@@ -106,7 +106,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   recentMarker?: WeakRef<IMarker>
   completion?: IntegratedShellCompletion
   completionKey?: symbol
-  recentCompletionAppliedPosition?: IntegratedShellCompletion['position']
+  recentCompletionAppliedPosition?: true | IntegratedShellCompletion['position']
 
   constructor(tab: TerminalTab) {
     this.tab = tab
@@ -496,8 +496,10 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       return
     }
     if (
-      isEqual(this.recentCompletionAppliedPosition, currentPosition)
-      && completions.some(item => item.query && item.value === item.query)
+      this.recentCompletionAppliedPosition === true || (
+        isEqual(this.recentCompletionAppliedPosition, currentPosition)
+        && completions.some(item => item.query && item.value === item.query)
+      )
     ) {
       this.recentCompletionAppliedPosition = undefined
       if (shouldReuseDecoration) {
@@ -534,6 +536,10 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
   }
 
+  skipCompletion(position?: IntegratedShellCompletion['position']) {
+    this.recentCompletionAppliedPosition = position ?? true
+  }
+
   applyCompletion(value: string, back = 0) {
     const { xterm } = this.tab
     const position = this._getCurrentPosition()
@@ -542,7 +548,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     while (position.x > xterm.cols) {
       position.x -= xterm.cols
     }
-    this.recentCompletionAppliedPosition = position
+    this.skipCompletion(position)
     writeTerminalTab(this.tab, '\x7F'.repeat(back) + value)
     // Preload completions
     this._getRealtimeCompletions(input.slice(0, -back) + value + ' ')
