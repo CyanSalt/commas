@@ -1,5 +1,24 @@
 
 
+## [0.25.0](https://github.com/CyanSalt/commas/compare/v0.24.0...v0.25.0) (2023-02-10)
+
+
+### Features
+
+* optimize tab item color ([4a84c42](https://github.com/CyanSalt/commas/commit/4a84c4212d67f5b67965d3dec1acf3cfd775e374))
+* replace easter egg with clippy addon ([5dba423](https://github.com/CyanSalt/commas/commit/5dba4236dfe7ba89061e1c034266b464c1a0d890))
+* support terminal.style.tabListPosition ([4c4b35b](https://github.com/CyanSalt/commas/commit/4c4b35ba7740614914713db7ad960c8561626bd5))
+* support top or bottom tab list ([01a7cba](https://github.com/CyanSalt/commas/commit/01a7cba54055b66b43ddbdf3ffeca70465dacf42))
+
+
+### Bug Fixes
+
+* code editor saving ([149b11a](https://github.com/CyanSalt/commas/commit/149b11a4e137b853d60d6b0dee9df89f8a3c7d53))
+* file as command completion ([f54eae5](https://github.com/CyanSalt/commas/commit/f54eae5dbca59382f0d53487d871dcb0c49345d9))
+* ignore history navigation ([5b45464](https://github.com/CyanSalt/commas/commit/5b4546466ccd12e9f930a2451b4e0506688a64fb))
+* remove completion on escape ([67ebb2b](https://github.com/CyanSalt/commas/commit/67ebb2b9d2fd9d967328a65d84dfdfb0a8ad96c0))
+* scroll completion item into view ([04e9ba9](https://github.com/CyanSalt/commas/commit/04e9ba99e8cd64236f717e48d4da0f2387137cd1))
+
 ## [0.24.0](https://github.com/CyanSalt/commas/compare/v0.23.0...v0.24.0) (2023-01-18)
 
 
