@@ -72,6 +72,9 @@ function close() {
     height: 52px; // 36 + 2 * 8
     line-height: 52px;
   }
+  :deep(.tab-list) {
+    -webkit-app-region: no-drag;
+  }
 }
 .controls,
 .symmetrical-space {
