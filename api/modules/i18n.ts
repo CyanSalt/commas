@@ -1,6 +1,6 @@
 import * as path from 'path'
-import { addTranslationDirectory, addTranslations, Priority, translate } from '../../src/main/lib/i18n'
 import type { TranslationFileEntry } from '../../src/main/lib/i18n'
+import { addTranslationDirectory, addTranslations, Priority, translate } from '../../src/main/lib/i18n'
 import type { MainAPIContext } from '../types'
 
 async function noConflictAddTranslations(this: MainAPIContext, entries: TranslationFileEntry[]) {

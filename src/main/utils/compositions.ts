@@ -1,6 +1,6 @@
 import * as fs from 'fs'
-import { computed, customRef, effect, stop, unref } from '@vue/reactivity'
 import type { Ref } from '@vue/reactivity'
+import { computed, customRef, effect, stop, unref } from '@vue/reactivity'
 import { ipcMain } from 'electron'
 import { cloneDeep } from 'lodash'
 import YAML from 'yaml'

@@ -1,6 +1,6 @@
 import { effect } from '@vue/reactivity'
-import { nativeTheme, systemPreferences } from 'electron'
 import type { BrowserWindowConstructorOptions } from 'electron'
+import { nativeTheme, systemPreferences } from 'electron'
 import { isDarkColor, mix, toCSSColor, toCSSHEX, toElectronHEX, toHSLA, toRGBA, toRGBAFromHSLA } from '../../shared/color'
 import type { Theme, ThemeDefinition } from '../../typings/theme'
 import { provideIPC } from '../utils/compositions'

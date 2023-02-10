@@ -1,6 +1,6 @@
 import type { Ref } from '@vue/reactivity'
-import { ipcMain } from 'electron'
 import type { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
+import { ipcMain } from 'electron'
 import { provideIPC } from '../../src/main/utils/compositions'
 import type { MainAPIContext } from '../types'
 

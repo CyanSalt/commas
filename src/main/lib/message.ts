@@ -1,5 +1,5 @@
-import { app, BrowserWindow, dialog, ipcMain, nativeImage, shell } from 'electron'
 import type { MessageBoxOptions, NativeImage, WebContents } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain, nativeImage, shell } from 'electron'
 import * as fileIcon from 'file-icon'
 import { readFile, watchFile, writeFile } from '../utils/file'
 import { execa, until } from '../utils/helper'

@@ -1,5 +1,5 @@
-import { app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, TouchBar } from 'electron'
 import type { MenuItemConstructorOptions, PopupOptions } from 'electron'
+import { app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, TouchBar } from 'electron'
 import { globalHandler } from '../../shared/handler'
 import type { KeyBinding, MenuItem } from '../../typings/menu'
 import { provideIPC, useYAMLFile } from '../utils/compositions'

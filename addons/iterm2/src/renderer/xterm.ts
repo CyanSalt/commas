@@ -174,7 +174,6 @@ export class ITerm2Addon implements ITerminalAddon {
             break
           }
           case 'SetBadgeFormat': {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             badge = Buffer.from(sequence.positional, 'base64').toString()
             break
           }

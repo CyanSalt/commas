@@ -48,11 +48,9 @@ function registerXtermAddon<T extends keyof TerminalTabAddons>(
   const apply = (tab: TerminalTab, active: boolean) => {
     const addon = factory(tab)
     if (addon) {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (active && !tab.addons[key]) {
         tab.addons[key] = addon
         tab.xterm.loadAddon(tab.addons[key]!)
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       } else if (!active && tab.addons[key]) {
         tab.addons[key]!.dispose()
         delete tab.addons[key]

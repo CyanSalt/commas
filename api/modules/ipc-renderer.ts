@@ -1,5 +1,5 @@
-import { ipcRenderer } from 'electron'
 import type { IpcRendererEvent } from 'electron'
+import { ipcRenderer } from 'electron'
 import { injectIPC } from '../../src/renderer/utils/compositions'
 import type { RendererAPIContext } from '../types'
 
