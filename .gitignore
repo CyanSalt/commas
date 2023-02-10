@@ -6,6 +6,7 @@ release
 /resources/images/*.ico
 /resources/images/*.icns
 /userdata
+.env
 
 # Log files
 npm-debug.log*

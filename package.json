@@ -15,7 +15,7 @@
     "dev:user": "node build/build-user.mjs && electron .",
     "build": "node build/build.mjs && node build/pack.mjs -- --local",
     "pack": "node build/build.mjs && node build/pack.mjs",
-    "release": "release-it",
+    "release": "dotenv release-it --",
     "lint:script": "eslint --ignore-path .gitignore --ext .js,.cjs,.mjs,.ts,.vue --cache --fix .",
     "lint:style": "stylelint --ignore-path .gitignore --cache --fix ./**/*.{css,vue}",
     "lint": "npm run lint:script && npm run lint:style"
@@ -49,6 +49,7 @@
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/reactivity-transform": "^3.2.45",
     "clippyjs": "^0.0.3",
+    "dotenv-cli": "^7.0.0",
     "electron": "^22.0.0",
     "electron-packager": "^17.1.1",
     "esbuild": "^0.16.16",

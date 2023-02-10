@@ -9,7 +9,7 @@
   "github": {
     "release": true,
     "releaseName": "v${version}",
-    "assets": ["dist/*.zip"]
+    "assets": ["release/*.zip"]
   },
   "plugins": {
     "@release-it/conventional-changelog": {
