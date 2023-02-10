@@ -2,9 +2,10 @@
 import { onBeforeUpdate } from 'vue'
 import { handleMousePressing } from '../../utils/helper'
 
-const { value, valueKey, disabled } = defineProps<{
+const { value, valueKey, direction = 'vertical', disabled } = defineProps<{
   value: any[],
   valueKey?: string | ((value: any) => any) | undefined,
+  direction?: 'vertical' | 'horizontal',
   disabled?: boolean,
 }>()
 
@@ -46,15 +47,27 @@ function startDragging(event: DragEvent, index: number) {
 }
 
 function getMovingTarget(event: MouseEvent) {
-  const min = startingParentBounds!.top - startingBounds!.top
-  const max = startingParentBounds!.bottom - startingBounds!.bottom
-  let distance = event.clientY - startingEvent!.clientY
+  const min = direction === 'horizontal'
+    ? startingParentBounds!.left - startingBounds!.left
+    : startingParentBounds!.top - startingBounds!.top
+  const max = direction === 'horizontal'
+    ? startingParentBounds!.right - startingBounds!.right
+    : startingParentBounds!.bottom - startingBounds!.bottom
+  let distance = direction === 'horizontal'
+    ? event.clientX - startingEvent!.clientX
+    : event.clientY - startingEvent!.clientY
   distance = Math.max(Math.min(max, distance), min)
   const bounds = draggingElement.getBoundingClientRect()
-  let offset = distance + startingBounds!.top - bounds.top
+  let offset = distance + (
+    direction === 'horizontal'
+      ? startingBounds!.left - bounds.left
+      : startingBounds!.top - bounds.top
+  )
   let currentIndex = items.findIndex(child => {
     const childBounds = child.getBoundingClientRect()
-    return childBounds.bottom > event.clientY
+    return direction === 'horizontal'
+      ? childBounds.right > event.clientX
+      : childBounds.bottom > event.clientY
   })
   if (currentIndex === -1) {
     currentIndex = offset > 0 ? items.length - 1 : 0
@@ -75,9 +88,13 @@ function handleDraggingMove(event: MouseEvent) {
   if (index !== draggingIndex) {
     const currentBounds = target.getBoundingClientRect()
     style.order = String(index * 2 + (offset > 0 ? 1 : -1))
-    offset -= currentBounds.top - startingBounds!.top
+    offset -= (
+      direction === 'horizontal'
+        ? currentBounds.left - startingBounds!.left
+        : currentBounds.top - startingBounds!.top
+    )
   }
-  style.transform = `translateY(${offset}px)`
+  style.transform = `translate${direction === 'horizontal' ? 'X' : 'Y'}(${offset}px)`
 }
 
 function handleDraggingEnd(event: MouseEvent) {
@@ -101,7 +118,7 @@ onBeforeUpdate(() => {
 </script>
 
 <template>
-  <div ref="root" class="sortable-list">
+  <div ref="root" :class="['sortable-list', direction]">
     <div
       v-for="(item, index) in value"
       :key="keys[index]"

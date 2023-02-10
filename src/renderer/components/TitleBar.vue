@@ -91,9 +91,6 @@ function close() {
 }
 .title-bar.no-controls .symmetrical-space {
   order: 1;
-  justify-content: flex-end;
-  padding-right: 16px;
-  padding-left: 0;
 }
 .controls {
   justify-content: flex-end;
@@ -105,6 +102,7 @@ function close() {
 }
 .title-bar:has(.terminal-title) .symmetrical-space {
   width: 120px;
+  padding-right: 16px;
 }
 .button {
   width: 36px;

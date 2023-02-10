@@ -87,6 +87,7 @@ function resize(startingEvent: DragEvent) {
         v-slot="{ value }"
         :value="standaloneTabs"
         value-key="pid"
+        :direction="isHorizontal ? 'horizontal' : 'vertical'"
         class="processes"
         @change="sortTabs"
       >
