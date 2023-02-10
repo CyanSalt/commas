@@ -1,5 +1,12 @@
 
 
+### [0.25.1](https://github.com/CyanSalt/commas/compare/v0.25.0...v0.25.1) (2023-02-10)
+
+
+### Bug Fixes
+
+* disable clippy by default ([73c6d7a](https://github.com/CyanSalt/commas/commit/73c6d7abae87d609f787c23d196b78a5445f51cb))
+
 ## [0.25.0](https://github.com/CyanSalt/commas/compare/v0.24.0...v0.25.0) (2023-02-10)
 
 
