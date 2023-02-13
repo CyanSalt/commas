@@ -1,20 +1,12 @@
 <script lang="ts" setup>
-import FireworkOverlay from './FireworkOverlay.vue'
-import { removeFirework, useBadge, useFireworks } from './badge'
+import { useBadge } from './badge'
 
 const badge = useBadge()
-const fireworks = useFireworks()
 </script>
 
 <template>
   <div class="badge-slot">
     <div v-if="badge" class="badge">{{ badge }}</div>
-    <FireworkOverlay
-      v-for="item in fireworks"
-      :key="item.id"
-      :position="item.position"
-      @animation-end="removeFirework(item)"
-    />
   </div>
 </template>
 

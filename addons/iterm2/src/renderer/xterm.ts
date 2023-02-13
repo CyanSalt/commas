@@ -1,9 +1,10 @@
+import confetti from 'canvas-confetti'
 import * as commas from 'commas:api/renderer'
 import { clipboard, ipcRenderer } from 'electron'
 import { nextTick } from 'vue'
 import type { IDisposable, IMarker, ITerminalAddon, Terminal } from 'xterm'
 import type { TerminalTab } from '../../../../src/typings/terminal'
-import { addFirework, useBadge } from './badge'
+import { useBadge } from './badge'
 import { calculateDOM, loadingElement, parseITerm2EscapeSequence } from './utils'
 
 interface XtermBufferPosition {
@@ -106,9 +107,15 @@ export class ITerm2Addon implements ITerminalAddon {
                   const bounds = element.getBoundingClientRect()
                   const cell = xterm['_core']._renderService.dimensions.css.cell
                   const { cursorX, cursorY } = xterm.buffer.active
-                  addFirework({
-                    x: bounds.x + (cursorX + 0.5) * cell.width,
-                    y: bounds.y + (cursorY + 0.5) * cell.height,
+                  confetti({
+                    spread: 360,
+                    ticks: 100,
+                    startVelocity: 30,
+                    scalar: 3,
+                    origin: {
+                      x: (bounds.x + (cursorX + 0.5) * cell.width) / window.innerWidth,
+                      y: (bounds.y + (cursorY + 0.5) * cell.height) / window.innerHeight,
+                    },
                   })
                 })
                 break
