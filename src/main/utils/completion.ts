@@ -304,6 +304,13 @@ const getCommandRawCompletions = memoizeAsync(async () => {
 
 async function getCommandCompletions(query: string) {
   const completions = await getCommandRawCompletions()
+  if (!query) {
+    completions.unshift({
+      type: 'command',
+      query: '',
+      value: '',
+    })
+  }
   return completions.map<CommandCompletion>(item => ({
     ...item,
     query,
