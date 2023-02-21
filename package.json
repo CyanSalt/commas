@@ -48,6 +48,7 @@
     "@types/prismjs": "^1.26.0",
     "@types/shell-quote": "^1.7.1",
     "@vitejs/plugin-vue": "^4.0.0",
+    "@vue-macros/reactivity-transform": "^0.2.3",
     "@vue/reactivity-transform": "^3.2.47",
     "canvas-confetti": "^1.6.0",
     "clippyjs": "^0.0.3",

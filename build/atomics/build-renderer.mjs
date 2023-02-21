@@ -1,5 +1,6 @@
 import { builtinModules } from 'module'
 import vue from '@vitejs/plugin-vue'
+import reactivityTransform from '@vue-macros/reactivity-transform/vite'
 import * as vite from 'vite'
 import { requireCommonJS } from '../utils/common.mjs'
 
@@ -22,9 +23,8 @@ export default (versions, tap) => vite.build(tap({
     'process.type': JSON.stringify('renderer'),
   },
   plugins: [
-    vue({
-      reactivityTransform: true,
-    }),
+    vue(),
+    reactivityTransform(),
   ],
   json: {
     stringify: true,
