@@ -35,7 +35,7 @@ export default () => {
 
   const syncData = useSyncData()
 
-  commas.helper.watchBaseEffect(() => {
+  commas.app.effect(() => {
     commas.context.provide('sync.file', `themes/${settings['terminal.theme.name']}.json`)
     // TODO: shall we sync addons?
   })
