@@ -285,6 +285,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       marker,
       width: xterm.cols,
       height,
+      layer: 'bottom',
     })!
     decoration.onRender(el => {
       el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
