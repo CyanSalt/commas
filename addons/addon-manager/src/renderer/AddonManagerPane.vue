@@ -38,7 +38,6 @@ const addonList = $computed(() => {
       manifest: commas.remote.getAddonManifest(addon.manifest),
       enabled: enabledAddons.includes(addon.name),
     }))
-    .sort((a, b) => Number(b.enabled) - Number(a.enabled))
 })
 
 function toggle(addon: AddonInfo, enabled: boolean) {
