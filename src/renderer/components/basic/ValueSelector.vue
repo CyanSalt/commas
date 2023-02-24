@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { modelValue, pinned = [], disabled = false, unpinable = false, placeholder = '' } = defineProps<{
+const { modelValue, pinned = (() => []) as never, disabled = false, unpinable = false, placeholder = '' } = defineProps<{
   modelValue: any,
   pinned?: any[],
   disabled?: boolean,

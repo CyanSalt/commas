@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@commas/api": "file:api",
-    "@cyansalt/eslint-config-preset": "^1.12.1",
+    "@cyansalt/eslint-config-preset": "^1.12.4",
     "@cyansalt/stylelint-config-preset": "^1.4.1",
     "@cyansalt/tsconfig": "^2.1.1",
     "@release-it/conventional-changelog": "^5.1.1",
