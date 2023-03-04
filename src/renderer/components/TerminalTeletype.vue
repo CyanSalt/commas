@@ -216,10 +216,9 @@ function selectCompletion(event: MouseEvent) {
   }
 }
 :deep(.terminal-highlight-block) {
-  box-sizing: border-box;
-  border: 1px solid rgb(var(--color));
-  background: rgb(var(--color) / 0.1);
-  border-radius: 4px;
+  margin-left: calc(0px - var(--cell-width));
+  border-left: calc(var(--cell-width) / 2) solid rgb(var(--color));
+  background: rgb(var(--color) / 0.2);
 }
 :deep(.terminal-completion) {
   max-height: calc(var(--cell-height) * var(--row-span));

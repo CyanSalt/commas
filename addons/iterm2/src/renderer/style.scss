@@ -1,3 +1,14 @@
+.iterm2-image {
+  overflow: hidden;
+  &::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: calc(var(--row) * var(--cell-height));
+    background: var(--image) no-repeat center/var(--image-fit);
+    transform: translateY(calc(0px - var(--offset) * var(--cell-height)));
+  }
+}
 .iterm2-mark {
   height: 0 !important;
   margin-top: calc(var(--cell-height) / 6);

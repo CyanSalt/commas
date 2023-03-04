@@ -104,6 +104,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   commands: IntegratedShellCommand[]
   currentCommand?: IntegratedShellCommand
   recentMarker?: WeakRef<IMarker>
+  highlightMarkers: IMarker[]
   completion?: IntegratedShellCompletion
   completionKey?: symbol
   recentCompletionAppliedPosition?: true | IntegratedShellCompletion['position']
@@ -168,18 +169,19 @@ export class ShellIntegrationAddon implements ITerminalAddon {
                 if (!this.currentCommand.marker.isDisposed) {
                   const theme = useTheme()
                   this.currentCommand.decoration.dispose()
-                  this.currentCommand.decoration = this._createCommandDecoration(
-                    xterm,
-                    this.currentCommand.marker,
-                    exitCode ? theme.red : theme.green,
-                    true,
-                  )
                   if (exitCode && settings['terminal.shell.highlightErrors']) {
                     this._createHighlightDecoration(
                       xterm,
-                      this.currentCommand.marker,
+                      this.currentCommand.marker.line,
+                      xterm.buffer.active.baseY + xterm.buffer.active.cursorY - 1,
                       theme.red,
-                      xterm.buffer.active.baseY + xterm.buffer.active.cursorY - this.currentCommand.marker.line,
+                    )
+                  } else {
+                    this.currentCommand.decoration = this._createCommandDecoration(
+                      xterm,
+                      this.currentCommand.marker,
+                      exitCode ? theme.red : theme.green,
+                      true,
                     )
                   }
                 }
@@ -241,6 +243,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     const disposables = [
       ...this.disposables,
       ...this.commands.map(command => command.marker),
+      ...this.highlightMarkers,
     ]
     disposables.forEach(disposable => {
       disposable.dispose()
@@ -276,22 +279,25 @@ export class ShellIntegrationAddon implements ITerminalAddon {
 
   _createHighlightDecoration(
     xterm: Terminal,
-    marker: IMarker,
+    from: number,
+    to: number,
     color: string,
-    height: number,
   ) {
+    const line = xterm.buffer.active.baseY + xterm.buffer.active.cursorY
     const rgba = toRGBA(color)
-    const decoration = xterm.registerDecoration({
-      marker,
-      width: xterm.cols,
-      height,
-      layer: 'bottom',
-    })!
-    decoration.onRender(el => {
-      el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
-      el.classList.add('terminal-highlight-block')
-    })
-    return decoration
+    for (let offset = from - line; offset <= to - line; offset += 1) {
+      const highlightMarker = xterm.registerMarker(offset)!
+      const decoration = xterm.registerDecoration({
+        marker: highlightMarker,
+        width: xterm.cols,
+        height: 1,
+        layer: 'bottom',
+      })!
+      decoration.onRender(el => {
+        el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
+        el.classList.add('terminal-highlight-block')
+      })
+    }
   }
 
   scrollToCommand(offset: number) {

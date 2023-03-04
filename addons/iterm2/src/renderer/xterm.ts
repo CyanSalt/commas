@@ -161,21 +161,20 @@ export class ITerm2Addon implements ITerminalAddon {
               el.style.height = dimension
               return el.clientHeight
             }, sequence.args.height, cell.height * baseScale)
-            let rest = height
-            while (rest >= 0) {
-              const offset = height - rest
+            for (let offset = 0; offset < height; offset += 1) {
               const marker = xterm.registerMarker(offset)!
               const decoration = xterm.registerDecoration({
                 marker,
                 width,
-                height,
+                height: 1,
               })!
               decoration.onRender(el => {
-                el.style.background = `url('${url}') no-repeat center/${sequence.args.preserveAspectRatio === '0' ? '100%' : 'contain'}`
-                el.style.transform = `translateY(-${offset * cell.height}px)`
+                el.classList.add('iterm2-image')
+                el.style.setProperty('--row', String(height))
+                el.style.setProperty('--image', `url('${url}')`)
+                el.style.setProperty('--image-fit', sequence.args.preserveAspectRatio === '0' ? '100%' : 'contain')
+                el.style.setProperty('--offset', String(offset))
               })
-              if (!rest) break
-              rest -= Math.min(rest, xterm.rows)
             }
             xterm.write('\r\n'.repeat(height - 1))
             break
