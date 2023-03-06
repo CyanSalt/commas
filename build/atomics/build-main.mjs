@@ -1,6 +1,6 @@
+import reactivityTransform from '@vue-macros/reactivity-transform/esbuild'
 import esbuild from 'esbuild'
 import externalNodeModules from '../utils/esbuild-external-node-modules.mjs'
-import reactivityTransform from '../utils/esbuild-reactivity-transform.mjs'
 
 /**
  * @typedef {import('esbuild').BuildOptions} BuildOptions
