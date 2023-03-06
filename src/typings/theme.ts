@@ -1,3 +1,4 @@
+import type { BrowserWindowConstructorOptions } from 'electron'
 import type { ITheme } from 'xterm'
 
 export interface ThemeDefinition extends ITheme {
@@ -18,7 +19,7 @@ export interface Theme extends Required<ThemeDefinition> {
   systemBlue: string,
   systemMagenta: string,
   systemAccent: string,
-  vibrancy: boolean,
+  vibrancy: BrowserWindowConstructorOptions['vibrancy'] | boolean,
   materialBackground: string,
   secondaryBackground: string,
 }

@@ -1,3 +1,4 @@
+import type { BrowserWindowConstructorOptions } from 'electron'
 import type { JSONSchema } from './json-schema'
 import type { ThemeDefinition } from './theme'
 
@@ -20,7 +21,7 @@ export interface Settings {
   'terminal.view.rendererType': 'dom' | 'canvas' | 'webgl',
   'terminal.view.frameType': 'system' | 'system-with-menu' | 'immersive',
   'terminal.style.opacity': number,
-  'terminal.style.vibrancy': boolean,
+  'terminal.style.vibrancy': BrowserWindowConstructorOptions['vibrancy'] | boolean,
   'terminal.style.fontSize': number,
   'terminal.style.fontFamily': string,
   'terminal.style.fontLigatures': boolean,
