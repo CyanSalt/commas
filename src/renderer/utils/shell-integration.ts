@@ -114,6 +114,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     this.tab.idle = true
     this.disposables = []
     this.commands = []
+    this.highlightMarkers = []
   }
 
   activate(xterm: Terminal) {
@@ -297,6 +298,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
         el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
         el.classList.add('terminal-highlight-block')
       })
+      this.highlightMarkers.push(highlightMarker)
     }
   }
 
