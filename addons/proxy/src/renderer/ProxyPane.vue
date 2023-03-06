@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
-import { ipcRenderer, shell } from 'electron'
+import { clipboard, ipcRenderer, shell } from 'electron'
 import type { TerminalTab } from '../../../../src/typings/terminal'
 import { useProxyRootCAStatus, useProxyServerStatus, useProxyServerVersionInfo, useSystemProxyStatus } from './compositions'
 
@@ -46,6 +46,10 @@ function openEditor() {
   shell.openExternal(`http://localhost:${port}`)
 }
 
+function copyAddress() {
+  clipboard.writeText(`${ip}:${port}`)
+}
+
 function toggleProxyServer() {
   if (status !== undefined) {
     status = !status
@@ -75,7 +79,12 @@ function update() {
     <div class="group">
       <div class="form-line">
         <label v-i18n class="form-label">Proxy Server Address#!proxy.4</label>
-        <span v-if="status" class="link" @click="openEditor">{{ address }}</span>
+        <span v-if="status" class="proxy-address">
+          <span class="link" @click="openEditor">{{ address }}</span>
+          <span class="link" @click="copyAddress">
+            <span class="feather-icon icon-copy"></span>
+          </span>
+        </span>
         <span v-else class="link shortcut" @click="toggleProxyServer">
           <span class="feather-icon icon-navigation"></span>
           <span v-i18n>Click this icon to start#!proxy.10</span>
@@ -129,6 +138,11 @@ function update() {
 }
 .proxy-pane .form-line {
   margin-top: 0;
+}
+.proxy-address {
+  display: flex;
+  gap: 1em;
+  align-items: center;
 }
 .update-link {
   display: flex;
