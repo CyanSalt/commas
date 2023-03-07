@@ -33,9 +33,7 @@ let isEditing: boolean = $ref(false)
 let keyword = $ref('')
 
 const keywords = $computed(() => {
-  return keyword.trim().toLowerCase().split(/\s+/)
-    .map(item => item.trim())
-    .filter(Boolean)
+  return commas.helper.getWords(keyword)
 })
 
 const filteredLaunchers = $computed(() => {
@@ -43,12 +41,8 @@ const filteredLaunchers = $computed(() => {
     if (isCollapsed) {
       if (!getTerminalTabByLauncher(launcher)) return false
     }
-    if (keywords.length) {
-      const matched = keywords.every(
-        item => Object.values(launcher).join(' ').toLowerCase().includes(item),
-      )
-      if (!matched) return false
-    }
+    const matched = commas.helper.matches(Object.values(launcher), keywords)
+    if (!matched) return false
     return true
   })
 })

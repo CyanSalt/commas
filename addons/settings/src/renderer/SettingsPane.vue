@@ -50,7 +50,7 @@ const groups = $computed(() => {
       key,
       name,
       from,
-      rows: keyword ? rows.filter(row => row.key.includes(keyword)) : rows,
+      rows: rows.filter(row => commas.helper.matches([row.key, commas.remote.translate(row.label)], keyword)),
     }
   }).filter(group => group.rows.length)
 })
