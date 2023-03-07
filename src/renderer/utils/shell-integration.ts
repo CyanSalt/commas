@@ -86,10 +86,14 @@ function filterAndSortCompletions(completions: CommandCompletion[]) {
           && record.query === item.query
       })
       const scale = duplicatedTimesItem ? duplicatedTimesItem.times : 1
-      const score = item.query
-        // First character must be matched
-        ? (item.query[0] === item.value[0] ? fuzzaldrin.score(item.value, item.query) : 0)
-        : 1
+      let score: number
+      if (item.query) {
+        const baseline = fuzzaldrin.score(item.value, item.value) * item.query.length / item.value.length ** 2
+        const queryScore = fuzzaldrin.score(item.value, item.query)
+        score = queryScore > baseline ? queryScore : 0
+      } else {
+        score = 1
+      }
       return [item, score * scale] as const
     })
     .filter(([item, score]) => score > 0)
