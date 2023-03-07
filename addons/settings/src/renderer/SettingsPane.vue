@@ -22,7 +22,7 @@ const specs = $(commas.remote.useSettingsSpecs())
 const configurableSpecs = $computed(() => {
   return specs.filter((item) => {
     return !Array.isArray(item.configurable)
-          || item.configurable.includes(process.platform)
+      || item.configurable.includes(process.platform)
   })
 })
 

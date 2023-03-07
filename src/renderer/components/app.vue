@@ -23,7 +23,7 @@ import {
   handleTerminalMessages,
   createTerminalTab,
 } from '../compositions/terminal'
-import { injectTheme } from '../compositions/theme'
+import { injectTheme, useTheme } from '../compositions/theme'
 import { unmountKeptAlive } from '../utils/helper'
 import { getTerminalTabID } from '../utils/terminal'
 import ActionBar from './ActionBar.vue'
@@ -35,6 +35,7 @@ import '../assets/fonts/devicon.css'
 import '../assets/fonts/feather.css'
 
 const settings = useSettings()
+const theme = useTheme()
 const isFullscreen = $(useFullscreen())
 const isTabListEnabled = $(useIsTabListEnabled())
 const terminal = $(useCurrentTerminal())
@@ -113,7 +114,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div :class="['app', { 'is-opaque': isFullscreen }]">
+  <div :class="['app', { 'is-opaque': isFullscreen, 'is-vibrant': theme.vibrancy }]">
     <TitleBar />
     <div class="content">
       <TabList v-if="!hasHorizontalTabList" v-show="isTabListEnabled" />
@@ -183,6 +184,9 @@ onMounted(() => {
   line-height: 1.2;
   overflow: hidden;
   transition: color 0.2s;
+  &.is-vibrant {
+    --vibrancy-filter: drop-shadow(0 0 0.5em rgb(var(--theme-background))) blur(2px);
+  }
 }
 .content {
   z-index: 1;

@@ -224,8 +224,9 @@ function selectCompletion(event: MouseEvent) {
   max-height: calc(var(--cell-height) * var(--row-span));
   margin-left: calc(var(--column) * var(--cell-width));
   border: 1px solid rgb(var(--theme-foreground) / 0.5);
-  background: rgb(var(--theme-background));
+  background: rgb(var(--theme-background) / var(--theme-opacity));
   border-radius: 2px;
+  backdrop-filter: var(--vibrancy-filter);
   // TODO: This may slightly slow down, but is friendlier visually
   transition: transform 50ms, margin-left 50ms;
   &.is-right {

@@ -300,7 +300,7 @@ function showLauncherMenu(event: MouseEvent) {
 }
 .new-launcher {
   height: var(--tab-height);
-  padding: 8px 16px 0;
+  padding: 8px 16px;
   font-size: var(--primary-icon-size);
   line-height: var(--tab-height);
   text-align: center;

@@ -81,7 +81,8 @@ const theme = $computed(() => {
     ...originalTheme,
     ...customization,
   }
-  const opacity = settings['terminal.style.opacity']
+  const vibrancy = process.platform === 'darwin' ? settings['terminal.style.vibrancy'] : false
+  const opacity = vibrancy ? settings['terminal.style.vibrancyOpacity'] : settings['terminal.style.opacity']
   const definition = {
     ...defaultTheme,
     ...userTheme,
@@ -112,7 +113,7 @@ const theme = $computed(() => {
   const backgroundHSLA = toHSLA(backgroundRGBA)
   const materialBackgroundRGBA = toRGBAFromHSLA({
     ...backgroundHSLA,
-    l: backgroundHSLA.l - Math.min(backgroundHSLA.l * 0.2, 0.1),
+    l: backgroundHSLA.l - Math.min(backgroundHSLA.l * 0.5, 0.1),
   })
   definition.materialBackground = toCSSColor(materialBackgroundRGBA)
   definition.secondaryBackground = toCSSColor(mix(backgroundRGBA, { r: 127, g: 127, b: 127, a: 1 }, 0.9))
@@ -126,7 +127,7 @@ const theme = $computed(() => {
   }
   const accentColor = systemPreferences.getAccentColor()
   definition.systemAccent = accentColor ? `#${accentColor.slice(0, 6)}` : ''
-  definition.vibrancy = process.platform === 'darwin' ? settings['terminal.style.vibrancy'] : false
+  definition.vibrancy = vibrancy
   definition.variables = Object.fromEntries([
     ...Object.entries({ ...THEME_CSS_COLORS, ...EXTRA_CSS_COLORS }).map(([key, attr]) => {
       let value = definition[key]
