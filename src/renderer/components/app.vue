@@ -200,6 +200,7 @@ onMounted(() => {
   flex-direction: column;
   min-width: 0;
   background: rgb(var(--theme-background) / var(--theme-opacity));
+  box-shadow: 0 0 4px 0px rgb(0 0 0 / 5%);
   transition: background 0.2s;
   .app.is-opaque & {
     background: rgb(var(--theme-background));
