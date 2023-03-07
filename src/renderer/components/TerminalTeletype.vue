@@ -223,9 +223,11 @@ function selectCompletion(event: MouseEvent) {
 :deep(.terminal-completion) {
   max-height: calc(var(--cell-height) * var(--row-span));
   margin-left: calc(var(--column) * var(--cell-width));
-  border: 1px solid rgb(var(--theme-foreground) / 0.5);
+  border: 1px solid rgb(127 127 127 / 0.5);
+  overflow: hidden;
   background: rgb(var(--theme-background) / var(--theme-opacity));
-  border-radius: 2px;
+  border-radius: 4px;
+  box-shadow: 0 0 1em 0px rgb(0 0 0 / 25%);
   backdrop-filter: var(--vibrancy-filter);
   // TODO: This may slightly slow down, but is friendlier visually
   transition: transform 50ms, margin-left 50ms;
