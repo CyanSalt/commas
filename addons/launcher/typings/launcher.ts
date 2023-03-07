@@ -1,3 +1,5 @@
+import type { TerminalProfile } from '../../../src/typings/settings'
+
 export interface LauncherInfo {
   name: string,
   command: string,
@@ -5,6 +7,7 @@ export interface LauncherInfo {
   login?: boolean,
   remote?: string,
   explorer?: string,
+  profile?: TerminalProfile,
   scripts?: LauncherInfo[],
 }
 

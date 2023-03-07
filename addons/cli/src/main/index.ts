@@ -146,7 +146,7 @@ where <command> is one of:
     command: 'run',
     usage: '<...command-with-args>',
     handler({ sender, argv }) {
-      sender.send('open-tab', {
+      sender.send('open-tab', undefined, {
         command: quote(argv),
       })
     },

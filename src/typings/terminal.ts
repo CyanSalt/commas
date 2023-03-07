@@ -26,11 +26,16 @@ export interface TerminalTabGroup {
   icon?: IconEntry,
 }
 
-export interface TerminalInfo {
-  pid: number,
-  process: string,
+export interface TerminalContext {
   cwd: string,
   shell: string,
+  args: string[],
+  env: NodeJS.ProcessEnv,
+}
+
+export interface TerminalInfo extends TerminalContext {
+  pid: number,
+  process: string,
 }
 
 export interface TerminalTabAddons {

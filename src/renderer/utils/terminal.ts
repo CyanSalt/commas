@@ -42,7 +42,7 @@ export function getIconEntryByProcess(process: string) {
   }))
 }
 
-export function getShells() {
+export function getShells(): Promise<string[]> {
   return ipcRenderer.invoke('get-shells')
 }
 

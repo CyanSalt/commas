@@ -1,12 +1,18 @@
 import type { BrowserWindowConstructorOptions } from 'electron'
 import type { JSONSchema } from './json-schema'
+import type { TerminalContext } from './terminal'
 import type { ThemeDefinition } from './theme'
+
+export interface TerminalProfile extends Partial<TerminalContext> {
+  label?: string,
+}
 
 export interface Settings {
   'terminal.shell.path': string,
   'terminal.shell.args': string[],
   'terminal.shell.windowsArgs': string[],
-  'terminal.shell.env': Record<string, string>,
+  'terminal.shell.env': NodeJS.ProcessEnv,
+  'terminal.shell.extraProfiles': TerminalProfile[],
   'terminal.shell.integration': boolean,
   'terminal.shell.highlightErrors': boolean,
   'terminal.shell.autoCompletion': boolean,

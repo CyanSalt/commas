@@ -14,7 +14,7 @@ import { WebglAddon } from 'xterm-addon-webgl'
 import * as commas from '../../../api/core-renderer'
 import { createDeferred } from '../../shared/helper'
 import type { MenuItem } from '../../typings/menu'
-import type { TerminalInfo, TerminalTab, TerminalTabGroup } from '../../typings/terminal'
+import type { TerminalContext, TerminalInfo, TerminalTab, TerminalTabGroup } from '../../typings/terminal'
 import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
 import { translate } from '../utils/i18n'
@@ -106,19 +106,15 @@ const rendererKeybindings = $computed(() => {
 })
 
 export interface CreateTerminalTabOptions {
-  cwd?: string,
-  shell?: string,
   command?: string,
   group?: TerminalTabGroup,
 }
 
-export async function createTerminalTab({
-  cwd: workingDirectory,
-  shell: shellPath,
+export async function createTerminalTab(context: Partial<TerminalContext> = {}, {
   command,
   group,
 }: CreateTerminalTabOptions = {}) {
-  const info: TerminalInfo = await ipcRenderer.invoke('create-terminal', { cwd: workingDirectory, shell: shellPath })
+  const info: TerminalInfo = await ipcRenderer.invoke('create-terminal', context)
   const xterm = new Terminal(terminalOptions)
   const tab = reactive<TerminalTab>({
     ...info,
@@ -315,15 +311,12 @@ export function handleTerminalMessages() {
       tab.xterm.focus()
     }
   })
-  ipcRenderer.on('open-tab', (event, options: CreateTerminalTabOptions) => {
-    createTerminalTab(options)
+  ipcRenderer.on('open-tab', (event, context: Partial<TerminalContext>, options: CreateTerminalTabOptions) => {
+    createTerminalTab(context, options)
   })
   ipcRenderer.on('duplicate-tab', event => {
     if (currentTerminal) {
-      createTerminalTab({
-        cwd: currentTerminal.cwd,
-        shell: currentTerminal.shell,
-      })
+      createTerminalTab(currentTerminal)
     }
   })
   ipcRenderer.on('split-tab', () => {
@@ -582,9 +575,7 @@ export function splitTerminalTab(tab: TerminalTab) {
       id: getTerminalTabID(tab),
     }
   }
-  return createTerminalTab({
-    cwd: tab.cwd,
-    shell: tab.shell,
+  return createTerminalTab(tab, {
     group: tab.group,
   })
 }

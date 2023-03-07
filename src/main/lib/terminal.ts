@@ -4,7 +4,7 @@ import type { WebContents } from 'electron'
 import { app, ipcMain } from 'electron'
 import type { IPty, IPtyForkOptions } from 'node-pty'
 import * as pty from 'node-pty'
-import type { TerminalInfo } from '../../typings/terminal'
+import type { TerminalContext, TerminalInfo } from '../../typings/terminal'
 import { getCompletions, refreshCompletions } from '../utils/completion'
 import { execa } from '../utils/helper'
 import { integrateShell, getDefaultEnv, getDefaultShell } from '../utils/shell'
@@ -12,21 +12,14 @@ import { useSettings, whenSettingsReady } from './settings'
 
 const ptyProcessMap = new Map<number, IPty>()
 
-interface CreateTerminalOptions {
+async function createTerminal(
   webContents: WebContents,
-  shell?: string,
-  cwd?: string,
-}
-
-async function createTerminal(webContents: WebContents, { shell, cwd }: CreateTerminalOptions): Promise<TerminalInfo> {
+  { shell, args, env, cwd }: Partial<TerminalContext>,
+): Promise<TerminalInfo> {
   await Promise.all([
     whenSettingsReady(),
     app.whenReady(),
   ])
-  const settings = useSettings()
-  if (!shell) {
-    shell = settings['terminal.shell.path'] || getDefaultShell()
-  }
   if (cwd) {
     try {
       await fs.promises.access(cwd)
@@ -37,28 +30,38 @@ async function createTerminal(webContents: WebContents, { shell, cwd }: CreateTe
   if (!cwd) {
     cwd = os.homedir()
   }
-  let env = {
+  const settings = useSettings()
+  if (!shell) {
+    shell = settings['terminal.shell.path'] || getDefaultShell()
+  }
+  if (!args) {
+    args = process.platform === 'win32'
+      ? settings['terminal.shell.windowsArgs']
+      : settings['terminal.shell.args']
+  }
+  if (!env) {
+    env = settings['terminal.shell.env']
+  }
+  let runtimeEnv = {
     ...getDefaultEnv(),
-    ...settings['terminal.shell.env'],
+    ...env,
     COMMAS_SENDER_ID: String(webContents.id),
   } as Record<string, string>
-  let args = process.platform === 'win32'
-    ? settings['terminal.shell.windowsArgs']
-    : settings['terminal.shell.args']
+  let runtimeArgs = args
   if (settings['terminal.shell.integration']) {
-    const result = integrateShell({ shell: shell!, args, env })
-    args = result.args
-    env = result.env
+    const result = integrateShell({ shell: shell!, args: runtimeArgs, env: runtimeEnv })
+    runtimeArgs = result.args
+    runtimeEnv = result.env
   }
   const options: IPtyForkOptions = {
     name: 'xterm-256color',
     cwd,
-    env,
+    env: runtimeEnv,
   }
   if (process.platform !== 'win32') {
     options.encoding = 'utf8'
   }
-  const ptyProcess = pty.spawn(shell!, args, options)
+  const ptyProcess = pty.spawn(shell!, runtimeArgs, options)
   ptyProcess.onData(data => {
     webContents.send('input-terminal', {
       pid: ptyProcess.pid,
@@ -81,11 +84,13 @@ async function createTerminal(webContents: WebContents, { shell, cwd }: CreateTe
     process: ptyProcess.process,
     cwd,
     shell: shell!,
+    args,
+    env,
   }
 }
 
 function handleTerminalMessages() {
-  ipcMain.handle('create-terminal', (event, data: CreateTerminalOptions) => {
+  ipcMain.handle('create-terminal', (event, data: Partial<TerminalContext>) => {
     return createTerminal(event.sender, data)
   })
   ipcMain.handle('write-terminal', (event, pid: number, data: string) => {

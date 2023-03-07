@@ -2,6 +2,7 @@
 import * as path from 'path'
 import * as commas from '../../../api/core-renderer'
 import { useAsyncComputed } from '../../shared/compositions'
+import type { MenuItem } from '../../typings/menu'
 import { useSettings } from '../compositions/settings'
 import {
   activateTerminalTab,
@@ -34,6 +35,10 @@ const isHorizontal: boolean = $computed(() => {
   return position === 'top' || position === 'bottom'
 })
 
+const profiles = $computed(() => {
+  return settings['terminal.shell.extraProfiles']
+})
+
 const standaloneTabs = $computed(() => {
   if (isHorizontal) return tabs
   return tabs.filter(tab => {
@@ -48,12 +53,22 @@ function sortTabs(from: number, to: number) {
 }
 
 function selectShell(event: MouseEvent) {
-  if (!shells.length) return
-  openContextMenu(shells.map(shell => ({
+  const profileOptions = profiles.map((profile, index) => ({
+    label: profile.label ?? JSON.stringify(profile),
+    command: 'open-tab',
+    args: [profile],
+  }))
+  const shellOptions: MenuItem[] = shells.map(shell => ({
     label: path.basename(shell),
     command: 'open-tab',
     args: [{ shell }],
-  })), event)
+  }))
+  if (!profileOptions.length && !shellOptions.length) return
+  openContextMenu([
+    ...profileOptions,
+    ...(profiles.length && shellOptions.length ? [{ type: 'separator' as const }] : []),
+    ...shellOptions,
+  ], event)
 }
 
 function selectDefaultShell(event: MouseEvent) {

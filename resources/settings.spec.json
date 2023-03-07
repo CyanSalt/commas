@@ -56,6 +56,41 @@
     "default": {}
   },
   {
+    "key": "terminal.shell.extraProfiles",
+    "label": "Extra Profiles",
+    "comments": [
+      "Customize terminal profile",
+      "Could override the default 'shell', 'args' and 'env'"
+    ],
+    "schema": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "shell": {
+            "type": "string"
+          },
+          "args": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "env": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "default": []
+  },
+  {
     "key": "terminal.shell.integration",
     "label": "Enable Shell Integration",
     "comments": [

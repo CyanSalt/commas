@@ -6,3 +6,6 @@
 #   login: true # Execute command with a login shell
 #   directory: "~/workspace/tasks/"
 #   command: "./example_task --with-args"
+#   profile:
+#     env:
+#       CI: "1"

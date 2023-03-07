@@ -46,7 +46,9 @@ export async function openLauncher(launcher: Launcher, { command }: OpenLauncher
   } else {
     const directory = launcher.remote ? undefined : launcher.directory
     await commas.workspace.createTerminalTab({
+      ...launcher.profile,
       cwd: directory && commas.helper.resolveHome(directory),
+    }, {
       command,
       group: createLauncherGroup(launcher),
     })
