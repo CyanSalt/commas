@@ -10,7 +10,7 @@ import { createDeferred } from '../../shared/helper'
 import type { Settings, SettingsSpec } from '../../typings/settings'
 import { provideIPC, useYAMLFile } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
-import { writeFile } from '../utils/file'
+import { ensureFile, writeFile } from '../utils/file'
 import { translate } from './i18n'
 
 const defaultSpecs: SettingsSpec[] = require(resourceFile('settings.spec.json'))
@@ -137,7 +137,8 @@ async function openSettingsFile() {
   return shell.openPath(file)
 }
 
-function openUserDirectory() {
+async function openUserDirectory() {
+  await ensureFile(userFile('settings.yaml'))
   return shell.openPath(userFile())
 }
 
