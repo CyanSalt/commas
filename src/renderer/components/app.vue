@@ -10,7 +10,7 @@ import {
   handleFrameMessages,
 } from '../compositions/frame'
 import { handleI18NMessages } from '../compositions/i18n'
-import { useSettings } from '../compositions/settings'
+import { injectSettingsStyle, useSettings } from '../compositions/settings'
 import {
   useIsTabListEnabled,
   useWillQuit,
@@ -23,7 +23,7 @@ import {
   handleTerminalMessages,
   createTerminalTab,
 } from '../compositions/terminal'
-import { injectTheme, useTheme } from '../compositions/theme'
+import { injectThemeStyle, useTheme } from '../compositions/theme'
 import { unmountKeptAlive } from '../utils/helper'
 import { getTerminalTabID } from '../utils/terminal'
 import ActionBar from './ActionBar.vue'
@@ -70,7 +70,8 @@ const slots = commas.proxy.context.getCollection('terminal.ui-slot')
 
 loadAddons()
 loadCustomJS()
-injectTheme()
+injectSettingsStyle()
+injectThemeStyle()
 handleFrameMessages()
 handleI18NMessages()
 handleShellMessages()
@@ -168,8 +169,6 @@ onMounted(() => {
 }
 :global(body) {
   margin: 0;
-  font-family: Fira Code, Cascadia Code, Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
-  font-size: 14px;
   cursor: default;
   user-select: none;
   -webkit-tap-highlight-color: transparent;

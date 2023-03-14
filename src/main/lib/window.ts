@@ -88,7 +88,9 @@ async function createWindow(...args: string[]) {
     if (process.platform === 'win32' && frameType === 'immersive') {
       frame.setTitleBarOverlay(themeOptions.titleBarOverlay)
     }
-    frame.setTrafficLightPosition(themeOptions.trafficLightPosition)
+    if (process.platform === 'darwin') {
+      frame.setTrafficLightPosition(themeOptions.trafficLightPosition)
+    }
   })
   frame.on('closed', () => {
     stop(menuEffect)

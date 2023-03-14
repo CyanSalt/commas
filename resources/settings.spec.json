@@ -320,7 +320,7 @@
     "schema": {
       "type": "string"
     },
-    "default": "Fira Code, Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace"
+    "default": "Fira Code, Consolas, Monaco, Andale Mono, Ubuntu Mono"
   },
   {
     "key": "terminal.style.fontLigatures",

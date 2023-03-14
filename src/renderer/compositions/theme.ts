@@ -15,7 +15,7 @@ export function useTheme() {
   return theme
 }
 
-export function injectTheme() {
+export function injectThemeStyle() {
   watchEffect((onInvalidate) => {
     const declarations = Object.entries(theme.variables)
       .map(([key, value]) => `${key}: ${value};`).join(' ')
