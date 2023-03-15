@@ -273,7 +273,7 @@ export function showTabOptions(event?: MouseEvent) {
       accelerator: number < 10 ? String(number) : undefined,
     }
   })
-  openContextMenu(options, event ?? [0, 36], options.findIndex(item => item.args?.[0] === activeIndex))
+  openContextMenu(options, event ?? [0, 0], options.findIndex(item => item.args?.[0] === activeIndex))
 }
 
 function handleTerminalTabHistory() {
