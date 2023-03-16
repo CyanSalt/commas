@@ -6,7 +6,7 @@ import { updateDocument } from './yaml-updater'
 
 async function ensureFile(file: string) {
   try {
-    await fs.promises.mkdir(path.dirname(file))
+    await fs.promises.mkdir(path.dirname(file), { recursive: true })
   } catch {
     // ignore error
   }
