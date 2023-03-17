@@ -4,7 +4,6 @@ import type { TerminalTab, TerminalTabGroup } from '../../../../src/typings/term
 import type { Launcher } from '../../typings/launcher'
 import { getLauncherCommand } from './utils'
 
-const tabs = $(commas.workspace.useTerminalTabs())
 const settings = commas.remote.useSettings()
 
 let launchers = $(commas.ipcRenderer.inject<Launcher[]>('launchers', []))
@@ -13,31 +12,41 @@ export function useLaunchers() {
   return $$(launchers)
 }
 
-export function getTerminalTabByLauncher(launcher: Launcher) {
-  return tabs.find(tab => tab.group?.type === 'launcher' && tab.group.id === launcher.id)
+const launcherGroups = $computed(() => {
+  return launchers.map<TerminalTabGroup>((launcher, index) => {
+    return {
+      type: 'launcher',
+      id: launcher.id,
+      title: launcher.name,
+      icon: {
+        name: `feather-icon ${launcher.remote ? 'icon-link' : 'icon-hash'}`,
+      },
+    }
+  })
+})
+
+export function useLauncherGroups() {
+  return $$(launcherGroups)
 }
 
 export function getLauncherByTerminalTab(tab: TerminalTab) {
   return launchers.find(launcher => tab.group?.type === 'launcher' && tab.group.id === launcher.id)
 }
 
-export function createLauncherGroup(launcher: Launcher): TerminalTabGroup {
-  return {
-    type: 'launcher',
-    id: launcher.id,
-    title: launcher.name,
-    icon: {
-      name: `feather-icon ${launcher.remote ? 'icon-link' : 'icon-hash'}`,
-    },
-  }
+export function getTerminalTabGroupByLauncher(launcher: Launcher) {
+  return launcherGroups.find(group => group.type === 'launcher' && group.id === launcher.id)!
+}
+
+export function getTerminalTabsByLauncher(launcher: Launcher) {
+  return commas.workspace.getTerminalTabsByGroup(getTerminalTabGroupByLauncher(launcher))
 }
 
 interface OpenLauncherOptions {
+  tab?: TerminalTab,
   command?: string,
 }
 
-export async function openLauncher(launcher: Launcher, { command }: OpenLauncherOptions = {}) {
-  const tab = getTerminalTabByLauncher(launcher)
+export async function openLauncher(launcher: Launcher, { tab, command }: OpenLauncherOptions = {}) {
   if (tab) {
     commas.workspace.activateTerminalTab(tab)
     if (command) {
@@ -50,7 +59,7 @@ export async function openLauncher(launcher: Launcher, { command }: OpenLauncher
       cwd: directory && commas.helper.resolveHome(directory),
     }, {
       command,
-      group: createLauncherGroup(launcher),
+      group: getTerminalTabGroupByLauncher(launcher),
     })
   }
 }

@@ -54,6 +54,10 @@ export function getTerminalTabIndex(tab: TerminalTab) {
   return tabs.indexOf(toRaw(tab))
 }
 
+export function getTerminalTabsByGroup(group: TerminalTabGroup) {
+  return tabs.filter(tab => tab.group?.type === group.type && tab.group.id === group.id)
+}
+
 export function isMatchLinkModifier(event: MouseEvent) {
   switch (settings['terminal.view.linkModifier']) {
     case 'Alt':
@@ -114,7 +118,12 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
   command,
   group,
 }: CreateTerminalTabOptions = {}) {
-  const info: TerminalInfo = await ipcRenderer.invoke('create-terminal', context)
+  const info: TerminalInfo = await ipcRenderer.invoke('create-terminal', {
+    cwd: context.cwd,
+    shell: context.shell,
+    args: toRaw(context.args),
+    env: toRaw(context.env),
+  })
   const xterm = new Terminal(terminalOptions)
   const tab = reactive<TerminalTab>({
     ...info,

@@ -2,10 +2,11 @@
 import * as commas from 'commas:api/renderer'
 import { ipcRenderer } from 'electron'
 import { nextTick } from 'vue'
+import type { TerminalTab, TerminalTabGroup } from '../../../../src/typings/terminal'
 import type { Launcher } from '../../typings/launcher'
 import {
-  createLauncherGroup,
-  getTerminalTabByLauncher,
+  getTerminalTabGroupByLauncher,
+  getTerminalTabsByLauncher,
   moveLauncher,
   openLauncher,
   removeLauncher,
@@ -39,11 +40,29 @@ const keywords = $computed(() => {
 const filteredLaunchers = $computed(() => {
   return launchers.filter(launcher => {
     if (isCollapsed) {
-      if (!getTerminalTabByLauncher(launcher)) return false
+      const launcherTabs = getTerminalTabsByLauncher(launcher)
+      if (!launcherTabs.length) return false
     }
     const matched = commas.helper.matches(Object.values(launcher), keywords)
     if (!matched) return false
     return true
+  })
+})
+
+interface LauncherItem {
+  key: string,
+  tab?: TerminalTab,
+  group: TerminalTabGroup,
+  launcher: Launcher,
+}
+
+const launcherItems = $computed(() => {
+  return filteredLaunchers.flatMap(launcher => {
+    const tabs = getTerminalTabsByLauncher(launcher)
+    const group = getTerminalTabGroupByLauncher(launcher)
+    return tabs.length
+      ? tabs.map<LauncherItem>(tab => ({ key: [launcher.id, tab.pid].join(':'), tab, group, launcher }))
+      : [{ key: launcher.id, group, launcher }]
   })
 })
 
@@ -82,13 +101,13 @@ function createLauncher() {
   ipcRenderer.invoke('create-launcher')
 }
 
-function closeLauncher(launcher: Launcher) {
-  const tab = getTerminalTabByLauncher(launcher)
+function closeLauncher(launcher: Launcher, tab?: TerminalTab) {
   if (isEditing) {
     const index = launchers.findIndex(item => item.id === launcher.id)
     removeLauncher(index)
-    if (tab) {
-      delete tab.group
+    const launcherTabs = getTerminalTabsByLauncher(launcher)
+    for (const launcherTab of launcherTabs) {
+      delete launcherTab.group
     }
   } else if (tab) {
     commas.workspace.closeTerminalTab(tab)
@@ -118,7 +137,7 @@ function showLauncherMenu(event: MouseEvent) {
   commas.ui.openContextMenu(launchers.map(launcher => {
     return {
       type: 'checkbox',
-      checked: Boolean(getTerminalTabByLauncher(launcher)),
+      checked: Boolean(getTerminalTabsByLauncher(launcher).length),
       label: launcher.name,
       command: 'open-launcher', // TODO
       args: [launcher],
@@ -168,19 +187,19 @@ function showLauncherMenu(event: MouseEvent) {
         </div>
       </div>
       <SortableList
-        v-slot="{ value: launcher }"
-        :value="filteredLaunchers"
-        value-key="id"
+        v-slot="{ value: { tab, group, launcher } }"
+        :value="launcherItems"
+        value-key="key"
         class="launchers"
         :disabled="isLauncherSortingDisabled"
         @change="sortLaunchers"
       >
         <TabItem
-          :tab="getTerminalTabByLauncher(launcher)"
-          :group="createLauncherGroup(launcher)"
+          :tab="tab"
+          :group="group"
           :closable="isEditing"
-          @click="openLauncher(launcher)"
-          @close="closeLauncher(launcher)"
+          @click="openLauncher(launcher, { tab })"
+          @close="closeLauncher(launcher, tab)"
         >
           <template v-if="!isEditing" #operations>
             <div
