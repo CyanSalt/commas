@@ -4,14 +4,17 @@ import { watchEffect } from 'vue'
 import { omitHome } from '../../shared/terminal'
 import { useSettings } from '../compositions/settings'
 import { useIsTabListEnabled } from '../compositions/shell'
-import { showTabOptions, useCurrentTerminal, useTerminalActiveIndex, useTerminalTabs } from '../compositions/terminal'
+import { getVisualTerminalTabIndex, showTabOptions, useCurrentTerminal, useTerminalTabs } from '../compositions/terminal'
 import { translate, vI18n } from '../utils/i18n'
 import { getPrompt } from '../utils/terminal'
 
 const settings = useSettings()
 const tabs = $(useTerminalTabs())
-const activeIndex = $(useTerminalActiveIndex())
 const terminal = $(useCurrentTerminal())
+
+const visualIndex = $computed(() => {
+  return terminal ? getVisualTerminalTabIndex(terminal) : -1
+})
 
 let isTabListEnabled = $(useIsTabListEnabled())
 
@@ -128,7 +131,7 @@ watchEffect(() => {
       @click="toggleTabList"
       @contextmenu="showTabOptions"
     >
-      [{{ activeIndex + 1 }}/{{ tabs.length }}]
+      [{{ visualIndex + 1 }}/{{ tabs.length }}]
     </div>
   </div>
 </template>

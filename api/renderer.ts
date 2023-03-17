@@ -1,4 +1,5 @@
 import type { Component } from 'vue'
+import type { TerminalTabGroup } from '../src/typings/terminal'
 
 declare module './modules/context' {
   export interface Context {
@@ -6,6 +7,11 @@ declare module './modules/context' {
     'terminal.ui-right-action-anchor': Component,
     'terminal.ui-side-list': Component,
     'terminal.ui-slot': Component,
+    'terminal.category': {
+      title: string,
+      groups: TerminalTabGroup[],
+      priority?: number,
+    },
   }
 }
 

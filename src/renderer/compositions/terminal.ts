@@ -33,9 +33,6 @@ export function useTerminalTabs() {
 }
 
 let activeIndex = $ref(-1)
-export function useTerminalActiveIndex() {
-  return $$(activeIndex)
-}
 
 const currentTerminal = $computed(() => {
   if (activeIndex === -1) return null
@@ -56,6 +53,50 @@ export function getTerminalTabIndex(tab: TerminalTab) {
 
 export function getTerminalTabsByGroup(group: TerminalTabGroup) {
   return tabs.filter(tab => tab.group?.type === group.type && tab.group.id === group.id)
+}
+
+interface TerminalTabCategory {
+  items: {
+    tab?: TerminalTab | undefined,
+    group?: TerminalTabGroup | undefined,
+  }[],
+}
+
+const tabCategories = $computed(() => {
+  const categories = commas.proxy.context.getCollection('terminal.category')
+  const orderedCategories = categories.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0))
+  return [
+    {
+      items: tabs
+        .filter(tab => {
+          return !orderedCategories.some(category => {
+            return category.groups
+              .some(group => tab.group?.type === group.type && tab.group.id === group.id)
+          })
+        })
+        .map(tab => ({ tab, group: tab.group })),
+    },
+    ...orderedCategories.map<TerminalTabCategory>(category => {
+      return {
+        items: category.groups.flatMap(group => {
+          const groupTabs = getTerminalTabsByGroup(group)
+          return groupTabs.length
+            ? groupTabs.map(tab => ({ tab, group }))
+            : { group }
+        }),
+      }
+    }),
+  ]
+})
+
+export function getVisualTerminalTabIndex(tab: TerminalTab) {
+  const visualTabs = tabCategories
+    .flatMap(category => category.items)
+    .map(item => item.tab)
+    .filter((item): item is TerminalTab => Boolean(item))
+  return visualTabs
+    .map(item => toRaw(item))
+    .indexOf(toRaw(tab))
 }
 
 export function isMatchLinkModifier(event: MouseEvent) {
@@ -238,8 +279,11 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
   if (command) {
     executeTerminalTab(tab, command)
   }
-  tabs.push(tab)
-  activeIndex = tabs.length - 1
+  const targetIndex = activeIndex + 1
+  tabs.splice(targetIndex, 0, tab)
+  activeIndex = targetIndex
+  // tabs.push(tab)
+  // activeIndex = tabs.length - 1
   return tab
 }
 
@@ -272,16 +316,25 @@ export function getTerminalTabTitle(tab: TerminalTab) {
 }
 
 export function showTabOptions(event?: MouseEvent) {
-  const entries = tabs.map((tab, index) => ({ tab, index }))
-  const options = entries.map<MenuItem>(({ tab, index }) => {
-    const number = index + 1
-    return {
-      label: getTerminalTabTitle(tab),
-      args: [index],
-      command: 'select-tab',
-      accelerator: number < 10 ? String(number) : undefined,
+  let currentIndex = 0
+  let options: MenuItem[] = []
+  for (let index = 0; index < tabCategories.length; index += 1) {
+    if (index) {
+      options.push({ type: 'separator' })
     }
-  })
+    const items = tabCategories[index].items
+      .map(item => item.tab)
+      .filter((item): item is TerminalTab => Boolean(item))
+    for (const item of items) {
+      options.push({
+        label: getTerminalTabTitle(item),
+        args: [currentIndex],
+        command: 'select-tab',
+        accelerator: currentIndex < 9 ? String(currentIndex + 1) : undefined,
+      })
+      currentIndex += 1
+    }
+  }
   openContextMenu(options, event ?? [0, 0], options.findIndex(item => item.args?.[0] === activeIndex))
 }
 
@@ -379,7 +432,10 @@ export function handleTerminalMessages() {
     if (targetIndex < 0) {
       targetIndex += tabs.length
     }
-    activeIndex = targetIndex
+    const targetItem = tabCategories.flatMap(category => category.items)[targetIndex]
+    if (targetItem.tab) {
+      activateTerminalTab(targetItem.tab)
+    }
   })
   ipcRenderer.on('select-previous-tab', () => {
     if (activeIndex > 0) {
@@ -552,7 +608,9 @@ export function activateOrAddTerminalTab(tab: TerminalTab) {
   if (index !== -1) {
     activeIndex = index
   } else {
-    activeIndex = tabs.push(tab) - 1
+    const targetIndex = activeIndex + 1
+    tabs.splice(targetIndex, 0, tab)
+    activeIndex = targetIndex
   }
 }
 

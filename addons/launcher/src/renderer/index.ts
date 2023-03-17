@@ -2,7 +2,7 @@ import * as commas from 'commas:api/renderer'
 import { watch } from 'vue'
 import LauncherLink from './LauncherLink.vue'
 import LauncherList from './LauncherList.vue'
-import { startLauncher, runLauncherScript, useLaunchers, openLauncher } from './launcher'
+import { startLauncher, runLauncherScript, useLauncherGroups, useLaunchers, openLauncher } from './launcher'
 import { clearLauncherSessions, LauncherSessionAddon } from './session'
 
 declare module '../../../../src/typings/terminal' {
@@ -23,6 +23,15 @@ export default () => {
   })
   commas.ipcRenderer.on('run-script', (event, launcher, index) => {
     runLauncherScript(launcher, index)
+  })
+
+  const groups = $(useLauncherGroups())
+
+  commas.app.effect(() => {
+    commas.context.provide('terminal.category', {
+      title: 'Launcher#!launcher.2',
+      groups,
+    })
   })
 
   watch(useLaunchers(), () => {
