@@ -59,10 +59,11 @@ interface TerminalTabCategory {
   items: {
     tab?: TerminalTab | undefined,
     group?: TerminalTabGroup | undefined,
+    command?: string,
   }[],
 }
 
-const tabCategories = $computed(() => {
+const tabCategories = $computed<TerminalTabCategory[]>(() => {
   const categories = commas.proxy.context.getCollection('terminal.category')
   const orderedCategories = categories.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0))
   return [
@@ -81,8 +82,8 @@ const tabCategories = $computed(() => {
         items: category.groups.flatMap(group => {
           const groupTabs = getTerminalTabsByGroup(group)
           return groupTabs.length
-            ? groupTabs.map(tab => ({ tab, group }))
-            : { group }
+            ? groupTabs.map(tab => ({ tab, group, command: category.command }))
+            : { group, command: category.command }
         }),
       }
     }),
@@ -315,27 +316,35 @@ export function getTerminalTabTitle(tab: TerminalTab) {
   return getPrompt(expr, tab) || tab.process
 }
 
-export function showTabOptions(event?: MouseEvent) {
+export function showTabOptions(event?: MouseEvent, type?: string) {
   let currentIndex = 0
+  let number = 1
   let options: MenuItem[] = []
+  let defaultIndex = -1
   for (let index = 0; index < tabCategories.length; index += 1) {
     if (index) {
       options.push({ type: 'separator' })
     }
     const items = tabCategories[index].items
-      .map(item => item.tab)
-      .filter((item): item is TerminalTab => Boolean(item))
     for (const item of items) {
-      options.push({
-        label: getTerminalTabTitle(item),
-        args: [currentIndex],
-        command: 'select-tab',
-        accelerator: currentIndex < 9 ? String(currentIndex + 1) : undefined,
-      })
+      if (!type || item.group?.type === type) {
+        if (item.tab && toRaw(item.tab) === toRaw(currentTerminal)) {
+          defaultIndex = options.length
+        }
+        options.push({
+          type: index ? 'checkbox' : 'normal',
+          label: item.tab ? getTerminalTabTitle(item.tab) : item.group?.title,
+          args: item.tab ? [currentIndex] : [item.group],
+          command: item.tab ? 'select-tab' : item.command,
+          accelerator: number <= 9 ? String(number) : undefined,
+          checked: index ? Boolean(item.tab) : undefined,
+        })
+        number += 1
+      }
       currentIndex += 1
     }
   }
-  openContextMenu(options, event ?? [0, 0], options.findIndex(item => item.args?.[0] === activeIndex))
+  openContextMenu(options, event ?? [0, 0], defaultIndex)
 }
 
 function handleTerminalTabHistory() {

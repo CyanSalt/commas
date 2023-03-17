@@ -13,7 +13,7 @@ export function useLaunchers() {
 }
 
 const launcherGroups = $computed(() => {
-  return launchers.map<TerminalTabGroup>((launcher, index) => {
+  return launchers.map<TerminalTabGroup>(launcher => {
     return {
       type: 'launcher',
       id: launcher.id,
@@ -29,8 +29,8 @@ export function useLauncherGroups() {
   return $$(launcherGroups)
 }
 
-export function getLauncherByTerminalTab(tab: TerminalTab) {
-  return launchers.find(launcher => tab.group?.type === 'launcher' && tab.group.id === launcher.id)
+export function getLauncherByTerminalTabGroup(group: TerminalTabGroup) {
+  return launchers.find(launcher => group.type === 'launcher' && group.id === launcher.id)
 }
 
 export function getTerminalTabGroupByLauncher(launcher: Launcher) {
@@ -47,6 +47,10 @@ interface OpenLauncherOptions {
 }
 
 export async function openLauncher(launcher: Launcher, { tab, command }: OpenLauncherOptions = {}) {
+  if (!tab) {
+    const launcherTabs = getTerminalTabsByLauncher(launcher)
+    tab = launcherTabs.length ? launcherTabs[0] : undefined
+  }
   if (tab) {
     commas.workspace.activateTerminalTab(tab)
     if (command) {

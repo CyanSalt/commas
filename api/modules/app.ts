@@ -43,13 +43,13 @@ function effect<T>(
     const previousContext = currentContext
     let invalidateFns: (() => void)[] = []
     currentContext = { invalidateFns }
-    const value = fn(callback => {
-      onEffectInvalidate(() => {
-        callback()
-        invalidateFns.forEach(invalidate => {
-          invalidate()
-        })
+    onEffectInvalidate(() => {
+      invalidateFns.forEach(invalidate => {
+        invalidate()
       })
+    })
+    const value = fn(callback => {
+      invalidateFns.push(callback)
     })
     currentContext = previousContext
     return value

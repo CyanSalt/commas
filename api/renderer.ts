@@ -10,6 +10,7 @@ declare module './modules/context' {
     'terminal.category': {
       title: string,
       groups: TerminalTabGroup[],
+      command: string,
       priority?: number,
     },
   }

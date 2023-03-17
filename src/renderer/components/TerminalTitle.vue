@@ -18,6 +18,11 @@ const visualIndex = $computed(() => {
 
 let isTabListEnabled = $(useIsTabListEnabled())
 
+const hasHorizontalTabList: boolean = $computed(() => {
+  const position = settings['terminal.style.tabListPosition']
+  return position === 'top' || position === 'bottom'
+})
+
 let iconBuffer = $ref<Buffer | undefined>()
 
 const isEnabled: boolean = $computed(() => {
@@ -99,8 +104,12 @@ function startDraggingDirectory(event: DragEvent) {
   ipcRenderer.invoke('drag-file', fileOrDirectory, iconBuffer)
 }
 
-function toggleTabList() {
-  isTabListEnabled = !isTabListEnabled
+function toggleTabList(event: MouseEvent) {
+  if (!hasHorizontalTabList) {
+    isTabListEnabled = !isTabListEnabled
+  } else {
+    showTabOptions(event)
+  }
 }
 
 watchEffect(() => {

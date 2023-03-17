@@ -134,15 +134,7 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
 }
 
 function showLauncherMenu(event: MouseEvent) {
-  commas.ui.openContextMenu(launchers.map(launcher => {
-    return {
-      type: 'checkbox',
-      checked: Boolean(getTerminalTabsByLauncher(launcher).length),
-      label: launcher.name,
-      command: 'open-launcher', // TODO
-      args: [launcher],
-    }
-  }), event)
+  commas.workspace.showTabOptions(event, 'launcher')
 }
 </script>
 

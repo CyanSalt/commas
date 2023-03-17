@@ -27,11 +27,9 @@ function cancelProviding<T extends keyof Context>(name: T, ...data: Context[T][]
 function provide<T extends keyof Context>(this: APIContext, name: keyof Context, ...data: Context[T][]) {
   const collection = getCollection(name)
   collection.push(...data)
-  if (data.length) {
-    this.$.app.onInvalidate(() => {
-      cancelProviding(name, ...data)
-    })
-  }
+  this.$.app.onInvalidate(() => {
+    cancelProviding(name, ...data)
+  })
 }
 
 function handle(this: APIContext, channel: string, listener: (...args: any[]) => any) {
