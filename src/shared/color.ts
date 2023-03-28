@@ -1,5 +1,4 @@
-import * as conversions from 'color-convert'
-import parseRGBA from 'color-rgba'
+import { colord } from 'colord'
 
 interface RGBA {
   r: number,
@@ -9,13 +8,7 @@ interface RGBA {
 }
 
 export function toRGBA(color: string): RGBA {
-  const channels = parseRGBA(color)!
-  return {
-    r: channels[0],
-    g: channels[1],
-    b: channels[2],
-    a: channels[3],
-  }
+  return colord(color).toRgb()
 }
 
 interface HSLA {
@@ -26,13 +19,12 @@ interface HSLA {
 }
 
 export function toHSLA(rgba: RGBA): HSLA {
-  const [h, s, l] = conversions.rgb.hsl([rgba.r, rgba.g, rgba.b])
-  return { h, s: s / 100, l: l / 100, a: rgba.a }
+  const { h, s, l, a } = colord(rgba).toHsl()
+  return { h, s: s / 100, l: l / 100, a }
 }
 
 export function toRGBAFromHSLA(hsla: HSLA): RGBA {
-  const [r, g, b] = conversions.hsl.rgb([hsla.h, hsla.s * 100, hsla.l * 100])
-  return { r, g, b, a: hsla.a }
+  return colord({ h: hsla.h, s: hsla.s * 100, l: hsla.l * 100 }).toRgb()
 }
 
 export function toCSSColor(rgba: RGBA) {
@@ -44,12 +36,7 @@ function toHexChannel(channel: number) {
 }
 
 export function toCSSHEX(rgba: RGBA) {
-  return '#' + [
-    toHexChannel(rgba.r),
-    toHexChannel(rgba.g),
-    toHexChannel(rgba.b),
-    rgba.a < 1 ? toHexChannel(Math.floor(256 * rgba.a)) : '',
-  ].join('')
+  return colord(rgba).toHex()
 }
 
 export function toElectronHEX(rgba: RGBA) {
