@@ -4,11 +4,8 @@ interface Element {
   scrollIntoViewIfNeeded(centerIfNeeded?: boolean): void,
 }
 
-declare module '*.vue' {
-  import type { DefineComponent } from 'vue'
-
-  const component: DefineComponent<{}, {}, any>
-  export default component
+declare module '@achrinza/node-ipc' {
+  export { default } from 'node-ipc'
 }
 
 declare module 'commas:api/main' {

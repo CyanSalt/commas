@@ -70,6 +70,7 @@
     "xterm-addon-webgl": "^0.14.0"
   },
   "dependencies": {
+    "@achrinza/node-ipc": "^10.1.7",
     "@vue/reactivity": "^3.2.45",
     "address": "^1.2.2",
     "chalk": "^4.1.2",
@@ -78,7 +79,6 @@
     "file-icon": "^4.0.0",
     "fuzzaldrin-plus": "^0.6.0",
     "lodash": "^4.17.21",
-    "node-ipc": "^10.1.0",
     "node-pty": "^0.10.1",
     "semver": "^7.3.7",
     "shell-history": "^1.1.0",
