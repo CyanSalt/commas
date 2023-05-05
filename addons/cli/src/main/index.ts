@@ -237,9 +237,9 @@ where <command> is one of:
     handler({ sender }) {
       const frame = BrowserWindow.fromWebContents(sender)
       if (!frame) return
-      const [width, height] = frame.getSize()
-      frame.setSize(width - 1, height - 1)
-      frame.setSize(width, height)
+      if (process.platform === 'darwin') {
+        frame.invalidateShadow()
+      }
     },
   })
 

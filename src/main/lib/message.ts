@@ -29,9 +29,9 @@ function handleMessages() {
   ipcMain.on('bootstrap', (event) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     if (!frame) return
-    const [width, height] = frame.getSize()
-    frame.setSize(width - 1, height - 1)
-    frame.setSize(width, height)
+    if (process.platform === 'darwin') {
+      frame.invalidateShadow()
+    }
   })
   ipcMain.handle('get-ref:minimized', (event) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
