@@ -29,7 +29,7 @@ let width = $ref(176)
 
 const settings = useSettings()
 
-const position = $computed(() => settings['terminal.style.tabListPosition'])
+const position = $computed(() => settings['terminal.view.tabListPosition'])
 
 const isHorizontal: boolean = $computed(() => {
   return position === 'top' || position === 'bottom'

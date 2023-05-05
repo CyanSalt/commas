@@ -15,7 +15,7 @@ const themeOptions = $(useThemeOptions())
 async function createWindow(...args: string[]) {
   await whenSettingsReady()
   const settings = useSettings()
-  const tabListPosition = settings['terminal.style.tabListPosition']
+  const tabListPosition = settings['terminal.view.tabListPosition']
   const frameType = settings['terminal.view.frameType']
   const options: Partial<BrowserWindowConstructorOptions> = {
     show: false,

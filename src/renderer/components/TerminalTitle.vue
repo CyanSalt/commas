@@ -19,7 +19,7 @@ const visualIndex = $computed(() => {
 let isTabListEnabled = $(useIsTabListEnabled())
 
 const hasHorizontalTabList: boolean = $computed(() => {
-  const position = settings['terminal.style.tabListPosition']
+  const position = settings['terminal.view.tabListPosition']
   return position === 'top' || position === 'bottom'
 })
 

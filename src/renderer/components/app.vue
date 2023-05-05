@@ -45,7 +45,7 @@ const willQuit: boolean = $(useWillQuit())
 let keepAlive = $ref<InstanceType<typeof KeepAlive>>()
 
 const hasHorizontalTabList = $computed(() => {
-  const position = settings['terminal.style.tabListPosition']
+  const position = settings['terminal.view.tabListPosition']
   return position === 'top' || position === 'bottom'
 })
 

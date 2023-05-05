@@ -164,7 +164,7 @@ const themeOptions = $computed<BrowserWindowThemeOptions>(() => {
       symbolColor: toElectronHEX({ ...foregroundRGBA, a: 1 }),
       height: 36,
     },
-    trafficLightPosition: settings['terminal.style.tabListPosition'] === 'top'
+    trafficLightPosition: settings['terminal.view.tabListPosition'] === 'top'
       ? { x: defaultTrafficLightPosition.x + trafficLightOffset, y: defaultTrafficLightPosition.y + trafficLightOffset }
       : defaultTrafficLightPosition,
   }

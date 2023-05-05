@@ -19,7 +19,7 @@ const { vI18n, SortableList, TabItem } = commas.ui.vueAssets
 
 const settings = commas.remote.useSettings()
 
-const position = $computed(() => settings['terminal.style.tabListPosition'])
+const position = $computed(() => settings['terminal.view.tabListPosition'])
 
 const isHorizontal = $computed(() => {
   return position === 'top' || position === 'bottom'

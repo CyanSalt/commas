@@ -29,8 +29,8 @@ function configure() {
       />
     </div>
     <div class="title-wrapper">
-      <TabList v-if="settings['terminal.style.tabListPosition'] === 'bottom'" />
-      <TerminalTitle v-else-if="settings['terminal.style.tabListPosition'] === 'top'" />
+      <TabList v-if="settings['terminal.view.tabListPosition'] === 'bottom'" />
+      <TerminalTitle v-else-if="settings['terminal.view.tabListPosition'] === 'top'" />
     </div>
     <div class="right-side">
       <component

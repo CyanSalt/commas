@@ -59,7 +59,7 @@ const thumbnail = $computed(() => {
   if (!tab) return ''
   if (pane) return ''
   if (!settings['terminal.tab.livePreview']) return ''
-  const tabListPosition = settings['terminal.style.tabListPosition']
+  const tabListPosition = settings['terminal.view.tabListPosition']
   if (tabListPosition === 'top' || tabListPosition === 'bottom') return ''
   if (tab.process === path.basename(tab.shell)) return ''
   if (tab.thumbnail) return tab.thumbnail

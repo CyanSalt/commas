@@ -36,7 +36,7 @@ function close() {
   >
     <div class="symmetrical-space"></div>
     <div class="title-wrapper">
-      <TabList v-if="settings['terminal.style.tabListPosition'] === 'top'" />
+      <TabList v-if="settings['terminal.view.tabListPosition'] === 'top'" />
       <TerminalTitle v-else />
     </div>
     <div class="controls">
