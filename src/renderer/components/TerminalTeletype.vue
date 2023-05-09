@@ -98,7 +98,7 @@ function getCompletionIcon(item: CommandCompletion) {
     case 'history':
       return 'ph-bold ph-clock-counter-clockwise'
     case 'file':
-      return 'ph-bold ph-file-text'
+      return 'ph-bold ph-file'
     case 'directory':
       return 'ph-bold ph-folder-open'
     case 'recommendation':
