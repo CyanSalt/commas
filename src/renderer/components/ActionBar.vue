@@ -57,6 +57,7 @@ function configure() {
   }
 }
 :deep(.anchor) {
+  display: inline-flex;
   opacity: 0.5;
   transition: opacity 0.2s;
   cursor: pointer;

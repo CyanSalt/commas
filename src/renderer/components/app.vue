@@ -97,12 +97,6 @@ window.addEventListener('beforeunload', async event => {
   }
 })
 
-commas.proxy.app.events.once('terminal-addons-loaded', () => {
-  requestIdleCallback(() => {
-    ipcRenderer.send('bootstrap')
-  })
-})
-
 // Revalidate KeepAlive manually
 commas.proxy.app.events.on('terminal-unmounted', (tab: TerminalTab) => {
   const id = getTerminalTabID(tab)

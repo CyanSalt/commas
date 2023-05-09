@@ -26,13 +26,6 @@ function handleMessages() {
   ipcMain.on('get-version', (event) => {
     event.returnValue = app.getVersion()
   })
-  ipcMain.on('bootstrap', (event) => {
-    const frame = BrowserWindow.fromWebContents(event.sender)
-    if (!frame) return
-    if (process.platform === 'darwin') {
-      frame.invalidateShadow()
-    }
-  })
   ipcMain.handle('get-ref:minimized', (event) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     if (!frame) return false
@@ -197,6 +190,14 @@ function handleEvents(frame: BrowserWindow) {
   frame.on('leave-full-screen', () => {
     frame.webContents.send('update-ref:fullscreen', false)
   })
+  if (process.platform === 'darwin') {
+    frame.on('move', () => {
+      frame.invalidateShadow()
+    })
+    frame.on('resize', () => {
+      frame.invalidateShadow()
+    })
+  }
 }
 
 export {

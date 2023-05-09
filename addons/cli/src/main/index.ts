@@ -232,17 +232,6 @@ where <command> is one of:
     },
   })
 
-  commas.context.provide('cli.command', {
-    command: 'trick',
-    handler({ sender }) {
-      const frame = BrowserWindow.fromWebContents(sender)
-      if (!frame) return
-      if (process.platform === 'darwin') {
-        frame.invalidateShadow()
-      }
-    },
-  })
-
   const externalURLCommands = $(useExternalURLCommands())
   commas.app.effect(() => {
     commas.context.provide('cli.command', ...externalURLCommands)
