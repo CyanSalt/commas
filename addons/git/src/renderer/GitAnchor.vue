@@ -50,6 +50,16 @@ const remoteExternalURL: string = $computed(() => {
   return `https://${matches[1]}/${matches[2]}${branch ? `/tree/${branch}` : ''}`
 })
 
+const isGithub = $computed(() => {
+  if (!remoteExternalURL) return false
+  try {
+    const url = new URL(remoteExternalURL)
+    return url.host === 'github.com' || url.host.endsWith('.github.com')
+  } catch {
+    return false
+  }
+})
+
 function openRemoteURL() {
   if (!remoteExternalURL) return
   shell.openExternal(remoteExternalURL)
@@ -58,10 +68,10 @@ function openRemoteURL() {
 
 <template>
   <div v-if="remoteExternalURL" v-bind="$attrs" class="git-remote-anchor" @click="openRemoteURL">
-    <span class="feather-icon icon-github"></span>
+    <span :class="['ph-bold', isGithub ? 'ph-github-logo' : 'ph-gitlab-logo-simple']"></span>
   </div>
   <div v-if="directory" v-bind="$attrs" class="git-branch-anchor" @click="updateBranch">
-    <span class="feather-icon icon-git-branch"></span>
+    <span class="ph-bold ph-git-branch"></span>
     <span v-if="branch" class="branch-name">{{ branch }}</span>
   </div>
 </template>

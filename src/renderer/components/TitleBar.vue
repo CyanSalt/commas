@@ -42,16 +42,15 @@ function close() {
     <div class="controls">
       <template v-if="isCustomControlEnabled">
         <div class="minimize button" @click="minimize">
-          <span class="feather-icon icon-minus"></span>
+          <span class="ph-bold ph-minus"></span>
         </div>
         <div class="maximize button" @click="maximize">
           <span
-            :class="['feather-icon', isMaximized
-              ? 'icon-minimize-2' : 'icon-maximize-2']"
+            :class="['ph-bold', isMaximized ? 'ph-arrows-in-simple' : 'ph-arrows-out-simple']"
           ></span>
         </div>
         <div class="close button" @click="close">
-          <span class="feather-icon icon-x"></span>
+          <span class="ph-bold ph-x"></span>
         </div>
       </template>
     </div>

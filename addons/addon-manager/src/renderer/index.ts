@@ -10,7 +10,7 @@ export default () => {
     title: 'Addons#!addon-manager.1',
     component: AddonManagerPane,
     icon: {
-      name: 'feather-icon icon-layers',
+      name: 'ph-bold ph-puzzle-piece',
     },
   })
 

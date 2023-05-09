@@ -113,14 +113,14 @@ function resize(startingEvent: DragEvent) {
       </SortableList>
       <div class="new-tab">
         <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
-          <span class="feather-icon icon-more-horizontal"></span>
+          <span class="ph-bold ph-dots-three"></span>
         </div>
         <div
           class="default-shell anchor"
           @click="selectDefaultShell"
           @contextmenu="selectShell"
         >
-          <span class="feather-icon icon-plus"></span>
+          <span class="ph-bold ph-plus"></span>
         </div>
       </div>
       <component
@@ -215,7 +215,7 @@ function resize(startingEvent: DragEvent) {
 .select-shell + .default-shell {
   order: -1;
   .tab-list.vertical & {
-    padding-left: 12px;
+    padding-left: 18px;
   }
 }
 .anchor {

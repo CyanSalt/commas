@@ -28,8 +28,8 @@ function configure() {
     @click="toggle"
     @contextmenu="configure"
   >
-    <span v-if="status === undefined" class="feather-icon icon-more-horizontal"></span>
-    <span v-else class="feather-icon icon-navigation"></span>
+    <span v-if="status === undefined" class="ph-bold ph-dots-three"></span>
+    <span v-else class="ph-bold ph-navigation-arrow"></span>
     <span v-if="status" class="server-port">{{ port }}</span>
   </div>
 </template>

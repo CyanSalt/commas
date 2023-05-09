@@ -131,7 +131,7 @@ watchEffect(() => {
       @dragstart.prevent="startDraggingDirectory"
     >
       <img v-if="icon" class="directory-icon" :src="icon">
-      <span v-else :class="['feather-icon', isDirectory ? 'icon-folder' : 'icon-file']"></span>
+      <span v-else :class="['ph-bold', isDirectory ? 'ph-folder-notch' : 'ph-file']"></span>
     </a>
     <div v-if="pane && !fileOrDirectory" v-i18n class="title-text">{{ pane.title }}</div>
     <div v-else class="title-text">{{ title }}</div>

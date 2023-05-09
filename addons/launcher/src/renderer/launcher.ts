@@ -19,7 +19,7 @@ const launcherGroups = $computed(() => {
       id: launcher.id,
       title: launcher.name,
       icon: {
-        name: `feather-icon ${launcher.remote ? 'icon-link' : 'icon-hash'}`,
+        name: `ph-bold ${launcher.remote ? 'ph-link' : 'ph-hash'}`,
       },
     }
   })

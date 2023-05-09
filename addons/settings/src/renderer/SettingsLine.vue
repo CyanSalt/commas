@@ -146,7 +146,7 @@ function reset() {
   >
     <summary :class="['line-summary', { customized: isCustomized }]">
       <span class="link tree-node">
-        <span class="feather-icon icon-chevron-down"></span>
+        <span class="ph-bold ph-caret-down"></span>
       </span>
       <span v-i18n class="item-label" @click.prevent>{{ spec.label }}#!settings.label.{{ spec.key }}</span>
       <span class="item-key" @click.prevent>{{ spec.key }}</span>
@@ -170,7 +170,7 @@ function reset() {
       >
         <template #extra>
           <span class="link reset" @click="reset">
-            <span class="feather-icon icon-rotate-ccw"></span>
+            <span class="ph-bold ph-arrow-counter-clockwise"></span>
           </span>
         </template>
       </ObjectEditor>
@@ -245,6 +245,7 @@ function reset() {
 }
 .tree-node {
   width: 24px;
+  font-size: 12px;
   text-align: center;
   opacity: 1;
   transition: transform 0.2s;

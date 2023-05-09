@@ -73,7 +73,7 @@ onMounted(() => {
       </div>
       <div class="action-line">
         <span class="link form-action" @click="refresh">
-          <span class="feather-icon icon-refresh-cw"></span>
+          <span class="ph-bold ph-arrows-clockwise"></span>
         </span>
       </div>
       <div class="addon-list">

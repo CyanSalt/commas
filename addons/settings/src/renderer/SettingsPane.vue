@@ -100,7 +100,7 @@ onBeforeUpdate(() => {
     <form class="group">
       <div class="action-line settings-searcher">
         <span :class="['link form-action toggle-all', { collapsed: isCollapsed }]" @click="toggleAll">
-          <span class="feather-icon icon-chevrons-down"></span>
+          <span class="ph-bold ph-caret-double-down"></span>
         </span>
         <input
           v-model="keyword"
@@ -134,6 +134,7 @@ onBeforeUpdate(() => {
 <style lang="scss" scoped>
 .form-action {
   margin: 0;
+  font-size: 12px;
 }
 .toggle-all.collapsed {
   opacity: 1;

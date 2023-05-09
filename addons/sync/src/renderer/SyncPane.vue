@@ -109,26 +109,26 @@ function removeSyncPlan(index: number) {
           class="form-control"
         >
         <span class="link form-action" @click="openGitHubTokenSettings">
-          <span class="feather-icon icon-github"></span>
+          <span class="ph-bold ph-github-logo"></span>
         </span>
         <span class="link form-action confirm" @click="confirmToken">
-          <span class="feather-icon icon-check"></span>
+          <span class="ph-bold ph-check"></span>
         </span>
       </div>
       <span v-else v-i18n class="link" @click="addToken">Add GitHub Token#!sync.3</span>
       <div v-if="syncData.token" class="form-line">
         <span class="link form-action" @click="uploadDefaultSyncPlan">
-          <span class="feather-icon icon-upload-cloud"></span>
+          <span class="ph-bold ph-cloud-arrow-up"></span>
         </span>
         <span v-if="defaultPlanGist" class="link form-action" @click="downloadDefaultSyncPlan">
-          <span class="feather-icon icon-download-cloud"></span>
+          <span class="ph-bold ph-cloud-arrow-down"></span>
         </span>
         <span
           v-if="defaultPlanGist.includes('/')"
           class="link form-action"
           @click="openSyncPlanGist(defaultPlanGist)"
         >
-          <span class="feather-icon icon-github"></span>
+          <span class="ph-bold ph-github-logo"></span>
         </span>
       </div>
       <div class="history">
@@ -141,35 +141,35 @@ function removeSyncPlan(index: number) {
       <div v-for="(plan, index) in extraPlans" :key="index" class="extra-plan">
         <div class="form-line">
           <span class="link form-action remove-plan" @click="removeSyncPlan(index)">
-            <span class="feather-icon icon-minus"></span>
+            <span class="ph-bold ph-minus"></span>
           </span>
           <input v-model.lazy="plan.name" class="immersive-control plan-name">
           <span class="plan-directory" @click="openSyncPlanDirectory(plan)">
-            <span class="feather-icon icon-at-sign"></span>
+            <span class="directory-icon ph-bold ph-folder-notch"></span>
             <span class="directory-path">{{ omitHome(plan.directory) }}</span>
           </span>
         </div>
         <ObjectEditor v-model="plan.files" lazy>
           <template #extra>
             <span class="link form-action" @click="uploadSyncPlan(plan)">
-              <span class="feather-icon icon-upload-cloud"></span>
+              <span class="ph-bold ph-cloud-arrow-up"></span>
             </span>
             <span v-if="plan.gist" class="link form-action" @click="downloadSyncPlan(plan)">
-              <span class="feather-icon icon-download-cloud"></span>
+              <span class="ph-bold ph-cloud-arrow-down"></span>
             </span>
             <span
               v-if="plan.gist.includes('/')"
               class="link form-action"
               @click="openSyncPlanGist(plan.gist)"
             >
-              <span class="feather-icon icon-github"></span>
+              <span class="ph-bold ph-github-logo"></span>
             </span>
           </template>
         </ObjectEditor>
       </div>
       <div class="form-line action-line">
         <span class="link form-action" @click="addSyncPlan">
-          <span class="feather-icon icon-plus"></span>
+          <span class="ph-bold ph-plus"></span>
         </span>
       </div>
     </div>
@@ -202,9 +202,9 @@ function removeSyncPlan(index: number) {
   &:hover {
     opacity: 1;
   }
-  .feather-icon {
-    margin: 0 0.5em;
-  }
+}
+.directory-icon {
+  margin: 0 0.5em;
 }
 .remove-plan {
   margin-right: 4px;

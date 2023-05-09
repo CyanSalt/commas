@@ -10,7 +10,7 @@ export default () => {
     title: 'Settings#!settings.1',
     component: SettingsPane,
     icon: {
-      name: 'feather-icon icon-sliders',
+      name: 'ph-bold ph-faders',
     },
   })
 

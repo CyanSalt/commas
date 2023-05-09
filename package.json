@@ -37,6 +37,7 @@
     "@cyansalt/eslint-config-preset": "^1.13.0",
     "@cyansalt/stylelint-config-preset": "^1.4.1",
     "@cyansalt/tsconfig": "^2.1.1",
+    "@phosphor-icons/web": "^2.0.3",
     "@release-it/conventional-changelog": "^5.1.1",
     "@types/canvas-confetti": "^1.6.0",
     "@types/fuzzaldrin-plus": "^0.6.2",

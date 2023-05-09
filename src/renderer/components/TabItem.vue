@@ -84,8 +84,8 @@ function close() {
             :style="{ color: isFocused ? iconEntry.color : undefined }"
             :class="['tab-icon', iconEntry.name]"
           ></span>
-          <span v-else-if="pane && tab!.shell" class="tab-icon feather-icon icon-file"></span>
-          <span v-else class="tab-icon feather-icon icon-terminal"></span>
+          <span v-else-if="pane && tab!.shell" class="tab-icon ph-bold ph-file"></span>
+          <span v-else class="tab-icon ph-bold ph-terminal"></span>
           <span class="tab-name">{{ title }}</span>
         </div>
         <div class="right-side">
@@ -93,7 +93,7 @@ function close() {
           <div class="operations">
             <slot name="operations"></slot>
             <div v-if="closable || tab" class="button close" @click.stop="close">
-              <div class="feather-icon icon-x"></div>
+              <div class="ph-bold ph-x"></div>
             </div>
           </div>
         </div>
@@ -135,9 +135,6 @@ function close() {
   display: inline-block;
   flex: none;
   margin-right: 6px;
-  &.feather-icon {
-    margin-top: -2px;
-  }
 }
 .tab-name {
   flex: auto;

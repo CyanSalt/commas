@@ -10,7 +10,7 @@ export default () => {
     title: 'Theme#!theme.1',
     component: ThemePane,
     icon: {
-      name: 'feather-icon icon-feather',
+      name: 'ph-bold ph-palette',
     },
   })
 

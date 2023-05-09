@@ -41,7 +41,7 @@ function unpin(value) {
         </label>
         <input :value="value" readonly type="text" :placeholder="placeholder" class="form-control">
         <span v-if="unpinable" class="form-action link remove" @click="unpin(value)">
-          <span class="feather-icon icon-x"></span>
+          <span class="ph-bold ph-x"></span>
         </span>
       </div>
     </template>

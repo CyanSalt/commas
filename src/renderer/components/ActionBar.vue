@@ -19,7 +19,7 @@ function configure() {
   <footer class="action-bar">
     <div class="left-side">
       <div class="anchor" @click="configure">
-        <span class="feather-icon icon-settings"></span>
+        <span class="ph-bold ph-gear"></span>
       </div>
       <component
         :is="anchor"

@@ -31,8 +31,8 @@ import FindBox from './FindBox.vue'
 import TabList from './TabList.vue'
 import TerminalGroup from './TerminalGroup.vue'
 import TitleBar from './TitleBar.vue'
+import '@phosphor-icons/web/bold'
 import '../assets/fonts/devicon.css'
-import '../assets/fonts/feather.css'
 
 const settings = useSettings()
 const theme = useTheme()
@@ -172,6 +172,9 @@ onMounted(() => {
   cursor: default;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+}
+:global(.ph-bold) {
+  line-height: inherit;
 }
 .app {
   display: flex;

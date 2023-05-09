@@ -14,7 +14,7 @@ export default () => {
     title: 'Preferences#!preference.1',
     component: PreferencePane,
     icon: {
-      name: 'feather-icon icon-settings',
+      name: 'ph-bold ph-gear',
     },
   })
 

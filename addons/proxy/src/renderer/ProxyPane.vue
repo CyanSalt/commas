@@ -82,11 +82,11 @@ function update() {
         <span v-if="status" class="proxy-address">
           <span class="link" @click="openEditor">{{ address }}</span>
           <span class="link" @click="copyAddress">
-            <span class="feather-icon icon-copy"></span>
+            <span class="ph-bold ph-copy"></span>
           </span>
         </span>
         <span v-else class="link shortcut" @click="toggleProxyServer">
-          <span class="feather-icon icon-navigation"></span>
+          <span class="shortcut-icon ph-bold ph-navigation-arrow"></span>
           <span v-i18n>Click this icon to start#!proxy.10</span>
         </span>
       </div>
@@ -97,10 +97,10 @@ function update() {
       <div class="form-line">
         <span class="form-label">
           <span v-i18n="{ V: versionInfo.version ?? '--' }">Current version: %V#!preference.9</span>
-          <span v-if="versionInfo.type !== 'builtin'" class="version-type feather-icon icon-external-link"></span>
+          <span v-if="versionInfo.type !== 'builtin'" class="version-type ph-bold ph-arrow-square-out"></span>
         </span>
         <span v-if="isOutdated" class="update-link link form-action" @click="update">
-          <span class="feather-icon icon-arrow-up"></span>
+          <span class="update-icon ph-bold ph-caret-double-up"></span>
           <span class="latest-version">{{ latestVersion }}</span>
         </span>
       </div>
@@ -109,7 +109,7 @@ function update() {
       <h2 v-i18n class="group-title">HTTPS Proxy#!proxy.5</h2>
       <div class="group">
         <span v-if="isCertInstalled" class="cert-status">
-          <span class="feather-icon icon-check"></span>
+          <span class="cert-icon ph-bold ph-seal-check"></span>
           <span v-i18n>Certification installed#!proxy.8</span>
         </span>
         <span
@@ -126,15 +126,15 @@ function update() {
 </template>
 
 <style lang="scss" scoped>
-.cert-status .feather-icon {
+.cert-icon {
   margin-right: 8px;
   color: rgb(var(--system-green));
 }
 .shortcut {
   display: flex;
-  .feather-icon {
-    margin-right: 8px;
-  }
+}
+.shortcut-icon {
+  margin-right: 8px;
 }
 .proxy-pane .form-line {
   margin-top: 0;
@@ -146,9 +146,6 @@ function update() {
 }
 .update-link {
   display: flex;
-  .feather-icon {
-    margin-top: -2px;
-  }
 }
 .latest-version {
   margin-left: 0.5em;

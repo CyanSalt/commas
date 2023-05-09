@@ -143,7 +143,7 @@ function showLauncherMenu(event: MouseEvent) {
     <template v-if="isHorizontal">
       <div class="launcher-folder">
         <span class="button menu" @click="showLauncherMenu">
-          <span class="feather-icon icon-chevrons-down"></span>
+          <span class="ph-bold ph-push-pin"></span>
         </span>
       </div>
     </template>
@@ -151,7 +151,7 @@ function showLauncherMenu(event: MouseEvent) {
       <div class="launcher-folder" @click="toggleCollapsing">
         <div :class="['group-name', { collapsed: isCollapsed }]">
           <span class="folder-icon">
-            <span class="feather-icon icon-chevrons-down"></span>
+            <span :class="['ph-bold', isCollapsed ? 'ph-push-pin-simple' : 'ph-push-pin']"></span>
           </span>
         </div>
         <div class="buttons" @click.stop>
@@ -159,7 +159,7 @@ function showLauncherMenu(event: MouseEvent) {
             :class="['button', 'more', { active: isAnyActionEnabled }]"
             @click="toggleActions"
           >
-            <span class="feather-icon icon-more-vertical"></span>
+            <span class="ph-bold ph-dots-three-vertical"></span>
           </div>
         </div>
         <div v-show="isActionsVisible" class="launcher-actions" @click.stop>
@@ -174,7 +174,7 @@ function showLauncherMenu(event: MouseEvent) {
             @keyup.esc="toggleActions"
           >
           <span :class="['button', 'edit', { active: isEditing }]" @click="toggleEditing">
-            <span class="feather-icon icon-edit-3"></span>
+            <span class="ph-bold ph-pencil-simple"></span>
           </span>
         </div>
       </div>
@@ -199,19 +199,19 @@ function showLauncherMenu(event: MouseEvent) {
               @click.stop="startLauncher(launcher)"
               @contextmenu="showLauncherScripts(launcher, $event)"
             >
-              <span class="feather-icon icon-play"></span>
+              <span class="ph-bold ph-play"></span>
             </div>
             <div
               class="button launch-externally"
               @click.stop="startLauncherExternally(launcher)"
             >
-              <span class="feather-icon icon-external-link"></span>
+              <span class="ph-bold ph-arrow-square-out"></span>
             </div>
           </template>
         </TabItem>
       </SortableList>
       <div v-if="isEditing" class="new-launcher" @click="createLauncher">
-        <span class="feather-icon icon-plus"></span>
+        <span class="ph-bold ph-plus"></span>
       </div>
     </template>
   </div>
@@ -262,13 +262,6 @@ function showLauncherMenu(event: MouseEvent) {
   }
   &:not(.collapsed):hover {
     opacity: 1;
-  }
-}
-.folder-icon {
-  display: inline-block;
-  transition: transform 0.2s;
-  .group-name.collapsed & {
-    transform: rotate(-90deg);
   }
 }
 .menu {
