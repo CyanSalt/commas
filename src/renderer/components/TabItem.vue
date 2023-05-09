@@ -81,7 +81,7 @@ function close() {
         <div class="tab-title">
           <span
             v-if="iconEntry"
-            :style="{ color: isFocused ? iconEntry.color : undefined }"
+            :style="{ color: isFocused ? iconEntry.color : 'inherit' }"
             :class="['tab-icon', iconEntry.name]"
           ></span>
           <span v-else-if="pane && tab!.shell" class="tab-icon ph-bold ph-file"></span>

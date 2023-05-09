@@ -50,6 +50,7 @@
     "@vue-macros/reactivity-transform": "^0.3.5",
     "canvas-confetti": "^1.6.0",
     "clippyjs": "^0.0.3",
+    "devicon": "^2.15.1",
     "dotenv-cli": "^7.2.1",
     "electron": "^24.2.0",
     "electron-packager": "^17.1.1",

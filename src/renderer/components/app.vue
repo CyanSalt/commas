@@ -32,7 +32,7 @@ import TabList from './TabList.vue'
 import TerminalGroup from './TerminalGroup.vue'
 import TitleBar from './TitleBar.vue'
 import '@phosphor-icons/web/bold'
-import '../assets/fonts/devicon.css'
+import 'devicon'
 
 const settings = useSettings()
 const theme = useTheme()

@@ -6,42 +6,35 @@ export interface IconEntry {
 
 export default [
   {
-    name: 'devicon devicon-ssh',
+    name: 'devicon-ssh-original-wordmark',
     patterns: ['ssh'],
   },
   {
-    name: 'devicon devicon-git',
+    name: 'devicon-git-plain colored',
     patterns: ['git'],
-    color: '#f05032',
   },
   {
-    name: 'devicon devicon-vim',
+    name: 'devicon-vim-plain colored',
     patterns: ['vi', 'vim', 'nvim'],
-    color: '#019733',
   },
   {
-    name: 'devicon devicon-nodejs',
+    name: 'devicon-nodejs-plain colored',
     patterns: ['node'],
-    color: '#339933',
   },
   {
-    name: 'devicon devicon-python',
+    name: 'devicon-python-plain colored',
     patterns: [/^python\d*/],
-    color: '#3776ab',
   },
   {
-    name: 'devicon devicon-ruby',
+    name: 'devicon-ruby-plain colored',
     patterns: ['ruby'],
-    color: '#f44336',
   },
   {
-    name: 'devicon devicon-docker',
+    name: 'devicon-docker-plain colored',
     patterns: ['docker', 'docker-compose'],
-    color: '#1488c6',
   },
   {
-    name: 'devicon devicon-amazonwebservices',
+    name: 'devicon-amazonwebservices-original colored',
     patterns: ['aws'],
-    color: '#232f3e',
   },
 ] as (IconEntry & { patterns: NonNullable<IconEntry['patterns']> })[]
