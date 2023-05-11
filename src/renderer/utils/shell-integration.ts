@@ -420,7 +420,8 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       el.classList.add(xterm.buffer.active.cursorX < xterm.cols / 2 ? 'is-left' : 'is-right')
       el.style.setProperty('--column', `${xterm.buffer.active.cursorX}`)
       el.style.setProperty('--row-span', `${height}`)
-      const source = document.getElementById('terminal-completion-source')
+      const source = xterm.element?.closest('[data-shell-integration="container"]')
+        ?.querySelector('[data-shell-integration="completion-source"]')
       if (source) {
         el.replaceChildren(...[...source.children].map(node => node.cloneNode(true)))
       }

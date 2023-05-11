@@ -128,13 +128,14 @@ function selectCompletion(event: MouseEvent) {
 <template>
   <div
     class="terminal-teletype"
+    data-shell-integration="container"
     @contextmenu="openEditingMenu"
     @dragover.prevent="dragFileOver"
     @drop.prevent="dropFile"
     @click="selectCompletion"
   >
     <div ref="element" class="terminal-content"></div>
-    <div v-if="tab.completions" id="terminal-completion-source">
+    <div v-if="tab.completions" data-shell-integration="completion-source">
       <div class="terminal-completion-wrapper">
         <ul class="terminal-completion-list">
           <li
@@ -188,7 +189,7 @@ function selectCompletion(event: MouseEvent) {
     z-index: 0;
   }
 }
-#terminal-completion-source {
+[data-shell-integration='completion-source'] {
   display: none;
 }
 @keyframes fade-out {
