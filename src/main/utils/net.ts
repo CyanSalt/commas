@@ -1,5 +1,5 @@
-import * as fs from 'fs'
-import type { Readable } from 'stream'
+import * as fs from 'node:fs'
+import type { Readable } from 'node:stream'
 import type { ClientRequestConstructorOptions, IncomingMessage } from 'electron'
 import { net } from 'electron'
 import { getStream, until } from './helper'

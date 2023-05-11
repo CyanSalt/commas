@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 import type { ReactiveEffectOptions } from '@vue/reactivity'
 import { app, ipcRenderer } from 'electron'
 import type { APIContext } from '../types'

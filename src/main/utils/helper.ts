@@ -1,7 +1,7 @@
-import * as childProcess from 'child_process'
-import type { EventEmitter } from 'events'
-import type { Readable } from 'stream'
-import * as util from 'util'
+import * as childProcess from 'node:child_process'
+import type { EventEmitter } from 'node:events'
+import type { Readable } from 'node:stream'
+import * as util from 'node:util'
 
 const execa = util.promisify(childProcess.exec)
 

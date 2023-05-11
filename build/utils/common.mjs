@@ -1,6 +1,6 @@
-import module from 'module'
-import * as path from 'path'
-import * as url from 'url'
+import module from 'node:module'
+import * as path from 'node:path'
+import * as url from 'node:url'
 
 /**
  * @param {ImportMeta} meta

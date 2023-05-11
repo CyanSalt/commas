@@ -1,5 +1,5 @@
-import { Module } from 'module'
-import * as path from 'path'
+import { Module } from 'node:module'
+import * as path from 'node:path'
 import type { EffectScope } from '@vue/reactivity'
 import { effectScope } from '@vue/reactivity'
 import type { AddonInfo } from '../../src/typings/addon'

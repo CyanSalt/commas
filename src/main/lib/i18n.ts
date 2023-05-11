@@ -1,5 +1,5 @@
-import * as fs from 'fs'
-import * as path from 'path'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
 import { effect, shallowReactive } from '@vue/reactivity'
 import { app } from 'electron'
 import { watchBaseEffect, useAsyncComputed } from '../../shared/compositions'

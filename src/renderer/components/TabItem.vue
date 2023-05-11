@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import * as path from 'path'
+import * as path from 'node:path'
 import type { TerminalTab, TerminalTabGroup } from '../../typings/terminal'
 import { useSettings } from '../compositions/settings'
 import { getTerminalTabTitle, useCurrentTerminal, closeTerminalTab } from '../compositions/terminal'

@@ -1,4 +1,4 @@
-import { builtinModules } from 'module'
+import { builtinModules } from 'node:module'
 import vue from '@vitejs/plugin-vue'
 import reactivityTransform from '@vue-macros/reactivity-transform/vite'
 import * as vite from 'vite'
@@ -43,6 +43,7 @@ export default (versions, tap) => vite.build(tap({
     minify: false,
     rollupOptions: {
       external: [
+        /^node:/,
         /^commas:/,
         'electron',
         ...builtinModules,

@@ -1,5 +1,5 @@
-import * as os from 'os'
-import * as path from 'path'
+import * as os from 'node:os'
+import * as path from 'node:path'
 import { ipcRenderer } from 'electron'
 import { omitHome, resolveWindowsDisk } from '../../shared/terminal'
 import type { TerminalTab } from '../../typings/terminal'

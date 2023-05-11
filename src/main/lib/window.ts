@@ -1,4 +1,4 @@
-import * as path from 'path'
+import * as path from 'node:path'
 import { effect, stop } from '@vue/reactivity'
 import type { BrowserWindowConstructorOptions } from 'electron'
 import { app, BrowserWindow, ipcMain } from 'electron'

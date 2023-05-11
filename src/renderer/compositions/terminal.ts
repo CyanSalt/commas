@@ -1,4 +1,4 @@
-import * as os from 'os'
+import * as os from 'node:os'
 import { ipcRenderer, shell } from 'electron'
 import { isMatch, trim } from 'lodash'
 import { markRaw, nextTick, reactive, shallowReactive, toRaw, watch, watchEffect } from 'vue'

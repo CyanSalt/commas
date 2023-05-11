@@ -1,4 +1,4 @@
-import * as path from 'path'
+import * as path from 'node:path'
 import buildAddonMain from './atomics/build-addon-main.mjs'
 import buildAddonRenderer from './atomics/build-addon-renderer.mjs'
 import buildCoreMain from './atomics/build-core-main.mjs'

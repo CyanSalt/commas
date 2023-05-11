@@ -1,4 +1,4 @@
-import * as fs from 'fs'
+import * as fs from 'node:fs'
 import * as commas from 'commas:api/main'
 import { app, autoUpdater } from 'electron'
 

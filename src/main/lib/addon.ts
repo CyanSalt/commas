@@ -1,4 +1,4 @@
-import * as path from 'path'
+import * as path from 'node:path'
 import { effect } from '@vue/reactivity'
 import type { BrowserWindow } from 'electron'
 import { app } from 'electron'

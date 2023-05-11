@@ -1,4 +1,4 @@
-import * as path from 'path'
+import * as path from 'node:path'
 import type { TranslationFileEntry } from '../../src/main/lib/i18n'
 import { addTranslationDirectory, addTranslations, Priority, translate } from '../../src/main/lib/i18n'
 import type { MainAPIContext } from '../types'

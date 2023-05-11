@@ -1,4 +1,4 @@
-import * as path from 'path'
+import * as path from 'node:path'
 import * as commas from 'commas:api/main'
 import { useEditorTheme } from './theme'
 

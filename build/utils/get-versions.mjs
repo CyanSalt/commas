@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import { execa } from './child-process.mjs'
 import { getDirectory, resolveCommonJS } from './common.mjs'
 

@@ -1,5 +1,5 @@
-import * as fs from 'fs'
-import * as os from 'os'
+import * as fs from 'node:fs'
+import * as os from 'node:os'
 import type { WebContents } from 'electron'
 import { app, ipcMain } from 'electron'
 import type { IPty, IPtyForkOptions } from 'node-pty'

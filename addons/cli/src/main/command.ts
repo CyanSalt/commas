@@ -1,4 +1,4 @@
-import * as util from 'util'
+import * as util from 'node:util'
 import * as commas from 'commas:api/main'
 import type { WebContents } from 'electron'
 import { shell } from 'electron'

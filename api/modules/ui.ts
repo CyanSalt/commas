@@ -1,5 +1,5 @@
-import * as path from 'path'
-import * as url from 'url'
+import * as path from 'node:path'
+import * as url from 'node:url'
 import TabItem from '../../src/renderer/components/TabItem.vue'
 import LoadingSpinner from '../../src/renderer/components/basic/LoadingSpinner.vue'
 import ObjectEditor from '../../src/renderer/components/basic/ObjectEditor.vue'

@@ -1,4 +1,4 @@
-import * as fs from 'fs'
+import * as fs from 'node:fs'
 import type { Ref } from '@vue/reactivity'
 import { computed, customRef, effect, stop, unref } from '@vue/reactivity'
 import { ipcMain } from 'electron'

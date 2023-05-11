@@ -1,4 +1,4 @@
-import * as os from 'os'
+import * as os from 'node:os'
 import * as commas from 'commas:api/main'
 
 export default () => {

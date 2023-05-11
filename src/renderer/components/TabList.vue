@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import * as path from 'path'
+import * as path from 'node:path'
 import * as commas from '../../../api/core-renderer'
 import { useAsyncComputed } from '../../shared/compositions'
 import type { MenuItem } from '../../typings/menu'

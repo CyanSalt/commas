@@ -1,4 +1,4 @@
-import * as path from 'path'
+import * as path from 'node:path'
 import { quote } from 'shell-quote'
 import type { Launcher } from '../../typings/launcher'
 

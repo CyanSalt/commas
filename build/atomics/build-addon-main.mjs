@@ -1,5 +1,5 @@
-import * as fs from 'fs'
-import * as path from 'path'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
 import alias from '../utils/esbuild-alias.mjs'
 import buildMain from './build-main.mjs'
 
