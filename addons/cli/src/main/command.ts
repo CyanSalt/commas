@@ -15,6 +15,7 @@ export interface CommandContext {
 
 export interface CommandModule {
   command: string,
+  description?: string,
   usage?: string,
   handler: (context: CommandContext) => Generable<string, string | undefined>,
 }

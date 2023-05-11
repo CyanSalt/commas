@@ -46,6 +46,7 @@
     "@types/node-ipc": "^9.2.0",
     "@types/prismjs": "^1.26.0",
     "@types/shell-quote": "^1.7.1",
+    "@types/text-table": "^0.2.2",
     "@vitejs/plugin-vue": "^4.2.1",
     "@vue-macros/reactivity-transform": "^0.3.6",
     "canvas-confetti": "^1.6.0",
@@ -75,6 +76,7 @@
     "@achrinza/node-ipc": "^10.1.7",
     "@vue/reactivity": "^3.2.45",
     "address": "^1.2.2",
+    "cfonts": "^3.2.0",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.3",
     "colord": "^2.9.3",
@@ -86,6 +88,7 @@
     "shell-history": "^1.1.0",
     "shell-quote": "^1.8.1",
     "sudo-prompt": "^9.2.1",
+    "text-table": "^0.2.0",
     "vue": "^3.2.47",
     "whistle": "^2.9.48",
     "yaml": "^2.2.2"

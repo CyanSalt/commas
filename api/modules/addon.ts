@@ -89,7 +89,7 @@ function loadAddon(addon: AddonInfo, api: CompatableAPI) {
       try {
         const userDataPath = app.isPackaged()
           ? path.join(app.getPath('userData'), 'User')
-          : path.resolve('../../userdata')
+          : path.join(app.getPath(), 'userdata')
         processor = require(path.join(userDataPath, addon.name))
       } catch {
         processor = () => {/* noop */}

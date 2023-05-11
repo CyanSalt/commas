@@ -20,8 +20,8 @@ function handleMessages() {
   app.on('before-quit', () => {
     broadcast('before-quit')
   })
-  ipcMain.on('get-path', (event, name: Parameters<typeof app['getPath']>[0]) => {
-    event.returnValue = app.getPath(name)
+  ipcMain.on('get-path', (event, name?: Parameters<typeof app['getPath']>[0]) => {
+    event.returnValue = name ? app.getPath(name) : app.getAppPath()
   })
   ipcMain.on('get-version', (event) => {
     event.returnValue = app.getVersion()

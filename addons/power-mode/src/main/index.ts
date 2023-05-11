@@ -4,6 +4,7 @@ export default () => {
 
   commas.context.provide('cli.command', {
     command: 'power',
+    description: 'Activate POWER MODE',
     usage: '[off]',
     async handler({ sender, argv }) {
       const [status] = argv

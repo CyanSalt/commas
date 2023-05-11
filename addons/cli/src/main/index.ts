@@ -3,11 +3,13 @@ import * as path from 'node:path'
 import * as util from 'node:util'
 import * as vm from 'node:vm'
 import ipc from '@achrinza/node-ipc'
+import * as cfonts from 'cfonts'
 import chalk from 'chalk'
 import * as commas from 'commas:api/main'
 import { app, BrowserWindow, webContents } from 'electron'
 import { random } from 'lodash'
 import { quote } from 'shell-quote'
+import table from 'text-table'
 import type { CommandModule } from './command'
 import { getCommandModule, executeCommand, useExternalURLCommands } from './command'
 
@@ -63,60 +65,35 @@ export default () => {
     ipc.server.stop()
   })
 
-  /** {@link https://github.com/npm/cli/blob/latest/lib/utils/npm-usage.js#L39-L55} */
-  const wrap = (arr) => {
-    const out = ['']
-    const line = process.stdout.columns
-      ? Math.min(60, Math.max(process.stdout.columns - 16, 24))
-      : 60
-    let l = 0
-    for (const c of arr.sort((a, b) => (a < b ? -1 : 1))) {
-      if (out[l].length + c.length + 2 < line) {
-        out[l] += ', ' + c
-      } else {
-        out[l++] += ','
-        out[l] = c
-      }
-    }
-    return out.join(os.EOL + '    ').slice(2)
+  const indent = (text: string, space: string) => {
+    return text.split('\n').map(line => space + line).join(os.EOL)
   }
 
   const commandList = $computed(() => {
     const aliases = settings['cli.command.aliases'] ?? {}
     return [
-      ...commands.map(item => item.command),
-      ...Object.keys(aliases),
+      ...commands.map(item => [item.command, item.description ?? '']),
+      ...Object.entries(aliases),
     ]
   })
 
+  const packageInfo = commas.app.getPackageInfo()
+
   commas.context.provide('cli.command', {
     command: 'help',
+    description: 'Print help information',
     usage: '[command]',
     handler({ argv }) {
-      /** {@link https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=COMMAS} */
-      const ansi = `
- ██████╗! ██████╗ !███╗   ███╗!███╗   ███╗! █████╗ !███████╗
-██╔════╝!██╔═══██╗!████╗ ████║!████╗ ████║!██╔══██╗!██╔════╝
-██║     !██║   ██║!██╔████╔██║!██╔████╔██║!███████║!███████╗
-██║     !██║   ██║!██║╚██╔╝██║!██║╚██╔╝██║!██╔══██║!╚════██║
-╚██████╗!╚██████╔╝!██║ ╚═╝ ██║!██║ ╚═╝ ██║!██║  ██║!███████║
- ╚═════╝! ╚═════╝ !╚═╝     ╚═╝!╚═╝     ╚═╝!╚═╝  ╚═╝!╚══════╝
-`
-        .split('\n')
-        .map(line => {
-          const cols = line.split('!')
-          if (cols.length < 2) return line
-          const colors = [
-            chalk.red,
-            chalk.green,
-            chalk.yellow,
-            chalk.blue,
-            chalk.magenta,
-            chalk.cyan,
-          ]
-          return cols.map((col, index) => colors[index % colors.length](col)).join('')
-        })
-        .join(os.EOL)
+      const colors = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan']
+      const ansiArt = app.name.split('').map((character, index) => {
+        return cfonts.render(character, {
+          font: 'tiny',
+          colors: [colors[index % colors.length]],
+          space: false,
+        })['array'] as string[]
+      }).reduce((lines, array) => {
+        return array.map((line, index) => String(lines[index] ?? '') + line)
+      }, []).join(os.EOL)
 
       const helpingCommand = argv[0]
       const manual = helpingCommand ? getCommandModule(argv[0], commands) : undefined
@@ -126,17 +103,24 @@ Usage: commas ${helpingCommand}${manual.usage ? ' ' + manual.usage : ''}
 `
       }
 
-      return `${ansi}
-Usage: commas <command>
+      return `
+${ansiArt}
 
-where <command> is one of:
-    ${wrap(commandList)}
+${app.name} ${app.getVersion()}
+${packageInfo.description}
+
+Usage:
+    commas <command> [options]
+
+Commands:
+${indent(table(commandList), '    ')}
 `
     },
   })
 
   commas.context.provide('cli.command', {
     command: 'version',
+    description: 'Print version information',
     handler() {
       return app.getVersion()
     },
@@ -144,6 +128,7 @@ where <command> is one of:
 
   commas.context.provide('cli.command', {
     command: 'run',
+    description: 'Run a command with arguments in a new tab',
     usage: '<...command-with-args>',
     handler({ sender, argv }) {
       sender.send('open-tab', undefined, {
@@ -154,6 +139,7 @@ where <command> is one of:
 
   commas.context.provide('cli.command', {
     command: 'select',
+    description: 'Jump to the nth tab',
     usage: '<nth-tab>',
     handler({ sender, argv }) {
       const index = Number.parseInt(argv[0], 10)
@@ -167,6 +153,7 @@ where <command> is one of:
 
   commas.context.provide('cli.command', {
     command: 'eval',
+    description: 'Evaluate a JS expression',
     handler({ argv }) {
       const script = argv[0]
       if (script === 'reset') {
@@ -187,6 +174,7 @@ where <command> is one of:
 
   commas.context.provide('cli.command', {
     command: 'roll',
+    description: 'Generate random numbers from 1 to 100',
     usage: '[n-times]',
     handler({ argv }) {
       let length = Number.parseInt(argv[0], 10)
@@ -200,6 +188,7 @@ where <command> is one of:
 
   commas.context.provide('cli.command', {
     command: 'preview',
+    description: 'Preview a file',
     usage: '[file]',
     handler({ sender, argv, cwd }) {
       const frame = BrowserWindow.fromWebContents(sender)
@@ -211,6 +200,7 @@ where <command> is one of:
 
   commas.context.provide('cli.command', {
     command: 'free',
+    description: 'Terminate all processes on a port',
     usage: '<port>',
     async handler({ argv }) {
       const port = Number.parseInt(argv[0], 10)

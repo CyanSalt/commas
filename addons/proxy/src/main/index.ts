@@ -18,6 +18,7 @@ export default () => {
   // Server
   commas.context.provide('cli.command', {
     command: 'whistle',
+    description: 'Execute the built-in whistle command',
     usage: '<command> [options]',
     async handler({ argv }) {
       try {

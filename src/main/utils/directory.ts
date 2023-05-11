@@ -1,7 +1,7 @@
 import * as path from 'node:path'
 import { app } from 'electron'
 
-const rootDir = path.join(__dirname, '../../')
+const rootDir = app.getAppPath()
 
 const userDataDir = app.isPackaged
   ? path.join(app.getPath('userData'), 'User')

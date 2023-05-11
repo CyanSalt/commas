@@ -1,4 +1,5 @@
 import { EventEmitter } from 'node:events'
+import * as path from 'node:path'
 import type { ReactiveEffectOptions } from '@vue/reactivity'
 import { app, ipcRenderer } from 'electron'
 import type { APIContext } from '../types'
@@ -17,9 +18,9 @@ function isPackaged() {
     : process.argv.some(arg => arg.startsWith('--app-path=') && arg.endsWith('app.asar'))
 }
 
-function getPath(name: Parameters<typeof app['getPath']>[0]) {
+function getPath(name?: Parameters<typeof app['getPath']>[0]) {
   return isMainProcess()
-    ? app.getPath(name)
+    ? (name ? app.getPath(name) : app.getAppPath())
     : ipcRenderer.sendSync('get-path', name) as string
 }
 
@@ -27,6 +28,10 @@ function getVersion() {
   return isMainProcess()
     ? app.getVersion()
     : ipcRenderer.sendSync('get-version') as string
+}
+
+function getPackageInfo() {
+  return require(path.join(getPath(), 'package.json'))
 }
 
 function onCleanup(this: APIContext, callback: () => void) {
@@ -72,6 +77,7 @@ export {
   isPackaged,
   getPath,
   getVersion,
+  getPackageInfo,
   onCleanup,
   effect,
   onInvalidate,
