@@ -4,7 +4,7 @@
 
 [EN](../README.md) | 中文
 
-**Commas** 是一款可定制、插件化的终端，同时也是命令行执行工具。这个名字源于 **Com**mand **Mas**ter (命令大师)。
+**Commas** 是一款可定制、插件化的终端，同时也是命令执行工具。这个名字源于 **Com**mand **Mas**ter (命令大师)。
 
 ![Screenshot](https://user-images.githubusercontent.com/5101076/212865459-f6c16a72-7c1e-4efb-a179-1109c8c5e3a5.png)
 

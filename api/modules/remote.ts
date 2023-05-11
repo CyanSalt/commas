@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron'
 import { useFile } from '../../src/renderer/compositions/frame'
-import { getAddonManifest, useLanguage } from '../../src/renderer/compositions/i18n'
+import { getI18NManifest, useLanguage } from '../../src/renderer/compositions/i18n'
 import {
   useAddons,
   useSettings,
@@ -42,7 +42,7 @@ export {
   useSettingsSpecs,
   useTheme,
   useFile,
-  getAddonManifest,
+  getI18NManifest,
   openUserDirectory,
   openDefaultSettings,
   openSettingsFile,

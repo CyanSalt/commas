@@ -42,7 +42,7 @@ const groups = $computed(() => {
       name = startCase(key)
       const addon = addons.find(item => item.name === domain[0])
       if (addon) {
-        const manifest = commas.remote.getAddonManifest(addon.manifest)
+        const manifest = commas.remote.getI18NManifest(addon.manifest)
         from = manifest.productName ?? manifest.name ?? addon.name
       }
     }

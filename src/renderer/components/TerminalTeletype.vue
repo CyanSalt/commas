@@ -248,7 +248,6 @@ function selectCompletion(event: MouseEvent) {
   @include partials.scroll-container(8px);
   display: flex;
   height: 100%;
-  overflow: auto;
 }
 .terminal-completion-list {
   flex: 1;
@@ -305,6 +304,7 @@ function selectCompletion(event: MouseEvent) {
   color: rgb(var(--theme-foreground) / 0.5);
   font-style: italic;
   font-size: 12px;
+  white-space: pre-wrap;
   overflow: hidden;
   &:empty {
     display: none;

@@ -1,8 +1,8 @@
 import { mix, toRGBA, toCSSHEX } from '../../src/shared/color'
 import { deepRef, surface, useAsyncComputed, watchBaseEffect } from '../../src/shared/compositions'
 import { createIDGenerator, iterate, reuse } from '../../src/shared/helper'
-import { getWords, matches } from '../../src/shared/match'
 import { omitHome, resolveHome } from '../../src/shared/terminal'
+import { getWords, matches } from '../../src/shared/text'
 
 export {
   deepRef,

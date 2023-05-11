@@ -35,7 +35,7 @@ const addonList = $computed(() => {
     })
     .map(addon => ({
       addon,
-      manifest: commas.remote.getAddonManifest(addon.manifest),
+      manifest: commas.remote.getI18NManifest(addon.manifest),
       enabled: enabledAddons.includes(addon.name),
     }))
 })

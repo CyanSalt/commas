@@ -1,5 +1,6 @@
 import { last } from 'lodash'
 import type { VNode } from 'vue'
+import { interpolateText } from '../../shared/text'
 import type { Dictionary, TranslationVariables } from '../../typings/i18n'
 import { injectIPC } from './compositions'
 import { createReactiveDirective } from './directives'
@@ -39,10 +40,7 @@ function translateText(text: string) {
 
 export function translate(text: string, variables?: TranslationVariables) {
   const translatedText = translateText(text)
-  if (!variables) return translatedText
-  return translatedText.replace(/%([A-Z]+)/g, (original, key) => {
-    return typeof variables[key] === 'string' ? variables[key] : original
-  })
+  return interpolateText(translatedText, variables)
 }
 
 function getVNodeTextContent(vnode: VNode): string {

@@ -3,6 +3,8 @@ import * as path from 'node:path'
 import { effect, shallowReactive } from '@vue/reactivity'
 import { app } from 'electron'
 import { watchBaseEffect, useAsyncComputed } from '../../shared/compositions'
+import { resolveManifest } from '../../shared/i18n'
+import { interpolateText } from '../../shared/text'
 import type { Dictionary, TranslationVariables } from '../../typings/i18n'
 import { provideIPC, useYAMLFile } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
@@ -139,10 +141,11 @@ function translateText(text: string) {
 
 function translate(text: string, variables?: TranslationVariables) {
   const translatedText = translateText(text)
-  if (!variables) return translatedText
-  return translatedText.replace(/%([A-Z]+)/g, (original, key) => {
-    return typeof variables[key] === 'string' ? variables[key] : original
-  })
+  return interpolateText(translatedText, variables)
+}
+
+function getI18NManifest(original: any) {
+  return resolveManifest(original, language)
 }
 
 function handleI18NMessages() {
@@ -155,5 +158,6 @@ export {
   translate,
   addTranslations,
   addTranslationDirectory,
+  getI18NManifest,
   handleI18NMessages,
 }

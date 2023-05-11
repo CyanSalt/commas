@@ -30,7 +30,7 @@ function getVersion() {
     : ipcRenderer.sendSync('get-version') as string
 }
 
-function getPackageInfo() {
+function getManifest() {
   return require(path.join(getPath(), 'package.json'))
 }
 
@@ -77,7 +77,7 @@ export {
   isPackaged,
   getPath,
   getVersion,
-  getPackageInfo,
+  getManifest,
   onCleanup,
   effect,
   onInvalidate,

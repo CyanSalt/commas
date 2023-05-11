@@ -72,20 +72,20 @@ export default () => {
   const commandList = $computed(() => {
     const aliases = settings['cli.command.aliases'] ?? {}
     return [
-      ...commands.map(item => [item.command, item.description ?? '']),
+      ...commands.map(item => [item.command, commas.i18n.translate(item.description ?? '')]),
       ...Object.entries(aliases),
     ]
   })
 
-  const packageInfo = commas.app.getPackageInfo()
+  const manifest = $computed(() => commas.i18n.getI18NManifest(commas.app.getManifest()))
 
   commas.context.provide('cli.command', {
     command: 'help',
-    description: 'Print help information',
-    usage: '[command]',
+    description: 'Print help information#!cli.description.help',
+    usage: '[command]#!cli.usage.help',
     handler({ argv }) {
       const colors = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan']
-      const ansiArt = app.name.split('').map((character, index) => {
+      const ansiArt = 'commas'.split('').map((character, index) => {
         return cfonts.render(character, {
           font: 'tiny',
           colors: [colors[index % colors.length]],
@@ -99,7 +99,8 @@ export default () => {
       const manual = helpingCommand ? getCommandModule(argv[0], commands) : undefined
       if (manual) {
         return `
-Usage: commas ${helpingCommand}${manual.usage ? ' ' + manual.usage : ''}
+${manual.description ? commas.i18n.translate(manual.description) + '\n\n' : ''}${chalk.bold(commas.i18n.translate('Usage:#!cli.1'))}
+    commas ${helpingCommand}${manual.usage ? ' ' + chalk.italic(commas.i18n.translate(manual.usage)) : ''}
 `
       }
 
@@ -107,12 +108,12 @@ Usage: commas ${helpingCommand}${manual.usage ? ' ' + manual.usage : ''}
 ${ansiArt}
 
 ${app.name} ${app.getVersion()}
-${packageInfo.description}
+${manifest.description}
 
-Usage:
-    commas <command> [options]
+${chalk.bold(commas.i18n.translate('Usage:#!cli.1'))}
+    commas ${chalk.italic(commas.i18n.translate('<command> [...options]#!cli.3'))}
 
-Commands:
+${chalk.bold(commas.i18n.translate('Commands:#!cli.2'))}
 ${indent(table(commandList), '    ')}
 `
     },
@@ -120,7 +121,7 @@ ${indent(table(commandList), '    ')}
 
   commas.context.provide('cli.command', {
     command: 'version',
-    description: 'Print version information',
+    description: 'Print version information#!cli.description.version',
     handler() {
       return app.getVersion()
     },
@@ -128,8 +129,8 @@ ${indent(table(commandList), '    ')}
 
   commas.context.provide('cli.command', {
     command: 'run',
-    description: 'Run a command with arguments in a new tab',
-    usage: '<...command-with-args>',
+    description: 'Run a command with arguments in a new tab#!cli.description.run',
+    usage: '<...command-with-args>#!cli.usage.run',
     handler({ sender, argv }) {
       sender.send('open-tab', undefined, {
         command: quote(argv),
@@ -139,8 +140,8 @@ ${indent(table(commandList), '    ')}
 
   commas.context.provide('cli.command', {
     command: 'select',
-    description: 'Jump to the nth tab',
-    usage: '<nth-tab>',
+    description: 'Jump to the nth tab#!cli.description.select',
+    usage: '<nth-tab>#!cli.usage.select',
     handler({ sender, argv }) {
       const index = Number.parseInt(argv[0], 10)
       if (!Number.isNaN(index)) {
@@ -153,7 +154,7 @@ ${indent(table(commandList), '    ')}
 
   commas.context.provide('cli.command', {
     command: 'eval',
-    description: 'Evaluate a JS expression',
+    description: 'Evaluate a JS expression#!cli.description.eval',
     handler({ argv }) {
       const script = argv[0]
       if (script === 'reset') {
@@ -174,8 +175,8 @@ ${indent(table(commandList), '    ')}
 
   commas.context.provide('cli.command', {
     command: 'roll',
-    description: 'Generate random numbers from 1 to 100',
-    usage: '[n-times]',
+    description: 'Generate random numbers from 1 to 100#!cli.description.roll',
+    usage: '[n-times]#!cli.usage.roll',
     handler({ argv }) {
       let length = Number.parseInt(argv[0], 10)
       if (Number.isNaN(length)) {
@@ -188,8 +189,8 @@ ${indent(table(commandList), '    ')}
 
   commas.context.provide('cli.command', {
     command: 'preview',
-    description: 'Preview a file',
-    usage: '[file]',
+    description: 'Preview a file#!cli.description.preview',
+    usage: '[file]#!cli.usage.preview',
     handler({ sender, argv, cwd }) {
       const frame = BrowserWindow.fromWebContents(sender)
       if (!frame) return
@@ -200,8 +201,8 @@ ${indent(table(commandList), '    ')}
 
   commas.context.provide('cli.command', {
     command: 'free',
-    description: 'Terminate all processes on a port',
-    usage: '<port>',
+    description: 'Terminate all processes on a port#!cli.description.free',
+    usage: '<port>#!cli.usage.free',
     async handler({ argv }) {
       const port = Number.parseInt(argv[0], 10)
       if (!Number.isNaN(port)) {
@@ -233,7 +234,8 @@ ${indent(table(commandList), '    ')}
         type: 'command' as const,
         query,
         value: item.command,
-        description: item.usage,
+        description: commas.i18n.translate(item.usage ?? '')
+          + (item.description ? '\n\n' + commas.i18n.translate(item.description) : ''),
       }))
     }
     return []
