@@ -6,6 +6,7 @@ import type { MenuItem } from '../../typings/menu'
 import { useSettings } from '../compositions/settings'
 import {
   activateTerminalTab,
+  cancelTerminalTabGrouping,
   createTerminalTab,
   getTerminalTabIndex,
   moveTerminalTab,
@@ -62,6 +63,7 @@ function stopMoving() {
 function sortTabs(from: number, to: number) {
   stopMoving()
   const toIndex = getTerminalTabIndex(standaloneTabs[to])
+  cancelTerminalTabGrouping(standaloneTabs[from])
   moveTerminalTab(standaloneTabs[from], toIndex)
 }
 

@@ -593,6 +593,12 @@ export function closeTerminalTab(tab: TerminalTab) {
 function releaseTabPosition(tab: TerminalTab, groupTabs: TerminalTab[]) {
   const position = tab.position
   if (!position) return
+  if (groupTabs.length <= 1) {
+    groupTabs.forEach(item => {
+      delete item.position
+    })
+    return
+  }
   const leftTabs = groupTabs.filter(item => {
     return item.position
       && item.position.row >= position.row
@@ -820,6 +826,16 @@ export function appendTerminalTab(tab: TerminalTab, fromIndex: number, direction
       break
     }
   }
+}
+
+export function cancelTerminalTabGrouping(tab: TerminalTab) {
+  if (!tab.group) return
+  const group = tab.group
+  delete tab.group
+  const groupTabs = getTerminalTabsByGroup(group)
+  releaseTabPosition(tab, groupTabs)
+  delete tab.position
+  reflowTabGroup(groupTabs)
 }
 
 export async function splitTerminalTab(tab: TerminalTab) {

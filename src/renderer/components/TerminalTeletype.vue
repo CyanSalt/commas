@@ -146,6 +146,7 @@ let movingDirection = $ref<TerminalTabDirection | undefined>()
 
 watchEffect(onInvalidate => {
   if (root && movingTarget) {
+    movingDirection = undefined
     const cancel = handleMousePressing({
       element: root,
       onMove(event) {
