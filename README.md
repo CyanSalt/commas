@@ -58,7 +58,7 @@ You can clone or download the repository and build Commas locally.
 
 ## Credits
 
-- [@vue/reactivity](https://github.com/vuejs/vue-next/tree/master/packages/reactivity)
+- [@vue/reactivity](https://github.com/vuejs/core/tree/main/packages/reactivity)
 - [electron](https://github.com/electron/electron)
 - [node-pty](https://github.com/microsoft/node-pty)
 - [vscode](https://github.com/microsoft/vscode)

@@ -58,7 +58,7 @@ brew install --cask cyansalt/cask/commas
 
 ## 鸣谢
 
-- [@vue/reactivity](https://github.com/vuejs/vue-next/tree/master/packages/reactivity)
+- [@vue/reactivity](https://github.com/vuejs/core/tree/main/packages/reactivity)
 - [electron](https://github.com/electron/electron)
 - [node-pty](https://github.com/microsoft/node-pty)
 - [vscode](https://github.com/microsoft/vscode)
