@@ -47,6 +47,11 @@ export function usePaneTabURL() {
   return $$(paneTabURL)
 }
 
+let movingIndex = $ref(-1)
+export function useMovingTerminalIndex() {
+  return $$(movingIndex)
+}
+
 export function getTerminalTabIndex(tab: TerminalTab) {
   return tabs.indexOf(toRaw(tab))
 }
@@ -582,23 +587,105 @@ export function closeTerminalTab(tab: TerminalTab) {
   }
 }
 
+function releaseTabPosition(tab: TerminalTab, groupTabs: TerminalTab[]) {
+  const position = tab.position
+  if (!position) return
+  const leftTabs = groupTabs.filter(item => {
+    return item.position
+      && item.position.row >= position.row
+      && item.position.row + (item.position.rowspan ?? 1) <= position.row + (position.rowspan ?? 1)
+      && item.position.col + (item.position.colspan ?? 1) === position.col
+  })
+  if (leftTabs.length) {
+    leftTabs.forEach(item => {
+      item.position!.colspan = (item.position!.colspan ?? 1) + (position.colspan ?? 1)
+    })
+    return
+  }
+  const rightTabs = groupTabs.filter(item => {
+    return item.position
+      && item.position.row >= position.row
+      && item.position.row + (item.position.rowspan ?? 1) <= position.row + (position.rowspan ?? 1)
+      && item.position.col === position.col + (position.colspan ?? 1)
+  })
+  if (rightTabs.length) {
+    rightTabs.forEach(item => {
+      item.position!.col -= (position.colspan ?? 1)
+      item.position!.colspan = (item.position!.colspan ?? 1) + (position.colspan ?? 1)
+    })
+    return
+  }
+  const topTabs = groupTabs.filter(item => {
+    return item.position
+      && item.position.col >= position.col
+      && item.position.col + (item.position.colspan ?? 1) <= position.col + (position.colspan ?? 1)
+      && item.position.row + (item.position.rowspan ?? 1) === position.row
+  })
+  if (topTabs.length) {
+    topTabs.forEach(item => {
+      item.position!.rowspan = (item.position!.rowspan ?? 1) + (position.rowspan ?? 1)
+    })
+    return
+  }
+  const bottomTabs = groupTabs.filter(item => {
+    return item.position
+      && item.position.col >= position.col
+      && item.position.col + (item.position.colspan ?? 1) <= position.col + (position.colspan ?? 1)
+      && item.position.row === position.row + (position.rowspan ?? 1)
+  })
+  if (bottomTabs.length) {
+    bottomTabs.forEach(item => {
+      item.position!.row -= (position.rowspan ?? 1)
+      item.position!.rowspan = (item.position!.rowspan ?? 1) + (position.rowspan ?? 1)
+    })
+    return
+  }
+}
+
+function reflowTabGroup(groupTabs: TerminalTab[]) {
+  if (groupTabs.length <= 1) {
+    groupTabs.forEach(tab => {
+      delete tab.position
+    })
+    return
+  }
+  const rows = groupTabs.map(tab => tab.position!.row)
+  for (const row of new Set(rows)) {
+    const rowTabs = groupTabs.filter(tab => tab.position!.row === row)
+    const colspans = rowTabs.map(tab => tab.position!.colspan ?? 1)
+    if (new Set(colspans).size === 1 && colspans.every(value => value > 1)) {
+      rowTabs.forEach(tab => {
+        delete tab.position!.colspan
+      })
+    }
+  }
+  const cols = groupTabs.map(tab => tab.position!.col)
+  for (const col of new Set(cols)) {
+    const colTabs = groupTabs.filter(tab => tab.position!.col === col)
+    const rowspans = colTabs.map(tab => tab.position!.rowspan ?? 1)
+    if (new Set(rowspans).size === 1 && rowspans.every(value => value > 1)) {
+      colTabs.forEach(tab => {
+        delete tab.position!.rowspan
+      })
+    }
+  }
+}
+
 export async function removeTerminalTab(tab: TerminalTab) {
   const index = getTerminalTabIndex(tab)
   tabs.splice(index, 1)
+  const groupTabs = tab.group ? getTerminalTabsByGroup(tab.group) : []
   if (!tabs.length) {
     window.close()
   } else if (activeIndex > index) {
     activeIndex -= 1
   } else if (activeIndex === index) {
-    const allEntries = Array.from(tabs.entries())
-    const groupEntries = allEntries.filter(entry => {
-      const item = entry[1]
-      return item.group && tab.group
-        && item.group.type === tab.group.type
-        && item.group.id === tab.group.id
-    })
-    const entries = groupEntries.length ? groupEntries : allEntries
-    activeIndex = entries[entries.length - 1][0]
+    const currentTabs = groupTabs.length ? groupTabs : tabs
+    activeIndex = getTerminalTabIndex(currentTabs[currentTabs.length - 1])
+  }
+  if (tab.group) {
+    releaseTabPosition(tab, groupTabs)
+    reflowTabGroup(groupTabs)
   }
   // Unmount after flushed
   await nextTick()
@@ -641,17 +728,100 @@ export function moveTerminalTab(tab: TerminalTab, index: number) {
   }
 }
 
-export function splitTerminalTab(tab: TerminalTab) {
-  if (tab.pane) {
-    return tab
-  }
+export type TerminalTabDirection = 'left' | 'right' | 'top' | 'bottom'
+
+export function appendTerminalTab(tab: TerminalTab, fromIndex: number, direction: TerminalTabDirection = 'right') {
+  const movingTab = tabs[fromIndex]
   if (!tab.group) {
     tab.group = {
       type: 'default',
       id: getTerminalTabID(tab),
     }
   }
-  return createTerminalTab(tab, {
-    group: tab.group,
-  })
+  if (!tab.position) {
+    tab.position = { row: 0, col: 0 }
+  }
+  movingTab.group = tab.group
+  switch (direction) {
+    case 'left':
+      movingTab.position = {
+        row: tab.position.row,
+        col: tab.position.col,
+        rowspan: tab.position.rowspan,
+      }
+      if (!tab.position.colspan || tab.position.colspan <= 1) {
+        tab.position.col += 1
+      }
+      break
+    case 'right':
+      movingTab.position = {
+        row: tab.position.row,
+        col: tab.position.col + (tab.position.colspan ? tab.position.colspan - 1 : 1),
+        rowspan: tab.position.rowspan,
+      }
+      break
+    case 'top':
+      movingTab.position = {
+        row: tab.position.row,
+        col: tab.position.col,
+        colspan: tab.position.colspan,
+      }
+      if (!tab.position.rowspan || tab.position.rowspan <= 1) {
+        tab.position.row += 1
+      }
+      break
+    case 'bottom':
+      movingTab.position = {
+        row: tab.position.row + (tab.position.rowspan ? tab.position.rowspan - 1 : 1),
+        col: tab.position.col,
+        colspan: tab.position.colspan,
+      }
+      break
+  }
+  const groupTabs = getTerminalTabsByGroup(tab.group)
+  switch (direction) {
+    case 'left':
+    case 'right': {
+      if (tab.position.colspan && tab.position.colspan > 1) {
+        tab.position.colspan -= 1
+        return
+      }
+      const position = movingTab.position!
+      const columnTabs = groupTabs.filter(item => {
+        return item.position
+          && item.position.row !== position.row
+          && item.position.col <= position.col
+          && item.position.col + (item.position.colspan ?? 1) >= position.col
+      })
+      columnTabs.forEach(item => {
+        item.position!.colspan = (item.position!.colspan ?? 1) + 1
+      })
+      break
+    }
+    case 'top':
+    case 'bottom': {
+      if (tab.position.rowspan && tab.position.rowspan > 1) {
+        tab.position.rowspan -= 1
+        return
+      }
+      const position = movingTab.position!
+      const rowTabs = groupTabs.filter(item => {
+        return item.position
+          && item.position.col !== position.col
+          && item.position.row <= position.row
+          && item.position.row + (item.position.rowspan ?? 1) >= position.row
+      })
+      rowTabs.forEach(item => {
+        item.position!.rowspan = (item.position!.rowspan ?? 1) + 1
+      })
+      break
+    }
+  }
+}
+
+export async function splitTerminalTab(tab: TerminalTab) {
+  if (tab.pane) return tab
+  const newTab = await createTerminalTab(tab)
+  appendTerminalTab(tab, getTerminalTabIndex(newTab))
+  return newTab
 }

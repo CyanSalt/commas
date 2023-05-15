@@ -11,6 +11,7 @@ import {
   moveTerminalTab,
   splitTerminalTab,
   useCurrentTerminal,
+  useMovingTerminalIndex,
   useTerminalTabs,
 } from '../compositions/terminal'
 import { openContextMenu } from '../utils/frame'
@@ -24,6 +25,7 @@ const shells = $(useAsyncComputed(() => getShells(), []))
 
 const tabs = $(useTerminalTabs())
 const terminal = $(useCurrentTerminal())
+let movingIndex = $(useMovingTerminalIndex())
 
 let width = $ref(176)
 
@@ -47,7 +49,18 @@ const standaloneTabs = $computed(() => {
   })
 })
 
+function startMoving(from: number) {
+  const movingTab = standaloneTabs[from]
+  if (!movingTab || movingTab.pane) return
+  movingIndex = getTerminalTabIndex(movingTab)
+}
+
+function stopMoving() {
+  movingIndex = -1
+}
+
 function sortTabs(from: number, to: number) {
+  stopMoving()
   const toIndex = getTerminalTabIndex(standaloneTabs[to])
   moveTerminalTab(standaloneTabs[from], toIndex)
 }
@@ -104,6 +117,8 @@ function resize(startingEvent: DragEvent) {
         value-key="pid"
         :direction="isHorizontal ? 'horizontal' : 'vertical'"
         class="processes"
+        @move="startMoving"
+        @stop="stopMoving"
         @change="sortTabs"
       >
         <TabItem

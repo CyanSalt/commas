@@ -10,6 +10,8 @@ const { value, valueKey, direction = 'vertical', disabled } = defineProps<{
 }>()
 
 const emit = defineEmits<{
+  (event: 'move', fromIndex: number): void,
+  (event: 'stop', fromIndex: number): void,
   (event: 'change', fromIndex: number, toIndex: number): void,
 }>()
 
@@ -44,6 +46,7 @@ function startDragging(event: DragEvent, index: number) {
   startingBounds = draggingElement.getBoundingClientRect()
   startingEvent = event
   startingParentBounds = root!.getBoundingClientRect()
+  emit('move', index)
 }
 
 function getMovingTarget(event: MouseEvent) {
@@ -79,11 +82,18 @@ function getMovingTarget(event: MouseEvent) {
   }
 }
 
-function handleDraggingMove(event: MouseEvent) {
+function resetDraggingElement() {
   if (draggingIndex === -1) return
   const { style } = draggingElement
   style.transform = ''
   style.order = String(2 * draggingIndex)
+}
+
+function handleDraggingMove(event: MouseEvent) {
+  if (draggingIndex === -1) return
+  resetDraggingElement()
+  if (event.defaultPrevented) return
+  const { style } = draggingElement
   let { offset, index, target } = getMovingTarget(event)
   if (index !== draggingIndex) {
     const currentBounds = target.getBoundingClientRect()
@@ -99,12 +109,12 @@ function handleDraggingMove(event: MouseEvent) {
 
 function handleDraggingEnd(event: MouseEvent) {
   if (draggingIndex === -1) return
-  const { style } = draggingElement
-  style.transform = ''
-  style.order = String(2 * draggingIndex)
+  resetDraggingElement()
   const { index } = getMovingTarget(event)
-  if (index !== draggingIndex) {
+  if (!event.defaultPrevented && index !== draggingIndex) {
     emit('change', draggingIndex, index)
+  } else {
+    emit('stop', draggingIndex)
   }
   draggingIndex = index
   setTimeout(() => {

@@ -56,6 +56,13 @@ export interface CommandCompletion {
   description?: string,
 }
 
+export interface TerminalTabPosition {
+  row: number,
+  col: number,
+  rowspan?: number,
+  colspan?: number,
+}
+
 export interface TerminalTab extends TerminalInfo {
   title: string,
   xterm: Terminal,
@@ -69,5 +76,6 @@ export interface TerminalTab extends TerminalInfo {
   thumbnail?: string,
   pane?: TerminalTabPane,
   group?: TerminalTabGroup,
+  position?: TerminalTabPosition,
   completions?: CommandCompletion[],
 }

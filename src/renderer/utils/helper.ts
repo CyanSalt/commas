@@ -3,24 +3,37 @@ import type { ComponentPublicInstance, KeepAlive, Ref, VNode } from 'vue'
 import { onActivated, unref, watchEffect } from 'vue'
 
 interface MousePressingOptions {
+  element?: Window | HTMLElement,
   onMove?: (event: MouseEvent) => void,
-  onEnd?: (event?: MouseEvent) => void,
+  onEnd?: (event: MouseEvent) => void,
+  onLeave?: (event: MouseEvent) => void,
+  active?: boolean,
 }
 
-export function handleMousePressing({ onMove, onEnd }: MousePressingOptions) {
-  function cancel(event) {
+export function handleMousePressing({ element, onMove, onEnd, onLeave, active }: MousePressingOptions) {
+  const target = element ?? window
+  function cancel() {
     if (onMove) {
-      window.removeEventListener('mousemove', onMove)
+      target.removeEventListener('mousemove', onMove)
     }
-    window.removeEventListener('mouseup', cancel)
+    if (onLeave) {
+      target.removeEventListener('mouseleave', onLeave)
+    }
+    target.removeEventListener('mouseup', stop)
+  }
+  function stop(event: MouseEvent) {
+    cancel()
     if (onEnd) {
       onEnd(event)
     }
   }
   if (onMove) {
-    window.addEventListener('mousemove', onMove, { passive: true })
+    target.addEventListener('mousemove', onMove, { passive: !active })
   }
-  window.addEventListener('mouseup', cancel)
+  if (onLeave) {
+    target.addEventListener('mouseleave', onLeave)
+  }
+  target.addEventListener('mouseup', stop)
   return cancel
 }
 

@@ -21,17 +21,38 @@ const groupTabs = $computed(() => {
   })
 })
 
+const gridStyle = $computed(() => {
+  const matrix: string[][] = []
+  for (const [index, item] of groupTabs.entries()) {
+    const position = item.position ?? { row: 0, col: 0 }
+    for (let row = position.row; row < position.row + (position.rowspan ?? 1); row += 1) {
+      if (!matrix[row]) {
+        matrix[row] = []
+      }
+      for (let col = position.col; col < position.col + (position.colspan ?? 1); col += 1) {
+        matrix[row][col] = `a${index}`
+      }
+    }
+  }
+  return {
+    'grid-template-areas': matrix.map(line => `"${line.join(' ')}"`).join(' '),
+    'grid-template-rows': Array.from({ length: matrix.length }).map(() => '1fr').join(' '),
+    'grid-template-columns': Array.from({ length: Math.max(...matrix.map(line => line.length)) }).map(() => '1fr').join(' '),
+  }
+})
+
 function activate(item: TerminalTab) {
   activateTerminalTab(item)
 }
 </script>
 
 <template>
-  <article class="terminal-group">
+  <article class="terminal-group" :style="gridStyle">
     <TerminalTeletype
-      v-for="item in groupTabs"
+      v-for="item, index in groupTabs"
       :key="getTerminalTabID(item)"
       :tab="item"
+      :style="{ 'grid-area': `a${index}` }"
       @click="activate(item)"
     />
   </article>
@@ -42,7 +63,7 @@ function activate(item: TerminalTab) {
 
 .terminal-group {
   position: relative;
-  display: flex;
+  display: grid;
   flex: 1;
   min-height: 0;
 }
