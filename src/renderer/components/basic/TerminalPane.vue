@@ -4,6 +4,10 @@ import { usePersistScrollPosition } from '../../utils/helper'
 
 const root = $ref<HTMLElement | undefined>()
 
+defineSlots<{
+  default?: (props: {}) => any,
+}>()
+
 usePersistScrollPosition($$(root))
 
 function openEditingMenu(event: MouseEvent) {

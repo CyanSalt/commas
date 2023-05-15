@@ -14,6 +14,11 @@ const emit = defineEmits<{
   (event: 'update:modelValue', value: object | undefined): void,
 }>()
 
+defineSlots<{
+  note?: (props: { item: EditorEntryItem }) => any,
+  extra?: (props: {}) => any,
+}>()
+
 interface EditorEntry {
   key: string | number | symbol,
   value: any,

@@ -12,6 +12,10 @@ const emit = defineEmits<{
   (event: 'update:pinned', value: any[]): void,
 }>()
 
+defineSlots<{
+  default?: (props: {}) => any,
+}>()
+
 let isPinned = $ref(Boolean(modelValue && pinned.includes(modelValue)))
 
 function update(value, pinnedStatus: boolean) {

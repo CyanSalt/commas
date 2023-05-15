@@ -4,6 +4,10 @@ import type { RemoteTheme } from './utils'
 const { theme } = defineProps<{
   theme: RemoteTheme,
 }>()
+
+defineSlots<{
+  default?: (props: {}) => any,
+}>()
 </script>
 
 <template>

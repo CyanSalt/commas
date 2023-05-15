@@ -9,6 +9,10 @@ const { value, valueKey, direction = 'vertical', disabled } = defineProps<{
   disabled?: boolean,
 }>()
 
+defineSlots<{
+  default?: (props: { value: any, index: number }) => any,
+}>()
+
 const emit = defineEmits<{
   (event: 'move', fromIndex: number): void,
   (event: 'stop', fromIndex: number): void,

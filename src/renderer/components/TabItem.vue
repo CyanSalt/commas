@@ -15,6 +15,10 @@ const emit = defineEmits<{
   (event: 'close', tab: TerminalTab | undefined): void,
 }>()
 
+defineSlots<{
+  operations?: (props: {}) => any,
+}>()
+
 const settings = useSettings()
 const terminal = $(useCurrentTerminal())
 
