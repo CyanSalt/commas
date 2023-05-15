@@ -273,6 +273,9 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
     tab.alerting = true
     ipcRenderer.invoke('beep')
   })
+  xterm['_core']._onFocus.event(() => {
+    activateTerminalTab(tab)
+  })
   const stopEffect = watchEffect(() => {
     for (const [key, value] of Object.entries(terminalOptions)) {
       xterm.options[key] = value

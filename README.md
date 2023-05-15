@@ -6,7 +6,7 @@ EN | [中文](docs/README-zh.md)
 
 **Commas** is a hackable, pluggable terminal, and also a command runner. The name comes from **Com**mand **Mas**ter.
 
-![Screenshot](https://github.com/CyanSalt/commas/assets/5101076/d0ff9271-4a2a-418f-926b-235f694f0139)
+![Screenshot](https://github.com/CyanSalt/commas/assets/5101076/d53a4443-b62c-4bfe-868b-bb236a298775)
 
 ## Installation
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import 'xterm/css/xterm.css'
 import type { TerminalTab } from '../../typings/terminal'
-import { activateTerminalTab, useTerminalTabs } from '../compositions/terminal'
+import { activateTerminalTab, getTerminalTabIndex, useTerminalTabs } from '../compositions/terminal'
 import { getTerminalTabID } from '../utils/terminal'
 import TerminalTeletype from './TerminalTeletype.vue'
 
@@ -18,6 +18,13 @@ const groupTabs = $computed(() => {
     if (!item.group) return false
     return item.group.type === group.type
       && item.group.id === group.id
+  })
+})
+
+const activeIndex = $computed(() => {
+  const currentIndex = getTerminalTabIndex(tab)
+  return groupTabs.findIndex(item => {
+    return getTerminalTabIndex(item) === currentIndex
   })
 })
 
@@ -52,6 +59,7 @@ function activate(item: TerminalTab) {
       v-for="item, index in groupTabs"
       :key="getTerminalTabID(item)"
       :tab="item"
+      :class="{ active: index === activeIndex }"
       :style="{ 'grid-area': `a${index}` }"
       @click="activate(item)"
     />
@@ -66,5 +74,8 @@ function activate(item: TerminalTab) {
   display: grid;
   flex: 1;
   min-height: 0;
+  :deep(.terminal-teletype:not(.active)) {
+    opacity: 0.75;
+  }
 }
 </style>
