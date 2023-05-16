@@ -35,7 +35,6 @@ export function createDeferred() {
   return deferred
 }
 
-
 export type Generable<T, U> = U | Promise<U> | Generator<T, U, never> | AsyncGenerator<T, U, never>
 
 export function isIterator(value: any): value is Iterator<unknown> | AsyncIterator<unknown> {

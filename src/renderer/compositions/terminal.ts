@@ -737,10 +737,21 @@ export function moveTerminalTab(tab: TerminalTab, index: number) {
   }
 }
 
+export function cancelTerminalTabGrouping(tab: TerminalTab) {
+  if (!tab.group) return
+  const group = tab.group
+  delete tab.group
+  const groupTabs = getTerminalTabsByGroup(group)
+  releaseTabPosition(tab, groupTabs)
+  delete tab.position
+  reflowTabGroup(groupTabs)
+}
+
 export type TerminalTabDirection = 'left' | 'right' | 'top' | 'bottom'
 
 export function appendTerminalTab(tab: TerminalTab, fromIndex: number, direction: TerminalTabDirection = 'right') {
   const movingTab = tabs[fromIndex]
+  cancelTerminalTabGrouping(movingTab)
   if (!tab.group) {
     tab.group = {
       type: 'default',
@@ -826,16 +837,6 @@ export function appendTerminalTab(tab: TerminalTab, fromIndex: number, direction
       break
     }
   }
-}
-
-export function cancelTerminalTabGrouping(tab: TerminalTab) {
-  if (!tab.group) return
-  const group = tab.group
-  delete tab.group
-  const groupTabs = getTerminalTabsByGroup(group)
-  releaseTabPosition(tab, groupTabs)
-  delete tab.position
-  reflowTabGroup(groupTabs)
 }
 
 export async function splitTerminalTab(tab: TerminalTab) {
