@@ -1,5 +1,53 @@
 
 
+## [0.26.0](https://github.com/CyanSalt/commas/compare/v0.25.1...v0.26.0) (2023-05-17)
+
+
+### Features
+
+* add shadow to interface ([d248bd5](https://github.com/CyanSalt/commas/commit/d248bd54978b8a4d147d1e7c14f7bf06aa6d7ca1))
+* append terminal tab ([a9d5c07](https://github.com/CyanSalt/commas/commit/a9d5c07a4e43fd407965eaa8953679d7743dd024))
+* **cli:** help message ([fe1082e](https://github.com/CyanSalt/commas/commit/fe1082e8bcaa10d319d2befeb6182d9b60ba3477))
+* **cli:** translate descriptions and usage ([fdd8633](https://github.com/CyanSalt/commas/commit/fdd8633a29d2e95b7412197c54a7d737a16129e9))
+* enable vibrancy effect on macOS by default ([0f42729](https://github.com/CyanSalt/commas/commit/0f42729e4de9924a02899200d33d59580dbc1fcb))
+* **proxy:** copy proxy address ([49f735d](https://github.com/CyanSalt/commas/commit/49f735dc7cf1013c572be6256df4f6faad022604))
+* replace feather icons ([bf325f5](https://github.com/CyanSalt/commas/commit/bf325f55cc1bd596c80c5423714d5784348f0206))
+* show tab categories in tab select ([6315acf](https://github.com/CyanSalt/commas/commit/6315acfb33d67373967e4279dd5acc282736839d))
+* support any vibrancy without docs ([c8442d4](https://github.com/CyanSalt/commas/commit/c8442d41e863305935047f305b6ba8c1e3e442f7))
+* support terminal.shell.extraProfiles ([79f0607](https://github.com/CyanSalt/commas/commit/79f0607d3754c820940f4eeb36b5a464a162e4e2))
+* update devicon ([eb26664](https://github.com/CyanSalt/commas/commit/eb26664d9a2486a65ef74e8aace09d1f3ce57f04))
+
+
+### Bug Fixes
+
+* **addon-manager:** stable order ([33d5076](https://github.com/CyanSalt/commas/commit/33d5076f010a1cc3b64d62ab51aa0239ace91c73))
+* allow skipping finished command ([162df93](https://github.com/CyanSalt/commas/commit/162df9312e5daf16db91b941ca8cd214fc55e0dc))
+* auto invalidate shadow ([9abcc71](https://github.com/CyanSalt/commas/commit/9abcc71a8d614e596b526b3bea5eb222c50782c3))
+* cancel grouping after sorting ([aae745d](https://github.com/CyanSalt/commas/commit/aae745d669a372bb79b52f9ecfb9fef07e972407))
+* cancel grouping before appending ([020b3e4](https://github.com/CyanSalt/commas/commit/020b3e4cf3ca682eed9715bcb82da8e1c9419a56))
+* completion range ([df2f080](https://github.com/CyanSalt/commas/commit/df2f08051db058f91e2a132ce2383c8f239b5918))
+* completion style ([d9ce5f7](https://github.com/CyanSalt/commas/commit/d9ce5f7f67d4ef25fffec925714741d3985fa226))
+* conflict completion ([d43bba1](https://github.com/CyanSalt/commas/commit/d43bba17bc16693b0baaf326207a4e7f3951bb6a))
+* create directory recursively ([dd0ba48](https://github.com/CyanSalt/commas/commit/dd0ba484a9b84089ee147dbc59d1de4efc4ac279))
+* devicon format ([fbea1a8](https://github.com/CyanSalt/commas/commit/fbea1a81690a52d1d6f063843cfc10f5c648e126))
+* file icon ([3de1750](https://github.com/CyanSalt/commas/commit/3de1750155f2b7754d841a682d46de2c9c8de778))
+* highlight block layer ([7358bd5](https://github.com/CyanSalt/commas/commit/7358bd5fe7353c57193b9b1c21b0cd949bc7b597))
+* horizontal dnd ([a125f2a](https://github.com/CyanSalt/commas/commit/a125f2ae9f1a132ffd212f7bb10f2bff1c05867e))
+* init user dir ([095192b](https://github.com/CyanSalt/commas/commit/095192b6ea98915b9f0ba5a8ecad6f6e5dcdfe86))
+* **launcher:** split launchers ([d3052c7](https://github.com/CyanSalt/commas/commit/d3052c78ff82f82990539fffda9054f2991a89a0))
+* lint problems ([95ba469](https://github.com/CyanSalt/commas/commit/95ba469c0f8cd9792f573af13ec7d5c5a369af31))
+* multiline decorations ([e661b67](https://github.com/CyanSalt/commas/commit/e661b67b26e4208692d2dd3b7e396a05d9cbb2aa))
+* natural order ([c929a56](https://github.com/CyanSalt/commas/commit/c929a563626323c0199d0e66a91fad85f5b4242f))
+* non-active style ([0ef4f40](https://github.com/CyanSalt/commas/commit/0ef4f404d4248e9d0a851f3bc7d83fd0ac332c8a))
+* **proxy:** asar support ([ec20cc3](https://github.com/CyanSalt/commas/commit/ec20cc34f49bee44b34e60cbc7301095e9e9904c))
+* remove magic number ([8b50823](https://github.com/CyanSalt/commas/commit/8b50823b02ef9af4ba827e1c80a0d8eb1b1fa5ad))
+* remove useless bindings ([9380ce7](https://github.com/CyanSalt/commas/commit/9380ce7d44c529c956e5dfbccf13d50388f8ddc2))
+* **settings:** fuzzy search ([8f21d83](https://github.com/CyanSalt/commas/commit/8f21d835f99d4c91bd65f21dec54f1c311d3f986))
+* shell integretion ([d30fcdb](https://github.com/CyanSalt/commas/commit/d30fcdb4dca25bf2583e0fb023346979ffa030b0))
+* tab list under title bar ([daa01b5](https://github.com/CyanSalt/commas/commit/daa01b525c35d53c56e742e5651d7c7c60192e9d))
+* terminal.style.tabListPosition -> terminal.view ([6d0c5ab](https://github.com/CyanSalt/commas/commit/6d0c5ab3f242a196e978e16d09e0f988eda46474))
+* windows style ([175d70b](https://github.com/CyanSalt/commas/commit/175d70b34e286a277a4f590bd3f0d85d6fe866e2))
+
 ### [0.25.1](https://github.com/CyanSalt/commas/compare/v0.25.0...v0.25.1) (2023-02-10)
 
 
