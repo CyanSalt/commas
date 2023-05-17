@@ -25,7 +25,8 @@ export default () => {
         const { stdout } = await whistle(quote(argv))
         return stdout.trim()
       } catch (err) {
-        return err.stderr
+        if (err.stderr) return err.stderr
+        throw err
       }
     },
   })

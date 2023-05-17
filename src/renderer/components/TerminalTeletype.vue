@@ -268,6 +268,7 @@ watchEffect(onInvalidate => {
   }
 }
 :deep(.terminal-highlight-block) {
+  z-index: 0 !important;
   margin-left: calc(0px - var(--cell-width));
   border-left: calc(var(--cell-width) / 2) solid rgb(var(--color));
   background: rgb(var(--color) / 0.2);

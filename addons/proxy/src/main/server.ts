@@ -41,7 +41,11 @@ function whistle(command: string) {
       ELECTRON_RUN_AS_NODE: '1',
       STARTING_EXEC_PATH: bin,
     }
-    return commas.shell.execute(`${bin} ${whistlePath} ${command}`, { env })
+    const noAsar = process.noAsar
+    process.noAsar = true
+    const execution = commas.shell.execute(`${bin} ${whistlePath} ${command}`, { env })
+    process.noAsar = noAsar
+    return execution
   }
   return commas.shell.execute(`${whistlePath} ${command}`)
 }
