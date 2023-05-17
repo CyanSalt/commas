@@ -21,13 +21,8 @@ export default () => {
     description: 'Execute the whistle command in use#!cli.description.whistle',
     usage: '<command> [options]#!cli.usage.whistle',
     async handler({ argv }) {
-      try {
-        const { stdout } = await whistle(quote(argv))
-        return stdout.trim()
-      } catch (err) {
-        if (err.stderr) return err.stderr
-        throw err
-      }
+      const { stdout } = await whistle(quote(argv))
+      return stdout.trim()
     },
   })
 

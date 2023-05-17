@@ -1,3 +1,4 @@
+import * as fs from 'node:fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
 import * as util from 'node:util'
@@ -34,6 +35,13 @@ export default () => {
 
   const commands = commas.context.getCollection('cli.command')
 
+  function cleanStack(stack: string) {
+    return stack.replace(/\n\s+at\s+(.+?)(?:(?:\((.+):\d+:\d+\))|:\d+:\d+)\s*$/gm, (line, frame, file) => {
+      const source = file ?? frame
+      return source.includes('node:') || source.startsWith(commas.app.getPath()) ? '' : line
+    })
+  }
+
   ipc.config.appspace = 'ipc.commas.'
   ipc.config.id = String(process.pid)
   ipc.config.silent = true
@@ -46,16 +54,17 @@ export default () => {
         while (!done) {
           const result = await execution.next()
           const stdout = result.value
-          if (typeof stdout === 'string') {
+          if (stdout) {
             ipc.server.emit(socket, 'data', stdout)
           }
           done = result.done
         }
         ipc.server.emit(socket, 'end', 0)
       } catch (err) {
-        ipc.server.emit(socket, 'error', util.inspect(err, {
-          colors: true,
-        }))
+        const stderr = err.stderr ?? (err.stack ? cleanStack(err.stack) : String(err))
+        if (stderr) {
+          ipc.server.emit(socket, 'error', stderr)
+        }
         ipc.server.emit(socket, 'end', 1)
       }
     })
@@ -96,7 +105,7 @@ export default () => {
       }, []).join(os.EOL)
 
       const helpingCommand = argv[0]
-      const manual = helpingCommand ? getCommandModule(argv[0], commands) : undefined
+      const manual = helpingCommand ? getCommandModule(helpingCommand, commands) : undefined
       if (manual) {
         return `
 ${manual.description ? commas.i18n.translate(manual.description) + '\n\n' : ''}${chalk.bold(commas.i18n.translate('Usage:#!cli.1'))}
@@ -104,7 +113,7 @@ ${manual.description ? commas.i18n.translate(manual.description) + '\n\n' : ''}$
 `
       }
 
-      return `
+      const message = `
 ${ansiArt}
 
 ${app.name} ${app.getVersion()}
@@ -115,7 +124,15 @@ ${chalk.bold(commas.i18n.translate('Usage:#!cli.1'))}
 
 ${chalk.bold(commas.i18n.translate('Commands:#!cli.2'))}
 ${indent(table(commandList), '    ')}
-`
+${helpingCommand ? '\n' + commas.i18n.translate('Unknown command: %C#!cli.4', { C: helpingCommand }) + '\n' : ''}`
+
+      if (helpingCommand) {
+        const error = new Error(message)
+        error['stderr'] = message
+        throw error
+      } else {
+        return message
+      }
     },
   })
 
@@ -143,14 +160,18 @@ ${indent(table(commandList), '    ')}
     description: 'Jump to the nth tab#!cli.description.select',
     usage: '<nth-tab>#!cli.usage.select',
     handler({ sender, argv }) {
-      const index = Number.parseInt(argv[0], 10)
-      if (!Number.isNaN(index)) {
+      const index = Number(argv[0])
+      if (Number.isInteger(index)) {
         sender.send('select-tab', index)
+      } else {
+        const error = new Error('Invalid argument')
+        error['stderr'] = ''
+        throw error
       }
     },
   })
 
-  let context
+  let context: vm.Context | undefined
 
   commas.context.provide('cli.command', {
     command: 'eval',
@@ -159,13 +180,13 @@ ${indent(table(commandList), '    ')}
       const script = argv[0]
       if (script === 'reset') {
         context = undefined
-        return ''
+        return
       }
       if (!context) {
         context = Object.create(null)
         vm.createContext(context)
       }
-      return util.inspect(vm.runInContext(script, context), {
+      return util.inspect(vm.runInContext(script, context!), {
         showHidden: true,
         showProxy: true,
         colors: true,
@@ -178,8 +199,8 @@ ${indent(table(commandList), '    ')}
     description: 'Generate random numbers from 1 to 100#!cli.description.roll',
     usage: '[n-times]#!cli.usage.roll',
     handler({ argv }) {
-      let length = Number.parseInt(argv[0], 10)
-      if (Number.isNaN(length)) {
+      let length = Number(argv[0])
+      if (!Number.isInteger(length) || length <= 0) {
         length = 1
       }
       return Array.from({ length })
@@ -191,10 +212,11 @@ ${indent(table(commandList), '    ')}
     command: 'preview',
     description: 'Preview a file#!cli.description.preview',
     usage: '[file]#!cli.usage.preview',
-    handler({ sender, argv, cwd }) {
+    async handler({ sender, argv, cwd }) {
       const frame = BrowserWindow.fromWebContents(sender)
       if (!frame) return
       const file = argv[0] ? path.resolve(cwd, argv[0]) : cwd
+      await fs.promises.access(file, fs.constants.R_OK)
       frame.previewFile(file, argv[0] || file)
     },
   })
@@ -204,8 +226,8 @@ ${indent(table(commandList), '    ')}
     description: 'Terminate all processes on a port#!cli.description.free',
     usage: '<port>#!cli.usage.free',
     async handler({ argv }) {
-      const port = Number.parseInt(argv[0], 10)
-      if (!Number.isNaN(port)) {
+      const port = Number(argv[0])
+      if (Number.isInteger(port) && port > 0) {
         const { stdout } = await commas.shell.execute(
           process.platform === 'win32'
             ? `netstat -ano | findstr "${port}"`
@@ -219,6 +241,10 @@ ${indent(table(commandList), '    ')}
             // ignore error
           }
         }
+      } else {
+        const error = new Error('Invalid argument')
+        error['stderr'] = ''
+        throw error
       }
     },
   })

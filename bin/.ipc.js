@@ -1,5 +1,5 @@
-const $require = require('module').createRequire(process.env.COMMAS_MAIN_FILE)
-const os = require('os')
+const $require = require('node:module').createRequire(process.env.COMMAS_MAIN_FILE)
+const os = require('node:os')
 
 /** @type {{ default: import('node-ipc') }} */
 const { default: ipc } = $require('@achrinza/node-ipc')

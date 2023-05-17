@@ -36,7 +36,7 @@ function executeCommand(
   const [command, ...argv] = inputContext.argv
   const mod = getCommandModule(command, commands)
   if (!mod) {
-    return executeCommand({ ...inputContext, argv: ['help'] }, commands)
+    return executeCommand({ ...inputContext, argv: ['help', command] }, commands)
   }
   const context = { ...inputContext, command, argv }
   return commas.helper.iterate(mod.handler(context))
