@@ -24,6 +24,7 @@ export interface TerminalTabGroup {
   id: string,
   title?: string,
   icon?: IconEntry,
+  defaultIcon?: IconEntry,
 }
 
 export interface TerminalContext {

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import * as path from 'node:path'
 import type { TerminalTab, TerminalTabGroup } from '../../typings/terminal'
+import type { IconEntry } from '../assets/icons'
 import { useSettings } from '../compositions/settings'
 import { getTerminalTabTitle, useCurrentTerminal, closeTerminalTab } from '../compositions/terminal'
 import { getIconEntryByProcess } from '../utils/terminal'
@@ -39,10 +40,22 @@ const pane = $computed(() => {
 })
 
 const iconEntry = $computed(() => {
-  if (group) return group.icon
-  if (!tab) return null
-  if (pane && !tab.shell) return pane.icon
-  return getIconEntryByProcess(tab.process)
+  let defaultIcon: IconEntry | undefined
+  if (group) {
+    if (group.icon) {
+      return group.icon
+    } else {
+      defaultIcon = group.defaultIcon
+    }
+  }
+  if (tab) {
+    if (pane && !tab.shell) {
+      if (pane.icon) return pane.icon
+    } else {
+      return getIconEntryByProcess(tab.process)
+    }
+  }
+  return defaultIcon
 })
 
 const title = $computed(() => {
