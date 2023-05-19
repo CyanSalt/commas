@@ -359,6 +359,7 @@ watchEffect(onInvalidate => {
   font-size: 12px;
   white-space: pre-wrap;
   overflow: hidden;
+  word-wrap: break-word;
   &:empty {
     display: none;
   }

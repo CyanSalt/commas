@@ -1,6 +1,7 @@
 import * as fs from 'node:fs'
 import * as path from 'node:path'
 import { findLastIndex, memoize, uniq } from 'lodash'
+import * as properties from 'properties'
 import shellHistory from 'shell-history'
 import type { ControlOperator, ParseEntry } from 'shell-quote'
 import { parse, quote } from 'shell-quote'
@@ -286,19 +287,37 @@ async function getHistoryCompletions(query: string, command: string) {
   }))
 }
 
-const getCommandRawCompletions = memoizeAsync(async () => {
+async function getAllCommands() {
   if (process.platform === 'win32') return []
-  let commands: string[] = []
   try {
     const { stdout } = await loginExecute('compgen -c', { shell: 'bash' })
-    commands = stdout.trim().split('\n')
+    return stdout.trim().split('\n')
   } catch {
-    // ignore error
+    return []
   }
+}
+
+async function getCommandAliases() {
+  if (process.platform === 'win32') return {}
+  try {
+    const { stdout } = await loginExecute('alias')
+    return properties.parse(stdout) as Record<string, string>
+  } catch {
+    return {}
+  }
+}
+
+const getCommandRawCompletions = memoizeAsync(async () => {
+  if (process.platform === 'win32') return []
+  let [commands, aliases] = await Promise.all([
+    getAllCommands(),
+    getCommandAliases(),
+  ])
   return uniq(commands).sort().map<CommandCompletion>(item => ({
     type: 'command',
     query: '',
     value: item,
+    description: aliases[item],
   }))
 })
 
