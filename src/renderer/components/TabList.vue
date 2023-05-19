@@ -130,7 +130,7 @@ function resize(startingEvent: DragEvent) {
       </SortableList>
       <div class="new-tab">
         <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
-          <span class="ph-bold ph-dots-three"></span>
+          <span class="ph-bold ph-list-plus"></span>
         </div>
         <div
           class="default-shell anchor"

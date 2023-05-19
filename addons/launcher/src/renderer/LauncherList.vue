@@ -159,7 +159,7 @@ function showLauncherMenu(event: MouseEvent) {
             :class="['button', 'more', { active: isAnyActionEnabled }]"
             @click="toggleActions"
           >
-            <span class="ph-bold ph-dots-three-vertical"></span>
+            <span class="ph-bold ph-caret-down"></span>
           </div>
         </div>
         <div v-show="isActionsVisible" class="launcher-actions" @click.stop>
@@ -174,7 +174,7 @@ function showLauncherMenu(event: MouseEvent) {
             @keyup.esc="toggleActions"
           >
           <span :class="['button', 'edit', { active: isEditing }]" @click="toggleEditing">
-            <span class="ph-bold ph-pencil-simple"></span>
+            <span :class="['ph-bold', isEditing ? 'ph-pencil-simple-slash' : 'ph-pencil-simple']"></span>
           </span>
         </div>
       </div>
@@ -251,6 +251,12 @@ function showLauncherMenu(event: MouseEvent) {
 .edit.active {
   color: rgb(var(--system-yellow));
   opacity: 1;
+}
+.more {
+  transition: transform 0.2s;
+  &.active {
+    transform: rotate(-0.5turn);
+  }
 }
 .group-name {
   flex: auto;
