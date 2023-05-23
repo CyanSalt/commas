@@ -5,13 +5,13 @@
   "Copy#!menu.copy": "复制",
   "Paste#!menu.paste": "粘贴",
   "Clear#!menu.clear": "清除",
-  "About %A#!menu.about": "关于 %A",
+  "About ${name}#!menu.about": "关于 ${name}",
   "Preferences...#!menu.preference": "首选项...",
   "Services#!menu.services": "服务",
-  "Hide %A#!menu.hide": "隐藏 %A",
+  "Hide ${name}#!menu.hide": "隐藏 ${name}",
   "Hide Others#!menu.hideothers": "隐藏其他",
   "Show All#!menu.unhide": "全部显示",
-  "Quit %A#!menu.quit": "退出 %A",
+  "Quit ${name}#!menu.quit": "退出 ${name}",
   "Terminal#!menu.terminal": "终端",
   "New Tab#!menu.newtab": "新建标签页",
   "Duplicate Tab#!menu.duplicatetab": "复制标签页",
@@ -35,5 +35,5 @@
   "Addon#!menu.addon": "附加功能",
   "Help#!menu.help": "帮助",
   "Toggle Developer Tools#!menu.toggledevtools": "切换开发人员工具",
-  "Relaunch %A#!menu.relaunch": "重新启动 %A"
+  "Relaunch ${name}#!menu.relaunch": "重新启动 ${name}"
 }

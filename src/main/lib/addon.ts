@@ -50,11 +50,11 @@ function checkAddon(addon: AddonInfo) {
     if (version && !semver.satisfies(version, range, { loose: true, includePrerelease: true })) {
       notify({
         type: 'error',
-        body: translate('Addon [%N] only supports %A %E, not %V#!terminal.6', {
-          N: addon.name,
-          A: engine,
-          E: range,
-          V: version,
+        body: translate('Addon [${name}] only supports ${engine} ${range}, not ${version}#!terminal.6', {
+          name: addon.name,
+          engine,
+          range,
+          version,
         }),
       })
     }

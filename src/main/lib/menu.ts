@@ -89,7 +89,7 @@ const menuTemplate = $computed<MenuItemConstructorOptions[]>(() => {
       submenu: [
         { role: 'toggleDevTools', label: translate('Toggle Developer Tools#!menu.toggledevtools') },
         {
-          label: translate('Relaunch %A#!menu.relaunch', { A: app.name }),
+          label: translate('Relaunch ${name}#!menu.relaunch', { name: app.name }),
           accelerator: 'CmdOrCtrl+Shift+R',
           click() {
             app.relaunch()
@@ -105,7 +105,7 @@ function createApplicationMenu() {
     {
       label: app.name,
       submenu: [
-        { role: 'about', label: translate('About %A#!menu.about', { A: app.name }) },
+        { role: 'about', label: translate('About ${name}#!menu.about', { name: app.name }) },
         { type: 'separator' },
         {
           label: translate('Preferences...#!menu.preference'),
@@ -117,11 +117,11 @@ function createApplicationMenu() {
         { type: 'separator' },
         { role: 'services', label: translate('Services#!menu.services') },
         { type: 'separator' },
-        { role: 'hide', label: translate('Hide %A#!menu.hide', { A: app.name }) },
+        { role: 'hide', label: translate('Hide ${name}#!menu.hide', { name: app.name }) },
         { role: 'hideOthers', label: translate('Hide Others#!menu.hideothers') },
         { role: 'unhide', label: translate('Show All#!menu.unhide') },
         { type: 'separator' },
-        { role: 'quit', label: translate('Quit %A#!menu.quit', { A: app.name }) },
+        { role: 'quit', label: translate('Quit ${name}#!menu.quit', { name: app.name }) },
       ],
     },
     ...menuTemplate,

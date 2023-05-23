@@ -6,8 +6,8 @@
   "About#!preference.5": "关于",
   "Open user directory#!preference.6": "打开用户目录",
   "Open default settings#!preference.7": "打开默认配置",
-  "Edit %F#!preference.8": "编辑 %F",
-  "Current version: %V#!preference.9": "当前版本: %V",
+  "Edit ${file}#!preference.8": "编辑 ${file}",
+  "Current version: ${version}#!preference.9": "当前版本: ${version}",
   "Visit our website#!preference.10": "访问网站",
   "Reset to default#!preference.12": "重置为默认值"
 }

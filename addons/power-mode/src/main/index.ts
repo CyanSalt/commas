@@ -11,8 +11,8 @@ export default () => {
       const enabled = status !== 'off'
       sender.send('toggle-power-mode', enabled)
       if (enabled) {
-        return commas.i18n.translate('Power mode is turned on. Enter %Cto exit power mode.#!power-mode.1', {
-          C: '\n\n    commas power off\n\n',
+        return commas.i18n.translate('Power mode is turned on. Enter ${command}to exit power mode.#!power-mode.1', {
+          command: '\n\n    commas power off\n\n',
         })
       }
     },

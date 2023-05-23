@@ -72,7 +72,7 @@ function openWebsite() {
         <span v-i18n>Open default settings#!preference.7</span>
       </span>
       <span class="link" @click="openSettingsFile">
-        <span v-i18n="{ F: 'settings.yaml' }">Edit %F#!preference.8</span>
+        <span v-i18n="{ file: 'settings.yaml' }">Edit ${file}#!preference.8</span>
       </span>
     </div>
     <h2 v-i18n class="group-title">Features#!preference.3</h2>
@@ -91,21 +91,21 @@ function openWebsite() {
         :key="index"
       />
       <span class="link" @click="openKeyBindings">
-        <span v-i18n="{ F: 'keybindings.yaml' }">Edit %F#!preference.8</span>
+        <span v-i18n="{ file: 'keybindings.yaml' }">Edit ${file}#!preference.8</span>
       </span>
       <span class="link" @click="openTranslation">
-        <span v-i18n="{ F: 'translation.yaml' }">Edit %F#!preference.8</span>
+        <span v-i18n="{ file: 'translation.yaml' }">Edit ${file}#!preference.8</span>
       </span>
       <span class="link" @click="openCustomJS">
-        <span v-i18n="{ F: 'custom.js' }">Edit %F#!preference.8</span>
+        <span v-i18n="{ file: 'custom.js' }">Edit ${file}#!preference.8</span>
       </span>
       <span class="link" @click="openCustomCSS">
-        <span v-i18n="{ F: 'custom.css' }">Edit %F#!preference.8</span>
+        <span v-i18n="{ file: 'custom.css' }">Edit ${file}#!preference.8</span>
       </span>
     </div>
     <h2 v-i18n class="group-title">About#!preference.5</h2>
     <div class="group">
-      <span v-i18n="{ V: version }" class="text">Current version: %V#!preference.9</span>
+      <span v-i18n="{ version }" class="text">Current version: ${version}#!preference.9</span>
       <component
         :is="item.component"
         v-for="(item, index) in aboutItems"

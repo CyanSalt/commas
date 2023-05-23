@@ -12,6 +12,6 @@ function openLaunchers() {
 
 <template>
   <span class="link launcher-link" @click="openLaunchers">
-    <span v-i18n="{ F: 'launchers.yaml' }">Edit %F#!preference.8</span>
+    <span v-i18n="{ file: 'launchers.yaml' }">Edit ${file}#!preference.8</span>
   </span>
 </template>

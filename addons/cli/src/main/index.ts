@@ -124,7 +124,13 @@ ${chalk.bold(commas.i18n.translate('Usage:#!cli.1'))}
 
 ${chalk.bold(commas.i18n.translate('Commands:#!cli.2'))}
 ${indent(table(commandList), '    ')}
-${helpingCommand ? '\n' + commas.i18n.translate('Unknown command: %C#!cli.4', { C: helpingCommand }) + '\n' : ''}`
+${
+  helpingCommand
+    ? '\n' + commas.i18n.translate('Unknown command: ${command}#!cli.4', {
+      command: helpingCommand,
+    }) + '\n'
+    : ''
+}`
 
       if (helpingCommand) {
         const error = new Error(message)

@@ -96,7 +96,7 @@ function update() {
       </div>
       <div class="form-line">
         <span class="form-label">
-          <span v-i18n="{ V: versionInfo.version ?? '--' }">Current version: %V#!preference.9</span>
+          <span v-i18n="{ version: versionInfo.version ?? '--' }">Current version: ${version}#!preference.9</span>
           <span v-if="versionInfo.type !== 'builtin'" class="version-type ph-bold ph-arrow-square-out"></span>
         </span>
         <span v-if="isOutdated" class="update-link link form-action" @click="update">
