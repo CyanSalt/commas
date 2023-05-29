@@ -3,8 +3,6 @@ import { discoverAddons, useDiscoveredAddons } from './discover'
 
 export default () => {
 
-  commas.i18n.addTranslationDirectory('locales')
-
   const discoveredAddons = $(useDiscoveredAddons())
   commas.ipcMain.provide('discovered-addons', $$(discoveredAddons))
 
@@ -17,5 +15,7 @@ export default () => {
       'terminal.addon.includes': value,
     })
   })
+
+  commas.i18n.addTranslationDirectory('locales')
 
 }

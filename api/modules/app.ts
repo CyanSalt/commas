@@ -30,7 +30,7 @@ function getVersion() {
     : ipcRenderer.sendSync('get-version') as string
 }
 
-function getManifest() {
+function getManifest(): Record<string, any> {
   return require(path.join(getPath(), 'package.json'))
 }
 

@@ -21,10 +21,6 @@ declare module '../../../../api/modules/context' {
 
 export default () => {
 
-  commas.i18n.addTranslationDirectory('locales')
-
-  commas.settings.addSettingsSpecsFile('settings.spec.json')
-
   commas.context.provide('sync.file', 'custom.css')
   commas.context.provide('sync.file', 'custom.js')
   commas.context.provide('sync.file', 'keybindings.yaml')
@@ -96,5 +92,9 @@ export default () => {
       }
     }
   })
+
+  commas.settings.addSettingsSpecsFile('settings.spec.json')
+
+  commas.i18n.addTranslationDirectory('locales')
 
 }

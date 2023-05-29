@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
-import { shell } from 'electron'
+import { ipcRenderer } from 'electron'
 import type { TerminalTab } from '../../../../src/typings/terminal'
 
 defineProps<{
@@ -52,7 +52,7 @@ function openCustomCSS() {
 }
 
 function openWebsite() {
-  shell.openExternal('https://github.com/CyanSalt/commas')
+  ipcRenderer.invoke('open-preference-website')
 }
 </script>
 

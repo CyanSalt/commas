@@ -13,7 +13,8 @@ async function checkForUpdates() {
 
 function setupAutoUpdater() {
   // Electron official feed URL
-  const repo = 'CyanSalt/commas'
+  const manifest = commas.app.getManifest()
+  const repo = `${manifest.author}/${manifest.name}`
   const host = 'https://update.electronjs.org'
   const feedURL = `${host}/${repo}/${process.platform}-${process.arch}/${app.getVersion()}`
   try {

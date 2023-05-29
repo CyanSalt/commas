@@ -1,9 +1,7 @@
 import * as commas from 'commas:api/main'
-import { ipcMain } from 'electron'
+import { ipcMain, shell } from 'electron'
 
 export default () => {
-
-  commas.i18n.addTranslationDirectory('locales')
 
   ipcMain.removeHandler('open-settings')
 
@@ -16,5 +14,12 @@ export default () => {
       return commas.settings.openSettingsFile()
     })
   })
+
+  commas.ipcMain.handle('open-preference-website', () => {
+    const manifest = commas.app.getManifest()
+    shell.openExternal(manifest.homepage)
+  })
+
+  commas.i18n.addTranslationDirectory('locales')
 
 }
