@@ -3,6 +3,10 @@ import * as commas from 'commas:api/renderer'
 import { ipcRenderer, shell } from 'electron'
 import { watchEffect } from 'vue'
 
+defineOptions({
+  inheritAttrs: false,
+})
+
 const terminal = $(commas.workspace.useCurrentTerminal())
 
 const directory: string = $computed(() => {
@@ -75,12 +79,6 @@ function openRemoteURL() {
     <span v-if="branch" class="branch-name">{{ branch }}</span>
   </div>
 </template>
-
-<script lang="ts">
-export default {
-  inheritAttrs: false,
-}
-</script>
 
 <style lang="scss" scoped>
 .git-branch-anchor {
