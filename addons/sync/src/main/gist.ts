@@ -1,7 +1,7 @@
 import * as path from 'node:path'
 import * as commas from 'commas:api/main'
 import type { SyncPlan } from '../../typings/sync'
-import { useSyncData } from './compositions'
+import { decryptToken, useSyncData } from './compositions'
 
 interface FileData {
   content: string,
@@ -10,7 +10,7 @@ interface FileData {
 const syncData = useSyncData()
 
 async function uploadFiles(plan: SyncPlan) {
-  const token = syncData.token
+  const token = decryptToken(syncData.encryption)
   if (!token) return
   const entries: Record<string, FileData> = {}
   await Promise.all(plan.files.map(async file => {
@@ -41,7 +41,7 @@ async function uploadFiles(plan: SyncPlan) {
 }
 
 async function downloadFiles(plan: SyncPlan) {
-  const token = syncData.token
+  const token = decryptToken(syncData.encryption)
   if (!token || !plan.gist) return
   const result = await commas.shell.requestJSON({
     url: `https://api.github.com/gists/${plan.gist}`,

@@ -1,38 +1,12 @@
 import * as commas from 'commas:api/main'
 import { safeStorage } from 'electron'
+import { memoize } from 'lodash'
 import type { SyncData } from '../../typings/sync'
 
-interface RawSyncData extends Omit<SyncData, 'token'> {
-  _token: string | null,
-}
-
-let rawSyncData = $(commas.file.useJSONFile<RawSyncData>(commas.file.userFile('sync-data.json'), {
-  _token: null,
+let syncData = $(commas.file.useJSONFile<SyncData>(commas.file.userFile('sync-data.json'), {
+  encryption: null,
   updatedAt: null,
 }))
-
-const syncData = $computed<SyncData>({
-  get() {
-    const { _token: encryption, ...data } = rawSyncData as SyncData & RawSyncData
-    data.token = null
-    if (encryption) {
-      try {
-        data.token = safeStorage.decryptString(Buffer.from(encryption, 'base64'))
-      } catch {
-        // ignore
-      }
-    }
-    return data
-  },
-  set(value) {
-    const { token, ...data } = value as SyncData & RawSyncData
-    data._token = null
-    if (token) {
-      data._token = safeStorage.encryptString(token).toString('base64')
-    }
-    rawSyncData = data
-  },
-})
 
 const reactiveSyncData = commas.helper.surface($$(syncData))
 
@@ -44,7 +18,26 @@ function useSyncData() {
   return reactiveSyncData
 }
 
+const encryptToken = memoize((plain: string) => {
+  try {
+    return safeStorage.encryptString(plain).toString('base64')
+  } catch {
+    return null
+  }
+})
+
+const decryptToken = memoize((encryption: string | null) => {
+  if (!encryption) return null
+  try {
+    return safeStorage.decryptString(Buffer.from(encryption, 'base64'))
+  } catch {
+    return null
+  }
+})
+
 export {
   getSyncDataRef,
   useSyncData,
+  encryptToken,
+  decryptToken,
 }

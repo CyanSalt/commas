@@ -13,7 +13,7 @@ defineProps<{
 const { vI18n, ObjectEditor, TerminalPane } = commas.ui.vueAssets
 
 const settings = commas.remote.useSettings()
-let syncData = useSyncData()
+let syncData = $(useSyncData())
 const omitHome = commas.helper.omitHome
 
 const defaultPlanGist = $computed(() => {
@@ -37,12 +37,12 @@ function openGitHubTokenSettings() {
 }
 
 function confirmToken() {
-  syncData.token = stagingToken || null
+  ipcRenderer.invoke('set-sync-token', stagingToken || null)
   isAddingToken = false
 }
 
 function removeToken() {
-  syncData.token = null
+  ipcRenderer.invoke('set-sync-token', null)
 }
 
 function uploadDefaultSyncPlan() {
@@ -97,7 +97,7 @@ function removeSyncPlan(index: number) {
     <h2 v-i18n class="group-title">Sync#!sync.1</h2>
     <div class="group">
       <span
-        v-if="syncData.token"
+        v-if="syncData.encryption"
         v-i18n
         class="link"
         @click="removeToken"
@@ -116,7 +116,7 @@ function removeSyncPlan(index: number) {
         </span>
       </div>
       <span v-else v-i18n class="link" @click="addToken">Add GitHub Token#!sync.3</span>
-      <div v-if="syncData.token" class="form-line">
+      <div v-if="syncData.encryption" class="form-line">
         <span class="link form-action" @click="uploadDefaultSyncPlan">
           <span class="ph-bold ph-cloud-arrow-up"></span>
         </span>

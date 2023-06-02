@@ -1,5 +1,5 @@
 export interface SyncData {
-  token: string | null,
+  encryption: string | null,
   updatedAt: string | null,
 }
 

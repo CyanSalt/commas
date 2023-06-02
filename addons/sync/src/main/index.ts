@@ -1,7 +1,7 @@
 import * as commas from 'commas:api/main'
 import { BrowserWindow, dialog } from 'electron'
 import type { SyncPlan } from '../../typings/sync'
-import { getSyncDataRef, useSyncData } from './compositions'
+import { encryptToken, getSyncDataRef, useSyncData } from './compositions'
 import { downloadFiles, uploadFiles } from './gist'
 import { createSyncPlan, useDefaultSyncPlan } from './plan'
 
@@ -39,6 +39,10 @@ export default () => {
   const defaultPlan = $(useDefaultSyncPlan())
 
   commas.ipcMain.provide('sync-data', getSyncDataRef())
+
+  commas.ipcMain.handle('set-sync-token', async (event, token: string) => {
+    syncData.encryption = encryptToken(token)
+  })
 
   commas.ipcMain.handle('upload-sync-files', async () => {
     const result = await uploadFiles(defaultPlan)
