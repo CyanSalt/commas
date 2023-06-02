@@ -89,7 +89,7 @@ async function createWindow(...args: string[]) {
       frame.setTitleBarOverlay(themeOptions.titleBarOverlay)
     }
     if (process.platform === 'darwin') {
-      frame.setTrafficLightPosition(themeOptions.trafficLightPosition)
+      frame.setWindowButtonPosition(themeOptions.windowButtonPosition)
     }
   })
   frame.on('closed', () => {

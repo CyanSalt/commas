@@ -1,5 +1,5 @@
 import { effect } from '@vue/reactivity'
-import type { BrowserWindowConstructorOptions } from 'electron'
+import type { BrowserWindow, BrowserWindowConstructorOptions } from 'electron'
 import { nativeTheme, systemPreferences } from 'electron'
 import { isDarkColor, mix, toCSSColor, toCSSHEX, toElectronHEX, toHSLA, toRGBA, toRGBAFromHSLA } from '../../shared/color'
 import type { Theme, ThemeDefinition } from '../../typings/theme'
@@ -11,7 +11,7 @@ interface BrowserWindowThemeOptions {
   backgroundColor: NonNullable<BrowserWindowConstructorOptions['backgroundColor']>,
   vibrancy: BrowserWindowConstructorOptions['vibrancy'],
   titleBarOverlay: Extract<BrowserWindowConstructorOptions['titleBarOverlay'], object>,
-  trafficLightPosition: NonNullable<BrowserWindowConstructorOptions['trafficLightPosition']>,
+  windowButtonPosition: ReturnType<BrowserWindow['getWindowButtonPosition']>,
 }
 
 const THEME_CSS_COLORS: Partial<Record<keyof ThemeDefinition, string>> = {
@@ -142,7 +142,7 @@ const theme = $computed(() => {
   return definition
 })
 
-const defaultTrafficLightPosition = {
+const defaultWindowButtonPosition = {
   x: 12,
   y: 11,
   // width: 68,
@@ -164,9 +164,9 @@ const themeOptions = $computed<BrowserWindowThemeOptions>(() => {
       symbolColor: toElectronHEX({ ...foregroundRGBA, a: 1 }),
       height: 36,
     },
-    trafficLightPosition: settings['terminal.view.tabListPosition'] === 'top'
-      ? { x: defaultTrafficLightPosition.x + trafficLightOffset, y: defaultTrafficLightPosition.y + trafficLightOffset }
-      : defaultTrafficLightPosition,
+    windowButtonPosition: settings['terminal.view.tabListPosition'] === 'top'
+      ? { x: defaultWindowButtonPosition.x + trafficLightOffset, y: defaultWindowButtonPosition.y + trafficLightOffset }
+      : defaultWindowButtonPosition,
   }
 })
 
