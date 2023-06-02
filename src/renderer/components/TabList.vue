@@ -112,32 +112,34 @@ function resize(startingEvent: DragEvent) {
 
 <template>
   <nav :class="['tab-list', position, isHorizontal ? 'horizontal' : 'vertical']">
-    <div class="list" :style="{ width: isHorizontal ? '' : width + 'px' }">
-      <SortableList
-        v-slot="{ value }"
-        :value="standaloneTabs"
-        value-key="pid"
-        :direction="isHorizontal ? 'horizontal' : 'vertical'"
-        class="processes"
-        @move="startMoving"
-        @stop="stopMoving"
-        @change="sortTabs"
-      >
-        <TabItem
-          :tab="value"
-          @click="activateTerminalTab(value)"
-        />
-      </SortableList>
-      <div class="new-tab">
-        <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
-          <span class="ph-bold ph-list-plus"></span>
-        </div>
-        <div
-          class="default-shell anchor"
-          @click="selectDefaultShell"
-          @contextmenu="selectShell"
+    <div class="list-content" :style="{ width: isHorizontal ? '' : width + 'px' }">
+      <div class="default-list">
+        <SortableList
+          v-slot="{ value }"
+          :value="standaloneTabs"
+          value-key="pid"
+          :direction="isHorizontal ? 'horizontal' : 'vertical'"
+          class="processes"
+          @move="startMoving"
+          @stop="stopMoving"
+          @change="sortTabs"
         >
-          <span class="ph-bold ph-plus"></span>
+          <TabItem
+            :tab="value"
+            @click="activateTerminalTab(value)"
+          />
+        </SortableList>
+        <div class="new-tab">
+          <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
+            <span class="ph-bold ph-list-plus"></span>
+          </div>
+          <div
+            class="default-shell anchor"
+            @click="selectDefaultShell"
+            @contextmenu="selectShell"
+          >
+            <span class="ph-bold ph-plus"></span>
+          </div>
         </div>
       </div>
       <component
@@ -181,14 +183,19 @@ function resize(startingEvent: DragEvent) {
     }
   }
 }
-.list {
+.list-content {
   @include partials.scroll-container(8px);
-  position: relative;
   display: flex;
   flex: auto;
   .tab-list.vertical & {
     flex-direction: column;
     width: 176px;
+  }
+}
+.default-list {
+  display: flex;
+  .tab-list.vertical & {
+    flex-direction: column;
   }
 }
 .sash {
@@ -205,10 +212,7 @@ function resize(startingEvent: DragEvent) {
   padding: 8px 16px;
   line-height: var(--min-tab-height);
   text-align: center;
-  .tab-list.vertical & {
-    padding-bottom: 0;
-  }
-  tab-list.horizontal & {
+  .tab-list.horizontal & {
     padding: 8px 12px;
   }
 }

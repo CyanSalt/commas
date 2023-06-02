@@ -159,7 +159,7 @@ function showLauncherMenu(event: MouseEvent) {
             :class="['button', 'more', { active: isAnyActionEnabled }]"
             @click="toggleActions"
           >
-            <span class="ph-bold ph-caret-down"></span>
+            <span class="ph-bold ph-list"></span>
           </div>
         </div>
         <div v-show="isActionsVisible" class="launcher-actions" @click.stop>
@@ -251,12 +251,6 @@ function showLauncherMenu(event: MouseEvent) {
 .edit.active {
   color: rgb(var(--system-yellow));
   opacity: 1;
-}
-.more {
-  transition: transform 0.2s;
-  &.active {
-    transform: rotate(-0.5turn);
-  }
 }
 .group-name {
   flex: auto;
