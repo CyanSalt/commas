@@ -8,11 +8,11 @@ export function useLanguage() {
   return $$(language)
 }
 
-export function getI18NManifest(original: any) {
+export function getI18nManifest(original: any) {
   return resolveManifest(original, language)
 }
 
-export function handleI18NMessages() {
+export function handleI18nMessages() {
   watchEffect(() => {
     if (language) {
       document.documentElement.lang = language

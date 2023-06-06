@@ -144,11 +144,11 @@ function translate(text: string, variables?: TranslationVariables) {
   return interpolateText(translatedText, variables)
 }
 
-function getI18NManifest(original: any) {
+function getI18nManifest(original: any) {
   return resolveManifest(original, language)
 }
 
-function handleI18NMessages() {
+function handleI18nMessages() {
   provideIPC('language', $$(language))
   provideIPC('dictionary', $$(dictionary))
 }
@@ -158,6 +158,6 @@ export {
   translate,
   addTranslations,
   addTranslationDirectory,
-  getI18NManifest,
-  handleI18NMessages,
+  getI18nManifest,
+  handleI18nMessages,
 }

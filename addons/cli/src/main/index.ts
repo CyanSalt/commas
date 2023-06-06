@@ -86,7 +86,7 @@ export default () => {
     ]
   })
 
-  const manifest = $computed(() => commas.i18n.getI18NManifest(commas.app.getManifest()))
+  const manifest = $computed(() => commas.i18n.getI18nManifest(commas.app.getManifest()))
 
   commas.context.provide('cli.command', {
     command: 'help',

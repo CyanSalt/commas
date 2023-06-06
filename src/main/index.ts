@@ -3,7 +3,7 @@ import { app } from 'electron'
 import * as commas from '../../api/core-main'
 import { handleAddonMessages, loadAddons, loadCustomJS } from './lib/addon'
 import { hasWindow, getLastWindow } from './lib/frame'
-import { loadTranslations, handleI18NMessages } from './lib/i18n'
+import { loadTranslations, handleI18nMessages } from './lib/i18n'
 import { createApplicationMenu, createDockMenu, handleMenuMessages, registerGlobalShortcuts } from './lib/menu'
 import { handleMessages } from './lib/message'
 import { handleSettingsMessages } from './lib/settings'
@@ -12,7 +12,7 @@ import { handleThemeMessages } from './lib/theme'
 import { createDefaultWindow, createWindow, handleWindowMessages, openFile } from './lib/window'
 
 handleMessages()
-handleI18NMessages()
+handleI18nMessages()
 handleMenuMessages()
 handleWindowMessages()
 handleAddonMessages()
