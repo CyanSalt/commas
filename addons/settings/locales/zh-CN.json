@@ -89,7 +89,7 @@
   "Theme#!settings.group.terminal.theme": "主题",
   "Theme Name#!settings.label.terminal.theme.name": "主题名称",
   "File name of built-in theme or files in `themes/` folder#!settings.comments.0.terminal.theme.name": "内置主题或 themes/ 文件夹下的文件名称",
-  "Support `oceanic-next` or `tomorrow` by default#!settings.comments.1.terminal.theme.name": "默认支持 `oceanic-next` 或 `tomorrow`",
+  "Support `OneHalfDark` or `OneHalfLight` by default#!settings.comments.1.terminal.theme.name": "默认支持 `OneHalfDark` 或 `OneHalfLight`",
   "Custom Theme Colors#!settings.label.terminal.theme.customization": "自定义主题颜色",
   "Overwrite colors in the theme file#!settings.comments.0.terminal.theme.customization": "覆盖主题文件中的颜色",
   "Addon#!settings.group.terminal.addon": "附加功能",

@@ -362,13 +362,13 @@
     "label": "Theme Name",
     "comments": [
       "File name of built-in theme or files in `themes/` folder",
-      "Support `oceanic-next` or `tomorrow` by default"
+      "Support `OneHalfDark` or `OneHalfLight` by default"
     ],
     "schema": {
       "type": "string"
     },
-    "recommendations": ["oceanic-next", "tomorrow"],
-    "default": "oceanic-next"
+    "recommendations": ["OneHalfDark", "OneHalfLight"],
+    "default": "OneHalfDark"
   },
   {
     "key": "terminal.theme.customization",
