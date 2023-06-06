@@ -20,6 +20,7 @@ import { openContextMenu } from '../utils/frame'
 import { translate } from '../utils/i18n'
 import { ShellIntegrationAddon } from '../utils/shell-integration'
 import { getPrompt, getTerminalTabID, getWindowsProcessInfo } from '../utils/terminal'
+import { useA11yEnabled } from './a11y'
 import { useKeyBindings } from './keybinding'
 import { useSettings } from './settings'
 import { useTheme } from './theme'
@@ -122,6 +123,8 @@ function handleTerminalLink(event: MouseEvent, uri: string) {
   }
 }
 
+const a11yEnabled = $(useA11yEnabled())
+
 const terminalOptions = $computed<Partial<ITerminalOptions>>(() => {
   return {
     allowProposedApi: true,
@@ -129,12 +132,13 @@ const terminalOptions = $computed<Partial<ITerminalOptions>>(() => {
     cursorStyle: settings['terminal.style.cursorStyle'],
     fontFamily: settings['terminal.style.fontFamily'],
     fontSize: settings['terminal.style.fontSize'],
-    overviewRulerWidth: 16,
-    smoothScrollDuration: 50,
-    theme: { ...theme },
     linkHandler: {
       activate: handleTerminalLink,
     },
+    overviewRulerWidth: 16,
+    screenReaderMode: a11yEnabled,
+    smoothScrollDuration: 50,
+    theme: { ...theme },
   }
 })
 

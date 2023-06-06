@@ -1,6 +1,7 @@
 import { effect } from '@vue/reactivity'
 import { app } from 'electron'
 import * as commas from '../../api/core-main'
+import { handleA11yMessages } from './lib/a11y'
 import { handleAddonMessages, loadAddons, loadCustomJS } from './lib/addon'
 import { hasWindow, getLastWindow } from './lib/frame'
 import { loadTranslations, handleI18nMessages } from './lib/i18n'
@@ -19,6 +20,7 @@ handleAddonMessages()
 handleSettingsMessages()
 handleThemeMessages()
 handleTerminalMessages()
+handleA11yMessages()
 
 async function initialize() {
   loadAddons()
