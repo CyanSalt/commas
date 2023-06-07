@@ -158,7 +158,7 @@ const themeOptions = $computed<BrowserWindowThemeOptions>(() => {
     /** {@link https://github.com/electron/electron/issues/10420} */
     backgroundColor: toElectronHEX({ ...backgroundRGBA, a: process.platform !== 'win32' ? 0 : 1 }),
     vibrancy: theme.vibrancy ? (
-      typeof theme.vibrancy === 'string' ? theme.vibrancy : 'fullscreen-ui'
+      typeof theme.vibrancy === 'string' ? theme.vibrancy : 'hud'
     ) : undefined,
     titleBarOverlay: {
       color: toElectronHEX(materialBackgroundRGBA),
