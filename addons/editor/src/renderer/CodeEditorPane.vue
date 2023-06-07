@@ -47,13 +47,33 @@ watchEffect((onInvalidate) => {
   }
 })
 
+function openEditingMenu(event: MouseEvent) {
+  commas.ui.openContextMenu([
+    {
+      label: 'Cut#!menu.cut',
+      accelerator: 'CmdOrCtrl+X',
+      role: 'cut',
+    },
+    {
+      label: 'Copy#!menu.copy',
+      accelerator: 'CmdOrCtrl+C',
+      role: 'copy',
+    },
+    {
+      label: 'Paste#!menu.paste',
+      accelerator: 'CmdOrCtrl+V',
+      role: 'paste',
+    },
+  ], event)
+}
+
 defineExpose({
   save,
 })
 </script>
 
 <template>
-  <article class="code-editor-pane">
+  <article class="code-editor-pane" @contextmenu="openEditingMenu">
     <CodeEditor
       ref="editor"
       v-model="code"

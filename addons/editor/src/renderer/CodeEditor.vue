@@ -137,20 +137,21 @@ watchEffect((onInvalidate) => {
   if (!root) return
   const created = monaco.editor.create(root, {
     model,
-    fontFamily: settings['terminal.style.fontFamily'],
-    fontSize: settings['terminal.style.fontSize'],
-    fontLigatures: settings['terminal.style.fontLigatures'],
+    contextmenu: false,
     // cursorStyle: settings['terminal.style.cursorStyle'],
     // find: {},
+    fontFamily: settings['terminal.style.fontFamily'],
+    fontLigatures: settings['terminal.style.fontLigatures'],
+    fontSize: settings['terminal.style.fontSize'],
     guides: {
       indentation: false,
     },
     // lineDecorationsWidth: 0,
     lineHeight: 18,
-    multiCursorModifier: 'ctrlCmd',
     minimap: {
       enabled: false,
     },
+    multiCursorModifier: 'ctrlCmd',
     tabSize: 2,
     theme: 'commas',
     wordWrap: 'on',
