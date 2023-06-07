@@ -63,11 +63,13 @@ async function createTerminal(
   }
   const ptyProcess = pty.spawn(shell!, runtimeArgs, options)
   ptyProcess.onData(data => {
-    webContents.send('input-terminal', {
-      pid: ptyProcess.pid,
-      process: ptyProcess.process,
-      data,
-    })
+    if (!webContents.isDestroyed()) {
+      webContents.send('input-terminal', {
+        pid: ptyProcess.pid,
+        process: ptyProcess.process,
+        data,
+      })
+    }
   })
   ptyProcess.onExit(data => {
     ptyProcessMap.delete(ptyProcess.pid)
