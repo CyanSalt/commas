@@ -547,17 +547,20 @@ export function loadTerminalAddons(tab: TerminalTab) {
       delete addons.ligatures
     }
   }
-  // Always dispose them since they depend on `xterm.element`
   const rendererType = settings['terminal.view.rendererType'] === 'webgl'
     ? (xterm.options.allowTransparency ? 'canvas' : 'webgl')
     : settings['terminal.view.rendererType']
-  if (addons.webgl) {
-    addons.webgl.dispose()
-    delete addons.webgl
+  if (rendererType !== 'webgl') {
+    if (addons.webgl) {
+      addons.webgl.dispose()
+      delete addons.webgl
+    }
   }
-  if (addons.canvas) {
-    addons.canvas.dispose()
-    delete addons.canvas
+  if (rendererType !== 'canvas') {
+    if (addons.canvas) {
+      addons.canvas.dispose()
+      delete addons.canvas
+    }
   }
   if (rendererType === 'webgl') {
     if (!addons.webgl) {
@@ -700,9 +703,6 @@ export async function removeTerminalTab(tab: TerminalTab) {
     releaseTabPosition(tab, groupTabs)
     reflowTabGroup(groupTabs)
   }
-  // Unmount after flushed
-  await nextTick()
-  commas.proxy.app.events.emit('terminal-unmounted', tab)
 }
 
 export function activateTerminalTab(tab: TerminalTab) {

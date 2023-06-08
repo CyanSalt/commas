@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import { ipcRenderer } from 'electron'
-import type { KeepAlive } from 'vue'
 import { onMounted } from 'vue'
 import * as commas from '../../../api/core-renderer'
-import type { TerminalTab } from '../../typings/terminal'
 import { loadAddons, loadCustomJS } from '../compositions/addon'
 import {
   useFullscreen,
@@ -18,14 +16,11 @@ import {
   handleShellMessages,
 } from '../compositions/shell'
 import {
-  useCurrentTerminal,
   useTerminalTabs,
   handleTerminalMessages,
   createTerminalTab,
 } from '../compositions/terminal'
 import { injectThemeStyle, useTheme } from '../compositions/theme'
-import { unmountKeptAlive } from '../utils/helper'
-import { getTerminalTabID } from '../utils/terminal'
 import ActionBar from './ActionBar.vue'
 import FindBox from './FindBox.vue'
 import TabList from './TabList.vue'
@@ -38,32 +33,12 @@ const settings = useSettings()
 const theme = useTheme()
 const isFullscreen = $(useFullscreen())
 const isTabListEnabled = $(useIsTabListEnabled())
-const terminal = $(useCurrentTerminal())
 const tabs = $(useTerminalTabs())
 const willQuit: boolean = $(useWillQuit())
-
-let keepAlive = $ref<InstanceType<typeof KeepAlive>>()
 
 const hasHorizontalTabList = $computed(() => {
   const position = settings['terminal.view.tabListPosition']
   return position === 'top' || position === 'bottom'
-})
-
-const TerminalComponent = $computed(() => {
-  if (!terminal) return undefined
-  if (terminal.pane) {
-    return terminal.pane.component
-  } else {
-    return TerminalGroup
-  }
-})
-
-const tabId = $computed(() => {
-  if (!terminal) return ''
-  if (terminal.group) {
-    return terminal.group.id
-  }
-  return getTerminalTabID(terminal)
 })
 
 const slots = commas.proxy.context.getCollection('terminal.ui-slot')
@@ -97,12 +72,6 @@ window.addEventListener('beforeunload', async event => {
   }
 })
 
-// Revalidate KeepAlive manually
-commas.proxy.app.events.on('terminal-unmounted', (tab: TerminalTab) => {
-  const id = getTerminalTabID(tab)
-  unmountKeptAlive(keepAlive!, id)
-})
-
 onMounted(() => {
   commas.proxy.app.events.emit('ready')
 })
@@ -115,15 +84,7 @@ onMounted(() => {
       <TabList v-if="!hasHorizontalTabList" v-show="isTabListEnabled" />
       <main class="interface">
         <FindBox />
-        <template v-if="terminal">
-          <!-- eslint-disable-next-line vue/component-name-in-template-casing -->
-          <keep-alive ref="keepAlive">
-            <TerminalComponent
-              :key="tabId"
-              :tab="terminal"
-            />
-          </keep-alive>
-        </template>
+        <TerminalGroup />
       </main>
     </div>
     <ActionBar />

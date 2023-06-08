@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { ipcRenderer } from 'electron'
-import { onActivated, onMounted } from 'vue'
+import { onMounted } from 'vue'
 
 const { vI18n } = commas.ui.vueAssets
 
@@ -29,10 +29,6 @@ async function clear() {
 }
 
 onMounted(() => {
-  check()
-})
-
-onActivated(() => {
   check()
 })
 </script>

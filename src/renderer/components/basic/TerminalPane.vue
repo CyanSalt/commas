@@ -1,14 +1,9 @@
 <script lang="ts" setup>
 import { openContextMenu } from '../../utils/frame'
-import { usePersistScrollPosition } from '../../utils/helper'
-
-const root = $ref<HTMLElement | undefined>()
 
 defineSlots<{
   default?: (props: {}) => any,
 }>()
-
-usePersistScrollPosition($$(root))
 
 function openEditingMenu(event: MouseEvent) {
   openContextMenu([
@@ -27,7 +22,7 @@ function openEditingMenu(event: MouseEvent) {
 </script>
 
 <template>
-  <article ref="root" class="terminal-pane" @contextmenu="openEditingMenu">
+  <article class="terminal-pane" @contextmenu="openEditingMenu">
     <slot></slot>
   </article>
 </template>

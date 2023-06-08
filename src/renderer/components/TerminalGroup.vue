@@ -1,37 +1,33 @@
 <script lang="ts" setup>
 import 'xterm/css/xterm.css'
 import type { TerminalTab } from '../../typings/terminal'
-import { activateTerminalTab, getTerminalTabIndex, useTerminalTabs } from '../compositions/terminal'
+import { activateTerminalTab, getTerminalTabIndex, useCurrentTerminal, useTerminalTabs } from '../compositions/terminal'
 import { getTerminalTabID } from '../utils/terminal'
 import TerminalTeletype from './TerminalTeletype.vue'
 
-const { tab } = defineProps<{
-  tab: TerminalTab,
-}>()
-
 const tabs = $(useTerminalTabs())
-
-const groupTabs = $computed(() => {
-  const group = tab.group
-  if (!group) return [tab]
-  return tabs.filter(item => {
-    if (!item.group) return false
-    return item.group.type === group.type
-      && item.group.id === group.id
-  })
-})
+const terminal = $(useCurrentTerminal())
 
 const activeIndex = $computed(() => {
-  const currentIndex = getTerminalTabIndex(tab)
-  return groupTabs.findIndex(item => {
-    return getTerminalTabIndex(item) === currentIndex
+  return terminal ? getTerminalTabIndex(terminal) : -1
+})
+
+const currentGroup = $computed(() => {
+  if (!terminal) return []
+  const group = terminal.group
+  if (!group) return [activeIndex]
+  return tabs.flatMap((item, index) => {
+    if (!item.group) return []
+    return item.group.type === group.type && item.group.id === group.id
+      ? [index] : []
   })
 })
 
 const gridStyle = $computed(() => {
   const matrix: string[][] = []
-  for (const [index, item] of groupTabs.entries()) {
-    const position = item.position ?? { row: 0, col: 0 }
+  for (const index of currentGroup) {
+    const tab = tabs[index]
+    const position = tab.position ?? { row: 0, col: 0 }
     for (let row = position.row; row < position.row + (position.rowspan ?? 1); row += 1) {
       if (!matrix[row]) {
         matrix[row] = []
@@ -55,14 +51,21 @@ function activate(item: TerminalTab) {
 
 <template>
   <article class="terminal-group" :style="gridStyle">
-    <TerminalTeletype
-      v-for="item, index in groupTabs"
-      :key="getTerminalTabID(item)"
-      :tab="item"
-      :class="{ active: index === activeIndex }"
-      :style="{ 'grid-area': `a${index}` }"
-      @click="activate(item)"
-    />
+    <template v-for="(tab, index) in tabs" :key="getTerminalTabID(tab)">
+      <component
+        :is="tab.pane.component"
+        v-if="tab.pane"
+        v-show="currentGroup.includes(index)"
+      ></component>
+      <TerminalTeletype
+        v-else
+        v-show="currentGroup.includes(index)"
+        :tab="tab"
+        :class="{ active: index === activeIndex }"
+        :style="{ 'grid-area': `a${index}` }"
+        @click="activate(tab)"
+      />
+    </template>
   </article>
 </template>
 

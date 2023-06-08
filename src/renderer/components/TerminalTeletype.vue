@@ -2,8 +2,7 @@
 import 'xterm/css/xterm.css'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { quote } from 'shell-quote'
-import { onActivated, watchEffect } from 'vue'
-import { createDeferred } from '../../shared/helper'
+import { watchEffect } from 'vue'
 import type { CommandCompletion, TerminalTab } from '../../typings/terminal'
 import type { TerminalTabDirection } from '../compositions/terminal'
 import { appendTerminalTab, getTerminalTabIndex, isMatchLinkModifier, useMovingTerminalIndex, writeTerminalTab } from '../compositions/terminal'
@@ -70,17 +69,10 @@ function fit() {
 const observer = new ResizeObserver(fit)
 
 watchEffect((onInvalidate) => {
-  console.log('watchEffect', tab)
   const el = element
   if (!el) return
   const xterm = tab.xterm
-  if (xterm.element) {
-    // FIXME: don't know why
-    if (document.contains(xterm.element)) return
-    // This will trigger `loadTerminalAddons` again
-    // eslint-disable-next-line vue/no-mutating-props
-    tab.deferred.open = createDeferred()
-  }
+  if (xterm.element) return
   xterm.open(el)
   // Add cell size properties
   const cell = xterm['_core']._renderService.dimensions.css.cell
@@ -92,13 +84,6 @@ watchEffect((onInvalidate) => {
   onInvalidate(() => {
     observer.unobserve(el)
   })
-})
-
-onActivated(() => {
-  const xterm = tab.xterm
-  if (xterm['_core'].viewport) {
-    xterm['_core'].viewport.syncScrollArea(true)
-  }
 })
 
 function highlightLabel(label: string, query: string) {
