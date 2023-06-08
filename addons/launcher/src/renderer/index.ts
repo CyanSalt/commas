@@ -2,7 +2,7 @@ import * as commas from 'commas:api/renderer'
 import { watch } from 'vue'
 import LauncherLink from './LauncherLink.vue'
 import LauncherList from './LauncherList.vue'
-import { startLauncher, runLauncherScript, useLauncherGroups, useLaunchers, openLauncher, getLauncherByTerminalTabGroup } from './launcher'
+import { startLauncher, runLauncherScript, useLauncherCharacters, useLaunchers, openLauncher, getLauncherByTerminalTabCharacter } from './launcher'
 import { clearLauncherSessions, LauncherSessionAddon } from './session'
 
 declare module '../../../../src/typings/terminal' {
@@ -15,8 +15,8 @@ export default () => {
 
   commas.ui.addCSSFile('dist/renderer/style.css')
 
-  commas.ipcRenderer.on('open-launcher-group', (event, group) => {
-    const launcher = getLauncherByTerminalTabGroup(group)
+  commas.ipcRenderer.on('open-launcher-character', (event, character) => {
+    const launcher = getLauncherByTerminalTabCharacter(character)
     if (launcher) {
       openLauncher(launcher)
     }
@@ -28,13 +28,13 @@ export default () => {
     runLauncherScript(launcher, index)
   })
 
-  const groups = $(useLauncherGroups())
+  const characters = $(useLauncherCharacters())
 
   commas.app.effect(() => {
     commas.context.provide('terminal.category', {
       title: 'Launcher#!launcher.2',
-      groups,
-      command: 'open-launcher-group',
+      characters,
+      command: 'open-launcher-character',
     })
   })
 
@@ -44,8 +44,8 @@ export default () => {
 
   commas.workspace.registerXtermAddon('launcherSession', tab => {
     const settings = commas.remote.useSettings()
-    if (tab.group?.type === 'launcher' && settings['launcher.session.persist']) {
-      return new LauncherSessionAddon(tab.group.id)
+    if (tab.character?.type === 'launcher' && settings['launcher.session.persist']) {
+      return new LauncherSessionAddon(tab.character.id)
     }
   }, true)
 

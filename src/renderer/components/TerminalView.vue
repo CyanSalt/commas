@@ -17,8 +17,7 @@ const currentGroup = $computed(() => {
   const group = terminal.group
   if (!group) return [activeIndex]
   return tabs.flatMap((item, index) => {
-    if (!item.group) return []
-    return item.group.type === group.type && item.group.id === group.id
+    return item.group && item.group === group
       ? [index] : []
   })
 })
@@ -44,26 +43,23 @@ const gridStyle = $computed(() => {
   }
 })
 
-function activate(item: TerminalTab) {
-  activateTerminalTab(item)
+function activate(item: TerminalTab, index: number) {
+  if (currentGroup.includes(index)) {
+    activateTerminalTab(item)
+  }
 }
 </script>
 
 <template>
-  <article class="terminal-group" :style="gridStyle">
+  <article class="terminal-view" :style="gridStyle">
     <template v-for="(tab, index) in tabs" :key="getTerminalTabID(tab)">
       <component
-        :is="tab.pane.component"
-        v-if="tab.pane"
-        v-show="currentGroup.includes(index)"
-      ></component>
-      <TerminalTeletype
-        v-else
+        :is="tab.pane ? tab.pane.component : TerminalTeletype"
         v-show="currentGroup.includes(index)"
         :tab="tab"
         :class="{ active: index === activeIndex }"
         :style="{ 'grid-area': `a${index}` }"
-        @click="activate(tab)"
+        @click="activate(tab, index)"
       />
     </template>
   </article>
@@ -72,12 +68,12 @@ function activate(item: TerminalTab) {
 <style lang="scss" scoped>
 @use '../assets/_partials';
 
-.terminal-group {
+.terminal-view {
   position: relative;
   display: grid;
   flex: 1;
   min-height: 0;
-  :deep(.terminal-teletype:not(.active)) {
+  :deep(.terminal-block:not(.active)) {
     opacity: 0.75;
   }
 }

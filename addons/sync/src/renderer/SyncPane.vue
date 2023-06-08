@@ -93,7 +93,7 @@ function removeSyncPlan(index: number) {
 </script>
 
 <template>
-  <TerminalPane class="sync-pane">
+  <TerminalPane :tab="tab" class="sync-pane">
     <h2 v-i18n class="group-title">Sync#!sync.1</h2>
     <div class="group">
       <span

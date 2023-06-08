@@ -1,5 +1,5 @@
 import type { Component } from 'vue'
-import type { TerminalTabGroup } from '../src/typings/terminal'
+import type { TerminalTabCharacter } from '../src/typings/terminal'
 
 declare module './modules/context' {
   export interface Context {
@@ -9,7 +9,7 @@ declare module './modules/context' {
     'terminal.ui-slot': Component,
     'terminal.category': {
       title: string,
-      groups: TerminalTabGroup[],
+      characters: TerminalTabCharacter[],
       command: string,
       priority?: number,
     },

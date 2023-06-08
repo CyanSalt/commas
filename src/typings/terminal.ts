@@ -19,7 +19,7 @@ export interface TerminalTabPane {
   instance?: any,
 }
 
-export interface TerminalTabGroup {
+export interface TerminalTabCharacter {
   type: string,
   id: string,
   title?: string,
@@ -76,7 +76,8 @@ export interface TerminalTab extends TerminalInfo {
   idle?: boolean,
   thumbnail?: string,
   pane?: TerminalTabPane,
-  group?: TerminalTabGroup,
+  character?: TerminalTabCharacter,
+  group?: bigint,
   position?: TerminalTabPosition,
   completions?: CommandCompletion[],
 }

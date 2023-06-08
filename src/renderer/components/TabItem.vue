@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import * as path from 'node:path'
-import type { TerminalTab, TerminalTabGroup } from '../../typings/terminal'
+import type { TerminalTab, TerminalTabCharacter } from '../../typings/terminal'
 import type { IconEntry } from '../assets/icons'
 import { useSettings } from '../compositions/settings'
 import { getTerminalTabTitle, useCurrentTerminal, closeTerminalTab } from '../compositions/terminal'
 import { getIconEntryByProcess } from '../utils/terminal'
 
-const { tab, group, closable = false } = defineProps<{
+const { tab, character, closable = false } = defineProps<{
   tab?: TerminalTab | undefined,
-  group?: TerminalTabGroup | undefined,
+  character?: TerminalTabCharacter | undefined,
   closable?: boolean,
 }>()
 
@@ -30,8 +30,7 @@ const isFocused: boolean = $computed(() => {
 const isActive = $computed(() => {
   if (isFocused) return true
   return terminal?.group && tab?.group
-    && terminal.group.type === tab.group.type
-    && terminal.group.id === tab.group.id
+    && terminal.group === tab.group
 })
 
 const pane = $computed(() => {
@@ -41,11 +40,11 @@ const pane = $computed(() => {
 
 const iconEntry = $computed(() => {
   let defaultIcon: IconEntry | undefined
-  if (group) {
-    if (group.icon) {
-      return group.icon
+  if (character) {
+    if (character.icon) {
+      return character.icon
     } else {
-      defaultIcon = group.defaultIcon
+      defaultIcon = character.defaultIcon
     }
   }
   if (tab) {
@@ -59,7 +58,7 @@ const iconEntry = $computed(() => {
 })
 
 const title = $computed(() => {
-  if (group?.title) return group.title
+  if (character?.title) return character.title
   return tab ? getTerminalTabTitle(tab) : ''
 })
 

@@ -4,17 +4,14 @@ import fuzzaldrin from 'fuzzaldrin-plus'
 import { quote } from 'shell-quote'
 import { watchEffect } from 'vue'
 import type { CommandCompletion, TerminalTab } from '../../typings/terminal'
-import type { TerminalTabDirection } from '../compositions/terminal'
-import { appendTerminalTab, getTerminalTabIndex, isMatchLinkModifier, useMovingTerminalIndex, writeTerminalTab } from '../compositions/terminal'
+import { isMatchLinkModifier, writeTerminalTab } from '../compositions/terminal'
 import { openContextMenu } from '../utils/frame'
-import { escapeHTML, handleMousePressing } from '../utils/helper'
+import { escapeHTML } from '../utils/helper'
+import TerminalBlock from './TerminalBlock.vue'
 
 const { tab } = defineProps<{
   tab: TerminalTab,
 }>()
-
-const movingIndex = $(useMovingTerminalIndex())
-const currentIndex = $computed(() => getTerminalTabIndex(tab))
 
 const element = $ref<HTMLElement | undefined>()
 
@@ -121,49 +118,11 @@ function selectCompletion(event: MouseEvent) {
     tab.xterm.focus()
   }
 }
-
-const root = $ref<HTMLElement | undefined>()
-const movingTarget = $ref<HTMLElement | undefined>()
-
-function getMovingDirection(target: HTMLElement, event: MouseEvent): TerminalTabDirection {
-  const bounds = target.getBoundingClientRect()
-  if (event.clientX > bounds.left + bounds.width * 3 / 4) return 'right'
-  if (event.clientX < bounds.left + bounds.width / 4) return 'left'
-  if (event.clientY > bounds.top + bounds.height * 3 / 4) return 'bottom'
-  if (event.clientY < bounds.top + bounds.height / 4) return 'top'
-  return 'right'
-}
-
-let movingDirection = $ref<TerminalTabDirection | undefined>()
-
-watchEffect(onInvalidate => {
-  if (root && movingTarget) {
-    movingDirection = undefined
-    const cancel = handleMousePressing({
-      element: root,
-      onMove(event) {
-        event.preventDefault()
-        movingDirection = getMovingDirection(root, event)
-      },
-      onEnd(event) {
-        event.preventDefault()
-        appendTerminalTab(tab, movingIndex, movingDirection)
-      },
-      onLeave() {
-        movingDirection = undefined
-      },
-      active: true,
-    })
-    onInvalidate(() => {
-      cancel()
-    })
-  }
-})
 </script>
 
 <template>
-  <div
-    ref="root"
+  <TerminalBlock
+    :tab="tab"
     class="terminal-teletype"
     data-shell-integration="container"
     @contextmenu="openEditingMenu"
@@ -195,19 +154,13 @@ watchEffect(onInvalidate => {
         <div class="terminal-completion-desc">{{ tab.completions[0]?.description ?? '' }}</div>
       </div>
     </div>
-    <div
-      v-if="movingIndex !== -1 && movingIndex !== currentIndex"
-      ref="movingTarget"
-      :class="['moving-target', movingDirection]"
-    ></div>
-  </div>
+  </TerminalBlock>
 </template>
 
 <style lang="scss" scoped>
 @use '../assets/_partials';
 
 .terminal-teletype {
-  position: relative;
   display: flex;
   flex: 1;
   min-width: 0;
@@ -354,24 +307,6 @@ watchEffect(onInvalidate => {
   word-wrap: break-word;
   &:empty {
     display: none;
-  }
-}
-.moving-target {
-  position: absolute;
-  inset: 50%;
-  background: var(--design-card-background);
-  transition: inset 0.2s;
-  &.top {
-    inset: 0 0 75% 0;
-  }
-  &.bottom {
-    inset: 75% 0 0 0;
-  }
-  &.left {
-    inset: 0 75% 0 0;
-  }
-  &.right {
-    inset: 0 0 0 75%;
   }
 }
 </style>

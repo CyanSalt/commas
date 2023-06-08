@@ -74,7 +74,7 @@ function update() {
 </script>
 
 <template>
-  <TerminalPane class="proxy-pane">
+  <TerminalPane :tab="tab" class="proxy-pane">
     <h2 v-i18n class="group-title">Proxy#!proxy.1</h2>
     <div class="group">
       <div class="form-line">

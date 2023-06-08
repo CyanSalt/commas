@@ -2,10 +2,10 @@
 import * as commas from 'commas:api/renderer'
 import { ipcRenderer } from 'electron'
 import { nextTick } from 'vue'
-import type { TerminalTab, TerminalTabGroup } from '../../../../src/typings/terminal'
+import type { TerminalTab, TerminalTabCharacter } from '../../../../src/typings/terminal'
 import type { Launcher } from '../../typings/launcher'
 import {
-  getTerminalTabGroupByLauncher,
+  getTerminalTabCharacterByLauncher,
   getTerminalTabsByLauncher,
   moveLauncher,
   openLauncher,
@@ -52,17 +52,17 @@ const filteredLaunchers = $computed(() => {
 interface LauncherItem {
   key: string,
   tab?: TerminalTab,
-  group: TerminalTabGroup,
+  character: TerminalTabCharacter,
   launcher: Launcher,
 }
 
 const launcherItems = $computed(() => {
   return filteredLaunchers.flatMap(launcher => {
     const tabs = getTerminalTabsByLauncher(launcher)
-    const group = getTerminalTabGroupByLauncher(launcher)
+    const character = getTerminalTabCharacterByLauncher(launcher)
     return tabs.length
-      ? tabs.map<LauncherItem>(tab => ({ key: [launcher.id, tab.pid].join(':'), tab, group, launcher }))
-      : [{ key: launcher.id, group, launcher }]
+      ? tabs.map<LauncherItem>(tab => ({ key: [launcher.id, tab.pid].join(':'), tab, character, launcher }))
+      : [{ key: launcher.id, character, launcher }]
   })
 })
 
@@ -107,7 +107,7 @@ function closeLauncher(launcher: Launcher, tab?: TerminalTab) {
     removeLauncher(index)
     const launcherTabs = getTerminalTabsByLauncher(launcher)
     for (const launcherTab of launcherTabs) {
-      delete launcherTab.group
+      delete launcherTab.character
     }
   } else if (tab) {
     commas.workspace.closeTerminalTab(tab)
@@ -179,7 +179,7 @@ function showLauncherMenu(event: MouseEvent) {
         </div>
       </div>
       <SortableList
-        v-slot="{ value: { tab, group, launcher } }"
+        v-slot="{ value: { tab, character, launcher } }"
         :value="launcherItems"
         value-key="key"
         class="launchers"
@@ -188,7 +188,7 @@ function showLauncherMenu(event: MouseEvent) {
       >
         <TabItem
           :tab="tab"
-          :group="group"
+          :character="character"
           :closable="isEditing"
           @click="openLauncher(launcher, { tab })"
           @close="closeLauncher(launcher, tab)"

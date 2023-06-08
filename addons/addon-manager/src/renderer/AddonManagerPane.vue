@@ -64,7 +64,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <TerminalPane class="addon-manager-pane">
+  <TerminalPane :tab="tab" class="addon-manager-pane">
     <h2 v-i18n class="group-title">Addons#!addon-manager.1</h2>
     <form class="group">
       <div class="form-line">

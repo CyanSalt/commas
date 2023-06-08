@@ -57,7 +57,7 @@ function openWebsite() {
 </script>
 
 <template>
-  <TerminalPane class="preference-pane">
+  <TerminalPane :tab="tab" class="preference-pane">
     <h2 v-i18n class="group-title">General#!preference.2</h2>
     <div class="group">
       <component

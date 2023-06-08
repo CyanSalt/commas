@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { openContextMenu } from '../../utils/frame'
+import type { TerminalTab } from '../../typings/terminal'
+import { openContextMenu } from '../utils/frame'
+import TerminalBlock from './TerminalBlock.vue'
+
+defineProps<{
+  tab: TerminalTab,
+}>()
 
 defineSlots<{
   default?: (props: {}) => any,
@@ -22,13 +28,13 @@ function openEditingMenu(event: MouseEvent) {
 </script>
 
 <template>
-  <article class="terminal-pane" @contextmenu="openEditingMenu">
+  <TerminalBlock :tab="tab" class="terminal-pane" @contextmenu="openEditingMenu">
     <slot></slot>
-  </article>
+  </TerminalBlock>
 </template>
 
 <style lang="scss" scoped>
-@use '../../assets/_partials';
+@use '../assets/_partials';
 
 .terminal-pane {
   @include partials.scroll-container;

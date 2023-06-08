@@ -8,6 +8,8 @@ const { tab } = defineProps<{
   tab: TerminalTab,
 }>()
 
+const { TerminalBlock } = commas.ui.vueAssets
+
 let editor = $ref<InstanceType<typeof CodeEditor>>()
 
 const file = $computed(() => tab.shell)
@@ -73,18 +75,19 @@ defineExpose({
 </script>
 
 <template>
-  <article class="code-editor-pane" @contextmenu="openEditingMenu">
+  <TerminalBlock :tab="tab" class="code-editor-pane" @contextmenu="openEditingMenu">
     <CodeEditor
       ref="editor"
       v-model="code"
       :file="file"
     />
-  </article>
+  </TerminalBlock>
 </template>
 
 <style lang="scss" scoped>
 .code-editor-pane {
   box-sizing: border-box;
+  min-width: 0;
   height: 100%;
 }
 </style>

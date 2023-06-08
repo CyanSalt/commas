@@ -1,11 +1,11 @@
-import { shallowReactive, markRaw, unref } from 'vue'
+import { markRaw, reactive, shallowReactive } from 'vue'
 import {
   activateOrAddTerminalTab,
   activateTerminalTab,
   closeTerminalTab,
   createTerminalTab,
   executeTerminalTab,
-  getTerminalTabsByGroup,
+  getTerminalTabsByCharacter,
   getTerminalTabTitle,
   scrollToMarker,
   showTabOptions,
@@ -16,29 +16,41 @@ import {
 import type { TerminalTab, TerminalTabAddons, TerminalTabPane } from '../../src/typings/terminal'
 import type { RendererAPIContext } from '../types'
 
-const paneTabs = shallowReactive<Record<string, TerminalTab | undefined>>({})
+const tabs = $(useTerminalTabs())
+
+const panes = shallowReactive<Record<string, TerminalTabPane | undefined>>({})
 
 function registerTabPane(this: RendererAPIContext, name: string, pane: TerminalTabPane) {
-  paneTabs[name] = markRaw({
-    pid: 0,
-    process: name,
-    title: '',
-    cwd: '',
-    pane,
-  } as TerminalTab)
+  panes[name] = markRaw(pane)
   this.$.app.onInvalidate(() => {
-    delete paneTabs[name]
+    delete panes[name]
   })
 }
 
-function getPaneTab(name: string) {
-  return paneTabs[name]
+function getPane(name: string) {
+  return panes[name]
+}
+
+function getTerminalTabByPane(pane: TerminalTabPane) {
+  return tabs.find(tab => tab.pane === pane)
 }
 
 function openPaneTab(name: string) {
-  const pane = getPaneTab(name)
+  const pane = getPane(name)
   if (!pane) return
-  activateOrAddTerminalTab(pane)
+  const tab = getTerminalTabByPane(pane)
+  if (tab) {
+    activateTerminalTab(tab)
+  } else {
+    const paneTab = reactive({
+      pid: 0,
+      process: name,
+      title: '',
+      cwd: '',
+      pane: markRaw(pane),
+    } as TerminalTab)
+    activateOrAddTerminalTab(paneTab)
+  }
 }
 
 function registerXtermAddon<T extends keyof TerminalTabAddons>(
@@ -69,7 +81,6 @@ function registerXtermAddon<T extends keyof TerminalTabAddons>(
   const toggle = (enabled: boolean) => {
     if (active === enabled) return
     active = enabled
-    const tabs = unref(useTerminalTabs())
     tabs.forEach(tab => {
       if (!tab.pane) {
         apply(tab, active)
@@ -91,7 +102,7 @@ export * from '../shim'
 
 export {
   registerTabPane,
-  getPaneTab,
+  getPane,
   openPaneTab,
   registerXtermAddon,
   activateOrAddTerminalTab,
@@ -99,7 +110,7 @@ export {
   closeTerminalTab,
   createTerminalTab,
   executeTerminalTab,
-  getTerminalTabsByGroup,
+  getTerminalTabsByCharacter,
   getTerminalTabTitle,
   scrollToMarker,
   showTabOptions,

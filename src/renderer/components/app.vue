@@ -24,7 +24,7 @@ import { injectThemeStyle, useTheme } from '../compositions/theme'
 import ActionBar from './ActionBar.vue'
 import FindBox from './FindBox.vue'
 import TabList from './TabList.vue'
-import TerminalGroup from './TerminalGroup.vue'
+import TerminalView from './TerminalView.vue'
 import TitleBar from './TitleBar.vue'
 import '@phosphor-icons/web/bold'
 import 'devicon'
@@ -84,7 +84,7 @@ onMounted(() => {
       <TabList v-if="!hasHorizontalTabList" v-show="isTabListEnabled" />
       <main class="interface">
         <FindBox />
-        <TerminalGroup />
+        <TerminalView />
       </main>
     </div>
     <ActionBar />

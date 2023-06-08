@@ -95,7 +95,7 @@ onBeforeUpdate(() => {
 </script>
 
 <template>
-  <TerminalPane class="settings-pane">
+  <TerminalPane :tab="tab" class="settings-pane">
     <h2 v-i18n class="group-title">Settings#!settings.1</h2>
     <form class="group">
       <div class="action-line settings-searcher">

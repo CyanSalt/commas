@@ -12,9 +12,9 @@ import { Unicode11Addon } from 'xterm-addon-unicode11'
 import { WebLinksAddon } from 'xterm-addon-web-links'
 import { WebglAddon } from 'xterm-addon-webgl'
 import * as commas from '../../../api/core-renderer'
-import { createDeferred } from '../../shared/helper'
+import { createDeferred, createIDGenerator } from '../../shared/helper'
 import type { MenuItem } from '../../typings/menu'
-import type { TerminalContext, TerminalInfo, TerminalTab, TerminalTabGroup } from '../../typings/terminal'
+import type { TerminalContext, TerminalInfo, TerminalTab, TerminalTabCharacter } from '../../typings/terminal'
 import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
 import { translate } from '../utils/i18n'
@@ -57,14 +57,18 @@ export function getTerminalTabIndex(tab: TerminalTab) {
   return tabs.indexOf(toRaw(tab))
 }
 
-export function getTerminalTabsByGroup(group: TerminalTabGroup) {
-  return tabs.filter(tab => tab.group?.type === group.type && tab.group.id === group.id)
+export function getTerminalTabsByGroup(group: NonNullable<TerminalTab['group']>) {
+  return tabs.filter(tab => tab.group === group)
+}
+
+export function getTerminalTabsByCharacter(character: TerminalTabCharacter) {
+  return tabs.filter(tab => tab.character?.type === character.type && tab.character.id === character.id)
 }
 
 interface TerminalTabCategory {
   items: {
     tab?: TerminalTab | undefined,
-    group?: TerminalTabGroup | undefined,
+    character?: TerminalTabCharacter | undefined,
     command?: string,
   }[],
 }
@@ -77,19 +81,19 @@ const tabCategories = $computed<TerminalTabCategory[]>(() => {
       items: tabs
         .filter(tab => {
           return !orderedCategories.some(category => {
-            return category.groups
-              .some(group => tab.group?.type === group.type && tab.group.id === group.id)
+            return category.characters
+              .some(character => tab.character?.type === character.type && tab.character.id === character.id)
           })
         })
-        .map(tab => ({ tab, group: tab.group })),
+        .map(tab => ({ tab, character: tab.character })),
     },
     ...orderedCategories.map<TerminalTabCategory>(category => {
       return {
-        items: category.groups.flatMap(group => {
-          const groupTabs = getTerminalTabsByGroup(group)
-          return groupTabs.length
-            ? groupTabs.map(tab => ({ tab, group, command: category.command }))
-            : { group, command: category.command }
+        items: category.characters.flatMap(character => {
+          const characterTabs = getTerminalTabsByCharacter(character)
+          return characterTabs.length
+            ? characterTabs.map(tab => ({ tab, character, command: category.command }))
+            : { character, command: category.command }
         }),
       }
     }),
@@ -162,12 +166,12 @@ const rendererKeybindings = $computed(() => {
 
 export interface CreateTerminalTabOptions {
   command?: string,
-  group?: TerminalTabGroup,
+  character?: TerminalTabCharacter,
 }
 
 export async function createTerminalTab(context: Partial<TerminalContext> = {}, {
   command,
-  group,
+  character,
 }: CreateTerminalTabOptions = {}) {
   const info: TerminalInfo = await ipcRenderer.invoke('create-terminal', {
     cwd: context.cwd,
@@ -187,7 +191,7 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
     },
     alerting: false,
     thumbnail: '',
-    group,
+    character,
   })
   xterm.attachCustomKeyEventHandler(event => {
     // Support shortcuts on Windows
@@ -321,8 +325,8 @@ export function getTerminalTabTitle(tab: TerminalTab) {
   if (tab.pane && !tab.shell) {
     return translate(tab.pane.title)
   }
-  if (tab.group?.title) {
-    return tab.group.title
+  if (tab.character?.title) {
+    return tab.character.title
   }
   if (process.platform !== 'win32' && tab.title) {
     return tab.title
@@ -342,14 +346,14 @@ export function showTabOptions(event?: MouseEvent, type?: string) {
     }
     const items = tabCategories[index].items
     for (const item of items) {
-      if (!type || item.group?.type === type) {
+      if (!type || item.character?.type === type) {
         if (item.tab && toRaw(item.tab) === toRaw(currentTerminal)) {
           defaultIndex = options.length
         }
         options.push({
           type: index ? 'checkbox' : 'normal',
-          label: item.tab ? getTerminalTabTitle(item.tab) : item.group?.title,
-          args: item.tab ? [currentIndex] : [item.group],
+          label: item.tab ? getTerminalTabTitle(item.tab) : item.character?.title,
+          args: item.tab ? [currentIndex] : [item.character],
           command: item.tab ? 'select-tab' : item.command,
           accelerator: number <= 9 ? String(number) : undefined,
           checked: index ? Boolean(item.tab) : undefined,
@@ -753,14 +757,13 @@ export function cancelTerminalTabGrouping(tab: TerminalTab) {
 
 export type TerminalTabDirection = 'left' | 'right' | 'top' | 'bottom'
 
+const generateGroup = createIDGenerator()
+
 export function appendTerminalTab(tab: TerminalTab, fromIndex: number, direction: TerminalTabDirection = 'right') {
   const movingTab = tabs[fromIndex]
   cancelTerminalTabGrouping(movingTab)
   if (!tab.group) {
-    tab.group = {
-      type: 'default',
-      id: getTerminalTabID(tab),
-    }
+    tab.group = generateGroup()
   }
   if (!tab.position) {
     tab.position = { row: 0, col: 0 }

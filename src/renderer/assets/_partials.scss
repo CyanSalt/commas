@@ -13,6 +13,9 @@
   &::-webkit-scrollbar-track {
     background-color: rgb(var(--theme-foreground) / var(--scrollbar-opacity));
   }
+  &::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
   &::-webkit-scrollbar-thumb {
     background-color: rgb(var(--theme-foreground) / var(--scrollbar-opacity));
     &:horizontal:active,

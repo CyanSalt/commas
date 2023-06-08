@@ -44,15 +44,12 @@ const profiles = $computed(() => {
 
 const standaloneTabs = $computed(() => {
   if (isHorizontal) return tabs
-  return tabs.filter(tab => {
-    if (!tab.group) return true
-    return tab.group.type === 'default'
-  })
+  return tabs.filter(tab => !tab.character)
 })
 
 function startMoving(from: number) {
   const movingTab = standaloneTabs[from]
-  if (!movingTab || movingTab.pane) return
+  if (!movingTab) return
   movingIndex = getTerminalTabIndex(movingTab)
 }
 

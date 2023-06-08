@@ -1,6 +1,6 @@
 import * as commas from 'commas:api/renderer'
 import { shell, ipcRenderer } from 'electron'
-import type { TerminalTab, TerminalTabGroup } from '../../../../src/typings/terminal'
+import type { TerminalTab, TerminalTabCharacter } from '../../../../src/typings/terminal'
 import type { Launcher } from '../../typings/launcher'
 import { getLauncherCommand } from './utils'
 
@@ -12,8 +12,8 @@ export function useLaunchers() {
   return $$(launchers)
 }
 
-const launcherGroups = $computed(() => {
-  return launchers.map<TerminalTabGroup>(launcher => {
+const launcherCharacters = $computed(() => {
+  return launchers.map<TerminalTabCharacter>(launcher => {
     return {
       type: 'launcher',
       id: launcher.id,
@@ -28,20 +28,20 @@ const launcherGroups = $computed(() => {
   })
 })
 
-export function useLauncherGroups() {
-  return $$(launcherGroups)
+export function useLauncherCharacters() {
+  return $$(launcherCharacters)
 }
 
-export function getLauncherByTerminalTabGroup(group: TerminalTabGroup) {
-  return launchers.find(launcher => group.type === 'launcher' && group.id === launcher.id)
+export function getLauncherByTerminalTabCharacter(character: TerminalTabCharacter) {
+  return launchers.find(launcher => character.type === 'launcher' && character.id === launcher.id)
 }
 
-export function getTerminalTabGroupByLauncher(launcher: Launcher) {
-  return launcherGroups.find(group => group.type === 'launcher' && group.id === launcher.id)!
+export function getTerminalTabCharacterByLauncher(launcher: Launcher) {
+  return launcherCharacters.find(character => character.type === 'launcher' && character.id === launcher.id)!
 }
 
 export function getTerminalTabsByLauncher(launcher: Launcher) {
-  return commas.workspace.getTerminalTabsByGroup(getTerminalTabGroupByLauncher(launcher))
+  return commas.workspace.getTerminalTabsByCharacter(getTerminalTabCharacterByLauncher(launcher))
 }
 
 interface OpenLauncherOptions {
@@ -66,7 +66,7 @@ export async function openLauncher(launcher: Launcher, { tab, command }: OpenLau
       cwd: directory && commas.helper.resolveHome(directory),
     }, {
       command,
-      group: getTerminalTabGroupByLauncher(launcher),
+      character: getTerminalTabCharacterByLauncher(launcher),
     })
   }
 }

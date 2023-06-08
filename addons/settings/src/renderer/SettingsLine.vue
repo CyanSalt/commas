@@ -227,6 +227,7 @@ function reset() {
   display: flex;
 }
 .item-label {
+  flex: none;
   cursor: text;
   user-select: text;
   .line-summary.customized & {
@@ -234,6 +235,7 @@ function reset() {
   }
 }
 .item-key {
+  flex: none;
   margin-left: 16px;
   font-size: 12px;
   opacity: 0.5;
@@ -244,6 +246,7 @@ function reset() {
   }
 }
 .tree-node {
+  flex: none;
   width: 24px;
   font-size: 12px;
   text-align: center;

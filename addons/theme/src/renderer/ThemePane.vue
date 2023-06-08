@@ -73,7 +73,7 @@ async function applyTheme(item: RemoteTheme) {
 </script>
 
 <template>
-  <TerminalPane class="theme-pane">
+  <TerminalPane :tab="tab" class="theme-pane">
     <h2 v-i18n class="group-title">Configure Theme#!theme.2</h2>
     <div class="group">
       <div class="form-line">

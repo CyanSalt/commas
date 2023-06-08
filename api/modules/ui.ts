@@ -1,11 +1,12 @@
 import * as path from 'node:path'
 import * as url from 'node:url'
 import TabItem from '../../src/renderer/components/TabItem.vue'
+import TerminalBlock from '../../src/renderer/components/TerminalBlock.vue'
+import TerminalPane from '../../src/renderer/components/TerminalPane.vue'
 import LoadingSpinner from '../../src/renderer/components/basic/LoadingSpinner.vue'
 import ObjectEditor from '../../src/renderer/components/basic/ObjectEditor.vue'
 import SortableList from '../../src/renderer/components/basic/SortableList.vue'
 import SwitchControl from '../../src/renderer/components/basic/SwitchControl.vue'
-import TerminalPane from '../../src/renderer/components/basic/TerminalPane.vue'
 import ValueSelector from '../../src/renderer/components/basic/ValueSelector.vue'
 import { openContextMenu } from '../../src/renderer/utils/frame'
 import { vI18n } from '../../src/renderer/utils/i18n'
@@ -33,6 +34,7 @@ const vueAssets = {
   ObjectEditor,
   SortableList,
   SwitchControl,
+  TerminalBlock,
   TerminalPane,
   ValueSelector,
   TabItem,
