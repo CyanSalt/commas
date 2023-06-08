@@ -57,7 +57,7 @@ export function usePersistScrollPosition(elementRef: Ref<HTMLElement | undefined
 }
 
 export function unmountKeptAlive(instance: InstanceType<typeof KeepAlive>, key: VNode['key']) {
-  const internalInstance = (instance as ComponentPublicInstance).$
+  const internalInstance = (instance as unknown as ComponentPublicInstance).$
   const cache: Map<typeof key, VNode> = internalInstance['__v_cache']
   if (!cache.has(key)) return
   const vnode = cache.get(key)!

@@ -3,6 +3,7 @@ import 'xterm/css/xterm.css'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { quote } from 'shell-quote'
 import { onActivated, watchEffect } from 'vue'
+import { createDeferred } from '../../shared/helper'
 import type { CommandCompletion, TerminalTab } from '../../typings/terminal'
 import type { TerminalTabDirection } from '../compositions/terminal'
 import { appendTerminalTab, getTerminalTabIndex, isMatchLinkModifier, useMovingTerminalIndex, writeTerminalTab } from '../compositions/terminal'
@@ -69,11 +70,17 @@ function fit() {
 const observer = new ResizeObserver(fit)
 
 watchEffect((onInvalidate) => {
+  console.log('watchEffect', tab)
   const el = element
   if (!el) return
   const xterm = tab.xterm
-  // FIXME: don't know why
-  if (xterm.element && document.contains(xterm.element)) return
+  if (xterm.element) {
+    // FIXME: don't know why
+    if (document.contains(xterm.element)) return
+    // This will trigger `loadTerminalAddons` again
+    // eslint-disable-next-line vue/no-mutating-props
+    tab.deferred.open = createDeferred()
+  }
   xterm.open(el)
   // Add cell size properties
   const cell = xterm['_core']._renderService.dimensions.css.cell

@@ -1,7 +1,7 @@
 import * as os from 'node:os'
 import { ipcRenderer, shell } from 'electron'
 import { isMatch, trim } from 'lodash'
-import { markRaw, nextTick, reactive, shallowReactive, toRaw, watch, watchEffect } from 'vue'
+import { effectScope, markRaw, nextTick, reactive, shallowReactive, toRaw, watch, watchEffect } from 'vue'
 import type { ITerminalOptions, IMarker } from 'xterm'
 import { Terminal } from 'xterm'
 import { CanvasAddon } from 'xterm-addon-canvas'
@@ -280,14 +280,17 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
   xterm['_core']._onFocus.event(() => {
     activateTerminalTab(tab)
   })
-  const stopEffect = watchEffect(() => {
-    for (const [key, value] of Object.entries(terminalOptions)) {
-      xterm.options[key] = value
-    }
-    loadTerminalAddons(tab)
+  const scope = effectScope()
+  scope.run(() => {
+    watchEffect(() => {
+      for (const [key, value] of Object.entries(terminalOptions)) {
+        xterm.options[key] = value
+      }
+      loadTerminalAddons(tab)
+    })
   })
   tab.deferred.stop.promise.then(() => {
-    stopEffect()
+    scope.stop()
   })
   if (command) {
     executeTerminalTab(tab, command)
@@ -544,20 +547,17 @@ export function loadTerminalAddons(tab: TerminalTab) {
       delete addons.ligatures
     }
   }
+  // Always dispose them since they depend on `xterm.element`
   const rendererType = settings['terminal.view.rendererType'] === 'webgl'
     ? (xterm.options.allowTransparency ? 'canvas' : 'webgl')
     : settings['terminal.view.rendererType']
-  if (rendererType !== 'webgl') {
-    if (addons.webgl) {
-      addons.webgl.dispose()
-      delete addons.webgl
-    }
+  if (addons.webgl) {
+    addons.webgl.dispose()
+    delete addons.webgl
   }
-  if (rendererType !== 'canvas') {
-    if (addons.canvas) {
-      addons.canvas.dispose()
-      delete addons.canvas
-    }
+  if (addons.canvas) {
+    addons.canvas.dispose()
+    delete addons.canvas
   }
   if (rendererType === 'webgl') {
     if (!addons.webgl) {
