@@ -49,9 +49,11 @@ function filterAndSortCompletions(completions: CommandCompletion[]) {
   const duplicatedTimes: (Pick<CommandCompletion, 'value' | 'query'> & { times: number })[] = []
   const deduplicatedCompletions: CommandCompletion[] = []
   for (const completion of completions) {
+    const isPassthrough = completion.value === completion.query
     const existingIndex = deduplicatedCompletions.findIndex(item => {
-      return item.value === completion.value
-        && item.query === completion.query
+      return isPassthrough
+        ? item.value === item.query
+        : item.value === completion.value && item.query === completion.query
     })
     if (existingIndex === -1) {
       deduplicatedCompletions.push(completion)
@@ -87,7 +89,9 @@ function filterAndSortCompletions(completions: CommandCompletion[]) {
       })
       const scale = duplicatedTimesItem ? duplicatedTimesItem.times : 1
       let score: number
-      if (item.query) {
+      if (item.value === item.query) {
+        score = Infinity
+      } else if (item.query) {
         const baseline = fuzzaldrin.score(item.value, item.value) * item.query.length / item.value.length ** 2
         const queryScore = fuzzaldrin.score(item.value, item.query)
         score = queryScore > baseline ? queryScore : 0
