@@ -74,7 +74,7 @@ function activate(item: TerminalTab, index: number) {
   flex: 1;
   min-height: 0;
   :deep(.terminal-block:not(.active)) {
-    opacity: 0.75;
+    opacity: 0.5;
   }
 }
 </style>
