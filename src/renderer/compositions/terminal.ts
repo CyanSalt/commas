@@ -551,9 +551,7 @@ export function loadTerminalAddons(tab: TerminalTab) {
       delete addons.ligatures
     }
   }
-  const rendererType = settings['terminal.view.rendererType'] === 'webgl'
-    ? (xterm.options.allowTransparency ? 'canvas' : 'webgl')
-    : settings['terminal.view.rendererType']
+  const rendererType = settings['terminal.view.rendererType']
   if (rendererType !== 'webgl') {
     if (addons.webgl) {
       addons.webgl.dispose()

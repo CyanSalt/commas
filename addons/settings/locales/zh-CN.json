@@ -55,7 +55,7 @@
   "Renderer Type#!settings.label.terminal.view.rendererType": "渲染方式",
   "Specify how to render the terminal#!settings.comments.0.terminal.view.rendererType": "声明如何渲染终端",
   "Options: 'dom', 'canvas' or 'webgl'#!settings.comments.1.terminal.view.rendererType": "可选项: 'dom', 'canvas' 或 'webgl'",
-  "'webgl' will fallback to 'canvas' when transparency is enabled#!settings.comments.2.terminal.view.rendererType": "当透明度启用时，'webgl' 将回退到 'canvas'",
+  "'webgl' may lose transparency when rendering some glyphs#!settings.comments.2.terminal.view.rendererType": "'webgl' 可能在渲染部分字形时失去透明度",
   "Frame Type#!settings.label.terminal.view.frameType": "框架类型",
   "Frame type of window#!settings.comments.0.terminal.view.frameType": "窗口的框架类型",
   "Options: 'system', 'system-with-menu' or 'immersive'#!settings.comments.1.terminal.view.frameType": "可选项: '系统', '系统（带菜单）' 或 '沉浸式'",

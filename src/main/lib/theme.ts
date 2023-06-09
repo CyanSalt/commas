@@ -91,7 +91,7 @@ const theme = $computed(() => {
   } as Theme
   const backgroundRGBA = toRGBA(definition.background!)
   const foregroundRGBA = toRGBA(definition.foreground!)
-  definition.background = toCSSHEX({ ...backgroundRGBA, a: 1 })
+  definition.background = toCSSHEX({ ...backgroundRGBA, a: 0 })
   definition.type = isDarkColor(backgroundRGBA) ? 'dark' : 'light'
   let selectionBackgroundRGBA = definition.selectionBackground ? toRGBA(definition.selectionBackground) : undefined
   if (!selectionBackgroundRGBA || selectionBackgroundRGBA.a < 1) {
@@ -108,7 +108,7 @@ const theme = $computed(() => {
     definition.cursor = userTheme.cursorColor ?? definition.foreground
   }
   if (!userTheme.cursorAccent) {
-    definition.cursorAccent = definition.background
+    definition.cursorAccent = toCSSHEX({ ...backgroundRGBA, a: 1 })
   }
   const backgroundHSLA = toHSLA(backgroundRGBA)
   const materialBackgroundRGBA = toRGBAFromHSLA({

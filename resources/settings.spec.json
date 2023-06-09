@@ -235,7 +235,7 @@
     "comments": [
       "Specify how to render the terminal",
       "Options: 'dom', 'canvas' or 'webgl'",
-      "'webgl' will fallback to 'canvas' when transparency is enabled"
+      "'webgl' may lose transparency when rendering some glyphs"
     ],
     "schema": {
       "type": "string",
