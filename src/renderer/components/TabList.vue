@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import * as path from 'node:path'
+import { watchEffect } from 'vue'
 import * as commas from '../../../api/core-renderer'
 import { useAsyncComputed } from '../../shared/compositions'
 import type { MenuItem } from '../../typings/menu'
@@ -60,7 +61,6 @@ function stopMoving() {
 function sortTabs(from: number, to: number) {
   stopMoving()
   const toIndex = getTerminalTabIndex(standaloneTabs[to])
-  cancelTerminalTabGrouping(standaloneTabs[from])
   moveTerminalTab(standaloneTabs[from], toIndex)
 }
 
@@ -105,6 +105,39 @@ function resize(startingEvent: DragEvent) {
     },
   })
 }
+
+const movingGroupTab = $computed(() => {
+  if (movingIndex === -1) return false
+  const tab = tabs[movingIndex]
+  return tab.group ? tab : undefined
+})
+
+let newTabElement = $ref<HTMLElement | undefined>()
+let isCancelingGroup = $ref(false)
+
+watchEffect(onInvalidate => {
+  if (newTabElement && movingGroupTab) {
+    const cancel = handleMousePressing({
+      element: newTabElement,
+      onMove(event) {
+        event.preventDefault()
+        isCancelingGroup = true
+      },
+      onEnd(event) {
+        event.preventDefault()
+        isCancelingGroup = false
+        cancelTerminalTabGrouping(movingGroupTab)
+      },
+      onLeave() {
+        isCancelingGroup = false
+      },
+      active: true,
+    })
+    onInvalidate(() => {
+      cancel()
+    })
+  }
+})
 </script>
 
 <template>
@@ -126,7 +159,7 @@ function resize(startingEvent: DragEvent) {
             @click="activateTerminalTab(value)"
           />
         </SortableList>
-        <div class="new-tab">
+        <div ref="newTabElement" :class="['new-tab', { 'is-canceling-group': isCancelingGroup }]">
           <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
             <span class="ph-bold ph-list-plus"></span>
           </div>
@@ -135,7 +168,8 @@ function resize(startingEvent: DragEvent) {
             @click="selectDefaultShell"
             @contextmenu="selectShell"
           >
-            <span class="ph-bold ph-plus"></span>
+            <span v-if="movingGroupTab" class="ph-bold ph-link-break"></span>
+            <span v-else class="ph-bold ph-plus"></span>
           </div>
         </div>
       </div>
@@ -219,7 +253,7 @@ function resize(startingEvent: DragEvent) {
   .tab-list.vertical & {
     visibility: hidden;
   }
-  .tab-list.vertical .new-tab:hover & {
+  .tab-list.vertical .new-tab:hover:not(.is-canceling-group) & {
     visibility: visible;
   }
   .tab-list.horizontal & {
@@ -229,6 +263,9 @@ function resize(startingEvent: DragEvent) {
 .default-shell {
   flex: auto;
   font-size: var(--primary-icon-size);
+  .new-tab.is-canceling-group & {
+    color: rgb(var(--system-red));
+  }
 }
 .select-shell + .default-shell {
   order: -1;
@@ -238,7 +275,7 @@ function resize(startingEvent: DragEvent) {
 }
 .anchor {
   opacity: 0.5;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, color 0.2s;
   cursor: pointer;
   &:hover:not(.disabled),
   &.active {

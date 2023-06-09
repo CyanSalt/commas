@@ -143,6 +143,10 @@ function startMoving(from: number) {
   if (!item?.tab) return
   movingIndex = commas.workspace.getTerminalTabIndex(item.tab)
 }
+
+function stopMoving() {
+  movingIndex = -1
+}
 </script>
 
 <template>
@@ -192,6 +196,7 @@ function startMoving(from: number) {
         class="launchers"
         :disabled="isLauncherSortingDisabled"
         @move="startMoving"
+        @stop="stopMoving"
         @change="sortLaunchers"
       >
         <TabItem
