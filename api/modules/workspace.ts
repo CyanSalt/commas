@@ -5,11 +5,13 @@ import {
   closeTerminalTab,
   createTerminalTab,
   executeTerminalTab,
+  getTerminalTabIndex,
   getTerminalTabsByCharacter,
   getTerminalTabTitle,
   scrollToMarker,
   showTabOptions,
   useCurrentTerminal,
+  useMovingTerminalIndex,
   usePaneTabURL,
   useTerminalTabs,
 } from '../../src/renderer/compositions/terminal'
@@ -117,4 +119,6 @@ export {
   useCurrentTerminal,
   usePaneTabURL,
   useTerminalTabs,
+  useMovingTerminalIndex,
+  getTerminalTabIndex,
 }

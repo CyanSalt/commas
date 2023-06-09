@@ -18,6 +18,7 @@ import {
 const { vI18n, SortableList, TabItem } = commas.ui.vueAssets
 
 const settings = commas.remote.useSettings()
+let movingIndex = $(commas.workspace.useMovingTerminalIndex())
 
 const position = $computed(() => settings['terminal.view.tabListPosition'])
 
@@ -136,6 +137,12 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
 function showLauncherMenu(event: MouseEvent) {
   commas.workspace.showTabOptions(event, 'launcher')
 }
+
+function startMoving(from: number) {
+  const item = launcherItems[from]
+  if (!item?.tab) return
+  movingIndex = commas.workspace.getTerminalTabIndex(item.tab)
+}
 </script>
 
 <template>
@@ -184,6 +191,7 @@ function showLauncherMenu(event: MouseEvent) {
         value-key="key"
         class="launchers"
         :disabled="isLauncherSortingDisabled"
+        @move="startMoving"
         @change="sortLaunchers"
       >
         <TabItem

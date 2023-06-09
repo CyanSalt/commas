@@ -40,8 +40,9 @@ const draggingElement = $computed(() => {
 })
 
 function startDragging(event: DragEvent, index: number) {
-  if (disabled) return
   if (items[index].contains(document.activeElement)) return
+  emit('move', index)
+  if (disabled) return
   handleMousePressing({
     onMove: handleDraggingMove,
     onEnd: handleDraggingEnd,
@@ -50,7 +51,6 @@ function startDragging(event: DragEvent, index: number) {
   startingBounds = draggingElement.getBoundingClientRect()
   startingEvent = event
   startingParentBounds = root!.getBoundingClientRect()
-  emit('move', index)
 }
 
 function getMovingTarget(event: MouseEvent) {
