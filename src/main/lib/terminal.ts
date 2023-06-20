@@ -7,7 +7,7 @@ import * as pty from 'node-pty'
 import type { TerminalContext, TerminalInfo } from '../../typings/terminal'
 import { getCompletions, refreshCompletions } from '../utils/completion'
 import { execa } from '../utils/helper'
-import { integrateShell, getDefaultEnv, getDefaultShell } from '../utils/shell'
+import { getDefaultEnv, getDefaultShell, integrateShell } from '../utils/shell'
 import { useSettings, whenSettingsReady } from './settings'
 
 const ptyProcessMap = new Map<number, IPty>()

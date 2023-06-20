@@ -12,7 +12,7 @@ import { random } from 'lodash'
 import { quote } from 'shell-quote'
 import table from 'text-table'
 import type { CommandModule } from './command'
-import { getCommandModule, executeCommand, useExternalURLCommands } from './command'
+import { executeCommand, getCommandModule, useExternalURLCommands } from './command'
 
 declare module '../../../../src/typings/settings' {
   export interface Settings {

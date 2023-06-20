@@ -1,4 +1,4 @@
-import { mix, toRGBA, toCSSHEX } from '../../src/shared/color'
+import { mix, toCSSHEX, toRGBA } from '../../src/shared/color'
 import { deepRef, surface, useAsyncComputed, watchBaseEffect } from '../../src/shared/compositions'
 import { createIDGenerator, iterate, reuse } from '../../src/shared/helper'
 import { omitHome, resolveHome } from '../../src/shared/terminal'

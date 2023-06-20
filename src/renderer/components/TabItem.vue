@@ -3,7 +3,7 @@ import * as path from 'node:path'
 import type { TerminalTab, TerminalTabCharacter } from '../../typings/terminal'
 import type { IconEntry } from '../assets/icons'
 import { useSettings } from '../compositions/settings'
-import { getTerminalTabTitle, useCurrentTerminal, closeTerminalTab } from '../compositions/terminal'
+import { closeTerminalTab, getTerminalTabTitle, useCurrentTerminal } from '../compositions/terminal'
 import { getIconEntryByProcess } from '../utils/terminal'
 
 const { tab, character, closable = false } = defineProps<{

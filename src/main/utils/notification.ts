@@ -1,5 +1,5 @@
 import type { MessageBoxOptions } from 'electron'
-import { nativeImage, dialog, Notification } from 'electron'
+import { dialog, nativeImage, Notification } from 'electron'
 import { until } from './helper'
 
 interface NotifyOptions {

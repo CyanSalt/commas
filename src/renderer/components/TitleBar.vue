@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useMinimized, useMaximized } from '../compositions/frame'
+import { useMaximized, useMinimized } from '../compositions/frame'
 import { useSettings } from '../compositions/settings'
 import TabList from './TabList.vue'
 import TerminalTitle from './TerminalTitle.vue'

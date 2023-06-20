@@ -1,12 +1,12 @@
 import * as path from 'node:path'
 import { markRaw } from '@vue/reactivity'
 import {
-  writeUserFile,
   openSettingsFile,
   openUserDirectory,
   useDefaultSettings,
   useSettings,
   useSettingsSpecs,
+  writeUserFile,
 } from '../../src/main/lib/settings'
 import { THEME_CSS_COLORS, useTheme } from '../../src/main/lib/theme'
 import type { SettingsSpec } from '../../src/typings/settings'

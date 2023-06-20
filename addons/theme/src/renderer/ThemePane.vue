@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
-import { shell, ipcRenderer } from 'electron'
+import { ipcRenderer, shell } from 'electron'
 import { onMounted } from 'vue'
 import type { TerminalTab } from '../../../../src/typings/terminal'
 import ThemeCard from './ThemeCard.vue'

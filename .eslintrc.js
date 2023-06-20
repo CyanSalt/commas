@@ -7,7 +7,7 @@ module.exports = {
     project: './tsconfig.tools.json',
   },
   rules: {
-    'unicorn/prefer-node-protocol': 'warn',
+    'sort-imports': ['warn', { ignoreCase: true, ignoreDeclarationSort: true }],
     'vue/no-undef-components': 'error',
     'vue/no-undef-properties': 'error',
   },

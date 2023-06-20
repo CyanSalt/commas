@@ -1,5 +1,5 @@
 import * as commas from 'commas:api/renderer'
-import { shell, ipcRenderer } from 'electron'
+import { ipcRenderer, shell } from 'electron'
 import type { TerminalTab, TerminalTabCharacter } from '../../../../src/typings/terminal'
 import type { Launcher } from '../../typings/launcher'
 import { getLauncherCommand } from './utils'

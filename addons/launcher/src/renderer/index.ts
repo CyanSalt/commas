@@ -2,7 +2,7 @@ import * as commas from 'commas:api/renderer'
 import { watch } from 'vue'
 import LauncherLink from './LauncherLink.vue'
 import LauncherList from './LauncherList.vue'
-import { startLauncher, runLauncherScript, useLauncherCharacters, useLaunchers, openLauncher, getLauncherByTerminalTabCharacter } from './launcher'
+import { getLauncherByTerminalTabCharacter, openLauncher, runLauncherScript, startLauncher, useLauncherCharacters, useLaunchers } from './launcher'
 import { clearLauncherSessions, LauncherSessionAddon } from './session'
 
 declare module '../../../../src/typings/terminal' {

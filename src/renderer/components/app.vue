@@ -4,21 +4,21 @@ import { onMounted } from 'vue'
 import * as commas from '../../../api/core-renderer'
 import { loadAddons, loadCustomJS } from '../compositions/addon'
 import {
-  useFullscreen,
   handleFrameMessages,
+  useFullscreen,
 } from '../compositions/frame'
 import { handleI18nMessages } from '../compositions/i18n'
 import { injectSettingsStyle, useSettings } from '../compositions/settings'
 import {
-  useIsTabListEnabled,
-  useWillQuit,
   confirmClosing,
   handleShellMessages,
+  useIsTabListEnabled,
+  useWillQuit,
 } from '../compositions/shell'
 import {
-  useTerminalTabs,
-  handleTerminalMessages,
   createTerminalTab,
+  handleTerminalMessages,
+  useTerminalTabs,
 } from '../compositions/terminal'
 import { injectThemeStyle, useTheme } from '../compositions/theme'
 import ActionBar from './ActionBar.vue'
