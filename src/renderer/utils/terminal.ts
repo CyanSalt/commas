@@ -1,9 +1,21 @@
 import * as os from 'node:os'
 import * as path from 'node:path'
 import { ipcRenderer } from 'electron'
+import { parse } from 'shell-quote'
 import { omitHome, resolveWindowsDisk } from '../../shared/terminal'
 import type { TerminalTab } from '../../typings/terminal'
 import icons from '../assets/icons'
+
+export function getProcessName(tab: TerminalTab) {
+  if (tab.process === tab.shell) {
+    if (tab.command) {
+      const entries = parse(tab.command)
+      const command = entries.find((item): item is string => typeof item === 'string')
+      if (command) return path.basename(command)
+    }
+  }
+  return path.basename(tab.process)
+}
 
 export function getPrompt(expr: string, tab: TerminalTab | null) {
   if (!expr) return ''
@@ -14,20 +26,20 @@ export function getPrompt(expr: string, tab: TerminalTab | null) {
   if (tab) {
     return result
       .replace(/\\l/g, tab.pid ? String(tab.pid) : '')
-      .replace(/\\v/g, tab.process)
+      .replace(/\\s/g, () => getProcessName(tab))
       .replace(/\\w/g, () => omitHome(tab.cwd))
       .replace(/\\W/g, () => path.basename(tab.cwd))
   } else {
     return result
       .replace(/\\l/g, '')
-      .replace(/\\v/g, '')
+      .replace(/\\s/g, '')
       .replace(/\\w/g, '')
       .replace(/\\W/g, '')
   }
 }
 
-export function getIconEntryByProcess(process: string) {
-  let name = process.toLowerCase()
+export function getIconEntry(tab: TerminalTab) {
+  let name = getProcessName(tab).toLowerCase()
   const ext = path.extname(name)
   // strip '.exe' extname in process name (Windows only)
   if (ext === '.exe') {

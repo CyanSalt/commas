@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import * as path from 'node:path'
 import type { TerminalTab, TerminalTabCharacter } from '../../typings/terminal'
 import type { IconEntry } from '../assets/icons'
 import { useSettings } from '../compositions/settings'
 import { closeTerminalTab, getTerminalTabTitle, useCurrentTerminal } from '../compositions/terminal'
-import { getIconEntryByProcess } from '../utils/terminal'
+import { getIconEntry } from '../utils/terminal'
 
 const { tab, character, closable = false } = defineProps<{
   tab?: TerminalTab | undefined,
@@ -51,7 +50,7 @@ const iconEntry = $computed(() => {
     if (pane && !tab.shell) {
       if (pane.icon) return pane.icon
     } else {
-      return getIconEntryByProcess(tab.process)
+      return getIconEntry(tab)
     }
   }
   return defaultIcon
@@ -66,8 +65,9 @@ const idleState = $computed(() => {
   if (!tab) return ''
   if (tab.alerting) return 'alerting'
   if (typeof tab.idle === 'boolean') return tab.idle ? 'idle' : 'busy'
+  if (tab.command === '') return 'idle'
   if (pane) return ''
-  if (tab.process === path.basename(tab.shell)) return 'idle'
+  if (tab.process === tab.shell) return 'idle'
   return 'busy'
 })
 
@@ -77,7 +77,7 @@ const thumbnail = $computed(() => {
   if (!settings['terminal.tab.livePreview']) return ''
   const tabListPosition = settings['terminal.view.tabListPosition']
   if (tabListPosition === 'top' || tabListPosition === 'bottom') return ''
-  if (tab.process === path.basename(tab.shell)) return ''
+  if (idleState === 'idle') return ''
   if (tab.thumbnail) return tab.thumbnail
   return ''
 })

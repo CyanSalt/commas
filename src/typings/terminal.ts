@@ -74,6 +74,7 @@ export interface TerminalTab extends TerminalInfo {
   },
   alerting?: boolean,
   idle?: boolean,
+  command?: string,
   thumbnail?: string,
   pane?: TerminalTabPane,
   character?: TerminalTabCharacter,

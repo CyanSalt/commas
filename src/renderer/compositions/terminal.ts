@@ -19,7 +19,7 @@ import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
 import { translate } from '../utils/i18n'
 import { ShellIntegrationAddon } from '../utils/shell-integration'
-import { getPrompt, getTerminalTabID, getWindowsProcessInfo } from '../utils/terminal'
+import { getProcessName, getPrompt, getTerminalTabID, getWindowsProcessInfo } from '../utils/terminal'
 import { useA11yEnabled } from './a11y'
 import { useKeyBindings } from './keybinding'
 import { useSettings } from './settings'
@@ -332,7 +332,7 @@ export function getTerminalTabTitle(tab: TerminalTab) {
     return tab.title
   }
   const expr = settings['terminal.tab.titleFormat']
-  return getPrompt(expr, tab) || tab.process
+  return getPrompt(expr, tab) || getProcessName(tab)
 }
 
 export function showTabOptions(event?: MouseEvent, type?: string) {
@@ -426,13 +426,15 @@ export function handleTerminalMessages() {
     xterm.write(data.data, () => {
       const activeBuffer = xterm.buffer.active
       let thumbnail: string | undefined
-      for (let y = activeBuffer.baseY + activeBuffer.cursorY; y >= 0; y -= 1) {
+      const startY = tab.addons.shellIntegration?.currentCommand?.marker.line ?? -1
+      for (let y = activeBuffer.baseY + activeBuffer.cursorY; y > startY; y -= 1) {
         thumbnail = activeBuffer.getLine(y)?.translateToString(true)
         if (thumbnail) break
       }
       tab.thumbnail = thumbnail
     })
     // data.process on Windows will be always equivalent to pty.name
+    // TODO: confirm after 1.0.0
     if (process.platform !== 'win32') {
       tab.process = data.process
     }
@@ -588,6 +590,7 @@ export function writeTerminalTab(tab: TerminalTab, data: string) {
 }
 
 export function executeTerminalTab(tab: TerminalTab, command: string, restart?: boolean) {
+  tab.command = command
   return writeTerminalTab(tab, (restart ? '\u0003' : '') + command + os.EOL)
 }
 

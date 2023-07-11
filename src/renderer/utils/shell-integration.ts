@@ -153,6 +153,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
               this.currentCommand.marker = marker
               this.currentCommand.decoration = decoration
             } else {
+              this.tab.command = ''
               this.currentCommand = {
                 marker,
                 decoration,
@@ -195,6 +196,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
                   }
                 }
               }
+              this.tab.command = ''
               this.currentCommand = undefined
             }
             return true
@@ -202,6 +204,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             // CommandLine
             if (this.currentCommand) {
               const executedCommand = args[0]
+              this.tab.command = executedCommand
               this.currentCommand.command = executedCommand
               if (!this.currentCommand.marker.isDisposed) {
                 updateDecorationElement(this.currentCommand.decoration, el => {

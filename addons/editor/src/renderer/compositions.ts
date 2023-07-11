@@ -21,7 +21,7 @@ export function openCodeEditorTab(file: string) {
   if (!tab) {
     tab = reactive({
       pid: 0,
-      process: path.basename(file),
+      process: file,
       title: '',
       cwd: path.dirname(file),
       shell: file,

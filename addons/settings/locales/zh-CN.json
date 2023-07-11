@@ -47,7 +47,7 @@
   "Tab Title Format#!settings.label.terminal.tab.titleFormat": "标签页标题格式",
   "Title format of terminal tab in grammer of bash prompt#!settings.comments.0.terminal.tab.titleFormat": "以 Bash 提示符语法描述的终端标签页标题格式",
   "It will not work if title is set from OSC 0 or OSC 2#!settings.comments.1.terminal.tab.titleFormat": "当标题从 OSC 0 或 OSC 2 设置时将不起作用",
-  "Supported identifiers: \\h \\H \\l \\u \\v \\w \\W#!settings.comments.2.terminal.tab.titleFormat": "支持的标识符: \\h \\H \\l \\u \\v \\w \\W",
+  "Supported identifiers: \\h \\H \\l \\s \\u \\w \\W#!settings.comments.2.terminal.tab.titleFormat": "支持的标识符: \\h \\H \\l \\s \\u \\w \\W",
   "View#!settings.group.terminal.view": "视图",
   "Link Modifier#!settings.label.terminal.view.linkModifier": "链接修饰键",
   "Keyboard modifier for opening link by click#!settings.comments.0.terminal.view.linkModifier": "点击打开链接时的键盘修饰键",

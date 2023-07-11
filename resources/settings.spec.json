@@ -210,12 +210,12 @@
     "comments": [
       "Title format of terminal tab in grammer of bash prompt",
       "It will not work if title is set from OSC 0 or OSC 2",
-      "Supported identifiers: \\h \\H \\l \\u \\v \\w \\W"
+      "Supported identifiers: \\h \\H \\l \\s \\u \\w \\W"
     ],
     "schema": {
       "type": "string"
     },
-    "default": "\\v"
+    "default": "\\s"
   },
   {
     "key": "terminal.view.linkModifier",

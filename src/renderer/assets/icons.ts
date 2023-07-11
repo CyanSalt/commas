@@ -22,6 +22,10 @@ export default [
     patterns: ['node'],
   },
   {
+    name: 'devicon-npm-original-wordmark colored',
+    patterns: ['npm', 'npx'],
+  },
+  {
     name: 'devicon-python-plain colored',
     patterns: [/^python\d*/],
   },
