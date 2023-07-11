@@ -6,6 +6,7 @@ import type { IMarker, ITerminalOptions } from 'xterm'
 import { Terminal } from 'xterm'
 import { CanvasAddon } from 'xterm-addon-canvas'
 import { FitAddon } from 'xterm-addon-fit'
+import { ImageAddon } from 'xterm-addon-image'
 import { LigaturesAddon } from 'xterm-addon-ligatures'
 import { SearchAddon } from 'xterm-addon-search'
 import { Unicode11Addon } from 'xterm-addon-unicode11'
@@ -536,6 +537,10 @@ export function loadTerminalAddons(tab: TerminalTab) {
     addons.unicode11 = new Unicode11Addon()
     xterm.loadAddon(addons.unicode11)
     xterm.unicode.activeVersion = '11'
+  }
+  if (!addons.image) {
+    addons.image = new ImageAddon()
+    xterm.loadAddon(addons.image)
   }
   if (settings['terminal.style.fontLigatures']) {
     if (!addons.ligatures) {

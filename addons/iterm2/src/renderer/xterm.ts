@@ -5,7 +5,7 @@ import { nextTick } from 'vue'
 import type { IDisposable, IMarker, ITerminalAddon, Terminal } from 'xterm'
 import type { TerminalTab } from '../../../../src/typings/terminal'
 import { useBadge } from './badge'
-import { calculateDOM, loadingElement, parseITerm2EscapeSequence } from './utils'
+import { parseITerm2EscapeSequence } from './utils'
 
 interface XtermBufferPosition {
   x: number,
@@ -134,51 +134,9 @@ export class ITerm2Addon implements ITerminalAddon {
             }
             break
           }
-          case 'File': {
-            const blob = new Blob([sequence.body])
-            const url = URL.createObjectURL(blob)
-            const image = new Image()
-            image.src = url
-            await loadingElement(image)
-            const cell = xterm['_core']._renderService.dimensions.css.cell
-            const getImageDimension = (
-              targetImage: HTMLImageElement,
-              fn: (el: HTMLImageElement, dimension: string) => number,
-              value: string,
-              scale: number,
-            ) => {
-              const numeric = Number(value)
-              return isNaN(numeric)
-                ? Math.ceil(calculateDOM(el => fn(el, value), targetImage) / scale)
-                : numeric
-            }
-            const baseScale = window.devicePixelRatio
-            const width = getImageDimension(image, (el, dimension) => {
-              el.style.width = dimension
-              return el.clientWidth
-            }, sequence.args.width, cell.width * baseScale)
-            const height = getImageDimension(image, (el, dimension) => {
-              el.style.height = dimension
-              return el.clientHeight
-            }, sequence.args.height, cell.height * baseScale)
-            for (let offset = 0; offset < height; offset += 1) {
-              const marker = xterm.registerMarker(offset)!
-              const decoration = xterm.registerDecoration({
-                marker,
-                width,
-                height: 1,
-              })!
-              decoration.onRender(el => {
-                el.classList.add('iterm2-image')
-                el.style.setProperty('--row', String(height))
-                el.style.setProperty('--image', `url('${url}')`)
-                el.style.setProperty('--image-fit', sequence.args.preserveAspectRatio === '0' ? '100%' : 'contain')
-                el.style.setProperty('--offset', String(offset))
-              })
-            }
-            xterm.write('\r\n'.repeat(height - 1))
-            break
-          }
+          case 'File':
+            // Will be handled by `xterm-addon-image`
+            return false
           case 'SetBadgeFormat': {
             badge = Buffer.from(sequence.positional, 'base64').toString()
             break
