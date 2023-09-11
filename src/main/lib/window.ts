@@ -20,9 +20,9 @@ async function createWindow(...args: string[]) {
   const options: Partial<BrowserWindowConstructorOptions> = {
     show: false,
     title: app.name,
-    width: (8 * 80) + (2 * 8) + 180,
-    minWidth: (8 * 40) + (2 * 8) + 180,
-    height: (18 * 24) + (2 * 4) + (tabListPosition === 'top' ? 52 : 36) + (tabListPosition === 'bottom' ? 52 : 32),
+    width: (8 * 80) + (12 * 2) + (8 * 3) + 176,
+    minWidth: (8 * 40) + (12 * 2) + (8 * 3) + 176,
+    height: (18 * 24) + (8 * 2) + (tabListPosition === 'top' ? 52 : 36) + (tabListPosition === 'bottom' ? 52 : 32),
     acceptFirstMouse: true,
     webPreferences: {
       nodeIntegration: true,

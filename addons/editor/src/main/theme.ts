@@ -11,9 +11,18 @@ const editorTheme = $computed(() => {
       return [key, commas.helper.toCSSHEX(commas.helper.toRGBA(theme[key]))]
     })),
     type: theme.type,
-    comment: commas.helper.toCSSHEX(commas.helper.mix(foregroundRGBA, backgroundRGBA, 0.5)),
-    lineHighlight: commas.helper.toCSSHEX(commas.helper.mix(foregroundRGBA, backgroundRGBA, 0.2)),
-    lineNumber: commas.helper.toCSSHEX(commas.helper.mix(foregroundRGBA, backgroundRGBA, 0.5)),
+    comment: commas.helper.toCSSHEX({
+      ...commas.helper.mix(foregroundRGBA, backgroundRGBA, 0.5),
+      a: 1,
+    }),
+    lineHighlight: commas.helper.toCSSHEX({
+      ...commas.helper.mix(foregroundRGBA, backgroundRGBA, 0.2),
+      a: 1,
+    }),
+    lineNumber: commas.helper.toCSSHEX({
+      ...commas.helper.mix(foregroundRGBA, backgroundRGBA, 0.5),
+      a: 1,
+    }),
     activeLineNumber: commas.helper.toCSSHEX(foregroundRGBA),
   } as EditorTheme
 })

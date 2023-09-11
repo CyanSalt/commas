@@ -1,4 +1,4 @@
-@mixin scroll-container($size: 16px) {
+@mixin scroll-container($size: 12px) {
   --scrollbar-opacity: 0;
   overflow: overlay;
   /* stylelint-disable-next-line custom-property-no-missing-var-function */
@@ -11,13 +11,16 @@
     height: $size;
   }
   &::-webkit-scrollbar-track {
-    background-color: rgb(var(--theme-foreground) / var(--scrollbar-opacity));
+    // background-color: rgb(var(--theme-foreground) / var(--scrollbar-opacity));
+    background-color: transparent;
   }
   &::-webkit-scrollbar-corner {
     background-color: transparent;
   }
   &::-webkit-scrollbar-thumb {
     background-color: rgb(var(--theme-foreground) / var(--scrollbar-opacity));
+    border-radius: $size;
+    box-shadow: 0 2px 4px 2px rgb(0 0 0 / calc(var(--scrollbar-opacity) / 2));
     &:horizontal:active,
     &:vertical:active {
       --scrollbar-opacity: 0.2;

@@ -192,9 +192,6 @@ watchEffect(onInvalidate => {
   display: flex;
   flex: none;
   font-size: 14px;
-  &.vertical {
-    background: rgb(var(--secondary-background) / var(--theme-opacity));
-  }
   &.right {
     order: 1;
   }
@@ -221,6 +218,12 @@ watchEffect(onInvalidate => {
   .tab-list.vertical & {
     flex-direction: column;
     width: 176px;
+    background: rgb(var(--theme-background) / calc(var(--theme-opacity) * 3 / 4));
+    border-radius: var(--content-gap);
+    box-shadow: 0 2px 4px 2px rgb(0 0 0 / 10%);
+  }
+  .app.is-opaque .tab-list.vertical & {
+    background: rgb(var(--theme-background));
   }
 }
 .default-list {
@@ -231,7 +234,7 @@ watchEffect(onInvalidate => {
 }
 .sash {
   flex: none;
-  width: 4px;
+  width: var(--content-gap);
   cursor: col-resize;
   .tab-list.right & {
     order: -1;

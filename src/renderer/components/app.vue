@@ -118,6 +118,7 @@ onMounted(() => {
   --design-card-background: rgb(var(--theme-foreground) / 0.15);
   --design-input-background: rgb(127 127 127 / 0.2);
   --design-separator: rgb(127 127 127 / 0.2);
+  --acrylic-background: 133 194 255;
 }
 :global(::selection) {
   background: rgb(var(--theme-selectionbackground));
@@ -140,28 +141,28 @@ onMounted(() => {
   /* Default line height of xterm.js */
   line-height: 1.2;
   overflow: hidden;
+  background-image: linear-gradient(to right bottom, rgb(var(--acrylic-background) / 5%), rgb(var(--acrylic-background) / 25%));
+  background-color: rgb(var(--theme-background) / var(--theme-opacity));
   transition: color 0.2s;
   &.is-vibrant {
     --vibrancy-filter: drop-shadow(0 0 0.5em rgb(var(--theme-background))) blur(2px);
+    background-color: transparent;
   }
 }
 .content {
+  --content-gap: 8px;
   z-index: 1;
   display: flex;
   flex: auto;
+  box-sizing: border-box;
   width: 100vw;
-  overflow: hidden;
+  min-height: 0;
+  padding: 0 var(--content-gap);
 }
 .interface {
   display: flex;
   flex: 1;
   flex-direction: column;
   min-width: 0;
-  background: rgb(var(--theme-background) / var(--theme-opacity));
-  box-shadow: 0 0 4px 0px rgb(0 0 0 / 5%);
-  transition: background 0.2s;
-  .app.is-opaque & {
-    background: rgb(var(--theme-background));
-  }
 }
 </style>

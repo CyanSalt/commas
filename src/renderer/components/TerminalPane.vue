@@ -42,11 +42,10 @@ function openEditingMenu(event: MouseEvent) {
   z-index: 0;
   box-sizing: border-box;
   height: 100%;
-  padding: 8px 24px;
+  padding: 8px 16px;
 }
 :deep(.group-title) {
-  margin-top: 0;
-  margin-bottom: 8px;
+  margin: 8px 0;
   font-size: 18px;
   line-height: 24px;
 }

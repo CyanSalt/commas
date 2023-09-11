@@ -44,8 +44,7 @@ const EXTRA_CSS_COLORS: Partial<Record<Exclude<keyof Theme, keyof ThemeDefinitio
   systemBlue: '--system-blue',
   systemMagenta: '--system-magenta',
   systemAccent: '--system-accent',
-  materialBackground: '--material-background',
-  secondaryBackground: '--secondary-background',
+  acrylicBackground: '--acrylic-background',
 }
 
 const CSS_PROPERTIES: Partial<Record<Exclude<keyof Theme, keyof ThemeDefinition>, string>> = {
@@ -110,13 +109,6 @@ const theme = $computed(() => {
   if (!userTheme.cursorAccent) {
     definition.cursorAccent = toCSSHEX({ ...backgroundRGBA, a: 1 })
   }
-  const backgroundHSLA = toHSLA(backgroundRGBA)
-  const materialBackgroundRGBA = toRGBAFromHSLA({
-    ...backgroundHSLA,
-    l: backgroundHSLA.l - Math.min(backgroundHSLA.l * 0.5, 0.1),
-  })
-  definition.materialBackground = toCSSColor(materialBackgroundRGBA)
-  definition.secondaryBackground = toCSSColor(mix(backgroundRGBA, { r: 127, g: 127, b: 127, a: 1 }, 0.9))
   if (process.platform === 'darwin') {
     definition.systemRed = systemPreferences.getSystemColor('red')
     definition.systemYellow = systemPreferences.getSystemColor('yellow')
@@ -128,6 +120,10 @@ const theme = $computed(() => {
   }
   const accentColor = systemPreferences.getAccentColor()
   definition.systemAccent = accentColor ? `#${accentColor.slice(0, 6)}` : ''
+  const accentHSLA = accentColor ? toHSLA(toRGBA(`#${accentColor.slice(0, 6)}`)) : undefined
+  definition.acrylicBackground = accentHSLA ? toCSSHEX(
+    toRGBAFromHSLA({ ...accentHSLA, l: (0.5 + accentHSLA.l / 2) }),
+  ) : ''
   definition.vibrancy = vibrancy
   definition.variables = Object.fromEntries([
     ...Object.entries({ ...THEME_CSS_COLORS, ...EXTRA_CSS_COLORS }).map(([key, attr]) => {
@@ -152,16 +148,16 @@ const defaultWindowButtonPosition = {
 const themeOptions = $computed<BrowserWindowThemeOptions>(() => {
   const foregroundRGBA = toRGBA(theme.foreground!)
   const backgroundRGBA = toRGBA(theme.background!)
-  const materialBackgroundRGBA = toRGBA(theme.materialBackground!)
+  const acrylicBackgroundRGBA = toRGBA(theme.acrylicBackground!)
   const trafficLightOffset = ((36 + 8 * 2) - 36) / 2
   return {
     /** {@link https://github.com/electron/electron/issues/10420} */
     backgroundColor: toElectronHEX({ ...backgroundRGBA, a: process.platform !== 'win32' ? 0 : 1 }),
     vibrancy: theme.vibrancy ? (
-      typeof theme.vibrancy === 'string' ? theme.vibrancy : 'hud'
+      typeof theme.vibrancy === 'string' ? theme.vibrancy : 'sidebar'
     ) : undefined,
     titleBarOverlay: {
-      color: toElectronHEX(materialBackgroundRGBA),
+      color: toElectronHEX(acrylicBackgroundRGBA),
       symbolColor: toElectronHEX({ ...foregroundRGBA, a: 1 }),
       height: 36,
     },

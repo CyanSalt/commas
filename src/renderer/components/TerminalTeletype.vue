@@ -171,7 +171,7 @@ function selectCompletion(event: MouseEvent) {
   min-width: 0;
   overflow: hidden;
   :deep(.xterm) {
-    padding: 4px 12px;
+    padding: 8px 12px;
   }
   :deep(.xterm-viewport) {
     @include partials.scroll-container;
@@ -225,7 +225,7 @@ function selectCompletion(event: MouseEvent) {
   overflow: hidden;
   background: rgb(var(--theme-background) / var(--theme-opacity));
   border-radius: 4px;
-  box-shadow: 0 0 1em 0px rgb(0 0 0 / 25%);
+  box-shadow: 0 2px 4px 2px rgb(0 0 0 / 10%);
   backdrop-filter: var(--vibrancy-filter);
   // TODO: This may slightly slow down, but is friendlier visually
   transition: transform 50ms, margin-left 50ms;
@@ -240,6 +240,9 @@ function selectCompletion(event: MouseEvent) {
   }
   &.is-bottom {
     margin-top: var(--cell-height);
+  }
+  .app.is-opaque & {
+    background: rgb(var(--theme-background));
   }
 }
 .terminal-completion-wrapper {

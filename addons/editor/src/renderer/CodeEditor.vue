@@ -60,6 +60,7 @@ watchEffect(() => {
       'editorCursor.foreground': theme.foreground,
       'editor.selectionBackground': theme.selectionBackground,
       'editor.lineHighlightBackground': theme.lineHighlight,
+      'editor.lineHighlightBorder': theme.lineHighlight,
       'editorLink.activeForeground': theme.blue,
       'editorWidget.foreground': theme.foreground,
       'editorWidget.background': theme.background,

@@ -64,6 +64,12 @@ watchEffect(onInvalidate => {
 <style lang="scss" scoped>
 .terminal-block {
   position: relative;
+  background: rgb(var(--theme-background) / var(--theme-opacity));
+  border-radius: var(--content-gap);
+  box-shadow: 0 2px 4px 2px rgb(0 0 0 / 0.1);
+  .app.is-opaque & {
+    background: rgb(var(--theme-background));
+  }
 }
 .moving-target {
   position: absolute;

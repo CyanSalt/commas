@@ -20,6 +20,5 @@ export interface Theme extends Required<ThemeDefinition> {
   systemMagenta: string,
   systemAccent: string,
   vibrancy: BrowserWindowConstructorOptions['vibrancy'] | boolean,
-  materialBackground: string,
-  secondaryBackground: string,
+  acrylicBackground: string,
 }

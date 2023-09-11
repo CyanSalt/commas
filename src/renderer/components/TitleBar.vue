@@ -65,7 +65,6 @@ function close() {
   justify-content: space-between;
   height: env(titlebar-area-height, 36px);
   line-height: env(titlebar-area-height, 36px);
-  background: rgb(var(--material-background) / var(--theme-opacity));
   -webkit-app-region: drag;
   &:has(.tab-list) {
     height: 52px; // 36 + 2 * 8
