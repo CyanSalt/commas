@@ -115,9 +115,12 @@ onMounted(() => {
   --system-blue: 10 132 255;
   --system-magenta: 255 55 95;
   --system-accent: var(--system-blue);
-  --design-card-background: rgb(var(--theme-foreground) / 0.15);
+  --design-highlight-background: rgb(var(--theme-foreground) / 0.15);
   --design-input-background: rgb(127 127 127 / 0.2);
   --design-separator: rgb(127 127 127 / 0.2);
+  --design-card-gap: 8px;
+  --design-card-border-radius: var(--design-card-gap);
+  --design-card-shadow: 0 2px 4px 2px rgb(0 0 0 / 10%);
   --acrylic-background: 133 194 255;
 }
 :global(::selection) {
@@ -150,14 +153,13 @@ onMounted(() => {
   }
 }
 .content {
-  --content-gap: 8px;
   z-index: 1;
   display: flex;
   flex: auto;
   box-sizing: border-box;
   width: 100vw;
   min-height: 0;
-  padding: 0 var(--content-gap);
+  padding: 0 var(--design-card-gap);
 }
 .interface {
   display: flex;

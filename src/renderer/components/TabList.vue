@@ -219,8 +219,8 @@ watchEffect(onInvalidate => {
     flex-direction: column;
     width: 176px;
     background: rgb(var(--theme-background) / calc(var(--theme-opacity) * 3 / 4));
-    border-radius: var(--content-gap);
-    box-shadow: 0 2px 4px 2px rgb(0 0 0 / 10%);
+    border-radius: var(--design-card-border-radius);
+    box-shadow: var(--design-card-shadow);
   }
   .app.is-opaque .tab-list.vertical & {
     background: rgb(var(--theme-background));
@@ -234,7 +234,7 @@ watchEffect(onInvalidate => {
 }
 .sash {
   flex: none;
-  width: var(--content-gap);
+  width: var(--design-card-gap);
   cursor: col-resize;
   .tab-list.right & {
     order: -1;

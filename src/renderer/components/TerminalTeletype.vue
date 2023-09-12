@@ -225,7 +225,7 @@ function selectCompletion(event: MouseEvent) {
   overflow: hidden;
   background: rgb(var(--theme-background) / var(--theme-opacity));
   border-radius: 4px;
-  box-shadow: 0 2px 4px 2px rgb(0 0 0 / 10%);
+  box-shadow: 0 0 1em 0 rgb(0 0 0 / 25%);
   backdrop-filter: var(--vibrancy-filter);
   // TODO: This may slightly slow down, but is friendlier visually
   transition: transform 50ms, margin-left 50ms;
@@ -262,7 +262,7 @@ function selectCompletion(event: MouseEvent) {
   padding: 0 0.25ch;
   cursor: pointer;
   &:hover, &.is-active {
-    background: var(--design-card-background);
+    background: var(--design-highlight-background);
   }
   :deep(strong) {
     color: rgb(var(--theme-blue));

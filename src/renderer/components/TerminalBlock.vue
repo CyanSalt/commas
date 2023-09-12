@@ -65,8 +65,8 @@ watchEffect(onInvalidate => {
 .terminal-block {
   position: relative;
   background: rgb(var(--theme-background) / var(--theme-opacity));
-  border-radius: var(--content-gap);
-  box-shadow: 0 2px 4px 2px rgb(0 0 0 / 0.1);
+  border-radius: var(--design-card-border-radius);
+  box-shadow: var(--design-card-shadow);
   .app.is-opaque & {
     background: rgb(var(--theme-background));
   }
@@ -74,7 +74,7 @@ watchEffect(onInvalidate => {
 .moving-target {
   position: absolute;
   inset: 50%;
-  background: var(--design-card-background);
+  background: var(--design-highlight-background);
   transition: inset 0.2s;
   &.top {
     inset: 0 0 75% 0;

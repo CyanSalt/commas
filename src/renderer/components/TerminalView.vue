@@ -72,7 +72,7 @@ function activate(item: TerminalTab, index: number) {
   position: relative;
   display: grid;
   flex: 1;
-  gap: var(--content-gap);
+  gap: var(--design-card-gap);
   min-height: 0;
   :deep(.terminal-block:not(.active)) {
     opacity: 0.5;

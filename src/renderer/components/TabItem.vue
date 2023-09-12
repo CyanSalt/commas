@@ -163,10 +163,10 @@ function close() {
   padding: 0 8px;
   border-radius: 8px;
   .tab-item.active & {
-    background: linear-gradient(to right, transparent, var(--design-card-background));
+    background: linear-gradient(to right, transparent, var(--design-highlight-background));
   }
   .tab-item.focused & {
-    background: var(--design-card-background);
+    background: var(--design-highlight-background);
   }
 }
 .tab-overview {
