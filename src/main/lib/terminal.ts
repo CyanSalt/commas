@@ -12,6 +12,12 @@ import { useSettings, whenSettingsReady } from './settings'
 
 const ptyProcessMap = new Map<number, IPty>()
 
+function readProcess(ptyProcess: IPty) {
+  const processName = ptyProcess.process
+  // FIXME: sometimes the `process` is a symbol
+  return typeof processName === 'string' ? processName : undefined
+}
+
 async function createTerminal(
   webContents: WebContents,
   { shell, args, env, cwd }: Partial<TerminalContext>,
@@ -32,7 +38,7 @@ async function createTerminal(
   }
   const settings = useSettings()
   if (!shell) {
-    shell = settings['terminal.shell.path'] || getDefaultShell()
+    shell = settings['terminal.shell.path'] || getDefaultShell()!
   }
   if (!args) {
     args = process.platform === 'win32'
@@ -49,7 +55,7 @@ async function createTerminal(
   } as Record<string, string>
   let runtimeArgs = args
   if (settings['terminal.shell.integration']) {
-    const result = integrateShell({ shell: shell!, args: runtimeArgs, env: runtimeEnv })
+    const result = integrateShell({ shell, args: runtimeArgs, env: runtimeEnv })
     runtimeArgs = result.args
     runtimeEnv = result.env
   }
@@ -66,7 +72,7 @@ async function createTerminal(
     if (!webContents.isDestroyed()) {
       webContents.send('input-terminal', {
         pid: ptyProcess.pid,
-        process: ptyProcess.process,
+        process: readProcess(ptyProcess) ?? shell,
         data,
       })
     }
@@ -83,9 +89,9 @@ async function createTerminal(
   ptyProcessMap.set(ptyProcess.pid, ptyProcess)
   return {
     pid: ptyProcess.pid,
-    process: ptyProcess.process,
+    process: readProcess(ptyProcess) ?? shell,
     cwd,
-    shell: shell!,
+    shell,
     args,
     env,
   }

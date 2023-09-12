@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
-import { DiffComputer } from 'monaco-editor/esm/vs/editor/common/diff/smartLinesDiffComputer'
+import { DiffComputer } from 'monaco-editor/esm/vs/editor/common/diff/legacyLinesDiffComputer'
 import { watchEffect } from 'vue'
 import { useEditorTheme } from './compositions'
 import * as monaco from './monaco-editor'
