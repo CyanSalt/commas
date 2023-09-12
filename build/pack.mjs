@@ -5,9 +5,7 @@ import util from 'node:util'
 import chalk from 'chalk'
 import packager from 'electron-packager'
 import png2icons from 'png2icons'
-import { requireCommonJS } from './utils/common.mjs'
-
-const pkg = requireCommonJS(import.meta, '../package.json')
+import { requireCommonJS, resolveCommonJS } from './utils/common.mjs'
 
 const execa = util.promisify(childProcess.exec)
 
@@ -64,6 +62,27 @@ async function generateAppIcon(input, icon, suffix) {
   }
 }
 
+const pkgPath = resolveCommonJS(import.meta, '../package.json')
+const backupPkgPath = path.relative(path.dirname(pkgPath), '.package.json')
+
+const pkg = requireCommonJS(import.meta, '../package.json')
+const workspacePkgs = pkg.workspaces
+  .map(dir => requireCommonJS(import.meta, path.join(path.dirname(pkgPath), dir, 'package.json')))
+
+const prunePkg = {
+  ...pkg,
+  devDependencies: Object.assign(
+    {},
+    ...workspacePkgs.map(workspace => workspace.devDependencies),
+    pkg.devDependencies
+  ),
+  dependencies: Object.assign(
+    {},
+    ...workspacePkgs.map(workspace => workspace.dependencies),
+    pkg.dependencies
+  ),
+}
+
 /**
  * @type {import('electron-packager').Options}
  */
@@ -113,7 +132,20 @@ const options = {
     FileDescription: pkg.productName,
     OriginalFilename: `${pkg.name}.exe`,
   },
+  beforeCopy: [
+    (buildPath, electronVersion, platform, arch, callback) => {
+      fs.promises.copyFile(pkgPath, backupPkgPath)
+        .then(() => fs.promises.writeFile(pkgPath, JSON.stringify(prunePkg, null, 2) + '\n'))
+        .then(
+          value => callback(),
+          reason => callback(reason),
+        )
+    },
+  ],
   afterCopy: [
+    (buildPath, electronVersion, platform, arch, callback) => {
+      fs.rename(backupPkgPath, pkgPath, callback)
+    },
     (buildPath, electronVersion, platform, arch, callback) => {
       fs.rm(path.join(buildPath, 'node_modules/@commas'), { recursive: true }, callback)
     },

@@ -1,5 +1,5 @@
 {
-  "name": "cleaner",
+  "name": "@commas/cleaner",
   "private": true,
   "version": "0.1.0",
   "productName": "Cache Cleaner",

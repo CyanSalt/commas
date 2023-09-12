@@ -1,5 +1,5 @@
 {
-  "name": "launcher",
+  "name": "@commas/launcher",
   "private": true,
   "version": "0.1.0",
   "productName": "Launcher",
@@ -7,6 +7,9 @@
   "main": "index.js",
   "author": "commas",
   "license": "ISC",
+  "devDependencies": {
+    "xterm-addon-serialize": "^0.11.0"
+  },
   "commas:i18n": {
     "zh-CN": {
       "productName": "启动项",

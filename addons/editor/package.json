@@ -1,5 +1,5 @@
 {
-  "name": "editor",
+  "name": "@commas/editor",
   "private": true,
   "version": "0.1.0",
   "productName": "Editor",
@@ -7,6 +7,9 @@
   "main": "index.js",
   "author": "commas",
   "license": "ISC",
+  "devDependencies": {
+    "monaco-editor": "^0.43.0"
+  },
   "commas:i18n": {
     "zh-CN": {
       "productName": "编辑器",

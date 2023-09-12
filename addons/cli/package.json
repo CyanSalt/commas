@@ -1,5 +1,5 @@
 {
-  "name": "cli",
+  "name": "@commas/cli",
   "private": true,
   "version": "0.1.0",
   "productName": "Commas CLI",
@@ -7,6 +7,14 @@
   "main": "index.js",
   "author": "commas",
   "license": "ISC",
+  "devDependencies": {
+    "@types/text-table": "^0.2.3"
+  },
+  "dependencies": {
+    "cfonts": "^3.2.0",
+    "chalk": "^4.1.2",
+    "text-table": "^0.2.0"
+  },
   "commas:i18n": {
     "zh-CN": {
       "description": "Commas 命令行工具"

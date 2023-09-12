@@ -1,5 +1,5 @@
 {
-  "name": "iterm2",
+  "name": "@commas/iterm2",
   "private": true,
   "version": "0.1.0",
   "productName": "iTerm2 Escape Code",
@@ -7,6 +7,10 @@
   "main": "index.js",
   "author": "commas",
   "license": "ISC",
+  "devDependencies": {
+    "@types/canvas-confetti": "^1.6.1",
+    "canvas-confetti": "^1.6.0"
+  },
   "commas:i18n": {
     "zh-CN": {
       "productName": "iTerm2 转义码",

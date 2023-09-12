@@ -1,5 +1,5 @@
 {
-  "name": "settings",
+  "name": "@commas/settings",
   "private": true,
   "version": "0.1.0",
   "productName": "Settings",

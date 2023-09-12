@@ -1,5 +1,5 @@
 {
-  "name": "l10n-ext",
+  "name": "@commas/l10n-ext",
   "private": true,
   "version": "0.1.0",
   "productName": "Extended Localization",

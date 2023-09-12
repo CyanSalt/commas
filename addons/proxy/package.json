@@ -1,5 +1,5 @@
 {
-  "name": "proxy",
+  "name": "@commas/proxy",
   "private": true,
   "version": "0.1.0",
   "productName": "Proxy",
@@ -7,6 +7,10 @@
   "main": "index.js",
   "author": "commas",
   "license": "ISC",
+  "dependencies": {
+    "address": "^1.2.2",
+    "whistle": "^2.9.57"
+  },
   "commas:i18n": {
     "zh-CN": {
       "productName": "代理",

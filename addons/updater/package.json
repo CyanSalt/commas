@@ -1,5 +1,5 @@
 {
-  "name": "updater",
+  "name": "@commas/updater",
   "private": true,
   "version": "0.1.0",
   "productName": "Auto Updater",

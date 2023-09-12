@@ -1,5 +1,5 @@
 {
-  "name": "clippy",
+  "name": "@commas/clippy",
   "private": true,
   "version": "0.1.0",
   "productName": "Clippy",
@@ -7,6 +7,9 @@
   "main": "index.js",
   "author": "commas",
   "license": "ISC",
+  "devDependencies": {
+    "clippyjs": "^0.0.3"
+  },
   "commas:i18n": {
     "zh-CN": {
       "productName": "大眼夹",

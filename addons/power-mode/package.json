@@ -1,5 +1,5 @@
 {
-  "name": "power-mode",
+  "name": "@commas/power-mode",
   "private": true,
   "version": "0.1.0",
   "productName": "Power Mode",

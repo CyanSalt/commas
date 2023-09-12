@@ -1,5 +1,5 @@
 {
-  "name": "addon-manager",
+  "name": "@commas/addon-manager",
   "productName": "Addon Manager",
   "private": true,
   "version": "0.1.0",

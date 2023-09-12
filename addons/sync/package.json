@@ -1,5 +1,5 @@
 {
-  "name": "sync",
+  "name": "@commas/sync",
   "private": true,
   "version": "0.1.0",
   "productName": "Sync",
