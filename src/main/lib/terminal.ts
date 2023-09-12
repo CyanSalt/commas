@@ -12,12 +12,6 @@ import { useSettings, whenSettingsReady } from './settings'
 
 const ptyProcessMap = new Map<number, IPty>()
 
-function readProcess(ptyProcess: IPty) {
-  const processName = ptyProcess.process
-  // FIXME: sometimes the `process` is a symbol
-  return typeof processName === 'string' ? processName : undefined
-}
-
 async function createTerminal(
   webContents: WebContents,
   { shell, args, env, cwd }: Partial<TerminalContext>,
@@ -72,7 +66,7 @@ async function createTerminal(
     if (!webContents.isDestroyed()) {
       webContents.send('input-terminal', {
         pid: ptyProcess.pid,
-        process: readProcess(ptyProcess) ?? shell,
+        process: ptyProcess.process,
         data,
       })
     }
@@ -89,7 +83,7 @@ async function createTerminal(
   ptyProcessMap.set(ptyProcess.pid, ptyProcess)
   return {
     pid: ptyProcess.pid,
-    process: readProcess(ptyProcess) ?? shell,
+    process: ptyProcess.process,
     cwd,
     shell,
     args,
