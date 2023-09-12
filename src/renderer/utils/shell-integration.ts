@@ -81,7 +81,7 @@ function filterAndSortCompletions(completions: CommandCompletion[]) {
       deduplicatedCompletions.splice(existingIndex, 1, replacement)
     }
   }
-  return deduplicatedCompletions
+  const sortedCompletions = deduplicatedCompletions
     .map(item => {
       const duplicatedTimesItem = duplicatedTimes.find(record => {
         return record.value === item.value
@@ -103,6 +103,15 @@ function filterAndSortCompletions(completions: CommandCompletion[]) {
     .filter(([item, score]) => score > 0)
     .sort(([itemA, scoreA], [itemB, scoreB]) => scoreB - scoreA)
     .map(([item]) => item)
+  // Always make history second at most
+  if (sortedCompletions.length && sortedCompletions[0].type === 'history') {
+    sortedCompletions.unshift({
+      type: 'recommendation',
+      query: '',
+      value: '',
+    })
+  }
+  return sortedCompletions
 }
 
 export class ShellIntegrationAddon implements ITerminalAddon {
