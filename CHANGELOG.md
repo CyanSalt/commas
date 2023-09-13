@@ -1,5 +1,20 @@
 
 
+## [0.28.0](https://github.com/CyanSalt/commas/compare/v0.27.1...v0.28.0) (2023-09-13)
+
+
+### Features
+
+* **theme:** follow system dark mode ([00afecd](https://github.com/CyanSalt/commas/commit/00afecddbacf2c83dcd2acaf4ee595f8ac48091d))
+
+
+### Bug Fixes
+
+* accent color on linux ([6fb0fea](https://github.com/CyanSalt/commas/commit/6fb0fea467be7b2935b7a101f57648461c80e872))
+* dispose canvas renderer before terminal ([0be990b](https://github.com/CyanSalt/commas/commit/0be990b24ea80f1d012567022bb270e161ce53e1))
+* dynamic accent color ([71a6f11](https://github.com/CyanSalt/commas/commit/71a6f117150cefbbd68b17c71464f74991cdfbf8))
+* file casing ([3317ec7](https://github.com/CyanSalt/commas/commit/3317ec7ffbad61ef017a96bb93f4a3288b98f2be))
+
 ## [0.27.1](https://github.com/CyanSalt/commas/compare/v0.27.0...v0.27.1) (2023-09-13)
 
 
