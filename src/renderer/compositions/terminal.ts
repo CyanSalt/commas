@@ -444,6 +444,11 @@ export function handleTerminalMessages() {
     const tab = tabs.find(item => item.pid === data.pid)
     if (!tab) return
     tab.deferred.stop.resolve()
+    // FIXME: xterm-addon-webgl cannot dispose correctly
+    if (tab.addons.webgl) {
+      tab.addons.webgl.dispose()
+      delete tab.addons.webgl
+    }
     const xterm = tab.xterm
     xterm.dispose()
     removeTerminalTab(tab)
