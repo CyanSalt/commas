@@ -52,7 +52,9 @@ const CSS_PROPERTIES: Partial<Record<Exclude<keyof Theme, keyof ThemeDefinition>
 }
 
 const accentColor = $customRef((track, trigger) => {
-  let color = systemPreferences.getAccentColor()
+  let color = ['darwin', 'win32'].includes(process.platform)
+    ? systemPreferences.getAccentColor()
+    : ''
   if (process.platform === 'win32') {
     systemPreferences.on('accent-color-changed', (event, newColor) => {
       color = newColor
@@ -186,6 +188,8 @@ const theme = $computed(() => {
       if (value) {
         const rgba = toRGBA(definition[key])
         value = `${rgba.r} ${rgba.g} ${rgba.b}`
+      } else {
+        value = undefined
       }
       return [attr, value]
     }),
