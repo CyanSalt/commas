@@ -1,5 +1,38 @@
 
 
+## [0.27.0](https://github.com/CyanSalt/commas/compare/v0.26.0...v0.27.0) (2023-09-13)
+
+
+### Features
+
+* cancel tab grouping ([a5e0662](https://github.com/CyanSalt/commas/commit/a5e066211e6cfeba9245d8aad5525520225a0bbc))
+* **completion:** show command aliases ([7126e17](https://github.com/CyanSalt/commas/commit/7126e17a455fd5c43b4de525d632adc3156ba31b))
+* **launcher:** composable launchers ([30e2359](https://github.com/CyanSalt/commas/commit/30e23597bd804d383d8c1e725861ee1604c1ecde))
+* new look ([1971d32](https://github.com/CyanSalt/commas/commit/1971d3274585d15789e245f4c5f5587470a420cc))
+* new pty process compat ([1141078](https://github.com/CyanSalt/commas/commit/1141078265064ba8c0255eb99212661194cb274c))
+* replace default themes ([4d5e29c](https://github.com/CyanSalt/commas/commit/4d5e29cd69b71c554bb2dff916d33dac1cba2bea))
+* screen reader mode ([8df4f68](https://github.com/CyanSalt/commas/commit/8df4f6830583f3479360e1270319d6c914462bdd))
+* show launcher process icons ([891f415](https://github.com/CyanSalt/commas/commit/891f415cf51f4491964888c07e060f1dc70a645f))
+* update default vibrancy ([0507f49](https://github.com/CyanSalt/commas/commit/0507f4909a82bde56abd2445470c2c526928c3fb))
+
+
+### Bug Fixes
+
+* **cli:** error messages ([1cd529a](https://github.com/CyanSalt/commas/commit/1cd529a4f8e494b252c89acf21549d243361355a))
+* **completion:** always make history second at most ([c4f57f7](https://github.com/CyanSalt/commas/commit/c4f57f73089aba06406ce9dcfa96ce3e6c53c6f2))
+* destroyed process ([be1ed57](https://github.com/CyanSalt/commas/commit/be1ed5721327734c56021d620207021c2855905b))
+* **editor:** unify context menu ([1d2e989](https://github.com/CyanSalt/commas/commit/1d2e9895d970c73d10e4e3404911201eb62977ca))
+* fix passthrough completion to top ([f0be2e7](https://github.com/CyanSalt/commas/commit/f0be2e774d9acc2cd1d3adb327ad4215d9d22b30))
+* i18n key ([d4c5496](https://github.com/CyanSalt/commas/commit/d4c549616c781b2324b286c2aba1d04aa199672b))
+* macro imports ([93e36d2](https://github.com/CyanSalt/commas/commit/93e36d2550481aab6c2b2508f773b327f9a70da0))
+* process name on macOS ([b5d0f0c](https://github.com/CyanSalt/commas/commit/b5d0f0cb606907f66420eb10fd0d6d09c7963e1c))
+* reduce inactive block opacity ([1f4707b](https://github.com/CyanSalt/commas/commit/1f4707beec4b3a549d77c5773ab890fafed15dfd))
+* rendererType after moving ([0bdcc04](https://github.com/CyanSalt/commas/commit/0bdcc047538cdcd082c7f76b8ff6563094232cc2))
+* **sync:** lazy sync token ([4aae537](https://github.com/CyanSalt/commas/commit/4aae5378ddd1250d82cfdfcb14c4d532d2b79c80))
+* tab list style ([2f3f7b6](https://github.com/CyanSalt/commas/commit/2f3f7b63ffecae8f2a1535c7113bced468259ae5))
+* transparency for webgl renderer ([8277662](https://github.com/CyanSalt/commas/commit/827766209f0bf6dad610a2d6b9c1ef62ba35eba6))
+* update icons ([6e1a31c](https://github.com/CyanSalt/commas/commit/6e1a31c11976f0843c16b8b45d2e129d0061e1ae))
+
 ## [0.26.0](https://github.com/CyanSalt/commas/compare/v0.25.1...v0.26.0) (2023-05-17)
 
 
