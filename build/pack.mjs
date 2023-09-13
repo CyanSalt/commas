@@ -7,6 +7,10 @@ import packager from 'electron-packager'
 import png2icons from 'png2icons'
 import { requireCommonJS, resolveCommonJS } from './utils/common.mjs'
 
+const pkg = requireCommonJS(import.meta, '../package.json')
+const pkgPath = resolveCommonJS(import.meta, '../package.json')
+const backupPkgPath = path.relative(path.dirname(pkgPath), '.package.json')
+
 const execa = util.promisify(childProcess.exec)
 
 const logger = {
@@ -62,25 +66,25 @@ async function generateAppIcon(input, icon, suffix) {
   }
 }
 
-const pkgPath = resolveCommonJS(import.meta, '../package.json')
-const backupPkgPath = path.relative(path.dirname(pkgPath), '.package.json')
-
-const pkg = requireCommonJS(import.meta, '../package.json')
-const workspacePkgs = pkg.workspaces
-  .map(dir => requireCommonJS(import.meta, path.join(path.dirname(pkgPath), dir, 'package.json')))
-
-const prunePkg = {
-  ...pkg,
-  devDependencies: Object.assign(
-    {},
-    ...workspacePkgs.map(workspace => workspace.devDependencies),
-    pkg.devDependencies
-  ),
-  dependencies: Object.assign(
-    {},
-    ...workspacePkgs.map(workspace => workspace.dependencies),
-    pkg.dependencies
-  ),
+async function resolveWorkspacePackages() {
+  const workspacePkgs = pkg.workspaces
+    .map(dir => requireCommonJS(import.meta, path.join(path.dirname(pkgPath), dir, 'package.json')))
+  const prunePkg = {
+    ...pkg,
+    devDependencies: Object.assign(
+      {},
+      ...workspacePkgs.map(workspace => workspace.devDependencies),
+      pkg.devDependencies
+    ),
+    dependencies: Object.assign(
+      {},
+      ...workspacePkgs.map(workspace => workspace.dependencies),
+      pkg.dependencies
+    ),
+  }
+  await fs.promises.copyFile(pkgPath, backupPkgPath)
+  await fs.promises.writeFile(pkgPath, JSON.stringify(prunePkg, null, 2) + '\n')
+  return () => fs.promises.rename(backupPkgPath, pkgPath)
 }
 
 /**
@@ -133,19 +137,9 @@ const options = {
     FileDescription: pkg.productName,
     OriginalFilename: `${pkg.name}.exe`,
   },
-  beforeCopy: [
+  afterPrune: [
     (buildPath, electronVersion, platform, arch, callback) => {
-      fs.promises.copyFile(pkgPath, backupPkgPath)
-        .then(() => fs.promises.writeFile(pkgPath, JSON.stringify(prunePkg, null, 2) + '\n'))
-        .then(
-          value => callback(),
-          reason => callback(reason),
-        )
-    },
-  ],
-  afterCopy: [
-    (buildPath, electronVersion, platform, arch, callback) => {
-      fs.rename(backupPkgPath, pkgPath, callback)
+      fs.copyFile(backupPkgPath, path.join(buildPath, 'package.json'), callback)
     },
     (buildPath, electronVersion, platform, arch, callback) => {
       fs.rm(path.join(buildPath, 'node_modules/@commas'), { recursive: true }, callback)
@@ -205,7 +199,13 @@ async function pack() {
     delete options.platform
   }
   // Run electron-packager
-  const appPaths = await packager(options)
+  const restorePackage = await resolveWorkspacePackages()
+  let appPaths
+  try {
+    appPaths = await packager(options)
+  } finally {
+    await restorePackage()
+  }
   if (!local) {
     const cwd = process.cwd()
     if (options.out) {
