@@ -1,5 +1,12 @@
 
 
+## [0.27.1](https://github.com/CyanSalt/commas/compare/v0.27.0...v0.27.1) (2023-09-13)
+
+
+### Bug Fixes
+
+* webgl renderer disposing ([8949f53](https://github.com/CyanSalt/commas/commit/8949f537b9ba98d7d5f4edaae4e7bbcce57f6a32))
+
 ## [0.27.0](https://github.com/CyanSalt/commas/compare/v0.26.0...v0.27.0) (2023-09-13)
 
 
