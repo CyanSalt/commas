@@ -6,10 +6,12 @@ export default () => {
 
   commas.ipcMain.handle('reset-theme', () => {
     const settings = commas.settings.useSettings()
-    // @ts-expect-error reset settings
-    delete settings['terminal.theme.name']
-    // @ts-expect-error reset settings
-    delete settings['terminal.theme.customization']
+    const defaultSettings = commas.settings.useDefaultSettings()
+    settings['terminal.theme.type'] = defaultSettings['terminal.theme.type']
+    settings['terminal.theme.name'] = defaultSettings['terminal.theme.name']
+    settings['terminal.theme.lightName'] = defaultSettings['terminal.theme.lightName']
+    settings['terminal.theme.customization'] = defaultSettings['terminal.theme.customization']
+    settings['terminal.theme.lightCustomization'] = defaultSettings['terminal.theme.lightCustomization']
   })
 
 }

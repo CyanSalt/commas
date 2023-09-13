@@ -12,22 +12,34 @@ const { field } = defineProps<{
 const name = $computed(() => startCase(field))
 
 const settings = commas.remote.useSettings()
+const isLightTheme = commas.remote.useIsLightTheme()
 const theme = commas.remote.useTheme()
 
 const model = $computed({
   get: () => {
-    return settings['terminal.theme.customization'][field] ?? theme[field]
+    return (
+      isLightTheme
+        ? settings['terminal.theme.lightCustomization'][field]
+        : settings['terminal.theme.customization'][field]
+    ) ?? theme[field]
   },
   set: value => {
     const customization: ThemeDefinition = {
-      ...settings['terminal.theme.customization'],
+      ...(isLightTheme
+        ? settings['terminal.theme.lightCustomization']
+        : settings['terminal.theme.customization']
+      ),
     }
     if (theme[field] === value) {
       delete customization[field]
     } else {
       customization[field] = value
     }
-    settings['terminal.theme.customization'] = customization
+    if (isLightTheme) {
+      settings['terminal.theme.lightCustomization'] = customization
+    } else {
+      settings['terminal.theme.customization'] = customization
+    }
   },
 })
 </script>

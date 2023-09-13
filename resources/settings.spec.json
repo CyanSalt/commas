@@ -358,23 +358,59 @@
     "default": "block"
   },
   {
-    "key": "terminal.theme.name",
-    "label": "Theme Name",
+    "key": "terminal.theme.type",
+    "label": "Theme Type",
     "comments": [
-      "File name of built-in theme or files in `themes/` folder",
-      "Support `OneHalfDark` or `OneHalfLight` by default"
+      "Choose to use a dark or light theme",
+      "Or use 'system' to follow the system's dark mode"
+    ],
+    "schema": {
+      "type": "string",
+      "enum": ["system", "dark", "light"]
+    },
+    "default": "system"
+  },
+  {
+    "key": "terminal.theme.name",
+    "label": "Dark Theme Name",
+    "comments": [
+      "File name of built-in theme or files in `themes/` folder"
     ],
     "schema": {
       "type": "string"
     },
-    "recommendations": ["OneHalfDark", "OneHalfLight"],
     "default": "OneHalfDark"
   },
   {
-    "key": "terminal.theme.customization",
-    "label": "Custom Theme Colors",
+    "key": "terminal.theme.lightName",
+    "label": "Light Theme Name",
     "comments": [
-      "Overwrite colors in the theme file"
+      "File name of built-in theme or files in `themes/` folder"
+    ],
+    "schema": {
+      "type": "string"
+    },
+    "default": "OneHalfLight"
+  },
+  {
+    "key": "terminal.theme.customization",
+    "label": "Custom Dark Theme Colors",
+    "comments": [
+      "Overwrite colors in the dark theme file"
+    ],
+    "schema": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "default": {}
+  },
+  {
+    "key": "terminal.theme.lightCustomization",
+    "label": "Custom Light Theme Colors",
+    "comments": [
+      "Overwrite colors in the light theme file"
     ],
     "schema": {
       "type": "object",

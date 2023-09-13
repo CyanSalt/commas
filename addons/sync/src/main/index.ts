@@ -33,6 +33,7 @@ export default () => {
 
   commas.app.effect(() => {
     commas.context.provide('sync.file', `themes/${settings['terminal.theme.name']}.json`)
+    commas.context.provide('sync.file', `themes/${settings['terminal.theme.lightName']}.json`)
     // TODO: shall we sync addons?
   })
 

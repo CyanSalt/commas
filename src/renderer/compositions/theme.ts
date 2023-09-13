@@ -4,6 +4,12 @@ import { surface } from '../../shared/compositions'
 import type { Theme } from '../../typings/theme'
 import { injectIPC } from '../utils/compositions'
 
+const isLightTheme = injectIPC('is-light-theme', false)
+
+export function useIsLightTheme() {
+  return isLightTheme
+}
+
 const theme = surface(
   injectIPC('theme', {
     variables: {},

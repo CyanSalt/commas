@@ -77,12 +77,42 @@ const accentColor = $customRef((track, trigger) => {
 
 const settings = useSettings()
 
+const isLightTheme = $customRef((track, trigger) => {
+  effect(() => {
+    nativeTheme.themeSource = settings['terminal.theme.type']
+  })
+  let shouldUseLight = !nativeTheme.shouldUseDarkColors
+  nativeTheme.on('updated', () => {
+    shouldUseLight = !nativeTheme.shouldUseDarkColors
+    trigger()
+  })
+  return {
+    get() {
+      track()
+      return shouldUseLight
+    },
+    set(value) {
+      console.log('shouldUseLight', shouldUseLight)
+      console.log('set to', value)
+      if (value !== shouldUseLight) {
+        settings['terminal.theme.type'] = value ? 'light' : 'dark'
+      }
+    }
+  }
+})
+
 const theme = $computed(() => {
   const defaultSettings = useDefaultSettings()
-  const defaultThemeName = defaultSettings['terminal.theme.name']
+  const defaultThemeName = isLightTheme
+    ? defaultSettings['terminal.theme.lightName']
+    : defaultSettings['terminal.theme.name']
   const defaultTheme: Required<ThemeDefinition> = require(resourceFile('themes', `${defaultThemeName}.json`))
   let originalTheme: ThemeDefinition = defaultTheme
-  const name = settings['terminal.theme.name'] || defaultThemeName
+  const name = (
+    isLightTheme
+      ? settings['terminal.theme.lightName']
+      : settings['terminal.theme.name']
+  ) || defaultThemeName
   if (name !== defaultThemeName) {
     const path = `themes/${name}.json`
     let source: ThemeDefinition | undefined
@@ -99,7 +129,9 @@ const theme = $computed(() => {
       originalTheme = source
     }
   }
-  const customization: ThemeDefinition = settings['terminal.theme.customization']
+  const customization: ThemeDefinition = isLightTheme
+    ? settings['terminal.theme.lightCustomization']
+    : settings['terminal.theme.customization']
   const userTheme: ThemeDefinition = {
     ...originalTheme,
     ...customization,
@@ -199,10 +231,7 @@ function useThemeOptions() {
 }
 
 function handleThemeMessages() {
-  effect(() => {
-    // Enable system dark mode
-    nativeTheme.themeSource = theme.type
-  })
+  provideIPC('is-light-theme', $$(isLightTheme))
   provideIPC('theme', $$(theme))
 }
 

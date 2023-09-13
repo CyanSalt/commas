@@ -6,7 +6,7 @@ import {
   useSettings,
   useSettingsSpecs,
 } from '../../src/renderer/compositions/settings'
-import { useTheme } from '../../src/renderer/compositions/theme'
+import { useIsLightTheme, useTheme } from '../../src/renderer/compositions/theme'
 import { translate } from '../../src/renderer/utils/i18n'
 import { globalHandler } from '../../src/shared/handler'
 
@@ -40,6 +40,7 @@ export {
   useLanguage,
   useSettings,
   useSettingsSpecs,
+  useIsLightTheme,
   useTheme,
   useFile,
   getI18nManifest,

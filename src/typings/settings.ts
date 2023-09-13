@@ -34,8 +34,11 @@ export interface Settings {
   'terminal.style.fontFamily': string,
   'terminal.style.fontLigatures': boolean,
   'terminal.style.cursorStyle': 'block' | 'bar' | 'underline',
+  'terminal.theme.type': 'system' | 'dark' | 'light',
   'terminal.theme.name': string,
+  'terminal.theme.lightName': string,
   'terminal.theme.customization': ThemeDefinition,
+  'terminal.theme.lightCustomization': ThemeDefinition,
   'terminal.addon.includes': string[],
 }
 

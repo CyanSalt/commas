@@ -24,9 +24,12 @@ const filteredList = $computed(() => {
   return list.filter(item => item.name.toLowerCase().includes(lowerCase))
 })
 
+let isLightTheme = $(commas.remote.useIsLightTheme())
 const settings = commas.remote.useSettings()
 
-const currentTheme = $computed(() => settings['terminal.theme.name'])
+const currentTheme = $computed(() => {
+  return isLightTheme ? settings['terminal.theme.lightName'] : settings['terminal.theme.name']
+})
 
 const fields = [
   'foreground',
@@ -68,7 +71,20 @@ function openMarketplace() {
 
 async function applyTheme(item: RemoteTheme) {
   await commas.remote.writeUserFile(`themes/${item.name}.json`, JSON.stringify(item, null, 2))
-  settings['terminal.theme.name'] = item.name
+  const isDark = item.meta.isDark
+  if (isDark) {
+    settings['terminal.theme.name'] = item.name
+    if (isLightTheme) {
+      settings['terminal.theme.type'] = 'dark'
+    }
+  } else {
+    settings['terminal.theme.lightName'] = item.name
+    if (!isLightTheme) {
+      settings['terminal.theme.type'] = 'light'
+    }
+  }
+  // Note that modifying `isLightTheme` will not be atomic
+  // isLightTheme = !isDark
 }
 </script>
 
