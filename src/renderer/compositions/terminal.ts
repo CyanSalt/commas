@@ -444,12 +444,19 @@ export function handleTerminalMessages() {
     const tab = tabs.find(item => item.pid === data.pid)
     if (!tab) return
     tab.deferred.stop.resolve()
-    // FIXME: xterm-addon-webgl cannot dispose correctly
+    // FIXME: renderer cannot dispose correctly since the `dispose` will set a new DomRenderer
+    // which could not be finished when the terminal is disposed
     if (tab.addons.webgl) {
       tab.addons.webgl.dispose()
       delete tab.addons.webgl
     }
+    if (tab.addons.canvas) {
+      tab.addons.canvas.dispose()
+      delete tab.addons.canvas
+    }
     const xterm = tab.xterm
+    // FIXME: clear paused resize task manually to remove renderer as dependency
+    xterm['_core']._renderService._pausedResizeTask.set(() => {})
     xterm.dispose()
     removeTerminalTab(tab)
   })
