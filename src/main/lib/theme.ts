@@ -51,6 +51,30 @@ const CSS_PROPERTIES: Partial<Record<Exclude<keyof Theme, keyof ThemeDefinition>
   opacity: '--theme-opacity',
 }
 
+const accentColor = $customRef((track, trigger) => {
+  let color = systemPreferences.getAccentColor()
+  if (process.platform === 'win32') {
+    systemPreferences.on('accent-color-changed', (event, newColor) => {
+      color = newColor
+      trigger()
+    })
+  } else if (process.platform === 'darwin') {
+    systemPreferences.subscribeNotification('AppleColorPreferencesChangedNotification', () => {
+      color = systemPreferences.getAccentColor()
+      trigger()
+    })
+  }
+  return {
+    get() {
+      track()
+      return color
+    },
+    set() {
+      // ignore
+    }
+  }
+})
+
 const settings = useSettings()
 
 const theme = $computed(() => {
@@ -118,7 +142,6 @@ const theme = $computed(() => {
     definition.systemBlue = systemPreferences.getSystemColor('blue')
     definition.systemMagenta = systemPreferences.getSystemColor('pink')
   }
-  const accentColor = systemPreferences.getAccentColor()
   definition.systemAccent = accentColor ? `#${accentColor.slice(0, 6)}` : ''
   const accentHSLA = accentColor ? toHSLA(toRGBA(`#${accentColor.slice(0, 6)}`)) : undefined
   definition.acrylicBackground = accentHSLA ? toCSSHEX(
