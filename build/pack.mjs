@@ -94,7 +94,8 @@ const options = {
   out: 'release/',
   overwrite: true,
   asar: {
-    unpack: '**/*.node',
+    // FIXME: node-pty does not support app.asar.unpacked currently
+    unpack: '**/{*.node,node_modules/node-pty/**/*}',
   },
   icon: 'resources/images/icon',
   ignore: [
