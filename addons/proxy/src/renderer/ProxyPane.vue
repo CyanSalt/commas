@@ -132,10 +132,6 @@ function update() {
   margin-right: 8px;
   color: rgb(var(--system-green));
 }
-.shortcut {
-  display: flex;
-  align-items: center;
-}
 .shortcut-icon {
   margin-right: 8px;
 }

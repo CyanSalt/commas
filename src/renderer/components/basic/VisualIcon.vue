@@ -34,9 +34,10 @@ const lucideSpritePath = $computed(() => {
 .visual-icon.feather {
   width: 1em;
   height: 1em;
-  vertical-align: middle;
+  vertical-align: -0.375ex;
   fill: none;
   stroke: currentColor;
+  translate: 0 -0.125ex;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -44,9 +45,10 @@ const lucideSpritePath = $computed(() => {
 .visual-icon.lucide {
   width: 1em;
   height: 1em;
-  vertical-align: middle;
+  vertical-align: -0.375ex;
   fill: none;
   stroke: currentColor;
+  translate: 0 -0.125ex;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
