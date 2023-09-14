@@ -9,7 +9,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "postinstall": "node post-install.js",
+    "postinstall": "electron-rebuild",
     "dev": "node build/build-git.mjs && electron .",
     "dev:all": "node build/build.mjs && electron .",
     "dev:user": "node build/build-user.mjs && electron .",
@@ -37,6 +37,7 @@
     "@cyansalt/eslint-config-preset": "^1.15.0",
     "@cyansalt/stylelint-config-preset": "^1.4.1",
     "@cyansalt/tsconfig": "^2.2.1",
+    "@electron/rebuild": "^3.3.0",
     "@phosphor-icons/web": "^2.0.3",
     "@release-it/conventional-changelog": "^7.0.1",
     "@types/fuzzaldrin-plus": "^0.6.2",
