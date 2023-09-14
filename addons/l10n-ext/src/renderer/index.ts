@@ -16,7 +16,7 @@ export default () => {
   })
 
   commas.context.provide('l10n-ext.locale', {
-    label: 'Chinese (Simplified)',
+    label: '中文 (简体)',
     value: 'zh-CN',
   })
 

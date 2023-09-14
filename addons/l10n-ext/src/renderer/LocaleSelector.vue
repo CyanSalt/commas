@@ -21,9 +21,8 @@ const supportedLanguages = $computed(() => {
       <option
         v-for="option in supportedLanguages"
         :key="option.value"
-        v-i18n
         :value="option.value"
-      >{{ option.label }}#!l10n-ext.locale.{{ option.value }}</option>
+      >{{ option.label }}</option>
     </select>
   </div>
 </template>
