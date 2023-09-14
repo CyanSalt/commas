@@ -8,6 +8,7 @@ import { isMatchLinkModifier, writeTerminalTab } from '../compositions/terminal'
 import { openContextMenu } from '../utils/frame'
 import { escapeHTML } from '../utils/helper'
 import TerminalBlock from './TerminalBlock.vue'
+import VisualIcon from './basic/VisualIcon.vue'
 
 const { tab } = defineProps<{
   tab: TerminalTab,
@@ -88,20 +89,20 @@ function highlightLabel(label: string, query: string) {
 }
 
 function getCompletionIcon(item: CommandCompletion) {
-  if (item.value === item.query) return 'ph-bold ph-arrow-bend-down-left'
+  if (item.value === item.query) return 'ph-arrow-bend-down-left'
   switch (item.type) {
     case 'history':
-      return 'ph-bold ph-clock-counter-clockwise'
+      return 'ph-clock-counter-clockwise'
     case 'file':
-      return 'ph-bold ph-file'
+      return 'ph-file'
     case 'directory':
-      return 'ph-bold ph-folder-open'
+      return 'ph-folder-open'
     case 'recommendation':
-      return 'ph-bold ph-fast-forward'
+      return 'ph-fast-forward'
     case 'command':
-      return 'ph-bold ph-terminal'
+      return 'ph-terminal'
     default:
-      return 'ph-bold ph-dots-three'
+      return 'ph-dots-three'
   }
 }
 
@@ -147,7 +148,7 @@ function selectCompletion(event: MouseEvent) {
             :data-desc="item.description ?? ''"
             :data-back="item.query.length"
           >
-            <span :class="['completion-item-icon', getCompletionIcon(item)]"></span>
+            <VisualIcon :name="getCompletionIcon(item)" class="completion-item-icon" />
             <span class="completion-item-label" v-html="highlightLabel(item.value, item.query)"></span>
           </li>
         </ul>

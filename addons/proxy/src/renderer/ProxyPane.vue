@@ -8,7 +8,7 @@ defineProps<{
   tab: TerminalTab,
 }>()
 
-const { vI18n, SwitchControl, TerminalPane } = commas.ui.vueAssets
+const { vI18n, VisualIcon, SwitchControl, TerminalPane } = commas.ui.vueAssets
 
 const settings = commas.remote.useSettings()
 const isSystemProxyEnabled = $(useSystemProxyStatus())
@@ -82,11 +82,11 @@ function update() {
         <span v-if="status" class="proxy-address">
           <span class="link" @click="openEditor">{{ address }}</span>
           <span class="link" @click="copyAddress">
-            <span class="ph-bold ph-copy"></span>
+            <VisualIcon name="ph-copy" />
           </span>
         </span>
         <span v-else class="link shortcut" @click="toggleProxyServer">
-          <span class="shortcut-icon ph-bold ph-navigation-arrow"></span>
+          <VisualIcon name="ph-navigation-arrow" class="shortcut-icon" />
           <span v-i18n>Click this icon to start#!proxy.10</span>
         </span>
       </div>
@@ -96,9 +96,13 @@ function update() {
       </div>
       <div class="form-line">
         <span v-i18n="{ version: versionInfo.version ?? '--' }">Current version: ${version}#!preference.9</span>
-        <span v-if="versionInfo.type !== 'builtin'" class="version-type ph-bold ph-arrow-square-out"></span>
+        <VisualIcon
+          v-if="versionInfo.type !== 'builtin'"
+          name="ph-arrow-square-out"
+          class="version-type"
+        />
         <span v-if="isOutdated" class="update-link link form-action" @click="update">
-          <span class="update-icon ph-bold ph-caret-double-up"></span>
+          <VisualIcon name="ph-caret-double-up" class="update-icon" />
           <span class="latest-version">{{ latestVersion }}</span>
         </span>
       </div>
@@ -107,7 +111,7 @@ function update() {
       <h2 v-i18n class="group-title">HTTPS Proxy#!proxy.5</h2>
       <div class="group">
         <span v-if="isCertInstalled" class="cert-status">
-          <span class="cert-icon ph-bold ph-seal-check"></span>
+          <VisualIcon name="ph-seal-check" class="cert-icon" />
           <span v-i18n>Certification installed#!proxy.8</span>
         </span>
         <span

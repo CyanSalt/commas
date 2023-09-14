@@ -7,6 +7,7 @@ import { useIsTabListEnabled } from '../compositions/shell'
 import { getVisualTerminalTabIndex, showTabOptions, useCurrentTerminal, useTerminalTabs } from '../compositions/terminal'
 import { translate, vI18n } from '../utils/i18n'
 import { getPrompt } from '../utils/terminal'
+import VisualIcon from './basic/VisualIcon.vue'
 
 const settings = useSettings()
 const tabs = $(useTerminalTabs())
@@ -131,7 +132,7 @@ watchEffect(() => {
       @dragstart.prevent="startDraggingDirectory"
     >
       <img v-if="icon" class="directory-icon" :src="icon">
-      <span v-else :class="['ph-bold', isDirectory ? 'ph-folder-notch' : 'ph-file']"></span>
+      <VisualIcon v-else :name="isDirectory ? 'ph-folder-notch' : 'ph-file'" />
     </a>
     <div v-if="pane && !fileOrDirectory" v-i18n class="title-text">{{ pane.title }}</div>
     <div v-else class="title-text">{{ title }}</div>

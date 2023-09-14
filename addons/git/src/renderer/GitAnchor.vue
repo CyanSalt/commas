@@ -7,6 +7,8 @@ defineOptions({
   inheritAttrs: false,
 })
 
+const { VisualIcon } = commas.ui.vueAssets
+
 const terminal = $(commas.workspace.useCurrentTerminal())
 
 const directory: string = $computed(() => {
@@ -72,10 +74,10 @@ function openRemoteURL() {
 
 <template>
   <div v-if="remoteExternalURL" v-bind="$attrs" class="git-remote-anchor" @click="openRemoteURL">
-    <span :class="['ph-bold', isGithub ? 'ph-github-logo' : 'ph-gitlab-logo-simple']"></span>
+    <VisualIcon :name="isGithub ? 'ph-github-logo' : 'ph-gitlab-logo-simple'" />
   </div>
   <div v-if="directory" v-bind="$attrs" class="git-branch-anchor" @click="updateBranch">
-    <span class="ph-bold ph-git-branch"></span>
+    <VisualIcon name="ph-git-branch" />
     <span v-if="branch" class="branch-name">{{ branch }}</span>
   </div>
 </template>

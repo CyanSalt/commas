@@ -9,7 +9,7 @@ defineProps<{
   tab: TerminalTab,
 }>()
 
-const { vI18n, TerminalPane } = commas.ui.vueAssets
+const { vI18n, VisualIcon, TerminalPane } = commas.ui.vueAssets
 
 const keyword: string = $ref('')
 
@@ -100,7 +100,7 @@ onBeforeUpdate(() => {
     <form class="group">
       <div class="action-line settings-searcher">
         <span :class="['link form-action toggle-all', { collapsed: isCollapsed }]" @click="toggleAll">
-          <span class="ph-bold ph-caret-double-down"></span>
+          <VisualIcon name="ph-caret-double-down" />
         </span>
         <input
           v-model="keyword"

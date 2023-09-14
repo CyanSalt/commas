@@ -12,7 +12,7 @@ defineProps<{
   tab: TerminalTab,
 }>()
 
-const { vI18n, LoadingSpinner, TerminalPane } = commas.ui.vueAssets
+const { vI18n, LoadingSpinner, VisualIcon, TerminalPane } = commas.ui.vueAssets
 
 const keyword: string = $ref('')
 
@@ -107,7 +107,7 @@ async function applyTheme(item: RemoteTheme) {
           class="form-control"
         >
         <span class="link form-action" @click="load">
-          <span class="ph-bold ph-arrows-clockwise"></span>
+          <VisualIcon name="ph-arrows-clockwise" />
         </span>
         <div class="form-line-tip">
           <span v-i18n>Theme will be downloaded from#!theme.3</span>
@@ -118,7 +118,7 @@ async function applyTheme(item: RemoteTheme) {
       <div v-else class="theme-list">
         <ThemeCard v-for="item in filteredList" :key="item.name" :theme="item">
           <span v-if="item.name !== currentTheme" class="link" @click="applyTheme(item)">
-            <span class="ph-bold ph-check"></span>
+            <VisualIcon name="ph-check" />
           </span>
         </ThemeCard>
       </div>

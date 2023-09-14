@@ -7,6 +7,7 @@ import { useIsFinding } from '../compositions/shell'
 import { useCurrentTerminal } from '../compositions/terminal'
 import { useTheme } from '../compositions/theme'
 import { vI18n } from '../utils/i18n'
+import VisualIcon from './basic/VisualIcon.vue'
 
 const terminal = $(useCurrentTerminal())
 const theme = useTheme()
@@ -156,13 +157,13 @@ watch($$(isFinding), (value: boolean) => {
     <div v-if="currentNumber && totalNumber" class="indicator">{{ currentNumber }} / {{ totalNumber }}</div>
     <div class="buttons">
       <div class="button previous">
-        <span class="ph-bold ph-arrow-left" @click="findPrevious"></span>
+        <VisualIcon name="ph-arrow-left" @click="findPrevious" />
       </div>
       <div class="button next">
-        <span class="ph-bold ph-arrow-right" @click="findNext"></span>
+        <VisualIcon name="ph-arrow-right" @click="findNext" />
       </div>
       <div class="button close">
-        <span class="ph-bold ph-x" @click="cancel"></span>
+        <VisualIcon name="ph-x" @click="cancel" />
       </div>
     </div>
   </div>

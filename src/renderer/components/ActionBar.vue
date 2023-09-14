@@ -4,6 +4,7 @@ import * as commas from '../../../api/core-renderer'
 import { useSettings } from '../compositions/settings'
 import TabList from './TabList.vue'
 import TerminalTitle from './TerminalTitle.vue'
+import VisualIcon from './basic/VisualIcon.vue'
 
 const settings = useSettings()
 
@@ -19,7 +20,7 @@ function configure() {
   <footer class="action-bar">
     <div class="left-side">
       <div class="anchor" @click="configure">
-        <span class="ph-bold ph-gear"></span>
+        <VisualIcon name="ph-gear" />
       </div>
       <component
         :is="anchor"

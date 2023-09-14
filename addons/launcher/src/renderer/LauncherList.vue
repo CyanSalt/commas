@@ -15,7 +15,7 @@ import {
   useLaunchers,
 } from './launcher'
 
-const { vI18n, SortableList, TabItem } = commas.ui.vueAssets
+const { vI18n, VisualIcon, SortableList, TabItem } = commas.ui.vueAssets
 
 const settings = commas.remote.useSettings()
 let movingIndex = $(commas.workspace.useMovingTerminalIndex())
@@ -154,7 +154,7 @@ function stopMoving() {
     <template v-if="isHorizontal">
       <div class="launcher-folder">
         <span class="button menu" @click="showLauncherMenu">
-          <span class="ph-bold ph-push-pin"></span>
+          <VisualIcon name="ph-push-pin" />
         </span>
       </div>
     </template>
@@ -162,7 +162,7 @@ function stopMoving() {
       <div class="launcher-folder" @click="toggleCollapsing">
         <div :class="['group-name', { collapsed: isCollapsed }]">
           <span class="folder-icon">
-            <span :class="['ph-bold', isCollapsed ? 'ph-push-pin-simple' : 'ph-push-pin']"></span>
+            <VisualIcon :name="isCollapsed ? 'ph-push-pin-simple' : 'ph-push-pin'" />
           </span>
         </div>
         <div class="buttons" @click.stop>
@@ -170,7 +170,7 @@ function stopMoving() {
             :class="['button', 'more', { active: isAnyActionEnabled }]"
             @click="toggleActions"
           >
-            <span class="ph-bold ph-list"></span>
+            <VisualIcon name="ph-list" />
           </div>
         </div>
         <div v-show="isActionsVisible" class="launcher-actions" @click.stop>
@@ -185,7 +185,7 @@ function stopMoving() {
             @keyup.esc="toggleActions"
           >
           <span :class="['button', 'edit', { active: isEditing }]" @click="toggleEditing">
-            <span :class="['ph-bold', isEditing ? 'ph-pencil-simple-slash' : 'ph-pencil-simple']"></span>
+            <VisualIcon :name="isEditing ? 'ph-pencil-simple-slash' : 'ph-pencil-simple'" />
           </span>
         </div>
       </div>
@@ -212,19 +212,19 @@ function stopMoving() {
               @click.stop="startLauncher(launcher)"
               @contextmenu="showLauncherScripts(launcher, $event)"
             >
-              <span class="ph-bold ph-play"></span>
+              <VisualIcon name="ph-play" />
             </div>
             <div
               class="button launch-externally"
               @click.stop="startLauncherExternally(launcher)"
             >
-              <span class="ph-bold ph-arrow-square-out"></span>
+              <VisualIcon name="ph-arrow-square-out" />
             </div>
           </template>
         </TabItem>
       </SortableList>
       <div v-if="isEditing" class="new-launcher" @click="createLauncher">
-        <span class="ph-bold ph-plus"></span>
+        <VisualIcon name="ph-plus" />
       </div>
     </template>
   </div>

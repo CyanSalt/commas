@@ -2,6 +2,7 @@
 import { isEqual } from 'lodash'
 import { watch } from 'vue'
 import OrderedCheckbox from './OrderedCheckbox.vue'
+import VisualIcon from './VisualIcon.vue'
 
 const { modelValue, withKeys, pinned, lazy } = defineProps<{
   modelValue: object | undefined,
@@ -112,7 +113,7 @@ function togglePinned(item: EditorEntryItem) {
             <input v-model="item.entry.key" :readonly="item.pinned" type="text" class="form-control">
           </template>
           <span class="property-arrow">
-            <span class="ph-bold ph-arrow-right"></span>
+            <VisualIcon name="ph-arrow-right" />
           </span>
         </template>
         <template v-if="lazy">
@@ -126,7 +127,7 @@ function togglePinned(item: EditorEntryItem) {
     </template>
     <div class="property-line extra-line">
       <span class="link add" @click="add">
-        <span class="ph-bold ph-plus"></span>
+        <VisualIcon name="ph-plus" />
       </span>
       <slot name="extra"></slot>
     </div>

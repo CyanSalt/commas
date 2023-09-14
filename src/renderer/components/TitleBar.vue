@@ -3,6 +3,7 @@ import { useMaximized, useMinimized } from '../compositions/frame'
 import { useSettings } from '../compositions/settings'
 import TabList from './TabList.vue'
 import TerminalTitle from './TerminalTitle.vue'
+import VisualIcon from './basic/VisualIcon.vue'
 
 const settings = useSettings()
 
@@ -42,15 +43,13 @@ function close() {
     <div class="controls">
       <template v-if="isCustomControlEnabled">
         <div class="minimize button" @click="minimize">
-          <span class="ph-bold ph-minus"></span>
+          <VisualIcon name="ph-minus" />
         </div>
         <div class="maximize button" @click="maximize">
-          <span
-            :class="['ph-bold', isMaximized ? 'ph-arrows-in-simple' : 'ph-arrows-out-simple']"
-          ></span>
+          <VisualIcon :name="isMaximized ? 'ph-arrows-in-simple' : 'ph-arrows-out-simple'" />
         </div>
         <div class="close button" @click="close">
-          <span class="ph-bold ph-x"></span>
+          <VisualIcon name="ph-x" />
         </div>
       </template>
     </div>

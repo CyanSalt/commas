@@ -4,6 +4,7 @@ import type { IconEntry } from '../assets/icons'
 import { useSettings } from '../compositions/settings'
 import { closeTerminalTab, getTerminalTabTitle, useCurrentTerminal } from '../compositions/terminal'
 import { getIconEntry } from '../utils/terminal'
+import VisualIcon from './basic/VisualIcon.vue'
 
 const { tab, character, closable = false } = defineProps<{
   tab?: TerminalTab | undefined,
@@ -95,13 +96,14 @@ function close() {
     <div class="tab-item-card">
       <div class="tab-overview">
         <div class="tab-title">
-          <span
+          <VisualIcon
             v-if="iconEntry"
-            :style="{ color: isFocused ? iconEntry.color : 'inherit' }"
-            :class="['tab-icon', iconEntry.name]"
-          ></span>
-          <span v-else-if="pane && tab!.shell" class="tab-icon ph-bold ph-file"></span>
-          <span v-else class="tab-icon ph-bold ph-terminal"></span>
+            :name="iconEntry.name"
+            :color="isFocused ? iconEntry.color : undefined"
+            class="tab-icon"
+          />
+          <VisualIcon v-else-if="pane && tab!.shell" name="ph-file" class="tab-icon" />
+          <VisualIcon v-else name="ph-terminal" class="tab-icon" />
           <span class="tab-name">{{ title }}</span>
         </div>
         <div class="right-side">
@@ -109,7 +111,7 @@ function close() {
           <div class="operations">
             <slot name="operations"></slot>
             <div v-if="closable || tab" class="button close" @click.stop="close">
-              <div class="ph-bold ph-x"></div>
+              <VisualIcon name="ph-x" />
             </div>
           </div>
         </div>

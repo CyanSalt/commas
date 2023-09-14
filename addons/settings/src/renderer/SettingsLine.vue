@@ -4,7 +4,7 @@ import { isEqual } from 'lodash'
 import type { SettingsSpec } from '../../../../src/typings/settings'
 import { accepts, isObjectSchema } from './json-schema'
 
-const { vI18n, ObjectEditor, SwitchControl, ValueSelector } = commas.ui.vueAssets
+const { vI18n, VisualIcon, ObjectEditor, SwitchControl, ValueSelector } = commas.ui.vueAssets
 
 const { spec, modelValue, open } = defineProps<{
   spec: SettingsSpec,
@@ -146,7 +146,7 @@ function reset() {
   >
     <summary :class="['line-summary', { customized: isCustomized }]">
       <span class="link tree-node">
-        <span class="ph-bold ph-caret-down"></span>
+        <VisualIcon name="ph-caret-down" />
       </span>
       <span v-i18n class="item-label" @click.prevent>{{ spec.label }}#!settings.label.{{ spec.key }}</span>
       <span class="item-key" @click.prevent>{{ spec.key }}</span>
@@ -170,7 +170,7 @@ function reset() {
       >
         <template #extra>
           <span class="link reset" @click="reset">
-            <span class="ph-bold ph-arrow-counter-clockwise"></span>
+            <VisualIcon name="ph-arrow-counter-clockwise" />
           </span>
         </template>
       </ObjectEditor>

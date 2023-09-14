@@ -10,7 +10,7 @@ defineProps<{
   tab: TerminalTab,
 }>()
 
-const { vI18n, TerminalPane, SwitchControl } = commas.ui.vueAssets
+const { vI18n, VisualIcon, TerminalPane, SwitchControl } = commas.ui.vueAssets
 
 const settings = commas.remote.useSettings()
 
@@ -73,7 +73,7 @@ onMounted(() => {
       </div>
       <div class="action-line">
         <span class="link form-action" @click="refresh">
-          <span class="ph-bold ph-arrows-clockwise"></span>
+          <VisualIcon name="ph-arrows-clockwise" />
         </span>
       </div>
       <div class="addon-list">

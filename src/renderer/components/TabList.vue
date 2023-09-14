@@ -21,6 +21,7 @@ import { handleMousePressing } from '../utils/helper'
 import { getShells } from '../utils/terminal'
 import TabItem from './TabItem.vue'
 import SortableList from './basic/SortableList.vue'
+import VisualIcon from './basic/VisualIcon.vue'
 
 const lists = commas.proxy.context.getCollection('terminal.ui-side-list')
 const shells = $(useAsyncComputed(() => getShells(), []))
@@ -161,15 +162,15 @@ watchEffect(onInvalidate => {
         </SortableList>
         <div ref="newTabElement" :class="['new-tab', { 'is-canceling-group': isCancelingGroup }]">
           <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
-            <span class="ph-bold ph-list-plus"></span>
+            <VisualIcon name="ph-list-plus" />
           </div>
           <div
             class="default-shell anchor"
             @click="selectDefaultShell"
             @contextmenu="selectShell"
           >
-            <span v-if="movingGroupTab" class="ph-bold ph-link-break"></span>
-            <span v-else class="ph-bold ph-plus"></span>
+            <VisualIcon v-if="movingGroupTab" name="ph-link-break" />
+            <VisualIcon v-else name="ph-plus" />
           </div>
         </div>
       </div>

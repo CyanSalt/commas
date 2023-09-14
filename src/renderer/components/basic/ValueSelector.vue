@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import VisualIcon from './VisualIcon.vue'
+
 const { modelValue, pinned = (() => []) as never, disabled = false, unpinable = false, placeholder = '' } = defineProps<{
   modelValue: any,
   pinned?: any[],
@@ -45,7 +47,7 @@ function unpin(value) {
         </label>
         <input :value="value" readonly type="text" :placeholder="placeholder" class="form-control">
         <span v-if="unpinable" class="form-action link remove" @click="unpin(value)">
-          <span class="ph-bold ph-x"></span>
+          <VisualIcon name="ph-x" />
         </span>
       </div>
     </template>

@@ -10,7 +10,7 @@ defineProps<{
   tab: TerminalTab,
 }>()
 
-const { vI18n, ObjectEditor, TerminalPane } = commas.ui.vueAssets
+const { vI18n, VisualIcon, ObjectEditor, TerminalPane } = commas.ui.vueAssets
 
 const settings = commas.remote.useSettings()
 let syncData = $(useSyncData())
@@ -109,26 +109,26 @@ function removeSyncPlan(index: number) {
           class="form-control"
         >
         <span class="link form-action" @click="openGitHubTokenSettings">
-          <span class="ph-bold ph-github-logo"></span>
+          <VisualIcon name="ph-github-logo" />
         </span>
         <span class="link form-action confirm" @click="confirmToken">
-          <span class="ph-bold ph-check"></span>
+          <VisualIcon name="ph-check" />
         </span>
       </div>
       <span v-else v-i18n class="link" @click="addToken">Add GitHub Token#!sync.3</span>
       <div v-if="syncData.encryption" class="form-line">
         <span class="link form-action" @click="uploadDefaultSyncPlan">
-          <span class="ph-bold ph-cloud-arrow-up"></span>
+          <VisualIcon name="ph-cloud-arrow-up" />
         </span>
         <span v-if="defaultPlanGist" class="link form-action" @click="downloadDefaultSyncPlan">
-          <span class="ph-bold ph-cloud-arrow-down"></span>
+          <VisualIcon name="ph-cloud-arrow-down" />
         </span>
         <span
           v-if="defaultPlanGist.includes('/')"
           class="link form-action"
           @click="openSyncPlanGist(defaultPlanGist)"
         >
-          <span class="ph-bold ph-github-logo"></span>
+          <VisualIcon name="ph-github-logo" />
         </span>
       </div>
       <div class="history">
@@ -141,35 +141,35 @@ function removeSyncPlan(index: number) {
       <div v-for="(plan, index) in extraPlans" :key="index" class="extra-plan">
         <div class="form-line">
           <span class="link form-action remove-plan" @click="removeSyncPlan(index)">
-            <span class="ph-bold ph-minus"></span>
+            <VisualIcon name="ph-minus" />
           </span>
           <input v-model.lazy="plan.name" class="immersive-control plan-name">
           <span class="plan-directory" @click="openSyncPlanDirectory(plan)">
-            <span class="directory-icon ph-bold ph-folder-notch"></span>
+            <VisualIcon name="ph-folder-notch" class="directory-icon" />
             <span class="directory-path">{{ omitHome(plan.directory) }}</span>
           </span>
         </div>
         <ObjectEditor v-model="plan.files" lazy>
           <template #extra>
             <span class="link form-action" @click="uploadSyncPlan(plan)">
-              <span class="ph-bold ph-cloud-arrow-up"></span>
+              <VisualIcon name="ph-cloud-arrow-up" />
             </span>
             <span v-if="plan.gist" class="link form-action" @click="downloadSyncPlan(plan)">
-              <span class="ph-bold ph-cloud-arrow-down"></span>
+              <VisualIcon name="ph-cloud-arrow-down" />
             </span>
             <span
               v-if="plan.gist.includes('/')"
               class="link form-action"
               @click="openSyncPlanGist(plan.gist)"
             >
-              <span class="ph-bold ph-github-logo"></span>
+              <VisualIcon name="ph-github-logo" />
             </span>
           </template>
         </ObjectEditor>
       </div>
       <div class="form-line action-line">
         <span class="link form-action" @click="addSyncPlan">
-          <span class="ph-bold ph-plus"></span>
+          <VisualIcon name="ph-plus" />
         </span>
       </div>
     </div>

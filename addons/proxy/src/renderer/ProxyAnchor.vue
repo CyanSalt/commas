@@ -2,6 +2,8 @@
 import * as commas from 'commas:api/renderer'
 import { useProxyServerStatus, useSystemProxyStatus } from './compositions'
 
+const { VisualIcon } = commas.ui.vueAssets
+
 const settings = commas.remote.useSettings()
 const systemStatus = $(useSystemProxyStatus())
 
@@ -28,8 +30,8 @@ function configure() {
     @click="toggle"
     @contextmenu="configure"
   >
-    <span v-if="status === undefined" class="ph-bold ph-dots-three"></span>
-    <span v-else class="ph-bold ph-navigation-arrow"></span>
+    <VisualIcon v-if="status === undefined" name="ph-dots-three" />
+    <VisualIcon v-else name="ph-navigation-arrow" />
     <span v-if="status" class="server-port">{{ port }}</span>
   </div>
 </template>
