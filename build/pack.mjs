@@ -3,6 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import util from 'node:util'
 import chalk from 'chalk'
+import { rebuild } from '@electron/rebuild';
 import packager from 'electron-packager'
 import png2icons from 'png2icons'
 import { requireCommonJS, resolveCommonJS } from './utils/common.mjs'
@@ -137,12 +138,17 @@ const options = {
     FileDescription: pkg.productName,
     OriginalFilename: `${pkg.name}.exe`,
   },
-  afterPrune: [
+  afterCopy: [
     (buildPath, electronVersion, platform, arch, callback) => {
-      fs.copyFile(backupPkgPath, path.join(buildPath, 'package.json'), callback)
+      util.callbackify(rebuild)({ buildPath, electronVersion, arch }, callback)
     },
     (buildPath, electronVersion, platform, arch, callback) => {
       fs.rm(path.join(buildPath, 'node_modules/@commas'), { recursive: true }, callback)
+    },
+  ],
+  afterPrune: [
+    (buildPath, electronVersion, platform, arch, callback) => {
+      fs.copyFile(backupPkgPath, path.join(buildPath, 'package.json'), callback)
     },
   ],
 }
