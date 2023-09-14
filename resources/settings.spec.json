@@ -235,13 +235,13 @@
     "comments": [
       "Specify how to render the terminal",
       "Options: 'dom', 'canvas' or 'webgl'",
-      "'webgl' may lose transparency when rendering some glyphs"
+      "'webgl' has the best performance but may have display flaws"
     ],
     "schema": {
       "type": "string",
       "enum": ["dom", "canvas", "webgl"]
     },
-    "default": "webgl"
+    "default": "canvas"
   },
   {
     "key": "terminal.view.frameType",
