@@ -10,6 +10,8 @@
 
 ![截图](https://github.com/CyanSalt/commas/assets/5101076/7592723f-fd56-4437-bc2f-cd49b99908cd)
 
+*主题: [OneHalf](https://github.com/sonph/onehalf)*
+
 ## 安装
 
 ### 预构建版本
@@ -21,6 +23,8 @@
 ```shell
 brew install --cask cyansalt/cask/commas
 ```
+
+> ⚠️ Linux 的预构建版本目前无法正常工作，参见 [#20](https://github.com/CyanSalt/commas/issues/20)。建议手动构建。
 
 ### 手动构建
 
@@ -57,14 +61,6 @@ brew install --cask cyansalt/cask/commas
 - Commas 内置了一组丰富的[钩子 API](https://github.com/CyanSalt/commas/tree/master/api)。你可以参考 Commas 的内置附加功能来编写自己的附加功能。
 
 - 以及，你还可以通过快捷键 <kbd>&#8984;/Ctrl</kbd> <kbd>Shift</kbd> <kbd>I</kbd> 打开 Commas 的开发者工具，检查 UI 中的 HTML 元素，就像在浏览器里一样！
-
-## 鸣谢
-
-- [@vue/reactivity](https://github.com/vuejs/core/tree/main/packages/reactivity)
-- [electron](https://github.com/electron/electron)
-- [node-pty](https://github.com/microsoft/node-pty)
-- [vscode](https://github.com/microsoft/vscode)
-- [xterm](https://github.com/xtermjs/xterm.js)
 
 ## 许可
 

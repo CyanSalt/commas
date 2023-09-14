@@ -10,6 +10,8 @@ EN | [中文](docs/README-zh.md)
 
 ![Screenshot](https://github.com/CyanSalt/commas/assets/5101076/7592723f-fd56-4437-bc2f-cd49b99908cd)
 
+*Theme: [OneHalf](https://github.com/sonph/onehalf)*
+
 ## Installation
 
 ### Prebuilt version
@@ -21,6 +23,8 @@ It can also be installed via [Homebrew](https://brew.sh/) (especially on macOS)
 ```shell
 brew install --cask cyansalt/cask/commas
 ```
+
+> ⚠️ The prebuilt version of Linux don't work currently, see [#20](https://github.com/CyanSalt/commas/issues/20). It is recommended to build manually.
 
 ### Build manually
 
@@ -57,14 +61,6 @@ You can clone or download the repository and build Commas locally.
 - Commas has a rich set of built-in [hook API](https://github.com/CyanSalt/commas/tree/master/api). You can read the built-in addons for reference in writing your own addons.
 
 - In addition, you can also use the shortcut key <kbd>&#8984;/Ctrl</kbd> <kbd>Shift</kbd> <kbd>I</kbd> to open the developer tool of Commas and inspect the HTML elements of UI, just like what you do in the browser!
-
-## Credits
-
-- [@vue/reactivity](https://github.com/vuejs/core/tree/main/packages/reactivity)
-- [electron](https://github.com/electron/electron)
-- [node-pty](https://github.com/microsoft/node-pty)
-- [vscode](https://github.com/microsoft/vscode)
-- [xterm](https://github.com/xtermjs/xterm.js)
 
 ## License
 
