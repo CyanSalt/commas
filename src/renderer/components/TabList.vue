@@ -218,7 +218,7 @@ watchEffect(onInvalidate => {
   .tab-list.vertical & {
     flex-direction: column;
     width: 176px;
-    background: rgb(var(--theme-background) / calc(var(--theme-opacity) * 3 / 4));
+    background: rgb(var(--theme-background) / var(--design-card-secondary-opacity));
     border-radius: var(--design-card-border-radius);
     box-shadow: var(--design-card-shadow);
   }

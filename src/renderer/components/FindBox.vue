@@ -117,7 +117,6 @@ watch($$(isFinding), (value: boolean) => {
     ipcRenderer.invoke('stop-finding', 'clearSelection')
   } else {
     terminal.addons.search.clearDecorations()
-    terminal.addons.search.clearActiveDecoration()
   }
 })
 </script>
@@ -174,8 +173,11 @@ watch($$(isFinding), (value: boolean) => {
   display: flex;
   flex: none;
   height: 26px;
-  padding: 4px 12px;
+  padding: var(--design-card-gap);
   line-height: 26px;
+  background: rgb(var(--theme-background) / var(--design-card-secondary-opacity));
+  border-radius: var(--design-card-border-radius);
+  box-shadow: var(--design-card-shadow);
 }
 .keyword {
   flex: auto;

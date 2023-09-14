@@ -121,6 +121,7 @@ onMounted(() => {
   --design-card-gap: 8px;
   --design-card-border-radius: var(--design-card-gap);
   --design-card-shadow: 0 2px 4px 2px rgb(0 0 0 / 10%);
+  --design-card-secondary-opacity: calc(var(--theme-opacity) * 3 / 4);
   --acrylic-background: 133 194 255;
 }
 :global(::selection) {
@@ -165,6 +166,7 @@ onMounted(() => {
   display: flex;
   flex: 1;
   flex-direction: column;
+  gap: var(--design-card-gap);
   min-width: 0;
 }
 </style>
