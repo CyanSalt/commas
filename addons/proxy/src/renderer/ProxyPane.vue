@@ -95,10 +95,8 @@ function update() {
         <SwitchControl v-model="isSystemProxyEnabled" />
       </div>
       <div class="form-line">
-        <span class="form-label">
-          <span v-i18n="{ version: versionInfo.version ?? '--' }">Current version: ${version}#!preference.9</span>
-          <span v-if="versionInfo.type !== 'builtin'" class="version-type ph-bold ph-arrow-square-out"></span>
-        </span>
+        <span v-i18n="{ version: versionInfo.version ?? '--' }">Current version: ${version}#!preference.9</span>
+        <span v-if="versionInfo.type !== 'builtin'" class="version-type ph-bold ph-arrow-square-out"></span>
         <span v-if="isOutdated" class="update-link link form-action" @click="update">
           <span class="update-icon ph-bold ph-caret-double-up"></span>
           <span class="latest-version">{{ latestVersion }}</span>
