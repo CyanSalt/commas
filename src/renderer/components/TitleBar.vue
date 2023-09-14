@@ -43,13 +43,13 @@ function close() {
     <div class="controls">
       <template v-if="isCustomControlEnabled">
         <div class="minimize button" @click="minimize">
-          <VisualIcon name="ph-minus" />
+          <VisualIcon name="feather-minus" />
         </div>
         <div class="maximize button" @click="maximize">
-          <VisualIcon :name="isMaximized ? 'ph-arrows-in-simple' : 'ph-arrows-out-simple'" />
+          <VisualIcon :name="isMaximized ? 'feather-minimize-2' : 'feather-maximize-2'" />
         </div>
         <div class="close button" @click="close">
-          <VisualIcon name="ph-x" />
+          <VisualIcon name="feather-x" />
         </div>
       </template>
     </div>
@@ -93,6 +93,7 @@ function close() {
   justify-content: flex-end;
   // TODO: get the min size
   width: 120px;
+  padding-right: 8px; /// trafficLightOffset
   .title-bar.no-controls & {
     order: -1;
   }
@@ -104,6 +105,7 @@ function close() {
 .button {
   width: 36px;
   height: 36px;
+  text-align: center;
   transition: color 0.2s;
   cursor: pointer;
   -webkit-app-region: no-drag;

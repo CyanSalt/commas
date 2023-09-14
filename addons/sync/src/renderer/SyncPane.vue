@@ -109,26 +109,26 @@ function removeSyncPlan(index: number) {
           class="form-control"
         >
         <span class="link form-action" @click="openGitHubTokenSettings">
-          <VisualIcon name="ph-github-logo" />
+          <VisualIcon name="feather-github" />
         </span>
         <span class="link form-action confirm" @click="confirmToken">
-          <VisualIcon name="ph-check" />
+          <VisualIcon name="feather-check" />
         </span>
       </div>
       <span v-else v-i18n class="link" @click="addToken">Add GitHub Token#!sync.3</span>
       <div v-if="syncData.encryption" class="form-line">
         <span class="link form-action" @click="uploadDefaultSyncPlan">
-          <VisualIcon name="ph-cloud-arrow-up" />
+          <VisualIcon name="feather-upload-cloud" />
         </span>
         <span v-if="defaultPlanGist" class="link form-action" @click="downloadDefaultSyncPlan">
-          <VisualIcon name="ph-cloud-arrow-down" />
+          <VisualIcon name="feather-download-cloud" />
         </span>
         <span
           v-if="defaultPlanGist.includes('/')"
           class="link form-action"
           @click="openSyncPlanGist(defaultPlanGist)"
         >
-          <VisualIcon name="ph-github-logo" />
+          <VisualIcon name="feather-github" />
         </span>
       </div>
       <div class="history">
@@ -141,35 +141,35 @@ function removeSyncPlan(index: number) {
       <div v-for="(plan, index) in extraPlans" :key="index" class="extra-plan">
         <div class="form-line">
           <span class="link form-action remove-plan" @click="removeSyncPlan(index)">
-            <VisualIcon name="ph-minus" />
+            <VisualIcon name="feather-minus" />
           </span>
           <input v-model.lazy="plan.name" class="immersive-control plan-name">
           <span class="plan-directory" @click="openSyncPlanDirectory(plan)">
-            <VisualIcon name="ph-folder-notch" class="directory-icon" />
+            <VisualIcon name="feather-folder" class="directory-icon" />
             <span class="directory-path">{{ omitHome(plan.directory) }}</span>
           </span>
         </div>
         <ObjectEditor v-model="plan.files" lazy>
           <template #extra>
             <span class="link form-action" @click="uploadSyncPlan(plan)">
-              <VisualIcon name="ph-cloud-arrow-up" />
+              <VisualIcon name="feather-upload-cloud" />
             </span>
             <span v-if="plan.gist" class="link form-action" @click="downloadSyncPlan(plan)">
-              <VisualIcon name="ph-cloud-arrow-down" />
+              <VisualIcon name="feather-download-cloud" />
             </span>
             <span
               v-if="plan.gist.includes('/')"
               class="link form-action"
               @click="openSyncPlanGist(plan.gist)"
             >
-              <VisualIcon name="ph-github-logo" />
+              <VisualIcon name="feather-github" />
             </span>
           </template>
         </ObjectEditor>
       </div>
       <div class="form-line action-line">
         <span class="link form-action" @click="addSyncPlan">
-          <VisualIcon name="ph-plus" />
+          <VisualIcon name="feather-plus" />
         </span>
       </div>
     </div>

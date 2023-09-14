@@ -19,10 +19,10 @@ const launcherCharacters = $computed(() => {
       id: launcher.id,
       title: launcher.name,
       defaultIcon: launcher.remote ? undefined : {
-        name: 'ph-hash',
+        name: 'feather-hash',
       },
       icon: launcher.remote ? {
-        name: 'ph-link',
+        name: 'feather-link',
       } : undefined,
     }
   })

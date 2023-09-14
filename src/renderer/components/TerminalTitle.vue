@@ -132,7 +132,7 @@ watchEffect(() => {
       @dragstart.prevent="startDraggingDirectory"
     >
       <img v-if="icon" class="directory-icon" :src="icon">
-      <VisualIcon v-else :name="isDirectory ? 'ph-folder-notch' : 'ph-file'" />
+      <VisualIcon v-else :name="isDirectory ? 'feather-folder' : 'feather-file'" />
     </a>
     <div v-if="pane && !fileOrDirectory" v-i18n class="title-text">{{ pane.title }}</div>
     <div v-else class="title-text">{{ title }}</div>
@@ -153,7 +153,6 @@ watchEffect(() => {
   align-items: center;
   box-sizing: border-box;
   padding: 0 8px;
-  font-size: 12px;
 }
 .shortcut {
   flex: none;
@@ -175,6 +174,7 @@ watchEffect(() => {
 }
 .title-text {
   font-weight: 500;
+  font-size: 12px;
   /* Show ellipsis on left */
   direction: rtl;
   white-space: nowrap;

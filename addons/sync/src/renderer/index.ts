@@ -10,7 +10,7 @@ export default () => {
     title: 'Sync#!sync.1',
     component: SyncPane,
     icon: {
-      name: 'ph-cloud-arrow-up',
+      name: 'feather-upload-cloud',
     },
   })
 

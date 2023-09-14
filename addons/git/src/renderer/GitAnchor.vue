@@ -74,10 +74,10 @@ function openRemoteURL() {
 
 <template>
   <div v-if="remoteExternalURL" v-bind="$attrs" class="git-remote-anchor" @click="openRemoteURL">
-    <VisualIcon :name="isGithub ? 'ph-github-logo' : 'ph-gitlab-logo-simple'" />
+    <VisualIcon :name="isGithub ? 'feather-github' : 'feather-gitlab'" />
   </div>
   <div v-if="directory" v-bind="$attrs" class="git-branch-anchor" @click="updateBranch">
-    <VisualIcon name="ph-git-branch" />
+    <VisualIcon name="feather-git-branch" />
     <span v-if="branch" class="branch-name">{{ branch }}</span>
   </div>
 </template>

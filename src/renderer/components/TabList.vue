@@ -162,15 +162,15 @@ watchEffect(onInvalidate => {
         </SortableList>
         <div ref="newTabElement" :class="['new-tab', { 'is-canceling-group': isCancelingGroup }]">
           <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
-            <VisualIcon name="ph-list-plus" />
+            <VisualIcon name="lucide-list-plus" />
           </div>
           <div
             class="default-shell anchor"
             @click="selectDefaultShell"
             @contextmenu="selectShell"
           >
-            <VisualIcon v-if="movingGroupTab" name="ph-link-break" />
-            <VisualIcon v-else name="ph-plus" />
+            <VisualIcon v-if="movingGroupTab" name="lucide-ungroup" />
+            <VisualIcon v-else name="feather-plus" />
           </div>
         </div>
       </div>

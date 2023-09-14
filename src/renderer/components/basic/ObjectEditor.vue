@@ -113,7 +113,7 @@ function togglePinned(item: EditorEntryItem) {
             <input v-model="item.entry.key" :readonly="item.pinned" type="text" class="form-control">
           </template>
           <span class="property-arrow">
-            <VisualIcon name="ph-arrow-right" />
+            <VisualIcon name="feather-arrow-right" />
           </span>
         </template>
         <template v-if="lazy">
@@ -127,7 +127,7 @@ function togglePinned(item: EditorEntryItem) {
     </template>
     <div class="property-line extra-line">
       <span class="link add" @click="add">
-        <VisualIcon name="ph-plus" />
+        <VisualIcon name="feather-plus" />
       </span>
       <slot name="extra"></slot>
     </div>

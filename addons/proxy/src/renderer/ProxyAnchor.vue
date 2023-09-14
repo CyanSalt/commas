@@ -30,8 +30,8 @@ function configure() {
     @click="toggle"
     @contextmenu="configure"
   >
-    <VisualIcon v-if="status === undefined" name="ph-dots-three" />
-    <VisualIcon v-else name="ph-navigation-arrow" />
+    <VisualIcon v-if="status === undefined" name="feather-loader" />
+    <VisualIcon v-else name="feather-navigation" />
     <span v-if="status" class="server-port">{{ port }}</span>
   </div>
 </template>

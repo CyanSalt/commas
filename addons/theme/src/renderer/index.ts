@@ -10,7 +10,7 @@ export default () => {
     title: 'Theme#!theme.1',
     component: ThemePane,
     icon: {
-      name: 'ph-palette',
+      name: 'lucide-palette',
     },
   })
 

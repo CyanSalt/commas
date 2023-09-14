@@ -89,20 +89,20 @@ function highlightLabel(label: string, query: string) {
 }
 
 function getCompletionIcon(item: CommandCompletion) {
-  if (item.value === item.query) return 'ph-arrow-bend-down-left'
+  if (item.value === item.query) return 'feather-corner-down-left'
   switch (item.type) {
     case 'history':
-      return 'ph-clock-counter-clockwise'
+      return 'feather-clock'
     case 'file':
-      return 'ph-file'
+      return 'feather-file'
     case 'directory':
-      return 'ph-folder-open'
+      return 'lucide-folder-open'
     case 'recommendation':
-      return 'ph-fast-forward'
+      return 'lucide-lightbulb'
     case 'command':
-      return 'ph-terminal'
+      return 'feather-terminal'
     default:
-      return 'ph-dots-three'
+      return 'feather-more-horizontal'
   }
 }
 
