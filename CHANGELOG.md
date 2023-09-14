@@ -1,5 +1,12 @@
 
 
+## [0.28.1-alpha.0](https://github.com/CyanSalt/commas/compare/v0.28.0...v0.28.1-alpha.0) (2023-09-14)
+
+
+### Bug Fixes
+
+* rebuild node native modules ([bfd63d1](https://github.com/CyanSalt/commas/commit/bfd63d1d066f245525df944bed836f3946410141))
+
 ## [0.28.0](https://github.com/CyanSalt/commas/compare/v0.27.1...v0.28.0) (2023-09-13)
 
 
