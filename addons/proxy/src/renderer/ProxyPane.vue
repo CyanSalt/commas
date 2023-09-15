@@ -86,7 +86,7 @@ function update() {
           </span>
         </span>
         <span v-else class="link shortcut" @click="toggleProxyServer">
-          <VisualIcon name="lucide-navigation" class="shortcut-icon" />
+          <VisualIcon name="lucide-router" class="shortcut-icon" />
           <span v-i18n>Click this icon to start#!proxy.10</span>
         </span>
       </div>

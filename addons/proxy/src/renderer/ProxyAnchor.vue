@@ -31,7 +31,7 @@ function configure() {
     @contextmenu="configure"
   >
     <VisualIcon v-if="status === undefined" name="lucide-loader" />
-    <VisualIcon v-else name="lucide-navigation" />
+    <VisualIcon v-else name="lucide-router" />
     <span v-if="status" class="server-port">{{ port }}</span>
   </div>
 </template>
