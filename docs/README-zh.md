@@ -6,9 +6,9 @@
 
 **Commas** 是一款可定制、插件化的终端，同时也是命令执行工具。这个名字源于 **Com**mand **Mas**ter (命令大师)。
 
-![截图](https://github.com/CyanSalt/commas/assets/5101076/1c034b43-0fed-4183-abe0-ad2077fd261b)
-
-![截图](https://github.com/CyanSalt/commas/assets/5101076/7592723f-fd56-4437-bc2f-cd49b99908cd)
+| 深色 | 浅色 |
+| --- | --- |
+| ![截图](https://github.com/CyanSalt/commas/assets/5101076/1c034b43-0fed-4183-abe0-ad2077fd261b) | ![截图](https://github.com/CyanSalt/commas/assets/5101076/7592723f-fd56-4437-bc2f-cd49b99908cd) |
 
 *主题: [OneHalf](https://github.com/sonph/onehalf)*
 
