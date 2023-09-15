@@ -24,7 +24,8 @@
 brew install --cask cyansalt/cask/commas
 ```
 
-> ⚠️ Linux 的预构建版本目前无法正常工作，参见 [#20](https://github.com/CyanSalt/commas/issues/20)。建议手动构建。
+> [!WARNING]
+> Linux 的预构建版本目前无法正常工作，参见 [#20](https://github.com/CyanSalt/commas/issues/20)。建议手动构建。
 
 ### 手动构建
 
