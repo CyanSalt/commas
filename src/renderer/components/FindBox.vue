@@ -146,7 +146,7 @@ watch($$(isFinding), (value: boolean) => {
           class="option whole-word"
           :class="{ selected: options.wholeWord }"
           @click="toggle('wholeWord')"
-        >|Ab|</div>
+        >|ab|</div>
         <div
           class="option use-regexp"
           :class="{ selected: options.regex }"
