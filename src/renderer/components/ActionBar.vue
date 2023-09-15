@@ -20,7 +20,7 @@ function configure() {
   <footer class="action-bar">
     <div class="left-side">
       <div class="anchor" @click="configure">
-        <VisualIcon name="feather-settings" />
+        <VisualIcon name="lucide-settings" />
       </div>
       <component
         :is="anchor"

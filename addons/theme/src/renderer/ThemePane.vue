@@ -107,7 +107,7 @@ async function applyTheme(item: RemoteTheme) {
           class="form-control"
         >
         <span class="link form-action" @click="load">
-          <VisualIcon name="feather-refresh-cw" />
+          <VisualIcon name="lucide-refresh-cw" />
         </span>
         <div class="form-line-tip">
           <span v-i18n>Theme will be downloaded from#!theme.3</span>
@@ -118,7 +118,7 @@ async function applyTheme(item: RemoteTheme) {
       <div v-else class="theme-list">
         <ThemeCard v-for="item in filteredList" :key="item.name" :theme="item">
           <span v-if="item.name !== currentTheme" class="link" @click="applyTheme(item)">
-            <VisualIcon name="feather-check" />
+            <VisualIcon name="lucide-check" />
           </span>
         </ThemeCard>
       </div>

@@ -43,13 +43,13 @@ function close() {
     <div class="controls">
       <template v-if="isCustomControlEnabled">
         <div class="minimize button" @click="minimize">
-          <VisualIcon name="feather-minus" />
+          <VisualIcon name="lucide-minus" />
         </div>
         <div class="maximize button" @click="maximize">
-          <VisualIcon :name="isMaximized ? 'feather-minimize-2' : 'feather-maximize-2'" />
+          <VisualIcon :name="isMaximized ? 'lucide-minimize-2' : 'lucide-maximize-2'" />
         </div>
         <div class="close button" @click="close">
-          <VisualIcon name="feather-x" />
+          <VisualIcon name="lucide-x" />
         </div>
       </template>
     </div>

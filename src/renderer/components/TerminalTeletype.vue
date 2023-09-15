@@ -89,20 +89,20 @@ function highlightLabel(label: string, query: string) {
 }
 
 function getCompletionIcon(item: CommandCompletion) {
-  if (item.value === item.query) return 'feather-corner-down-left'
+  if (item.value === item.query) return 'lucide-corner-down-left'
   switch (item.type) {
     case 'history':
-      return 'feather-clock'
+      return 'lucide-clock'
     case 'file':
-      return 'feather-file'
+      return 'lucide-file'
     case 'directory':
       return 'lucide-folder-open'
     case 'recommendation':
       return 'lucide-lightbulb'
     case 'command':
-      return 'feather-terminal'
+      return 'lucide-terminal'
     default:
-      return 'feather-more-horizontal'
+      return 'lucide-more-horizontal'
   }
 }
 

@@ -73,7 +73,7 @@ onMounted(() => {
       </div>
       <div class="action-line">
         <span class="link form-action" @click="refresh">
-          <VisualIcon name="feather-refresh-cw" />
+          <VisualIcon name="lucide-refresh-cw" />
         </span>
       </div>
       <div class="addon-list">

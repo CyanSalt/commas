@@ -100,7 +100,7 @@ onBeforeUpdate(() => {
     <form class="group">
       <div class="action-line settings-searcher">
         <span :class="['link form-action toggle-all', { collapsed: isCollapsed }]" @click="toggleAll">
-          <VisualIcon name="feather-chevrons-down" />
+          <VisualIcon name="lucide-chevrons-down" />
         </span>
         <input
           v-model="keyword"

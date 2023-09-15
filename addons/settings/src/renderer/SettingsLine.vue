@@ -146,7 +146,7 @@ function reset() {
   >
     <summary :class="['line-summary', { customized: isCustomized }]">
       <span class="link tree-node">
-        <VisualIcon name="feather-chevron-down" />
+        <VisualIcon name="lucide-chevron-down" />
       </span>
       <span v-i18n class="item-label" @click.prevent>{{ spec.label }}#!settings.label.{{ spec.key }}</span>
       <span class="item-key" @click.prevent>{{ spec.key }}</span>
@@ -170,7 +170,7 @@ function reset() {
       >
         <template #extra>
           <span class="link reset" @click="reset">
-            <VisualIcon name="feather-rotate-ccw" />
+            <VisualIcon name="lucide-rotate-ccw" />
           </span>
         </template>
       </ObjectEditor>

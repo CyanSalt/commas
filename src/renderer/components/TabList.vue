@@ -170,7 +170,7 @@ watchEffect(onInvalidate => {
             @contextmenu="selectShell"
           >
             <VisualIcon v-if="movingGroupTab" name="lucide-ungroup" />
-            <VisualIcon v-else name="feather-plus" />
+            <VisualIcon v-else name="lucide-plus" />
           </div>
         </div>
       </div>

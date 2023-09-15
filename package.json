@@ -52,7 +52,6 @@
     "electron": "^26.2.0",
     "electron-packager": "^17.1.2",
     "esbuild": "^0.19.2",
-    "feather-icons": "^4.29.1",
     "lucide-static": "^0.277.0",
     "png2icons": "^2.0.1",
     "release-it": "^16.1.5",

@@ -82,11 +82,11 @@ function update() {
         <span v-if="status" class="proxy-address">
           <span class="link" @click="openEditor">{{ address }}</span>
           <span class="link" @click="copyAddress">
-            <VisualIcon name="feather-clipboard" />
+            <VisualIcon name="lucide-clipboard-copy" />
           </span>
         </span>
         <span v-else class="link shortcut" @click="toggleProxyServer">
-          <VisualIcon name="feather-navigation" class="shortcut-icon" />
+          <VisualIcon name="lucide-navigation" class="shortcut-icon" />
           <span v-i18n>Click this icon to start#!proxy.10</span>
         </span>
       </div>
@@ -98,11 +98,11 @@ function update() {
         <span v-i18n="{ version: versionInfo.version ?? '--' }">Current version: ${version}#!preference.9</span>
         <VisualIcon
           v-if="versionInfo.type !== 'builtin'"
-          name="feather-external-link"
+          name="lucide-external-link"
           class="version-type"
         />
         <span v-if="isOutdated" class="update-link link form-action" @click="update">
-          <VisualIcon name="feather-chevrons-up" class="update-icon" />
+          <VisualIcon name="lucide-chevrons-up" class="update-icon" />
           <span class="latest-version">{{ latestVersion }}</span>
         </span>
       </div>
@@ -111,7 +111,7 @@ function update() {
       <h2 v-i18n class="group-title">HTTPS Proxy#!proxy.5</h2>
       <div class="group">
         <span v-if="isCertInstalled" class="cert-status">
-          <VisualIcon name="feather-award" class="cert-icon" />
+          <VisualIcon name="lucide-award" class="cert-icon" />
           <span v-i18n>Certification installed#!proxy.8</span>
         </span>
         <span

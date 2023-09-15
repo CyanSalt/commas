@@ -157,13 +157,13 @@ watch($$(isFinding), (value: boolean) => {
     <div v-if="currentNumber && totalNumber" class="indicator">{{ currentNumber }} / {{ totalNumber }}</div>
     <div class="buttons">
       <div class="button previous">
-        <VisualIcon name="feather-arrow-up" @click="findPrevious" />
+        <VisualIcon name="lucide-arrow-up" @click="findPrevious" />
       </div>
       <div class="button next">
-        <VisualIcon name="feather-arrow-down" @click="findNext" />
+        <VisualIcon name="lucide-arrow-down" @click="findNext" />
       </div>
       <div class="button close">
-        <VisualIcon name="feather-x" @click="cancel" />
+        <VisualIcon name="lucide-x" @click="cancel" />
       </div>
     </div>
   </div>

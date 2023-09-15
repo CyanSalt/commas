@@ -11,7 +11,7 @@ export default () => {
     title: 'Proxy#!proxy.1',
     component: ProxyPane,
     icon: {
-      name: 'feather-navigation',
+      name: 'lucide-navigation',
     },
   })
 

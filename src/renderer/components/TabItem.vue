@@ -102,8 +102,8 @@ function close() {
             :color="isFocused ? iconEntry.color : undefined"
             class="tab-icon"
           />
-          <VisualIcon v-else-if="pane && tab!.shell" name="feather-file" class="tab-icon" />
-          <VisualIcon v-else name="feather-terminal" class="tab-icon" />
+          <VisualIcon v-else-if="pane && tab!.shell" name="lucide-file" class="tab-icon" />
+          <VisualIcon v-else name="lucide-terminal" class="tab-icon" />
           <span class="tab-name">{{ title }}</span>
         </div>
         <div class="right-side">
@@ -111,7 +111,7 @@ function close() {
           <div class="operations">
             <slot name="operations"></slot>
             <div v-if="closable || tab" class="button close" @click.stop="close">
-              <VisualIcon name="feather-x" />
+              <VisualIcon name="lucide-x" />
             </div>
           </div>
         </div>

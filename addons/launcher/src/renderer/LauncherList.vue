@@ -154,7 +154,7 @@ function stopMoving() {
     <template v-if="isHorizontal">
       <div class="launcher-folder">
         <span class="button menu" @click="showLauncherMenu">
-          <VisualIcon name="feather-paperclip" />
+          <VisualIcon name="lucide-list-video" />
         </span>
       </div>
     </template>
@@ -162,7 +162,7 @@ function stopMoving() {
       <div class="launcher-folder" @click="toggleCollapsing">
         <div :class="['group-name', { collapsed: isCollapsed }]">
           <span class="folder-icon">
-            <VisualIcon :name="isCollapsed ? 'feather-activity' : 'feather-paperclip'" />
+            <VisualIcon :name="isCollapsed ? 'lucide-list-filter' : 'lucide-list-video'" />
           </span>
         </div>
         <div class="buttons" @click.stop>
@@ -170,7 +170,7 @@ function stopMoving() {
             :class="['button', 'more', { active: isAnyActionEnabled }]"
             @click="toggleActions"
           >
-            <VisualIcon name="feather-more-vertical" />
+            <VisualIcon name="lucide-more-vertical" />
           </div>
         </div>
         <div v-show="isActionsVisible" class="launcher-actions" @click.stop>
@@ -185,7 +185,7 @@ function stopMoving() {
             @keyup.esc="toggleActions"
           >
           <span :class="['button', 'edit', { active: isEditing }]" @click="toggleEditing">
-            <VisualIcon :name="isEditing ? 'feather-edit-3' : 'feather-edit-2'" />
+            <VisualIcon :name="isEditing ? 'lucide-pen-line' : 'lucide-pen'" />
           </span>
         </div>
       </div>
@@ -212,19 +212,19 @@ function stopMoving() {
               @click.stop="startLauncher(launcher)"
               @contextmenu="showLauncherScripts(launcher, $event)"
             >
-              <VisualIcon name="feather-play" />
+              <VisualIcon name="lucide-play" />
             </div>
             <div
               class="button launch-externally"
               @click.stop="startLauncherExternally(launcher)"
             >
-              <VisualIcon name="feather-external-link" />
+              <VisualIcon name="lucide-external-link" />
             </div>
           </template>
         </TabItem>
       </SortableList>
       <div v-if="isEditing" class="new-launcher" @click="createLauncher">
-        <VisualIcon name="feather-plus" />
+        <VisualIcon name="lucide-plus" />
       </div>
     </template>
   </div>

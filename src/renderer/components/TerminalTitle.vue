@@ -132,7 +132,7 @@ watchEffect(() => {
       @dragstart.prevent="startDraggingDirectory"
     >
       <img v-if="icon" class="directory-icon" :src="icon">
-      <VisualIcon v-else :name="isDirectory ? 'feather-folder' : 'feather-file'" />
+      <VisualIcon v-else :name="isDirectory ? 'lucide-folder' : 'lucide-file'" />
     </a>
     <div v-if="pane && !fileOrDirectory" v-i18n class="title-text">{{ pane.title }}</div>
     <div v-else class="title-text">{{ title }}</div>
