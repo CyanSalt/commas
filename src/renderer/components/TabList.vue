@@ -231,6 +231,7 @@ watchEffect(onInvalidate => {
   display: flex;
   .tab-list.vertical & {
     flex-direction: column;
+    margin-right: calc(0px - var(--scrollbar-size));
   }
 }
 .sash {

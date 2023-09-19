@@ -1,8 +1,10 @@
 @mixin scroll-container($size: 12px) {
+  --scrollbar-size: #{$size};
   --scrollbar-opacity: 0;
   overflow: overlay;
   /* stylelint-disable-next-line custom-property-no-missing-var-function */
   transition: --scrollbar-opacity 0.2s;
+  scrollbar-gutter: stable;
   &:hover {
     --scrollbar-opacity: 0.1;
   }
@@ -20,7 +22,6 @@
   &::-webkit-scrollbar-thumb {
     background-color: rgb(var(--theme-foreground) / var(--scrollbar-opacity));
     border-radius: $size;
-    box-shadow: 0 2px 4px 2px rgb(0 0 0 / calc(var(--scrollbar-opacity) / 2));
     &:horizontal:active,
     &:vertical:active {
       --scrollbar-opacity: 0.2;
