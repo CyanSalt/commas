@@ -2,8 +2,8 @@ import childProcess from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import util from 'node:util'
+import { rebuild } from '@electron/rebuild'
 import chalk from 'chalk'
-import { rebuild } from '@electron/rebuild';
 import packager from 'electron-packager'
 import png2icons from 'png2icons'
 import { requireCommonJS, resolveCommonJS } from './utils/common.mjs'
@@ -75,12 +75,12 @@ async function resolveWorkspacePackages() {
     devDependencies: Object.assign(
       {},
       ...workspacePkgs.map(workspace => workspace.devDependencies),
-      pkg.devDependencies
+      pkg.devDependencies,
     ),
     dependencies: Object.assign(
       {},
       ...workspacePkgs.map(workspace => workspace.dependencies),
-      pkg.dependencies
+      pkg.dependencies,
     ),
   }
   await fs.promises.copyFile(pkgPath, backupPkgPath)

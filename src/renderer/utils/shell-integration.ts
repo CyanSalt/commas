@@ -75,7 +75,6 @@ function filterAndSortCompletions(completions: CommandCompletion[]) {
       const replacement: CommandCompletion = {
         ...existingItem,
         type: 'default',
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         description: existingItem.description || completion.description,
       }
       deduplicatedCompletions.splice(existingIndex, 1, replacement)
