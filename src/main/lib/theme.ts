@@ -73,7 +73,7 @@ const accentColor = $customRef((track, trigger) => {
     },
     set() {
       // ignore
-    }
+    },
   }
 })
 
@@ -99,7 +99,7 @@ const isLightTheme = $customRef((track, trigger) => {
       if (value !== shouldUseLight) {
         settings['terminal.theme.type'] = value ? 'light' : 'dark'
       }
-    }
+    },
   }
 })
 
@@ -213,7 +213,7 @@ const themeOptions = $computed<BrowserWindowThemeOptions>(() => {
     /** {@link https://github.com/electron/electron/issues/10420} */
     backgroundColor: toElectronHEX({ ...backgroundRGBA, a: process.platform !== 'win32' ? 0 : 1 }),
     vibrancy: theme.vibrancy ? (
-      typeof theme.vibrancy === 'string' ? theme.vibrancy : 'sidebar'
+      typeof theme.vibrancy === 'string' ? theme.vibrancy : 'popover'
     ) : undefined,
     titleBarOverlay: {
       color: toElectronHEX(acrylicBackgroundRGBA),
