@@ -94,8 +94,6 @@ const isLightTheme = $customRef((track, trigger) => {
       return shouldUseLight
     },
     set(value) {
-      console.log('shouldUseLight', shouldUseLight)
-      console.log('set to', value)
       if (value !== shouldUseLight) {
         settings['terminal.theme.type'] = value ? 'light' : 'dark'
       }
@@ -213,7 +211,7 @@ const themeOptions = $computed<BrowserWindowThemeOptions>(() => {
     /** {@link https://github.com/electron/electron/issues/10420} */
     backgroundColor: toElectronHEX({ ...backgroundRGBA, a: process.platform !== 'win32' ? 0 : 1 }),
     vibrancy: theme.vibrancy ? (
-      typeof theme.vibrancy === 'string' ? theme.vibrancy : 'popover'
+      typeof theme.vibrancy === 'string' ? theme.vibrancy : 'sidebar'
     ) : undefined,
     titleBarOverlay: {
       color: toElectronHEX(acrylicBackgroundRGBA),

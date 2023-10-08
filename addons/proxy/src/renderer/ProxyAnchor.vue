@@ -38,6 +38,7 @@ function configure() {
 
 <style lang="scss" scoped>
 .proxy-anchor {
+  align-items: center;
   &.active {
     color: rgb(var(--system-cyan));
     &.system {

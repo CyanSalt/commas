@@ -50,10 +50,8 @@ function configure() {
   flex: none;
   justify-content: space-between;
   height: 32px;
-  line-height: 32px;
   &:has(.tab-list) {
     height: 52px; // 36 + 2 * 8
-    line-height: 52px;
   }
 }
 :deep(.anchor) {

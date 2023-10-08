@@ -246,6 +246,7 @@ watchEffect(onInvalidate => {
 }
 .new-tab {
   display: flex;
+  align-items: center;
   height: var(--min-tab-height);
   padding: 8px 16px;
   line-height: var(--min-tab-height);
