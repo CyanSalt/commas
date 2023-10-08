@@ -20,7 +20,7 @@ const badge = useBadge()
   position: fixed;
   top: 76px;
   right: 8px;
-  color: rgb(var(--theme-red) / 0.5);
+  color: rgb(var(--theme-red) / 50%);
   font-weight: bold;
   font-size: 48px;
   -webkit-text-stroke: 1px rgb(var(--theme-background));

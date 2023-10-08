@@ -198,7 +198,7 @@ function selectCompletion(event: MouseEvent) {
   }
 }
 :deep(.terminal-marker-highlight-line) {
-  background: rgb(var(--theme-magenta) / 0.5);
+  background: rgb(var(--theme-magenta) / 50%);
   animation: fade-out 1s;
 }
 :deep(.terminal-command-mark) {
@@ -217,12 +217,12 @@ function selectCompletion(event: MouseEvent) {
   z-index: 0 !important;
   margin-left: calc(0px - var(--cell-width));
   border-left: calc(var(--cell-width) / 2) solid rgb(var(--color));
-  background: rgb(var(--color) / 0.2);
+  background: rgb(var(--color) / 20%);
 }
 :deep(.terminal-completion) {
   max-height: calc(var(--cell-height) * var(--row-span));
   margin-left: calc(var(--column) * var(--cell-width));
-  border: 1px solid rgb(127 127 127 / 0.5);
+  border: 1px solid rgb(127 127 127 / 50%);
   overflow: hidden;
   background: rgb(var(--theme-background) / var(--theme-opacity));
   border-radius: 4px;
@@ -303,7 +303,7 @@ function selectCompletion(event: MouseEvent) {
   top: 0;
   flex: 1;
   padding: 0 0.25ch;
-  color: rgb(var(--theme-foreground) / 0.5);
+  color: rgb(var(--theme-foreground) / 50%);
   font-style: italic;
   font-size: 12px;
   white-space: pre-wrap;

@@ -55,13 +55,13 @@ const checked = $computed<boolean>({
       content: '';
       position: absolute;
       inset: 0;
-      background: rgb(0 0 0 / 0.25);
+      background: rgb(0 0 0 / 25%);
     }
     &:hover::before {
-      background: rgb(0 0 0 / 0.25);
+      background: rgb(0 0 0 / 25%);
     }
     &:active::before {
-      background: rgb(255 255 255 / 0.25);
+      background: rgb(255 255 255 / 25%);
     }
   }
 }

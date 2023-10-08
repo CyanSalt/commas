@@ -218,7 +218,7 @@ function close() {
 }
 .tab-thumbnail {
   padding-bottom: calc((var(--min-tab-height) - 16px) / 2);
-  color: rgb(var(--theme-foreground) / 0.5);
+  color: rgb(var(--theme-foreground) / 50%);
   font-style: italic;
   font-size: 12px;
   line-height: 12px;

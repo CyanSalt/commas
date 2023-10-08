@@ -113,9 +113,9 @@ onMounted(() => {
   --system-blue: 10 132 255;
   --system-magenta: 255 55 95;
   --system-accent: var(--system-blue);
-  --design-highlight-background: rgb(var(--theme-foreground) / 0.15);
-  --design-input-background: rgb(var(--theme-foreground) / 0.1);
-  --design-separator: rgb(var(--theme-foreground) / 0.1);
+  --design-highlight-background: color-mix(in hsl, rgb(var(--theme-foreground) / 15%), rgb(var(--acrylic-background) / 10%));
+  --design-input-background: color-mix(in hsl, rgb(var(--theme-foreground) / 10%) 75%, rgb(var(--acrylic-background) / 10%));
+  --design-separator: rgb(var(--theme-foreground) / 10%);
   --design-card-gap: 8px;
   --design-card-border-radius: var(--design-card-gap);
   --design-card-shadow: 0 2px 4px 0px rgb(0 0 0 / 10%);

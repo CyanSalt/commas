@@ -231,11 +231,6 @@ function stopMoving() {
 </template>
 
 <style lang="scss" scoped>
-.launcher-list {
-  .tab-list.horizontal & {
-    margin-right: calc(0px - var(--scrollbar-size));
-  }
-}
 .launcher-folder {
   display: flex;
   flex-wrap: wrap;

@@ -120,7 +120,7 @@ onMounted(() => {
   border-top: 1px solid var(--design-separator);
   line-height: 24px;
   &.is-disabled {
-    color: rgb(var(--theme-foreground) / 0.5);
+    color: rgb(var(--theme-foreground) / 50%);
   }
 }
 .addon-card-title {
@@ -138,7 +138,7 @@ onMounted(() => {
 .addon-id,
 .addon-version {
   margin-left: 1em;
-  color: rgb(var(--theme-foreground) / 0.5);
+  color: rgb(var(--theme-foreground) / 50%);
   font-size: 12px;
   opacity: 1;
 }

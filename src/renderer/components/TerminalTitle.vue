@@ -184,7 +184,7 @@ watchEffect(() => {
 }
 .tab-index-indicator {
   margin-left: 8px;
-  color: rgb(var(--theme-foreground) / 0.5);
+  color: rgb(var(--theme-foreground) / 50%);
   font-size: 12px;
   cursor: pointer;
   -webkit-app-region: no-drag;

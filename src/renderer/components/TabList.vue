@@ -222,6 +222,9 @@ watchEffect(onInvalidate => {
     background: rgb(var(--theme-background) / var(--design-card-secondary-opacity));
     border-radius: var(--design-card-border-radius);
     box-shadow: var(--design-card-shadow);
+    & > * {
+      margin-right: calc(0px - var(--scrollbar-size));
+    }
   }
   .app.is-opaque .tab-list.vertical & {
     background: rgb(var(--theme-background));
@@ -231,7 +234,6 @@ watchEffect(onInvalidate => {
   display: flex;
   .tab-list.vertical & {
     flex-direction: column;
-    margin-right: calc(0px - var(--scrollbar-size));
   }
 }
 .sash {
