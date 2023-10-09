@@ -176,10 +176,7 @@ function selectCompletion(event: MouseEvent) {
   }
   :deep(.xterm-viewport) {
     @include partials.scroll-container;
-    z-index: 1;
     background-color: transparent !important;
-    /* Make decoration interactive */
-    pointer-events: none;
   }
   /* issue@xterm: pointer behavior */
   :deep(.xterm-screen) {
