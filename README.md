@@ -33,25 +33,26 @@ You can clone or download the repository and build Commas locally.
   - Make sure you have the latest LTS version of Node.js installed on your device.
   - Download the source code and enter the directory through the command line.
   - Run `npm install` to install dependencies
-  - Run `npm run build` to generate portable versions of this application.
+  - Run `npm run build` to build this application for the current platform
 
 ## Features
 
-- Optional multi-tabs support
-- Customizable rapid command launchers
-- Various built-in addons
+- Multi-tab support with customizable layout
+- Duplicate or split from current terminal
+- Theme system compatible with Windows Terminal
+- Plug-in internationalization support
+- Built-in addons
+  - Run commands instantly on local or remote server
+  - Edit configuration files within the application
+  - Interact with the application in the terminal
   - Visual settings editor
-  - CLI with custom commands supporting
-  - Integration with [Whistle](https://github.com/avwo/whistle) proxy
-  - Customizable theme (200 + downloadable)
-- Internationalization support
+  - Integration with [whistle](https://github.com/avwo/whistle) proxy
+  - Gist-based configuration synchronization
 - User scripts and third-party addons
 
 ## Customization
 
-- All of user data are stored in a separate **user data folder**, which is `~/Library/Application Support/Commas/` on macOS, `%localappdata%/Commas/` on Windows and `~/.config/Commas/` on Linux. You can configure and back up personal data by editing / copying files in the user data folder.
-
-- You can place any of the files mentioned below in the user data folder. The configuration files (settings, key bindings, translations) are in YAML format, while the resource files (themes) are in JSON format.
+- All of user data are stored in a separate **user data folder**, which is `~/Library/Application Support/Commas/` on macOS, `%localappdata%/Commas/` on Windows and `~/.config/Commas/` on Linux. These files can be shared between different devices. The configuration files (settings, key bindings, translations) are in YAML format, while the resource files (themes) are in JSON format.
 
 - Commas has several useful / interesting built-in [addons](https://github.com/CyanSalt/commas/tree/master/addons). You can also download / write third-party addons, place them in the `addons` directory of the user data folder, and manage the addons you want to enable through settings.
 

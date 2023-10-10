@@ -33,25 +33,26 @@ brew install --cask cyansalt/cask/commas
   - 确保你的设备上安装了最新的 LTS 版本的 Node.js；
   - 下载源代码，通过命令行进入代码目录；
   - 运行 `npm install` 安装依赖；
-  - 运行 `npm run build` 以生成此应用的免安装版本。
+  - 运行 `npm run build` 以生成适用于当前平台的此应用。
 
 ## 功能
 
-- 可选的多标签支持
-- 可自定义快捷的命令启动项
+- 可自定义布局的多标签页支持
+- 从当前终端复制或拆分
+- 与 Windows Terminal 兼容的主题系统
+- 外挂国际化支持
 - 内置多个附加功能
+  - 在本地或远程服务器即时运行命令
+  - 在应用内编辑配置文件
+  - 在终端内与所在的应用交互
   - 可视化配置编辑器
-  - 支持自定义命令的 CLI
-  - 集成 [Whistle](https://github.com/avwo/whistle) 代理
-  - 可定制主题 (200+ 可下载)
-- 多语言支持
-- 支持用户脚本和第三方附加功能
+  - 集成 [whistle](https://github.com/avwo/whistle) 代理
+  - 基于 Gist 的配置同步
+- 用户脚本和第三方附加功能
 
 ## 定制
 
-- 所有的数据都存储在独立的**用户数据文件夹**下，在 macOS 上是 `~/Library/Application Support/Commas/`, 在 Windows 上是 `%localappdata%/Commas/`，在 Linux 上是 `~/.config/Commas/`。你可以通过编辑/拷贝用户数据文件夹下的文件来配置和备份个人数据。
-
-- 你可以把下面提到的任意文件放置在用户数据文件夹下。配置文件（设置、快捷键、翻译）均使用 YAML 格式，而资源文件（主题）则使用 JSON 格式。
+- 所有的数据都存储在独立的**用户数据文件夹**下，在 macOS 上是 `~/Library/Application Support/Commas/`, 在 Windows 上是 `%localappdata%/Commas/`，在 Linux 上是 `~/.config/Commas/`。这些文件都可以在不同设备之间共享。配置文件（设置、快捷键、翻译）均使用 YAML 格式，而资源文件（主题）则使用 JSON 格式。
 
 - Commas 内置了数个有用/有趣的[附加功能](https://github.com/CyanSalt/commas/tree/master/addons)，你也可以下载/编写第三方附加功能放置在用户数据文件夹的 `addons` 目录下，并通过设置来管理期望启用的附加功能。
 
