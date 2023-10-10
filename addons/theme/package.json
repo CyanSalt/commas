@@ -3,14 +3,14 @@
   "private": true,
   "version": "0.1.0",
   "productName": "Theme",
-  "description": "Download theme from GitHub",
+  "description": "Download theme from windowsterminalthemes.dev",
   "main": "index.js",
   "author": "commas",
   "license": "ISC",
   "commas:i18n": {
     "zh-CN": {
       "productName": "主题",
-      "description": "从 GitHub 下载主题"
+      "description": "从 windowsterminalthemes.dev 下载主题"
     }
   }
 }

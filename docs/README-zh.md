@@ -54,15 +54,41 @@ brew install --cask cyansalt/cask/commas
 
 - 所有的数据都存储在独立的**用户数据文件夹**下，在 macOS 上是 `~/Library/Application Support/Commas/`, 在 Windows 上是 `%localappdata%/Commas/`，在 Linux 上是 `~/.config/Commas/`。这些文件都可以在不同设备之间共享。配置文件（设置、快捷键、翻译）均使用 YAML 格式，而资源文件（主题）则使用 JSON 格式。
 
-- Commas 内置了数个有用/有趣的[附加功能](https://github.com/CyanSalt/commas/tree/master/addons)，你也可以下载/编写第三方附加功能放置在用户数据文件夹的 `addons` 目录下，并通过设置来管理期望启用的附加功能。
+### 配置
 
-- Commas 也支持添加自定义脚本和样式表。你可以查看这里的[示例文件](https://github.com/CyanSalt/commas/tree/master/resources/examples)。这个目录下也包含了辅助你自定义快捷键或是命令启动项的示例文件。
+你可以通过 `settings.yaml` 对应用的界面和功能进行细粒度的配置。例如，在终端中启用字体连字：
 
-- 如果应用内没有你想要语言的翻译，你可以在用户数据文件夹下添加/修改 `translation.yaml` 文件。文件内容可以是类似于这个[翻译文件](https://github.com/CyanSalt/commas/blob/master/resources/locales/zh-CN.json)的一部分。你也可以通过 `"@use": zh-CN` 这样的键值对来引用已有的翻译文件。
+```yaml
+terminal.style.fontLigatures: true
+```
 
-- Commas 内置了一组丰富的[钩子 API](https://github.com/CyanSalt/commas/tree/master/api)。你可以参考 Commas 的内置附加功能来编写自己的附加功能。
+此外，内置的 `settings` 附加功能支持在图形化表单中管理这些配置。
 
-- 以及，你还可以通过快捷键 <kbd>&#8984;/Ctrl</kbd> <kbd>Shift</kbd> <kbd>I</kbd> 打开 Commas 的开发者工具，检查 UI 中的 HTML 元素，就像在浏览器里一样！
+### 主题
+
+Commas 支持与 Windows Terminal 兼容的主题文件。你可以将主题文件放置在用户数据文件夹的 `themes` 目录下，然后通过配置指定主题名称。
+
+默认情况下，Commas 会跟随系统的深色模式显示为深色/浅色主题。你可以分别指定深色/浅色模式下的主题，也可以修改这一行为以保持主题不变。
+
+内置的 `theme` 附加功能支持从 [windowsterminalthemes.dev](https://windowsterminalthemes.dev) 下载主题。目前有 300+ 可用的主题支持下载使用。
+
+### 多语言
+
+Commas 目前内置了英语和简体中文的支持。你也可以通过在用户数据文件夹下添加/修改 `translation.yaml` 文件以实现其他语言的翻译功能。文件内容可以是类似于这个[翻译文件](https://github.com/CyanSalt/commas/blob/master/resources/locales/zh-CN.json)的一部分。
+
+如果你使用的是内置语言的方言，也可以通过 `@use: zh-CN` 的形式引用已有的翻译文件。
+
+### 附件功能和用户脚本
+
+Commas 内置了数个有用/有趣的[附加功能](https://github.com/CyanSalt/commas/tree/master/addons)。此外，你也可以下载/编写第三方附加功能放置在用户数据文件夹的 `addons` 目录下，并通过设置来管理期望启用的附加功能。
+
+借助内置的 `addon-manager` 附加功能，可以方便地通过图形化界面管理内置和自行添加的全部附加功能。
+
+附加功能基于一组丰富的[钩子 API](https://github.com/CyanSalt/commas/tree/master/api)。你可以参考内置的附加功能来编写自己的附加功能。对于一些简单的场景，可以直接添加/修改用户数据文件夹下的 `custom.js` 和 `custom.css` 文件，以实现自定义的逻辑和样式。`custom.js` 同样具有完整的钩子 API 支持。
+
+### 开发者工具
+
+最棒的是，你完全可以通过快捷键 <kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>I</kbd> 打开 Commas 的开发者工具，检查 UI 中的 HTML 元素，就像在浏览器里一样！
 
 ## 许可
 

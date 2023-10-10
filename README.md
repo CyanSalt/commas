@@ -40,7 +40,7 @@ You can clone or download the repository and build Commas locally.
 - Multi-tab support with customizable layout
 - Duplicate or split from current terminal
 - Theme system compatible with Windows Terminal
-- Plug-in internationalization support
+- Plug-in i18n support
 - Built-in addons
   - Run commands instantly on local or remote server
   - Edit configuration files within the application
@@ -52,17 +52,43 @@ You can clone or download the repository and build Commas locally.
 
 ## Customization
 
-- All of user data are stored in a separate **user data folder**, which is `~/Library/Application Support/Commas/` on macOS, `%localappdata%/Commas/` on Windows and `~/.config/Commas/` on Linux. These files can be shared between different devices. The configuration files (settings, key bindings, translations) are in YAML format, while the resource files (themes) are in JSON format.
+All of user data are stored in a separate **user data folder**, which is `~/Library/Application Support/Commas/` on macOS, `%localappdata%/Commas/` on Windows and `~/.config/Commas/` on Linux. These files can be shared between different devices. The configuration files (settings, key bindings, translations) are in YAML format, while the resource files (themes) are in JSON format.
 
-- Commas has several useful / interesting built-in [addons](https://github.com/CyanSalt/commas/tree/master/addons). You can also download / write third-party addons, place them in the `addons` directory of the user data folder, and manage the addons you want to enable through settings.
+### Configuration
 
-- Commas also supports adding custom scripts and stylesheets. You can see the sample files [here](https://github.com/CyanSalt/commas/tree/master/resources/examples). This directory also contains the example files which could help you to customize shortcut keys or command launchers.
+You can configure the application's interface and functionality at a granular level via `settings.yaml`. For example, to enable font ligatures in the terminal:
 
-- If there is no translation for the language you want in the application, you can add / modify the `translation.yaml` file in the user data folder. The content of the file can be similar to part of [the translation file](https://github.com/CyanSalt/commas/blob/master/resources/locales/zh-CN.json). You can also use key-value pairs like `"@use": zh-CN` to refer to an existing translation file.
+```yaml
+terminal.style.fontLigatures: true
+```
 
-- Commas has a rich set of built-in [hook API](https://github.com/CyanSalt/commas/tree/master/api). You can read the built-in addons for reference in writing your own addons.
+Additionally, the built-in `settings` addon supports managing these configurations in graphical forms.
 
-- In addition, you can also use the shortcut key <kbd>&#8984;/Ctrl</kbd> <kbd>Shift</kbd> <kbd>I</kbd> to open the developer tool of Commas and inspect the HTML elements of UI, just like what you do in the browser!
+### Theme
+
+Commas supports windowsterminal-compatible theme files. You can place theme files in the `themes` directory of the user data folder, and then specify the theme name through the settings.
+
+Commas will display a dark / light theme that follows your system's dark mode by default. You can specify the theme in dark / light mode separately, or you can change this behavior to keep the theme unchanged.
+
+The built-in `theme` addon supports downloading themes from [windowsterminalthemes.dev](https://windowsterminalthemes.dev). There are currently 300+ available themes that can be downloaded and used.
+
+### I18n
+
+Commas currently has built-in supports for English and Simplified Chinese. You can also enable translation for other languages by adding / modifying the `translation.yaml` file under the user data folder. The content of the file can be something like part of [the translation file](https://github.com/CyanSalt/commas/blob/master/resources/locales/zh-CN.json).
+
+You can also reference an existing translation file in the form of `@use: zh-CN` if you are using a dialect of one of the built-in languages.
+
+### Addons and user scripts
+
+Commas has several useful / interesting built-in [addons](https://github.com/CyanSalt/commas/tree/master/addons). In addition, you can also download / write third-party addons to be placed in the `addons` directory of the user data folder, and manage which addons you want to enable via settings.
+
+With the built-in `addon-manager` addon, all built-in and self-added addons can be easily managed via a graphical interface.
+
+Add-ons are based on a rich set of [hook APIs](https://github.com/CyanSalt/commas/tree/master/api). You can read the built-in addons for reference in writing your own addons. For some simple scenarios, you can add / modify the `custom.js` and `custom.css` files directly under the user data folder to implement custom logic and styles. `custom.js` also has full hook API support.
+
+### Developer tools
+
+The best part is that you can use the shortcut key <kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>I</kbd> to open developer tool of Commas and inspect the HTML elements in the UI just like you would in a browser!
 
 ## License
 
