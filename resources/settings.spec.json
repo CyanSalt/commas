@@ -298,20 +298,6 @@
     "default": true
   },
   {
-    "key": "terminal.style.vibrancyOpacity",
-    "label": "Vibrancy Background Opacity",
-    "comments": [
-      "Background opacity of window with vibrancy effect"
-    ],
-    "configurable": ["darwin"],
-    "schema": {
-      "type": "number",
-      "minimum": 0,
-      "maximum": 1
-    },
-    "default": 0.667
-  },
-  {
     "key": "terminal.style.fontSize",
     "label": "Font Size",
     "comments": [

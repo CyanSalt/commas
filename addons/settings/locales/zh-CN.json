@@ -76,8 +76,6 @@
   "Or when using the system frame#!settings.comments.2.terminal.style.opacity": "或者是使用系统框架时将不起作用",
   "Vibrancy Effect#!settings.label.terminal.style.vibrancy": "毛玻璃特效",
   "Specify whether or not to enable the vibrancy effect for window (currently for macOS only)#!settings.comments.0.terminal.style.vibrancy": "指定是否对窗口启用毛玻璃特效 (目前仅支持 macOS)",
-  "Vibrancy Background Opacity#!settings.label.terminal.style.vibrancyOpacity": "毛玻璃背景不透明度",
-  "Background opacity of window with vibrancy effect#!settings.comments.0.terminal.style.vibrancyOpacity": "启用毛玻璃特效时的窗口背景不透明度",
   "Font Size#!settings.label.terminal.style.fontSize": "字体大小",
   "Font size for window in pixels#!settings.comments.0.terminal.style.fontSize": "窗口的字体尺寸像素数",
   "Font Family#!settings.label.terminal.style.fontFamily": "字体名称",

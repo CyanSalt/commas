@@ -137,7 +137,7 @@ const theme = $computed(() => {
     ...customization,
   }
   const vibrancy = process.platform === 'darwin' ? settings['terminal.style.vibrancy'] : false
-  const opacity = vibrancy ? settings['terminal.style.vibrancyOpacity'] : settings['terminal.style.opacity']
+  const opacity = settings['terminal.style.opacity']
   const definition = {
     ...defaultTheme,
     ...userTheme,

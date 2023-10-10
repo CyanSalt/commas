@@ -29,7 +29,6 @@ export interface Settings {
   'terminal.view.tabListPosition': 'left' | 'right' | 'top' | 'bottom',
   'terminal.style.opacity': number,
   'terminal.style.vibrancy': BrowserWindowConstructorOptions['vibrancy'] | boolean,
-  'terminal.style.vibrancyOpacity': number,
   'terminal.style.fontSize': number,
   'terminal.style.fontFamily': string,
   'terminal.style.fontLigatures': boolean,
