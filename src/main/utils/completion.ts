@@ -264,6 +264,33 @@ async function getManPageCompletions(query: string, command: string, subcommand?
   }))
 }
 
+const getNpmScripts = memoizeAsync(async cwd => {
+  const { stdout } = await execa('npm run')
+  const matches = Array.from(stdout.matchAll(/^\s{2}([^\r\n]+)[\r\n]+\s{4}([^\r\n]+)/gm))
+  return matches.map<CommandCompletion>(([full, script, command]) => {
+    return {
+      type: 'command',
+      query: '',
+      value: script,
+      description: command,
+    }
+  })
+})
+
+async function getFrequentlyUsedProgramCompletions(query: string, cwd: string, command: string, subcommand?: string) {
+  if (
+    command === 'npm' && ['run', 'run-script', 'rum', 'urn'].includes(subcommand!)
+    || ['pnpm', 'yarn'].includes(command)
+  ) {
+    const completions = await getNpmScripts(cwd)
+    return completions.map<CommandCompletion>(item => ({
+      ...item,
+      query,
+    }))
+  }
+  return []
+}
+
 const getShellHistoryTokenLists = memoize(() => {
   const history = uniq((shellHistory() as string[]).reverse()).slice(0, 100)
   return history.map(line => {
@@ -403,6 +430,11 @@ async function getCompletions(input: string, cwd: string) {
   if (command) {
     asyncCompletionLists.push(
       getManPageCompletions(currentWord, command, subcommand),
+    )
+  }
+  if (command === 'npm' && subcommand === 'run') {
+    asyncCompletionLists.push(
+      getFrequentlyUsedProgramCompletions(currentWord, cwd, command, subcommand),
     )
   }
   const lists = await Promise.all(asyncCompletionLists)
