@@ -141,7 +141,6 @@ onMounted(() => {
   line-height: 1.2;
   overflow: hidden;
   background-image: linear-gradient(to right bottom, rgb(var(--acrylic-background) / 5%), rgb(var(--acrylic-background) / 25%));
-  background-color: rgb(var(--theme-background) / var(--theme-opacity));
   transition: color 0.2s;
   &.is-vibrant {
     --vibrancy-filter: drop-shadow(0 0 0.5em rgb(var(--theme-background))) blur(2px);
