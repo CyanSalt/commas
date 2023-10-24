@@ -4,18 +4,23 @@ import * as fileIcon from 'file-icon'
 import { readFile, watchFile, writeFile } from '../utils/file'
 import { execa, until } from '../utils/helper'
 import { notify } from '../utils/notification'
-import { broadcast } from './frame'
+import { broadcast, hasWindow } from './frame'
 
 let currentBouncingId = -1
 
+function reportError(error: Error) {
+  console.error(error)
+  if (hasWindow()) {
+    broadcast('uncaught-error', String(error))
+  }
+}
+
 function handleMessages() {
   process.on('uncaughtException', error => {
-    console.error(error)
-    broadcast('uncaught-error', String(error))
+    reportError(error)
   })
   process.on('unhandledRejection', (error: Error) => {
-    console.error(error)
-    broadcast('uncaught-error', String(error))
+    reportError(error)
   })
   app.on('before-quit', () => {
     broadcast('before-quit')

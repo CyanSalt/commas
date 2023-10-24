@@ -72,6 +72,20 @@ interface AddonContext {
 
 const loadedAddonContexts: AddonContext[] = []
 
+function loadAddonEntry(addon: AddonInfo): APIAddon {
+  if (addon.name === 'custom.js') {
+    try {
+      const userDataPath = app.isPackaged()
+        ? path.join(app.getPath('userData'), 'User')
+        : path.join(app.getPath(), 'userdata')
+      return require(path.join(userDataPath, addon.name))
+    } catch {
+      return () => {/* noop */}
+    }
+  }
+  return require(addon.entry)
+}
+
 function loadAddon(addon: AddonInfo, api: CompatableAPI) {
   if (loadedAddonContexts.some(item => item.addon.name === addon.name)) return
   // Reserved names
@@ -84,20 +98,12 @@ function loadAddon(addon: AddonInfo, api: CompatableAPI) {
   // Reactivity scope
   const scope = effectScope()
   scope.run(() => {
-    let processor: APIAddon
-    if (addon.name === 'custom.js') {
-      try {
-        const userDataPath = app.isPackaged()
-          ? path.join(app.getPath('userData'), 'User')
-          : path.join(app.getPath(), 'userdata')
-        processor = require(path.join(userDataPath, addon.name))
-      } catch {
-        processor = () => {/* noop */}
-      }
-    } else {
-      processor = require(addon.entry)
+    try {
+      const processor = loadAddonEntry(addon)
+      processor(clonedAPI)
+    } catch (err) {
+      app.triggerError(err)
     }
-    processor(clonedAPI)
   })
   addCommasModule(undefined)
   loadedAddonContexts.push({ addon, scope })

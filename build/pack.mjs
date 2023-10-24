@@ -97,7 +97,7 @@ const options = {
     ? pkg.name : pkg.productName,
   out: 'release/',
   overwrite: true,
-  asar: {
+  asar: process.env.DEBUG ? false : {
     // FIXME: node-pty does not support app.asar.unpacked currently
     unpack: '**/{*.node,node_modules/node-pty/**/*}',
   },

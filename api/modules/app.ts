@@ -34,6 +34,14 @@ function getManifest(): Record<string, any> {
   return require(path.join(getPath(), 'package.json'))
 }
 
+function triggerError(err: Error) {
+  if (isMainProcess()) {
+    process.emit('uncaughtException', err)
+  } else {
+    console.error(err)
+  }
+}
+
 function onCleanup(this: APIContext, callback: () => void) {
   events.once(`unload:${this.__name__}`, callback)
 }
@@ -78,6 +86,7 @@ export {
   getPath,
   getVersion,
   getManifest,
+  triggerError,
   onCleanup,
   effect,
   onInvalidate,

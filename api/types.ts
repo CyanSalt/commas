@@ -1,12 +1,12 @@
-import type * as Main from './main'
-import type * as Renderer from './renderer'
+import type * as main from './main'
+import type * as renderer from './renderer'
 
 type MixValues<T, U> = {
   [K in keyof T]: T[K] & U
 }
 
-export type MainAPI = typeof Main
-export type RendererAPI = typeof Renderer
+export type MainAPI = typeof main
+export type RendererAPI = typeof renderer
 export type API = MainAPI & RendererAPI
 export type CompatableAPI = MainAPI | RendererAPI
 
