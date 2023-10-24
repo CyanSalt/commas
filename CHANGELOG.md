@@ -1,5 +1,12 @@
 
 
+## [0.29.1](https://github.com/CyanSalt/commas/compare/v0.29.0...v0.29.1) (2023-10-24)
+
+
+### Bug Fixes
+
+* handle error for addons ([626efb1](https://github.com/CyanSalt/commas/commit/626efb166dcf149309148224366c03fcc61d08c3))
+
 ## [0.29.0](https://github.com/CyanSalt/commas/compare/v0.28.0...v0.29.0) (2023-10-24)
 
 
