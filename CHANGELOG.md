@@ -1,5 +1,12 @@
 
 
+## [0.29.2](https://github.com/CyanSalt/commas/compare/v0.29.1...v0.29.2) (2023-10-24)
+
+
+### Bug Fixes
+
+* error reporting ([8927869](https://github.com/CyanSalt/commas/commit/892786977fa994ff5dc37f7eaca0301b9155fe26))
+
 ## [0.29.1](https://github.com/CyanSalt/commas/compare/v0.29.0...v0.29.1) (2023-10-24)
 
 
