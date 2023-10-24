@@ -1,5 +1,36 @@
 
 
+## [0.29.0](https://github.com/CyanSalt/commas/compare/v0.28.0...v0.29.0) (2023-10-24)
+
+
+### Features
+
+* better secondary background colors ([3d1c740](https://github.com/CyanSalt/commas/commit/3d1c7405a3276778e6b431f2c212d0a76da033a7))
+* completion for npm scripts ([faf2cbf](https://github.com/CyanSalt/commas/commit/faf2cbf5f47d852b7200fad330302cc6d5666ef8))
+* remove vibrancyOpacity settings ([47aa04e](https://github.com/CyanSalt/commas/commit/47aa04ecf210c5565ce4a9febe9b95fa8c8c8545))
+* replace icon sets ([099f2eb](https://github.com/CyanSalt/commas/commit/099f2eb833180d16d764be4e4c70f89207b5aae6))
+
+
+### Bug Fixes
+
+* action bar layout ([af27126](https://github.com/CyanSalt/commas/commit/af27126a845f672a79b95e49879f0f8de77b90af))
+* build for arm ([d76c5db](https://github.com/CyanSalt/commas/commit/d76c5db7eb062bb3f871ad79a04ea8cc9751ba66))
+* code lint ([4ed0240](https://github.com/CyanSalt/commas/commit/4ed02405ef84f12bf51e94e8f581b52f0e2e4927))
+* find box new look ([ad1648c](https://github.com/CyanSalt/commas/commit/ad1648c0f19de225aa2097895caf8ac7030663cd))
+* find box text icon ([7fba629](https://github.com/CyanSalt/commas/commit/7fba6294921b491419d36b387e68d12d9489c7c6))
+* input and sep color ([0e1dd5e](https://github.com/CyanSalt/commas/commit/0e1dd5e772d3060e9119ee104bac28d470cb7b01))
+* **l10n-ext:** consistent locale name ([88a5d8b](https://github.com/CyanSalt/commas/commit/88a5d8bb180721aa3bdf2e5b039c7c1f02a6bd7f))
+* **proxy:** replace icon ([c3b5f90](https://github.com/CyanSalt/commas/commit/c3b5f90a6b16ec232863b7fa3cffa7f5b68518b5))
+* **proxy:** version style ([be208ee](https://github.com/CyanSalt/commas/commit/be208eeb343a6a64e91e2f4379913835f057ad27))
+* rebuild node native modules ([b8ff232](https://github.com/CyanSalt/commas/commit/b8ff2328a3ed6f13aa00ff67fd8de4696a995485))
+* remove useless styles ([03c6bc2](https://github.com/CyanSalt/commas/commit/03c6bc2c46f5015450726bcc66318f2f2c9fa504))
+* scrollbar style and shadow ([1feb89e](https://github.com/CyanSalt/commas/commit/1feb89eab933706c4d927d5e56de125417632d4f))
+* svg icon vertical align ([baef0b9](https://github.com/CyanSalt/commas/commit/baef0b9c0210c5be3c00414b22b8605c0f9d9e53))
+* use canvas renderer by default ([0df633d](https://github.com/CyanSalt/commas/commit/0df633d57d57a019c33c49a7196546dbd5025311))
+* vibrancy style ([23c3387](https://github.com/CyanSalt/commas/commit/23c3387c5b5a3dfed0c87b4b9ebd13edade3f62c))
+* vulnerabilities ([d5b9ea5](https://github.com/CyanSalt/commas/commit/d5b9ea50a2bc185aba0a3a4079a495e72a937a88))
+* xterm scroll bar ([4e681e4](https://github.com/CyanSalt/commas/commit/4e681e4fccd40f66ee650c8bd791ee37795ecca4))
+
 ## [0.28.0](https://github.com/CyanSalt/commas/compare/v0.27.1...v0.28.0) (2023-09-13)
 
 
