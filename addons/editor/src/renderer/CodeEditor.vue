@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
-import { DiffComputer } from 'monaco-editor/esm/vs/editor/common/diff/legacyLinesDiffComputer'
+import { AdvancedLinesDiffComputer } from 'monaco-editor/esm/vs/editor/common/diff/advancedLinesDiffComputer'
 import { watchEffect } from 'vue'
 import { useEditorTheme } from './compositions'
 import * as monaco from './monaco-editor'
@@ -70,39 +70,50 @@ watchEffect(() => {
   })
 })
 
+const diffComputer = new AdvancedLinesDiffComputer()
+const myersDiffingThreshold = 1700
+
 function computeDiffDecorations(model: monaco.editor.ITextModel, defaultModel: monaco.editor.ITextModel) {
-  const diffComputer = new DiffComputer(defaultModel.getLinesContent(), model.getLinesContent(), {
-    shouldComputeCharChanges: false,
-    shouldPostProcessCharChanges: false,
-    shouldIgnoreTrimWhitespace: false,
-    shouldMakePrettyDiff: true,
-  })
-  const diff = diffComputer.computeDiff()
-  return diff.changes.map(change => {
+  let originalLines = defaultModel.getLinesContent()
+  let modifiedLines = model.getLinesContent()
+  if (originalLines.length + modifiedLines.length < myersDiffingThreshold) {
+    const padding = Array.from({ length: myersDiffingThreshold / 2 }, () => '\u200b')
+    originalLines = originalLines.concat(padding)
+    modifiedLines = modifiedLines.concat(padding)
+  }
+  const diff = diffComputer.computeDiff(originalLines, modifiedLines, {})
+  let decorations: monaco.editor.IModelDeltaDecoration[] = []
+  let lineOffset = 0
+  for (const { originalRange, modifiedRange } of diff.changes) {
+    const currentOffset = modifiedRange.endLineNumberExclusive - originalRange.endLineNumberExclusive
     const range: monaco.IRange = {
-      startLineNumber: change.modifiedStartLineNumber,
-      endLineNumber: change.modifiedEndLineNumber || change.modifiedStartLineNumber,
+      startLineNumber: currentOffset < lineOffset
+        ? modifiedRange.endLineNumberExclusive - 1
+        : modifiedRange.startLineNumber,
+      endLineNumber: modifiedRange.endLineNumberExclusive - 1,
       startColumn: 1,
       endColumn: 1,
     }
     let linesDecorationsClasses = ['dirty-diff-glyph']
-    if (!change.originalEndLineNumber) {
+    if (currentOffset > lineOffset) {
       // Add
       linesDecorationsClasses.push('is-added')
-    } else if (!change.modifiedEndLineNumber) {
+    } else if (currentOffset < lineOffset) {
       // Delete
       linesDecorationsClasses.push('is-deleted')
     } else {
       // Modified
       linesDecorationsClasses.push('is-modified')
     }
-    return {
+    lineOffset = currentOffset
+    decorations.push({
       range,
       options: {
         linesDecorationsClassName: linesDecorationsClasses.join(' '),
       },
-    }
-  }) as monaco.editor.IModelDeltaDecoration[]
+    })
+  }
+  return decorations
 }
 
 let defaultModel = $shallowRef<monaco.editor.ITextModel | undefined>()
@@ -223,7 +234,7 @@ defineExpose({
       bottom: -5px;
       width: 0px !important;
       height: 0px !important;
-      border-width: 5px solid transparent;
+      border: 5px solid transparent;
       border-right: 0;
       border-left: 4px solid rgb(var(--theme-red));
       transform: translateX(6px);
