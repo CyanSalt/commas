@@ -93,8 +93,6 @@ async function resolveWorkspacePackages() {
  */
 const options = {
   dir: '.',
-  platform: ['darwin', 'linux', 'win32'],
-  arch: ['x64', 'arm64'],
   executableName: process.platform === 'win32'
     ? pkg.name : pkg.productName,
   out: 'release/',
@@ -184,6 +182,22 @@ async function compressPackage(dir) {
   return execa(`zip -ry ${dir}.zip ${dir}/`)
 }
 
+/**
+ * @param {import('electron-packager').Options} packagerOptions
+ * @param {import('electron-packager').TargetDefinition[]} [targets]
+ */
+async function runPackager(packagerOptions, targets) {
+  const { arch, platform, ...others } = packagerOptions
+  if (targets) {
+    const paths = await Promise.all(targets.map(target => {
+      return packager({ ...target, ...others })
+    }))
+    return paths.flat()
+  } else {
+    return packager(others)
+  }
+}
+
 async function pack() {
   const local = process.argv.includes('--local')
   // Generate icons
@@ -213,7 +227,12 @@ async function pack() {
   const restorePackage = await resolveWorkspacePackages()
   let appPaths
   try {
-    appPaths = await packager(options)
+    appPaths = await runPackager(options, local ? undefined : [
+      { arch: 'x64', platform: 'darwin' },
+      { arch: 'x64', platform: 'linux' },
+      { arch: 'x64', platform: 'win32' },
+      { arch: 'arm64', platform: 'darwin' },
+    ])
   } finally {
     await restorePackage()
   }
