@@ -11,7 +11,9 @@ let currentBouncingId = -1
 function reportError(error: Error) {
   console.error(error)
   if (hasWindow()) {
-    broadcast('uncaught-error', String(error))
+    broadcast('uncaught-error', error.stack ?? error.message)
+  } else {
+    dialog.showErrorBox(error.name, error.stack ?? error.message)
   }
 }
 
