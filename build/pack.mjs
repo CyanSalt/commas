@@ -94,6 +94,7 @@ async function resolveWorkspacePackages() {
 const options = {
   dir: '.',
   platform: ['darwin', 'linux', 'win32'],
+  arch: ['x64', 'arm64'],
   executableName: process.platform === 'win32'
     ? pkg.name : pkg.productName,
   out: 'release/',
@@ -203,6 +204,7 @@ async function pack() {
   }
   if (local) {
     delete options.platform
+    delete options.arch
   }
   // Run electron-packager
   const restorePackage = await resolveWorkspacePackages()
