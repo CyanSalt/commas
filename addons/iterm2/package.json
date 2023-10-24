@@ -8,8 +8,8 @@
   "author": "commas",
   "license": "ISC",
   "devDependencies": {
-    "@types/canvas-confetti": "^1.6.1",
-    "canvas-confetti": "^1.6.0"
+    "@types/canvas-confetti": "^1.6.2",
+    "canvas-confetti": "^1.9.0"
   },
   "commas:i18n": {
     "zh-CN": {

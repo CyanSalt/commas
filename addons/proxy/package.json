@@ -9,7 +9,7 @@
   "license": "ISC",
   "dependencies": {
     "address": "^1.2.2",
-    "whistle": "^2.9.57"
+    "whistle": "^2.9.58"
   },
   "commas:i18n": {
     "zh-CN": {

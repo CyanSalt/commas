@@ -8,7 +8,7 @@
   "author": "commas",
   "license": "ISC",
   "devDependencies": {
-    "@types/text-table": "^0.2.3"
+    "@types/text-table": "^0.2.4"
   },
   "dependencies": {
     "cfonts": "^3.2.0",
