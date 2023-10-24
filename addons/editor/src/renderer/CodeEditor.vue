@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
-import { AdvancedLinesDiffComputer } from 'monaco-editor/esm/vs/editor/common/diff/advancedLinesDiffComputer'
+import { DefaultLinesDiffComputer } from 'monaco-editor/esm/vs/editor/common/diff/defaultLinesDiffComputer/defaultLinesDiffComputer'
 import { watchEffect } from 'vue'
 import { useEditorTheme } from './compositions'
 import * as monaco from './monaco-editor'
@@ -70,7 +70,7 @@ watchEffect(() => {
   })
 })
 
-const diffComputer = new AdvancedLinesDiffComputer()
+const diffComputer = new DefaultLinesDiffComputer()
 const myersDiffingThreshold = 1700
 
 function computeDiffDecorations(model: monaco.editor.ITextModel, defaultModel: monaco.editor.ITextModel) {
@@ -84,13 +84,13 @@ function computeDiffDecorations(model: monaco.editor.ITextModel, defaultModel: m
   const diff = diffComputer.computeDiff(originalLines, modifiedLines, {})
   let decorations: monaco.editor.IModelDeltaDecoration[] = []
   let lineOffset = 0
-  for (const { originalRange, modifiedRange } of diff.changes) {
-    const currentOffset = modifiedRange.endLineNumberExclusive - originalRange.endLineNumberExclusive
+  for (const { original, modified } of diff.changes) {
+    const currentOffset = modified.endLineNumberExclusive - original.endLineNumberExclusive
     const range: monaco.IRange = {
       startLineNumber: currentOffset < lineOffset
-        ? modifiedRange.endLineNumberExclusive - 1
-        : modifiedRange.startLineNumber,
-      endLineNumber: modifiedRange.endLineNumberExclusive - 1,
+        ? modified.endLineNumberExclusive - 1
+        : modified.startLineNumber,
+      endLineNumber: modified.endLineNumberExclusive - 1,
       startColumn: 1,
       endColumn: 1,
     }
