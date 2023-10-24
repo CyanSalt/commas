@@ -8,7 +8,7 @@ import * as cfonts from 'cfonts'
 import chalk from 'chalk'
 import * as commas from 'commas:api/main'
 import { app, BrowserWindow, webContents } from 'electron'
-import { random } from 'lodash'
+import { random, sortBy } from 'lodash'
 import { quote } from 'shell-quote'
 import table from 'text-table'
 import type { CommandModule } from './command'
@@ -145,8 +145,22 @@ ${
   commas.context.provide('cli.command', {
     command: 'version',
     description: 'Print version information#!cli.description.version',
-    handler() {
-      return app.getVersion()
+    usage: '[module-name-or-all]#!cli.usage.version',
+    handler({ argv }) {
+      const versions = {
+        commas: app.getVersion(),
+        ...process.versions,
+      }
+      if (argv[0] === 'all') {
+        return table(sortBy(
+          Object.entries(versions).filter((entry): entry is [string, string] => typeof entry[1] === 'string'),
+          entry => entry[0],
+        ))
+      } else if (typeof versions[argv[0]] === 'string') {
+        return versions[argv[0]]
+      } else {
+        return versions.commas
+      }
     },
   })
 

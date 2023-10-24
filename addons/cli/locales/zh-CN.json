@@ -7,6 +7,7 @@
   "[command]#!cli.usage.help": "[命令]",
   "Print version information#!cli.description.version": "打印版本信息",
   "Run a command with arguments in a new tab#!cli.description.run": "在新标签页执行带参数的命令",
+  "[module-name-or-all]#!cli.usage.version": "[模块名或 all]",
   "<...command-with-args>#!cli.usage.run": "<...命令和参数>",
   "Jump to the nth tab#!cli.description.select": "跳转到第 n 个标签页",
   "<nth-tab>#!cli.usage.select": "<第 n 个标签页>",
