@@ -149,7 +149,10 @@ const options = {
   ],
   afterPrune: [
     (buildPath, electronVersion, platform, arch, callback) => {
-      fs.copyFile(backupPkgPath, path.join(buildPath, 'package.json'), callback)
+      util.callbackify(() => Promise.all([
+        fs.promises.rm(path.join(buildPath, 'node_modules/node-pty/build/node_gyp_bins'), { force: true, recursive: true }),
+        fs.promises.copyFile(backupPkgPath, path.join(buildPath, 'package.json')),
+      ]))(callback)
     },
   ],
 }
