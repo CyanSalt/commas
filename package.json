@@ -49,7 +49,7 @@
     "css-font-face-src": "^1.0.0",
     "devicon": "^2.15.1",
     "dotenv-cli": "^7.3.0",
-    "electron": "^26.4.1",
+    "electron": "^27.0.2",
     "electron-packager": "^17.1.2",
     "esbuild": "^0.19.5",
     "lucide-static": "^0.290.0",
