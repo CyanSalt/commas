@@ -7,7 +7,6 @@ module.exports = {
     project: './tsconfig.tools.json',
   },
   rules: {
-    'sort-imports': ['warn', { ignoreCase: true, ignoreDeclarationSort: true }],
     'vue/no-undef-components': 'error',
     'vue/no-undef-properties': 'error',
   },
