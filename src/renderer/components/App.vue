@@ -50,8 +50,8 @@ handleI18nMessages()
 handleShellMessages()
 handleTerminalMessages()
 
-const startIndex = process.argv.indexOf('--') + 1
-const args = startIndex ? process.argv.slice(startIndex) : []
+const argIndex = process.argv.indexOf('--') + 1
+const args = argIndex ? process.argv.slice(argIndex) : []
 const initialPath = args[0]
 createTerminalTab({ cwd: initialPath })
 

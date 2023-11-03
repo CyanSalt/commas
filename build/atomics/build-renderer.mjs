@@ -47,7 +47,7 @@ export default (versions, tap) => vite.build(tap({
         /^commas:/,
         'electron',
         ...builtinModules,
-        ...Object.keys(pkg.dependencies),
+        ...Object.keys(pkg.dependencies ?? {}),
       ],
       output: {
         format: 'cjs',
