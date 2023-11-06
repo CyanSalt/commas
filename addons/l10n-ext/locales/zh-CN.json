@@ -3,6 +3,7 @@
   "Cut#!menu.cut": "剪切",
   "Copy#!menu.copy": "复制",
   "Paste#!menu.paste": "粘贴",
+  "Look Up \"${0}\"#!menu.lookup": "查询“${0}”",
   "Clear#!menu.clear": "清除",
   "About ${name}#!menu.about": "关于 ${name}",
   "Preferences...#!menu.preference": "首选项...",

@@ -5,7 +5,7 @@ import { quote } from 'shell-quote'
 import { watchEffect } from 'vue'
 import type { CommandCompletion, TerminalTab } from '../../typings/terminal'
 import { isMatchLinkModifier, writeTerminalTab } from '../compositions/terminal'
-import { openContextMenu } from '../utils/frame'
+import { createContextMenu, openContextMenu } from '../utils/frame'
 import { escapeHTML } from '../utils/helper'
 import TerminalBlock from './TerminalBlock.vue'
 import VisualIcon from './basic/VisualIcon.vue'
@@ -36,20 +36,10 @@ function dropFile(event: DragEvent) {
 }
 
 function openEditingMenu(event: MouseEvent) {
+  const { withSeparator, definitionItems, editingItems } = createContextMenu()
   openContextMenu([
-    {
-      label: 'Copy#!menu.copy',
-      accelerator: 'CmdOrCtrl+C',
-      role: 'copy',
-    },
-    {
-      label: 'Paste#!menu.paste',
-      accelerator: 'CmdOrCtrl+V',
-      role: 'paste',
-    },
-    {
-      type: 'separator',
-    },
+    ...withSeparator(definitionItems, []),
+    ...withSeparator(editingItems, []),
     {
       label: 'Clear#!menu.clear',
       accelerator: 'CmdOrCtrl+K',

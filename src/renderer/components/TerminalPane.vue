@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { TerminalTab } from '../../typings/terminal'
-import { openContextMenu } from '../utils/frame'
+import { createContextMenu, openContextMenu } from '../utils/frame'
 import TerminalBlock from './TerminalBlock.vue'
 
 defineProps<{
@@ -12,17 +12,10 @@ defineSlots<{
 }>()
 
 function openEditingMenu(event: MouseEvent) {
+  const { withSeparator, definitionItems, editingItems } = createContextMenu()
   openContextMenu([
-    {
-      label: 'Copy#!menu.copy',
-      accelerator: 'CmdOrCtrl+C',
-      role: 'copy',
-    },
-    {
-      label: 'Paste#!menu.paste',
-      accelerator: 'CmdOrCtrl+V',
-      role: 'paste',
-    },
+    ...withSeparator(definitionItems, []),
+    ...editingItems,
   ], event)
 }
 </script>

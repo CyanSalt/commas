@@ -14,3 +14,41 @@ export function openContextMenu(
     ...coords,
   })
 }
+
+export function createContextMenu() {
+  let definitionItems: MenuItem[] = []
+  if (process.platform === 'darwin') {
+    const selection = getSelection()
+    const text = selection ? selection.toString() : ''
+    if (text) {
+      definitionItems = [
+        {
+          label: 'Look Up "${0}"#!menu.lookup',
+          command: 'global:look-up',
+          args: [text],
+        },
+      ]
+    }
+  }
+  const editingItems: MenuItem[] = [
+    {
+      label: 'Copy#!menu.copy',
+      accelerator: 'CmdOrCtrl+C',
+      role: 'copy',
+    },
+    {
+      label: 'Paste#!menu.paste',
+      accelerator: 'CmdOrCtrl+V',
+      role: 'paste',
+    },
+  ]
+  const withSeparator = (previousItems: MenuItem[], nextItems: MenuItem[]) => {
+    if (!previousItems.length && !nextItems.length) return []
+    return [...previousItems, { type: 'separator' as const }, ...nextItems]
+  }
+  return {
+    withSeparator,
+    definitionItems,
+    editingItems,
+  }
+}

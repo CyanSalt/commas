@@ -9,7 +9,7 @@ import SortableList from '../../src/renderer/components/basic/SortableList.vue'
 import SwitchControl from '../../src/renderer/components/basic/SwitchControl.vue'
 import ValueSelector from '../../src/renderer/components/basic/ValueSelector.vue'
 import VisualIcon from '../../src/renderer/components/basic/VisualIcon.vue'
-import { openContextMenu } from '../../src/renderer/utils/frame'
+import { createContextMenu, openContextMenu } from '../../src/renderer/utils/frame'
 import { vI18n } from '../../src/renderer/utils/i18n'
 import type { RendererAPIContext } from '../types'
 
@@ -48,4 +48,5 @@ export {
   vueAssets,
   addCSSFile,
   openContextMenu,
+  createContextMenu,
 }

@@ -84,6 +84,7 @@ async function createWindow(...args: string[]) {
   const themeEffect = effect(() => {
     if (frame.isDestroyed()) return
     frame.setBackgroundColor(themeOptions.backgroundColor)
+    // @ts-expect-error electron type error
     frame.setVibrancy(themeOptions.vibrancy ?? null)
     if (process.platform === 'win32' && frameType === 'immersive') {
       frame.setTitleBarOverlay(themeOptions.titleBarOverlay)
@@ -127,6 +128,9 @@ function handleWindowMessages() {
   })
   globalHandler.handle('global:open-window', () => {
     createWindow()
+  })
+  globalHandler.handle('global:look-up', (text: string, frame?: BrowserWindow) => {
+    frame?.webContents.showDefinitionForSelection()
   })
 }
 

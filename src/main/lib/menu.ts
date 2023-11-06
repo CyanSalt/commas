@@ -1,6 +1,7 @@
 import type { MenuItemConstructorOptions, PopupOptions } from 'electron'
 import { app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, TouchBar } from 'electron'
 import { globalHandler } from '../../shared/handler'
+import type { TranslationVariables } from '../../typings/i18n'
 import type { KeyBinding, MenuItem } from '../../typings/menu'
 import { provideIPC, useYAMLFile } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
@@ -31,12 +32,12 @@ const hasFocusedWindow = $computed(() => Boolean(focusedWindow))
 function resolveBindingCommand(binding: MenuItem) {
   const result: MenuItemConstructorOptions = { ...binding }
   if (binding.label) {
-    result.label = translate(binding.label)
+    result.label = translate(binding.label, binding.args as TranslationVariables | undefined)
   }
   if (binding.command) {
     if (binding.command.startsWith('global:')) {
-      result.click = () => {
-        globalHandler.invoke(binding.command!, ...(binding.args ?? []))
+      result.click = (self, frame) => {
+        globalHandler.invoke(binding.command!, ...(binding.args ?? []), frame)
       }
     } else {
       result.click = (self, frame) => {

@@ -50,22 +50,15 @@ watchEffect((onInvalidate) => {
 })
 
 function openEditingMenu(event: MouseEvent) {
+  const { withSeparator, definitionItems, editingItems } = commas.ui.createContextMenu()
   commas.ui.openContextMenu([
+    ...withSeparator(definitionItems, []),
     {
       label: 'Cut#!menu.cut',
       accelerator: 'CmdOrCtrl+X',
       role: 'cut',
     },
-    {
-      label: 'Copy#!menu.copy',
-      accelerator: 'CmdOrCtrl+C',
-      role: 'copy',
-    },
-    {
-      label: 'Paste#!menu.paste',
-      accelerator: 'CmdOrCtrl+V',
-      role: 'paste',
-    },
+    ...editingItems,
   ], event)
 }
 
