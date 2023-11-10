@@ -77,10 +77,10 @@ watchEffect(onInvalidate => {
   background: var(--design-highlight-background);
   transition: inset 0.2s;
   &.top {
-    inset: 0 0 75% 0;
+    inset: 0 0 75%;
   }
   &.bottom {
-    inset: 75% 0 0 0;
+    inset: 75% 0 0;
   }
   &.left {
     inset: 0 75% 0 0;
