@@ -25,7 +25,7 @@ brew install --cask cyansalt/cask/commas
 ```
 
 > [!WARNING]
-> The prebuilt version of Linux don't work currently, see [#20](https://github.com/CyanSalt/commas/issues/20). It is recommended to build manually.
+> The prebuilt version of Windows or Linux don't work currently, see [#20](https://github.com/CyanSalt/commas/issues/20). It is recommended to build manually.
 
 ### Build manually
 
