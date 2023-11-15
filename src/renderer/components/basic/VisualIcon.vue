@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import 'devicon'
+import 'simple-icons-font/font/simple-icons.css'
 import lucideSpriteURL from 'lucide-static/sprite.svg'
 
 const { name } = defineProps<{

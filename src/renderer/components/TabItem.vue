@@ -99,8 +99,8 @@ function close() {
           <VisualIcon
             v-if="iconEntry"
             :name="iconEntry.name"
-            :color="isFocused ? iconEntry.color : undefined"
             class="tab-icon"
+            :style="{ color: isFocused ? iconEntry.color : undefined }"
           />
           <VisualIcon v-else-if="pane && tab!.shell" name="lucide-file" class="tab-icon" />
           <VisualIcon v-else name="lucide-terminal" class="tab-icon" />

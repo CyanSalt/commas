@@ -6,39 +6,54 @@ export interface IconEntry {
 
 export default [
   {
-    name: 'devicon-denojs-original colored',
+    name: 'si si-bun',
+    patterns: ['bun', 'bunx'],
+  },
+  {
+    name: 'si si-curl',
+    patterns: ['curl'],
+  },
+  {
+    name: 'si si-deno',
     patterns: ['deno'],
   },
   {
-    name: 'devicon-docker-plain colored',
+    name: 'si si-docker',
     patterns: ['docker', 'docker-compose'],
+    color: '#2496ed',
   },
   {
-    name: 'devicon-git-plain colored',
+    name: 'si si-git',
     patterns: ['git'],
+    color: '#f05032',
   },
   {
-    name: 'devicon-nodejs-plain colored',
+    name: 'si si-nodedotjs',
     patterns: ['node'],
+    color: '#339933',
   },
   {
-    name: 'devicon-npm-original-wordmark colored',
-    patterns: ['npm', 'npx'],
+    name: 'si si-rust',
+    patterns: ['rustc'],
   },
   {
-    name: 'devicon-python-plain colored',
+    name: 'si si-python',
     patterns: [/^python\d*/],
+    color: '#3776ab',
   },
   {
-    name: 'devicon-ruby-plain colored',
+    name: 'si si-ruby',
     patterns: ['ruby'],
+    color: '#cc342d',
   },
   {
-    name: 'devicon-ssh-original-wordmark',
-    patterns: ['ssh'],
+    name: 'si si-vim',
+    patterns: ['vi', 'vim'],
+    color: '#019733',
   },
   {
-    name: 'devicon-vim-plain colored',
-    patterns: ['vi', 'vim', 'nvim'],
+    name: 'si si-neovim',
+    patterns: ['nvim'],
+    color: '#57a143',
   },
 ] as (IconEntry & { patterns: NonNullable<IconEntry['patterns']> })[]
