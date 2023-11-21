@@ -144,8 +144,8 @@ const theme = $computed(() => {
     name,
     opacity,
   } as Theme
-  const backgroundRGBA = toRGBA(definition.background!)
-  const foregroundRGBA = toRGBA(definition.foreground!)
+  const backgroundRGBA = toRGBA(definition.background)
+  const foregroundRGBA = toRGBA(definition.foreground)
   definition.background = toCSSHEX({ ...backgroundRGBA, a: 0 })
   definition.type = isDarkColor(backgroundRGBA) ? 'dark' : 'light'
   let selectionBackgroundRGBA = definition.selectionBackground ? toRGBA(definition.selectionBackground) : undefined
@@ -203,9 +203,9 @@ const defaultWindowButtonPosition = {
 }
 
 const themeOptions = $computed<BrowserWindowThemeOptions>(() => {
-  const foregroundRGBA = toRGBA(theme.foreground!)
-  const backgroundRGBA = toRGBA(theme.background!)
-  const acrylicBackgroundRGBA = toRGBA(theme.acrylicBackground!)
+  const foregroundRGBA = toRGBA(theme.foreground)
+  const backgroundRGBA = toRGBA(theme.background)
+  const acrylicBackgroundRGBA = toRGBA(theme.acrylicBackground)
   const trafficLightOffset = ((36 + 8 * 2) - 36) / 2
   return {
     /** {@link https://github.com/electron/electron/issues/10420} */

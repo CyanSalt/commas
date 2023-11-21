@@ -61,7 +61,7 @@ async function createTerminal(
   if (process.platform !== 'win32') {
     options.encoding = 'utf8'
   }
-  const ptyProcess = pty.spawn(shell!, runtimeArgs, options)
+  const ptyProcess = pty.spawn(shell, runtimeArgs, options)
   ptyProcess.onData(data => {
     if (!webContents.isDestroyed()) {
       webContents.send('input-terminal', {

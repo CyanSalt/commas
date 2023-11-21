@@ -4,8 +4,8 @@ import type { EditorTheme } from '../typings/theme'
 const theme = $(commas.settings.useTheme())
 
 const editorTheme = $computed(() => {
-  const backgroundRGBA = commas.helper.toRGBA(theme.background!)
-  const foregroundRGBA = commas.helper.toRGBA(theme.foreground!)
+  const backgroundRGBA = commas.helper.toRGBA(theme.background)
+  const foregroundRGBA = commas.helper.toRGBA(theme.foreground)
   return {
     ...Object.fromEntries(Object.entries(commas.settings.THEME_CSS_COLORS).map(([key]) => {
       return [key, commas.helper.toCSSHEX(commas.helper.toRGBA(theme[key]))]

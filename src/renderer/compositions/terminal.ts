@@ -831,7 +831,7 @@ export function appendTerminalTab(tab: TerminalTab, fromIndex: number, direction
         tab.position.colspan -= 1
         return
       }
-      const position = movingTab.position!
+      const position = movingTab.position
       const columnTabs = groupTabs.filter(item => {
         return item.position
           && item.position.row !== position.row
@@ -849,7 +849,7 @@ export function appendTerminalTab(tab: TerminalTab, fromIndex: number, direction
         tab.position.rowspan -= 1
         return
       }
-      const position = movingTab.position!
+      const position = movingTab.position
       const rowTabs = groupTabs.filter(item => {
         return item.position
           && item.position.col !== position.col
