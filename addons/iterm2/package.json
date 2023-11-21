@@ -9,7 +9,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/canvas-confetti": "^1.6.3",
-    "canvas-confetti": "^1.9.0"
+    "canvas-confetti": "^1.9.1"
   },
   "commas:i18n": {
     "zh-CN": {

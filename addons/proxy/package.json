@@ -8,7 +8,7 @@
   "author": "commas",
   "license": "ISC",
   "dependencies": {
-    "address": "^1.2.2",
+    "address": "^2.0.1",
     "whistle": "^2.9.59"
   },
   "commas:i18n": {
