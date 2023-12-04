@@ -274,8 +274,8 @@ ${
     commas.context.provide('cli.command', ...externalURLCommands)
   })
 
-  commas.context.provide('terminal.completion', async (query: string, command: string) => {
-    if (command === 'commas') {
+  commas.context.provide('terminal.completion', async (query: string, command: string, subcommand?: string) => {
+    if (command === 'commas' && !subcommand) {
       return commands.map(item => ({
         type: 'command' as const,
         query,
