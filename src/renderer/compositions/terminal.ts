@@ -19,6 +19,7 @@ import type { TerminalContext, TerminalInfo, TerminalTab, TerminalTabCharacter }
 import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
 import { translate } from '../utils/i18n'
+import { handleRenderer } from '../utils/ipc'
 import { ShellIntegrationAddon } from '../utils/shell-integration'
 import { getProcessName, getPrompt, getTerminalTabID, getWindowsProcessInfo } from '../utils/terminal'
 import { useA11yEnabled } from './a11y'
@@ -513,6 +514,16 @@ export function handleTerminalMessages() {
   ipcRenderer.on('save', () => {
     if (!currentTerminal) return
     currentTerminal.pane?.instance?.save?.()
+  })
+  handleRenderer('get-history', (event, count?: number) => {
+    if (!currentTerminal) return []
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    const commands = currentTerminal.addons?.shellIntegration?.commands
+      .filter(item => item.exitCode === 0)
+      .map(item => item.command)
+      .filter((command): command is string => Boolean(command))
+      ?? []
+    return count ? commands.slice(0 - count) : commands
   })
 }
 

@@ -123,7 +123,7 @@ ${chalk.bold(commas.i18n.translate('Usage:#!cli.1'))}
     commas ${chalk.italic(commas.i18n.translate('<command> [...options]#!cli.3'))}
 
 ${chalk.bold(commas.i18n.translate('Commands:#!cli.2'))}
-${indent(table(commandList), '    ')}
+${indent(table(sortBy(commandList, entry => entry[0])), '    ')}
 ${
   helpingCommand
     ? '\n' + commas.i18n.translate('Unknown command: ${command}#!cli.4', {
@@ -266,6 +266,17 @@ ${
         error['stderr'] = ''
         throw error
       }
+    },
+  })
+
+  commas.context.provide('cli.command', {
+    command: 'history',
+    description: 'Get history in current session#!cli.description.history',
+    usage: '[num]#!cli.usage.history',
+    async handler({ sender, argv }) {
+      const index = Number(argv[0])
+      const recentCommands = await commas.ipcMain.invoke<string[]>(sender, 'get-history', Number.isInteger(index) ? index : undefined)
+      return recentCommands.join('\r\n')
     },
   })
 

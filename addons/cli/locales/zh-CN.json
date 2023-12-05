@@ -18,6 +18,8 @@
   "[file]#!cli.usage.preview": "[文件]",
   "Terminate all processes on a port#!cli.description.free": "终止端口上的所有进程",
   "<port>#!cli.usage.free": "<端口>",
+  "Get history in current session#!cli.description.history": "获取当前会话的历史",
+  "[num]#!cli.usage.history": "[数目]",
   "External URL Commands#!settings.label.cli.command.externalURLs": "外部网址命令",
   "Shortcut commands for external URLs#!settings.comments.0.cli.command.externalURLs": "外部网址的快捷命令",
   "Commands Aliases#!settings.label.cli.command.aliases": "命令别名",
