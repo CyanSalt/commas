@@ -46,7 +46,7 @@
     "@types/node-ipc": "^9.2.3",
     "@types/shell-quote": "^1.7.5",
     "@vitejs/plugin-vue": "^4.5.2",
-    "@vue-macros/reactivity-transform": "^0.4.0",
+    "@vue-macros/reactivity-transform": "^0.4.1",
     "css-font-face-src": "^1.0.0",
     "dotenv-cli": "^7.3.0",
     "electron": "^28.0.0",
