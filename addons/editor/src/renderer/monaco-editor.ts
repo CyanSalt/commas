@@ -1,11 +1,4 @@
-import 'monaco-editor/esm/vs/basic-languages/css/css.contribution.js'
-import 'monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution.js'
-import 'monaco-editor/esm/vs/basic-languages/yaml/yaml.contribution.js'
-import 'monaco-editor/esm/vs/language/css/monaco.contribution.js'
-import 'monaco-editor/esm/vs/language/typescript/monaco.contribution.js'
-import 'monaco-editor/esm/vs/editor/editor.all.js'
-
-export * from 'monaco-editor/esm/vs/editor/editor.api.js'
+export * from 'monaco-editor'
 
 window.MonacoEnvironment = {
   getWorker(workerId, label) {
