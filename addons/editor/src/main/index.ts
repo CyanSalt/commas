@@ -12,7 +12,7 @@ export default () => {
     description: 'Edit a text file#!cli.description.edit',
     usage: '<file>#!cli.usage.edit',
     async handler({ sender, argv, cwd }) {
-      const file = path.join(cwd, argv[0])
+      const file = path.resolve(cwd, argv[0])
       await fs.promises.access(file, fs.constants.R_OK)
       sender.send('open-code-editor', file)
     },
