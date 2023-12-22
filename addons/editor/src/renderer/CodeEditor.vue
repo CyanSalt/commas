@@ -7,7 +7,6 @@ import * as monaco from './monaco-editor'
 
 const { modelValue = '', file } = defineProps<{
   modelValue?: string,
-  lang?: string,
   file?: string,
 }>()
 
