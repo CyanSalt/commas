@@ -104,14 +104,14 @@ onMounted(() => {
   initial-value: 0;
 }
 
-// https://developer.apple.com/design/human-interface-guidelines/macos/visual-design/color#system-colors
+// https://developer.apple.com/design/human-interface-guidelines/color#macOS-system-colors
 :global(:root) {
-  --system-red: 255 69 58;
-  --system-yellow: 255 214 10;
-  --system-green: 50 215 75;
-  --system-cyan: 102 212 207;
-  --system-blue: 10 132 255;
-  --system-magenta: 255 55 95;
+  --system-red: 255 49 38;
+  --system-yellow: 245 139 0;
+  --system-green: 30 195 55;
+  --system-cyan: 0 189 180;
+  --system-blue: 0 122 245;
+  --system-magenta: 245 35 75;
   --system-accent: var(--system-blue);
   --design-highlight-background: color-mix(in hsl, rgb(var(--theme-foreground) / 15%), rgb(var(--acrylic-background) / 10%));
   --design-input-background: color-mix(in hsl, rgb(var(--theme-foreground) / 10%) 75%, rgb(var(--acrylic-background) / 10%));
@@ -121,6 +121,9 @@ onMounted(() => {
   --design-card-shadow: 0 2px 4px 0px rgb(0 0 0 / 10%);
   --design-card-secondary-opacity: calc(var(--theme-opacity) * 3 / 4);
   --acrylic-background: 133 194 255;
+  @media (prefers-color-scheme: dark) {
+    --system-cyan: 108 224 219;
+  }
 }
 :global(::selection) {
   background: rgb(var(--theme-selectionbackground));

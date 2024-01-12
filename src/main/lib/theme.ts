@@ -169,8 +169,6 @@ const theme = $computed(() => {
     definition.systemRed = systemPreferences.getSystemColor('red')
     definition.systemYellow = systemPreferences.getSystemColor('yellow')
     definition.systemGreen = systemPreferences.getSystemColor('green')
-    // Finder iCloud color
-    definition.systemCyan = definition.type === 'dark' ? '#5FEFFF' : '#1891A7'
     definition.systemBlue = systemPreferences.getSystemColor('blue')
     definition.systemMagenta = systemPreferences.getSystemColor('pink')
   }
