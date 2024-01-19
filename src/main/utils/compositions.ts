@@ -84,7 +84,7 @@ function provideIPC<T>(key: string, valueRef: Ref<T>) {
   ipcMain.handle(`set-ref:${key}`, (event, value: T) => {
     valueRef.value = value
   })
-  let latestValuePromise
+  let latestValuePromise: Promise<Awaited<T>>
   const reactiveEffect = effect(async () => {
     const valuePromise = Promise.resolve(unref(valueRef))
     latestValuePromise = valuePromise

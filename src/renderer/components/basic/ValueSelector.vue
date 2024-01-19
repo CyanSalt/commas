@@ -1,34 +1,35 @@
 <script lang="ts" setup>
+import { onMounted } from 'vue'
 import VisualIcon from './VisualIcon.vue'
 
-const { modelValue, pinned = (() => []) as never, disabled = false, unpinable = false, placeholder = '' } = defineProps<{
-  modelValue: any,
-  pinned?: any[],
+const { disabled = false, unpinable = false, placeholder = '' } = defineProps<{
   disabled?: boolean,
   unpinable?: boolean,
   placeholder?: string,
 }>()
 
-const emit = defineEmits<{
-  (event: 'update:modelValue', value: any): void,
-  (event: 'update:pinned', value: any[]): void,
-}>()
+let modelValue = $(defineModel<any>({ required: true }))
+let pinned = $(defineModel<any[]>('pinned', { default: () => [] }))
 
 defineSlots<{
   default?: (props: {}) => any,
 }>()
 
-let isPinned = $ref(Boolean(modelValue && pinned.includes(modelValue)))
+let isPinned = $ref(false)
+
+onMounted(() => {
+  isPinned = Boolean(modelValue && pinned.includes(modelValue))
+})
 
 function update(value, pinnedStatus: boolean) {
   isPinned = pinnedStatus
   if (pinnedStatus) {
-    emit('update:modelValue', value)
+    modelValue = value
   }
 }
 
 function unpin(value) {
-  emit('update:pinned', pinned.filter(item => item !== value))
+  pinned = pinned.filter(item => item !== value)
 }
 </script>
 

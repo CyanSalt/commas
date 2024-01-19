@@ -5,14 +5,11 @@ import { watchEffect } from 'vue'
 import { useEditorTheme } from './compositions'
 import * as monaco from './monaco-editor'
 
-const { modelValue = '', file } = defineProps<{
-  modelValue?: string,
+const { file } = defineProps<{
   file?: string,
 }>()
 
-const emit = defineEmits<{
-  (event: 'update:modelValue', code: string): void,
-}>()
+let modelValue = $(defineModel<string>({ default: '' }))
 
 const theme = useEditorTheme()
 const settings = commas.remote.useSettings()
@@ -227,7 +224,7 @@ watchEffect((onInvalidate) => {
 
 function save() {
   if (!model) return
-  emit('update:modelValue', model.getValue())
+  modelValue = model.getValue()
 }
 
 defineExpose({

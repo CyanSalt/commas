@@ -6,16 +6,12 @@ import { accepts, isObjectSchema } from './json-schema'
 
 const { vI18n, VisualIcon, ObjectEditor, SwitchControl, ValueSelector } = commas.ui.vueAssets
 
-const { spec, modelValue, open } = defineProps<{
+const { spec } = defineProps<{
   spec: SettingsSpec,
-  modelValue: any,
-  open?: boolean,
 }>()
 
-const emit = defineEmits<{
-  (event: 'update:modelValue', value: any): void,
-  (event: 'update:open', value: boolean): void,
-}>()
+let open = $(defineModel<boolean>('open'))
+let modelValue = $(defineModel<any>({ required: true }))
 
 const isSimpleObject: boolean = $computed(() => {
   const schema = spec.schema
@@ -58,7 +54,7 @@ let model = $computed({
     return stringify(modelValue)
   },
   set: (value) => {
-    emit('update:modelValue', parse(value))
+    modelValue = parse(value)
   },
 })
 
@@ -129,8 +125,8 @@ function parse(value) {
   return value
 }
 
-function toggle(event) {
-  emit('update:open', event.target.open)
+function toggle(event: Event) {
+  open = (event.target as HTMLDetailsElement).open
 }
 
 function reset() {

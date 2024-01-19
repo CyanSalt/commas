@@ -4,16 +4,13 @@ import { watch } from 'vue'
 import OrderedCheckbox from './OrderedCheckbox.vue'
 import VisualIcon from './VisualIcon.vue'
 
-const { modelValue, withKeys, pinned, lazy } = defineProps<{
-  modelValue: object | undefined,
+const { withKeys, pinned, lazy } = defineProps<{
   withKeys?: boolean,
   pinned?: object | undefined,
   lazy?: boolean,
 }>()
 
-const emit = defineEmits<{
-  (event: 'update:modelValue', value: object | undefined): void,
-}>()
+let modelValue = $(defineModel<object | undefined>({ required: true }))
 
 defineSlots<{
   note?: (props: { item: EditorEntryItem }) => any,
@@ -81,7 +78,7 @@ watch($$(modelValue), value => {
 }, { immediate: true })
 
 watch($$(result), value => {
-  emit('update:modelValue', value)
+  modelValue = value
 })
 
 function add() {

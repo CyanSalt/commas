@@ -1,14 +1,8 @@
 <script lang="ts" setup>
-const { modelValue } = defineProps<{
-  modelValue?: boolean,
-}>()
+let modelValue = $(defineModel<boolean>())
 
-const emit = defineEmits<{
-  (event: 'update:modelValue', value: boolean): void,
-}>()
-
-function change(event) {
-  emit('update:modelValue', event.target.checked)
+function change(event: Event) {
+  modelValue = (event.target as HTMLInputElement).checked
 }
 </script>
 
