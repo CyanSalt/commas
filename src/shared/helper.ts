@@ -17,20 +17,14 @@ export function reuse<T>(fn: () => T) {
 }
 
 export interface Deferred {
-  resolved: boolean,
   promise: Promise<void>,
   resolve: () => void,
 }
 
 export function createDeferred() {
-  const deferred = {
-    resolved: false,
-  } as Deferred
+  const deferred = {} as Deferred
   deferred.promise = new Promise<void>(resolve => {
-    deferred.resolve = () => {
-      deferred.resolved = true
-      resolve()
-    }
+    deferred.resolve = resolve
   })
   return deferred
 }

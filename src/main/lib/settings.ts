@@ -64,6 +64,11 @@ let userSettings = $(useYAMLFile(userFile('settings.yaml'), {} as Settings, {
   },
 }))
 
+let isReady = false
+deferredSettings.promise.then(() => {
+  isReady = true
+})
+
 let oldSettings: Settings | undefined
 const settings = $computed<Settings>({
   get() {
@@ -83,7 +88,7 @@ const settings = $computed<Settings>({
     } else {
       actualSettings = definition
     }
-    if (deferredSettings.resolved) {
+    if (isReady) {
       oldSettings = actualSettings
     }
     return actualSettings
