@@ -143,7 +143,6 @@ const terminalOptions = $computed<Partial<ITerminalOptions>>(() => {
     },
     overviewRulerWidth: 16,
     screenReaderMode: a11yEnabled,
-    smoothScrollDuration: 50,
     theme: { ...theme },
   }
 })
