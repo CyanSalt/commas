@@ -1,5 +1,31 @@
 
 
+## [0.30.0](https://github.com/CyanSalt/commas/compare/v0.29.2...v0.30.0) (2024-02-07)
+
+
+### Features
+
+* **cli:** support `commas history` ([e77aa5d](https://github.com/CyanSalt/commas/commit/e77aa5db363f3c800c06861a6068914d27662fdf))
+* **cli:** support `commas version [mod]` ([04c0b50](https://github.com/CyanSalt/commas/commit/04c0b50c703e8510fa55ab0a92b18756a0f8c433))
+* **editor:** refine theme and language support ([a799273](https://github.com/CyanSalt/commas/commit/a799273803a2453b6a16b5ee66e2813460fbcdc3))
+* macOS colors ([31247af](https://github.com/CyanSalt/commas/commit/31247af897144cca1f1f38e12d95cbc5f936bbb1))
+* refine default ui options ([72b5d48](https://github.com/CyanSalt/commas/commit/72b5d48fe6c2a9a19fc9142f5d1fed18b1ff8ecb))
+* show definition on macOS ([3774b2e](https://github.com/CyanSalt/commas/commit/3774b2e49d132aa2152b7b850011907ffcc35ea2))
+
+
+### Bug Fixes
+
+* a11y support ([621fac2](https://github.com/CyanSalt/commas/commit/621fac276a679508fca198a7e1d34a5f70daa742))
+* **cli:** ignore completion when subcommand provided ([2c5b65b](https://github.com/CyanSalt/commas/commit/2c5b65b2bfc5edded1f20fd619c031ed634987d7))
+* disable scroll delay ([d505587](https://github.com/CyanSalt/commas/commit/d5055871796cbe320a65ca67a67ed7e2738a0af7))
+* **editor:** resolve file path ([d4ec967](https://github.com/CyanSalt/commas/commit/d4ec967fb326029dab96ebc73cee7186afd8309e))
+* **editor:** widget style ([4a00869](https://github.com/CyanSalt/commas/commit/4a00869ef1f550b2bb142e2cbabca8bf929e7d9d))
+* electron packager exports ([34eb18d](https://github.com/CyanSalt/commas/commit/34eb18d52edb4b492631e31add308be0e3e313ed))
+* icon compilation ([e68da92](https://github.com/CyanSalt/commas/commit/e68da92fe9c17130df993ba5ff40cb70751f78f6))
+* import meta resolve ([93cf560](https://github.com/CyanSalt/commas/commit/93cf560856b1f155dbad88b896c5da5792b50528))
+* lint autofix ([9d00531](https://github.com/CyanSalt/commas/commit/9d00531ff2301bf3e168a90d365e2b3fe9859d25))
+* non vibrant background ([8e11692](https://github.com/CyanSalt/commas/commit/8e11692364eacda67d31bae72f4d647fd8339656))
+
 ## [0.29.2](https://github.com/CyanSalt/commas/compare/v0.29.1...v0.29.2) (2023-10-24)
 
 
