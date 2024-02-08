@@ -37,6 +37,8 @@ async function createWindow(...args: string[]) {
     options.titleBarStyle = process.platform === 'darwin' ? 'hiddenInset' : 'hidden'
     if (process.platform === 'win32') {
       options.titleBarOverlay = true
+    } else if (process.platform === 'linux') {
+      options.frame = false
     } else {
       // Transparent window on Windows will lose border and shadow
       options.transparent = true
