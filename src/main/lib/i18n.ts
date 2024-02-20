@@ -1,6 +1,6 @@
 import * as fs from 'node:fs'
 import * as path from 'node:path'
-import { effect, shallowReactive } from '@vue/reactivity'
+import { effect, shallowReactive, toRaw } from '@vue/reactivity'
 import { app } from 'electron'
 import { useAsyncComputed, watchBaseEffect } from '../../shared/compositions'
 import { resolveManifest } from '../../shared/i18n'
@@ -105,7 +105,7 @@ async function addTranslationDirectory(directory: string, priority: Priority) {
 }
 
 function removeTranslation(translation: Translation) {
-  const matched = [...translations].find(item => item.file === translation.file)
+  const matched = [...toRaw(translations)].find(item => item.file === translation.file)
   if (matched) {
     translations.delete(matched)
   }

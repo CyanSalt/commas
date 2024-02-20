@@ -74,8 +74,14 @@ const menuTemplate = $computed<MenuItemConstructorOptions[]>(() => {
       label: translate('Terminal#!menu.terminal'),
       submenu: terminalMenuItems,
     },
-    { role: 'editMenu', label: translate('Edit#!menu.edit') },
-    { role: 'windowMenu', label: translate('Window#!menu.window') },
+    {
+      label: translate('Edit#!menu.edit'),
+      role: 'editMenu',
+    },
+    {
+      label: translate('Window#!menu.window'),
+      role: 'windowMenu',
+    },
     {
       label: translate('User#!menu.user'),
       submenu: customMenuItems,
@@ -88,7 +94,10 @@ const menuTemplate = $computed<MenuItemConstructorOptions[]>(() => {
       label: translate('Help#!menu.help'),
       role: 'help',
       submenu: [
-        { role: 'toggleDevTools', label: translate('Toggle Developer Tools#!menu.toggledevtools') },
+        {
+          label: translate('Toggle Developer Tools#!menu.toggledevtools'),
+          role: 'toggleDevTools',
+        },
         {
           label: translate('Relaunch ${name}#!menu.relaunch', { name: app.name }),
           accelerator: 'CmdOrCtrl+Shift+R',
