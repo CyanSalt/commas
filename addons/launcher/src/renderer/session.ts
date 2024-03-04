@@ -1,5 +1,5 @@
-import type { Terminal } from 'xterm'
-import { SerializeAddon } from 'xterm-addon-serialize'
+import { SerializeAddon } from '@xterm/addon-serialize'
+import type { Terminal } from '@xterm/xterm'
 
 const launcherSessionMap = new Map<string, string>()
 

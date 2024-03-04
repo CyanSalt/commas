@@ -8,7 +8,7 @@
   "author": "commas",
   "license": "ISC",
   "devDependencies": {
-    "xterm-addon-serialize": "^0.11.0"
+    "@xterm/addon-serialize": "^0.12.0"
   },
   "commas:i18n": {
     "zh-CN": {

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import 'xterm/css/xterm.css'
 import type { TerminalTab } from '../../typings/terminal'
 import { activateTerminalTab, getTerminalTabIndex, useCurrentTerminal, useTerminalTabs } from '../compositions/terminal'
 import { getTerminalTabID } from '../utils/terminal'

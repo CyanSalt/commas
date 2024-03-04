@@ -1,8 +1,8 @@
+import type { IDisposable, IMarker, ITerminalAddon, Terminal } from '@xterm/xterm'
 import confetti from 'canvas-confetti'
 import * as commas from 'commas:api/renderer'
 import { clipboard, ipcRenderer } from 'electron'
 import { nextTick } from 'vue'
-import type { IDisposable, IMarker, ITerminalAddon, Terminal } from 'xterm'
 import type { TerminalTab } from '../../../../src/typings/terminal'
 import { useBadge } from './badge'
 import { parseITerm2EscapeSequence } from './utils'
@@ -177,7 +177,7 @@ export class ITerm2Addon implements ITerminalAddon {
     const theme = commas.remote.useTheme()
     const rgba = commas.helper.toRGBA(theme.blue)
     const xterm = this.tab.xterm
-    const marker = xterm.registerMarker()!
+    const marker = xterm.registerMarker()
     const decoration = xterm.registerDecoration({
       marker,
       overviewRulerOptions: {

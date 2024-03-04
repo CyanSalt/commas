@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import 'xterm/css/xterm.css'
+import '@xterm/xterm/css/xterm.css'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { quote } from 'shell-quote'
 import { watchEffect } from 'vue'

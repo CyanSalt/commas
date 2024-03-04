@@ -1,8 +1,8 @@
+import type { IDecoration, IDisposable, IMarker, ITerminalAddon, Terminal } from '@xterm/xterm'
 import { ipcRenderer } from 'electron'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { isEqual } from 'lodash'
 import { nextTick, toRaw } from 'vue'
-import type { IDecoration, IDisposable, IMarker, ITerminalAddon, Terminal } from 'xterm'
 import { toCSSHEX, toRGBA } from '../../shared/color'
 import type { CommandCompletion, TerminalTab } from '../../typings/terminal'
 import { useSettings } from '../compositions/settings'
@@ -145,7 +145,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
           case 'B': {
             // PromptEnd
             ipcRenderer.send('terminal-prompt-end')
-            const marker = xterm.registerMarker()!
+            const marker = xterm.registerMarker()
             const actions = this.currentCommand
               ? this.currentCommand.actions
               : this._generateQuickFixActions(marker)
@@ -306,7 +306,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     const line = xterm.buffer.active.baseY + xterm.buffer.active.cursorY
     const rgba = toRGBA(color)
     for (let offset = from - line; offset <= to - line; offset += 1) {
-      const highlightMarker = xterm.registerMarker(offset)!
+      const highlightMarker = xterm.registerMarker(offset)
       const decoration = xterm.registerDecoration({
         marker: highlightMarker,
         width: xterm.cols,

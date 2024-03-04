@@ -1,4 +1,4 @@
-import type { IDisposable, ITerminalAddon, Terminal } from 'xterm'
+import type { IDisposable, ITerminalAddon, Terminal } from '@xterm/xterm'
 
 interface Particle {
   x: number,

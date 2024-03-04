@@ -1,5 +1,5 @@
+import type { ITheme } from '@xterm/xterm'
 import type { BrowserWindowConstructorOptions } from 'electron'
-import type { ITheme } from 'xterm'
 
 export interface ThemeDefinition extends ITheme {
   purple?: string,
