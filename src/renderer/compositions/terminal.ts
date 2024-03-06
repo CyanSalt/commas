@@ -138,6 +138,7 @@ const terminalOptions = $computed<Partial<ITerminalOptions>>(() => {
     cursorStyle: settings['terminal.style.cursorStyle'],
     fontFamily: settings['terminal.style.fontFamily'],
     fontSize: settings['terminal.style.fontSize'],
+    lineHeight: settings['terminal.style.lineHeight'],
     linkHandler: {
       activate: handleTerminalLink,
     },

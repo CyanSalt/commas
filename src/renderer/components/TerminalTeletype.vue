@@ -114,7 +114,7 @@ function selectCompletion(event: MouseEvent) {
 <template>
   <TerminalBlock
     :tab="tab"
-    class="terminal-teletype"
+    :class="['terminal-teletype', { 'has-shell-integration': tab.addons.shellIntegration }]"
     data-shell-integration="container"
     @contextmenu="openEditingMenu"
     @dragover.prevent="dragFileOver"
@@ -162,7 +162,10 @@ function selectCompletion(event: MouseEvent) {
   min-width: 0;
   overflow: hidden;
   :deep(.xterm) {
-    padding: 8px 12px;
+    padding: 8px 16px 8px 8px;
+  }
+  .terminal-teletype.has-shell-integration & :deep(.xterm) {
+    padding-left: 16px;
   }
   :deep(.xterm-viewport) {
     @include partials.scroll-container;

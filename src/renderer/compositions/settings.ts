@@ -28,11 +28,13 @@ export function injectSettingsStyle() {
     const fontFamily = settings['terminal.style.fontFamily']
     const fontSize = settings['terminal.style.fontSize']
     const fontLigatures = settings['terminal.style.fontLigatures']
+    const lineHeight = settings['terminal.style.lineHeight']
     const styles = {
       'font-family': fontFamily ? (
         process.platform === 'win32' ? fontFamily : `${fontFamily}, monospace`
       ) : 'monospace',
       'font-size': fontSize ? `${fontSize}px` : 'inherit',
+      'line-height': lineHeight ? `${lineHeight}${lineHeight > 8 ? 'px' : ''}` : 'inherit',
       'font-variant-ligatures': fontLigatures ? 'normal' : 'none',
     }
     const declarations = Object.entries(styles)

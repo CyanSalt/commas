@@ -310,6 +310,20 @@
     "default": 14
   },
   {
+    "key": "terminal.style.lineHeight",
+    "label": "Line Height",
+    "comments": [
+      "Lint height for window",
+      "Will be treated as pixels if greater than 8",
+      "otherwise calculated relative to terminal.style.fontSize"
+    ],
+    "schema": {
+      "type": "number",
+      "minimum": 1
+    },
+    "default": 1.1
+  },
+  {
     "key": "terminal.style.fontFamily",
     "label": "Font Family",
     "comments": [

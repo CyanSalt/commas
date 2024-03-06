@@ -179,7 +179,7 @@ watchEffect((onInvalidate) => {
       indentation: false,
     },
     // lineDecorationsWidth: 0,
-    lineHeight: 18,
+    lineHeight: settings['terminal.style.lineHeight'],
     minimap: {
       enabled: false,
     },

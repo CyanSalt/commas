@@ -30,6 +30,7 @@ export interface Settings {
   'terminal.style.opacity': number,
   'terminal.style.vibrancy': BrowserWindowConstructorOptions['vibrancy'] | boolean,
   'terminal.style.fontSize': number,
+  'terminal.style.lineHeight': number,
   'terminal.style.fontFamily': string,
   'terminal.style.fontLigatures': boolean,
   'terminal.style.cursorStyle': 'block' | 'bar' | 'underline',
