@@ -149,6 +149,7 @@ function selectCompletion(event: MouseEvent) {
 </template>
 
 <style lang="scss" scoped>
+@use 'sass:math';
 @use '../assets/_partials';
 
 .terminal-teletype {
@@ -192,13 +193,15 @@ function selectCompletion(event: MouseEvent) {
   animation: fade-out 1s;
 }
 :deep(.terminal-command-mark) {
-  margin-left: calc(0px - var(--cell-width));
+  width: 16px !important;
+  margin-left: -16px;
   &::before {
     content: '';
     display: block;
     width: 6px !important;
     height: 6px !important;
     margin-top: calc(var(--cell-height) / 2 - 3px);
+    margin-left: #{math.div(16px, 2) - 3px};
     background: rgb(var(--color) / var(--opacity));
     border-radius: 50%;
   }
