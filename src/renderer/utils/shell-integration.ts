@@ -2,7 +2,7 @@ import type { IDecoration, IDisposable, IMarker, ITerminalAddon, Terminal } from
 import { ipcRenderer } from 'electron'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { isEqual } from 'lodash'
-import { nextTick, toRaw } from 'vue'
+import { nextTick, reactive, toRaw } from 'vue'
 import { toCSSHEX, toRGBA } from '../../shared/color'
 import type { CommandCompletion, TerminalTab } from '../../typings/terminal'
 import { useSettings } from '../compositions/settings'
@@ -32,6 +32,12 @@ interface IntegratedShellCompletion {
   decoration: IDecoration,
   renderer: IDisposable,
   position: IntegratedShellPosition,
+}
+
+interface RenderableIntegratedShellCompletion {
+  items: CommandCompletion[],
+  index: number,
+  element?: HTMLElement,
 }
 
 function updateDecorationElement(decoration: IDecoration, callback: (el: HTMLElement) => void) {
@@ -122,6 +128,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   completion?: IntegratedShellCompletion
   completionKey?: symbol
   recentCompletionAppliedPosition?: true | IntegratedShellCompletion['position']
+  renderableCompletion: RenderableIntegratedShellCompletion
 
   constructor(tab: TerminalTab) {
     this.tab = tab
@@ -129,6 +136,10 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     this.disposables = []
     this.commands = []
     this.highlightMarkers = []
+    this.renderableCompletion = reactive({
+      items: [],
+      index: 0,
+    })
   }
 
   activate(xterm: Terminal) {
@@ -425,7 +436,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
     let renderedCompletions: CommandCompletion[] | undefined
     const renderer = decoration.onRender(el => {
-      const renderingCompletions = toRaw(this.tab.completions)
+      const renderingCompletions = toRaw(this.renderableCompletion.items)
       if (renderingCompletions === renderedCompletions) return
       renderedCompletions = renderingCompletions
       el.classList.add('terminal-completion')
@@ -433,7 +444,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       el.classList.add(xterm.buffer.active.cursorX < xterm.cols / 2 ? 'is-left' : 'is-right')
       el.style.setProperty('--column', `${xterm.buffer.active.cursorX}`)
       el.style.setProperty('--row-span', `${height}`)
-      this.tab.completionElement = el
+      this.renderableCompletion.element = el
     })
     return Object.assign(reusingCompletion ?? {}, {
       marker,
@@ -536,7 +547,8 @@ export class ShellIntegrationAddon implements ITerminalAddon {
         shouldReuseDecoration ? this.completion : undefined,
       )
       this.completion = result
-      this.tab.completions = completions
+      this.renderableCompletion.items = completions
+      this.renderableCompletion.index = 0
       // Refresh immediately
       if (shouldReuseDecoration && result.decoration.element) {
         await nextTick()
@@ -559,11 +571,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
   }
 
-  skipCompletion(position?: IntegratedShellCompletion['position']) {
-    this.recentCompletionAppliedPosition = position ?? true
-  }
-
-  applyCompletion(value: string, back = 0) {
+  _applyCompletion(value: string, back = 0) {
     const { xterm } = this.tab
     const position = this._getCurrentPosition()
     const input = this._getCurrentCommandInput(position)
@@ -577,84 +585,42 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     this._getRealtimeCompletions(input.slice(0, -back) + value + ' ')
   }
 
-  setCompletionDescription(content: string | undefined) {
-    if (this.completion?.decoration.element) {
-      const el = this.completion.decoration.element.querySelector<HTMLDivElement>('.terminal-completion-desc')
-      if (el) {
-        el.textContent = content ?? ''
-      }
-    }
+  skipCompletion(position?: IntegratedShellCompletion['position']) {
+    this.recentCompletionAppliedPosition = position ?? true
   }
 
-  getCompletionElement(target: EventTarget | null) {
-    return target instanceof HTMLElement
-      ? target.closest<HTMLElement>('.terminal-completion-item')
-      : null
-  }
-
-  applyCompletionElement(item: HTMLElement, isEnterPressing?: boolean) {
-    let value = item.dataset.value
-    if (value) {
-      const back = Number(item.dataset.back ?? 0)
-      if (isEnterPressing && value.length === back) return false
-      this.applyCompletion(value, back)
+  applyCompletion(index: number, isEnterPressing?: boolean) {
+    const item = this.renderableCompletion.items[index]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (item) {
+      const back = item.query.length
+      if (isEnterPressing && item.value.length === back) return false
+      this._applyCompletion(item.value, back)
       return true
     }
     return false
   }
 
-  selectCompletionElement(item: HTMLElement) {
-    const parent = item.parentElement
-    if (parent) {
-      for (const el of parent.children) {
-        el.classList.remove('is-active')
-      }
-    }
-    this.setCompletionDescription(item.dataset.desc)
-    item.classList.add('is-active')
-    item.scrollIntoViewIfNeeded()
+  applySelectedCompletion(isEnterPressing?: boolean) {
+    return this.applyCompletion(this.renderableCompletion.index, isEnterPressing)
   }
 
-  getSelectedCompletionElement() {
-    return this.completion?.decoration.element
-      ? this.completion.decoration.element.querySelector<HTMLDivElement>(
-        '.terminal-completion-item.is-active',
-      )
-      : null
+  selectCompletion(index: number) {
+    this.renderableCompletion.index = index
   }
 
-  applySelectedCompletionElement(isEnterPressing?: boolean) {
-    const item = this.getSelectedCompletionElement()
-    if (item) {
-      return this.applyCompletionElement(item, isEnterPressing)
-    }
-    return false
+  selectPreviousCompletion() {
+    const target = this.renderableCompletion.index === 0
+      ? this.renderableCompletion.items.length - 1
+      : this.renderableCompletion.index - 1
+    this.selectCompletion(target)
   }
 
-  selectPreviousCompletionElement() {
-    const item = this.getSelectedCompletionElement()
-    if (item) {
-      const previousSibling = item.previousElementSibling
-      if (previousSibling) {
-        this.selectCompletionElement(previousSibling as HTMLElement)
-      } else {
-        const parent = item.parentElement!
-        this.selectCompletionElement(parent.children[parent.childElementCount - 1] as HTMLElement)
-      }
-    }
-  }
-
-  selectNextCompletionElement() {
-    const item = this.getSelectedCompletionElement()
-    if (item) {
-      const nextSibling = item.nextElementSibling
-      if (nextSibling) {
-        this.selectCompletionElement(nextSibling as HTMLElement)
-      } else {
-        const parent = item.parentElement!
-        this.selectCompletionElement(parent.children[0] as HTMLElement)
-      }
-    }
+  selectNextCompletion() {
+    const target = this.renderableCompletion.index === this.renderableCompletion.items.length - 1
+      ? 0
+      : this.renderableCompletion.index + 1
+    this.selectCompletion(target)
   }
 
 }

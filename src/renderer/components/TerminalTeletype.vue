@@ -84,6 +84,10 @@ function highlightLabel(label: string, query: string) {
   return query ? fuzzaldrin.wrap(escapeHTML(label), escapeHTML(query)) : label
 }
 
+const renderableCompletion = $computed(() => {
+  return tab.addons.shellIntegration?.renderableCompletion
+})
+
 function getCompletionIcon(item: CommandCompletion) {
   if (item.value === item.query) return 'lucide-corner-down-left'
   switch (item.type) {
@@ -102,18 +106,16 @@ function getCompletionIcon(item: CommandCompletion) {
   }
 }
 
-function selectCompletion(event: MouseEvent) {
-  const item = tab.addons.shellIntegration!.getCompletionElement(event.target)
-  if (item) {
-    event.stopPropagation()
-    event.preventDefault()
-    if (isMatchLinkModifier(event)) {
-      tab.addons.shellIntegration!.selectCompletionElement(item)
-    } else {
-      tab.addons.shellIntegration!.applyCompletionElement(item)
-    }
-    tab.xterm.focus()
+function selectCompletion(event: MouseEvent, item: CommandCompletion) {
+  const index = renderableCompletion.items
+    .findIndex(completion => completion.value === item.value)
+  if (index === -1) return
+  if (isMatchLinkModifier(event)) {
+    tab.addons.shellIntegration!.selectCompletion(index)
+  } else {
+    tab.addons.shellIntegration!.applyCompletion(index)
   }
+  tab.xterm.focus()
 }
 </script>
 
@@ -127,9 +129,12 @@ function selectCompletion(event: MouseEvent) {
     @click="selectCompletion"
   >
     <div ref="element" class="terminal-content"></div>
-    <Teleport v-if="tab.completionElement" :to="tab.completionElement">
+    <Teleport
+      v-if="renderableCompletion?.element"
+      :to="renderableCompletion.element"
+    >
       <RecycleScroller
-        :items="tab.completions"
+        :items="renderableCompletion.items"
         :item-size="cell.height"
         key-field="value"
         class="terminal-completion-wrapper"
@@ -138,24 +143,22 @@ function selectCompletion(event: MouseEvent) {
         item-tag="li"
         item-class="terminal-completion-item-wrapper"
       >
-        <template #default="{ item, index }">
+        <template #default="{ item }">
           <span
             :class="[
               'terminal-completion-item',
               item.type ?? 'default',
               { 'is-passthrough': item.value === item.query },
-              { 'is-active': !index },
+              { 'is-active': item.value === renderableCompletion.items[renderableCompletion.index]?.value },
             ]"
-            :data-value="item.value"
-            :data-desc="item.description ?? ''"
-            :data-back="item.query.length"
+            @click.stop.prevent="selectCompletion($event, item)"
           >
             <VisualIcon :name="getCompletionIcon(item)" class="completion-item-icon" />
             <span class="completion-item-label" v-html="highlightLabel(item.value, item.query)"></span>
           </span>
         </template>
         <template #after>
-          <div class="terminal-completion-desc">{{ tab.completions[0]?.description ?? '' }}</div>
+          <div class="terminal-completion-desc">{{ renderableCompletion.items[renderableCompletion.index]?.description ?? '' }}</div>
         </template>
       </RecycleScroller>
     </Teleport>

@@ -209,7 +209,7 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
           case 'Tab':
             event.preventDefault()
             if (event.type === 'keydown') {
-              return !shellIntegration.applySelectedCompletionElement(event.key === 'Enter')
+              return !shellIntegration.applySelectedCompletion(event.key === 'Enter')
             }
             return false
           case 'Escape':
@@ -219,12 +219,12 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
             return false
           case 'ArrowUp':
             if (event.type === 'keydown') {
-              shellIntegration.selectPreviousCompletionElement()
+              shellIntegration.selectPreviousCompletion()
             }
             return false
           case 'ArrowDown':
             if (event.type === 'keydown') {
-              shellIntegration.selectNextCompletionElement()
+              shellIntegration.selectNextCompletion()
             }
             return false
         }

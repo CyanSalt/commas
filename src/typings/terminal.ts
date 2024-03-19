@@ -82,6 +82,4 @@ export interface TerminalTab extends TerminalInfo {
   character?: TerminalTabCharacter,
   group?: bigint,
   position?: TerminalTabPosition,
-  completions?: CommandCompletion[],
-  completionElement?: HTMLElement,
 }
