@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import '@xterm/xterm/css/xterm.css'
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { quote } from 'shell-quote'
 import { watchEffect } from 'vue'
+import { RecycleScroller } from 'vue-virtual-scroller'
 import type { CommandCompletion, TerminalTab } from '../../typings/terminal'
 import { isMatchLinkModifier, writeTerminalTab } from '../compositions/terminal'
 import { createContextMenu, openContextMenu } from '../utils/frame'
@@ -56,6 +58,11 @@ function fit() {
 
 const observer = new ResizeObserver(fit)
 
+const cell = $computed(() => {
+  const xterm = tab.xterm
+  return xterm['_core']._renderService.dimensions.css.cell
+})
+
 watchEffect((onInvalidate) => {
   const el = element
   if (!el) return
@@ -63,7 +70,6 @@ watchEffect((onInvalidate) => {
   if (xterm.element) return
   xterm.open(el)
   // Add cell size properties
-  const cell = xterm['_core']._renderService.dimensions.css.cell
   el.style.setProperty('--cell-width', `${cell.width}px`)
   el.style.setProperty('--cell-height', `${cell.height}px`)
   tab.deferred.open.resolve()
@@ -115,19 +121,25 @@ function selectCompletion(event: MouseEvent) {
   <TerminalBlock
     :tab="tab"
     :class="['terminal-teletype', { 'has-shell-integration': tab.addons.shellIntegration }]"
-    data-shell-integration="container"
     @contextmenu="openEditingMenu"
     @dragover.prevent="dragFileOver"
     @drop.prevent="dropFile"
     @click="selectCompletion"
   >
     <div ref="element" class="terminal-content"></div>
-    <div v-if="tab.completions" data-shell-integration="completion-source">
-      <div class="terminal-completion-wrapper">
-        <ul class="terminal-completion-list">
-          <li
-            v-for="(item, index) in tab.completions"
-            :key="index"
+    <Teleport v-if="tab.completionElement" :to="tab.completionElement">
+      <RecycleScroller
+        :items="tab.completions"
+        :item-size="cell.height"
+        key-field="value"
+        class="terminal-completion-wrapper"
+        list-tag="ul"
+        list-class="terminal-completion-list"
+        item-tag="li"
+        item-class="terminal-completion-item-wrapper"
+      >
+        <template #default="{ item, index }">
+          <span
             :class="[
               'terminal-completion-item',
               item.type ?? 'default',
@@ -140,11 +152,13 @@ function selectCompletion(event: MouseEvent) {
           >
             <VisualIcon :name="getCompletionIcon(item)" class="completion-item-icon" />
             <span class="completion-item-label" v-html="highlightLabel(item.value, item.query)"></span>
-          </li>
-        </ul>
-        <div class="terminal-completion-desc">{{ tab.completions[0]?.description ?? '' }}</div>
-      </div>
-    </div>
+          </span>
+        </template>
+        <template #after>
+          <div class="terminal-completion-desc">{{ tab.completions[0]?.description ?? '' }}</div>
+        </template>
+      </RecycleScroller>
+    </Teleport>
   </TerminalBlock>
 </template>
 
@@ -176,9 +190,6 @@ function selectCompletion(event: MouseEvent) {
   :deep(.xterm-screen) {
     z-index: 0;
   }
-}
-[data-shell-integration='completion-source'] {
-  display: none;
 }
 @keyframes fade-out {
   from {
@@ -244,7 +255,7 @@ function selectCompletion(event: MouseEvent) {
   display: flex;
   height: 100%;
 }
-.terminal-completion-list {
+:deep(.terminal-completion-list) {
   flex: 1;
   min-width: 0;
   margin: 0;
@@ -253,6 +264,7 @@ function selectCompletion(event: MouseEvent) {
 .terminal-completion-item {
   display: flex;
   align-items: center;
+  height: var(--cell-height);
   padding: 0 0.25ch;
   cursor: pointer;
   &:hover, &.is-active {

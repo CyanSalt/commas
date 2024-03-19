@@ -66,7 +66,8 @@
     "sass": "^1.71.1",
     "simple-icons-font": "^11.7.0",
     "typescript": "^5.3.3",
-    "vite": "^5.1.5"
+    "vite": "^5.1.5",
+    "vue-virtual-scroller": "^2.0.0-beta.8"
   },
   "dependencies": {
     "@achrinza/node-ipc": "^10.1.10",

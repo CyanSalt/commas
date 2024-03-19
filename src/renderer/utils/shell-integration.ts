@@ -91,9 +91,7 @@ function filterAndSortCompletions(completions: CommandCompletion[]) {
       if (item.value === item.query) {
         score = Infinity
       } else if (item.query) {
-        const baseline = fuzzaldrin.score(item.value, item.value) * item.query.length / item.value.length ** 2
-        const queryScore = fuzzaldrin.score(item.value, item.query)
-        score = queryScore > baseline ? queryScore : 0
+        score = fuzzaldrin.score(item.value, item.query)
       } else {
         score = 1
       }
@@ -435,11 +433,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       el.classList.add(xterm.buffer.active.cursorX < xterm.cols / 2 ? 'is-left' : 'is-right')
       el.style.setProperty('--column', `${xterm.buffer.active.cursorX}`)
       el.style.setProperty('--row-span', `${height}`)
-      const source = xterm.element?.closest('[data-shell-integration="container"]')
-        ?.querySelector('[data-shell-integration="completion-source"]')
-      if (source) {
-        el.replaceChildren(...[...source.children].map(node => node.cloneNode(true)))
-      }
+      this.tab.completionElement = el
     })
     return Object.assign(reusingCompletion ?? {}, {
       marker,
