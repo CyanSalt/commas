@@ -40,6 +40,7 @@ interface RenderableIntegratedShellCompletion {
   items: CommandCompletion[],
   index: number,
   element?: HTMLElement,
+  mounted: Map<CommandCompletion['value'], HTMLElement>,
 }
 
 function updateDecorationElement(decoration: IDecoration, callback: (el: HTMLElement) => void) {
@@ -141,6 +142,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     this.renderableCompletion = reactive({
       items: [],
       index: 0,
+      mounted: new Map(),
     })
   }
 
@@ -622,6 +624,13 @@ export class ShellIntegrationAddon implements ITerminalAddon {
 
   selectCompletion(index: number) {
     this.renderableCompletion.index = index
+    const item = this.renderableCompletion.items[index]
+    // FIXME: may not be found since using virtual scrolling
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (item && this.renderableCompletion.mounted.has(item.value)) {
+      const element = this.renderableCompletion.mounted.get(item.value)!
+      element.scrollIntoView({ block: 'nearest' })
+    }
   }
 
   selectPreviousCompletion() {

@@ -3,7 +3,7 @@ import '@xterm/xterm/css/xterm.css'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { quote } from 'shell-quote'
-import { watchEffect } from 'vue'
+import { onBeforeUpdate, watchEffect } from 'vue'
 import { RecycleScroller } from 'vue-virtual-scroller'
 import type { CommandCompletion, TerminalTab } from '../../typings/terminal'
 import { isMatchLinkModifier, writeTerminalTab } from '../compositions/terminal'
@@ -88,6 +88,10 @@ const renderableCompletion = $computed(() => {
   return tab.addons.shellIntegration?.renderableCompletion
 })
 
+const selectedCompletion = $computed(() => {
+  return renderableCompletion.items[renderableCompletion.index]
+})
+
 function getCompletionIcon(item: CommandCompletion) {
   if (item.value === item.query) return 'lucide-corner-down-left'
   switch (item.type) {
@@ -117,6 +121,16 @@ function selectCompletion(event: MouseEvent, item: CommandCompletion) {
   }
   tab.xterm.focus()
 }
+
+onBeforeUpdate(() => {
+  renderableCompletion?.mounted.clear()
+})
+
+function mountCompletion(el: HTMLElement, item: CommandCompletion) {
+  if (!renderableCompletion.mounted.has(item.value)) {
+    renderableCompletion.mounted.set(item.value, el)
+  }
+}
 </script>
 
 <template>
@@ -144,11 +158,12 @@ function selectCompletion(event: MouseEvent, item: CommandCompletion) {
       >
         <template #default="{ item }">
           <span
+            :ref="(el: HTMLDivElement) => mountCompletion(el, item)"
             :class="[
               'terminal-completion-item',
               item.type ?? 'default',
               { 'is-passthrough': item.value === item.query },
-              { 'is-active': item.value === renderableCompletion.items[renderableCompletion.index]?.value },
+              { 'is-active': item.value === selectedCompletion?.value },
             ]"
             @click.stop.prevent="selectCompletion($event, item)"
           >
@@ -157,7 +172,7 @@ function selectCompletion(event: MouseEvent, item: CommandCompletion) {
           </span>
         </template>
         <template #after>
-          <div class="terminal-completion-desc">{{ renderableCompletion.items[renderableCompletion.index]?.description ?? '' }}</div>
+          <div class="terminal-completion-desc">{{ selectedCompletion?.description ?? '' }}</div>
         </template>
       </RecycleScroller>
     </Teleport>
@@ -269,6 +284,15 @@ function selectCompletion(event: MouseEvent, item: CommandCompletion) {
   @include partials.scroll-container(8px);
   display: flex;
   height: 100%;
+  :deep(.vue-recycle-scroller__slot) {
+    position: sticky;
+    top: 0;
+    flex: 1;
+    min-width: 0;
+    &:has(.terminal-completion-desc:empty) {
+      display: none;
+    }
+  }
 }
 :deep(.terminal-completion-list) {
   flex: 1;
@@ -319,9 +343,6 @@ function selectCompletion(event: MouseEvent, item: CommandCompletion) {
   overflow: hidden;
 }
 .terminal-completion-desc {
-  position: sticky;
-  top: 0;
-  flex: 1;
   padding: 0 0.25ch;
   color: rgb(var(--theme-foreground) / 50%);
   font-style: italic;
@@ -329,8 +350,5 @@ function selectCompletion(event: MouseEvent, item: CommandCompletion) {
   white-space: pre-wrap;
   overflow: hidden;
   word-wrap: break-word;
-  &:empty {
-    display: none;
-  }
 }
 </style>
