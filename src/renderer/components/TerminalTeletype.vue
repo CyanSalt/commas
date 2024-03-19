@@ -167,6 +167,8 @@ function selectCompletion(event: MouseEvent) {
 @use '../assets/_partials';
 
 .terminal-teletype {
+  --integration-width: 16px;
+  --overview-width: 16px;
   display: flex;
   flex: 1;
   min-width: 0;
@@ -177,10 +179,10 @@ function selectCompletion(event: MouseEvent) {
   min-width: 0;
   overflow: hidden;
   :deep(.xterm) {
-    padding: 8px 16px 8px 8px;
+    padding: 8px var(--overview-width) 8px 8px;
   }
   .terminal-teletype.has-shell-integration & :deep(.xterm) {
-    padding-left: 16px;
+    padding-left: var(--integration-width);
   }
   :deep(.xterm-viewport) {
     @include partials.scroll-container;
@@ -212,15 +214,15 @@ function selectCompletion(event: MouseEvent) {
     width: 6px !important;
     height: 6px !important;
     margin-top: calc(var(--cell-height) / 2 - 3px);
-    margin-left: #{math.div(16px, 2) - 3px};
+    margin-left: calc(var(--integration-width) / 2 - 3px);
     background: rgb(var(--color) / var(--opacity));
     border-radius: 50%;
   }
 }
 :deep(.terminal-highlight-block) {
   z-index: 0 !important;
-  margin-left: calc(0px - var(--cell-width));
-  border-left: calc(var(--cell-width) / 2) solid rgb(var(--color));
+  margin-left: calc(#{0px - math.div(4px, 2)} - var(--integration-width) / 2);
+  border-left: 4px solid rgb(var(--color));
   background: rgb(var(--color) / 20%);
 }
 :deep(.terminal-completion) {
