@@ -126,7 +126,6 @@ function selectCompletion(event: MouseEvent, item: CommandCompletion) {
     @contextmenu="openEditingMenu"
     @dragover.prevent="dragFileOver"
     @drop.prevent="dropFile"
-    @click="selectCompletion"
   >
     <div ref="element" class="terminal-content"></div>
     <Teleport
@@ -209,15 +208,25 @@ function selectCompletion(event: MouseEvent, item: CommandCompletion) {
   animation: fade-out 1s;
 }
 :deep(.terminal-command-mark) {
-  width: 16px !important;
-  margin-left: -16px;
+  --command-mark-padding: 2px;
+  width: calc(var(--integration-width) - var(--command-mark-padding) * 2) !important;
+  margin-left: calc(var(--command-mark-padding) - var(--integration-width));
+  border-radius: 4px;
+  cursor: default;
+  // &.is-interactive {
+  //   transition: background 0.2s;
+  //   cursor: pointer;
+  //   &:hover {
+  //     background: var(--design-highlight-background);
+  //   }
+  // }
   &::before {
     content: '';
     display: block;
     width: 6px !important;
     height: 6px !important;
     margin-top: calc(var(--cell-height) / 2 - 3px);
-    margin-left: calc(var(--integration-width) / 2 - 3px);
+    margin-left: calc(var(--integration-width) / 2 - var(--command-mark-padding) - 3px);
     background: rgb(var(--color) / var(--opacity));
     border-radius: 50%;
   }
@@ -227,6 +236,7 @@ function selectCompletion(event: MouseEvent, item: CommandCompletion) {
   margin-left: calc(#{0px - math.div(4px, 2)} - var(--integration-width) / 2);
   border-left: 4px solid rgb(var(--color));
   background: rgb(var(--color) / 20%);
+  cursor: default;
 }
 :deep(.terminal-completion) {
   max-height: calc(var(--cell-height) * var(--row-span));

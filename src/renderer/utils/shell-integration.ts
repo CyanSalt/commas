@@ -19,6 +19,8 @@ interface IntegratedShellCommand {
   marker: IMarker,
   decoration: IDecoration,
   cursorX: number,
+  startedAt: Date,
+  endedAt?: Date,
   actions?: IntegratedShellCommandAction[],
 }
 
@@ -159,9 +161,11 @@ export class ShellIntegrationAddon implements ITerminalAddon {
               ? this.currentCommand.actions
               : this._generateQuickFixActions(marker)
             const theme = useTheme()
+            let currentCommand = this.currentCommand
             const decoration = this._createCommandDecoration(
               xterm,
               marker,
+              () => currentCommand!,
               actions ? theme.yellow : theme.foreground,
               Boolean(actions),
             )
@@ -171,13 +175,15 @@ export class ShellIntegrationAddon implements ITerminalAddon {
               this.currentCommand.decoration = decoration
             } else {
               this.tab.command = ''
-              this.currentCommand = {
+              currentCommand = {
                 marker,
                 decoration,
                 cursorX: xterm.buffer.active.cursorX,
                 actions,
+                startedAt: new Date(),
               }
-              this.commands.push(this.currentCommand)
+              this.commands.push(currentCommand)
+              this.currentCommand = currentCommand
               this.recentMarker = undefined
             }
             return true
@@ -190,13 +196,14 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             // CommandComplete
             this.tab.idle = true
             if (this.currentCommand) {
+              this.currentCommand.endedAt = new Date()
               const exitCode = args[0] ? Number(args[0]) : undefined
-              if (typeof exitCode === 'number' && exitCode < 128) {
+              if (typeof exitCode === 'number') {
                 this.currentCommand.exitCode = exitCode
                 if (!this.currentCommand.marker.isDisposed) {
                   const theme = useTheme()
                   this.currentCommand.decoration.dispose()
-                  if (exitCode && settings['terminal.shell.highlightErrors']) {
+                  if (exitCode > 0 && exitCode < 128 && settings['terminal.shell.highlightErrors']) {
                     this._createHighlightDecoration(
                       xterm,
                       this.currentCommand.marker.line,
@@ -204,10 +211,12 @@ export class ShellIntegrationAddon implements ITerminalAddon {
                       theme.red,
                     )
                   } else {
+                    const currentCommand = this.currentCommand
                     this.currentCommand.decoration = this._createCommandDecoration(
                       xterm,
-                      this.currentCommand.marker,
-                      exitCode ? theme.red : theme.green,
+                      currentCommand.marker,
+                      () => currentCommand,
+                      exitCode > 0 ? theme.red : theme.green,
                       true,
                     )
                   }
@@ -223,11 +232,6 @@ export class ShellIntegrationAddon implements ITerminalAddon {
               const executedCommand = args[0]
               this.tab.command = executedCommand
               this.currentCommand.command = executedCommand
-              if (!this.currentCommand.marker.isDisposed) {
-                updateDecorationElement(this.currentCommand.decoration, el => {
-                  el.dataset.command = executedCommand
-                })
-              }
             }
             return true
           case 'F':
@@ -287,21 +291,28 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   _createCommandDecoration(
     xterm: Terminal,
     marker: IMarker,
+    factory: () => IntegratedShellCommand,
     color: string,
-    strong?: boolean,
+    interactive?: boolean,
   ) {
     const rgba = toRGBA(color)
     const decoration = xterm.registerDecoration({
       marker,
-      overviewRulerOptions: strong ? {
+      overviewRulerOptions: interactive ? {
         color: toCSSHEX({ ...rgba, a: 0.5 }),
         position: 'right',
       } : undefined,
     })!
     updateDecorationElement(decoration, el => {
       el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
-      el.style.setProperty('--opacity', strong ? '1' : '0.25')
+      el.style.setProperty('--opacity', interactive ? '1' : '0.25')
       el.classList.add('terminal-command-mark')
+      if (interactive) {
+        el.classList.add('is-interactive')
+      }
+      // el.addEventListener('click', event => {
+      //   const command = factory()
+      // })
     })
     return decoration
   }
@@ -321,6 +332,10 @@ export class ShellIntegrationAddon implements ITerminalAddon {
         width: xterm.cols,
         height: 1,
         layer: 'bottom',
+        overviewRulerOptions: offset === from - line ? {
+          color: toCSSHEX({ ...rgba, a: 0.5 }),
+          position: 'right',
+        } : undefined,
       })!
       decoration.onRender(el => {
         el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
