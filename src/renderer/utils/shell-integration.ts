@@ -162,7 +162,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
           case 'B': {
             // PromptEnd
             ipcRenderer.send('terminal-prompt-end')
-            const marker = xterm.registerMarker()
+            const marker = this._createCompletionMarker(xterm)
             const actions = this.currentCommand
               ? this.currentCommand.actions
               : this._generateQuickFixActions(marker)
@@ -295,6 +295,17 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     this.recentCompletionAppliedPosition = undefined
   }
 
+  _createCompletionMarker(xterm: Terminal) {
+    const marker = xterm.registerMarker()
+    marker.onDispose(() => {
+      const index = this.commands.findIndex(item => item.marker === marker)
+      if (index !== -1) {
+        this.commands.splice(index, 1)
+      }
+    })
+    return marker
+  }
+
   _createCommandMenu(command: IntegratedShellCommand) {
     const menu: MenuItem[] = []
     if (command.exitCode) {
@@ -378,6 +389,17 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     return decoration
   }
 
+  _createHighlightMarker(xterm: Terminal, offset: number) {
+    const marker = xterm.registerMarker(offset)
+    marker.onDispose(() => {
+      const index = this.highlightMarkers.indexOf(marker)
+      if (index !== -1) {
+        this.highlightMarkers.splice(index, 1)
+      }
+    })
+    return marker
+  }
+
   _createHighlightDecoration(
     xterm: Terminal,
     from: number,
@@ -387,7 +409,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     const line = xterm.buffer.active.baseY + xterm.buffer.active.cursorY
     const rgba = toRGBA(color)
     for (let offset = from - line; offset <= to - line; offset += 1) {
-      const highlightMarker = xterm.registerMarker(offset)
+      const highlightMarker = this._createHighlightMarker(xterm, offset)
       const decoration = xterm.registerDecoration({
         marker: highlightMarker,
         width: xterm.cols,
@@ -500,7 +522,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       marker = reusingCompletion.marker
       decoration = reusingCompletion.decoration
     } else {
-      marker = xterm.registerMarker()!
+      marker = this._createCompletionMarker(xterm)
       decoration = xterm.registerDecoration({
         marker,
         width: Math.floor(xterm.cols / 2),
