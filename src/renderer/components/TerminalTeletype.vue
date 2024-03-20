@@ -6,7 +6,7 @@ import { quote } from 'shell-quote'
 import { onBeforeUpdate, watchEffect } from 'vue'
 import { RecycleScroller } from 'vue-virtual-scroller'
 import type { CommandCompletion, TerminalTab } from '../../typings/terminal'
-import { isMatchLinkModifier, writeTerminalTab } from '../compositions/terminal'
+import { isMatchLinkModifier } from '../compositions/terminal'
 import { createContextMenu, openContextMenu } from '../utils/frame'
 import { escapeHTML } from '../utils/helper'
 import TerminalBlock from './TerminalBlock.vue'
@@ -30,10 +30,10 @@ function dropFile(event: DragEvent) {
   const files = dataTransfer.files
   if (files.length) {
     const paths = Array.from(files).map(({ path }) => path)
-    writeTerminalTab(tab, quote(paths))
+    tab.xterm.paste(quote(paths))
   } else {
     const data = dataTransfer.getData('text')
-    writeTerminalTab(tab, data)
+    tab.xterm.paste(data)
   }
 }
 
