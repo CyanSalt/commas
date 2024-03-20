@@ -92,3 +92,11 @@ export function getTerminalTabID(tab: TerminalTab) {
     return `process@${tab.pid}`
   }
 }
+
+export function getReadableSignal(code: number) {
+  if (code > 128 && code < 256) {
+    return Object.entries(os.constants.signals)
+      .find(([name, value]) => 128 + value === code)
+      ?.[0]
+  }
+}

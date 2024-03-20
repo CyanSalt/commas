@@ -9,7 +9,7 @@ import { WebLinksAddon } from '@xterm/addon-web-links'
 import { WebglAddon } from '@xterm/addon-webgl'
 import type { IMarker, ITerminalOptions } from '@xterm/xterm'
 import { Terminal } from '@xterm/xterm'
-import { ipcRenderer, shell } from 'electron'
+import { clipboard, ipcRenderer, shell } from 'electron'
 import { isMatch, trim } from 'lodash'
 import { effectScope, markRaw, nextTick, reactive, shallowReactive, toRaw, watch, watchEffect } from 'vue'
 import * as commas from '../../../api/core-renderer'
@@ -470,6 +470,10 @@ export function handleTerminalMessages() {
     if (!currentTerminal) return
     closeTerminalTab(currentTerminal)
   })
+  ipcRenderer.on('execute-terminal', (event, command: string, restart?: boolean) => {
+    if (!currentTerminal) return
+    executeTerminalTab(currentTerminal, command, restart)
+  })
   ipcRenderer.on('select-tab', (event, index: number) => {
     if (!tabs.length) return
     let targetIndex = index % tabs.length
@@ -514,6 +518,9 @@ export function handleTerminalMessages() {
   ipcRenderer.on('save', () => {
     if (!currentTerminal) return
     currentTerminal.pane?.instance?.save?.()
+  })
+  ipcRenderer.on('copy', (event, text: string) => {
+    clipboard.writeText(text)
   })
   handleRenderer('get-history', (event, count?: number) => {
     if (!currentTerminal) return []

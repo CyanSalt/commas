@@ -4,5 +4,10 @@
   "Confirm#!terminal.3": "确认",
   "Cancel#!terminal.4": "取消",
   "Find#!terminal.5": "查找",
-  "Addon [${name}] only supports ${engine} ${range}, not ${version}#!terminal.6": "插件 [${name}] 仅支持 ${engine} ${range}，而非 ${version}"
+  "Addon [${name}] only supports ${engine} ${range}, not ${version}#!terminal.6": "插件 [${name}] 仅支持 ${engine} ${range}，而非 ${version}",
+  "Exit Code: ${code}#!terminal.7": "退出代码: ${code}",
+  "Started At: ${time}#!terminal.8": "开始运行于: ${time}",
+  "Time taken: ${duration}#!terminal.9": "耗时: ${duration}",
+  "Rerun Command#!terminal.10": "重新运行命令",
+  "Copy Command#!terminal.11": "复制命令"
 }

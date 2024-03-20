@@ -4,10 +4,14 @@ import fuzzaldrin from 'fuzzaldrin-plus'
 import { isEqual } from 'lodash'
 import { nextTick, reactive, toRaw } from 'vue'
 import { toCSSHEX, toRGBA } from '../../shared/color'
+import type { MenuItem } from '../../typings/menu'
 import type { CommandCompletion, TerminalTab } from '../../typings/terminal'
 import { useSettings } from '../compositions/settings'
 import { scrollToMarker, writeTerminalTab } from '../compositions/terminal'
 import { useTheme } from '../compositions/theme'
+import { openContextMenu } from './frame'
+import { translate } from './i18n'
+import { getReadableSignal } from './terminal'
 
 interface IntegratedShellCommandAction {
   command: string,
@@ -19,7 +23,7 @@ interface IntegratedShellCommand {
   marker: IMarker,
   decoration: IDecoration,
   cursorX: number,
-  startedAt: Date,
+  startedAt?: Date,
   endedAt?: Date,
   actions?: IntegratedShellCommandAction[],
 }
@@ -167,9 +171,8 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             const decoration = this._createCommandDecoration(
               xterm,
               marker,
-              () => currentCommand!,
               actions ? theme.yellow : theme.foreground,
-              Boolean(actions),
+              actions ? 'strong' : undefined,
             )
             if (this.currentCommand) {
               this.currentCommand.marker.dispose()
@@ -182,7 +185,6 @@ export class ShellIntegrationAddon implements ITerminalAddon {
                 decoration,
                 cursorX: xterm.buffer.active.cursorX,
                 actions,
-                startedAt: new Date(),
               }
               this.commands.push(currentCommand)
               this.currentCommand = currentCommand
@@ -193,6 +195,9 @@ export class ShellIntegrationAddon implements ITerminalAddon {
           case 'C':
             // OutputStart
             this.tab.idle = false
+            if (this.currentCommand) {
+              this.currentCommand.startedAt = new Date()
+            }
             return true
           case 'D':
             // CommandComplete
@@ -205,23 +210,23 @@ export class ShellIntegrationAddon implements ITerminalAddon {
                 if (!this.currentCommand.marker.isDisposed) {
                   const theme = useTheme()
                   this.currentCommand.decoration.dispose()
-                  if (exitCode > 0 && exitCode < 128 && settings['terminal.shell.highlightErrors']) {
+                  const shouldHighlight = exitCode > 0 && exitCode < 128 && settings['terminal.shell.highlightErrors']
+                  if (shouldHighlight) {
                     this._createHighlightDecoration(
                       xterm,
                       this.currentCommand.marker.line,
                       xterm.buffer.active.baseY + xterm.buffer.active.cursorY - 1,
                       theme.red,
                     )
-                  } else {
-                    const currentCommand = this.currentCommand
-                    this.currentCommand.decoration = this._createCommandDecoration(
-                      xterm,
-                      currentCommand.marker,
-                      () => currentCommand,
-                      exitCode > 0 ? theme.red : theme.green,
-                      true,
-                    )
                   }
+                  const currentCommand = this.currentCommand
+                  this.currentCommand.decoration = this._createCommandDecoration(
+                    xterm,
+                    currentCommand.marker,
+                    exitCode > 0 ? theme.red : theme.green,
+                    shouldHighlight ? 'transparent' : 'strong',
+                    currentCommand,
+                  )
                 }
               }
               this.tab.command = ''
@@ -290,31 +295,85 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     this.recentCompletionAppliedPosition = undefined
   }
 
+  _createCommandMenu(command: IntegratedShellCommand) {
+    const menu: MenuItem[] = []
+    if (command.exitCode) {
+      const signal = getReadableSignal(command.exitCode)
+      menu.push({
+        label: translate('Exit Code: ${code}#!terminal.7', {
+          code: `${command.exitCode}${signal ? ` (${signal})` : ''}`,
+        }),
+        enabled: false,
+      })
+    }
+    const timeFormat = new Intl.DateTimeFormat(undefined, {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    })
+    if (command.startedAt) {
+      const startedAt = timeFormat.format(command.startedAt)
+      menu.push({
+        label: translate('Started At: ${time}#!terminal.8', {
+          time: startedAt,
+        }),
+        enabled: false,
+      })
+    }
+    if (command.startedAt && command.endedAt) {
+      const duration = command.endedAt.getTime() - command.startedAt.getTime()
+      menu.push({
+        label: translate('Time taken: ${duration}#!terminal.9', {
+          duration: duration > 1000 ? `${duration / 1000}s` : `${duration}ms`,
+        }),
+        enabled: false,
+      })
+    }
+    if (command.command) {
+      if (menu.length) {
+        menu.push({ type: 'separator' })
+      }
+      menu.push(
+        {
+          label: translate('Rerun Command#!terminal.10'),
+          command: 'execute-terminal',
+          args: [command.command, true],
+        },
+        {
+          label: translate('Copy Command#!terminal.11'),
+          command: 'copy',
+          args: [command.command],
+        },
+      )
+    }
+    return menu
+  }
+
   _createCommandDecoration(
     xterm: Terminal,
     marker: IMarker,
-    factory: () => IntegratedShellCommand,
     color: string,
-    interactive?: boolean,
+    style?: 'strong' | 'transparent' | undefined,
+    command?: IntegratedShellCommand,
   ) {
     const rgba = toRGBA(color)
     const decoration = xterm.registerDecoration({
       marker,
-      overviewRulerOptions: interactive ? {
+      overviewRulerOptions: style === 'strong' ? {
         color: toCSSHEX({ ...rgba, a: 0.5 }),
         position: 'right',
       } : undefined,
     })!
     updateDecorationElement(decoration, el => {
       el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
-      el.style.setProperty('--opacity', interactive ? '1' : '0.25')
+      el.style.setProperty('--opacity', style === 'strong' ? '1' : (style === 'transparent' ? '0' : '0.25'))
       el.classList.add('terminal-command-mark')
-      if (interactive) {
+      if (command) {
         el.classList.add('is-interactive')
+        el.addEventListener('click', event => {
+          openContextMenu(this._createCommandMenu(command), event)
+        })
       }
-      // el.addEventListener('click', event => {
-      //   const command = factory()
-      // })
     })
     return decoration
   }

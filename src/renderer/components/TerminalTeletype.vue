@@ -228,13 +228,13 @@ function mountCompletion(el: HTMLElement, item: CommandCompletion) {
   margin-left: calc(var(--command-mark-padding) - var(--integration-width));
   border-radius: 4px;
   cursor: default;
-  // &.is-interactive {
-  //   transition: background 0.2s;
-  //   cursor: pointer;
-  //   &:hover {
-  //     background: var(--design-highlight-background);
-  //   }
-  // }
+  &.is-interactive {
+    transition: background 0.2s;
+    cursor: pointer;
+    &:hover {
+      background: var(--design-highlight-background);
+    }
+  }
   &::before {
     content: '';
     display: block;
