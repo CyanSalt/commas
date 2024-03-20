@@ -623,13 +623,14 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   }
 
   selectCompletion(index: number) {
-    this.renderableCompletion.index = index
     const item = this.renderableCompletion.items[index]
     // FIXME: may not be found since using virtual scrolling
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (item && this.renderableCompletion.mounted.has(item.value)) {
       const element = this.renderableCompletion.mounted.get(item.value)!
       element.scrollIntoView({ block: 'nearest' })
+      // Select only if element found
+      this.renderableCompletion.index = index
     }
   }
 
