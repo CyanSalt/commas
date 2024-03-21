@@ -678,7 +678,8 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       position.x -= xterm.cols
     }
     this.skipCompletion(position)
-    this.tab.xterm.input('\x7F'.repeat(back) + value)
+    this.tab.xterm.input('\x7F'.repeat(back))
+    this.tab.xterm.paste(value)
     // Preload completions
     this._getRealtimeCompletions(input.slice(0, -back) + value + ' ')
   }

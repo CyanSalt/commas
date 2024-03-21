@@ -622,7 +622,11 @@ export function loadTerminalAddons(tab: TerminalTab) {
 
 export function executeTerminalTab(tab: TerminalTab, command: string, restart?: boolean) {
   tab.command = command
-  tab.xterm.input((restart ? '\u0003' : '') + command + os.EOL)
+  if (restart) {
+    tab.xterm.input('\u0003')
+  }
+  tab.xterm.paste(command)
+  tab.xterm.input(os.EOL)
 }
 
 export function closeTerminalTab(tab: TerminalTab) {
