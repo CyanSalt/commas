@@ -224,7 +224,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
                     xterm,
                     currentCommand.marker,
                     exitCode > 0 ? theme.red : theme.green,
-                    shouldHighlight ? 'transparent' : 'strong',
+                    shouldHighlight ? 'stroked' : 'strong',
                     currentCommand,
                   )
                 }
@@ -364,7 +364,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     xterm: Terminal,
     marker: IMarker,
     color: string,
-    style?: 'strong' | 'transparent' | undefined,
+    style?: 'strong' | 'stroked' | undefined,
     command?: IntegratedShellCommand,
   ) {
     const rgba = toRGBA(color)
@@ -377,8 +377,11 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     })!
     updateDecorationElement(decoration, el => {
       el.style.setProperty('--color', `${rgba.r} ${rgba.g} ${rgba.b}`)
-      el.style.setProperty('--opacity', style === 'strong' ? '1' : (style === 'transparent' ? '0' : '0.25'))
+      el.style.setProperty('--opacity', style ? '1' : '0.25')
       el.classList.add('terminal-command-mark')
+      if (style === 'stroked') {
+        el.classList.add('is-stroked')
+      }
       if (command) {
         el.classList.add('is-interactive')
         el.addEventListener('click', event => {

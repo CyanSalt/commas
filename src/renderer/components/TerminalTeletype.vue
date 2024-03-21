@@ -58,9 +58,14 @@ function fit() {
 
 const observer = new ResizeObserver(fit)
 
-const cell = $computed(() => {
-  const xterm = tab.xterm
-  return xterm['_core']._renderService.dimensions.css.cell
+let cell = $ref<{ width: number, height: number }>()
+
+const variables = $computed(() => {
+  if (!cell) return {}
+  return {
+    '--cell-width': `${cell.width}px`,
+    '--cell-height': `${cell.height}px`,
+  }
 })
 
 watchEffect((onInvalidate) => {
@@ -69,9 +74,7 @@ watchEffect((onInvalidate) => {
   const xterm = tab.xterm
   if (xterm.element) return
   xterm.open(el)
-  // Add cell size properties
-  el.style.setProperty('--cell-width', `${cell.width}px`)
-  el.style.setProperty('--cell-height', `${cell.height}px`)
+  cell = xterm['_core']._renderService.dimensions.css.cell
   tab.deferred.open.resolve()
   xterm.focus()
   observer.observe(el)
@@ -89,6 +92,7 @@ const renderableCompletion = $computed(() => {
 })
 
 const selectedCompletion = $computed(() => {
+  if (!renderableCompletion) return undefined
   return renderableCompletion.items[renderableCompletion.index]
 })
 
@@ -111,7 +115,7 @@ function getCompletionIcon(item: CommandCompletion) {
 }
 
 function selectCompletion(event: MouseEvent, item: CommandCompletion) {
-  const index = renderableCompletion.items
+  const index = renderableCompletion!.items
     .findIndex(completion => completion.value === item.value)
   if (index === -1) return
   if (isMatchLinkModifier(event)) {
@@ -127,8 +131,8 @@ onBeforeUpdate(() => {
 })
 
 function mountCompletion(el: HTMLElement, item: CommandCompletion) {
-  if (!renderableCompletion.mounted.has(item.value)) {
-    renderableCompletion.mounted.set(item.value, el)
+  if (!renderableCompletion!.mounted.has(item.value)) {
+    renderableCompletion!.mounted.set(item.value, el)
   }
 }
 </script>
@@ -148,7 +152,7 @@ function mountCompletion(el: HTMLElement, item: CommandCompletion) {
     >
       <RecycleScroller
         :items="renderableCompletion.items"
-        :item-size="cell.height"
+        :item-size="cell!.height"
         key-field="value"
         class="terminal-completion-wrapper"
         list-tag="ul"
@@ -244,6 +248,10 @@ function mountCompletion(el: HTMLElement, item: CommandCompletion) {
     margin-left: calc(var(--integration-width) / 2 - var(--command-mark-padding) - 3px);
     background: rgb(var(--color) / var(--opacity));
     border-radius: 50%;
+  }
+  &.is-stroked::before {
+    background: rgb(var(--theme-background) / var(--opacity));
+    box-shadow: 0 0 0 1px rgb(var(--color)), 0 0 0 1px rgb(var(--color)) inset;
   }
 }
 :deep(.terminal-highlight-block) {
