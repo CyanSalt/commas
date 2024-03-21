@@ -14,7 +14,7 @@ import { isMatch, trim } from 'lodash'
 import { effectScope, markRaw, nextTick, reactive, shallowReactive, toRaw, watch, watchEffect } from 'vue'
 import * as commas from '../../../api/core-renderer'
 import { createDeferred, createIDGenerator } from '../../shared/helper'
-import type { MenuItem } from '../../typings/menu'
+import type { KeyBindingCommand, MenuItem } from '../../typings/menu'
 import type { TerminalContext, TerminalInfo, TerminalTab, TerminalTabCharacter } from '../../typings/terminal'
 import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
@@ -148,10 +148,8 @@ const terminalOptions = $computed<Partial<ITerminalOptions>>(() => {
   }
 })
 
-interface RendererKeyBinding {
+interface RendererKeyBinding extends KeyBindingCommand {
   pattern: Partial<KeyboardEvent>,
-  command: string,
-  args?: any[],
 }
 
 const keybindings = $(useKeyBindings())
@@ -203,37 +201,8 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
     }
     const shellIntegration = tab.addons.shellIntegration
     if (shellIntegration) {
-      if (shellIntegration.completion) {
-        switch (event.key) {
-          case 'Enter':
-          case 'Tab':
-            event.preventDefault()
-            if (event.type === 'keydown') {
-              return !shellIntegration.applySelectedCompletion(event.key === 'Enter')
-            }
-            return false
-          case 'Escape':
-            if (event.type === 'keydown') {
-              shellIntegration.clearCompletion()
-            }
-            return false
-          case 'ArrowUp':
-            if (event.type === 'keydown') {
-              shellIntegration.selectPreviousCompletion()
-            }
-            return false
-          case 'ArrowDown':
-            if (event.type === 'keydown') {
-              shellIntegration.selectNextCompletion()
-            }
-            return false
-        }
-      } else {
-        if (['ArrowUp', 'ArrowDown'].includes(event.key) && event.type === 'keydown') {
-          shellIntegration.skipCompletion()
-          return true
-        }
-      }
+      const defaultProcessed = shellIntegration.handleCustomKeyEvent(event)
+      if (typeof defaultProcessed === 'boolean') return defaultProcessed
     }
     const matchedItem = rendererKeybindings.find(item => isMatch(event, item.pattern))
     if (!matchedItem) return true

@@ -1,8 +1,11 @@
 import type { MenuItemConstructorOptions } from 'electron'
 
-export interface MenuItem extends Partial<MenuItemConstructorOptions> {
+export interface KeyBindingCommand {
   command?: string,
   args?: any[],
+}
+
+export interface MenuItem extends Partial<MenuItemConstructorOptions>, KeyBindingCommand {
   submenu?: MenuItem[],
 }
 

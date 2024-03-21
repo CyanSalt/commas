@@ -730,4 +730,38 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     this.selectCompletion(target)
   }
 
+  handleCustomKeyEvent(event: KeyboardEvent): boolean | void {
+    if (this.completion) {
+      switch (event.key) {
+        case 'Enter':
+        case 'Tab':
+          event.preventDefault()
+          if (event.type === 'keydown') {
+            return !this.applySelectedCompletion(event.key === 'Enter')
+          }
+          return false
+        case 'Escape':
+          if (event.type === 'keydown') {
+            this.clearCompletion()
+          }
+          return false
+        case 'ArrowUp':
+          if (event.type === 'keydown') {
+            this.selectPreviousCompletion()
+          }
+          return false
+        case 'ArrowDown':
+          if (event.type === 'keydown') {
+            this.selectNextCompletion()
+          }
+          return false
+      }
+    } else {
+      if (['ArrowUp', 'ArrowDown'].includes(event.key) && event.type === 'keydown') {
+        this.skipCompletion()
+        return true
+      }
+    }
+  }
+
 }
