@@ -4,13 +4,13 @@ export default [
   {
     label: 'Delete the whole line',
     accelerator: 'CmdOrCtrl+Backspace',
-    command: 'xterm:send',
+    command: 'xterm:input',
     args: ['\u0015'],
   },
   {
     label: 'Delete the whole word',
     accelerator: 'Alt+Backspace',
-    command: 'xterm:send',
+    command: 'xterm:input',
     args: ['\u0017'],
   },
   {

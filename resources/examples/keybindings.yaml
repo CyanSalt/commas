@@ -9,6 +9,6 @@
 
 # - label: Go to Previous Word
 #   accelerator: Alt+Left
-#   command: xterm:send
+#   command: xterm:input
 #   args:
 #     - "\eb"

@@ -238,8 +238,8 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
     const matchedItem = rendererKeybindings.find(item => isMatch(event, item.pattern))
     if (!matchedItem) return true
     switch (matchedItem.command) {
-      case 'xterm:send': {
-        writeTerminalTab(tab, matchedItem.args ? matchedItem.args.join('') : '')
+      case 'xterm:input': {
+        tab.xterm.input(matchedItem.args ? matchedItem.args.join('') : '')
         return false
       }
       case 'xterm:completion': {
@@ -257,7 +257,7 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
     if (tab.alerting) {
       tab.alerting = false
     }
-    writeTerminalTab(tab, data)
+    ipcRenderer.invoke('write-terminal', pid, data)
   })
   xterm.onResize(({ cols, rows }) => {
     ipcRenderer.invoke('resize-terminal', pid, { cols, rows })
@@ -620,13 +620,9 @@ export function loadTerminalAddons(tab: TerminalTab) {
   commas.proxy.app.events.emit('terminal-addons-loaded', tab)
 }
 
-export function writeTerminalTab(tab: TerminalTab, data: string) {
-  return ipcRenderer.invoke('write-terminal', tab.pid, data)
-}
-
 export function executeTerminalTab(tab: TerminalTab, command: string, restart?: boolean) {
   tab.command = command
-  return writeTerminalTab(tab, (restart ? '\u0003' : '') + command + os.EOL)
+  tab.xterm.input((restart ? '\u0003' : '') + command + os.EOL)
 }
 
 export function closeTerminalTab(tab: TerminalTab) {

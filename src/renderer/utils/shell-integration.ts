@@ -7,7 +7,7 @@ import { toCSSHEX, toRGBA } from '../../shared/color'
 import type { MenuItem } from '../../typings/menu'
 import type { CommandCompletion, TerminalTab } from '../../typings/terminal'
 import { useSettings } from '../compositions/settings'
-import { scrollToMarker, writeTerminalTab } from '../compositions/terminal'
+import { scrollToMarker } from '../compositions/terminal'
 import { useTheme } from '../compositions/theme'
 import { openContextMenu } from './frame'
 import { translate } from './i18n'
@@ -678,7 +678,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       position.x -= xterm.cols
     }
     this.skipCompletion(position)
-    writeTerminalTab(this.tab, '\x7F'.repeat(back) + value)
+    this.tab.xterm.input('\x7F'.repeat(back) + value)
     // Preload completions
     this._getRealtimeCompletions(input.slice(0, -back) + value + ' ')
   }
