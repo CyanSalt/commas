@@ -47,13 +47,13 @@ export interface ReadonlyTerminalTabAddons {
   unicode11: Unicode11Addon,
   webgl?: WebglAddon,
   canvas?: CanvasAddon,
-  weblinks: WebLinksAddon,
   serialize: SerializeAddon,
 }
 
 export interface TerminalTabAddons extends ReadonlyTerminalTabAddons {
   shellIntegration?: ShellIntegrationAddon,
   search: SearchAddon,
+  weblinks: WebLinksAddon,
   image?: ImageAddon,
 }
 

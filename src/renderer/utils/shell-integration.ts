@@ -344,7 +344,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     if (this.stickyMarker && target.marker === this.stickyMarker.deref()) return
     const range = {
       start: target.marker.line,
-      end: target.outputStartY - 1,
+      end: Math.min(target.marker.line + 3, target.outputStartY) - 1,
     }
     stickyXterm.reset()
     stickyXterm.write(this.tab.addons.serialize.serialize({ range }))

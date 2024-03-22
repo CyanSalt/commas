@@ -566,10 +566,6 @@ function loadReadOnlyTerminalAddons(tab: TerminalTab, xterm: Terminal, addons: R
       addons.fit.fit()
     })
   }
-  if (!addons.weblinks) {
-    addons.weblinks = new WebLinksAddon(handleTerminalLink)
-    xterm.loadAddon(addons.weblinks)
-  }
   if (!addons.unicode11) {
     addons.unicode11 = new Unicode11Addon()
     xterm.loadAddon(addons.unicode11)
@@ -641,6 +637,10 @@ function loadInteractiveTerminalAddons(tab: TerminalTab, xterm: Terminal, addons
   if (!addons.search) {
     addons.search = new SearchAddon()
     xterm.loadAddon(addons.search)
+  }
+  if (!addons.weblinks) {
+    addons.weblinks = new WebLinksAddon(handleTerminalLink)
+    xterm.loadAddon(addons.weblinks)
   }
   if (!addons.image) {
     addons.image = new ImageAddon()
