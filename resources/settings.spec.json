@@ -126,6 +126,18 @@
     "default": true
   },
   {
+    "key": "terminal.shell.stickyScroll",
+    "label": "Enable Sticky Scroll",
+    "comments": [
+      "Display the current command at the top of the terminal",
+      "Requires Shell Integration to be enabled"
+    ],
+    "schema": {
+      "type": "boolean"
+    },
+    "default": true
+  },
+  {
     "key": "terminal.external.openPathIn",
     "label": "Open External Path In",
     "comments": [

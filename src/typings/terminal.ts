@@ -3,6 +3,7 @@ import type { FitAddon } from '@xterm/addon-fit'
 import type { ImageAddon } from '@xterm/addon-image'
 import type { LigaturesAddon } from '@xterm/addon-ligatures'
 import type { SearchAddon } from '@xterm/addon-search'
+import type { SerializeAddon } from '@xterm/addon-serialize'
 import type { Unicode11Addon } from '@xterm/addon-unicode11'
 import type { WebLinksAddon } from '@xterm/addon-web-links'
 import type { WebglAddon } from '@xterm/addon-webgl'
@@ -40,16 +41,20 @@ export interface TerminalInfo extends TerminalContext {
   process: string,
 }
 
-export interface TerminalTabAddons {
-  shellIntegration?: ShellIntegrationAddon,
+export interface ReadonlyTerminalTabAddons {
   fit: FitAddon,
   ligatures?: LigaturesAddon,
-  search: SearchAddon,
   unicode11: Unicode11Addon,
-  image?: ImageAddon,
   webgl?: WebglAddon,
   canvas?: CanvasAddon,
   weblinks: WebLinksAddon,
+  serialize: SerializeAddon,
+}
+
+export interface TerminalTabAddons extends ReadonlyTerminalTabAddons {
+  shellIntegration?: ShellIntegrationAddon,
+  search: SearchAddon,
+  image?: ImageAddon,
 }
 
 export interface CommandCompletion {
@@ -82,4 +87,6 @@ export interface TerminalTab extends TerminalInfo {
   character?: TerminalTabCharacter,
   group?: bigint,
   position?: TerminalTabPosition,
+  stickyXterm?: Terminal,
+  stickyAddons?: ReadonlyTerminalTabAddons,
 }

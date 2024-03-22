@@ -4,6 +4,7 @@ import { FitAddon } from '@xterm/addon-fit'
 import { ImageAddon } from '@xterm/addon-image'
 import { LigaturesAddon } from '@xterm/addon-ligatures'
 import { SearchAddon } from '@xterm/addon-search'
+import { SerializeAddon } from '@xterm/addon-serialize'
 import { Unicode11Addon } from '@xterm/addon-unicode11'
 import { WebLinksAddon } from '@xterm/addon-web-links'
 import { WebglAddon } from '@xterm/addon-webgl'
@@ -11,11 +12,12 @@ import type { IMarker, ITerminalOptions } from '@xterm/xterm'
 import { Terminal } from '@xterm/xterm'
 import { clipboard, ipcRenderer, shell } from 'electron'
 import { isMatch, trim } from 'lodash'
-import { effectScope, markRaw, nextTick, reactive, shallowReactive, toRaw, watch, watchEffect } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
+import { effectScope, markRaw, nextTick, reactive, shallowReactive, toRaw, toValue, watch, watchEffect } from 'vue'
 import * as commas from '../../../api/core-renderer'
 import { createDeferred, createIDGenerator } from '../../shared/helper'
 import type { KeyBindingCommand, MenuItem } from '../../typings/menu'
-import type { TerminalContext, TerminalInfo, TerminalTab, TerminalTabCharacter } from '../../typings/terminal'
+import type { ReadonlyTerminalTabAddons, TerminalContext, TerminalInfo, TerminalTab, TerminalTabCharacter } from '../../typings/terminal'
 import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
 import { translate } from '../utils/i18n'
@@ -131,7 +133,7 @@ function handleTerminalLink(event: MouseEvent, uri: string) {
 
 const a11yEnabled = $(useA11yEnabled())
 
-const terminalOptions = $computed<Partial<ITerminalOptions>>(() => {
+const readonlyTerminalOptions = $computed<Partial<ITerminalOptions>>(() => {
   return {
     allowProposedApi: true,
     allowTransparency: theme.opacity < 1,
@@ -139,14 +141,29 @@ const terminalOptions = $computed<Partial<ITerminalOptions>>(() => {
     fontFamily: settings['terminal.style.fontFamily'],
     fontSize: settings['terminal.style.fontSize'],
     lineHeight: settings['terminal.style.lineHeight'],
-    linkHandler: {
-      activate: handleTerminalLink,
-    },
-    overviewRulerWidth: 16,
     screenReaderMode: a11yEnabled,
     theme: { ...theme },
   }
 })
+
+const interactiveTerminalOptions = $computed<Partial<ITerminalOptions>>(() => {
+  return {
+    linkHandler: {
+      activate: handleTerminalLink,
+    },
+    overviewRulerWidth: 16,
+  }
+})
+
+const terminalOptions = $computed(() => ({
+  ...readonlyTerminalOptions,
+  ...interactiveTerminalOptions,
+}))
+
+const stickyTerminalOptions = $computed(() => ({
+  ...readonlyTerminalOptions,
+  disableStdin: true,
+}))
 
 interface RendererKeyBinding extends KeyBindingCommand {
   pattern: Partial<KeyboardEvent>,
@@ -255,6 +272,13 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
   xterm['_core']._onFocus.event(() => {
     activateTerminalTab(tab)
   })
+  const stickyXterm = settings['terminal.shell.integration'] && settings['terminal.shell.stickyScroll']
+    ? new Terminal(stickyTerminalOptions)
+    : undefined
+  if (stickyXterm) {
+    tab.stickyXterm = stickyXterm
+    tab.stickyAddons = shallowReactive<any>({})
+  }
   const scope = effectScope()
   scope.run(() => {
     watchEffect(() => {
@@ -263,6 +287,14 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
       }
       loadTerminalAddons(tab)
     })
+    if (stickyXterm) {
+      watchEffect(() => {
+        for (const [key, value] of Object.entries(stickyTerminalOptions)) {
+          stickyXterm.options[key] = value
+        }
+        loadStickyTerminalAddons(tab)
+      })
+    }
   })
   tab.deferred.stop.promise.then(() => {
     scope.stop()
@@ -273,9 +305,32 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
   const targetIndex = activeIndex + 1
   tabs.splice(targetIndex, 0, tab)
   activeIndex = targetIndex
-  // tabs.push(tab)
-  // activeIndex = tabs.length - 1
   return tab
+}
+
+export function useTerminalElement(
+  element: MaybeRefOrGetter<HTMLElement | undefined>,
+  terminal: MaybeRefOrGetter<Terminal>,
+  addons: MaybeRefOrGetter<ReadonlyTerminalTabAddons>,
+  onInitialize?: (xterm: Terminal) => void,
+) {
+  const observer = new ResizeObserver(() => {
+    if (toValue(terminal).element?.clientWidth) {
+      toValue(addons).fit.fit()
+    }
+  })
+  return watchEffect((onInvalidate) => {
+    const el = toValue(element)
+    if (!el) return
+    const xterm = toValue(terminal)
+    if (xterm.element) return
+    xterm.open(el)
+    onInitialize?.(xterm)
+    observer.observe(el)
+    onInvalidate(() => {
+      observer.unobserve(el)
+    })
+  })
 }
 
 export function scrollToMarker(xterm: Terminal, marker: IMarker) {
@@ -503,30 +558,13 @@ export function handleTerminalMessages() {
   })
 }
 
-export function loadTerminalAddons(tab: TerminalTab) {
-  const xterm = tab.xterm
-  const addons: Record<string, any> = tab.addons
-  if (settings['terminal.shell.integration']) {
-    if (!addons.shellIntegration) {
-      addons.shellIntegration = new ShellIntegrationAddon(tab)
-      xterm.loadAddon(addons.shellIntegration)
-    }
-  } else {
-    if (addons.shellIntegration) {
-      addons.shellIntegration.dispose()
-      delete addons.shellIntegration
-    }
-  }
+function loadReadOnlyTerminalAddons(tab: TerminalTab, xterm: Terminal, addons: Record<string, any>) {
   if (!addons.fit) {
     addons.fit = new FitAddon()
     xterm.loadAddon(addons.fit)
     tab.deferred.open.promise.then(() => {
       addons.fit.fit()
     })
-  }
-  if (!addons.search) {
-    addons.search = new SearchAddon()
-    xterm.loadAddon(addons.search)
   }
   if (!addons.weblinks) {
     addons.weblinks = new WebLinksAddon(handleTerminalLink)
@@ -536,10 +574,6 @@ export function loadTerminalAddons(tab: TerminalTab) {
     addons.unicode11 = new Unicode11Addon()
     xterm.loadAddon(addons.unicode11)
     xterm.unicode.activeVersion = '11'
-  }
-  if (!addons.image) {
-    addons.image = new ImageAddon()
-    xterm.loadAddon(addons.image)
   }
   if (settings['terminal.style.fontLigatures']) {
     if (!addons.ligatures) {
@@ -586,7 +620,46 @@ export function loadTerminalAddons(tab: TerminalTab) {
       })
     }
   }
+  if (!addons.serialize) {
+    addons.serialize = new SerializeAddon()
+    xterm.loadAddon(addons.serialize)
+  }
+}
+
+function loadInteractiveTerminalAddons(tab: TerminalTab, xterm: Terminal, addons: Record<string, any>) {
+  if (settings['terminal.shell.integration']) {
+    if (!addons.shellIntegration) {
+      addons.shellIntegration = new ShellIntegrationAddon(tab)
+      xterm.loadAddon(addons.shellIntegration)
+    }
+  } else {
+    if (addons.shellIntegration) {
+      addons.shellIntegration.dispose()
+      delete addons.shellIntegration
+    }
+  }
+  if (!addons.search) {
+    addons.search = new SearchAddon()
+    xterm.loadAddon(addons.search)
+  }
+  if (!addons.image) {
+    addons.image = new ImageAddon()
+    xterm.loadAddon(addons.image)
+  }
+}
+
+function loadTerminalAddons(tab: TerminalTab) {
+  const xterm = tab.xterm
+  const addons: Record<string, any> = tab.addons
+  loadReadOnlyTerminalAddons(tab, xterm, addons)
+  loadInteractiveTerminalAddons(tab, xterm, addons)
   commas.proxy.app.events.emit('terminal-addons-loaded', tab)
+}
+
+function loadStickyTerminalAddons(tab: TerminalTab) {
+  const xterm = tab.stickyXterm!
+  const addons: Record<string, any> = tab.stickyAddons!
+  loadReadOnlyTerminalAddons(tab, xterm, addons)
 }
 
 export function executeTerminalTab(tab: TerminalTab, command: string, restart?: boolean) {

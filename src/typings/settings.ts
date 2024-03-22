@@ -16,6 +16,7 @@ export interface Settings {
   'terminal.shell.integration': boolean,
   'terminal.shell.highlightErrors': boolean,
   'terminal.shell.autoCompletion': boolean,
+  'terminal.shell.stickyScroll': boolean,
   'terminal.external.openPathIn': 'new-tab' | 'new-window',
   'terminal.external.explorer': string,
   'terminal.external.remoteExplorer': string,

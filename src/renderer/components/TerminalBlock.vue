@@ -64,6 +64,7 @@ watchEffect(onInvalidate => {
 <style lang="scss" scoped>
 .terminal-block {
   position: relative;
+  overflow: hidden;
   background: rgb(var(--theme-background) / var(--theme-opacity));
   border-radius: var(--design-card-border-radius);
   box-shadow: var(--design-card-shadow);

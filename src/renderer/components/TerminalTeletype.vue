@@ -3,10 +3,10 @@ import '@xterm/xterm/css/xterm.css'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { quote } from 'shell-quote'
-import { onBeforeUpdate, watchEffect } from 'vue'
+import { onBeforeUpdate } from 'vue'
 import { RecycleScroller } from 'vue-virtual-scroller'
 import type { CommandCompletion, TerminalTab } from '../../typings/terminal'
-import { isMatchLinkModifier } from '../compositions/terminal'
+import { isMatchLinkModifier, useTerminalElement } from '../compositions/terminal'
 import { createContextMenu, openContextMenu } from '../utils/frame'
 import { escapeHTML } from '../utils/helper'
 import TerminalBlock from './TerminalBlock.vue'
@@ -17,6 +17,7 @@ const { tab } = defineProps<{
 }>()
 
 const element = $ref<HTMLElement | undefined>()
+const stickyElement = $ref<HTMLElement | undefined>()
 
 function dragFileOver(event: DragEvent) {
   if (event.dataTransfer) {
@@ -50,14 +51,6 @@ function openEditingMenu(event: MouseEvent) {
   ], event)
 }
 
-function fit() {
-  if (tab.xterm.element?.clientWidth) {
-    tab.addons.fit.fit()
-  }
-}
-
-const observer = new ResizeObserver(fit)
-
 let cell = $ref<{ width: number, height: number }>()
 
 const variables = $computed(() => {
@@ -68,20 +61,22 @@ const variables = $computed(() => {
   }
 })
 
-watchEffect((onInvalidate) => {
-  const el = element
-  if (!el) return
-  const xterm = tab.xterm
-  if (xterm.element) return
-  xterm.open(el)
-  cell = xterm['_core']._renderService.dimensions.css.cell
-  tab.deferred.open.resolve()
-  xterm.focus()
-  observer.observe(el)
-  onInvalidate(() => {
-    observer.unobserve(el)
-  })
-})
+useTerminalElement(
+  $$(element),
+  () => tab.xterm,
+  () => tab.addons,
+  xterm => {
+    cell = xterm['_core']._renderService.dimensions.css.cell
+    tab.deferred.open.resolve()
+    xterm.focus()
+  },
+)
+
+useTerminalElement(
+  $$(stickyElement),
+  () => tab.stickyXterm!,
+  () => tab.stickyAddons!,
+)
 
 function highlightLabel(label: string, query: string) {
   return query ? fuzzaldrin.wrap(escapeHTML(label), escapeHTML(query)) : label
@@ -91,9 +86,19 @@ const renderableCompletion = $computed(() => {
   return tab.addons.shellIntegration?.renderableCompletion
 })
 
+const renderableStickyCommand = $computed(() => {
+  return tab.addons.shellIntegration?.renderableStickyCommand
+})
+
 const selectedCompletion = $computed(() => {
   if (!renderableCompletion) return undefined
   return renderableCompletion.items[renderableCompletion.index]
+})
+
+const stickyVariables = $computed(() => {
+  return {
+    '--sticky-row-span': renderableStickyCommand?.rows ?? 0,
+  }
 })
 
 function getCompletionIcon(item: CommandCompletion) {
@@ -135,17 +140,30 @@ function mountCompletion(el: HTMLElement, item: CommandCompletion) {
     renderableCompletion!.mounted.set(item.value, el)
   }
 }
+
+function scrollToStickyCommand() {
+  tab.addons.shellIntegration!.scrollToStickyCommand()
+}
 </script>
 
 <template>
   <TerminalBlock
     :tab="tab"
     :class="['terminal-teletype', { 'has-shell-integration': tab.addons.shellIntegration }]"
+    :style="variables"
     @contextmenu="openEditingMenu"
     @dragover.prevent="dragFileOver"
     @drop.prevent="dropFile"
   >
     <div ref="element" class="terminal-content"></div>
+    <div
+      v-if="tab.stickyXterm"
+      v-show="renderableStickyCommand?.rows"
+      ref="stickyElement"
+      class="terminal-content is-sticky"
+      :style="stickyVariables"
+      @focusin="scrollToStickyCommand"
+    ></div>
     <Teleport
       v-if="renderableCompletion?.element"
       :to="renderableCompletion.element"
@@ -212,6 +230,18 @@ function mountCompletion(el: HTMLElement, item: CommandCompletion) {
   /* issue@xterm: pointer behavior */
   :deep(.xterm-screen) {
     z-index: 0;
+  }
+  &.is-sticky {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: calc(var(--cell-height) * var(--sticky-row-span) + 8px);
+    background: rgb(var(--theme-background));
+    box-shadow: var(--design-card-shadow);
+    :deep(.xterm) {
+      padding-bottom: 0;
+    }
   }
 }
 @keyframes fade-out {

@@ -22,7 +22,9 @@ interface IntegratedShellCommand {
   exitCode?: number,
   marker: IMarker,
   decoration: IDecoration,
-  cursorX: number,
+  commandStartX: number,
+  commandStartY: number,
+  outputStartY: number,
   startedAt?: Date,
   endedAt?: Date,
   actions?: IntegratedShellCommandAction[],
@@ -45,6 +47,10 @@ interface RenderableIntegratedShellCompletion {
   index: number,
   element?: HTMLElement,
   mounted: Map<CommandCompletion['value'], HTMLElement>,
+}
+
+interface RenderableIntegratedStickyCommand {
+  rows: number,
 }
 
 function updateDecorationElement(decoration: IDecoration, callback: (el: HTMLElement) => void) {
@@ -136,6 +142,8 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   completionKey?: symbol
   recentCompletionAppliedPosition?: true | IntegratedShellCompletion['position']
   renderableCompletion: RenderableIntegratedShellCompletion
+  stickyMarker?: WeakRef<IMarker>
+  renderableStickyCommand: RenderableIntegratedStickyCommand
 
   constructor(tab: TerminalTab) {
     this.tab = tab
@@ -148,6 +156,9 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       index: 0,
       mounted: new Map(),
     })
+    this.renderableStickyCommand = reactive({
+      rows: 0,
+    })
   }
 
   activate(xterm: Terminal) {
@@ -156,12 +167,8 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       xterm.parser.registerOscHandler(633, data => {
         const [command, ...args] = data.split(';')
         switch (command) {
-          case 'A':
+          case 'A': {
             // PromptStart
-            return true
-          case 'B': {
-            // PromptEnd
-            ipcRenderer.send('terminal-prompt-end')
             const marker = this._createCompletionMarker(xterm)
             const actions = this.currentCommand
               ? this.currentCommand.actions
@@ -180,10 +187,13 @@ export class ShellIntegrationAddon implements ITerminalAddon {
               this.currentCommand.decoration = decoration
             } else {
               this.tab.command = ''
+              const position = this._getCurrentPosition()
               currentCommand = {
                 marker,
                 decoration,
-                cursorX: xterm.buffer.active.cursorX,
+                commandStartX: position.x,
+                commandStartY: position.y,
+                outputStartY: position.y + 1,
                 actions,
               }
               this.commands.push(currentCommand)
@@ -192,10 +202,21 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             }
             return true
           }
+          case 'B': {
+            // PromptEnd
+            ipcRenderer.send('terminal-prompt-end')
+            if (this.currentCommand) {
+              const position = this._getCurrentPosition()
+              this.currentCommand.commandStartX = position.x
+              this.currentCommand.commandStartY = position.y
+            }
+            return true
+          }
           case 'C':
             // OutputStart
             this.tab.idle = false
             if (this.currentCommand) {
+              this.currentCommand.outputStartY = xterm.buffer.active.cursorY
               this.currentCommand.startedAt = new Date()
             }
             return true
@@ -276,6 +297,13 @@ export class ShellIntegrationAddon implements ITerminalAddon {
         }
       }),
     )
+    this.tab.deferred.open.promise.then(() => {
+      this.disposables.push(
+        xterm['_core'].viewport.onRequestScrollLines(() => {
+          this._renderStickyLines()
+        }),
+      )
+    })
   }
 
   dispose() {
@@ -293,6 +321,36 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     this.recentMarker = undefined
     this.clearCompletion()
     this.recentCompletionAppliedPosition = undefined
+  }
+
+  _getSortedCommands() {
+    return this.commands
+      .filter(item => !item.marker.isDisposed)
+      .sort((a, b) => a.marker.line - b.marker.line)
+  }
+
+  _renderStickyLines() {
+    const stickyXterm = this.tab.stickyXterm
+    if (!stickyXterm) return
+    const sortedCommands = this._getSortedCommands()
+    if (!sortedCommands.length) return
+    const viewportY = this.tab.xterm.buffer.active.viewportY
+    const target = sortedCommands.findLast(command => command.marker.line <= viewportY)
+    if (!target || target.marker.line === viewportY) {
+      this.renderableStickyCommand.rows = 0
+      this.stickyMarker = undefined
+      return
+    }
+    if (this.stickyMarker && target.marker === this.stickyMarker.deref()) return
+    const range = {
+      start: target.marker.line,
+      end: target.outputStartY - 1,
+    }
+    stickyXterm.reset()
+    stickyXterm.write(this.tab.addons.serialize.serialize({ range }))
+    stickyXterm.scrollToTop()
+    this.renderableStickyCommand.rows = range.end - range.start + 1
+    this.stickyMarker = new WeakRef(target.marker)
   }
 
   _createCompletionMarker(xterm: Terminal) {
@@ -432,10 +490,8 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   }
 
   scrollToCommand(offset: number) {
-    const markers = this.commands
+    const markers = this._getSortedCommands()
       .map(item => item.marker)
-      .filter(marker => !marker.isDisposed)
-      .sort((a, b) => a.line - b.line)
     if (!markers.length) return
     const index = this.recentMarker
       // @ts-expect-error also find undefined
@@ -500,10 +556,9 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       ? this.commands[this.commands.length - 1]
       : undefined
     if (lastCommand?.command && lastCommand.exitCode) {
-      const lastCommandLine = lastCommand.marker.line
+      const lastCommandLine = lastCommand.outputStartY
       let lastOutput = ''
-      // TODO: use actual command start
-      for (let line = lastCommandLine + 1; line < marker.line; line += 1) {
+      for (let line = lastCommandLine; line < marker.line; line += 1) {
         const bufferLine = xterm.buffer.active.getLine(line)
         if (bufferLine) {
           lastOutput += (bufferLine.isWrapped || !lastOutput ? '' : '\n')
@@ -525,7 +580,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       marker = reusingCompletion.marker
       decoration = reusingCompletion.decoration
     } else {
-      marker = this._createCompletionMarker(xterm)
+      marker = xterm.registerMarker()
       decoration = xterm.registerDecoration({
         marker,
         width: Math.floor(xterm.cols / 2),
@@ -566,20 +621,20 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   _getCurrentCommandInput(position: IntegratedShellPosition) {
     const { xterm } = this.tab
     if (!this.currentCommand || this.currentCommand.command) return ''
-    const cursorX = this.currentCommand.cursorX
-    const promptLine = Math.max(this.currentCommand.marker.line, 0)
+    const commandStartX = this.currentCommand.commandStartX
+    const commandLine = Math.max(this.currentCommand.commandStartY, 0)
     if (
-      position.y >= promptLine
-      && position.x >= cursorX
+      position.y > commandLine
+      || position.y === commandLine && position.x >= commandStartX
     ) {
-      const rowspan = position.y - promptLine + 1
+      const rowspan = position.y - commandLine + 1
       return Array.from(
         { length: rowspan },
         (_, index) => {
           const trimRight = rowspan <= 1 || index !== rowspan - 1
-          const startColumn = index === 0 ? cursorX : 0
+          const startColumn = index === 0 ? commandStartX : 0
           const endColumn = index === rowspan - 1 ? position.x : undefined
-          return xterm.buffer.active.getLine(promptLine + index)
+          return xterm.buffer.active.getLine(commandLine + index)
             ?.translateToString(trimRight, startColumn, endColumn)
             ?? ''
         },
@@ -731,6 +786,13 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       ? 0
       : this.renderableCompletion.index + 1
     this.selectCompletion(target)
+  }
+
+  scrollToStickyCommand() {
+    const stickyMarker = this.stickyMarker?.deref()
+    if (stickyMarker) {
+      scrollToMarker(this.tab.xterm, stickyMarker)
+    }
   }
 
   handleCustomKeyEvent(event: KeyboardEvent): boolean | void {
