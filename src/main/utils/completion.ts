@@ -1,6 +1,6 @@
 import * as fs from 'node:fs'
 import * as path from 'node:path'
-import { findLastIndex, memoize, uniq } from 'lodash'
+import { memoize, uniq } from 'lodash'
 import * as properties from 'properties'
 import shellHistory from 'shell-history'
 import type { ControlOperator, ParseEntry } from 'shell-quote'
@@ -380,7 +380,7 @@ async function getCompletions(input: string, cwd: string) {
   if (!entries.length) return []
   const lastToken = entries[entries.length - 1]
   const isWordStart = /\s$/.test(input) || typeof lastToken !== 'string'
-  const tokenIndex = findLastIndex(entries, item => {
+  const tokenIndex = entries.findLastIndex(item => {
     return isControlOperatorEntry(item) && item.op !== '>'
   })
   const undeterminedCommand = tokenIndex !== entries.length - 1 && isCommandEntry(entries[tokenIndex + 1])

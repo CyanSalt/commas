@@ -1,4 +1,3 @@
-import { last } from 'lodash'
 import type { VNode } from 'vue'
 import { interpolateText } from '../../shared/text'
 import type { Dictionary, TranslationVariables } from '../../typings/i18n'
@@ -8,7 +7,8 @@ import { createReactiveDirective } from './directives'
 const DELIMITER = '#!'
 
 function getTextSequence(text: string, readable?: boolean) {
-  return readable ? text.split(DELIMITER)[0] : last(text.split(DELIMITER))!
+  const sequences = text.split(DELIMITER)
+  return readable ? sequences[0] : sequences[sequences.length - 1]
 }
 
 const dictionary = $(injectIPC<Dictionary>('dictionary', {}))
