@@ -216,7 +216,8 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             // OutputStart
             this.tab.idle = false
             if (this.currentCommand) {
-              this.currentCommand.outputStartY = xterm.buffer.active.cursorY
+              const position = this._getCurrentPosition()
+              this.currentCommand.outputStartY = position.y
               this.currentCommand.startedAt = new Date()
             }
             return true
@@ -329,16 +330,24 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       .sort((a, b) => a.marker.line - b.marker.line)
   }
 
+  _clearStickyLines() {
+    this.renderableStickyCommand.rows = 0
+    this.stickyMarker = undefined
+  }
+
   _renderStickyLines() {
     const stickyXterm = this.tab.stickyXterm
     if (!stickyXterm) return
+    const buffer = this.tab.xterm.buffer.active
+    if (buffer.viewportY >= buffer.baseY) {
+      this._clearStickyLines()
+      return
+    }
     const sortedCommands = this._getSortedCommands()
     if (!sortedCommands.length) return
-    const viewportY = this.tab.xterm.buffer.active.viewportY
-    const target = sortedCommands.findLast(command => command.marker.line <= viewportY)
-    if (!target || target.marker.line === viewportY) {
-      this.renderableStickyCommand.rows = 0
-      this.stickyMarker = undefined
+    const target = sortedCommands.findLast(command => command.marker.line <= buffer.viewportY)
+    if (!target || target.marker.line === buffer.viewportY) {
+      this._clearStickyLines()
       return
     }
     if (this.stickyMarker && target.marker === this.stickyMarker.deref()) return
