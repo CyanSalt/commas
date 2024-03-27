@@ -173,11 +173,22 @@ export class ITerm2Addon implements ITerminalAddon {
     this.recentMarkMarker = undefined
   }
 
+  _createMarkMarker(xterm: Terminal) {
+    const marker = xterm.registerMarker()
+    marker.onDispose(() => {
+      const index = this.markMarkers.indexOf(marker)
+      if (index !== -1) {
+        this.markMarkers.splice(index, 1)
+      }
+    })
+    return marker
+  }
+
   setMark() {
     const theme = commas.remote.useTheme()
     const rgba = commas.helper.toRGBA(theme.blue)
     const xterm = this.tab.xterm
-    const marker = xterm.registerMarker()
+    const marker = this._createMarkMarker(xterm)
     const decoration = xterm.registerDecoration({
       marker,
       overviewRulerOptions: {
@@ -204,9 +215,6 @@ export class ITerm2Addon implements ITerminalAddon {
     })!
     highlightDecoration.onRender(el => {
       el.classList.add('iterm2-cursor-highlight-line')
-    })
-    this.highlightMarker.onDispose(() => {
-      highlightDecoration.dispose()
     })
   }
 
