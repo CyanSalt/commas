@@ -11,6 +11,7 @@ import { WebglAddon } from '@xterm/addon-webgl'
 import type { IMarker, ITerminalOptions } from '@xterm/xterm'
 import { Terminal } from '@xterm/xterm'
 import { clipboard, ipcRenderer, shell } from 'electron'
+import { toKeyEvent } from 'keyboardevent-from-electron-accelerator'
 import { isMatch, trim } from 'lodash'
 import type { MaybeRefOrGetter } from 'vue'
 import { effectScope, markRaw, nextTick, reactive, shallowReactive, toRaw, toValue, watch, watchEffect } from 'vue'
@@ -18,7 +19,6 @@ import * as commas from '../../../api/core-renderer'
 import { createDeferred, createIDGenerator } from '../../shared/helper'
 import type { KeyBindingCommand, MenuItem } from '../../typings/menu'
 import type { ReadonlyTerminalTabAddons, TerminalContext, TerminalInfo, TerminalTab, TerminalTabCharacter } from '../../typings/terminal'
-import { toKeyEventPattern } from '../utils/accelerator'
 import { openContextMenu } from '../utils/frame'
 import { translate } from '../utils/i18n'
 import { handleRenderer } from '../utils/ipc'
@@ -173,7 +173,7 @@ const keybindings = $(useKeyBindings())
 const rendererKeybindings = $computed(() => {
   return keybindings.map<RendererKeyBinding>(binding => ({
     pattern: {
-      ...toKeyEventPattern(binding.accelerator),
+      ...toKeyEvent(binding.accelerator),
       type: binding.when ?? 'keydown',
     },
     command: binding.command!,

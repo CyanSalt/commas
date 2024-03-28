@@ -61,6 +61,7 @@
     "dotenv-cli": "^7.3.0",
     "electron": "^29.1.0",
     "esbuild": "^0.20.1",
+    "keyboardevent-from-electron-accelerator": "^2.0.0",
     "lucide-static": "^0.344.0",
     "png2icons": "^2.0.1",
     "release-it": "^17.1.1",
