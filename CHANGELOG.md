@@ -1,5 +1,36 @@
 
 
+## [0.31.0](https://github.com/CyanSalt/commas/compare/v0.30.0...v0.31.0) (2024-04-08)
+
+
+### Features
+
+* add terminal.style.lineHeight ([9741442](https://github.com/CyanSalt/commas/commit/9741442957d2949dca96ec909332b8ff0c49538c))
+* interactive command marks ([1d366ca](https://github.com/CyanSalt/commas/commit/1d366ca6fcea87cbc57cdd9330c00cecabf4ff9f))
+* sticky scroll ([63b2a07](https://github.com/CyanSalt/commas/commit/63b2a07bebd3cbbea98472867234a4c7d3540c13))
+
+
+### Bug Fixes
+
+* add overview for highlighted errors ([e779f79](https://github.com/CyanSalt/commas/commit/e779f79835a3ebd2087a5fb6dc51ddc39b54dfea))
+* arrow control for completions ([2088d14](https://github.com/CyanSalt/commas/commit/2088d14aa479a1b2c7dadb86831af5db899e16d7))
+* auto reveal completions ([45f2001](https://github.com/CyanSalt/commas/commit/45f200115b5dbb191dd0c7259864e4e31a1b09f2))
+* continuous completion for directories ([d24e08e](https://github.com/CyanSalt/commas/commit/d24e08e22210c594e85f896d12895869f43fe5ad))
+* dictionary reactivity ([77c4db8](https://github.com/CyanSalt/commas/commit/77c4db89a788a5c93c3a6843f3ecdd570ad07a89))
+* double title bar on linux ([9e0a04a](https://github.com/CyanSalt/commas/commit/9e0a04a184615035afe54ececafaa785ea9a1460))
+* electron compatible accelerator ([c3a6836](https://github.com/CyanSalt/commas/commit/c3a68362296a87cbca3f214d12b263f591eb522f))
+* highlight block alignment ([f9bef54](https://github.com/CyanSalt/commas/commit/f9bef5423c1d384b8c01203eb148fba5e589b090))
+* highlight block size ([468000c](https://github.com/CyanSalt/commas/commit/468000c45eff69105645a880e3432f4be549cbf0))
+* **iterm2:** clean up disposed markers ([1d944e3](https://github.com/CyanSalt/commas/commit/1d944e39f2511ca8b13481e66169e84ea35e36a5))
+* max sticky rows ([cc80029](https://github.com/CyanSalt/commas/commit/cc80029234520158c472d66fcd2b85fddb9b0c87))
+* optimize batch input ([908bea0](https://github.com/CyanSalt/commas/commit/908bea0185353549d23051ebd6f9624eed94a501))
+* refine marker style ([a8efa2b](https://github.com/CyanSalt/commas/commit/a8efa2b1875b15b0ccd4924faf1788b00c12cce8))
+* refine term padding ([c18abab](https://github.com/CyanSalt/commas/commit/c18abab395e858f5cbe19dbd93d67092ee0b6530))
+* release after clear ([12ee2b8](https://github.com/CyanSalt/commas/commit/12ee2b8115877f53996b3861815f22c11993659b))
+* remove sticky at the last line ([edb5b5d](https://github.com/CyanSalt/commas/commit/edb5b5d643e4bdbbdf09c5678a291984c7553ec0))
+* select completion only if element found ([353af00](https://github.com/CyanSalt/commas/commit/353af00266ff2c2a28fffb66a103eb17f2150ffe))
+* write dropping data as pasting ([ea916d1](https://github.com/CyanSalt/commas/commit/ea916d102f8f6352b7addf6dd1d40dd1cad0ed34))
+
 ## [0.30.0](https://github.com/CyanSalt/commas/compare/v0.29.2...v0.30.0) (2024-02-07)
 
 
