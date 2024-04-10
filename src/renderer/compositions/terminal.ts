@@ -667,7 +667,11 @@ export function executeTerminalTab(tab: TerminalTab, command: string, restart?: 
   if (restart) {
     tab.xterm.input('\u0003')
   }
-  tab.xterm.paste(command)
+  if (tab.xterm.element) {
+    tab.xterm.paste(command)
+  } else {
+    tab.xterm.input(command)
+  }
   tab.xterm.input(os.EOL)
 }
 
