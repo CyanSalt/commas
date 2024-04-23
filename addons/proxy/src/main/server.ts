@@ -1,51 +1,15 @@
 import * as path from 'node:path'
 import * as commas from 'commas:api/main'
-import { app } from 'electron'
-import * as pkg from 'whistle/package.json'
-
-const builtinWhistlePath = path.join(path.dirname(require.resolve('whistle/package.json')), pkg.bin.whistle)
-
-const builtinServerVersionInfo = {
-  type: 'builtin' as const,
-  version: pkg.version,
-}
 
 const settings = commas.settings.useSettings()
 
-const whistlePath = $(commas.helper.useAsyncComputed(async () => {
-  const specifiedPath = settings['proxy.server.whistle']
-  if (!specifiedPath) return builtinWhistlePath
-  if (path.isAbsolute(specifiedPath)) return specifiedPath
-  try {
-    if (process.platform !== 'win32') {
-      await commas.shell.loginExecute(`command -v ${specifiedPath}`)
-    }
-    return specifiedPath
-  } catch {
-    return builtinWhistlePath
+async function whistle(command: string) {
+  const whistlePath = settings['proxy.server.whistle']
+  if (!whistlePath) {
+    throw new Error('Command "whistle" not found')
   }
-}, builtinWhistlePath))
-
-const isUsingBuiltinWhistle: boolean = $computed(() => {
-  return whistlePath === builtinWhistlePath
-})
-
-function whistle(command: string) {
   if (!path.isAbsolute(whistlePath)) {
     return commas.shell.loginExecute(`${whistlePath} ${command}`)
-  }
-  if (isUsingBuiltinWhistle) {
-    const bin = app.getPath('exe')
-    const env = {
-      ...process.env,
-      ELECTRON_RUN_AS_NODE: '1',
-      STARTING_EXEC_PATH: bin,
-    }
-    const noAsar = process.noAsar
-    process.noAsar = true
-    const execution = commas.shell.execute(`${bin} ${whistlePath} ${command}`, { env })
-    process.noAsar = noAsar
-    return execution
   }
   return commas.shell.execute(`${whistlePath} ${command}`)
 }
@@ -58,12 +22,21 @@ function closeServer() {
   return whistle('stop')
 }
 
+async function getProxyServerStatus() {
+  try {
+    const { stdout } = await whistle('status')
+    return stdout.trim().includes(' is running')
+  } catch {
+    return undefined
+  }
+}
+
 async function getProxyServerVersion() {
   try {
     const { stdout } = await whistle('-V')
     return stdout.trim()
   } catch {
-    return null
+    return undefined
   }
 }
 
@@ -72,24 +45,33 @@ async function getLatestProxyServerVersion() {
     const data = await commas.shell.requestJSON('https://registry.npmjs.org/whistle/latest')
     return data.version
   } catch {
-    return null
+    return undefined
   }
 }
 
-const serverVersionInfo = $(commas.helper.useAsyncComputed(async () => {
-  if (isUsingBuiltinWhistle) return builtinServerVersionInfo
-  return {
-    type: 'external' as const,
-    version: await getProxyServerVersion(),
+const serverInstalled = $(commas.helper.useAsyncComputed(async () => {
+  try {
+    await whistle('help')
+    return true
+  } catch {
+    return false
   }
-}, builtinServerVersionInfo))
+}, true))
 
-function useProxyServerVersionInfo() {
-  return $$(serverVersionInfo)
+function useProxyServerInstalled() {
+  return $$(serverInstalled)
+}
+
+const serverVersion = $(commas.helper.useAsyncComputed(async () => {
+  return getProxyServerVersion()
+}))
+
+function useProxyServerVersion() {
+  return $$(serverVersion)
 }
 
 const serverStatus = $customRef<boolean | undefined>((track, trigger) => {
-  let status: boolean | undefined = false
+  let status: boolean | undefined
   let processing: Promise<unknown> | undefined
   let stopServer: (() => void) | undefined
   let running: {}
@@ -105,8 +87,8 @@ const serverStatus = $customRef<boolean | undefined>((track, trigger) => {
       status = undefined
       trigger()
       processing = fn()
-      await processing
-      status = value
+      const result = await processing
+      status = typeof result === 'boolean' ? result : value
       trigger()
     } catch {
       status = oldStatus
@@ -117,14 +99,17 @@ const serverStatus = $customRef<boolean | undefined>((track, trigger) => {
   }
   const startServer = () => commas.helper.watchBaseEffect((onInvalidate) => {
     const port = settings['proxy.server.port']!
-    toggle(true, () => createServer(port))
+    toggle(true, () => createServer(port).then(() => undefined))
     onInvalidate(() => {
-      toggle(false, () => closeServer())
+      toggle(false, () => closeServer().then(() => undefined))
     })
   })
   return {
     get() {
       track()
+      if (status === undefined) {
+        toggle(false, () => getProxyServerStatus())
+      }
       return status
     },
     set(value) {
@@ -145,8 +130,8 @@ function useProxyServerStatus() {
 }
 
 export {
-  whistle,
   getLatestProxyServerVersion,
-  useProxyServerVersionInfo,
+  useProxyServerInstalled,
+  useProxyServerVersion,
   useProxyServerStatus,
 }

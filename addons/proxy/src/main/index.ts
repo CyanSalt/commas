@@ -1,9 +1,8 @@
 import { effect } from '@vue/reactivity'
 import * as address from 'address'
 import * as commas from 'commas:api/main'
-import { quote } from 'shell-quote'
 import { checkRootCA, installRootCA, uninstallRootCA } from './cert'
-import { getLatestProxyServerVersion, useProxyServerStatus, useProxyServerVersionInfo, whistle } from './server'
+import { getLatestProxyServerVersion, useProxyServerInstalled, useProxyServerStatus, useProxyServerVersion } from './server'
 import { useSystemProxyStatus } from './system'
 
 declare module '../../../../src/typings/settings' {
@@ -15,16 +14,8 @@ declare module '../../../../src/typings/settings' {
 
 export default () => {
 
-  // Server
-  commas.context.provide('cli.command', {
-    command: 'whistle',
-    description: 'Execute the whistle command in use#!cli.description.whistle',
-    usage: '<command> [options]#!cli.usage.whistle',
-    async handler({ argv }) {
-      const { stdout } = await whistle(quote(argv))
-      return stdout.trim()
-    },
-  })
+  let serverInstalled = $(useProxyServerInstalled())
+  commas.ipcMain.provide('proxy-server-installed', $$(serverInstalled))
 
   let serverStatus = $(useProxyServerStatus())
   commas.ipcMain.provide('proxy-server-status', $$(serverStatus))
@@ -37,8 +28,8 @@ export default () => {
     return address.ip()
   })
 
-  const serverVersionInfo = $(useProxyServerVersionInfo())
-  commas.ipcMain.provide('proxy-server-version-info', $$(serverVersionInfo))
+  const serverVersion = $(useProxyServerVersion())
+  commas.ipcMain.provide('proxy-server-version', $$(serverVersion))
 
   // System
   let systemStatus = $(useSystemProxyStatus())

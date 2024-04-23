@@ -3,9 +3,7 @@
     "key": "proxy.server.whistle",
     "label": "Custom whistle Command",
     "comments": [
-      "Specify a custom command for whistle",
-      "It will be automatically downgraded to the built-in version if not available",
-      "For example if it is empty"
+      "Specify a custom command for whistle"
     ],
     "schema": {
       "type": "string",

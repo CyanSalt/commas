@@ -2,7 +2,7 @@
 import * as commas from 'commas:api/renderer'
 import { clipboard, ipcRenderer, shell } from 'electron'
 import type { TerminalTab } from '../../../../src/typings/terminal'
-import { useProxyRootCAStatus, useProxyServerStatus, useProxyServerVersionInfo, useSystemProxyStatus } from './compositions'
+import { useProxyRootCAStatus, useProxyServerInstalled, useProxyServerStatus, useProxyServerVersion, useSystemProxyStatus } from './compositions'
 
 defineProps<{
   tab: TerminalTab,
@@ -13,7 +13,8 @@ const { vI18n, VisualIcon, SwitchControl, TerminalPane } = commas.ui.vueAssets
 const settings = commas.remote.useSettings()
 const isSystemProxyEnabled = $(useSystemProxyStatus())
 const isCertInstalled = $(useProxyRootCAStatus())
-const versionInfo = $(useProxyServerVersionInfo())
+const version = $(useProxyServerVersion())
+const installed = $(useProxyServerInstalled())
 let status = $(useProxyServerStatus())
 
 const supportsSystemProxy = process.platform === 'darwin'
@@ -25,8 +26,7 @@ const latestVersion = $(commas.helper.useAsyncComputed<string | undefined>(
 ))
 
 const isOutdated = $computed(() => {
-  if (versionInfo.type === 'builtin') return false
-  return Boolean(versionInfo.version && latestVersion && versionInfo.version !== latestVersion)
+  return Boolean(version && latestVersion && version !== latestVersion)
 })
 
 const port = $computed(() => {
@@ -68,6 +68,10 @@ function openKeychainAccess() {
   return ipcRenderer.invoke('execute', `open -a 'Keychain Access'`)
 }
 
+function install() {
+  shell.openExternal('https://github.com/avwo/whistle/')
+}
+
 function update() {
   shell.openExternal('https://github.com/avwo/whistle/blob/master/CHANGELOG.md')
 }
@@ -85,9 +89,13 @@ function update() {
             <VisualIcon name="lucide-clipboard-copy" />
           </span>
         </span>
-        <span v-else class="link shortcut" @click="toggleProxyServer">
+        <span v-else-if="installed" class="link shortcut" @click="toggleProxyServer">
           <VisualIcon name="lucide-router" class="shortcut-icon" />
           <span v-i18n>Click this icon to start#!proxy.10</span>
+        </span>
+        <span v-else class="link shortcut" @click="install">
+          <VisualIcon name="lucide-hard-drive-download" class="shortcut-icon" />
+          <span v-i18n>Install whistle#!proxy.11</span>
         </span>
       </div>
       <div v-if="supportsSystemProxy" class="form-line">
@@ -95,12 +103,7 @@ function update() {
         <SwitchControl v-model="isSystemProxyEnabled" />
       </div>
       <div class="form-line">
-        <span v-i18n="{ version: versionInfo.version ?? '--' }">Current version: ${version}#!preference.9</span>
-        <VisualIcon
-          v-if="versionInfo.type !== 'builtin'"
-          name="lucide-external-link"
-          class="version-type"
-        />
+        <span v-i18n="{ version: version ?? '--' }">Current version: ${version}#!preference.9</span>
         <span v-if="isOutdated" class="update-link link form-action" @click="update">
           <VisualIcon name="lucide-chevrons-up" class="update-icon" />
           <span class="latest-version">{{ latestVersion }}</span>
@@ -145,6 +148,8 @@ function update() {
 }
 .update-link {
   display: flex;
+  align-items: center;
+  width: auto;
 }
 .latest-version {
   margin-left: 0.5em;
