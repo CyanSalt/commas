@@ -333,7 +333,7 @@
       "type": "number",
       "minimum": 1
     },
-    "default": 1.1
+    "default": 1.4
   },
   {
     "key": "terminal.style.fontFamily",
