@@ -63,6 +63,7 @@ watchEffect(() => {
       // { token: 'predefined.sql', foreground: 'C700C7' },
     ],
     colors: {
+      focusBorder: '#00000000',
       'input.background': '#7F7F7F33',
       'scrollbarSlider.activeBackground': `${theme.foreground}1A`,
       'scrollbarSlider.background': `${theme.foreground}33`,

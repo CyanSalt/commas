@@ -82,5 +82,6 @@ defineExpose({
   box-sizing: border-box;
   min-width: 0;
   height: 100%;
+  padding: 8px 0;
 }
 </style>
