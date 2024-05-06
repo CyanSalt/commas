@@ -149,9 +149,11 @@ watchEffect(() => {
 <style lang="scss" scoped>
 .terminal-title {
   display: flex;
+  flex: 1;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
+  min-width: 0;
   padding: 0 8px;
 }
 .shortcut {
@@ -179,7 +181,6 @@ watchEffect(() => {
   direction: rtl;
   white-space: nowrap;
   text-overflow: ellipsis;
-  unicode-bidi: plaintext;
   overflow: hidden;
 }
 .tab-index-indicator {
