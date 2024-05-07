@@ -263,9 +263,12 @@ function handleGroupSeparating(args: DraggableElementEventPayload<DraggableEleme
   @include partials.scroll-container(8px);
   display: flex;
   flex: auto;
+  gap: 8px;
+  padding: 8px 8px 0;
   .tab-list.vertical & {
     flex-direction: column;
     width: 176px;
+    padding: 8px 0 8px 8px;
     background: rgb(var(--theme-background) / var(--design-card-secondary-opacity));
     border-radius: var(--design-card-border-radius);
     box-shadow: var(--design-card-shadow);
@@ -280,13 +283,9 @@ function handleGroupSeparating(args: DraggableElementEventPayload<DraggableEleme
 .default-list {
   display: flex;
   gap: 8px;
-  .tab-list.horizontal & {
-    padding: 8px 8px 0;
-  }
   .tab-list.vertical & {
     flex-direction: column;
-    width: calc(100% - 8px);
-    padding: 8px 0 8px 8px;
+    width: 100%;
   }
 }
 .list-item {

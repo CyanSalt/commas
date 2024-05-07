@@ -318,13 +318,9 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
 .launcher-list {
   display: flex;
   gap: 8px;
-  &.horizontal {
-    padding: 8px 8px 0;
-  }
   &.vertical {
     flex-direction: column;
-    width: calc(100% - 8px);
-    padding: 8px 0 8px 8px;
+    width: 100%;
   }
 }
 .list-item {
