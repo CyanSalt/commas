@@ -23,6 +23,7 @@ import { openContextMenu } from '../utils/frame'
 import { handleMousePressing } from '../utils/helper'
 import { getShells } from '../utils/terminal'
 import TabItem from './TabItem.vue'
+import AutoScroll from './basic/AutoScroll.vue'
 import DraggableElement from './basic/DraggableElement.vue'
 import DropIndicator from './basic/DropIndicator.vue'
 import DropTarget from './basic/DropTarget.vue'
@@ -163,72 +164,74 @@ function handleGroupSeparating(args: DraggableElementEventPayload<DraggableEleme
 
 <template>
   <nav :class="['tab-list', position, isHorizontal ? 'horizontal' : 'vertical']">
-    <div class="list-content" :style="{ width: isHorizontal ? '' : width + 'px' }">
-      <div class="default-list">
-        <DraggableElement
-          v-for="({ tab, index }) in standaloneTabs"
-          :key="tab.pid"
-          v-slot="{ mount: draggable }"
-          :data="{ type: 'tab', index }"
-          @dragstart="handleDragStart"
-          @drop="handleDragStop"
-        >
+    <AutoScroll v-slot="{ mount: autoScroll }">
+      <div :ref="autoScroll" class="list-content" :style="{ width: isHorizontal ? '' : width + 'px' }">
+        <div class="default-list">
+          <DraggableElement
+            v-for="({ tab, index }) in standaloneTabs"
+            :key="tab.pid"
+            v-slot="{ mount: draggable }"
+            :data="{ type: 'tab', index }"
+            @dragstart="handleDragStart"
+            @drop="handleDragStop"
+          >
+            <DropTarget
+              v-slot="{ mount: dropTarget }"
+              :data="{ index }"
+              :allowed-edges="isHorizontal ? ['left', 'right'] : ['top', 'bottom']"
+              @dragenter="handleDrag"
+              @drag="handleDrag"
+              @dragleave="handleDragLeave"
+              @drop="handleDrop"
+            >
+              <div
+                :ref="dropTarget"
+                :class="['list-item', { 'drop-to-end': draggingEdges.get(index) === 'right' || draggingEdges.get(index) === 'bottom' }]"
+              >
+                <DropIndicator
+                  v-if="draggingEdges.get(index)"
+                  :vertical="isHorizontal"
+                />
+                <TabItem
+                  :ref="draggable"
+                  :tab="tab"
+                  @click="activateTerminalTab(tab)"
+                />
+              </div>
+            </DropTarget>
+          </DraggableElement>
           <DropTarget
-            v-slot="{ mount: dropTarget }"
-            :data="{ index }"
-            :allowed-edges="isHorizontal ? ['left', 'right'] : ['top', 'bottom']"
-            @dragenter="handleDrag"
-            @drag="handleDrag"
-            @dragleave="handleDragLeave"
-            @drop="handleDrop"
+            v-slot="{ mount }"
+            :disabled="!groupSeparatingEnabled"
+            @dragenter="groupSeparatingActive = true"
+            @dragleave="groupSeparatingActive = false"
+            @drop="handleGroupSeparating"
           >
             <div
-              :ref="dropTarget"
-              :class="['list-item', { 'drop-to-end': draggingEdges.get(index) === 'right' || draggingEdges.get(index) === 'bottom' }]"
+              :ref="mount"
+              :class="['new-tab', { 'is-group-separating-active': groupSeparatingActive }]"
             >
-              <DropIndicator
-                v-if="draggingEdges.get(index)"
-                :vertical="isHorizontal"
-              />
-              <TabItem
-                :ref="draggable"
-                :tab="tab"
-                @click="activateTerminalTab(tab)"
-              />
+              <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
+                <VisualIcon name="lucide-list-plus" />
+              </div>
+              <div
+                class="default-shell anchor"
+                @click="selectDefaultShell"
+                @contextmenu="selectShell"
+              >
+                <VisualIcon v-if="groupSeparatingEnabled" name="lucide-ungroup" />
+                <VisualIcon v-else name="lucide-plus" />
+              </div>
             </div>
           </DropTarget>
-        </DraggableElement>
-        <DropTarget
-          v-slot="{ mount }"
-          :disabled="!groupSeparatingEnabled"
-          @dragenter="groupSeparatingActive = true"
-          @dragleave="groupSeparatingActive = false"
-          @drop="handleGroupSeparating"
-        >
-          <div
-            :ref="mount"
-            :class="['new-tab', { 'is-group-separating-active': groupSeparatingActive }]"
-          >
-            <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
-              <VisualIcon name="lucide-list-plus" />
-            </div>
-            <div
-              class="default-shell anchor"
-              @click="selectDefaultShell"
-              @contextmenu="selectShell"
-            >
-              <VisualIcon v-if="groupSeparatingEnabled" name="lucide-ungroup" />
-              <VisualIcon v-else name="lucide-plus" />
-            </div>
-          </div>
-        </DropTarget>
+        </div>
+        <component
+          :is="list"
+          v-for="(list, index) in lists"
+          :key="index"
+        />
       </div>
-      <component
-        :is="list"
-        v-for="(list, index) in lists"
-        :key="index"
-      />
-    </div>
+    </AutoScroll>
     <div v-if="!isHorizontal" draggable="true" class="sash" @dragstart.prevent="resize"></div>
   </nav>
 </template>
