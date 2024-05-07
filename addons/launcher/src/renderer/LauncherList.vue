@@ -2,7 +2,7 @@
 import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
 import * as commas from 'commas:api/renderer'
 import { ipcRenderer } from 'electron'
-import { nextTick, reactive } from 'vue'
+import { reactive } from 'vue'
 import type { DraggableElementDataLike } from '../../../../src/renderer/utils/draggable'
 import type { DraggableElementEventPayload } from '../../../../src/typings/draggable'
 import type { TerminalTab, TerminalTabCharacter } from '../../../../src/typings/terminal'
@@ -20,7 +20,7 @@ import {
   useLaunchers,
 } from './launcher'
 
-const { vI18n, VisualIcon, DraggableElement, DropTarget, DropIndicator, TabItem } = commas.ui.vueAssets
+const { VisualIcon, DraggableElement, DropTarget, DropIndicator, TabItem } = commas.ui.vueAssets
 
 const settings = commas.remote.useSettings()
 let isGroupSeparating = $(commas.workspace.useTerminalTabGroupSeparating())
@@ -34,25 +34,14 @@ const isHorizontal = $computed(() => {
 const tabs = $(commas.workspace.useTerminalTabs())
 const launchers = $(useLaunchers())
 
-let searcher = $ref<HTMLInputElement>()
 let isCollapsed: boolean = $ref(false)
-let isActionsVisible: boolean = $ref(false)
 let isEditing: boolean = $ref(false)
-let keyword = $ref('')
-
-const keywords = $computed(() => {
-  return commas.helper.getWords(keyword)
-})
 
 const filteredLaunchers = $computed(() => {
+  if (!isCollapsed) return launchers
   return launchers.filter(launcher => {
-    if (isCollapsed) {
-      const launcherTabs = getTerminalTabsByLauncher(launcher)
-      if (!launcherTabs.length) return false
-    }
-    const matched = commas.helper.matches(Object.values(launcher), keywords)
-    if (!matched) return false
-    return true
+    const launcherTabs = getTerminalTabsByLauncher(launcher)
+    return launcherTabs.length > 0
   })
 })
 
@@ -80,23 +69,8 @@ const launcherItems = $computed(() => {
   })
 })
 
-const isAnyActionEnabled = $computed(() => {
-  if (isActionsVisible) return true
-  return Boolean(keywords.length) || isEditing
-})
-
 function toggleCollapsing() {
   isCollapsed = !isCollapsed
-}
-
-async function toggleActions() {
-  isActionsVisible = !isActionsVisible
-  if (isActionsVisible) {
-    await nextTick()
-    searcher!.focus()
-  } else {
-    searcher!.blur()
-  }
 }
 
 function toggleEditing() {
@@ -241,26 +215,11 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
         </div>
         <div class="buttons" @click.stop>
           <div
-            :class="['button', 'more', { active: isAnyActionEnabled }]"
-            @click="toggleActions"
+            :class="['button', 'edit', { active: isEditing }]"
+            @click="toggleEditing"
           >
-            <VisualIcon name="lucide-ellipsis-vertical" />
+            <VisualIcon name="lucide-tags" />
           </div>
-        </div>
-        <div v-show="isActionsVisible" class="launcher-actions" @click.stop>
-          <input
-            ref="searcher"
-            v-model="keyword"
-            v-i18n:placeholder
-            type="search"
-            class="keyword"
-            placeholder="Find#!terminal.5"
-            autofocus
-            @keyup.esc="toggleActions"
-          >
-          <span :class="['button', 'edit', { active: isEditing }]" @click="toggleEditing">
-            <VisualIcon :name="isEditing ? 'lucide-pen-line' : 'lucide-pen'" />
-          </span>
         </div>
       </div>
       <DraggableElement
@@ -386,7 +345,6 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
   transition: opacity 0.2s, color 0.2s;
   cursor: pointer;
 }
-.more.active,
 .edit.active {
   color: rgb(var(--system-yellow));
   opacity: 1;
@@ -405,29 +363,6 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
 }
 .menu {
   font-size: var(--primary-icon-size);
-}
-.launcher-actions {
-  display: flex;
-  flex-basis: 100%;
-  align-items: center;
-  margin-top: 8px;
-}
-.keyword {
-  flex: 1;
-  width: 0;
-  margin-right: 6px;
-  padding: 2px 6px;
-  border: none;
-  color: inherit;
-  font-family: inherit;
-  font-size: inherit;
-  line-height: 20px;
-  background: var(--design-input-background);
-  outline: none;
-  &::placeholder {
-    color: rgb(var(--theme-foreground));
-    opacity: 0.25;
-  }
 }
 .launch:hover {
   color: rgb(var(--system-green));
