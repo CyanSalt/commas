@@ -9,10 +9,12 @@ import type { DraggableElementEventPayload } from '../../../typings/draggable'
 const {
   data = (() => ({})) as never,
   disabled,
+  sticky,
   allowedEdges,
 } = defineProps<{
   data?: T,
   disabled?: boolean,
+  sticky?: boolean,
   allowedEdges?: Edge[],
 }>()
 
@@ -30,6 +32,7 @@ watchEffect(onInvalidate => {
   onInvalidate(dropTargetForElements({
     element,
     canDrop: () => !disabled,
+    getIsSticky: () => Boolean(sticky),
     getData: ({ input, element: currentElement }) => {
       let currentData = { ...data }
       if (allowedEdges) {

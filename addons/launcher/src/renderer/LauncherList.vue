@@ -275,6 +275,7 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
           v-slot="{ mount: dropTarget }"
           :data="{ launcher }"
           :allowed-edges="isHorizontal ? ['left', 'right'] : ['top', 'bottom']"
+          sticky
           @dragenter="handleDrag"
           @drag="handleDrag"
           @dragleave="handleDragLeave"

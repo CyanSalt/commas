@@ -179,6 +179,7 @@ function handleGroupSeparating(args: DraggableElementEventPayload<DraggableEleme
               v-slot="{ mount: dropTarget }"
               :data="{ index }"
               :allowed-edges="isHorizontal ? ['left', 'right'] : ['top', 'bottom']"
+              sticky
               @dragenter="handleDrag"
               @drag="handleDrag"
               @dragleave="handleDragLeave"
