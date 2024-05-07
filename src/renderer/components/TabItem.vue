@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { watchEffect } from 'vue'
 import type { TerminalTab, TerminalTabCharacter } from '../../typings/terminal'
 import type { IconEntry } from '../assets/icons'
 import { useSettings } from '../compositions/settings'
@@ -6,14 +7,16 @@ import { closeTerminalTab, getTerminalTabTitle, useCurrentTerminal } from '../co
 import { getIconEntry } from '../utils/terminal'
 import VisualIcon from './basic/VisualIcon.vue'
 
-const { tab, character, closable = false } = defineProps<{
+const { tab, character, closable = false, customizable = false } = defineProps<{
   tab?: TerminalTab | undefined,
   character?: TerminalTabCharacter | undefined,
   closable?: boolean,
+  customizable?: boolean,
 }>()
 
 const emit = defineEmits<{
   (event: 'close', tab: TerminalTab | undefined): void,
+  (event: 'customize', title: string): void,
 }>()
 
 defineSlots<{
@@ -62,6 +65,30 @@ const title = $computed(() => {
   return tab ? getTerminalTabTitle(tab) : ''
 })
 
+let isCustomizing = $ref(false)
+let customTitle: string = $ref('')
+
+watchEffect(() => {
+  customTitle = title
+})
+
+function startCustomization() {
+  if (customizable && isActive) {
+    isCustomizing = true
+  }
+}
+
+function customize() {
+  if (customTitle !== title) {
+    emit('customize', customTitle)
+  }
+  isCustomizing = false
+}
+
+function autoselect(event: InputEvent) {
+  (event.target as HTMLInputElement).select()
+}
+
 const idleState = $computed(() => {
   if (!tab) return ''
   if (tab.alerting) return 'alerting'
@@ -103,7 +130,17 @@ function close() {
         />
         <VisualIcon v-else-if="pane && tab!.shell" name="lucide-file" class="tab-icon" />
         <VisualIcon v-else name="lucide-terminal" class="tab-icon" />
-        <span class="tab-name">{{ title }}</span>
+        <input
+          v-if="isCustomizing"
+          v-model="customTitle"
+          autofocus
+          class="custom-tab-name"
+          @focus="autoselect"
+          @blur="customize"
+          @keydown.enter="customize"
+          @keydown.esc="customize"
+        >
+        <span v-else class="tab-name" @click="startCustomization">{{ customTitle }}</span>
       </div>
       <div class="right-side">
         <div v-if="idleState" :class="['idle-light', idleState]"></div>
@@ -157,6 +194,17 @@ function close() {
   text-overflow: ellipsis;
   overflow: hidden;
   transition: color 0.2s;
+}
+.custom-tab-name {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  background: transparent;
+  outline: none;
 }
 .tab-overview {
   position: relative;

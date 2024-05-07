@@ -16,6 +16,7 @@ import {
   removeLauncher,
   startLauncher,
   startLauncherExternally,
+  updateLauncher,
   useLaunchers,
 } from './launcher'
 
@@ -119,6 +120,14 @@ function closeLauncher(launcher: Launcher, tab?: TerminalTab) {
   }
 }
 
+function customizeLauncher(launcher: Launcher, title: string) {
+  const index = launchers.findIndex(item => item.id === launcher.id)
+  updateLauncher(index, {
+    ...launcher,
+    name: title,
+  })
+}
+
 function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
   const scripts = launcher.scripts ?? []
   commas.ui.openContextMenu([
@@ -208,7 +217,6 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
     const toEdge = edge === 'top' || edge === 'left'
       ? 'start'
       : (edge === 'bottom' || edge === 'right' ? 'end' : undefined)
-    console.log(launcher, launchers.indexOf(args.self.data.launcher), toEdge)
     moveLauncher(launcher, launchers.indexOf(args.self.data.launcher), toEdge)
     draggingEdges.set(args.self.data.launcher.id, null)
   }
@@ -285,8 +293,10 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
               :tab="tab"
               :character="character"
               :closable="isEditing"
+              customizable
               @click="openLauncher(launcher, { tab })"
               @close="closeLauncher(launcher, tab)"
+              @customize="customizeLauncher(launcher, $event)"
             >
               <template v-if="!isEditing" #operations>
                 <div

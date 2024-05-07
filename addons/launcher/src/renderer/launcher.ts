@@ -126,3 +126,9 @@ export function removeLauncher(index: number) {
   updated.splice(index, 1)
   launchers = updated
 }
+
+export function updateLauncher(index: number, launcher: Launcher) {
+  const updated = [...launchers]
+  updated.splice(index, 1, launcher)
+  launchers = updated
+}
