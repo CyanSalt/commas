@@ -1,10 +1,14 @@
 <script lang="ts" setup>
+import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
 import * as commas from 'commas:api/renderer'
 import { ipcRenderer } from 'electron'
-import { nextTick } from 'vue'
+import { nextTick, reactive } from 'vue'
+import type { DraggableElementDataLike } from '../../../../src/renderer/utils/draggable'
+import type { DraggableElementEventPayload } from '../../../../src/typings/draggable'
 import type { TerminalTab, TerminalTabCharacter } from '../../../../src/typings/terminal'
 import type { Launcher } from '../../typings/launcher'
 import {
+  getLauncherByTerminalTabCharacter,
   getTerminalTabCharacterByLauncher,
   getTerminalTabsByLauncher,
   moveLauncher,
@@ -15,10 +19,10 @@ import {
   useLaunchers,
 } from './launcher'
 
-const { vI18n, VisualIcon, SortableList, TabItem } = commas.ui.vueAssets
+const { vI18n, VisualIcon, DraggableElement, DropTarget, DropIndicator, TabItem } = commas.ui.vueAssets
 
 const settings = commas.remote.useSettings()
-let movingIndex = $(commas.workspace.useMovingTerminalIndex())
+let isGroupSeparating = $(commas.workspace.useTerminalTabGroupSeparating())
 
 const position = $computed(() => settings['terminal.view.tabListPosition'])
 
@@ -26,6 +30,7 @@ const isHorizontal = $computed(() => {
   return position === 'top' || position === 'bottom'
 })
 
+const tabs = $(commas.workspace.useTerminalTabs())
 const launchers = $(useLaunchers())
 
 let searcher = $ref<HTMLInputElement>()
@@ -53,22 +58,25 @@ const filteredLaunchers = $computed(() => {
 interface LauncherItem {
   key: string,
   tab?: TerminalTab,
+  index?: number,
   character: TerminalTabCharacter,
   launcher: Launcher,
 }
 
 const launcherItems = $computed(() => {
   return filteredLaunchers.flatMap(launcher => {
-    const tabs = getTerminalTabsByLauncher(launcher)
+    const launcherTabs = getTerminalTabsByLauncher(launcher)
     const character = getTerminalTabCharacterByLauncher(launcher)
-    return tabs.length
-      ? tabs.map<LauncherItem>(tab => ({ key: [launcher.id, tab.pid].join(':'), tab, character, launcher }))
+    return launcherTabs.length
+      ? launcherTabs.map<LauncherItem>(tab => ({
+        key: [launcher.id, tab.pid].join(':'),
+        tab,
+        index: commas.workspace.getTerminalTabIndex(tab),
+        character,
+        launcher,
+      }))
       : [{ key: launcher.id, character, launcher }]
   })
-})
-
-const isLauncherSortingDisabled = $computed(() => {
-  return filteredLaunchers.length !== launchers.length
 })
 
 const isAnyActionEnabled = $computed(() => {
@@ -88,10 +96,6 @@ async function toggleActions() {
   } else {
     searcher!.blur()
   }
-}
-
-function sortLaunchers(from: number, to: number) {
-  moveLauncher(from, to)
 }
 
 function toggleEditing() {
@@ -138,19 +142,81 @@ function showLauncherMenu(event: MouseEvent) {
   commas.workspace.showTabOptions(event, 'launcher')
 }
 
-function startMoving(from: number) {
-  const item = launcherItems[from]
-  if (!item?.tab) return
-  movingIndex = commas.workspace.getTerminalTabIndex(item.tab)
+interface LauncherDraggableElementData extends DraggableElementDataLike {
+  launcher?: Launcher,
 }
 
-function stopMoving() {
-  movingIndex = -1
+interface DropTargetData extends Record<string | symbol, unknown> {
+  launcher: Launcher,
+}
+
+const draggingEdges = reactive(new Map<string, Edge | null>())
+
+function handleDragStart(args: DraggableElementEventPayload<LauncherDraggableElementData>) {
+  if (args.source.data.type === 'tab') {
+    const tab = tabs[args.source.data.index!]
+    isGroupSeparating = Boolean(tab.group)
+  }
+}
+
+function handleDragStop() {
+  isGroupSeparating = false
+}
+
+function handleDrag(args: DraggableElementEventPayload<LauncherDraggableElementData, DropTargetData>) {
+  let launcher: Launcher | undefined
+  if (args.source.data.type === 'tab') {
+    const tab = tabs[args.source.data.index!]
+    if (tab.character) {
+      launcher = getLauncherByTerminalTabCharacter(tab.character)
+    }
+  } else if (args.source.data.type === 'launcher') {
+    launcher = args.source.data.launcher
+  }
+  if (launcher) {
+    draggingEdges.set(args.self.data.launcher.id, commas.ui.extractClosestEdge(args.self.data))
+  }
+}
+
+function handleDragLeave(args: DraggableElementEventPayload<LauncherDraggableElementData, DropTargetData>) {
+  let launcher: Launcher | undefined
+  if (args.source.data.type === 'tab') {
+    const tab = tabs[args.source.data.index!]
+    if (tab.character) {
+      launcher = getLauncherByTerminalTabCharacter(tab.character)
+    }
+  } else if (args.source.data.type === 'launcher') {
+    launcher = args.source.data.launcher
+  }
+  if (launcher) {
+    draggingEdges.set(args.self.data.launcher.id, null)
+  }
+}
+
+function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementData, DropTargetData>) {
+  let launcher: Launcher | undefined
+  if (args.source.data.type === 'tab') {
+    const tab = tabs[args.source.data.index!]
+    if (tab.character) {
+      launcher = getLauncherByTerminalTabCharacter(tab.character)
+    }
+  } else if (args.source.data.type === 'launcher') {
+    launcher = args.source.data.launcher
+  }
+  if (launcher) {
+    const edge = commas.ui.extractClosestEdge(args.self.data)
+    const toEdge = edge === 'top' || edge === 'left'
+      ? 'start'
+      : (edge === 'bottom' || edge === 'right' ? 'end' : undefined)
+    console.log(launcher, launchers.indexOf(args.self.data.launcher), toEdge)
+    moveLauncher(launcher, launchers.indexOf(args.self.data.launcher), toEdge)
+    draggingEdges.set(args.self.data.launcher.id, null)
+  }
 }
 </script>
 
 <template>
-  <div class="launcher-list">
+  <div :class="['launcher-list', isHorizontal ? 'horizontal' : 'vertical']">
     <template v-if="isHorizontal">
       <div class="launcher-folder">
         <span class="button menu" @click="showLauncherMenu">
@@ -170,7 +236,7 @@ function stopMoving() {
             :class="['button', 'more', { active: isAnyActionEnabled }]"
             @click="toggleActions"
           >
-            <VisualIcon name="lucide-more-vertical" />
+            <VisualIcon name="lucide-ellipsis-vertical" />
           </div>
         </div>
         <div v-show="isActionsVisible" class="launcher-actions" @click.stop>
@@ -189,40 +255,58 @@ function stopMoving() {
           </span>
         </div>
       </div>
-      <SortableList
-        v-slot="{ value: { tab, character, launcher } }"
-        :value="launcherItems"
-        value-key="key"
-        class="launchers"
-        :disabled="isLauncherSortingDisabled"
-        @move="startMoving"
-        @stop="stopMoving"
-        @change="sortLaunchers"
+      <DraggableElement
+        v-for="{ key, tab, index, character, launcher } in launcherItems"
+        :key="key"
+        v-slot="{ mount: draggable }"
+        :data="{ type: tab ? 'tab' : 'launcher', index, launcher }"
+        @dragstart="handleDragStart"
+        @drop="handleDragStop"
       >
-        <TabItem
-          :tab="tab"
-          :character="character"
-          :closable="isEditing"
-          @click="openLauncher(launcher, { tab })"
-          @close="closeLauncher(launcher, tab)"
+        <DropTarget
+          v-slot="{ mount: dropTarget }"
+          :data="{ launcher }"
+          :allowed-edges="isHorizontal ? ['left', 'right'] : ['top', 'bottom']"
+          @dragenter="handleDrag"
+          @drag="handleDrag"
+          @dragleave="handleDragLeave"
+          @drop="handleDrop"
         >
-          <template v-if="!isEditing" #operations>
-            <div
-              class="button launch"
-              @click.stop="startLauncher(launcher)"
-              @contextmenu="showLauncherScripts(launcher, $event)"
+          <div
+            :ref="dropTarget"
+            :class="['list-item', { 'drop-to-end': draggingEdges.get(launcher.id) === 'right' || draggingEdges.get(launcher.id) === 'bottom' }]"
+          >
+            <DropIndicator
+              v-if="draggingEdges.get(launcher.id)"
+              :vertical="isHorizontal"
+            />
+            <TabItem
+              :ref="draggable"
+              :tab="tab"
+              :character="character"
+              :closable="isEditing"
+              @click="openLauncher(launcher, { tab })"
+              @close="closeLauncher(launcher, tab)"
             >
-              <VisualIcon name="lucide-play" />
-            </div>
-            <div
-              class="button launch-externally"
-              @click.stop="startLauncherExternally(launcher)"
-            >
-              <VisualIcon name="lucide-external-link" />
-            </div>
-          </template>
-        </TabItem>
-      </SortableList>
+              <template v-if="!isEditing" #operations>
+                <div
+                  class="button launch"
+                  @click.stop="startLauncher(launcher)"
+                  @contextmenu="showLauncherScripts(launcher, $event)"
+                >
+                  <VisualIcon name="lucide-play" />
+                </div>
+                <div
+                  class="button launch-externally"
+                  @click.stop="startLauncherExternally(launcher)"
+                >
+                  <VisualIcon name="lucide-external-link" />
+                </div>
+              </template>
+            </TabItem>
+          </div>
+        </DropTarget>
+      </DraggableElement>
       <div v-if="isEditing" class="new-launcher" @click="createLauncher">
         <VisualIcon name="lucide-plus" />
       </div>
@@ -231,11 +315,47 @@ function stopMoving() {
 </template>
 
 <style lang="scss" scoped>
+.launcher-list {
+  display: flex;
+  gap: 8px;
+  &.horizontal {
+    padding: 8px 8px 0;
+  }
+  &.vertical {
+    flex-direction: column;
+    width: calc(100% - 8px);
+    padding: 8px 0 8px 8px;
+  }
+}
+.list-item {
+  display: flex;
+  :deep(.drop-indicator) {
+    transform: translateX(-4px);
+  }
+  &.drop-to-end {
+    flex-direction: row-reverse;
+    :deep(.drop-indicator) {
+      transform: translateX(4px);
+    }
+  }
+  .tab-list.vertical & {
+    flex-direction: column;
+    :deep(.drop-indicator) {
+      transform: translateY(-4px);
+    }
+    &.drop-to-end {
+      flex-direction: column-reverse;
+      :deep(.drop-indicator) {
+        transform: translateY(4px);
+      }
+    }
+  }
+}
 .launcher-folder {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  padding: 8px 16px;
+  padding: 0 8px;
   line-height: 16px;
   cursor: pointer;
   .button {
@@ -246,7 +366,6 @@ function stopMoving() {
   }
   .tab-list.horizontal & {
     height: var(--min-tab-height);
-    padding-left: 0;
     line-height: var(--min-tab-height);
   }
 }

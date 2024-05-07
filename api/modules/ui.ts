@@ -1,11 +1,14 @@
 import * as path from 'node:path'
 import * as url from 'node:url'
+import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
 import TabItem from '../../src/renderer/components/TabItem.vue'
 import TerminalBlock from '../../src/renderer/components/TerminalBlock.vue'
 import TerminalPane from '../../src/renderer/components/TerminalPane.vue'
+import DraggableElement from '../../src/renderer/components/basic/DraggableElement.vue'
+import DropIndicator from '../../src/renderer/components/basic/DropIndicator.vue'
+import DropTarget from '../../src/renderer/components/basic/DropTarget.vue'
 import LoadingSpinner from '../../src/renderer/components/basic/LoadingSpinner.vue'
 import ObjectEditor from '../../src/renderer/components/basic/ObjectEditor.vue'
-import SortableList from '../../src/renderer/components/basic/SortableList.vue'
 import SwitchControl from '../../src/renderer/components/basic/SwitchControl.vue'
 import ValueSelector from '../../src/renderer/components/basic/ValueSelector.vue'
 import VisualIcon from '../../src/renderer/components/basic/VisualIcon.vue'
@@ -34,7 +37,9 @@ const vueAssets = {
   LoadingSpinner,
   VisualIcon,
   ObjectEditor,
-  SortableList,
+  DraggableElement,
+  DropTarget,
+  DropIndicator,
   SwitchControl,
   TerminalBlock,
   TerminalPane,
@@ -49,4 +54,5 @@ export {
   addCSSFile,
   openContextMenu,
   createContextMenu,
+  extractClosestEdge,
 }

@@ -1,63 +1,56 @@
 <script lang="ts" setup>
-import { watchEffect } from 'vue'
+import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
+import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
+import type { DraggableElementEventPayload } from '../../typings/draggable'
 import type { TerminalTab } from '../../typings/terminal'
-import type { TerminalTabDirection } from '../compositions/terminal'
-import { appendTerminalTab, getTerminalTabIndex, useMovingTerminalIndex } from '../compositions/terminal'
-import { handleMousePressing } from '../utils/helper'
+import { appendTerminalTab, getTerminalTabIndex } from '../compositions/terminal'
+import type { DraggableElementDataLike } from '../utils/draggable'
+import DropTarget from './basic/DropTarget.vue'
 
 const { tab } = defineProps<{
   tab: TerminalTab,
 }>()
 
-const movingIndex = $(useMovingTerminalIndex())
 const currentIndex = $computed(() => getTerminalTabIndex(tab))
 
-let root = $ref<HTMLElement | undefined>()
-let movingTarget = $ref<HTMLElement | undefined>()
-let movingDirection = $ref<TerminalTabDirection | undefined>()
+let dropEdge = $ref<Edge | null>(null)
 
-function getMovingDirection(element: HTMLElement, event: MouseEvent): TerminalTabDirection {
-  const bounds = element.getBoundingClientRect()
-  if (event.clientX > bounds.left + bounds.width * 3 / 4) return 'right'
-  if (event.clientX < bounds.left + bounds.width / 4) return 'left'
-  if (event.clientY > bounds.top + bounds.height * 3 / 4) return 'bottom'
-  if (event.clientY < bounds.top + bounds.height / 4) return 'top'
-  return 'right'
+function handleDrag(args: DraggableElementEventPayload<DraggableElementDataLike>) {
+  if (args.source.data.type === 'tab' && args.source.data.index !== currentIndex) {
+    dropEdge = extractClosestEdge(args.self.data)
+  }
 }
 
-watchEffect(onInvalidate => {
-  if (root && movingTarget) {
-    movingDirection = undefined
-    const cancel = handleMousePressing({
-      element: root,
-      onMove(event) {
-        event.preventDefault()
-        movingDirection = getMovingDirection(root!, event)
-      },
-      onEnd(event) {
-        event.preventDefault()
-        appendTerminalTab(tab, movingIndex, movingDirection)
-      },
-      onLeave() {
-        movingDirection = undefined
-      },
-      active: true,
-    })
-    onInvalidate(() => {
-      cancel()
-    })
+function handleDragLeave(args: DraggableElementEventPayload<DraggableElementDataLike>) {
+  if (args.source.data.type === 'tab' && args.source.data.index !== currentIndex) {
+    dropEdge = null
   }
-})
+}
+
+function handleDrop(args: DraggableElementEventPayload<DraggableElementDataLike>) {
+  if (args.source.data.type === 'tab' && args.source.data.index !== currentIndex) {
+    const edge = extractClosestEdge(args.self.data)
+    appendTerminalTab(tab, args.source.data.index!, edge)
+    dropEdge = null
+  }
+}
 </script>
 
 <template>
-  <section ref="root" class="terminal-block">
-    <slot></slot>
-    <div
-      v-if="movingIndex !== -1 && movingIndex !== currentIndex"
-      ref="movingTarget"
-      :class="['moving-target', movingDirection]"
-    ></div>
+  <section class="terminal-block">
+    <DropTarget
+      v-slot="{ mount }"
+      :allowed-edges="['top', 'bottom', 'left', 'right']"
+      @dragenter="handleDrag"
+      @drag="handleDrag"
+      @dragleave="handleDragLeave"
+      @drop="handleDrop"
+    >
+      <div :ref="mount" class="terminal-container">
+        <slot></slot>
+      </div>
+      <div v-if="dropEdge" :class="['moving-target', dropEdge]"></div>
+    </DropTarget>
   </section>
 </template>
 
@@ -72,11 +65,15 @@ watchEffect(onInvalidate => {
     background: rgb(var(--theme-background));
   }
 }
+.terminal-container {
+  height: 100%;
+}
 .moving-target {
   position: absolute;
   inset: 50%;
   background: var(--design-highlight-background);
   transition: inset 0.2s;
+  pointer-events: none;
   &.top {
     inset: 0 0 75%;
   }

@@ -93,42 +93,43 @@ function close() {
 
 <template>
   <div :class="['tab-item', { active: isActive, focused: isFocused, virtual: !tab }]">
-    <div class="tab-item-card">
-      <div class="tab-overview">
-        <div class="tab-title">
-          <VisualIcon
-            v-if="iconEntry"
-            :name="iconEntry.name"
-            class="tab-icon"
-            :style="{ color: isFocused ? iconEntry.color : undefined }"
-          />
-          <VisualIcon v-else-if="pane && tab!.shell" name="lucide-file" class="tab-icon" />
-          <VisualIcon v-else name="lucide-terminal" class="tab-icon" />
-          <span class="tab-name">{{ title }}</span>
-        </div>
-        <div class="right-side">
-          <div v-if="idleState" :class="['idle-light', idleState]"></div>
-          <div class="operations">
-            <slot name="operations"></slot>
-            <div v-if="closable || tab" class="button close" @click.stop="close">
-              <VisualIcon name="lucide-x" />
-            </div>
+    <div class="tab-overview">
+      <div class="tab-title">
+        <VisualIcon
+          v-if="iconEntry"
+          :name="iconEntry.name"
+          class="tab-icon"
+          :style="{ color: isFocused ? iconEntry.color : undefined }"
+        />
+        <VisualIcon v-else-if="pane && tab!.shell" name="lucide-file" class="tab-icon" />
+        <VisualIcon v-else name="lucide-terminal" class="tab-icon" />
+        <span class="tab-name">{{ title }}</span>
+      </div>
+      <div class="right-side">
+        <div v-if="idleState" :class="['idle-light', idleState]"></div>
+        <div class="operations">
+          <slot name="operations"></slot>
+          <div v-if="closable || tab" class="button close" @click.stop="close">
+            <VisualIcon name="lucide-x" />
           </div>
         </div>
       </div>
-      <div v-if="thumbnail" class="tab-thumbnail">{{ thumbnail }}</div>
     </div>
+    <div v-if="thumbnail" class="tab-thumbnail">{{ thumbnail }}</div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .tab-item {
-  padding: 8px;
-  .tab-list.vertical & {
-    padding-bottom: 0;
+  padding: 0 8px;
+  border-radius: 8px;
+  // https://github.com/react-dnd/react-dnd/issues/788
+  transform: translate(0, 0);
+  &.active {
+    box-shadow: var(--design-element-shadow);
   }
-  .tab-list.horizontal & {
-    padding-right: 0;
+  &.focused {
+    background: rgb(var(--theme-background));
   }
 }
 .tab-title {
@@ -141,12 +142,8 @@ function close() {
   .tab-item.virtual & {
     opacity: 0.5;
   }
-  .tab-item.focused &,
-  .sortable-item.dragging & {
+  .tab-item.focused & {
     opacity: 1;
-  }
-  .sortable-item.dragging & {
-    color: rgb(var(--system-yellow));
   }
 }
 .tab-icon {
@@ -160,16 +157,6 @@ function close() {
   text-overflow: ellipsis;
   overflow: hidden;
   transition: color 0.2s;
-}
-.tab-item-card {
-  padding: 0 8px;
-  border-radius: 8px;
-  .tab-item.active & {
-    background: linear-gradient(to right, transparent, var(--design-highlight-background));
-  }
-  .tab-item.focused & {
-    background: var(--design-highlight-background);
-  }
 }
 .tab-overview {
   position: relative;

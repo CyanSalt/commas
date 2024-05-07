@@ -33,6 +33,8 @@
     "node": ">=14.0.0"
   },
   "devDependencies": {
+    "@atlaskit/pragmatic-drag-and-drop": "^1.1.7",
+    "@atlaskit/pragmatic-drag-and-drop-hitbox": "^1.0.3",
     "@commas/api": "file:api",
     "@cyansalt/eslint-config-preset": "^1.18.0",
     "@cyansalt/stylelint-config-preset": "^1.4.4",

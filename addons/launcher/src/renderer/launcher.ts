@@ -105,15 +105,18 @@ export async function startLauncherExternally(launcher: Launcher) {
   return ipcRenderer.invoke('execute', explorer)
 }
 
-export function moveLauncher(from: number, to: number) {
+export function moveLauncher(launcher: Launcher, index: number, edge?: 'start' | 'end') {
   const updated = [...launchers]
-  const rule = updated[from]
-  if (from < to) {
-    updated.splice(to + 1, 0, rule)
-    updated.splice(from, 1)
+  const fromIndex = updated.indexOf(launcher)
+  let targetIndex = index
+  if (fromIndex < index) {
+    targetIndex = edge === 'start' ? index - 1 : index
+    updated.splice(targetIndex + 1, 0, launcher)
+    updated.splice(fromIndex, 1)
   } else {
-    updated.splice(from, 1)
-    updated.splice(to, 0, rule)
+    targetIndex = edge === 'end' ? index + 1 : index
+    updated.splice(fromIndex, 1)
+    updated.splice(targetIndex, 0, launcher)
   }
   launchers = updated
 }

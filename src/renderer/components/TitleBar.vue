@@ -67,7 +67,7 @@ function close() {
   -webkit-app-region: drag;
   &:has(.tab-list) {
     height: 52px; // 36 + 2 * 8
-    line-height: 52px;
+    line-height: 1;
   }
   :deep(.tab-list) {
     -webkit-app-region: no-drag;

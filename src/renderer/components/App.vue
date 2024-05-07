@@ -119,6 +119,7 @@ onMounted(() => {
   --design-card-gap: 8px;
   --design-card-border-radius: var(--design-card-gap);
   --design-card-shadow: 0 2px 4px 0px rgb(0 0 0 / 10%);
+  --design-element-shadow: 0 1px 2px 0px rgb(0 0 0 / 10%);
   --design-card-secondary-opacity: calc(var(--theme-opacity) * 3 / 4);
   --acrylic-background: 133 194 255;
   @media (prefers-color-scheme: dark) {

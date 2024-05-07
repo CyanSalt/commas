@@ -11,8 +11,8 @@ import {
   scrollToMarker,
   showTabOptions,
   useCurrentTerminal,
-  useMovingTerminalIndex,
   usePaneTabURL,
+  useTerminalTabGroupSeparating,
   useTerminalTabs,
 } from '../../src/renderer/compositions/terminal'
 import type { TerminalTab, TerminalTabAddons, TerminalTabPane } from '../../src/typings/terminal'
@@ -119,6 +119,6 @@ export {
   useCurrentTerminal,
   usePaneTabURL,
   useTerminalTabs,
-  useMovingTerminalIndex,
+  useTerminalTabGroupSeparating,
   getTerminalTabIndex,
 }

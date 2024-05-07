@@ -1,26 +1,31 @@
 <script lang="ts" setup>
 import * as path from 'node:path'
-import { watchEffect } from 'vue'
+import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
+import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
+import { reactive, watchEffect } from 'vue'
 import * as commas from '../../../api/core-renderer'
 import { useAsyncComputed } from '../../shared/compositions'
+import type { DraggableElementEventPayload } from '../../typings/draggable'
 import type { MenuItem } from '../../typings/menu'
 import { useSettings } from '../compositions/settings'
 import {
   activateTerminalTab,
-  cancelTerminalTabGrouping,
   createTerminalTab,
-  getTerminalTabIndex,
   moveTerminalTab,
+  separateTerminalTabGroup,
   splitTerminalTab,
   useCurrentTerminal,
-  useMovingTerminalIndex,
+  useTerminalTabGroupSeparating,
   useTerminalTabs,
 } from '../compositions/terminal'
+import type { DraggableElementData, DraggableElementDataLike } from '../utils/draggable'
 import { openContextMenu } from '../utils/frame'
 import { handleMousePressing } from '../utils/helper'
 import { getShells } from '../utils/terminal'
 import TabItem from './TabItem.vue'
-import SortableList from './basic/SortableList.vue'
+import DraggableElement from './basic/DraggableElement.vue'
+import DropIndicator from './basic/DropIndicator.vue'
+import DropTarget from './basic/DropTarget.vue'
 import VisualIcon from './basic/VisualIcon.vue'
 
 const lists = commas.proxy.context.getCollection('terminal.ui-side-list')
@@ -28,7 +33,6 @@ const shells = $(useAsyncComputed(() => getShells(), []))
 
 const tabs = $(useTerminalTabs())
 const terminal = $(useCurrentTerminal())
-let movingIndex = $(useMovingTerminalIndex())
 
 let width = $ref(176)
 
@@ -45,25 +49,10 @@ const profiles = $computed(() => {
 })
 
 const standaloneTabs = $computed(() => {
-  if (isHorizontal) return tabs
-  return tabs.filter(tab => !tab.character)
+  const entries = tabs.map((tab, index) => ({ tab, index }))
+  if (isHorizontal) return entries
+  return entries.filter(({ tab }) => !tab.character)
 })
-
-function startMoving(from: number) {
-  const movingTab = standaloneTabs[from]
-  if (!movingTab) return
-  movingIndex = getTerminalTabIndex(movingTab)
-}
-
-function stopMoving() {
-  movingIndex = -1
-}
-
-function sortTabs(from: number, to: number) {
-  stopMoving()
-  const toIndex = getTerminalTabIndex(standaloneTabs[to])
-  moveTerminalTab(standaloneTabs[from], toIndex)
-}
 
 function selectShell(event: MouseEvent) {
   const profileOptions = profiles.map((profile, index) => ({
@@ -107,72 +96,132 @@ function resize(startingEvent: DragEvent) {
   })
 }
 
-const movingGroupTab = $computed(() => {
-  if (movingIndex === -1) return false
-  const tab = tabs[movingIndex]
-  return tab.group ? tab : undefined
-})
+interface DropTargetData extends Record<string | symbol, unknown> {
+  index: number,
+}
 
-let newTabElement = $ref<HTMLElement | undefined>()
-let isCancelingGroup = $ref(false)
+const draggingEdges = reactive(new Map<number, Edge | null>())
 
-watchEffect(onInvalidate => {
-  if (newTabElement && movingGroupTab) {
-    const cancel = handleMousePressing({
-      element: newTabElement,
-      onMove(event) {
-        event.preventDefault()
-        isCancelingGroup = true
-      },
-      onEnd(event) {
-        event.preventDefault()
-        isCancelingGroup = false
-        cancelTerminalTabGrouping(movingGroupTab)
-      },
-      onLeave() {
-        isCancelingGroup = false
-      },
-      active: true,
-    })
-    onInvalidate(() => {
-      cancel()
-    })
+let groupSeparatingEnabled = $(useTerminalTabGroupSeparating())
+let groupSeparatingActive = $ref(false)
+
+watchEffect(() => {
+  if (!groupSeparatingEnabled) {
+    groupSeparatingActive = false
   }
 })
+
+function handleDragStart(args: DraggableElementEventPayload<DraggableElementData>) {
+  const tab = tabs[args.source.data.index]
+  groupSeparatingEnabled = Boolean(tab.group)
+}
+
+function handleDragStop() {
+  groupSeparatingEnabled = false
+}
+
+function handleDrag(args: DraggableElementEventPayload<DraggableElementDataLike, DropTargetData>) {
+  if (args.source.data.type === 'tab' && args.source.data.index !== args.self.data.index) {
+    const tab = tabs[args.source.data.index!]
+    if (!tab.character) {
+      draggingEdges.set(args.self.data.index, extractClosestEdge(args.self.data))
+    }
+  }
+}
+
+function handleDragLeave(args: DraggableElementEventPayload<DraggableElementDataLike, DropTargetData>) {
+  if (args.source.data.type === 'tab') {
+    const tab = tabs[args.source.data.index!]
+    if (!tab.character) {
+      draggingEdges.set(args.self.data.index, null)
+    }
+  }
+}
+
+function handleDrop(args: DraggableElementEventPayload<DraggableElementDataLike, DropTargetData>) {
+  if (args.source.data.type === 'tab') {
+    const tab = tabs[args.source.data.index!]
+    if (!tab.character) {
+      const edge = extractClosestEdge(args.self.data)
+      const toEdge = edge === 'top' || edge === 'left'
+        ? 'start'
+        : (edge === 'bottom' || edge === 'right' ? 'end' : undefined)
+      moveTerminalTab(tab, args.self.data.index, toEdge)
+      draggingEdges.set(args.self.data.index, null)
+    }
+  }
+}
+
+function handleGroupSeparating(args: DraggableElementEventPayload<DraggableElementDataLike>) {
+  if (args.source.data.type === 'tab') {
+    const tab = tabs[args.source.data.index!]
+    separateTerminalTabGroup(tab)
+    groupSeparatingEnabled = false
+  }
+}
 </script>
 
 <template>
   <nav :class="['tab-list', position, isHorizontal ? 'horizontal' : 'vertical']">
     <div class="list-content" :style="{ width: isHorizontal ? '' : width + 'px' }">
       <div class="default-list">
-        <SortableList
-          v-slot="{ value }"
-          :value="standaloneTabs"
-          value-key="pid"
-          :direction="isHorizontal ? 'horizontal' : 'vertical'"
-          class="processes"
-          @move="startMoving"
-          @stop="stopMoving"
-          @change="sortTabs"
+        <DraggableElement
+          v-for="({ tab, index }) in standaloneTabs"
+          :key="tab.pid"
+          v-slot="{ mount: draggable }"
+          :data="{ type: 'tab', index }"
+          @dragstart="handleDragStart"
+          @drop="handleDragStop"
         >
-          <TabItem
-            :tab="value"
-            @click="activateTerminalTab(value)"
-          />
-        </SortableList>
-        <div ref="newTabElement" :class="['new-tab', { 'is-canceling-group': isCancelingGroup }]">
-          <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
-            <VisualIcon name="lucide-list-plus" />
-          </div>
-          <div
-            class="default-shell anchor"
-            @click="selectDefaultShell"
-            @contextmenu="selectShell"
+          <DropTarget
+            v-slot="{ mount: dropTarget }"
+            :data="{ index }"
+            :allowed-edges="isHorizontal ? ['left', 'right'] : ['top', 'bottom']"
+            @dragenter="handleDrag"
+            @drag="handleDrag"
+            @dragleave="handleDragLeave"
+            @drop="handleDrop"
           >
-            <VisualIcon v-if="movingGroupTab" name="lucide-ungroup" />
-            <VisualIcon v-else name="lucide-plus" />
+            <div
+              :ref="dropTarget"
+              :class="['list-item', { 'drop-to-end': draggingEdges.get(index) === 'right' || draggingEdges.get(index) === 'bottom' }]"
+            >
+              <DropIndicator
+                v-if="draggingEdges.get(index)"
+                :vertical="isHorizontal"
+              />
+              <TabItem
+                :ref="draggable"
+                :tab="tab"
+                @click="activateTerminalTab(tab)"
+              />
+            </div>
+          </DropTarget>
+        </DraggableElement>
+        <DropTarget
+          v-slot="{ mount }"
+          :disabled="!groupSeparatingEnabled"
+          @dragenter="groupSeparatingActive = true"
+          @dragleave="groupSeparatingActive = false"
+          @drop="handleGroupSeparating"
+        >
+          <div
+            :ref="mount"
+            :class="['new-tab', { 'is-group-separating-active': groupSeparatingActive }]"
+          >
+            <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
+              <VisualIcon name="lucide-list-plus" />
+            </div>
+            <div
+              class="default-shell anchor"
+              @click="selectDefaultShell"
+              @contextmenu="selectShell"
+            >
+              <VisualIcon v-if="groupSeparatingEnabled" name="lucide-ungroup" />
+              <VisualIcon v-else name="lucide-plus" />
+            </div>
           </div>
-        </div>
+        </DropTarget>
       </div>
       <component
         :is="list"
@@ -200,12 +249,7 @@ watchEffect(onInvalidate => {
     --primary-icon-size: 18px;
     flex: 1;
     min-width: 0;
-    :deep(.sortable-list) {
-      flex: 0 1 auto;
-      flex-direction: row;
-      min-width: 0;
-    }
-    :deep(.sortable-item) {
+    :deep(.tab-item) {
       flex: 1;
       width: 176px;
       min-width: 0;
@@ -232,8 +276,38 @@ watchEffect(onInvalidate => {
 }
 .default-list {
   display: flex;
+  gap: 8px;
+  .tab-list.horizontal & {
+    padding: 8px 8px 0;
+  }
   .tab-list.vertical & {
     flex-direction: column;
+    width: calc(100% - 8px);
+    padding: 8px 0 8px 8px;
+  }
+}
+.list-item {
+  display: flex;
+  :deep(.drop-indicator) {
+    transform: translateX(-4px);
+  }
+  &.drop-to-end {
+    flex-direction: row-reverse;
+    :deep(.drop-indicator) {
+      transform: translateX(4px);
+    }
+  }
+  .tab-list.vertical & {
+    flex-direction: column;
+    :deep(.drop-indicator) {
+      transform: translateY(-4px);
+    }
+    &.drop-to-end {
+      flex-direction: column-reverse;
+      :deep(.drop-indicator) {
+        transform: translateY(4px);
+      }
+    }
   }
 }
 .sash {
@@ -248,11 +322,12 @@ watchEffect(onInvalidate => {
   display: flex;
   align-items: center;
   height: var(--min-tab-height);
-  padding: 8px 16px;
+  padding: 0 8px;
   line-height: var(--min-tab-height);
   text-align: center;
-  .tab-list.horizontal & {
-    padding: 8px 12px;
+  border-radius: 8px;
+  &.is-group-separating-active {
+    outline: 2px solid rgb(var(--system-accent));
   }
 }
 .select-shell {
@@ -261,7 +336,7 @@ watchEffect(onInvalidate => {
   .tab-list.vertical & {
     visibility: hidden;
   }
-  .tab-list.vertical .new-tab:hover:not(.is-canceling-group) & {
+  .tab-list.vertical .new-tab:hover:not(.is-group-separating-active) & {
     visibility: visible;
   }
   .tab-list.horizontal & {
@@ -271,9 +346,6 @@ watchEffect(onInvalidate => {
 .default-shell {
   flex: auto;
   font-size: var(--primary-icon-size);
-  .new-tab.is-canceling-group & {
-    color: rgb(var(--system-red));
-  }
 }
 .select-shell + .default-shell {
   order: -1;

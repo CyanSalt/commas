@@ -208,10 +208,9 @@ function scrollToStickyCommand() {
 .terminal-teletype {
   --integration-width: 16px;
   --overview-width: 16px;
-  display: flex;
-  flex: 1;
-  min-width: 0;
-  min-height: 0;
+  :deep(.terminal-container) {
+    display: flex;
+  }
 }
 .terminal-content {
   flex: 1;

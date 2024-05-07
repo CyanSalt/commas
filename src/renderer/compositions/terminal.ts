@@ -1,4 +1,5 @@
 import * as os from 'node:os'
+import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
 import { CanvasAddon } from '@xterm/addon-canvas'
 import { FitAddon } from '@xterm/addon-fit'
 import { ImageAddon } from '@xterm/addon-image'
@@ -52,9 +53,9 @@ export function usePaneTabURL() {
   return $$(paneTabURL)
 }
 
-let movingIndex = $ref(-1)
-export function useMovingTerminalIndex() {
-  return $$(movingIndex)
+let isGroupSeparating = $ref(false)
+export function useTerminalTabGroupSeparating() {
+  return $$(isGroupSeparating)
 }
 
 export function getTerminalTabIndex(tab: TerminalTab) {
@@ -810,25 +811,28 @@ export function activateOrAddTerminalTab(tab: TerminalTab) {
   }
 }
 
-export function moveTerminalTab(tab: TerminalTab, index: number) {
+export function moveTerminalTab(tab: TerminalTab, index: number, edge?: 'start' | 'end') {
   const fromIndex = tabs.indexOf(tab)
+  let targetIndex = index
   if (fromIndex < index) {
-    tabs.splice(index + 1, 0, tab)
+    targetIndex = edge === 'start' ? index - 1 : index
+    tabs.splice(targetIndex + 1, 0, tab)
     tabs.splice(fromIndex, 1)
   } else {
+    targetIndex = edge === 'end' ? index + 1 : index
     tabs.splice(fromIndex, 1)
-    tabs.splice(index, 0, tab)
+    tabs.splice(targetIndex, 0, tab)
   }
   if (activeIndex === fromIndex) {
-    activeIndex = index
-  } else if (activeIndex > fromIndex && activeIndex < index) {
+    activeIndex = targetIndex
+  } else if (activeIndex > fromIndex && activeIndex < targetIndex) {
     activeIndex -= 1
-  } else if (activeIndex < fromIndex && activeIndex > index) {
+  } else if (activeIndex < fromIndex && activeIndex > targetIndex) {
     activeIndex += 1
   }
 }
 
-export function cancelTerminalTabGrouping(tab: TerminalTab) {
+export function separateTerminalTabGroup(tab: TerminalTab) {
   if (!tab.group) return
   const group = tab.group
   delete tab.group
@@ -838,13 +842,11 @@ export function cancelTerminalTabGrouping(tab: TerminalTab) {
   reflowTabGroup(groupTabs)
 }
 
-export type TerminalTabDirection = 'left' | 'right' | 'top' | 'bottom'
-
 const generateGroup = createIDGenerator()
 
-export function appendTerminalTab(tab: TerminalTab, fromIndex: number, direction: TerminalTabDirection = 'right') {
+export function appendTerminalTab(tab: TerminalTab, fromIndex: number, direction?: Edge | null) {
   const movingTab = tabs[fromIndex]
-  cancelTerminalTabGrouping(movingTab)
+  separateTerminalTabGroup(movingTab)
   if (!tab.group) {
     tab.group = generateGroup()
   }
@@ -853,23 +855,6 @@ export function appendTerminalTab(tab: TerminalTab, fromIndex: number, direction
   }
   movingTab.group = tab.group
   switch (direction) {
-    case 'left':
-      movingTab.position = {
-        row: tab.position.row,
-        col: tab.position.col,
-        rowspan: tab.position.rowspan,
-      }
-      if (!tab.position.colspan || tab.position.colspan <= 1) {
-        tab.position.col += 1
-      }
-      break
-    case 'right':
-      movingTab.position = {
-        row: tab.position.row,
-        col: tab.position.col + (tab.position.colspan ? tab.position.colspan - 1 : 1),
-        rowspan: tab.position.rowspan,
-      }
-      break
     case 'top':
       movingTab.position = {
         row: tab.position.row,
@@ -887,27 +872,27 @@ export function appendTerminalTab(tab: TerminalTab, fromIndex: number, direction
         colspan: tab.position.colspan,
       }
       break
+    case 'left':
+      movingTab.position = {
+        row: tab.position.row,
+        col: tab.position.col,
+        rowspan: tab.position.rowspan,
+      }
+      if (!tab.position.colspan || tab.position.colspan <= 1) {
+        tab.position.col += 1
+      }
+      break
+    case 'right':
+    default:
+      movingTab.position = {
+        row: tab.position.row,
+        col: tab.position.col + (tab.position.colspan ? tab.position.colspan - 1 : 1),
+        rowspan: tab.position.rowspan,
+      }
+      break
   }
   const groupTabs = getTerminalTabsByGroup(tab.group)
   switch (direction) {
-    case 'left':
-    case 'right': {
-      if (tab.position.colspan && tab.position.colspan > 1) {
-        tab.position.colspan -= 1
-        return
-      }
-      const position = movingTab.position
-      const columnTabs = groupTabs.filter(item => {
-        return item.position
-          && item.position.row !== position.row
-          && item.position.col <= position.col
-          && item.position.col + (item.position.colspan ?? 1) >= position.col
-      })
-      columnTabs.forEach(item => {
-        item.position!.colspan = (item.position!.colspan ?? 1) + 1
-      })
-      break
-    }
     case 'top':
     case 'bottom': {
       if (tab.position.rowspan && tab.position.rowspan > 1) {
@@ -923,6 +908,25 @@ export function appendTerminalTab(tab: TerminalTab, fromIndex: number, direction
       })
       rowTabs.forEach(item => {
         item.position!.rowspan = (item.position!.rowspan ?? 1) + 1
+      })
+      break
+    }
+    case 'left':
+    case 'right':
+    default: {
+      if (tab.position.colspan && tab.position.colspan > 1) {
+        tab.position.colspan -= 1
+        return
+      }
+      const position = movingTab.position
+      const columnTabs = groupTabs.filter(item => {
+        return item.position
+          && item.position.row !== position.row
+          && item.position.col <= position.col
+          && item.position.col + (item.position.colspan ?? 1) >= position.col
+      })
+      columnTabs.forEach(item => {
+        item.position!.colspan = (item.position!.colspan ?? 1) + 1
       })
       break
     }
