@@ -14,7 +14,8 @@ const isEnabled: boolean = $computed(() => {
   return settings['terminal.view.frameType'] === 'immersive'
 })
 
-const isCustomControlEnabled = !['darwin', 'win32'].includes(process.platform)
+const platform = process.platform
+const isCustomControlEnabled = !['darwin', 'win32'].includes(platform)
 
 function minimize() {
   isMinimized = !isMinimized
@@ -32,7 +33,7 @@ function close() {
 <template>
   <header
     v-if="isEnabled"
-    :class="['title-bar', { 'no-controls': !isCustomControlEnabled }]"
+    :class="['title-bar', platform, { 'no-controls': !isCustomControlEnabled }]"
     @dblclick="maximize"
   >
     <div class="symmetrical-space"></div>
@@ -91,16 +92,22 @@ function close() {
 }
 .controls {
   justify-content: flex-end;
-  // TODO: get the min size
-  width: 120px;
-  padding-right: 8px; /// trafficLightOffset
+  width: #{36px * 3 + 8px};
   .title-bar.no-controls & {
     order: -1;
   }
+  .title-bar.no-controls.darwin & {
+    width: #{12px * 2 + 56px};
+  }
+  // TODO: get the min size on win32
 }
-.title-bar:has(.terminal-title) .symmetrical-space {
-  width: 120px;
-  padding-right: 16px;
+.symmetrical-space {
+  .title-bar:has(.terminal-title) & {
+    width: #{36px * 3 + 8px};
+  }
+  .title-bar.no-controls.darwin & {
+    width: #{12px * 2 + 56px};
+  }
 }
 .button {
   width: 36px;

@@ -154,7 +154,6 @@ watchEffect(() => {
   align-items: center;
   box-sizing: border-box;
   min-width: 0;
-  padding: 0 8px;
 }
 .shortcut {
   flex: none;

@@ -197,7 +197,7 @@ const theme = $computed(() => {
 const defaultWindowButtonPosition = {
   x: 12,
   y: 11,
-  // width: 68,
+  // width: 56,
 }
 
 const themeOptions = $computed<BrowserWindowThemeOptions>(() => {
