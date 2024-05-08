@@ -813,6 +813,7 @@ export function activateOrAddTerminalTab(tab: TerminalTab) {
 
 export function moveTerminalTab(tab: TerminalTab, index: number, edge?: 'start' | 'end') {
   const fromIndex = tabs.indexOf(tab)
+  if (fromIndex === index) return
   let targetIndex = index
   if (fromIndex < index) {
     targetIndex = edge === 'start' ? index - 1 : index

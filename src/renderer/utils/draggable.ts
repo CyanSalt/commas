@@ -1,9 +1,12 @@
-export interface DraggableElementData {
+import type { TerminalTab } from '../../typings/terminal'
+
+export interface DraggableTabData {
   type: 'tab',
   index: number,
+  create?: () => TerminalTab | Promise<TerminalTab>,
+  dispose?: () => void,
 }
 
-export interface DraggableElementDataLike {
+export interface DraggableElementData extends Partial<Omit<DraggableTabData, 'type'>> {
   type: string,
-  index?: number,
 }

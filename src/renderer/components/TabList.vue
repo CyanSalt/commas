@@ -7,6 +7,7 @@ import * as commas from '../../../api/core-renderer'
 import { useAsyncComputed } from '../../shared/compositions'
 import type { DraggableElementEventPayload } from '../../typings/draggable'
 import type { MenuItem } from '../../typings/menu'
+import type { TerminalTab } from '../../typings/terminal'
 import { useSettings } from '../compositions/settings'
 import {
   activateTerminalTab,
@@ -18,7 +19,7 @@ import {
   useTerminalTabGroupSeparating,
   useTerminalTabs,
 } from '../compositions/terminal'
-import type { DraggableElementData, DraggableElementDataLike } from '../utils/draggable'
+import type { DraggableElementData, DraggableTabData } from '../utils/draggable'
 import { openContextMenu } from '../utils/frame'
 import { handleMousePressing } from '../utils/helper'
 import { getShells } from '../utils/terminal'
@@ -112,7 +113,7 @@ watchEffect(() => {
   }
 })
 
-function handleDragStart(args: DraggableElementEventPayload<DraggableElementData>) {
+function handleDragStart(args: DraggableElementEventPayload<DraggableTabData>) {
   const tab = tabs[args.source.data.index]
   groupSeparatingEnabled = Boolean(tab.group)
 }
@@ -121,40 +122,44 @@ function handleDragStop() {
   groupSeparatingEnabled = false
 }
 
-function handleDrag(args: DraggableElementEventPayload<DraggableElementDataLike, DropTargetData>) {
-  if (args.source.data.type === 'tab' && args.source.data.index !== args.self.data.index) {
-    const tab = tabs[args.source.data.index!]
-    if (!tab.character) {
-      draggingEdges.set(args.self.data.index, extractClosestEdge(args.self.data))
-    }
+function handleDrag(args: DraggableElementEventPayload<DraggableElementData, DropTargetData>) {
+  if (args.source.data.type === 'tab') {
+    draggingEdges.set(args.self.data.index, extractClosestEdge(args.self.data))
   }
 }
 
-function handleDragLeave(args: DraggableElementEventPayload<DraggableElementDataLike, DropTargetData>) {
+function handleDragLeave(args: DraggableElementEventPayload<DraggableElementData, DropTargetData>) {
   if (args.source.data.type === 'tab') {
-    const tab = tabs[args.source.data.index!]
-    if (!tab.character) {
-      draggingEdges.set(args.self.data.index, null)
-    }
+    draggingEdges.set(args.self.data.index, null)
   }
 }
 
-function handleDrop(args: DraggableElementEventPayload<DraggableElementDataLike, DropTargetData>) {
+async function handleDrop(args: DraggableElementEventPayload<DraggableElementData, DropTargetData>) {
   if (args.source.data.type === 'tab') {
-    const tab = tabs[args.source.data.index!]
-    if (!tab.character) {
+    let tab: TerminalTab | undefined
+    if (args.source.data.index === -1) {
+      if (args.source.data.create) {
+        tab = await args.source.data.create()
+      }
+    } else {
+      tab = tabs[args.source.data.index!]
+    }
+    if (tab) {
       const edge = extractClosestEdge(args.self.data)
       const toEdge = edge === 'top' || edge === 'left'
         ? 'start'
         : (edge === 'bottom' || edge === 'right' ? 'end' : undefined)
       moveTerminalTab(tab, args.self.data.index, toEdge)
-      draggingEdges.set(args.self.data.index, null)
     }
+    if (args.source.data.dispose) {
+      args.source.data.dispose()
+    }
+    draggingEdges.set(args.self.data.index, null)
   }
 }
 
-function handleGroupSeparating(args: DraggableElementEventPayload<DraggableElementDataLike>) {
-  if (args.source.data.type === 'tab') {
+function handleGroupSeparating(args: DraggableElementEventPayload<DraggableElementData>) {
+  if (args.source.data.type === 'tab' && args.source.data.index !== -1) {
     const tab = tabs[args.source.data.index!]
     separateTerminalTabGroup(tab)
     groupSeparatingEnabled = false

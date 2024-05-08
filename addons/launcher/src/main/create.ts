@@ -32,52 +32,51 @@ export function getNodePackageManager(pkg: any, files: string[]) {
   return 'npm'
 }
 
-function getNodePackageCommand(pkg: any, files) {
+function getNodePackageCommands(pkg: any, files: string[]) {
   const packageManager = getNodePackageManager(pkg, files)
   const scripts: Record<string, string> = pkg.scripts ?? {}
   const builtinScripts = ['pack', 'rebuild', 'start', 'test']
-  const runScripts = ['serve', 'build', 'dev']
-  const builtinScript = builtinScripts.find(key => scripts[key])
-  if (builtinScript) {
-    return `${packageManager} ${builtinScript}`
-  }
-  const runScript = runScripts.find(key => scripts[key])
-  if (runScript) {
-    return `${packageManager}${packageManager === 'yarn' ? '' : ' run'} ${builtinScript}`
-  }
-  return `${packageManager}${packageManager === 'yarn' ? '' : ' install'}`
+  return Object.fromEntries(
+    Object.keys(scripts).map(name => [
+      name,
+      `${packageManager}${packageManager === 'npm' && !builtinScripts.includes(name) ? ' run' : ''} ${name}`,
+    ]),
+  )
 }
 
-async function createLauncher(entry: string): Promise<LauncherInfo> {
+async function generateScripts(entry: string): Promise<LauncherInfo[]> {
   const info = await fs.promises.stat(entry)
   const directory = info.isDirectory() ? entry : path.dirname(entry)
   const files = await fs.promises.readdir(directory)
-  const homedir = os.homedir()
   if (info.isDirectory()) {
     if (files.includes('package.json')) {
-      return createLauncher(path.join(entry, 'package.json'))
+      return generateScripts(path.join(entry, 'package.json'))
     }
   }
   const parsed = path.parse(entry)
-  const isUserPath = process.platform !== 'win32' && parsed.dir.startsWith(homedir + path.sep)
   if (parsed.base === 'package.json') {
     const data = await readJSONFile(entry)
-    const command = getNodePackageCommand(data, files)
-    return {
-      name: data.productName ?? data.name ?? path.basename(parsed.dir),
-      command,
-      directory: isUserPath
-        ? '~' + parsed.dir.slice(homedir.length)
-        : parsed.dir,
+    const commands = getNodePackageCommands(data, files)
+    return Object.entries(commands).map(([name, command]) => ({ name, command }))
+  }
+  return []
+}
+
+async function createLauncher(data: Pick<LauncherInfo, 'name' | 'command' | 'directory'>) {
+  const launcher: LauncherInfo = { ...data }
+  const directory = launcher.directory
+  if (directory) {
+    const homedir = os.homedir()
+    const isUserPath = process.platform !== 'win32' && directory.startsWith(homedir + path.sep)
+    if (isUserPath) {
+      launcher.directory = '~' + directory.slice(homedir.length)
+    }
+    const scripts = await generateScripts(directory)
+    if (scripts.length) {
+      launcher.scripts = scripts
     }
   }
-  return {
-    name: path.basename(parsed.dir),
-    command: entry,
-    directory: isUserPath
-      ? os.homedir()
-      : parsed.dir,
-  }
+  return launcher
 }
 
 export {

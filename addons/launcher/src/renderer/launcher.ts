@@ -59,9 +59,10 @@ export async function openLauncher(launcher: Launcher, { tab, command }: OpenLau
     if (command) {
       commas.workspace.executeTerminalTab(tab, command, true)
     }
+    return tab
   } else {
     const directory = launcher.remote ? undefined : launcher.directory
-    await commas.workspace.createTerminalTab({
+    return commas.workspace.createTerminalTab({
       ...launcher.profile,
       cwd: directory && commas.helper.resolveHome(directory),
     }, {
@@ -108,6 +109,7 @@ export async function startLauncherExternally(launcher: Launcher) {
 export function moveLauncher(launcher: Launcher, index: number, edge?: 'start' | 'end') {
   const updated = [...launchers]
   const fromIndex = updated.indexOf(launcher)
+  if (fromIndex === index) return
   let targetIndex = index
   if (fromIndex < index) {
     targetIndex = edge === 'start' ? index - 1 : index
@@ -122,9 +124,13 @@ export function moveLauncher(launcher: Launcher, index: number, edge?: 'start' |
 }
 
 export function removeLauncher(index: number) {
+  const launcherTabs = getTerminalTabsByLauncher(launchers[index])
   const updated = [...launchers]
   updated.splice(index, 1)
   launchers = updated
+  for (const tab of launcherTabs) {
+    delete tab.character
+  }
 }
 
 export function updateLauncher(index: number, launcher: Launcher) {

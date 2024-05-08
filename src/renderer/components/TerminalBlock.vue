@@ -4,7 +4,7 @@ import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/clo
 import type { DraggableElementEventPayload } from '../../typings/draggable'
 import type { TerminalTab } from '../../typings/terminal'
 import { appendTerminalTab, getTerminalTabIndex } from '../compositions/terminal'
-import type { DraggableElementDataLike } from '../utils/draggable'
+import type { DraggableElementData } from '../utils/draggable'
 import DropTarget from './basic/DropTarget.vue'
 
 const { tab } = defineProps<{
@@ -15,20 +15,32 @@ const currentIndex = $computed(() => getTerminalTabIndex(tab))
 
 let dropEdge = $ref<Edge | null>(null)
 
-function handleDrag(args: DraggableElementEventPayload<DraggableElementDataLike>) {
-  if (args.source.data.type === 'tab' && args.source.data.index !== currentIndex) {
+function handleDrag(args: DraggableElementEventPayload<DraggableElementData>) {
+  if (
+    args.source.data.type === 'tab'
+    && args.source.data.index !== -1
+    && args.source.data.index !== currentIndex
+  ) {
     dropEdge = extractClosestEdge(args.self.data)
   }
 }
 
-function handleDragLeave(args: DraggableElementEventPayload<DraggableElementDataLike>) {
-  if (args.source.data.type === 'tab' && args.source.data.index !== currentIndex) {
+function handleDragLeave(args: DraggableElementEventPayload<DraggableElementData>) {
+  if (
+    args.source.data.type === 'tab'
+    && args.source.data.index !== -1
+    && args.source.data.index !== currentIndex
+  ) {
     dropEdge = null
   }
 }
 
-function handleDrop(args: DraggableElementEventPayload<DraggableElementDataLike>) {
-  if (args.source.data.type === 'tab' && args.source.data.index !== currentIndex) {
+function handleDrop(args: DraggableElementEventPayload<DraggableElementData>) {
+  if (
+    args.source.data.type === 'tab'
+    && args.source.data.index !== -1
+    && args.source.data.index !== currentIndex
+  ) {
     const edge = extractClosestEdge(args.self.data)
     appendTerminalTab(tab, args.source.data.index!, edge)
     dropEdge = null

@@ -1,6 +1,6 @@
 import * as commas from 'commas:api/main'
-import { BrowserWindow, dialog } from 'electron'
-import type { Launcher } from '../../typings/launcher'
+import { BrowserWindow } from 'electron'
+import type { Launcher, LauncherInfo } from '../../typings/launcher'
 import { createLauncher } from './create'
 import { useLaunchers } from './launcher'
 
@@ -17,17 +17,13 @@ export default () => {
   let launchers = $(useLaunchers())
   commas.ipcMain.provide('launchers', $$(launchers))
 
-  commas.ipcMain.handle('create-launcher', async (event) => {
+  commas.ipcMain.handle('create-launcher', async (event, data: Pick<LauncherInfo, 'name' | 'command' | 'directory'>, index: number) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     if (!frame) return
-    const result = await dialog.showOpenDialog(frame, {
-      properties: process.platform === 'darwin'
-        ? ['openFile', 'openDirectory', 'multiSelections', 'createDirectory']
-        : ['openFile', 'multiSelections', 'dontAddToRecent'],
-    })
-    if (result.canceled) return
-    const created = await Promise.all(result.filePaths.map(entry => createLauncher(entry))) as Launcher[]
-    launchers = [...launchers, ...created]
+    const created = await createLauncher(data) as Launcher
+    const updated = [...launchers]
+    updated.splice(index, 0, created)
+    launchers = updated
   })
 
   commas.settings.addSettingsSpecsFile('settings.spec.json')

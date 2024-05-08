@@ -7,9 +7,9 @@ function fillLauncherIDs(launchers: LauncherInfo[], old: Launcher[] | null) {
   const oldValues = old ? [...old] : []
   return launchers.map<Launcher>(launcher => {
     const index = oldValues.findIndex(item => {
-      return item.remote === launcher.remote && (item.name === launcher.name || (
-        item.directory === launcher.directory && item.command === launcher.command
-      ))
+      return item.name === launcher.name || (
+        item.remote === launcher.remote && item.directory === launcher.directory
+      )
     })
     let matched: Launcher | undefined
     if (index !== -1) {

@@ -2,11 +2,11 @@
 import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
 import * as commas from 'commas:api/renderer'
 import { ipcRenderer } from 'electron'
-import { reactive } from 'vue'
-import type { DraggableElementDataLike } from '../../../../src/renderer/utils/draggable'
+import { reactive, watch } from 'vue'
+import type { DraggableElementData } from '../../../../src/renderer/utils/draggable'
 import type { DraggableElementEventPayload } from '../../../../src/typings/draggable'
 import type { TerminalTab, TerminalTabCharacter } from '../../../../src/typings/terminal'
-import type { Launcher } from '../../typings/launcher'
+import type { Launcher, LauncherInfo } from '../../typings/launcher'
 import {
   getLauncherByTerminalTabCharacter,
   getTerminalTabCharacterByLauncher,
@@ -35,7 +35,6 @@ const tabs = $(commas.workspace.useTerminalTabs())
 const launchers = $(useLaunchers())
 
 let isCollapsed: boolean = $ref(false)
-let isEditing: boolean = $ref(false)
 
 const filteredLaunchers = $computed(() => {
   if (!isCollapsed) return launchers
@@ -48,7 +47,7 @@ const filteredLaunchers = $computed(() => {
 interface LauncherItem {
   key: string,
   tab?: TerminalTab,
-  index?: number,
+  index: number,
   character: TerminalTabCharacter,
   launcher: Launcher,
 }
@@ -65,7 +64,7 @@ const launcherItems = $computed(() => {
         character,
         launcher,
       }))
-      : [{ key: launcher.id, character, launcher }]
+      : [{ key: launcher.id, index: -1, character, launcher }]
   })
 })
 
@@ -73,25 +72,17 @@ function toggleCollapsing() {
   isCollapsed = !isCollapsed
 }
 
-function toggleEditing() {
-  isEditing = !isEditing
+function createLauncher(data: Pick<LauncherInfo, 'name' | 'command' | 'directory'>, index: number) {
+  ipcRenderer.invoke('create-launcher', data, index)
 }
 
-function createLauncher() {
-  ipcRenderer.invoke('create-launcher')
+function closeTab(tab: TerminalTab) {
+  commas.workspace.closeTerminalTab(tab)
 }
 
-function closeLauncher(launcher: Launcher, tab?: TerminalTab) {
-  if (isEditing) {
-    const index = launchers.findIndex(item => item.id === launcher.id)
-    removeLauncher(index)
-    const launcherTabs = getTerminalTabsByLauncher(launcher)
-    for (const launcherTab of launcherTabs) {
-      delete launcherTab.character
-    }
-  } else if (tab) {
-    commas.workspace.closeTerminalTab(tab)
-  }
+function dropLauncher(launcher: Launcher) {
+  const index = launchers.findIndex(item => item.id === launcher.id)
+  removeLauncher(index)
 }
 
 function customizeLauncher(launcher: Launcher, title: string) {
@@ -114,7 +105,7 @@ function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
       type: 'separator',
     },
     ...scripts.map((script, index) => ({
-      label: script.name || script.command,
+      label: script.name,
       command: 'run-script',
       args: [launcher, index],
     })),
@@ -125,7 +116,7 @@ function showLauncherMenu(event: MouseEvent) {
   commas.workspace.showTabOptions(event, 'launcher')
 }
 
-interface LauncherDraggableElementData extends DraggableElementDataLike {
+interface LauncherDraggableElementData extends DraggableElementData {
   launcher?: Launcher,
 }
 
@@ -136,7 +127,7 @@ interface DropTargetData extends Record<string | symbol, unknown> {
 const draggingEdges = reactive(new Map<string, Edge | null>())
 
 function handleDragStart(args: DraggableElementEventPayload<LauncherDraggableElementData>) {
-  if (args.source.data.type === 'tab') {
+  if (args.source.data.type === 'tab' && args.source.data.index !== -1) {
     const tab = tabs[args.source.data.index!]
     isGroupSeparating = Boolean(tab.group)
   }
@@ -147,51 +138,56 @@ function handleDragStop() {
 }
 
 function handleDrag(args: DraggableElementEventPayload<LauncherDraggableElementData, DropTargetData>) {
-  let launcher: Launcher | undefined
   if (args.source.data.type === 'tab') {
-    const tab = tabs[args.source.data.index!]
-    if (tab.character) {
-      launcher = getLauncherByTerminalTabCharacter(tab.character)
-    }
-  } else if (args.source.data.type === 'launcher') {
-    launcher = args.source.data.launcher
-  }
-  if (launcher) {
     draggingEdges.set(args.self.data.launcher.id, commas.ui.extractClosestEdge(args.self.data))
   }
 }
 
 function handleDragLeave(args: DraggableElementEventPayload<LauncherDraggableElementData, DropTargetData>) {
-  let launcher: Launcher | undefined
   if (args.source.data.type === 'tab') {
-    const tab = tabs[args.source.data.index!]
-    if (tab.character) {
-      launcher = getLauncherByTerminalTabCharacter(tab.character)
-    }
-  } else if (args.source.data.type === 'launcher') {
-    launcher = args.source.data.launcher
-  }
-  if (launcher) {
     draggingEdges.set(args.self.data.launcher.id, null)
   }
 }
 
-function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementData, DropTargetData>) {
-  let launcher: Launcher | undefined
-  if (args.source.data.type === 'tab') {
-    const tab = tabs[args.source.data.index!]
-    if (tab.character) {
-      launcher = getLauncherByTerminalTabCharacter(tab.character)
-    }
-  } else if (args.source.data.type === 'launcher') {
-    launcher = args.source.data.launcher
+const pool = new Set<{ tab: TerminalTab, index: number }>()
+
+watch(() => launchers, values => {
+  for (const { tab, index } of pool) {
+    tab.character = index !== -1
+      ? getTerminalTabCharacterByLauncher(values[index])
+      : undefined
   }
-  if (launcher) {
+  pool.clear()
+})
+
+function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementData, DropTargetData>) {
+  if (args.source.data.type === 'tab') {
+    let launcher: Launcher | undefined
+    if (args.source.data.index === -1) {
+      launcher = args.source.data.launcher
+    } else {
+      const tab = tabs[args.source.data.index!]
+      if (tab.character) {
+        launcher = getLauncherByTerminalTabCharacter(tab.character)
+      }
+    }
     const edge = commas.ui.extractClosestEdge(args.self.data)
     const toEdge = edge === 'top' || edge === 'left'
       ? 'start'
       : (edge === 'bottom' || edge === 'right' ? 'end' : undefined)
-    moveLauncher(launcher, launchers.indexOf(args.self.data.launcher), toEdge)
+    if (launcher) {
+      moveLauncher(launcher, launchers.indexOf(args.self.data.launcher), toEdge)
+    } else {
+      const tab = tabs[args.source.data.index!]
+      const toIndex = launchers.indexOf(args.self.data.launcher)
+      const index = toEdge === 'start' ? toIndex : toIndex + 1
+      createLauncher({
+        name: commas.workspace.getTerminalTabTitle(tab),
+        command: tab.command,
+        directory: tab.cwd,
+      }, index)
+      pool.add({ tab, index })
+    }
     draggingEdges.set(args.self.data.launcher.id, null)
   }
 }
@@ -213,20 +209,18 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
             <VisualIcon :name="isCollapsed ? 'lucide-list-filter' : 'lucide-list-video'" />
           </span>
         </div>
-        <div class="buttons" @click.stop>
-          <div
-            :class="['button', 'edit', { active: isEditing }]"
-            @click="toggleEditing"
-          >
-            <VisualIcon name="lucide-tags" />
-          </div>
-        </div>
       </div>
       <DraggableElement
         v-for="{ key, tab, index, character, launcher } in launcherItems"
         :key="key"
         v-slot="{ mount: draggable }"
-        :data="{ type: tab ? 'tab' : 'launcher', index, launcher }"
+        :data="{
+          type: 'tab',
+          index,
+          launcher,
+          create: () => openLauncher(launcher),
+          dispose: () => dropLauncher(launcher),
+        }"
         @dragstart="handleDragStart"
         @drop="handleDragStop"
       >
@@ -252,13 +246,13 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
               :ref="draggable"
               :tab="tab"
               :character="character"
-              :closable="isEditing"
+              :closable="Boolean(tab)"
               customizable
               @click="openLauncher(launcher, { tab })"
-              @close="closeLauncher(launcher, tab)"
+              @close="closeTab(tab!)"
               @customize="customizeLauncher(launcher, $event)"
             >
-              <template v-if="!isEditing" #operations>
+              <template #operations>
                 <div
                   class="button launch"
                   @click.stop="startLauncher(launcher)"
@@ -277,9 +271,6 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
           </div>
         </DropTarget>
       </DraggableElement>
-      <div v-if="isEditing" class="new-launcher" @click="createLauncher">
-        <VisualIcon name="lucide-plus" />
-      </div>
     </template>
   </div>
 </template>
@@ -324,30 +315,16 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
   padding: 0 8px;
   line-height: 16px;
   cursor: pointer;
-  .button {
-    opacity: 0.5;
-    &:hover {
-      opacity: 1;
-    }
-  }
   .tab-list.horizontal & {
     height: var(--min-tab-height);
     line-height: var(--min-tab-height);
   }
-}
-.buttons {
-  display: flex;
-  flex: none;
 }
 .button {
   width: 18px;
   text-align: center;
   transition: opacity 0.2s, color 0.2s;
   cursor: pointer;
-}
-.edit.active {
-  color: rgb(var(--system-yellow));
-  opacity: 1;
 }
 .group-name {
   flex: auto;
@@ -369,18 +346,5 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
 }
 .launch-externally:hover {
   color: rgb(var(--system-blue));
-}
-.new-launcher {
-  height: var(--tab-height);
-  padding: 8px 16px;
-  font-size: var(--primary-icon-size);
-  line-height: var(--tab-height);
-  text-align: center;
-  opacity: 0.5;
-  transition: opacity 0.2s;
-  cursor: pointer;
-  &:hover {
-    opacity: 1;
-  }
 }
 </style>
