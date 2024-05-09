@@ -3,7 +3,7 @@ import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge
 import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
 import type { DraggableElementEventPayload } from '../../typings/draggable'
 import type { TerminalTab } from '../../typings/terminal'
-import { appendTerminalTab, getTerminalTabIndex } from '../compositions/terminal'
+import { appendTerminalTab, getTerminalTabIndex, splitTerminalTab } from '../compositions/terminal'
 import type { DraggableElementData } from '../utils/draggable'
 import DropTarget from './basic/DropTarget.vue'
 
@@ -19,7 +19,6 @@ function handleDrag(args: DraggableElementEventPayload<DraggableElementData>) {
   if (
     args.source.data.type === 'tab'
     && args.source.data.index !== -1
-    && args.source.data.index !== currentIndex
   ) {
     dropEdge = extractClosestEdge(args.self.data)
   }
@@ -29,20 +28,22 @@ function handleDragLeave(args: DraggableElementEventPayload<DraggableElementData
   if (
     args.source.data.type === 'tab'
     && args.source.data.index !== -1
-    && args.source.data.index !== currentIndex
   ) {
     dropEdge = null
   }
 }
 
-function handleDrop(args: DraggableElementEventPayload<DraggableElementData>) {
+async function handleDrop(args: DraggableElementEventPayload<DraggableElementData>) {
   if (
     args.source.data.type === 'tab'
     && args.source.data.index !== -1
-    && args.source.data.index !== currentIndex
   ) {
     const edge = extractClosestEdge(args.self.data)
-    appendTerminalTab(tab, args.source.data.index!, edge)
+    if (args.source.data.index === currentIndex) {
+      splitTerminalTab(tab)
+    } else {
+      appendTerminalTab(tab, args.source.data.index!, edge)
+    }
     dropEdge = null
   }
 }
