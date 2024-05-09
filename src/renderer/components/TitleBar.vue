@@ -59,6 +59,8 @@ function close() {
 
 <style lang="scss" scoped>
 .title-bar {
+  // TODO: get the min size on win32
+  --control-area-size: #{28px * 3 + 8px * 5};
   z-index: 1;
   display: flex;
   flex: none;
@@ -66,6 +68,9 @@ function close() {
   height: env(titlebar-area-height, 36px);
   line-height: env(titlebar-area-height, 36px);
   -webkit-app-region: drag;
+  &.darwin {
+    --control-area-size: #{12px * 2 + 56px};
+  }
   &:has(.tab-list) {
     height: 52px; // 36 + 2 * 8
     line-height: 1;
@@ -78,6 +83,7 @@ function close() {
 .symmetrical-space {
   display: flex;
   flex: none;
+  box-sizing: border-box;
 }
 .title-wrapper {
   display: flex;
@@ -91,36 +97,31 @@ function close() {
   order: 1;
 }
 .controls {
+  gap: 8px;
   justify-content: flex-end;
-  width: #{36px * 3 + 8px};
+  width: var(--control-area-size);
+  padding: 4px 8px;
   .title-bar.no-controls & {
     order: -1;
+    padding: 0;
   }
-  .title-bar.no-controls.darwin & {
-    width: #{12px * 2 + 56px};
-  }
-  // TODO: get the min size on win32
 }
-.symmetrical-space {
-  .title-bar:has(.terminal-title) & {
-    width: #{36px * 3 + 8px};
-  }
-  .title-bar.no-controls.darwin & {
-    width: #{12px * 2 + 56px};
-  }
+.title-bar:has(.terminal-title) .symmetrical-space {
+  width: var(--control-area-size);
 }
 .button {
-  width: 36px;
-  height: 36px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 28px;
+  height: 28px;
   text-align: center;
-  transition: color 0.2s;
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
   cursor: pointer;
   -webkit-app-region: no-drag;
-  &.minimize:hover {
-    color: rgb(var(--system-green));
-  }
-  &.maximize:hover {
-    color: rgb(var(--system-yellow));
+  &:hover {
+    background: rgb(var(--theme-background) / var(--design-card-secondary-opacity));
   }
   &.close:hover {
     color: rgb(var(--system-red));
