@@ -113,6 +113,8 @@ onMounted(() => {
   --system-blue: 0 122 245;
   --system-magenta: 245 35 75;
   --system-accent: var(--system-blue);
+  --design-alert-color: rgb(var(--system-blue));
+  --design-highlight-color: rgb(var(--system-blue));
   --design-highlight-background: color-mix(in hsl, rgb(var(--theme-foreground) / 15%), rgb(var(--acrylic-background) / 10%));
   --design-input-background: color-mix(in hsl, rgb(var(--theme-foreground) / 10%) 75%, rgb(var(--acrylic-background) / 10%));
   --design-separator: rgb(var(--theme-foreground) / 10%);
@@ -121,9 +123,10 @@ onMounted(() => {
   --design-card-shadow: 0 2px 4px 0px rgb(0 0 0 / 10%);
   --design-element-shadow: 0 1px 2px 0px rgb(0 0 0 / 10%);
   --design-card-secondary-opacity: calc(var(--theme-opacity) * 3 / 4);
-  --acrylic-background: 133 194 255;
   @media (prefers-color-scheme: dark) {
     --system-cyan: 108 224 219;
+    --design-alert-color: rgb(var(--system-yellow));
+    --design-highlight-color: rgb(var(--system-cyan));
   }
 }
 :global(::selection) {

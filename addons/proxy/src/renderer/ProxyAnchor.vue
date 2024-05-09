@@ -41,7 +41,7 @@ function configure() {
   gap: 4px;
   align-items: center;
   &.active {
-    color: rgb(var(--system-cyan));
+    color: var(--design-highlight-color);
     &.system {
       color: rgb(var(--system-magenta));
     }

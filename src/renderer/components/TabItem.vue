@@ -229,7 +229,7 @@ function close() {
     color: rgb(var(--system-green));
   }
   &.alerting {
-    color: rgb(var(--system-yellow));
+    color: var(--design-alert-color);
   }
   .tab-item:hover & {
     display: none;

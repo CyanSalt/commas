@@ -331,7 +331,7 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
   opacity: 0.5;
   transition: opacity 0.2s, color 0.2s;
   &.collapsed {
-    color: rgb(var(--system-yellow));
+    color: var(--design-highlight-color);
     opacity: 1;
   }
   &:not(.collapsed):hover {
