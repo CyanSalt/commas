@@ -19,6 +19,7 @@ function handleDrag(args: DraggableElementEventPayload<DraggableElementData>) {
   if (
     args.source.data.type === 'tab'
     && args.source.data.index !== -1
+    && !(tab.pane && args.source.data.index === currentIndex)
   ) {
     dropEdge = extractClosestEdge(args.self.data)
   }
@@ -28,6 +29,7 @@ function handleDragLeave(args: DraggableElementEventPayload<DraggableElementData
   if (
     args.source.data.type === 'tab'
     && args.source.data.index !== -1
+    && !(tab.pane && args.source.data.index === currentIndex)
   ) {
     dropEdge = null
   }
