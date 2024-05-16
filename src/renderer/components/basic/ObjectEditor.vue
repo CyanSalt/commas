@@ -50,12 +50,11 @@ const entryItems = $computed(() => {
     id: `pinned:${withKeys ? entry.key : entry.value}`,
   }))
   const extraItems = entries
-    .map<EditorEntryItem>((entry, index) => (
-      {
-        entry,
-        index,
-        id: index,
-      }))
+    .map<EditorEntryItem>((entry, index) => ({
+    entry,
+    index,
+    id: index,
+  }))
     .filter(item => !pinnedItems.some(pinnedItem => isMatchedWithPinned(item.entry, pinnedItem.entry)))
   return [
     ...pinnedItems,

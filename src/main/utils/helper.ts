@@ -15,8 +15,8 @@ function until<T extends EventEmitter, U extends string>(emitter: T, finish: U, 
       resolve(args)
     })
     if (error) {
-      emitter.once(error, (...args) => {
-        reject(args)
+      emitter.once(error, rejection => {
+        reject(rejection)
       })
     }
   })

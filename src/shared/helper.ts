@@ -6,7 +6,7 @@ export function createIDGenerator(iterator?: IDIterator) {
   }
   let id = 1n
   return () => {
-    id = iterator!(id)
+    id = iterator(id)
     return id
   }
 }

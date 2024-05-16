@@ -50,7 +50,7 @@ export function toElectronHEX(rgba: RGBA) {
 
 export function isDarkColor(rgba: RGBA) {
   // YIQ equation from http://24ways.org/2010/calculating-color-contrast
-  const yiq = (rgba.r * 2126 + rgba.g * 7152 + rgba.a * 722) / 10000
+  const yiq = (rgba.r * 2126 + rgba.g * 7152 + rgba.b * 722) / 10000
   return yiq < 128
 }
 
