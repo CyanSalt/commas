@@ -2,7 +2,6 @@
   --scrollbar-size: #{$size};
   --scrollbar-opacity: 0;
   overflow: scroll;
-  /* stylelint-disable-next-line custom-property-no-missing-var-function */
   transition: --scrollbar-opacity 0.2s;
   scrollbar-gutter: stable;
   &:hover {
