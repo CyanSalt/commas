@@ -38,7 +38,7 @@
     "@atlaskit/pragmatic-drag-and-drop-hitbox": "^1.0.3",
     "@commas/api": "file:api",
     "@cyansalt/eslint-config": "^4.0.0",
-    "@cyansalt/stylelint-config": "^4.0.1",
+    "@cyansalt/stylelint-config": "^4.0.2",
     "@cyansalt/tsconfig": "^2.2.1",
     "@electron/packager": "^18.3.2",
     "@electron/rebuild": "^3.6.0",
