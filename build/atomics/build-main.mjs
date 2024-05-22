@@ -21,5 +21,10 @@ export default (versions, tap) => esbuild.build(tap({
   define: {
     // Optimization
     'process.type': JSON.stringify('browser'),
+    ...Object.fromEntries(
+      Object.entries(process.env)
+        .filter(([key]) => key.startsWith('__COMMAS_'))
+        .map(([key, value]) => [`process.env.${key}`, JSON.stringify(value)]),
+    ),
   },
 }))

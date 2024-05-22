@@ -1,0 +1,16 @@
+{
+  "name": "@commas/ai",
+  "private": true,
+  "version": "0.1.0",
+  "productName": "AI",
+  "description": "Autocompletion powered by AI",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC",
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "AI",
+      "description": "AI 支持的自动补全"
+    }
+  }
+}

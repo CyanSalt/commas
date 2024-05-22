@@ -1,16 +1,11 @@
 import path from 'node:path'
 import url from 'node:url'
 import { execa } from './child-process.mjs'
-import { getDirectory, resolveCommonJS } from './common.mjs'
+import { getDirectory } from './common.mjs'
 
 export default async function () {
-  let electron = resolveCommonJS(import.meta, 'electron/cli.js')
-  if (import.meta.resolve) {
-    const resolved = await import.meta.resolve('electron/cli.js')
-    electron = url.fileURLToPath(resolved)
-  } else {
-    electron = resolveCommonJS(import.meta, 'electron/cli.js')
-  }
+  const resolved = import.meta.resolve('electron/cli.js')
+  const electron = url.fileURLToPath(resolved)
   const versionScript = path.resolve(getDirectory(import.meta), 'electron-versions.cjs')
   const { stdout: versions } = await execa(`node ${electron} ${versionScript}`)
   return JSON.parse(versions)
