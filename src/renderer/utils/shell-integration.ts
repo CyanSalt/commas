@@ -171,16 +171,17 @@ export class ShellIntegrationAddon implements ITerminalAddon {
           case 'A': {
             // PromptStart
             const marker = this._createCompletionMarker(xterm)
-            const actions = this.currentCommand
-              ? this.currentCommand.actions
-              : this._generateQuickFixActions()
+            const lastCommand = this.commands.length
+              ? this.commands[this.commands.length - 1]
+              : undefined
+            const hasActions = Boolean(lastCommand?.actions?.length)
             const theme = useTheme()
             let currentCommand = this.currentCommand
             const decoration = this._createCommandDecoration(
               xterm,
               marker,
-              actions ? theme.yellow : theme.foreground,
-              actions ? 'strong' : undefined,
+              hasActions ? theme.yellow : theme.foreground,
+              hasActions ? 'strong' : undefined,
             )
             if (this.currentCommand) {
               this.currentCommand.marker.dispose()
@@ -196,7 +197,6 @@ export class ShellIntegrationAddon implements ITerminalAddon {
                 commandStartY: position.y,
                 outputStartY: position.y + 1,
                 outputEndY: position.y + 1,
-                actions,
               }
               this.commands.push(currentCommand)
               this.currentCommand = currentCommand
@@ -256,6 +256,10 @@ export class ShellIntegrationAddon implements ITerminalAddon {
                   )
                 }
               }
+              this.currentCommand.actions = [
+                ...(this.currentCommand.actions ?? []),
+                ...(this._generateQuickFixActions(this.currentCommand) ?? []),
+              ]
               this.tab.command = ''
               this.currentCommand = undefined
             }
@@ -564,21 +568,18 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
   }
 
-  _generateQuickFixActions() {
+  _generateQuickFixActions(command: IntegratedShellCommand | undefined) {
     const { xterm } = this.tab
-    const lastCommand = this.commands.length
-      ? this.commands[this.commands.length - 1]
-      : undefined
-    if (lastCommand?.command && lastCommand.exitCode) {
-      let lastOutput = ''
-      for (let line = lastCommand.outputStartY; line < lastCommand.outputEndY; line += 1) {
+    if (command?.command && command.exitCode) {
+      let output = ''
+      for (let line = command.outputStartY; line < command.outputEndY; line += 1) {
         const bufferLine = xterm.buffer.active.getLine(line)
         if (bufferLine) {
-          lastOutput += (bufferLine.isWrapped || !lastOutput ? '' : '\n')
+          output += (bufferLine.isWrapped || !output ? '' : '\n')
             + bufferLine.translateToString(true)
         }
       }
-      return this._getQuickFixActionsByOutput(lastCommand.command, lastOutput)
+      return this._getQuickFixActionsByOutput(command.command, output)
     }
   }
 
@@ -663,8 +664,11 @@ export class ShellIntegrationAddon implements ITerminalAddon {
 
   async _getCompletions(input: string) {
     let completions: CommandCompletion[] = []
-    if (this.currentCommand?.actions) {
-      const actionCompletions: CommandCompletion[] = this.currentCommand.actions.map(action => ({
+    const previousCommand = this.commands.length > 1
+      ? this.commands[this.commands.length - 2]
+      : undefined
+    if (previousCommand?.actions?.length) {
+      const actionCompletions: CommandCompletion[] = previousCommand.actions.map(action => ({
         type: 'recommendation',
         query: input,
         value: action.command,
@@ -806,6 +810,14 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     if (stickyMarker) {
       scrollToMarker(this.tab.xterm, stickyMarker)
     }
+  }
+
+  addQuickFixAction(command: string) {
+    if (!this.currentCommand) return
+    this.currentCommand.actions = [
+      ...(this.currentCommand.actions ?? []),
+      { command },
+    ]
   }
 
   handleCustomKeyEvent(event: KeyboardEvent): boolean | void {

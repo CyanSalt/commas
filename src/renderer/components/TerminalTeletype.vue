@@ -292,7 +292,7 @@ function scrollToStickyCommand() {
   cursor: default;
 }
 :deep(.terminal-completion) {
-  max-height: calc(var(--cell-height) * var(--row-span));
+  max-height: calc(var(--cell-height) * var(--row-span) + 8px); // --scrollbar-size
   margin-left: calc(var(--column) * var(--cell-width));
   border: 1px solid rgb(127 127 127 / 50%);
   overflow: hidden;

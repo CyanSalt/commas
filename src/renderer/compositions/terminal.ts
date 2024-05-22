@@ -558,6 +558,11 @@ export function handleTerminalMessages() {
       ?? []
     return count ? commands.slice(0 - count) : commands
   })
+  handleRenderer('add-quick-fix-action', (event, command: string) => {
+    if (!currentTerminal) return
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    currentTerminal.addons?.shellIntegration?.addQuickFixAction(command)
+  })
 }
 
 function loadReadOnlyTerminalAddons(tab: TerminalTab, xterm: Terminal, addons: Record<string, any>) {
