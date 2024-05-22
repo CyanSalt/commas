@@ -25,6 +25,7 @@ interface IntegratedShellCommand {
   commandStartX: number,
   commandStartY: number,
   outputStartY: number,
+  outputEndY: number,
   startedAt?: Date,
   endedAt?: Date,
   actions?: IntegratedShellCommandAction[],
@@ -172,7 +173,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             const marker = this._createCompletionMarker(xterm)
             const actions = this.currentCommand
               ? this.currentCommand.actions
-              : this._generateQuickFixActions(marker)
+              : this._generateQuickFixActions()
             const theme = useTheme()
             let currentCommand = this.currentCommand
             const decoration = this._createCommandDecoration(
@@ -194,6 +195,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
                 commandStartX: position.x,
                 commandStartY: position.y,
                 outputStartY: position.y + 1,
+                outputEndY: position.y + 1,
                 actions,
               }
               this.commands.push(currentCommand)
@@ -218,6 +220,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             if (this.currentCommand) {
               const position = this._getCurrentPosition()
               this.currentCommand.outputStartY = position.y
+              this.currentCommand.outputEndY = position.y
               this.currentCommand.startedAt = new Date()
             }
             return true
@@ -225,6 +228,8 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             // CommandComplete
             this.tab.idle = true
             if (this.currentCommand) {
+              const position = this._getCurrentPosition()
+              this.currentCommand.outputEndY = position.y
               this.currentCommand.endedAt = new Date()
               const exitCode = args[0] ? Number(args[0]) : undefined
               if (typeof exitCode === 'number') {
@@ -559,15 +564,14 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
   }
 
-  _generateQuickFixActions(marker: IMarker) {
+  _generateQuickFixActions() {
     const { xterm } = this.tab
     const lastCommand = this.commands.length
       ? this.commands[this.commands.length - 1]
       : undefined
     if (lastCommand?.command && lastCommand.exitCode) {
-      const lastCommandLine = lastCommand.outputStartY
       let lastOutput = ''
-      for (let line = lastCommandLine; line < marker.line; line += 1) {
+      for (let line = lastCommand.outputStartY; line < lastCommand.outputEndY; line += 1) {
         const bufferLine = xterm.buffer.active.getLine(line)
         if (bufferLine) {
           lastOutput += (bufferLine.isWrapped || !lastOutput ? '' : '\n')
