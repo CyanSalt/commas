@@ -13,6 +13,7 @@ import { quote } from 'shell-quote'
 import table from 'text-table'
 import type { CommandModule } from './command'
 import { executeCommand, getCommandModule, useExternalURLCommands } from './command'
+import EventEmitter from 'node:events'
 
 declare module '../../../../src/typings/settings' {
   export interface Settings {
@@ -50,14 +51,22 @@ export default () => {
       context.sender = webContents.fromId(context.sender)
       try {
         const execution = executeCommand(context, commands)
+        let payload: string | undefined
         let done: boolean | undefined
         while (!done) {
-          const result = await execution.next()
+          const result = await execution.next(payload)
+          payload = undefined
+          done = result.done
           const stdout = result.value
           if (stdout) {
-            ipc.server.emit(socket, 'data', stdout)
+            if (stdout.endsWith('\x05')) {
+              ipc.server.emit(socket, 'pause', stdout.slice(0, -1))
+              const [received] = await commas.shell.until(ipc.server as unknown as EventEmitter<{ resume: [string] }>, 'resume')
+              payload = received
+            } else {
+              ipc.server.emit(socket, 'data', stdout)
+            }
           }
-          done = result.done
         }
         ipc.server.emit(socket, 'end', 0)
       } catch (err) {

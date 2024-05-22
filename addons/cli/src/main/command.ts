@@ -17,7 +17,7 @@ export interface CommandModule {
   command: string,
   description?: string,
   usage?: string,
-  handler: (context: CommandContext) => Generable<string, string | undefined>,
+  handler: (context: CommandContext) => Generable<string, string | undefined, string | undefined>,
 }
 
 function getCommandModule(command: string, commands: CommandModule[]) {
@@ -32,7 +32,7 @@ function getCommandModule(command: string, commands: CommandModule[]) {
 function executeCommand(
   inputContext: CommandContext,
   commands: CommandModule[],
-): AsyncGenerator<string, string | undefined, never> {
+): AsyncGenerator<string, string | undefined, string | undefined> {
   const [command, ...argv] = inputContext.argv
   const mod = getCommandModule(command, commands)
   if (!mod) {

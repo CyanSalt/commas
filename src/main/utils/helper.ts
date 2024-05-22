@@ -5,12 +5,14 @@ import * as util from 'node:util'
 
 const execa = util.promisify(childProcess.exec)
 
-interface OnceEmitter<T extends string, U extends any[]> {
-  once(name: T, listener: (...args: U) => unknown): this,
-}
-
 function until<T extends EventEmitter, U extends string>(emitter: T, finish: U, error?: string) {
-  return new Promise<T extends OnceEmitter<U, infer V> ? V : unknown[]>((resolve, reject) => {
+  return new Promise<
+    T extends EventEmitter<{ [P in U]: infer V extends any[] }> ? V : (
+      T extends {
+        once(name: U, listener: (...args: infer V) => unknown): unknown,
+      } ? V : unknown[]
+    )
+  >((resolve, reject) => {
     emitter.once(finish, (...args: any) => {
       resolve(args)
     })

@@ -29,23 +29,24 @@ export function createDeferred() {
   return deferred
 }
 
-export type Generable<T, U> = U | Promise<U> | Generator<T, U, never> | AsyncGenerator<T, U, never>
+export type Generable<T, U, V> = U | Promise<U> | Generator<T, U, V> | AsyncGenerator<T, U, V>
 
-export function isIterator(value: any): value is Iterator<unknown> | AsyncIterator<unknown> {
+export function isIterator(value: any): value is Iterator<unknown, unknown, unknown> | AsyncIterator<unknown, unknown, unknown> {
   return Boolean(value) && typeof value.next === 'function'
 }
 
-export async function *iterate<T, U>(iteratee: Generable<T, U>): AsyncGenerator<T, U, never> {
+export async function *iterate<T, U, V>(iteratee: Generable<T, U, V>): AsyncGenerator<T, U, V> {
   if (!isIterator(iteratee)) {
     return iteratee as Awaited<U>
   }
+  let payload: V
   let done: boolean | undefined
   while (!done) {
-    const result = await iteratee.next()
+    const result = await iteratee.next(payload!)
     if (result.done) {
       return result.value as Awaited<U>
     } else {
-      yield result.value
+      payload = yield result.value
     }
     done = result.done
   }
