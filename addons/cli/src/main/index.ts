@@ -1,3 +1,4 @@
+import type EventEmitter from 'node:events'
 import * as fs from 'node:fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
@@ -13,7 +14,6 @@ import { quote } from 'shell-quote'
 import table from 'text-table'
 import type { CommandModule } from './command'
 import { executeCommand, getCommandModule, useExternalURLCommands } from './command'
-import EventEmitter from 'node:events'
 
 declare module '../../../../src/typings/settings' {
   export interface Settings {
