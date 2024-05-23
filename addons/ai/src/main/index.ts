@@ -1,5 +1,5 @@
 import * as commas from 'commas:api/main'
-import { getCommand } from './prompt'
+import { getCommand, getDoctorCommand } from './prompt'
 
 export default () => {
 
@@ -16,6 +16,9 @@ export default () => {
     },
   })
 
-  commas.i18n.addTranslationDirectory('locales')
+  commas.ipcMain.handle('ai-doctor', async (event, command: string, output: string) => {
+    return getDoctorCommand(command, output)
+  })
+
 
 }

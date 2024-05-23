@@ -3,6 +3,7 @@ import { ipcRenderer } from 'electron'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { isEqual } from 'lodash'
 import { nextTick, reactive, toRaw } from 'vue'
+import * as commas from '../../../api/core-renderer'
 import { toCSSHEX, toRGBA } from '../../shared/color'
 import type { MenuItem } from '../../typings/menu'
 import type { CommandCompletion, TerminalTab } from '../../typings/terminal'
@@ -260,6 +261,8 @@ export class ShellIntegrationAddon implements ITerminalAddon {
                 ...(this.currentCommand.actions ?? []),
                 ...(this._generateQuickFixActions(this.currentCommand) ?? []),
               ]
+              const output = this._getCommandOutput(this.currentCommand)
+              commas.proxy.app.events.emit('command-complete', this.currentCommand, output)
               this.tab.command = ''
               this.currentCommand = undefined
             }
@@ -568,17 +571,22 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
   }
 
-  _generateQuickFixActions(command: IntegratedShellCommand | undefined) {
+  _getCommandOutput(command: IntegratedShellCommand) {
     const { xterm } = this.tab
-    if (command?.command && command.exitCode) {
-      let output = ''
-      for (let line = command.outputStartY; line < command.outputEndY; line += 1) {
-        const bufferLine = xterm.buffer.active.getLine(line)
-        if (bufferLine) {
-          output += (bufferLine.isWrapped || !output ? '' : '\n')
-            + bufferLine.translateToString(true)
-        }
+    let output = ''
+    for (let line = command.outputStartY; line < command.outputEndY; line += 1) {
+      const bufferLine = xterm.buffer.active.getLine(line)
+      if (bufferLine) {
+        output += (bufferLine.isWrapped || !output ? '' : '\n')
+          + bufferLine.translateToString(true)
       }
+    }
+    return output
+  }
+
+  _generateQuickFixActions(command: IntegratedShellCommand | undefined) {
+    if (command?.command && command.exitCode) {
+      const output = this._getCommandOutput(command)
       return this._getQuickFixActionsByOutput(command.command, output)
     }
   }
@@ -812,12 +820,21 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
   }
 
-  addQuickFixAction(command: string) {
-    if (!this.currentCommand) return
-    this.currentCommand.actions = [
-      ...(this.currentCommand.actions ?? []),
+  addQuickFixAction(command: string, target?: IntegratedShellCommand) {
+    const targetCommand = target ?? this.currentCommand
+    if (!targetCommand) return
+    targetCommand.actions = [
+      ...(targetCommand.actions ?? []),
       { command },
     ]
+    // Refresh completion if needed
+    if (
+      this.commands.length > 1
+      && this.commands[this.commands.length - 2] === targetCommand
+    ) {
+      this.clearCompletion()
+      this.triggerCompletion()
+    }
   }
 
   handleCustomKeyEvent(event: KeyboardEvent): boolean | void {
