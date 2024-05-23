@@ -1,3 +1,4 @@
 {
-  "Get command with AI prompt#!cli.description.ai": "通过 AI 提示词获取命令"
+  "Get command with AI prompt#!cli.description.ai": "通过 AI 提示词获取命令",
+  "Missing `${key}` in settings. You can open settings via Command+, key, or `commas open settings` command and add it.#!ai.1": "配置缺少 `${key}`。你可以通过 Command+, 快捷键，或者是 `commas open settings` 命令打开配置并添加它。"
 }

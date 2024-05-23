@@ -1,0 +1,24 @@
+[
+  {
+    "key": "ai.ernie.key",
+    "label": "API Key for ERNIE",
+    "comments": [
+      "Specify the API key of the ERNIE Speed language model"
+    ],
+    "schema": {
+      "type": "string"
+    },
+    "default": ""
+  },
+  {
+    "key": "ai.ernie.secret",
+    "label": "Secret Key for ERNIE",
+    "comments": [
+      "Specify the secret key of the ERNIE Speed language model"
+    ],
+    "schema": {
+      "type": "string"
+    },
+    "default": ""
+  }
+]

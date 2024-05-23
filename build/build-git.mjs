@@ -1,5 +1,4 @@
 import * as path from 'node:path'
-import dotenv from 'dotenv'
 import buildAddonMain from './atomics/build-addon-main.mjs'
 import buildAddonRenderer from './atomics/build-addon-renderer.mjs'
 import buildCoreMain from './atomics/build-core-main.mjs'
@@ -7,8 +6,6 @@ import buildCoreRenderer from './atomics/build-core-renderer.mjs'
 import { execa } from './utils/child-process.mjs'
 import getAddons from './utils/get-addons.mjs'
 import getVersions from './utils/get-versions.mjs'
-
-dotenv.config()
 
 async function getModifiedFiles() {
   const { stdout: files } = await execa(`git ls-files --modified --others --exclude-standard`)
