@@ -1,5 +1,38 @@
 
 
+## [0.32.0](https://github.com/CyanSalt/commas/compare/v0.31.0...v0.32.0) (2024-05-23)
+
+
+### Features
+
+* add ai command ([b8ec7ee](https://github.com/CyanSalt/commas/commit/b8ec7eeb70889144ef2888097934ad87ec9e9499))
+* auto scroll ([ce85836](https://github.com/CyanSalt/commas/commit/ce8583609a1afcbd8a865b82268e6f2888602615))
+* better dnd for tab items ([b534b7d](https://github.com/CyanSalt/commas/commit/b534b7dad14f5997c5265da7d74f3374d86291c4))
+* **cli:** support prompt ([6c2a008](https://github.com/CyanSalt/commas/commit/6c2a008ca15f27f8f611e7e04a804a782fa39b74))
+* drag self to split ([29c4396](https://github.com/CyanSalt/commas/commit/29c43966b11b0a7e427ca5a9b20b2e05cc1feb96))
+* experimental ai addon ([66e81d9](https://github.com/CyanSalt/commas/commit/66e81d9c877d363ac3033102837f4a4cd0991a73))
+* **launcher:** fast customization ([901e850](https://github.com/CyanSalt/commas/commit/901e8507c6a764980a3d06e0c859b3d56aa49567))
+* **launcher:** interactive launcher list ([b65b944](https://github.com/CyanSalt/commas/commit/b65b9445619aba0d0e74f873fd7f07390f67a44f))
+
+
+### Bug Fixes
+
+* **cleaner:** missing style ([aeda13a](https://github.com/CyanSalt/commas/commit/aeda13a891ddfa655dbf2fc4ceeadbcfb4e61097))
+* disallow spliting panes ([ac6f6c9](https://github.com/CyanSalt/commas/commit/ac6f6c98bd2e98b6a85eabb3774b994fb0de25b1))
+* **editor:** focus outline and padding ([debd393](https://github.com/CyanSalt/commas/commit/debd39397bd906cf1b1024300aaaf6de9720917d))
+* fit light colors ([9ea0c2d](https://github.com/CyanSalt/commas/commit/9ea0c2d599e709ab87e7e46b55ff6682fd261675))
+* **launcher:** remove keyword matching ([e28beba](https://github.com/CyanSalt/commas/commit/e28bebac069aa7e250ee424e65d7a97abb24b3e9))
+* paste before initialization ([4a5bada](https://github.com/CyanSalt/commas/commit/4a5bada732a24d44e61f99cbf74fa3d8fd7a977f))
+* **proxy:** anchor space ([eb1166a](https://github.com/CyanSalt/commas/commit/eb1166a378a714242a47994b05ab7cffbdada5b9))
+* **shell-integration:** move actions to exact command ([28b0f53](https://github.com/CyanSalt/commas/commit/28b0f531800ed1375ef99bc0bf06dc446ce12e1c))
+* **shell-integration:** record output end ([ff82c64](https://github.com/CyanSalt/commas/commit/ff82c6406b147478bcc4f3fd12ee37f7ea318e4b))
+* sticky drop target ([4c067e3](https://github.com/CyanSalt/commas/commit/4c067e32263d3d84aec471defced6ea3a821dc42))
+* tab list layout ([ae44b97](https://github.com/CyanSalt/commas/commit/ae44b97f91f19e155547d189e5b48fc3345ba3c9))
+* title bar custom button style ([ecb8e78](https://github.com/CyanSalt/commas/commit/ecb8e781404d9c64fe3e57ac7eb47bf051becf14))
+* title overflow ([e69e6e2](https://github.com/CyanSalt/commas/commit/e69e6e2751f447ca3498c26f5288736334da1d5b))
+* wide title bar ([0a64960](https://github.com/CyanSalt/commas/commit/0a64960a229568d8dc692c3d4f01b7ff5c6ac8b2))
+* xterm line height ([061f094](https://github.com/CyanSalt/commas/commit/061f0942a9e5a2929f680b19ec7b4aed6095a196))
+
 ## [0.31.0](https://github.com/CyanSalt/commas/compare/v0.30.0...v0.31.0) (2024-04-08)
 
 
