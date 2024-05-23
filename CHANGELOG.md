@@ -1,5 +1,18 @@
 
 
+## [0.32.1](https://github.com/CyanSalt/commas/compare/v0.32.0...v0.32.1) (2024-05-23)
+
+
+### Features
+
+* **ai:** use user defined api key ([affbdf2](https://github.com/CyanSalt/commas/commit/affbdf2f33a3db0a1232d9f160254f7a09730f66))
+* **cli:** support `commas open` ([c8049aa](https://github.com/CyanSalt/commas/commit/c8049aa34be6006abb742d9ad32a6791c8f89ad3))
+
+
+### Bug Fixes
+
+* **preference:** open from menu ([a1867c1](https://github.com/CyanSalt/commas/commit/a1867c18a9de9cba52877d4243e889c8b846d4ca))
+
 ## [0.32.0](https://github.com/CyanSalt/commas/compare/v0.31.0...v0.32.0) (2024-05-23)
 
 
