@@ -185,6 +185,15 @@ ${
   })
 
   commas.context.provide('cli.command', {
+    command: 'open',
+    description: 'Open built-in tab#!cli.description.open',
+    usage: '<name>#!cli.usage.open',
+    handler({ sender, argv }) {
+      sender.send('open-pane', argv)
+    },
+  })
+
+  commas.context.provide('cli.command', {
     command: 'select',
     description: 'Jump to the nth tab#!cli.description.select',
     usage: '<nth-tab>#!cli.usage.select',

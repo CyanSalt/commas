@@ -548,6 +548,9 @@ export function handleTerminalMessages() {
   ipcRenderer.on('copy', (event, text: string) => {
     clipboard.writeText(text)
   })
+  ipcRenderer.on('open-pane', (event, name: string) => {
+    commas.proxy.workspace.openPaneTab(name)
+  })
   handleRenderer('get-history', (event, count?: number) => {
     if (!currentTerminal) return []
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
