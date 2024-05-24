@@ -9,6 +9,7 @@
       "type": "string",
       "minLength": 0
     },
+    "recommendations": ["eval \"$(fnm env)\" && whistle"],
     "default": "whistle"
   },
   {
