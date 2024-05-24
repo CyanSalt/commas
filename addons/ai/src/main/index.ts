@@ -5,6 +5,7 @@ declare module '../../../../src/typings/settings' {
   export interface Settings {
     'ai.ernie.key'?: string,
     'ai.ernie.secret'?: string,
+    'ai.shell.doctor'?: boolean,
   }
 }
 

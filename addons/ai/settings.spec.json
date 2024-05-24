@@ -20,5 +20,17 @@
       "type": "string"
     },
     "default": ""
+  },
+  {
+    "key": "ai.shell.doctor",
+    "label": "Command Doctor",
+    "comments": [
+      "Whether to generate prompts for failed commands",
+      "Requires Shell Integration to be enabled"
+    ],
+    "schema": {
+      "type": "boolean"
+    },
+    "default": true
   }
 ]
