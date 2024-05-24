@@ -238,6 +238,10 @@ function scrollToStickyCommand() {
     height: calc(var(--cell-height) * var(--sticky-row-span) + 8px);
     background: rgb(var(--theme-background));
     box-shadow: var(--design-card-shadow);
+    transition: opacity 0.2s;
+    &:hover {
+      opacity: 0.5;
+    }
     :deep(.xterm) {
       padding-bottom: 0;
     }
