@@ -60,7 +60,7 @@ export interface TerminalTabAddons extends ReadonlyTerminalTabAddons {
 export interface CommandCompletion {
   value: string,
   query: string,
-  type?: 'history' | 'file' | 'directory' | 'recommendation' | 'command' | 'default',
+  type?: 'history' | 'file' | 'directory' | 'recommendation' | 'third-party' | 'command' | 'default',
   description?: string,
 }
 

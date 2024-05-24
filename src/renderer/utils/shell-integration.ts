@@ -15,6 +15,7 @@ import { translate } from './i18n'
 import { getReadableSignal } from './terminal'
 
 interface IntegratedShellCommandAction {
+  type: Extract<CommandCompletion['type'], 'recommendation' | 'third-party'>,
   command: string,
 }
 
@@ -530,16 +531,16 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     scrollToMarker(this.tab.xterm, targetMarker)
   }
 
-  _getQuickFixActionsByOutput(command: string, output: string) {
+  _getQuickFixActionsByOutput(command: string, output: string): IntegratedShellCommandAction[] | undefined {
     // Git push for upstream
     const gitUpstreamMatches = output.match(/git push --set-upstream origin (\S+)/)
     if (gitUpstreamMatches && /\bgit\b/.test(command)) {
-      return [{ command: gitUpstreamMatches[0] }]
+      return [{ type: 'recommendation', command: gitUpstreamMatches[0] }]
     }
     // Free port
     const portMatches = output.match(/address already in use (?:0\.0\.0\.0|127\.0\.0\.1|localhost|::):(\d{4,5})|Unable to bind \S*:(\d{4,5})|can't listen on port (\d{4,5})|listen EADDRINUSE \S*:(\d{4,5})/)
     if (portMatches) {
-      return [{ command: `commas free ${portMatches[1]}` }]
+      return [{ type: 'recommendation', command: `commas free ${portMatches[1]}` }]
     }
     // Git style recommendations
     const gitMessages = [
@@ -552,7 +553,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       const name = output.match(/^[^\s:]+(?=:|\uff1a)/)?.[0] ?? 'git'
       const subcommands = gitMatches[1].split('\n').map(line => line.trim()).filter(Boolean)
       const actions = subcommands.map(subcommand => {
-        return { command: `${name} ${subcommand}` }
+        return { type: 'recommendation' as const, command: `${name} ${subcommand}` }
       })
       return actions
     }
@@ -565,7 +566,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
         return index === -1 ? subcommand : subcommand.slice(0, index)
       }).filter(Boolean)
       const actions = commands.map(subcommand => {
-        return { command: `${subcommand}` }
+        return { type: 'recommendation' as const, command: `${subcommand}` }
       })
       return actions
     }
@@ -677,7 +678,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       : undefined
     if (previousCommand?.actions?.length) {
       const actionCompletions: CommandCompletion[] = previousCommand.actions.map(action => ({
-        type: 'recommendation',
+        type: action.type,
         query: input,
         value: action.command,
       }))
@@ -825,7 +826,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     if (!targetCommand) return
     targetCommand.actions = [
       ...(targetCommand.actions ?? []),
-      { command },
+      { type: 'third-party', command },
     ]
     // Refresh completion if needed
     if (

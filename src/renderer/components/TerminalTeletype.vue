@@ -112,6 +112,8 @@ function getCompletionIcon(item: CommandCompletion) {
       return 'lucide-folder-open'
     case 'recommendation':
       return 'lucide-lightbulb'
+    case 'third-party':
+      return 'lucide-sparkles'
     case 'command':
       return 'lucide-terminal'
     default:
@@ -367,7 +369,8 @@ function scrollToStickyCommand() {
   .terminal-completion-item.directory & {
     color: rgb(var(--theme-cyan));
   }
-  .terminal-completion-item.recommendation & {
+  .terminal-completion-item.recommendation &,
+  .terminal-completion-item.third-party & {
     color: rgb(var(--theme-green));
   }
   .terminal-completion-item.command & {
