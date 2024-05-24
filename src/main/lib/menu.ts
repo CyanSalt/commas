@@ -8,6 +8,7 @@ import { resourceFile, userFile } from '../utils/directory'
 import { execa } from '../utils/helper'
 import { useFocusedWindow } from './frame'
 import { translate } from './i18n'
+import { useSettings } from './settings'
 import { openFile } from './window'
 
 const userKeyBindings = $(useYAMLFile<KeyBinding[]>(userFile('keybindings.yaml'), []))
@@ -32,7 +33,7 @@ const hasFocusedWindow = $computed(() => Boolean(focusedWindow))
 function resolveBindingCommand(binding: MenuItem) {
   const result: MenuItemConstructorOptions = { ...binding }
   if (binding.label) {
-    result.label = translate(binding.label, binding.args as TranslationVariables | undefined)
+    result.label = translate(binding.label, binding.args as unknown as TranslationVariables | undefined)
   }
   if (binding.command) {
     if (binding.command.startsWith('global:')) {
@@ -147,9 +148,14 @@ function createWindowMenu(frame: BrowserWindow) {
 }
 
 function createTouchBar(frame: BrowserWindow) {
+  const settings = useSettings()
+  const position = settings['terminal.view.tabListPosition']
+  const isHorizontal = position === 'top' || position === 'bottom'
   const menu = [
     { icon: 'NSImageNameTouchBarListViewTemplate', command: 'show-tab-options' },
-    { icon: 'NSImageNameTouchBarSidebarTemplate', command: 'toggle-tab-list' },
+    ...(isHorizontal ? [] : [
+      { icon: 'NSImageNameTouchBarSidebarTemplate', command: 'toggle-tab-list' },
+    ]),
     { icon: 'NSImageNameTouchBarAddTemplate', command: 'open-tab' },
   ]
   const { TouchBarButton } = TouchBar
