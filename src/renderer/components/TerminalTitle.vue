@@ -3,26 +3,13 @@ import { ipcRenderer, nativeImage, shell } from 'electron'
 import { watchEffect } from 'vue'
 import { omitHome } from '../../shared/terminal'
 import { useSettings } from '../compositions/settings'
-import { useIsTabListEnabled } from '../compositions/shell'
-import { getVisualTerminalTabIndex, showTabOptions, useCurrentTerminal, useTerminalTabs } from '../compositions/terminal'
+import { useCurrentTerminal } from '../compositions/terminal'
 import { translate, vI18n } from '../utils/i18n'
 import { getPrompt } from '../utils/terminal'
 import VisualIcon from './basic/VisualIcon.vue'
 
 const settings = useSettings()
-const tabs = $(useTerminalTabs())
 const terminal = $(useCurrentTerminal())
-
-const visualIndex = $computed(() => {
-  return terminal ? getVisualTerminalTabIndex(terminal) : -1
-})
-
-let isTabListEnabled = $(useIsTabListEnabled())
-
-const hasHorizontalTabList: boolean = $computed(() => {
-  const position = settings['terminal.view.tabListPosition']
-  return position === 'top' || position === 'bottom'
-})
 
 let iconBuffer = $ref<Buffer | undefined>()
 
@@ -105,14 +92,6 @@ function startDraggingDirectory(event: DragEvent) {
   ipcRenderer.invoke('drag-file', fileOrDirectory, iconBuffer)
 }
 
-function toggleTabList(event: MouseEvent) {
-  if (!hasHorizontalTabList) {
-    isTabListEnabled = !isTabListEnabled
-  } else {
-    showTabOptions(event)
-  }
-}
-
 watchEffect(() => {
   ipcRenderer.invoke('update-window', {
     title: `${pane && !fileOrDirectory ? translate(pane.title) : title}`,
@@ -136,13 +115,6 @@ watchEffect(() => {
     </a>
     <div v-if="pane && !fileOrDirectory" v-i18n class="title-text">{{ pane.title }}</div>
     <div v-else class="title-text">{{ title }}</div>
-    <div
-      class="tab-index-indicator"
-      @click="toggleTabList"
-      @contextmenu="showTabOptions"
-    >
-      [{{ visualIndex + 1 }}/{{ tabs.length }}]
-    </div>
   </div>
 </template>
 
@@ -181,12 +153,5 @@ watchEffect(() => {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-}
-.tab-index-indicator {
-  margin-left: 8px;
-  color: rgb(var(--theme-foreground) / 50%);
-  font-size: 12px;
-  cursor: pointer;
-  -webkit-app-region: no-drag;
 }
 </style>
