@@ -32,7 +32,7 @@ export default () => {
       const query = yield '? \x05'
       if (query) {
         const command = await getCommand(query)
-        await commas.ipcMain.invoke(sender, 'add-quick-fix-action', command)
+        await commas.ipcMain.invoke(sender, 'ai-quick-fix', command)
         return `> ${command}`
       }
     },
