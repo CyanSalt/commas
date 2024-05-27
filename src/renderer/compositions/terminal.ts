@@ -30,6 +30,12 @@ import { useKeyBindings } from './keybinding'
 import { useSettings } from './settings'
 import { useTheme } from './theme'
 
+declare module '../../../api/modules/app' {
+  export interface Events {
+    'terminal.addons-loaded': [TerminalTab],
+  }
+}
+
 const settings = useSettings()
 const theme = useTheme()
 
@@ -658,7 +664,7 @@ function loadTerminalAddons(tab: TerminalTab) {
   const addons: Record<string, any> = tab.addons
   loadReadOnlyTerminalAddons(tab, xterm, addons)
   loadInteractiveTerminalAddons(tab, xterm, addons)
-  commas.proxy.app.events.emit('terminal-addons-loaded', tab)
+  commas.proxy.app.events.emit('terminal.addons-loaded', tab)
 }
 
 function loadStickyTerminalAddons(tab: TerminalTab) {

@@ -5,7 +5,10 @@ import { app, ipcRenderer } from 'electron'
 import type { APIContext } from '../types'
 import { watchBaseEffect } from './helper'
 
-const events = new EventEmitter()
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface Events {}
+
+const events = new EventEmitter<Events>()
 events.setMaxListeners(0)
 
 function isMainProcess() {

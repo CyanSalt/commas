@@ -6,6 +6,13 @@ import type { AddonInfo } from '../../src/typings/addon'
 import type { APIAddon, APIContext, CompatableAPI } from '../types'
 import * as app from './app'
 
+declare module './app' {
+  // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+  export interface Events {
+    [key: `unload:${string}`]: never[],
+  }
+}
+
 function cloneAPIMethod<T>(method: Function, context: Omit<APIContext<T>, '_'>) {
   return new Proxy(method, {
     apply(target, thisArg, argArray) {

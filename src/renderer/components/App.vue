@@ -27,6 +27,13 @@ import TabList from './TabList.vue'
 import TerminalView from './TerminalView.vue'
 import TitleBar from './TitleBar.vue'
 
+declare module '../../../api/modules/app' {
+  export interface Events {
+    ready: never[],
+    unload: never[],
+  }
+}
+
 const settings = useSettings()
 const theme = useTheme()
 const isFullscreen = $(useFullscreen())

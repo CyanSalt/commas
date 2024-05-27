@@ -14,6 +14,12 @@ import { openContextMenu } from './frame'
 import { translate } from './i18n'
 import { getReadableSignal } from './terminal'
 
+declare module '../../../api/modules/app' {
+  export interface Events {
+    'terminal.command-complete': [IntegratedShellCommand, string],
+  }
+}
+
 interface IntegratedShellCommandAction {
   type: Extract<CommandCompletion['type'], 'recommendation' | 'third-party'>,
   command: string,
@@ -263,7 +269,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
                 ...(this._generateQuickFixActions(this.currentCommand) ?? []),
               ]
               const output = this._getCommandOutput(this.currentCommand)
-              commas.proxy.app.events.emit('command-complete', this.currentCommand, output)
+              commas.proxy.app.events.emit('terminal.command-complete', this.currentCommand, output)
               this.tab.command = ''
               this.currentCommand = undefined
             }

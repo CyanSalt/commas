@@ -76,7 +76,7 @@ function registerXtermAddon<T extends keyof TerminalTabAddons>(
 
   let active = false
 
-  this.$.app.events.on('terminal-addons-loaded', tab => {
+  this.$.app.events.on('terminal.addons-loaded', tab => {
     apply(tab, active)
   })
 

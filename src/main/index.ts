@@ -12,6 +12,13 @@ import { handleTerminalMessages } from './lib/terminal'
 import { handleThemeMessages } from './lib/theme'
 import { createDefaultWindow, createWindow, handleWindowMessages, openFile } from './lib/window'
 
+declare module '../../api/modules/app' {
+  export interface Events {
+    ready: never[],
+    unload: never[],
+  }
+}
+
 handleMessages()
 handleI18nMessages()
 handleMenuMessages()

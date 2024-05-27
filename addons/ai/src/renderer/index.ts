@@ -1,8 +1,5 @@
 import * as commas from 'commas:api/renderer'
 import { ipcRenderer } from 'electron'
-import type { TerminalTabAddons } from '../../../../src/typings/terminal'
-
-type IntegratedShellCommand = NonNullable<NonNullable<TerminalTabAddons['shellIntegration']>['currentCommand']>
 
 export default () => {
 
@@ -15,7 +12,7 @@ export default () => {
     terminal.addons?.shellIntegration?.addQuickFixAction(command)
   })
 
-  commas.app.events.on('command-complete', async (command: IntegratedShellCommand, output: string) => {
+  commas.app.events.on('terminal.command-complete', async (command, output) => {
     if (
       settings['ai.shell.doctor']
       && command.command

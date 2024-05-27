@@ -45,7 +45,7 @@ export default () => {
     })
   })
 
-  commas.app.events.on('terminal-addons-loaded', () => {
+  commas.app.events.on('terminal.addons-loaded', () => {
     if (!currentAgent) return
     currentAgent.play('CheckingSomething')
   })
