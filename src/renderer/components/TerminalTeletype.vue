@@ -346,9 +346,10 @@ function scrollToStickyCommand() {
 }
 .terminal-completion-item {
   display: flex;
+  gap: 0.375ch;
   align-items: center;
   height: var(--cell-height);
-  padding: 0 0.25ch;
+  padding: 0 0.375ch;
   cursor: pointer;
   &:hover, &.is-active {
     background: var(--design-highlight-background);
@@ -359,7 +360,6 @@ function scrollToStickyCommand() {
 }
 .completion-item-icon {
   flex: none;
-  margin-right: 0.25ch;
   font-size: 12px;
   opacity: 0.75;
   .terminal-completion-item.history & {
@@ -388,7 +388,7 @@ function scrollToStickyCommand() {
   overflow: hidden;
 }
 .terminal-completion-desc {
-  padding: 0 0.25ch;
+  padding: 0 0.375ch;
   color: rgb(var(--theme-foreground) / 50%);
   font-style: italic;
   font-size: 12px;
