@@ -197,17 +197,15 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
   <div :class="['launcher-list', isHorizontal ? 'horizontal' : 'vertical']">
     <template v-if="isHorizontal">
       <div class="launcher-folder">
-        <span class="button menu" @click="showLauncherMenu">
+        <div class="group-name" @click="showLauncherMenu">
           <VisualIcon name="lucide-list-video" />
-        </span>
+        </div>
       </div>
     </template>
     <template v-else>
       <div class="launcher-folder" @click="toggleCollapsing">
         <div :class="['group-name', { collapsed: isCollapsed }]">
-          <span class="folder-icon">
-            <VisualIcon :name="isCollapsed ? 'lucide-list-filter' : 'lucide-list-video'" />
-          </span>
+          <VisualIcon :name="isCollapsed ? 'lucide-list-filter' : 'lucide-list-video'" />
         </div>
       </div>
       <DraggableElement
@@ -337,9 +335,6 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
   &:not(.collapsed):hover {
     opacity: 1;
   }
-}
-.menu {
-  font-size: var(--primary-icon-size);
 }
 .launch:hover {
   color: rgb(var(--system-green));
