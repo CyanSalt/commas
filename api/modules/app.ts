@@ -8,6 +8,10 @@ import { watchBaseEffect } from './helper'
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Events {}
 
+type Listener<T extends keyof Events> = T extends keyof Events ? (
+  Events[T] extends unknown[] ? (...args: Events[T]) => void : never
+) : never
+
 const events = new EventEmitter<Events>()
 events.setMaxListeners(0)
 
@@ -80,6 +84,17 @@ function onInvalidate(this: APIContext, callback: () => void) {
   }
 }
 
+function on<T extends keyof Events>(
+  this: APIContext,
+  event: T,
+  listener: Listener<T>,
+) {
+  events.on(event, listener)
+  onInvalidate.call(this, () => {
+    events.removeListener<T>(event, listener)
+  })
+}
+
 export * from '../shim'
 
 export {
@@ -93,4 +108,5 @@ export {
   onCleanup,
   effect,
   onInvalidate,
+  on,
 }

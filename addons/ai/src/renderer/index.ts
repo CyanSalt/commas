@@ -12,7 +12,7 @@ export default () => {
     terminal.addons?.shellIntegration?.addQuickFixAction(command)
   })
 
-  commas.app.events.on('terminal.command-complete', async (command, output) => {
+  commas.app.on('terminal.command-complete', async (command, output) => {
     if (
       settings['ai.shell.doctor']
       && command.command
