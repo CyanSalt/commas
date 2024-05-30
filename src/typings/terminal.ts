@@ -14,7 +14,7 @@ import type { ShellIntegrationAddon } from '../renderer/utils/shell-integration'
 import type { Deferred } from '../shared/helper'
 
 export interface TerminalTabPane {
-  type?: string,
+  name?: string,
   title: string,
   icon?: IconEntry,
   component: Component<{ tab: TerminalTab }>,

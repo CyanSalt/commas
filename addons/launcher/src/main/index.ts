@@ -17,7 +17,7 @@ export default () => {
   let launchers = $(useLaunchers())
   commas.ipcMain.provide('launchers', $$(launchers))
 
-  commas.ipcMain.handle('create-launcher', async (event, data: Pick<LauncherInfo, 'name' | 'command' | 'directory'>, index: number) => {
+  commas.ipcMain.handle('create-launcher', async (event, data: LauncherInfo, index: number) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     if (!frame) return
     const created = await createLauncher(data) as Launcher

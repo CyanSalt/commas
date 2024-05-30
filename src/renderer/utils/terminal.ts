@@ -87,7 +87,7 @@ export function getWindowsProcessInfo(shell: string, title: string): Partial<Ter
 
 export function getTerminalTabID(tab: TerminalTab) {
   if (tab.pane) {
-    return `${tab.pane.type ?? 'pane'}@${tab.shell || tab.process}`
+    return `${tab.pane.name ?? 'pane'}@${tab.shell || tab.process}`
   } else {
     return `process@${tab.pid}`
   }

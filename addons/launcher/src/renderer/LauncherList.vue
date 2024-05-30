@@ -72,7 +72,7 @@ function toggleCollapsing() {
   isCollapsed = !isCollapsed
 }
 
-function createLauncher(data: Pick<LauncherInfo, 'name' | 'command' | 'directory'>, index: number) {
+function createLauncher(data: LauncherInfo, index: number) {
   ipcRenderer.invoke('create-launcher', data, index)
 }
 
@@ -137,23 +137,14 @@ function handleDragStop() {
   isGroupSeparating = false
 }
 
-function isDraggingTerminalTab(args: DraggableElementEventPayload<LauncherDraggableElementData, DropTargetData>) {
-  if (args.source.data.type === 'tab') {
-    if (args.source.data.index === -1) return true
-    const tab = tabs[args.source.data.index!]
-    return !tab.pane
-  }
-  return false
-}
-
 function handleDrag(args: DraggableElementEventPayload<LauncherDraggableElementData, DropTargetData>) {
-  if (isDraggingTerminalTab(args)) {
+  if (args.source.data.type === 'tab') {
     draggingEdges.set(args.self.data.launcher.id, commas.ui.extractClosestEdge(args.self.data))
   }
 }
 
 function handleDragLeave(args: DraggableElementEventPayload<LauncherDraggableElementData, DropTargetData>) {
-  if (isDraggingTerminalTab(args)) {
+  if (args.source.data.type === 'tab') {
     draggingEdges.set(args.self.data.launcher.id, null)
   }
 }
@@ -170,7 +161,7 @@ watch(() => launchers, values => {
 })
 
 function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementData, DropTargetData>) {
-  if (isDraggingTerminalTab(args)) {
+  if (args.source.data.type === 'tab') {
     let launcher: Launcher | undefined
     if (args.source.data.index === -1) {
       launcher = args.source.data.launcher
@@ -194,6 +185,10 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
         name: commas.workspace.getTerminalTabTitle(tab),
         command: tab.command,
         directory: tab.cwd,
+        profile: tab.shell ? {
+          shell: tab.shell,
+        } : undefined,
+        pane: tab.pane?.name,
       }, index)
       pool.add({ tab, index })
     }

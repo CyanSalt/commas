@@ -7,6 +7,7 @@ export interface LauncherInfo {
   login?: boolean,
   remote?: string,
   explorer?: string,
+  pane?: string,
   profile?: TerminalProfile,
   scripts?: LauncherInfo[],
 }

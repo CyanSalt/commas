@@ -1,6 +1,6 @@
 import * as commas from 'commas:api/renderer'
 import { ipcRenderer, shell } from 'electron'
-import type { TerminalTab, TerminalTabCharacter } from '../../../../src/typings/terminal'
+import type { TerminalInfo, TerminalTab, TerminalTabCharacter } from '../../../../src/typings/terminal'
 import type { Launcher } from '../../typings/launcher'
 import { getLauncherCommand } from './utils'
 
@@ -32,6 +32,18 @@ export function useLauncherCharacters() {
   return $$(launcherCharacters)
 }
 
+function getLauncherProfile(launcher: Launcher) {
+  const directory = launcher.remote ? undefined : launcher.directory
+  const profile: Partial<TerminalInfo> = {
+    ...launcher.profile,
+    cwd: directory && commas.helper.resolveHome(directory),
+  }
+  if (profile.shell) {
+    profile.process = profile.shell
+  }
+  return profile
+}
+
 export function getLauncherByTerminalTabCharacter(character: TerminalTabCharacter) {
   return launchers.find(launcher => character.type === 'launcher' && character.id === launcher.id)
 }
@@ -41,6 +53,11 @@ export function getTerminalTabCharacterByLauncher(launcher: Launcher) {
 }
 
 export function getTerminalTabsByLauncher(launcher: Launcher) {
+  const pane = launcher.pane ? commas.workspace.getPane(launcher.pane) : undefined
+  if (pane) {
+    const paneTab = commas.workspace.getTerminalTabByPane(pane, getLauncherProfile(launcher))
+    return paneTab ? [paneTab] : []
+  }
   return commas.workspace.getTerminalTabsByCharacter(getTerminalTabCharacterByLauncher(launcher))
 }
 
@@ -61,14 +78,19 @@ export async function openLauncher(launcher: Launcher, { tab, command }: OpenLau
     }
     return tab
   } else {
-    const directory = launcher.remote ? undefined : launcher.directory
-    return commas.workspace.createTerminalTab({
-      ...launcher.profile,
-      cwd: directory && commas.helper.resolveHome(directory),
-    }, {
-      command,
-      character: getTerminalTabCharacterByLauncher(launcher),
-    })
+    const profile = getLauncherProfile(launcher)
+    const pane = launcher.pane ? commas.workspace.getPane(launcher.pane) : undefined
+    if (pane) {
+      const paneTab = commas.workspace.createPaneTab(pane, profile)
+      paneTab.character = getTerminalTabCharacterByLauncher(launcher)
+      commas.workspace.activateOrAddTerminalTab(paneTab)
+      return paneTab
+    } else {
+      return commas.workspace.createTerminalTab(profile, {
+        command,
+        character: getTerminalTabCharacterByLauncher(launcher),
+      })
+    }
   }
 }
 

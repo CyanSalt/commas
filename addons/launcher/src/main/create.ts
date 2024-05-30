@@ -62,8 +62,8 @@ async function generateScripts(entry: string): Promise<LauncherInfo[]> {
   return []
 }
 
-async function createLauncher(data: Pick<LauncherInfo, 'name' | 'command' | 'directory'>) {
-  const launcher: LauncherInfo = { ...data }
+async function createLauncher(data: LauncherInfo) {
+  const launcher = { ...data }
   const directory = launcher.directory
   if (directory) {
     const homedir = os.homedir()

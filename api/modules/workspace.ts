@@ -1,3 +1,4 @@
+import { isMatch } from 'lodash'
 import { markRaw, reactive, shallowReactive } from 'vue'
 import {
   activateOrAddTerminalTab,
@@ -15,7 +16,7 @@ import {
   useTerminalTabGroupSeparating,
   useTerminalTabs,
 } from '../../src/renderer/compositions/terminal'
-import type { TerminalTab, TerminalTabAddons, TerminalTabPane } from '../../src/typings/terminal'
+import type { TerminalInfo, TerminalTab, TerminalTabAddons, TerminalTabPane } from '../../src/typings/terminal'
 import type { RendererAPIContext } from '../types'
 
 const tabs = $(useTerminalTabs())
@@ -23,7 +24,7 @@ const tabs = $(useTerminalTabs())
 const panes = shallowReactive<Record<string, TerminalTabPane | undefined>>({})
 
 function registerTabPane(this: RendererAPIContext, name: string, pane: TerminalTabPane) {
-  panes[name] = markRaw(pane)
+  panes[name] = { name, ...pane }
   this.$.app.onInvalidate(() => {
     delete panes[name]
   })
@@ -33,8 +34,19 @@ function getPane(name: string) {
   return panes[name]
 }
 
-function getTerminalTabByPane(pane: TerminalTabPane) {
-  return tabs.find(tab => tab.pane === pane)
+function getTerminalTabByPane(pane: TerminalTabPane, info: Partial<TerminalInfo> = {}) {
+  return tabs.find(tab => tab.pane?.name === pane.name && isMatch(tab, info))
+}
+
+function createPaneTab(pane: TerminalTabPane, info?: Partial<TerminalInfo>) {
+  return reactive({
+    pid: 0,
+    process: pane.name,
+    title: '',
+    cwd: '',
+    ...info,
+    pane: markRaw(pane),
+  } as unknown as TerminalTab)
 }
 
 function openPaneTab(name: string) {
@@ -44,13 +56,7 @@ function openPaneTab(name: string) {
   if (tab) {
     activateTerminalTab(tab)
   } else {
-    const paneTab = reactive({
-      pid: 0,
-      process: name,
-      title: '',
-      cwd: '',
-      pane: markRaw(pane),
-    } as TerminalTab)
+    const paneTab = createPaneTab(pane)
     activateOrAddTerminalTab(paneTab)
   }
 }
@@ -105,6 +111,8 @@ export * from '../shim'
 export {
   registerTabPane,
   getPane,
+  getTerminalTabByPane,
+  createPaneTab,
   openPaneTab,
   registerXtermAddon,
   activateOrAddTerminalTab,
