@@ -137,14 +137,23 @@ function handleDragStop() {
   isGroupSeparating = false
 }
 
-function handleDrag(args: DraggableElementEventPayload<LauncherDraggableElementData, DropTargetData>) {
+function isDraggingTerminalTab(args: DraggableElementEventPayload<LauncherDraggableElementData, DropTargetData>) {
   if (args.source.data.type === 'tab') {
+    if (args.source.data.index === -1) return true
+    const tab = tabs[args.source.data.index!]
+    return !tab.pane
+  }
+  return false
+}
+
+function handleDrag(args: DraggableElementEventPayload<LauncherDraggableElementData, DropTargetData>) {
+  if (isDraggingTerminalTab(args)) {
     draggingEdges.set(args.self.data.launcher.id, commas.ui.extractClosestEdge(args.self.data))
   }
 }
 
 function handleDragLeave(args: DraggableElementEventPayload<LauncherDraggableElementData, DropTargetData>) {
-  if (args.source.data.type === 'tab') {
+  if (isDraggingTerminalTab(args)) {
     draggingEdges.set(args.self.data.launcher.id, null)
   }
 }
@@ -161,7 +170,7 @@ watch(() => launchers, values => {
 })
 
 function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementData, DropTargetData>) {
-  if (args.source.data.type === 'tab') {
+  if (isDraggingTerminalTab(args)) {
     let launcher: Launcher | undefined
     if (args.source.data.index === -1) {
       launcher = args.source.data.launcher
