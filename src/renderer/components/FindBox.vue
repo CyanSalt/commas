@@ -173,10 +173,10 @@ watch($$(isFinding), (value: boolean) => {
 .find-box {
   display: flex;
   flex: none;
-  height: 26px;
-  padding: var(--design-card-gap);
-  line-height: 26px;
-  background: rgb(var(--theme-background) / var(--design-card-secondary-opacity));
+  height: #{36px - 2 * 8px}; // var(--min-tab-height) - 2 * 8px
+  padding: 8px;
+  line-height: #{36px - 2 * 8px};
+  background: rgb(var(--theme-background) / var(--theme-opacity));
   border-radius: var(--design-card-border-radius);
   box-shadow: var(--design-card-shadow);
 }
@@ -187,8 +187,8 @@ watch($$(isFinding), (value: boolean) => {
   color: inherit;
   font-family: inherit;
   font-size: inherit;
-  line-height: 20px;
-  background: var(--design-input-background);
+  line-height: #{36px - 2 * 8px - 2 * 2px};
+  background: transparent;
   outline: none;
   &::placeholder {
     color: rgb(var(--theme-foreground));

@@ -276,7 +276,7 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
 <style lang="scss" scoped>
 .launcher-list {
   display: flex;
-  gap: 8px;
+  gap: var(--design-card-gap);
   &.vertical {
     flex-direction: column;
     width: 100%;

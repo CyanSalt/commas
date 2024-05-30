@@ -85,7 +85,7 @@ function customize() {
   isCustomizing = false
 }
 
-function autoselect(event: InputEvent) {
+function autoselect(event: FocusEvent) {
   (event.target as HTMLInputElement).select()
 }
 
@@ -166,7 +166,7 @@ function close() {
     box-shadow: var(--design-element-shadow);
   }
   &.focused {
-    background: rgb(var(--theme-background));
+    background: rgb(var(--theme-background) / var(--theme-opacity));
   }
 }
 .tab-title {

@@ -129,7 +129,6 @@ onMounted(() => {
   --design-card-border-radius: var(--design-card-gap);
   --design-card-shadow: 0 2px 4px 0px rgb(0 0 0 / 10%);
   --design-element-shadow: 0 1px 2px 0px rgb(0 0 0 / 10%);
-  --design-card-secondary-opacity: calc(var(--theme-opacity) * 3 / 4);
   @media (prefers-color-scheme: dark) {
     --system-cyan: 108 224 219;
     --design-alert-color: rgb(var(--system-yellow));
@@ -154,7 +153,7 @@ onMounted(() => {
   /* Default line height of xterm.js */
   line-height: 1.2;
   overflow: hidden;
-  background-image: linear-gradient(to right bottom, rgb(var(--acrylic-background) / 5%), rgb(var(--acrylic-background) / 25%));
+  background-image: linear-gradient(to right bottom, rgb(var(--acrylic-background) / 10%), rgb(var(--acrylic-background) / 25%));
   background-color: rgb(var(--theme-background) / var(--theme-opacity));
   transition: color 0.2s;
   &.is-vibrant {

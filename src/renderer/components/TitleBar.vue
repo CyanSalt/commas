@@ -72,7 +72,7 @@ function close() {
     --control-area-size: #{12px * 2 + 56px};
   }
   &:has(.tab-list) {
-    height: 52px; // 36 + 2 * 8
+    height: #{36px + 2 * 8px}; // var(--min-tab-height) + 2 * 8px
     line-height: 1;
   }
   :deep(.tab-list) {
@@ -121,7 +121,7 @@ function close() {
   cursor: pointer;
   -webkit-app-region: no-drag;
   &:hover {
-    background: rgb(var(--theme-background) / var(--design-card-secondary-opacity));
+    background: rgb(var(--theme-background) / var(--theme-opacity));
   }
   &.close:hover {
     color: rgb(var(--system-red));
