@@ -1,4 +1,4 @@
-@mixin scroll-container($size: 12px) {
+@mixin scroll-container($size) {
   --scrollbar-size: #{$size};
   --scrollbar-opacity: 0;
   overflow: scroll;

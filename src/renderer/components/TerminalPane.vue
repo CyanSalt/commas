@@ -30,7 +30,7 @@ function openEditingMenu(event: MouseEvent) {
 @use '../assets/_partials';
 
 .terminal-pane {
-  @include partials.scroll-container;
+  @include partials.scroll-container(8px);
   position: relative;
   z-index: 0;
   box-sizing: border-box;

@@ -225,7 +225,7 @@ function scrollToStickyCommand() {
     padding-left: var(--integration-width);
   }
   :deep(.xterm-viewport) {
-    @include partials.scroll-container;
+    @include partials.scroll-container(8px);
     background-color: transparent !important;
   }
   /* issue@xterm: pointer behavior */
