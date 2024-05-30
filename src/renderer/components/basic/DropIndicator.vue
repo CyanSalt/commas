@@ -5,7 +5,7 @@ const { vertical } = defineProps<{
 </script>
 
 <template>
-  <div :class="['drop-indicator', vertical]"></div>
+  <div :class="['drop-indicator', { vertical }]"></div>
 </template>
 
 <style lang="scss" scoped>
