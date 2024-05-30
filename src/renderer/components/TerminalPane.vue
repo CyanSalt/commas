@@ -109,13 +109,14 @@ function openEditingMenu(event: MouseEvent) {
 :deep(input.form-control),
 :deep(textarea.form-control) {
   width: 165px;
-  padding: 2px 6px;
+  padding: 4px 8px;
   border: none;
   color: inherit;
   font-family: inherit;
   font-size: inherit;
   line-height: 20px;
   background: var(--design-input-background);
+  border-radius: 4px;
   outline: none;
   &::placeholder {
     color: rgb(var(--theme-foreground));
@@ -140,8 +141,7 @@ function openEditingMenu(event: MouseEvent) {
   outline: none;
 }
 :deep(select.form-control) {
-  height: 24px;
-  padding: 2px 6px;
+  padding: 4px 8px;
   border: none;
   color: var(--theme-foreground);
   font: inherit;

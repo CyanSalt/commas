@@ -224,12 +224,20 @@ function close() {
   vertical-align: 1px;
   background: currentColor;
   border-radius: 50%;
-  transition: color 0.2s;
+  opacity: 0.75;
+  transition: color 0.2s, opacity 0.2s;
   &.busy {
     color: rgb(var(--system-green));
   }
   &.alerting {
     color: var(--design-alert-color);
+    opacity: 1;
+  }
+  .tab-item.virtual &:not(.alerting) {
+    opacity: 0.5;
+  }
+  .tab-item.focused & {
+    opacity: 1;
   }
   .tab-item:hover & {
     display: none;
