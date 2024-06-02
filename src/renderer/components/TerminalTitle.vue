@@ -148,8 +148,6 @@ watchEffect(() => {
 .title-text {
   font-weight: 500;
   font-size: 12px;
-  /* Show ellipsis on left */
-  direction: rtl;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
