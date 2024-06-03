@@ -15,6 +15,10 @@ export default () => {
     },
   })
 
+  commas.ipcRenderer.on('configure-proxy', () => {
+    commas.workspace.openPaneTab('proxy')
+  })
+
   commas.context.provide('terminal.ui-left-action-anchor', ProxyAnchor)
 
   commas.context.provide('preference.item', {

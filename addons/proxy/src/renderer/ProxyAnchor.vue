@@ -19,8 +19,13 @@ function toggle() {
   }
 }
 
-function configure() {
-  commas.workspace.openPaneTab('proxy')
+function configure(event: MouseEvent) {
+  commas.ui.openContextMenu([
+    {
+      label: 'Configure Proxy#!proxy.2',
+      command: 'configure-proxy',
+    },
+  ], event)
 }
 </script>
 
