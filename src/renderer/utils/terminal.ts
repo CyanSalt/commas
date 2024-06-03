@@ -3,6 +3,7 @@ import * as path from 'node:path'
 import { ipcRenderer } from 'electron'
 import { parse } from 'shell-quote'
 import { omitHome, resolveWindowsDisk } from '../../shared/terminal'
+import type { MenuItem } from '../../typings/menu'
 import type { TerminalTab } from '../../typings/terminal'
 import icons from '../assets/icons'
 
@@ -98,5 +99,30 @@ export function getReadableSignal(code: number) {
     return Object.entries(os.constants.signals)
       .find(([name, value]) => 128 + value === code)
       ?.[0]
+  }
+}
+export function createTerminalTabContextMenu() {
+  let updatingItems: MenuItem[] = [
+    {
+      label: 'Duplicate Tab#!menu.duplicatetab',
+      accelerator: 'CmdOrCtrl+D',
+      command: 'duplicate-tab',
+    },
+    {
+      label: 'Split Tab#!menu.splittab',
+      accelerator: 'CmdOrCtrl+Shift+D',
+      command: 'split-tab',
+    },
+  ]
+  const deletingItems: MenuItem[] = [
+    {
+      label: 'Close Tab#!menu.closetab',
+      accelerator: 'CmdOrCtrl+W',
+      command: 'close-tab',
+    },
+  ]
+  return {
+    updatingItems,
+    deletingItems,
   }
 }

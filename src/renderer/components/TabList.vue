@@ -20,9 +20,9 @@ import {
   useTerminalTabs,
 } from '../compositions/terminal'
 import type { DraggableElementData, DraggableTabData } from '../utils/draggable'
-import { openContextMenu } from '../utils/frame'
+import { openContextMenu, withContextMenuSeparator } from '../utils/frame'
 import { handleMousePressing } from '../utils/helper'
-import { getShells } from '../utils/terminal'
+import { createTerminalTabContextMenu, getShells } from '../utils/terminal'
 import TabItem from './TabItem.vue'
 import AutoScroll from './basic/AutoScroll.vue'
 import DraggableElement from './basic/DraggableElement.vue'
@@ -167,6 +167,14 @@ function handleGroupSeparating(args: DraggableElementEventPayload<DraggableEleme
 }
 
 const enableSash = false
+
+function openTabItemMenu(event: MouseEvent) {
+  const { updatingItems, deletingItems } = createTerminalTabContextMenu()
+  openContextMenu([
+    ...withContextMenuSeparator(updatingItems, []),
+    ...deletingItems,
+  ], event)
+}
 </script>
 
 <template>
@@ -205,6 +213,7 @@ const enableSash = false
                     :ref="draggable"
                     :tab="tab"
                     @click="activateTerminalTab(tab)"
+                    @contextmenu="openTabItemMenu"
                   />
                 </div>
               </DropTarget>

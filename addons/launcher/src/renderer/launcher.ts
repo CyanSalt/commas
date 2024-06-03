@@ -145,9 +145,10 @@ export function moveLauncher(launcher: Launcher, index: number, edge?: 'start' |
   launchers = updated
 }
 
-export function removeLauncher(index: number) {
-  const launcherTabs = getTerminalTabsByLauncher(launchers[index])
+export function removeLauncher(launcher: Launcher) {
+  const launcherTabs = getTerminalTabsByLauncher(launcher)
   const updated = [...launchers]
+  const index = updated.findIndex(item => item.id === launcher.id)
   updated.splice(index, 1)
   launchers = updated
   for (const tab of launcherTabs) {

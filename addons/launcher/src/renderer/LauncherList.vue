@@ -80,36 +80,12 @@ function closeTab(tab: TerminalTab) {
   commas.workspace.closeTerminalTab(tab)
 }
 
-function dropLauncher(launcher: Launcher) {
-  const index = launchers.findIndex(item => item.id === launcher.id)
-  removeLauncher(index)
-}
-
 function customizeLauncher(launcher: Launcher, title: string) {
   const index = launchers.findIndex(item => item.id === launcher.id)
   updateLauncher(index, {
     ...launcher,
     name: title,
   })
-}
-
-function showLauncherScripts(launcher: Launcher, event: MouseEvent) {
-  const scripts = launcher.scripts ?? []
-  commas.ui.openContextMenu([
-    {
-      label: 'Launch#!launcher.1',
-      command: 'start-launcher',
-      args: [launcher],
-    },
-    {
-      type: 'separator',
-    },
-    ...scripts.map((script, index) => ({
-      label: script.name,
-      command: 'run-script',
-      args: [launcher, index],
-    })),
-  ], event)
 }
 
 function showLauncherMenu(event: MouseEvent) {
@@ -195,6 +171,40 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
     draggingEdges.set(args.self.data.launcher.id, null)
   }
 }
+
+function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, event: MouseEvent) {
+  const scripts = launcher.scripts ?? []
+  const { updatingItems, deletingItems } = commas.workspace.createTerminalTabContextMenu()
+  commas.ui.openContextMenu([
+    ...commas.ui.withContextMenuSeparator([
+      {
+        label: 'Launch#!launcher.2',
+        command: 'start-launcher',
+        args: [launcher],
+      },
+      {
+        label: 'Open in External#!launcher.3',
+        command: 'start-launcher-externally',
+        args: [launcher],
+      },
+    ], []),
+    ...commas.ui.withContextMenuSeparator(
+      scripts.map((script, index) => ({
+        label: script.name,
+        command: 'run-script',
+        args: [launcher, index],
+      })),
+      [],
+    ),
+    ...(tab ? commas.ui.withContextMenuSeparator(updatingItems, []) : []),
+    ...(tab ? deletingItems : []),
+    {
+      label: 'Remove Launcher#!launcher.4',
+      command: 'remove-launcher',
+      args: [launcher],
+    },
+  ], event)
+}
 </script>
 
 <template>
@@ -221,7 +231,7 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
           index,
           launcher,
           create: () => openLauncher(launcher),
-          dispose: () => dropLauncher(launcher),
+          dispose: () => removeLauncher(launcher),
         }"
         @dragstart="handleDragStart"
         @drop="handleDragStop"
@@ -253,12 +263,12 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
               @click="openLauncher(launcher, { tab })"
               @close="closeTab(tab!)"
               @customize="customizeLauncher(launcher, $event)"
+              @contextmenu="openLauncherMenu(launcher, tab, $event)"
             >
               <template #operations>
                 <div
                   class="button launch"
                   @click.stop="startLauncher(launcher)"
-                  @contextmenu="showLauncherScripts(launcher, $event)"
                 >
                   <VisualIcon name="lucide-play" />
                 </div>

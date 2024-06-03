@@ -16,6 +16,7 @@ import {
   useTerminalTabGroupSeparating,
   useTerminalTabs,
 } from '../../src/renderer/compositions/terminal'
+import { createTerminalTabContextMenu } from '../../src/renderer/utils/terminal'
 import type { TerminalInfo, TerminalTab, TerminalTabAddons, TerminalTabPane } from '../../src/typings/terminal'
 import type { RendererAPIContext } from '../types'
 
@@ -129,4 +130,5 @@ export {
   useTerminalTabs,
   useTerminalTabGroupSeparating,
   getTerminalTabIndex,
+  createTerminalTabContextMenu,
 }
