@@ -79,6 +79,7 @@
   "Or when using the system frame#!settings.comments.2.terminal.style.opacity": "或者是使用系统框架时将不起作用",
   "Vibrancy Effect#!settings.label.terminal.style.vibrancy": "毛玻璃特效",
   "Specify whether or not to enable the vibrancy effect for window (currently for macOS only)#!settings.comments.0.terminal.style.vibrancy": "指定是否对窗口启用毛玻璃特效 (目前仅支持 macOS)",
+  "It will not work if the opacity of the window is not 1#!settings.comments.1.terminal.style.vibrancy": "当窗口的不透明度不为 1 时将不起作用",
   "Font Size#!settings.label.terminal.style.fontSize": "字体大小",
   "Font size for window in pixels#!settings.comments.0.terminal.style.fontSize": "窗口的字体尺寸像素数",
   "Line Height#!settings.label.terminal.style.lineHeight": "行高",

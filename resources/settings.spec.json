@@ -301,7 +301,8 @@
     "key": "terminal.style.vibrancy",
     "label": "Vibrancy Effect",
     "comments": [
-      "Specify whether or not to enable the vibrancy effect for window (currently for macOS only)"
+      "Specify whether or not to enable the vibrancy effect for window (currently for macOS only)",
+      "It will not work if the opacity of the window is not 1"
     ],
     "configurable": ["darwin"],
     "schema": {
