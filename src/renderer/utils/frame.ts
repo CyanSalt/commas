@@ -15,6 +15,11 @@ export function openContextMenu(
   })
 }
 
+export function withContextMenuSeparator(previousItems: MenuItem[], nextItems: MenuItem[]) {
+  if (!previousItems.length && !nextItems.length) return []
+  return [...previousItems, { type: 'separator' as const }, ...nextItems]
+}
+
 export function createContextMenu() {
   let definitionItems: MenuItem[] = []
   if (process.platform === 'darwin') {
@@ -42,12 +47,7 @@ export function createContextMenu() {
       role: 'paste',
     },
   ]
-  const withSeparator = (previousItems: MenuItem[], nextItems: MenuItem[]) => {
-    if (!previousItems.length && !nextItems.length) return []
-    return [...previousItems, { type: 'separator' as const }, ...nextItems]
-  }
   return {
-    withSeparator,
     definitionItems,
     editingItems,
   }

@@ -12,7 +12,7 @@ import ObjectEditor from '../../src/renderer/components/basic/ObjectEditor.vue'
 import SwitchControl from '../../src/renderer/components/basic/SwitchControl.vue'
 import ValueSelector from '../../src/renderer/components/basic/ValueSelector.vue'
 import VisualIcon from '../../src/renderer/components/basic/VisualIcon.vue'
-import { createContextMenu, openContextMenu } from '../../src/renderer/utils/frame'
+import { createContextMenu, openContextMenu, withContextMenuSeparator } from '../../src/renderer/utils/frame'
 import { vI18n } from '../../src/renderer/utils/i18n'
 import type { RendererAPIContext } from '../types'
 
@@ -54,5 +54,6 @@ export {
   addCSSFile,
   openContextMenu,
   createContextMenu,
+  withContextMenuSeparator,
   extractClosestEdge,
 }
