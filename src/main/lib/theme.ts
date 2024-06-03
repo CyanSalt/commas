@@ -47,10 +47,6 @@ const EXTRA_CSS_COLORS: Partial<Record<Exclude<keyof Theme, keyof ThemeDefinitio
   acrylicBackground: '--acrylic-background',
 }
 
-const CSS_PROPERTIES: Partial<Record<Exclude<keyof Theme, keyof ThemeDefinition>, string>> = {
-  opacity: '--theme-opacity',
-}
-
 const accentColor = $customRef((track, trigger) => {
   let color = ['darwin', 'win32'].includes(process.platform)
     ? systemPreferences.getAccentColor()
@@ -146,7 +142,7 @@ const theme = $computed(() => {
   } as Theme
   const backgroundRGBA = toRGBA(definition.background)
   const foregroundRGBA = toRGBA(definition.foreground)
-  definition.background = toCSSHEX({ ...backgroundRGBA, a: 0 })
+  definition.background = toCSSHEX({ ...backgroundRGBA, a: opacity < 1 ? 0 : 1 })
   definition.type = isDarkColor(backgroundRGBA) ? 'dark' : 'light'
   let selectionBackgroundRGBA = definition.selectionBackground ? toRGBA(definition.selectionBackground) : undefined
   if (!selectionBackgroundRGBA || selectionBackgroundRGBA.a < 1) {
@@ -177,7 +173,7 @@ const theme = $computed(() => {
   definition.acrylicBackground = accentHSLA ? toCSSHEX(
     toRGBAFromHSLA({ ...accentHSLA, l: (0.5 + accentHSLA.l / 2) }),
   ) : ''
-  definition.vibrancy = vibrancy
+  definition.vibrancy = opacity < 1 ? undefined : vibrancy
   definition.variables = Object.fromEntries([
     ...Object.entries({ ...THEME_CSS_COLORS, ...EXTRA_CSS_COLORS }).map(([key, attr]) => {
       let value = definition[key]
@@ -189,7 +185,7 @@ const theme = $computed(() => {
       }
       return [attr, value]
     }),
-    ...Object.entries(CSS_PROPERTIES).map(([key, attr]) => [attr, definition[key]]),
+    ['--theme-opacity', `${opacity * 100}%`],
   ].filter(([key, value]) => value !== undefined))
   return definition
 })

@@ -153,12 +153,11 @@ onMounted(() => {
   /* Default line height of xterm.js */
   line-height: 1.2;
   overflow: hidden;
-  background-image: linear-gradient(to right bottom, rgb(var(--acrylic-background) / 10%), rgb(var(--acrylic-background) / 25%));
-  background-color: rgb(var(--theme-background) / var(--theme-opacity));
+  background-image: linear-gradient(to right bottom, color-mix(in sRGB, rgb(var(--acrylic-background) / var(--theme-opacity)) 10%, rgb(var(--theme-background) / var(--theme-opacity))), color-mix(in sRGB, rgb(var(--acrylic-background) / var(--theme-opacity)) 25%, rgb(var(--theme-background) / var(--theme-opacity))));
   transition: color 0.2s;
   &.is-vibrant {
     --vibrancy-filter: drop-shadow(0 0 0.5em rgb(var(--theme-background))) blur(2px);
-    background-color: transparent;
+    background-image: linear-gradient(to right bottom, rgb(var(--acrylic-background) / 10%), rgb(var(--acrylic-background) / 25%));
   }
 }
 .content {
