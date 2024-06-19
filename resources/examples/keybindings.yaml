@@ -6,9 +6,3 @@
 # - label: Open User Directory
 #   accelerator: CmdOrCtrl+Shift+,
 #   command: open-user-directory
-
-# - label: Go to Previous Word
-#   accelerator: Alt+Left
-#   command: xterm:input
-#   args:
-#     - "\eb"

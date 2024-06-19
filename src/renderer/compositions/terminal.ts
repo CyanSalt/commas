@@ -179,14 +179,20 @@ interface RendererKeyBinding extends KeyBindingCommand {
 
 const keybindings = $(useKeyBindings())
 const rendererKeybindings = $computed(() => {
-  return keybindings.map<RendererKeyBinding>(binding => ({
-    pattern: {
-      ...toKeyEvent(binding.accelerator),
-      type: binding.when ?? 'keydown',
-    },
-    command: binding.command!,
-    args: binding.args,
-  }))
+  return keybindings.map<RendererKeyBinding>(binding => {
+    const pattern = toKeyEvent(binding.accelerator)
+    if (pattern.code) {
+      delete pattern.key
+    }
+    return {
+      pattern: {
+        ...pattern,
+        type: binding.when ?? 'keydown',
+      },
+      command: binding.command!,
+      args: binding.args,
+    }
+  })
 })
 
 export interface CreateTerminalTabOptions {
