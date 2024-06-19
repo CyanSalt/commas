@@ -599,24 +599,17 @@ function loadReadOnlyTerminalAddons(tab: TerminalTab, xterm: Terminal, addons: R
     }
   }
   const rendererType = settings['terminal.view.rendererType']
-  if (rendererType !== 'webgl') {
-    if (addons.webgl) {
-      addons.webgl.dispose()
-      delete addons.webgl
-    }
-  }
-  if (rendererType !== 'canvas') {
-    if (addons.canvas) {
-      addons.canvas.dispose()
-      delete addons.canvas
-    }
-  }
   if (rendererType === 'webgl') {
     if (!addons.webgl) {
       addons.webgl = new WebglAddon()
       tab.deferred.open.promise.then(() => {
         xterm.loadAddon(addons.webgl)
       })
+    }
+  } else {
+    if (addons.webgl) {
+      addons.webgl.dispose()
+      delete addons.webgl
     }
   }
   if (rendererType === 'canvas') {
@@ -625,6 +618,11 @@ function loadReadOnlyTerminalAddons(tab: TerminalTab, xterm: Terminal, addons: R
       tab.deferred.open.promise.then(() => {
         xterm.loadAddon(addons.canvas)
       })
+    }
+  } else {
+    if (addons.canvas) {
+      addons.canvas.dispose()
+      delete addons.canvas
     }
   }
   if (!addons.serialize) {
