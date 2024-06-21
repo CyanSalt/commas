@@ -22,12 +22,9 @@ function stringifyQuestion(question: string) {
 
 function parseAnswer(message: string) {
   const raw = message.trim().replace(/^```\S*\n(.+)```$/s, '$1').replace(/^`(.+)`$/, '$1')
-  try {
-    const { answer } = JSON.parse(raw)
-    return answer
-  } catch {
-    return raw
-  }
+  // Let it throw
+  const { answer } = JSON.parse(raw)
+  return answer
 }
 
 async function getCommand(query: string) {
