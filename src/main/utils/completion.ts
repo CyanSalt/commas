@@ -219,29 +219,31 @@ const getManPageRawCompletions = memoizeAsync(async (command: string, subcommand
     }
   }
   if (command === 'npm') {
-    const defaultSection = sections.find(item => item.title === 'NAME')!
-    const parameterParagraphs: string[][] = []
-    let currentParameter: string | undefined
-    let currentParameterParagraph: string[] = []
-    for (const paragraph of defaultSection.paragraphs) {
-      const matches = paragraph[0].match(/^\s{3}([a-z][\w-]*)/)
-      if (matches) {
-        if (currentParameter) {
-          parameterParagraphs.push([currentParameter, ...currentParameterParagraph])
-          currentParameterParagraph = []
-        }
-        currentParameter = '   --' + matches[1]
-      } else if (currentParameter) {
-        if (/^\s{3}[A-Z]/.test(paragraph[0])) {
-          parameterParagraphs.push([currentParameter, ...currentParameterParagraph])
-          currentParameterParagraph = []
-          break
-        } else {
-          currentParameterParagraph = currentParameterParagraph.concat(paragraph)
+    const defaultSection = sections.find(item => item.title === 'NAME')
+    if (defaultSection) {
+      const parameterParagraphs: string[][] = []
+      let currentParameter: string | undefined
+      let currentParameterParagraph: string[] = []
+      for (const paragraph of defaultSection.paragraphs) {
+        const matches = paragraph[0].match(/^\s{3}([a-z][\w-]*)/)
+        if (matches) {
+          if (currentParameter) {
+            parameterParagraphs.push([currentParameter, ...currentParameterParagraph])
+            currentParameterParagraph = []
+          }
+          currentParameter = '   --' + matches[1]
+        } else if (currentParameter) {
+          if (/^\s{3}[A-Z]/.test(paragraph[0])) {
+            parameterParagraphs.push([currentParameter, ...currentParameterParagraph])
+            currentParameterParagraph = []
+            break
+          } else {
+            currentParameterParagraph = currentParameterParagraph.concat(paragraph)
+          }
         }
       }
+      paragraphs = parameterParagraphs
     }
-    paragraphs = parameterParagraphs
   }
   for (const paragraph of paragraphs) {
     const matches = paragraph[0].match(/^\s*(-[\w-.]+=?),?\s*(.*)$/)
