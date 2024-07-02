@@ -16,19 +16,6 @@ export function reuse<T>(fn: () => T) {
   return () => value
 }
 
-export interface Deferred {
-  promise: Promise<void>,
-  resolve: () => void,
-}
-
-export function createDeferred() {
-  const deferred = {} as Deferred
-  deferred.promise = new Promise<void>(resolve => {
-    deferred.resolve = resolve
-  })
-  return deferred
-}
-
 export type Generable<T, U, V> = U | Promise<U> | Generator<T, U, V> | AsyncGenerator<T, U, V>
 
 export function isIterator(value: any): value is

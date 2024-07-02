@@ -11,7 +11,6 @@ import type { Terminal } from '@xterm/xterm'
 import type { Component } from 'vue'
 import type { IconEntry } from '../renderer/assets/icons'
 import type { ShellIntegrationAddon } from '../renderer/utils/shell-integration'
-import type { Deferred } from '../shared/helper'
 
 export interface TerminalTabPane {
   name?: string,
@@ -75,9 +74,9 @@ export interface TerminalTab extends TerminalInfo {
   title: string,
   xterm: Terminal,
   addons: TerminalTabAddons,
-  deferred: {
-    open: Deferred,
-    stop: Deferred,
+  state: {
+    open: PromiseWithResolvers<void>,
+    stop: PromiseWithResolvers<void>,
   },
   alerting?: boolean,
   idle?: boolean,

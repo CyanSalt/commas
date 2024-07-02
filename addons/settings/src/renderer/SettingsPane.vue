@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
-import { groupBy, startCase } from 'lodash'
+import { startCase } from 'lodash'
 import { nextTick, onBeforeUpdate, watchEffect } from 'vue'
 import type { TerminalTab } from '../../../../src/typings/terminal'
 import SettingsLine from './SettingsLine.vue'
@@ -29,7 +29,7 @@ const configurableSpecs = $computed(() => {
 const addons = $(commas.remote.useAddons())
 
 const groups = $computed(() => {
-  return Object.entries(groupBy(configurableSpecs, spec => {
+  return Object.entries(Object.groupBy(configurableSpecs, spec => {
     const domain = spec.key.split('.')
     return domain.slice(0, domain[0] === 'terminal' ? 2 : 1).join('.')
   })).map(([key, rows]) => {
@@ -50,7 +50,7 @@ const groups = $computed(() => {
       key,
       name,
       from,
-      rows: rows.filter(row => commas.helper.matches([row.key, commas.remote.translate(row.label)], keyword)),
+      rows: rows!.filter(row => commas.helper.matches([row.key, commas.remote.translate(row.label)], keyword)),
     }
   }).filter(group => group.rows.length)
 })

@@ -67,7 +67,7 @@ useTerminalElement(
   () => tab.addons,
   xterm => {
     cell = xterm['_core']._renderService.dimensions.css.cell
-    tab.deferred.open.resolve()
+    tab.state.open.resolve()
     xterm.focus()
   },
 )

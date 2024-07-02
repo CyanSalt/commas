@@ -6,7 +6,6 @@ import { cloneDeep, isEqual } from 'lodash'
 import YAML from 'yaml'
 import { surface } from '../../shared/compositions'
 import { globalHandler } from '../../shared/handler'
-import { createDeferred } from '../../shared/helper'
 import type { Settings, SettingsSpec } from '../../typings/settings'
 import { provideIPC, useYAMLFile } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
@@ -52,20 +51,20 @@ function useDefaultSettings() {
   return reactiveDefaultSettings
 }
 
-const deferredSettings = createDeferred()
+const loadingState = Promise.withResolvers<void>()
 
 function whenSettingsReady() {
-  return deferredSettings.promise
+  return loadingState.promise
 }
 
 let userSettings = $(useYAMLFile(userFile('settings.yaml'), {} as Settings, {
   onTrigger() {
-    deferredSettings.resolve()
+    loadingState.resolve()
   },
 }))
 
 let isReady = false
-deferredSettings.promise.then(() => {
+loadingState.promise.then(() => {
   isReady = true
 })
 

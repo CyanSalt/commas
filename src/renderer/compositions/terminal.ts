@@ -17,7 +17,7 @@ import { isMatch, trim } from 'lodash'
 import type { MaybeRefOrGetter } from 'vue'
 import { effectScope, markRaw, nextTick, reactive, shallowReactive, toRaw, toValue, watch, watchEffect } from 'vue'
 import * as commas from '../../../api/core-renderer'
-import { createDeferred, createIDGenerator } from '../../shared/helper'
+import { createIDGenerator } from '../../shared/helper'
 import type { KeyBindingCommand, MenuItem } from '../../typings/menu'
 import type { ReadonlyTerminalTabAddons, TerminalContext, TerminalInfo, TerminalTab, TerminalTabCharacter } from '../../typings/terminal'
 import { openContextMenu } from '../utils/frame'
@@ -216,9 +216,9 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
     title: '',
     xterm: markRaw(xterm),
     addons: shallowReactive<any>({}),
-    deferred: {
-      open: createDeferred(),
-      stop: createDeferred(),
+    state: {
+      open: Promise.withResolvers(),
+      stop: Promise.withResolvers(),
     },
     alerting: false,
     thumbnail: '',
@@ -310,7 +310,7 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
       })
     }
   })
-  tab.deferred.stop.promise.then(() => {
+  tab.state.stop.promise.then(() => {
     scope.stop()
   })
   if (command) {
@@ -482,7 +482,7 @@ export function handleTerminalMessages() {
   ipcRenderer.on('exit-terminal', (event, data: Pick<TerminalTab, 'pid'>) => {
     const tab = tabs.find(item => item.pid === data.pid)
     if (!tab) return
-    tab.deferred.stop.resolve()
+    tab.state.stop.resolve()
     // FIXME: renderer cannot dispose correctly since the `dispose` will set a new DomRenderer
     // which could not be finished when the terminal is disposed
     if (tab.addons.webgl) {
@@ -579,7 +579,7 @@ function loadReadOnlyTerminalAddons(tab: TerminalTab, xterm: Terminal, addons: R
   if (!addons.fit) {
     addons.fit = new FitAddon()
     xterm.loadAddon(addons.fit)
-    tab.deferred.open.promise.then(() => {
+    tab.state.open.promise.then(() => {
       addons.fit.fit()
     })
   }
@@ -592,7 +592,7 @@ function loadReadOnlyTerminalAddons(tab: TerminalTab, xterm: Terminal, addons: R
     if (!addons.ligatures) {
       const ligatures = new LigaturesAddon()
       addons.ligatures = ligatures
-      tab.deferred.open.promise.then(() => {
+      tab.state.open.promise.then(() => {
         if (addons.ligatures === ligatures) {
           xterm.loadAddon(ligatures)
         }
@@ -608,7 +608,7 @@ function loadReadOnlyTerminalAddons(tab: TerminalTab, xterm: Terminal, addons: R
   if (rendererType === 'webgl') {
     if (!addons.webgl) {
       addons.webgl = new WebglAddon()
-      tab.deferred.open.promise.then(() => {
+      tab.state.open.promise.then(() => {
         xterm.loadAddon(addons.webgl)
       })
     }
@@ -621,7 +621,7 @@ function loadReadOnlyTerminalAddons(tab: TerminalTab, xterm: Terminal, addons: R
   if (rendererType === 'canvas') {
     if (!addons.canvas) {
       addons.canvas = new CanvasAddon()
-      tab.deferred.open.promise.then(() => {
+      tab.state.open.promise.then(() => {
         xterm.loadAddon(addons.canvas)
       })
     }

@@ -319,7 +319,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
         }
       }),
     )
-    this.tab.deferred.open.promise.then(() => {
+    this.tab.state.open.promise.then(() => {
       this.disposables.push(
         xterm['_core'].viewport.onRequestScrollLines(() => {
           this._renderStickyLines()
