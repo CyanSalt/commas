@@ -120,17 +120,19 @@ onMounted(() => {
   --system-blue: 0 122 245;
   --system-magenta: 245 35 75;
   --system-accent: var(--system-blue);
+  --design-active-background: rgb(var(--theme-background) / var(--theme-opacity));
   --design-alert-color: rgb(var(--system-blue));
+  --design-card-border-radius: var(--design-card-gap);
+  --design-card-gap: 8px;
+  --design-card-shadow: 0 2px 4px 0px rgb(0 0 0 / 10%);
+  --design-element-shadow: 0 1px 2px 0px rgb(0 0 0 / 10%);
   --design-highlight-color: rgb(var(--system-blue));
   --design-highlight-background: color-mix(in hsl, rgb(var(--theme-foreground) / 15%), rgb(var(--acrylic-background) / 10%));
   --design-input-background: color-mix(in hsl, rgb(var(--theme-foreground) / 10%) 75%, rgb(var(--acrylic-background) / 10%));
   --design-separator: rgb(var(--theme-foreground) / 10%);
-  --design-card-gap: 8px;
-  --design-card-border-radius: var(--design-card-gap);
-  --design-card-shadow: 0 2px 4px 0px rgb(0 0 0 / 10%);
-  --design-element-shadow: 0 1px 2px 0px rgb(0 0 0 / 10%);
   @media (prefers-color-scheme: dark) {
     --system-cyan: 108 224 219;
+    --design-active-background: color-mix(in sRGB, color-mix(in sRGB, rgb(var(--theme-background) / 50%) 90%, rgb(var(--system-accent))) 80%, white);
     --design-alert-color: rgb(var(--system-yellow));
     --design-highlight-color: rgb(var(--system-cyan));
   }

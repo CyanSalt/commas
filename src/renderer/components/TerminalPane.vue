@@ -122,6 +122,9 @@ function openEditingMenu(event: MouseEvent) {
     color: rgb(var(--theme-foreground));
     opacity: 0.25;
   }
+  &:not(:read-only):focus {
+    outline: 1px solid rgb(var(--system-accent));
+  }
   &:read-only {
     opacity: 0.5;
   }
@@ -149,6 +152,9 @@ function openEditingMenu(event: MouseEvent) {
   background: var(--design-input-background);
   border-radius: 4px;
   outline: none;
+  &:focus {
+    outline: 1px solid rgb(var(--system-accent));
+  }
   // Fix windows native control style
   option {
     color: initial;

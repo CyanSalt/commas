@@ -121,7 +121,7 @@ function close() {
   cursor: pointer;
   -webkit-app-region: no-drag;
   &:hover {
-    background: rgb(var(--theme-background) / var(--theme-opacity));
+    background: var(--design-active-background);
   }
   &.close:hover {
     color: rgb(var(--system-red));
