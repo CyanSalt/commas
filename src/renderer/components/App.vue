@@ -132,7 +132,7 @@ onMounted(() => {
   --design-separator: rgb(var(--theme-foreground) / 10%);
   @media (prefers-color-scheme: dark) {
     --system-cyan: 108 224 219;
-    --design-active-background: color-mix(in sRGB, color-mix(in sRGB, rgb(var(--theme-background) / 50%) 90%, rgb(var(--system-accent))) 80%, white);
+    --design-active-background: rgb(255 255 255 / 16.667%);
     --design-alert-color: rgb(var(--system-yellow));
     --design-highlight-color: rgb(var(--system-cyan));
   }
