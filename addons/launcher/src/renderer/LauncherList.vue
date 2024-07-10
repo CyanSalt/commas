@@ -92,12 +92,15 @@ function showLauncherMenu(event: MouseEvent) {
   commas.workspace.showTabOptions(event, 'launcher')
 }
 
+const FOLDER_ID = 'launcher@folder'
+const FOLDER_DROP_TARGET = Symbol(FOLDER_ID)
+
 interface LauncherDraggableElementData extends DraggableElementData {
   launcher?: Launcher,
 }
 
 interface DropTargetData extends Record<string | symbol, unknown> {
-  launcher: Launcher,
+  launcher: Launcher | typeof FOLDER_DROP_TARGET,
 }
 
 const draggingEdges = reactive(new Map<string, Edge | null>())
@@ -115,13 +118,19 @@ function handleDragStop() {
 
 function handleDrag(args: DraggableElementEventPayload<LauncherDraggableElementData, DropTargetData>) {
   if (args.source.data.type === 'tab') {
-    draggingEdges.set(args.self.data.launcher.id, commas.ui.extractClosestEdge(args.self.data))
+    draggingEdges.set(
+      args.self.data.launcher === FOLDER_DROP_TARGET ? FOLDER_ID : args.self.data.launcher.id,
+      commas.ui.extractClosestEdge(args.self.data),
+    )
   }
 }
 
 function handleDragLeave(args: DraggableElementEventPayload<LauncherDraggableElementData, DropTargetData>) {
   if (args.source.data.type === 'tab') {
-    draggingEdges.set(args.self.data.launcher.id, null)
+    draggingEdges.set(
+      args.self.data.launcher === FOLDER_DROP_TARGET ? FOLDER_ID : args.self.data.launcher.id,
+      null,
+    )
   }
 }
 
@@ -152,10 +161,14 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
       ? 'start'
       : (edge === 'bottom' || edge === 'right' ? 'end' : undefined)
     if (launcher) {
-      moveLauncher(launcher, launchers.indexOf(args.self.data.launcher), toEdge)
+      moveLauncher(
+        launcher,
+        args.self.data.launcher === FOLDER_DROP_TARGET ? -1 : launchers.indexOf(args.self.data.launcher),
+        toEdge,
+      )
     } else {
       const tab = tabs[args.source.data.index!]
-      const toIndex = launchers.indexOf(args.self.data.launcher)
+      const toIndex = args.self.data.launcher === FOLDER_DROP_TARGET ? -1 : launchers.indexOf(args.self.data.launcher)
       const index = toEdge === 'start' ? toIndex : toIndex + 1
       createLauncher({
         name: commas.workspace.getTerminalTabTitle(tab),
@@ -168,7 +181,10 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
       }, index)
       pool.add({ tab, index })
     }
-    draggingEdges.set(args.self.data.launcher.id, null)
+    draggingEdges.set(
+      args.self.data.launcher === FOLDER_DROP_TARGET ? FOLDER_ID : args.self.data.launcher.id,
+      null,
+    )
   }
 }
 
@@ -217,11 +233,26 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
       </div>
     </template>
     <template v-else>
-      <div class="launcher-folder" @click="toggleCollapsing">
-        <div :class="['group-name', { collapsed: isCollapsed }]">
-          <VisualIcon :name="isCollapsed ? 'lucide-list-filter' : 'lucide-list-video'" />
+      <DropTarget
+        v-slot="{ mount: dropTarget }"
+        :data="{ launcher: FOLDER_DROP_TARGET as typeof FOLDER_DROP_TARGET }"
+        :allowed-edges="isHorizontal ? ['right'] : ['bottom']"
+        sticky
+        @dragenter="handleDrag"
+        @drag="handleDrag"
+        @dragleave="handleDragLeave"
+        @drop="handleDrop"
+      >
+        <div :ref="dropTarget" class="launcher-folder" @click="toggleCollapsing">
+          <div :class="['group-name', { collapsed: isCollapsed }]">
+            <VisualIcon :name="isCollapsed ? 'lucide-list-filter' : 'lucide-list-video'" />
+          </div>
+          <DropIndicator
+            v-if="draggingEdges.get(FOLDER_ID)"
+            :vertical="isHorizontal"
+          />
         </div>
-      </div>
+      </DropTarget>
       <DraggableElement
         v-for="{ key, tab, index, character, launcher } in launcherItems"
         :key="key"
@@ -321,9 +352,6 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
   }
 }
 .launcher-folder {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
   padding: 0 8px;
   line-height: 16px;
   cursor: pointer;
@@ -339,7 +367,6 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
   cursor: pointer;
 }
 .group-name {
-  flex: auto;
   opacity: 0.5;
   transition: opacity 0.2s, color 0.2s;
   &.collapsed {
