@@ -166,8 +166,6 @@ function handleGroupSeparating(args: DraggableElementEventPayload<DraggableEleme
   }
 }
 
-const enableSash = false
-
 function openTabItemMenu(event: MouseEvent) {
   const { updatingItems, deletingItems } = createTerminalTabContextMenu()
   openContextMenu([
@@ -251,7 +249,7 @@ function openTabItemMenu(event: MouseEvent) {
         </div>
       </div>
     </AutoScroll>
-    <div v-if="enableSash && !isHorizontal" draggable="true" class="sash" @dragstart.prevent="resize"></div>
+    <div v-if="!isHorizontal" draggable="true" class="sash" @dragstart.prevent="resize"></div>
   </nav>
 </template>
 
@@ -261,6 +259,7 @@ function openTabItemMenu(event: MouseEvent) {
 .tab-list {
   --min-tab-height: 36px;
   --primary-icon-size: 21px;
+  position: relative;
   display: flex;
   flex: none;
   font-size: 14px;
@@ -349,11 +348,24 @@ function openTabItemMenu(event: MouseEvent) {
   }
 }
 .sash {
+  position: absolute;
+  inset-block: 0;
+  right: 0;
   flex: none;
-  width: var(--design-card-gap);
+  width: calc(var(--design-card-gap) / 2);
+  border-left: 2px solid transparent;
+  transition: border-color 0.2s;
   cursor: col-resize;
+  &:hover {
+    border-color: rgb(var(--system-accent));
+    transition-delay: 0.5s;
+  }
   .tab-list.right & {
+    right: unset;
+    left: 0;
     order: -1;
+    border-right: 2px solid transparent;
+    border-left: none;
   }
 }
 .new-tab {
