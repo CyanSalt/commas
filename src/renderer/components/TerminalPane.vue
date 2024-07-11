@@ -30,12 +30,12 @@ function openEditingMenu(event: MouseEvent) {
 @use '../assets/_partials';
 
 .terminal-pane {
-  @include partials.scroll-container(8px);
   position: relative;
   z-index: 0;
   box-sizing: border-box;
   height: 100%;
   padding: 8px 16px;
+  @include partials.scroll-container(8px);
 }
 :deep(.group-title) {
   margin: 8px 0;

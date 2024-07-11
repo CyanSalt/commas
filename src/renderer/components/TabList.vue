@@ -278,8 +278,8 @@ function openTabItemMenu(event: MouseEvent) {
   }
 }
 .list-container {
-  @include partials.scroll-container(var(--design-card-gap));
   flex: 1;
+  @include partials.scroll-container(var(--design-card-gap));
   .tab-list.vertical & {
     width: 176px;
     padding-left: var(--design-card-gap);

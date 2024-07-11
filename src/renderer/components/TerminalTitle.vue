@@ -11,7 +11,7 @@ import VisualIcon from './basic/VisualIcon.vue'
 const settings = useSettings()
 const terminal = $(useCurrentTerminal())
 
-let iconBuffer = $ref<Buffer | undefined>()
+let iconBuffer = $ref<Buffer>()
 
 const isEnabled: boolean = $computed(() => {
   return settings['terminal.view.frameType'] === 'immersive'

@@ -12,8 +12,8 @@ import VisualIcon from './basic/VisualIcon.vue'
 const terminal = $(useCurrentTerminal())
 const theme = useTheme()
 
-const root = $ref<HTMLElement | undefined>()
-const finder = $ref<HTMLInputElement | undefined>()
+const root = $ref<HTMLElement>()
+const finder = $ref<HTMLInputElement>()
 const keyword = $ref('')
 const options = reactive({
   caseSensitive: false,

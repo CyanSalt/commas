@@ -16,8 +16,8 @@ const { tab } = defineProps<{
   tab: TerminalTab,
 }>()
 
-const element = $ref<HTMLElement | undefined>()
-const stickyElement = $ref<HTMLElement | undefined>()
+const element = $ref<HTMLElement>()
+const stickyElement = $ref<HTMLElement>()
 
 function dragFileOver(event: DragEvent) {
   if (event.dataTransfer) {
@@ -225,8 +225,8 @@ function scrollToStickyCommand() {
     padding-left: var(--integration-width);
   }
   :deep(.xterm-viewport) {
-    @include partials.scroll-container(8px);
     background-color: transparent !important;
+    @include partials.scroll-container(8px);
   }
   /* issue@xterm: pointer behavior */
   :deep(.xterm-screen) {
@@ -325,9 +325,9 @@ function scrollToStickyCommand() {
   }
 }
 .terminal-completion-wrapper {
-  @include partials.scroll-container(8px);
   display: flex;
   height: 100%;
+  @include partials.scroll-container(8px);
   :deep(.vue-recycle-scroller__slot) {
     position: sticky;
     top: 0;
