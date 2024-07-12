@@ -1,10 +1,12 @@
 import childProcess from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import util from 'node:util'
 import { packager } from '@electron/packager'
 import { rebuild } from '@electron/rebuild'
 import chalk from 'chalk'
+import * as dotenv from 'dotenv'
 import png2icons from 'png2icons'
 import { requireCommonJS, resolveCommonJS } from './utils/common.mjs'
 
@@ -88,6 +90,11 @@ async function resolveWorkspacePackages() {
   return () => fs.promises.rename(backupPkgPath, pkgPath)
 }
 
+const { parsed: env } = dotenv.config({
+  path: fileURLToPath(import.meta.resolve('../.env')),
+  processEnv: {},
+})
+
 /**
  * @type {import('@electron/packager').Options}
  */
@@ -156,20 +163,6 @@ const options = {
 }
 
 /**
- * @param {string} name
- */
-async function getMacOSCodeSign(name) {
-  const { stdout } = await execa(
-    `security find-identity -p codesigning -v | grep "\\"${name}: .*\\"" | cut -d ' ' -f 4`,
-  )
-  const sign = stdout.trim()
-  if (!/^[0-9A-Fa-f]{40}$/.test(sign)) {
-    throw new Error(`Invalid code sign: ${sign}`)
-  }
-  return sign
-}
-
-/**
  * @param {string} dir
  */
 async function compressPackage(dir) {
@@ -214,15 +207,22 @@ async function pack() {
       options.icon = icon
     }
   }
-  // Equivalent to { type: 'development' } for electron-osx-sign
-  if (process.platform === 'darwin') {
-    options.osxSign = {
-      identity: await getMacOSCodeSign('Apple Development'),
-    }
-  }
   if (local) {
     delete options.platform
     delete options.arch
+  } else if (
+    env
+    && env.APPLE_ID
+    && env.APPLE_ID_PASSWORD
+    && env.APPLE_TEAM_ID
+  ) {
+    logger.info('Will sign and notarize for macOS')
+    options.osxSign = {}
+    options.osxNotarize = {
+      appleId: env.APPLE_ID,
+      appleIdPassword: env.APPLE_ID_PASSWORD,
+      teamId: env.APPLE_TEAM_ID,
+    }
   }
   // Run @electron/packager
   const restorePackage = await resolveWorkspacePackages()
