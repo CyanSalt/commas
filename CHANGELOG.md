@@ -1,5 +1,13 @@
 
 
+## [0.33.1](https://github.com/CyanSalt/commas/compare/v0.33.0...v0.33.1) (2024-07-12)
+
+
+### Bug Fixes
+
+* remove backdrop-filter to avoid bugs ([4a8525a](https://github.com/CyanSalt/commas/commit/4a8525a799fa931058fc26873449bec9e5e0734a))
+* **sync:** refine icons ([39f62ae](https://github.com/CyanSalt/commas/commit/39f62ae0a3170af070222bddbfcd9e0b68d75e0c))
+
 ## [0.33.0](https://github.com/CyanSalt/commas/compare/v0.32.1...v0.33.0) (2024-07-12)
 
 
