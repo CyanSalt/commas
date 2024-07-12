@@ -158,7 +158,6 @@ onMounted(() => {
   background-image: linear-gradient(to right bottom, color-mix(in sRGB, rgb(var(--acrylic-background) / var(--theme-opacity)) 10%, rgb(var(--theme-background) / var(--theme-opacity))), color-mix(in sRGB, rgb(var(--acrylic-background) / var(--theme-opacity)) 25%, rgb(var(--theme-background) / var(--theme-opacity))));
   transition: color 0.2s;
   &.is-vibrant {
-    --vibrancy-filter: drop-shadow(0 0 0.5em rgb(var(--theme-background))) blur(2px);
     background-image: linear-gradient(to right bottom, rgb(var(--acrylic-background) / 10%), rgb(var(--acrylic-background) / 25%));
   }
 }

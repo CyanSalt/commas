@@ -305,7 +305,6 @@ function scrollToStickyCommand() {
   background: rgb(var(--theme-background) / var(--theme-opacity));
   border-radius: 4px;
   box-shadow: 0 0 1em 0 rgb(0 0 0 / 25%);
-  backdrop-filter: var(--vibrancy-filter);
   // TODO: This may slightly slow down, but is friendlier visually
   transition: transform 50ms, margin-left 50ms;
   &.is-right {
