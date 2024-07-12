@@ -10,7 +10,7 @@ export default () => {
     title: 'Sync#!sync.1',
     component: SyncPane,
     icon: {
-      name: 'lucide-upload-cloud',
+      name: 'lucide-cloud-upload',
     },
   })
 

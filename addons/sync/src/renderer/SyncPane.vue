@@ -118,10 +118,10 @@ function removeSyncPlan(index: number) {
       <span v-else v-i18n class="link" @click="addToken">Add GitHub Token#!sync.3</span>
       <div v-if="syncData.encryption" class="form-line">
         <span class="link form-action" @click="uploadDefaultSyncPlan">
-          <VisualIcon name="lucide-upload-cloud" />
+          <VisualIcon name="lucide-cloud-upload" />
         </span>
         <span v-if="defaultPlanGist" class="link form-action" @click="downloadDefaultSyncPlan">
-          <VisualIcon name="lucide-download-cloud" />
+          <VisualIcon name="lucide-cloud-download" />
         </span>
         <span
           v-if="defaultPlanGist.includes('/')"
@@ -141,21 +141,21 @@ function removeSyncPlan(index: number) {
       <div v-for="(plan, index) in extraPlans" :key="index" class="extra-plan">
         <div class="form-line">
           <span class="link form-action remove-plan" @click="removeSyncPlan(index)">
-            <VisualIcon name="lucide-minus" />
+            <VisualIcon name="lucide-package-minus" />
           </span>
           <input v-model.lazy="plan.name" class="immersive-control plan-name">
           <span class="plan-directory" @click="openSyncPlanDirectory(plan)">
-            <VisualIcon name="lucide-folder" class="directory-icon" />
+            <VisualIcon name="lucide-folder-output" class="directory-icon" />
             <span class="directory-path">{{ omitHome(plan.directory) }}</span>
           </span>
         </div>
         <ObjectEditor v-model="plan.files" lazy>
           <template #extra>
             <span class="link form-action" @click="uploadSyncPlan(plan)">
-              <VisualIcon name="lucide-upload-cloud" />
+              <VisualIcon name="lucide-cloud-upload" />
             </span>
             <span v-if="plan.gist" class="link form-action" @click="downloadSyncPlan(plan)">
-              <VisualIcon name="lucide-download-cloud" />
+              <VisualIcon name="lucide-cloud-download" />
             </span>
             <span
               v-if="plan.gist.includes('/')"
@@ -169,7 +169,7 @@ function removeSyncPlan(index: number) {
       </div>
       <div class="form-line action-line">
         <span class="link form-action" @click="addSyncPlan">
-          <VisualIcon name="lucide-plus" />
+          <VisualIcon name="lucide-package-plus" />
         </span>
       </div>
     </div>
