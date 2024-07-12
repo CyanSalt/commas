@@ -1,5 +1,47 @@
 
 
+## [0.33.0](https://github.com/CyanSalt/commas/compare/v0.32.1...v0.33.0) (2024-07-12)
+
+
+### Features
+
+* **ai:** switch for doctor ([5e4a156](https://github.com/CyanSalt/commas/commit/5e4a15615decc169710e210089f556c52aaeff54))
+* alt navigation by default ([54c8f64](https://github.com/CyanSalt/commas/commit/54c8f6436b40367efdb0e49b2e0754042a42c54b))
+* bouncy tab items ([33f977c](https://github.com/CyanSalt/commas/commit/33f977cc8d322c26cdc2c2acd5bf5900ebf6e4b5))
+* launcher folder as drop target ([82c67b1](https://github.com/CyanSalt/commas/commit/82c67b128ca3aa9fc5648a883c10933fbdb63799))
+* **launcher:** pane as launcher ([083b782](https://github.com/CyanSalt/commas/commit/083b782e1430e3c066d5151f2983eecb9cf577be))
+* modern ui ([cff8970](https://github.com/CyanSalt/commas/commit/cff89706b9cf776439a8cb064880cf5e91e0d143))
+* refine tab list entry ([4aac850](https://github.com/CyanSalt/commas/commit/4aac8508cf39705cda509f630291c9ca807b0de0))
+* tab list context menu ([741c8dc](https://github.com/CyanSalt/commas/commit/741c8dc2732d5bf242b0a2b11c6c7847c3e27d28))
+* third party quick fix icon ([cb48613](https://github.com/CyanSalt/commas/commit/cb48613e0dc8b31f815707ea6f12ec9eb8680bb5))
+
+
+### Bug Fixes
+
+* **ai:** refine prompts ([5116335](https://github.com/CyanSalt/commas/commit/5116335f7b2789bc6d92f0f424aa1e280fb9d976))
+* **ai:** remove native events ([d9bcd9d](https://github.com/CyanSalt/commas/commit/d9bcd9d2e872612d48ae2ae05b083ba08dfa95f0))
+* **ai:** skip invalid completions ([b8b08ee](https://github.com/CyanSalt/commas/commit/b8b08ee28a6be7b189cbdf579adc9589dde6e3f7))
+* avoid triggering completion in vim ([49d1a32](https://github.com/CyanSalt/commas/commit/49d1a32659a36b375c00fdb31e1063dbaeb2a20d))
+* drop indicator style ([51e36f9](https://github.com/CyanSalt/commas/commit/51e36f9527916b89eb5e3ee710b471e8bf934dd2))
+* enable nav sash ([7527bf4](https://github.com/CyanSalt/commas/commit/7527bf4f55b810492f9ecdab87baa3d7ae56fa5e))
+* hide tab list icon in touch bar if useless ([f2dfdb1](https://github.com/CyanSalt/commas/commit/f2dfdb1bc20b56b26798eac7b9a64489e79ece12))
+* home ident ([eb75c41](https://github.com/CyanSalt/commas/commit/eb75c41343c224830128a1e01bc5a6a8216f3436))
+* input and idle light style ([dbd620d](https://github.com/CyanSalt/commas/commit/dbd620d512610450a8f428015bdc3bb9c1f214bc))
+* **launcher:** disallow dragging pane as launcher ([4c0dd35](https://github.com/CyanSalt/commas/commit/4c0dd357b51c2baa7e0fe05369edf9111e19a43f))
+* **launcher:** icon style ([842052c](https://github.com/CyanSalt/commas/commit/842052cf7fcf7a7f8240d348da19450d91ea458c))
+* npm completions ([384ad3e](https://github.com/CyanSalt/commas/commit/384ad3e686c93c0c1c87ce721204830eb25a23ed))
+* **proxy:** recommend to use fnm ([7fee81b](https://github.com/CyanSalt/commas/commit/7fee81b0abc27373f5d384b9d6d1a0192ee16b6f))
+* **proxy:** right click to open context menu ([1914d03](https://github.com/CyanSalt/commas/commit/1914d03110e84f6627a051d17de299af96bcee2e))
+* refine context menu api ([e0726f4](https://github.com/CyanSalt/commas/commit/e0726f4da7fa75c1c678ea001c04ca64294f9a38))
+* simplify active background color ([ae76b53](https://github.com/CyanSalt/commas/commit/ae76b533377e05b2b2e98e6810e7a22414409f6b))
+* spacing for completions ([1ae6b67](https://github.com/CyanSalt/commas/commit/1ae6b679aa03d85884fe0c4ac4675fcc8b7a3a74))
+* support app.on ([b8a0d6c](https://github.com/CyanSalt/commas/commit/b8a0d6c33182355f655b6797ebb9264565008c57))
+* theme colors ([67e7005](https://github.com/CyanSalt/commas/commit/67e70051f8e96885e39ac0642da620790c05bd85))
+* thin scroll bar ([148c8dd](https://github.com/CyanSalt/commas/commit/148c8dd546638d588819ebea42ec888caf8c4c1e))
+* translucent sticky term ([fc38aba](https://github.com/CyanSalt/commas/commit/fc38aba5e194f9e7c41b9d937055fad01cb6bc84))
+* vibrancy setting comment ([a6551b8](https://github.com/CyanSalt/commas/commit/a6551b8ba20bb3eb2a6987c7d127d24bb7887712))
+* vibrancy without opacity ([8a3598f](https://github.com/CyanSalt/commas/commit/8a3598f0b427283ddb7ee7f9d25fad2267b15f83))
+
 ## [0.32.1](https://github.com/CyanSalt/commas/compare/v0.32.0...v0.32.1) (2024-05-23)
 
 
