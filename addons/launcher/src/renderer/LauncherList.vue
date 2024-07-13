@@ -226,15 +226,8 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
 <template>
   <div :class="['launcher-list', isHorizontal ? 'horizontal' : 'vertical']">
     <template v-if="isHorizontal">
-      <div class="launcher-folder">
-        <div class="group-name" @click="showLauncherMenu">
-          <VisualIcon name="lucide-list-video" />
-        </div>
-      </div>
-    </template>
-    <template v-else>
       <DropTarget
-        v-slot="{ mount: dropTarget }"
+        v-slot="{ mount }"
         :data="{ launcher: FOLDER_DROP_TARGET as typeof FOLDER_DROP_TARGET }"
         :allowed-edges="isHorizontal ? ['right'] : ['bottom']"
         sticky
@@ -243,7 +236,25 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
         @dragleave="handleDragLeave"
         @drop="handleDrop"
       >
-        <div :ref="dropTarget" class="launcher-folder" @click="toggleCollapsing">
+        <div :ref="mount" :class="['launcher-folder', { 'is-dropping-active': draggingEdges.get(FOLDER_ID) }]">
+          <div class="group-name" @click="showLauncherMenu">
+            <VisualIcon name="lucide-list-video" />
+          </div>
+        </div>
+      </DropTarget>
+    </template>
+    <template v-else>
+      <DropTarget
+        v-slot="{ mount }"
+        :data="{ launcher: FOLDER_DROP_TARGET as typeof FOLDER_DROP_TARGET }"
+        :allowed-edges="isHorizontal ? ['right'] : ['bottom']"
+        sticky
+        @dragenter="handleDrag"
+        @drag="handleDrag"
+        @dragleave="handleDragLeave"
+        @drop="handleDrop"
+      >
+        <div :ref="mount" class="launcher-folder" @click="toggleCollapsing">
           <div :class="['group-name', { collapsed: isCollapsed }]">
             <VisualIcon :name="isCollapsed ? 'lucide-list-filter' : 'lucide-list-video'" />
           </div>
@@ -321,10 +332,13 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
 <style lang="scss" scoped>
 .launcher-list {
   display: flex;
-  gap: var(--design-card-gap);
   &.vertical {
     flex-direction: column;
+    gap: var(--design-card-gap);
     width: 100%;
+  }
+  &.horizontal {
+    align-items: center;
   }
 }
 .list-item {
@@ -356,8 +370,14 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
   line-height: 16px;
   cursor: pointer;
   .tab-list.horizontal & {
-    height: var(--min-tab-height);
+    display: flex;
+    align-items: center;
+    height: calc(1em + 2 * 8px);
     line-height: var(--min-tab-height);
+    border-radius: 8px;
+    &.is-dropping-active {
+      outline: 2px solid rgb(var(--system-accent));
+    }
   }
 }
 .button {

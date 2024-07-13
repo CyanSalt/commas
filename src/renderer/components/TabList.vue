@@ -210,6 +210,7 @@ function openTabItemMenu(event: MouseEvent) {
                   <TabItem
                     :ref="draggable"
                     :tab="tab"
+                    :character="tab.character"
                     @click="activateTerminalTab(tab)"
                     @contextmenu="openTabItemMenu"
                   />
