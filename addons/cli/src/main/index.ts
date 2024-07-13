@@ -107,7 +107,8 @@ export default () => {
         return cfonts.render(character, {
           font: 'tiny',
           colors: [colors[index % colors.length]],
-          space: false,
+          space: false, // docs on npmjs.com
+          spaceless: true, // actually (cli argument)
         })['array'] as string[]
       }).reduce((lines, array) => {
         return array.map((line, index) => String(lines[index] ?? '') + line)
