@@ -37,25 +37,7 @@ const isNullableString: boolean = $computed(() => {
 
 const placeholder = $computed(() => {
   if (isNullableString) return ''
-  return String(stringify(spec.default))
-})
-
-let model = $computed({
-  get: () => {
-    if (
-      modelValue === undefined
-      && (isScalarEnum || isNullableString || accepts(spec.schema, ['boolean', 'array', 'object']))
-    ) {
-      return normalize(spec.default)
-    }
-    if (isSimpleObject) {
-      return normalize(modelValue)
-    }
-    return stringify(modelValue)
-  },
-  set: (value) => {
-    modelValue = parse(value)
-  },
+  return String(toPrimitive(spec.default) ?? '')
 })
 
 const isCustomized = $computed(() => {
@@ -63,30 +45,39 @@ const isCustomized = $computed(() => {
   return !isEqual(modelValue, spec.default)
 })
 
-function normalize(value) {
-  if (accepts(spec.schema, 'array') && Array.isArray(value)) {
-    return value
-  }
-  if (accepts(spec.schema, 'object') && typeof value === 'object') {
-    return value
-  }
-  if (value === undefined) {
-    return ''
-  }
-  return value
-}
+let model = $computed({
+  get: () => {
+    const value = isCustomized ? modelValue : spec.default
+    if (accepts(spec.schema, ['boolean'])) {
+      return Boolean(value)
+    }
+    if (isSimpleObject) {
+      if (accepts(spec.schema, 'array')) {
+        return Array.isArray(value) ? value : []
+      }
+      if (accepts(spec.schema, 'object')) {
+        return typeof value === 'object' ? value : {}
+      }
+      // will never fallthrough
+    }
+    if (isScalarEnum) {
+      return value
+    }
+    return isCustomized ? toPrimitive(modelValue) : undefined
+  },
+  set: (value) => {
+    modelValue = fromPrimitive(value)
+  },
+})
 
-function stringify(value) {
+function toPrimitive(value) {
   if (accepts(spec.schema, 'array') && Array.isArray(value)) {
     return JSON.stringify(value, null, 2)
   }
   if (accepts(spec.schema, 'object') && typeof value === 'object') {
     return JSON.stringify(value, null, 2)
   }
-  if (value === undefined) {
-    return ''
-  }
-  return value as string | number | boolean
+  return value as string | number | boolean | undefined
 }
 
 function parseJSON(value) {
@@ -97,7 +88,7 @@ function parseJSON(value) {
   }
 }
 
-function parse(value) {
+function fromPrimitive(value) {
   if (typeof value !== 'string') {
     return value
   }

@@ -95,7 +95,7 @@ const settings = $computed<Settings>({
   set(data) {
     userSettings = Object.fromEntries(
       Object.entries(data).filter(
-        ([key, value]) => !isEqual(value, defaultSettings[key]),
+        ([key, value]) => (value !== undefined && !isEqual(value, defaultSettings[key])),
       ),
     ) as Settings
   },
