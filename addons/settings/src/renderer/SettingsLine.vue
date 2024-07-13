@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { isEqual } from 'lodash'
+import { watchEffect } from 'vue'
 import type { SettingsSpec } from '../../../../src/typings/settings'
 import { accepts, isObjectSchema } from './json-schema'
 
@@ -120,8 +121,33 @@ function toggle(event: Event) {
   open = (event.target as HTMLDetailsElement).open
 }
 
+let staged = $ref<any>()
+
 function reset() {
-  model = spec.default
+  if (isCustomized) {
+    staged = model
+    model = spec.default
+  }
+}
+
+const isRecoverable = $computed(() => {
+  return staged !== undefined
+})
+
+watchEffect(onInvalidate => {
+  if (isRecoverable) {
+    const timer = setTimeout(() => {
+      staged = undefined
+    }, 10_000)
+    onInvalidate(() => {
+      clearTimeout(timer)
+    })
+  }
+})
+
+function recover() {
+  model = staged
+  staged = undefined
 }
 </script>
 
@@ -135,10 +161,15 @@ function reset() {
       <span class="link tree-node">
         <VisualIcon name="lucide-chevron-down" />
       </span>
-      <span v-i18n class="item-label" @click.prevent>{{ spec.label }}#!settings.label.{{ spec.key }}</span>
-      <span class="item-key" @click.prevent>{{ spec.key }}</span>
-      <span v-if="isCustomized" class="link reset" @click.prevent="reset">
-        <VisualIcon name="lucide-rotate-ccw" />
+      <span class="line-description">
+        <span v-i18n class="item-label" @click.prevent>{{ spec.label }}#!settings.label.{{ spec.key }}</span>
+        <span class="item-key" @click.prevent>{{ spec.key }}</span>
+        <span v-if="isRecoverable" class="link recover" @click.prevent="recover">
+          <VisualIcon name="lucide-rotate-cw" />
+        </span>
+        <span v-else-if="isCustomized" class="link reset" @click.prevent="reset">
+          <VisualIcon name="lucide-rotate-ccw" />
+        </span>
       </span>
     </summary>
     <div class="setting-detail">
@@ -210,6 +241,10 @@ function reset() {
 .line-summary {
   display: flex;
 }
+.line-description {
+  display: flex;
+  gap: 8px;
+}
 .item-label {
   flex: none;
   cursor: text;
@@ -245,7 +280,7 @@ function reset() {
     display: none;
   }
 }
-.reset {
-  margin-left: 8px;
+.recover {
+  color: rgb(var(--system-red));
 }
 </style>
