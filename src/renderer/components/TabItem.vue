@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { watchEffect } from 'vue'
+import { nextTick, watchEffect } from 'vue'
 import type { TerminalTab, TerminalTabCharacter } from '../../typings/terminal'
 import type { IconEntry } from '../assets/icons'
 import { useSettings } from '../compositions/settings'
@@ -67,14 +67,19 @@ const title = $computed(() => {
 
 let isCustomizing = $ref(false)
 let customTitle: string = $ref('')
+let customTitleElement = $ref<HTMLInputElement>()
 
 watchEffect(() => {
   customTitle = title
 })
 
-function startCustomization() {
+async function startCustomization() {
   if (customizable && isActive) {
     isCustomizing = true
+    await nextTick()
+    if (customTitleElement) {
+      customTitleElement.select()
+    }
   }
 }
 
@@ -132,6 +137,7 @@ function close() {
         <VisualIcon v-else name="lucide-terminal" class="tab-icon" />
         <input
           v-if="isCustomizing"
+          ref="customTitleElement"
           v-model="customTitle"
           autofocus
           class="custom-tab-name"
