@@ -137,6 +137,9 @@ function reset() {
       </span>
       <span v-i18n class="item-label" @click.prevent>{{ spec.label }}#!settings.label.{{ spec.key }}</span>
       <span class="item-key" @click.prevent>{{ spec.key }}</span>
+      <span v-if="isCustomized" class="link reset" @click.prevent="reset">
+        <VisualIcon name="lucide-rotate-ccw" />
+      </span>
     </summary>
     <div class="setting-detail">
       <div class="form-tips">
@@ -154,13 +157,7 @@ function reset() {
         :with-keys="accepts(spec.schema, 'object')"
         :pinned="spec.recommendations"
         lazy
-      >
-        <template #extra>
-          <span class="link reset" @click="reset">
-            <VisualIcon name="lucide-rotate-ccw" />
-          </span>
-        </template>
-      </ObjectEditor>
+      />
       <select
         v-else-if="isScalarEnum"
         v-model="model"
@@ -223,7 +220,7 @@ function reset() {
 }
 .item-key {
   flex: none;
-  margin-left: 16px;
+  margin-left: 8px;
   font-size: 12px;
   opacity: 0.5;
   cursor: text;
@@ -247,5 +244,8 @@ function reset() {
   .settings-line:not([open]) & {
     display: none;
   }
+}
+.reset {
+  margin-left: 8px;
 }
 </style>
