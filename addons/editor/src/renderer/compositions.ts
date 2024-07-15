@@ -1,8 +1,8 @@
 import * as path from 'node:path'
+import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import { readonly } from 'vue'
-import type { TerminalTab } from '@commas/types/terminal'
-import type { EditorTheme } from '@commas/types/theme'
+import type { EditorTheme } from '../types/theme'
 
 export const useEditorTheme = commas.helper.reuse(() => {
   return readonly(commas.helper.surface(

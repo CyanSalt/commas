@@ -6,7 +6,7 @@ import { reactive, watchEffect } from 'vue'
 import type { DraggableElementEventPayload } from '@commas/types/draggable'
 import type { MenuItem } from '@commas/types/menu'
 import type { TerminalTab } from '@commas/types/terminal'
-import * as commas from '../../../api/core-renderer'
+import * as commas from '../../api/core-renderer'
 import { useAsyncComputed } from '../../shared/compositions'
 import { useSettings } from '../compositions/settings'
 import {

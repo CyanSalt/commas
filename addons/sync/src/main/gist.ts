@@ -1,6 +1,6 @@
 import * as path from 'node:path'
 import * as commas from 'commas:api/main'
-import type { SyncPlan } from '@commas/types/sync'
+import type { SyncPlan } from '../types/sync'
 import { decryptToken, useSyncData } from './compositions'
 
 interface FileData {

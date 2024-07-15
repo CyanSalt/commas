@@ -1,8 +1,8 @@
 <script lang="ts" setup>
+import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import { startCase } from 'lodash'
 import { nextTick, onBeforeUpdate, watchEffect } from 'vue'
-import type { TerminalTab } from '@commas/types/terminal'
 import SettingsLine from './SettingsLine.vue'
 
 defineProps<{

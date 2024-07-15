@@ -1,9 +1,9 @@
 <script lang="ts" setup>
+import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import { ipcRenderer, shell } from 'electron'
 import { toRaw, toRef } from 'vue'
-import type { TerminalTab } from '@commas/types/terminal'
-import type { SyncPlan } from '@commas/types/sync'
+import type { SyncPlan } from '../types/sync'
 import { useSyncData } from './compositions'
 
 defineProps<{

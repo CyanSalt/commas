@@ -1,5 +1,5 @@
 import { shallowReactive } from '@vue/reactivity'
-import { globalHandler } from '../../src/shared/handler'
+import { globalHandler } from '../../shared/handler'
 import type { APIContext } from '../types'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

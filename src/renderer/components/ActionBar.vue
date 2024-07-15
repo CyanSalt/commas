@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ipcRenderer } from 'electron'
-import * as commas from '../../../api/core-renderer'
+import * as commas from '../../api/core-renderer'
 import { useSettings } from '../compositions/settings'
 import { useIsTabListEnabled } from '../compositions/shell'
 import { showTabOptions } from '../compositions/terminal'

@@ -1,6 +1,6 @@
 import { effect } from '@vue/reactivity'
 import { app } from 'electron'
-import * as commas from '../../api/core-main'
+import * as commas from '../api/core-main'
 import { handleA11yMessages } from './lib/a11y'
 import { handleAddonMessages, loadAddons, loadCustomJS } from './lib/addon'
 import { getLastWindow, hasWindow } from './lib/frame'

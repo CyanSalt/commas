@@ -1,7 +1,7 @@
 import * as fs from 'node:fs'
 import * as path from 'node:path'
 import * as commas from 'commas:api/main'
-import type { SyncPlan } from '@commas/types/sync'
+import type { SyncPlan } from '../types/sync'
 
 const settings = commas.settings.useSettings()
 const defaultFiles = commas.context.getCollection('sync.file')

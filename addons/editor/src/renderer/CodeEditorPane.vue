@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import { computed, watchEffect } from 'vue'
-import type { TerminalTab } from '@commas/types/terminal'
 import CodeEditor from './CodeEditor.vue'
 
 const { tab } = defineProps<{

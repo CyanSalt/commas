@@ -16,8 +16,8 @@ import {
   usePaneTabURL,
   useTerminalTabGroupSeparating,
   useTerminalTabs,
-} from '../../src/renderer/compositions/terminal'
-import { createTerminalTabContextMenu } from '../../src/renderer/utils/terminal'
+} from '../../renderer/compositions/terminal'
+import { createTerminalTabContextMenu } from '../../renderer/utils/terminal'
 import type { RendererAPIContext } from '../types'
 
 const tabs = $(useTerminalTabs())

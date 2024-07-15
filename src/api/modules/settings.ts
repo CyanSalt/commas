@@ -8,8 +8,8 @@ import {
   useSettings,
   useSettingsSpecs,
   writeUserFile,
-} from '../../src/main/lib/settings'
-import { THEME_CSS_COLORS, useTheme } from '../../src/main/lib/theme'
+} from '../../main/lib/settings'
+import { THEME_CSS_COLORS, useTheme } from '../../main/lib/theme'
 import type { MainAPIContext } from '../types'
 
 let currentSpecs = $(useSettingsSpecs())

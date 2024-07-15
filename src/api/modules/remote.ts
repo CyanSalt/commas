@@ -1,14 +1,14 @@
 import { ipcRenderer } from 'electron'
-import { useFile } from '../../src/renderer/compositions/frame'
-import { getI18nManifest, useLanguage } from '../../src/renderer/compositions/i18n'
+import { useFile } from '../../renderer/compositions/frame'
+import { getI18nManifest, useLanguage } from '../../renderer/compositions/i18n'
 import {
   useAddons,
   useSettings,
   useSettingsSpecs,
-} from '../../src/renderer/compositions/settings'
-import { useIsLightTheme, useTheme } from '../../src/renderer/compositions/theme'
-import { translate } from '../../src/renderer/utils/i18n'
-import { globalHandler } from '../../src/shared/handler'
+} from '../../renderer/compositions/settings'
+import { useIsLightTheme, useTheme } from '../../renderer/compositions/theme'
+import { translate } from '../../renderer/utils/i18n'
+import { globalHandler } from '../../shared/handler'
 
 export * from '../shim'
 
