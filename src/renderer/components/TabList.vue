@@ -42,7 +42,7 @@ const settings = useSettings()
 
 const position = $computed(() => settings['terminal.view.tabListPosition'])
 
-const isHorizontal: boolean = $computed(() => {
+const isHorizontal = $computed(() => {
   return position === 'top' || position === 'bottom'
 })
 

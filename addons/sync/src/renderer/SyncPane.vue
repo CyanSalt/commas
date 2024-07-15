@@ -24,7 +24,7 @@ const defaultPlanGist = $computed(() => {
 let extraPlans = $(commas.helper.deepRef(toRef(settings, 'sync.plan.extraPlans')))
 
 let isAddingToken = $ref(false)
-let stagingToken: string = $ref('')
+let stagingToken = $ref('')
 
 function addToken() {
   isAddingToken = true

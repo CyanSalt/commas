@@ -1,12 +1,15 @@
 import * as commas from 'commas:api/main'
 
-interface AccessToken {
-  api_key: string,
+interface AccessTokenData {
   access_token: string,
   expires_in: number,
-  expires_from: number,
   error: string,
   error_description: string,
+}
+
+interface AccessToken extends AccessTokenData {
+  api_key: string,
+  expires_from: number,
 }
 
 async function getAccessTokenFromServer(): Promise<AccessToken> {
@@ -15,9 +18,9 @@ async function getAccessTokenFromServer(): Promise<AccessToken> {
   const secretKey = settings['ai.ernie.secret']
   const params = {
     expires_from: Date.now(),
-    api_key: apiKey,
+    api_key: apiKey!,
   }
-  const response = await commas.shell.requestJSON({
+  const response = await commas.shell.requestJSON<AccessTokenData>({
     method: 'POST',
     url: `https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=${apiKey}&client_secret=${secretKey}`,
   })
@@ -55,7 +58,7 @@ async function getAccessToken() {
 
 async function chat(message: string) {
   const token = await getAccessToken()
-  const response = await commas.shell.requestJSON({
+  const response = await commas.shell.requestJSON<{ result: string }>({
     method: 'POST',
     url: `https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-speed-128k?access_token=${token}`,
     headers: {
@@ -71,7 +74,7 @@ async function chat(message: string) {
       ],
     }),
   })
-  return response.result as string
+  return response.result
 }
 
 export {

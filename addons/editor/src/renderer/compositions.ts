@@ -1,5 +1,4 @@
 import * as path from 'node:path'
-import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import { readonly } from 'vue'
 import type { EditorTheme } from '../types/theme'
@@ -20,7 +19,7 @@ export function openCodeEditorTab(file: string) {
       process: file,
       cwd: path.dirname(file),
       shell: file,
-    } as unknown as TerminalTab)
+    })
   }
   commas.workspace.activateOrAddTerminalTab(tab)
 }

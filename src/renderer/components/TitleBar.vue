@@ -10,7 +10,7 @@ const settings = useSettings()
 let isMaximized = $(useMaximized())
 let isMinimized = $(useMinimized())
 
-const isEnabled: boolean = $computed(() => {
+const isEnabled = $computed(() => {
   return settings['terminal.view.frameType'] === 'immersive'
 })
 

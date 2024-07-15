@@ -7,6 +7,13 @@ interface FileData {
   content: string,
 }
 
+interface GistData {
+  id: string,
+  files: Record<string, FileData>,
+  owner: { login: string },
+  updated_at: string,
+}
+
 const syncData = useSyncData()
 
 async function uploadFiles(plan: SyncPlan) {
@@ -20,7 +27,7 @@ async function uploadFiles(plan: SyncPlan) {
       entries[key] = { content }
     }
   }))
-  const result = await commas.shell.requestJSON(plan.gist ? {
+  const result = await commas.shell.requestJSON<GistData>(plan.gist ? {
     url: `https://api.github.com/gists/${plan.gist}`,
     method: 'PATCH',
   } : {
@@ -43,7 +50,7 @@ async function uploadFiles(plan: SyncPlan) {
 async function downloadFiles(plan: SyncPlan) {
   const token = decryptToken(syncData.encryption)
   if (!token || !plan.gist) return
-  const result = await commas.shell.requestJSON({
+  const result = await commas.shell.requestJSON<GistData>({
     url: `https://api.github.com/gists/${plan.gist}`,
     method: 'GET',
   }, {
@@ -52,7 +59,7 @@ async function downloadFiles(plan: SyncPlan) {
       Authorization: `token ${token}`,
     },
   })
-  const entries: Record<string, FileData> = result.files
+  const entries = result.files
   await Promise.all(Object.entries(entries).map(([key, data]) => {
     const file = key.replaceAll('__', path.sep)
     if (!plan.files.includes(file)) return undefined

@@ -27,10 +27,10 @@ async function request(options: RequestOptions, data?: RequestData) {
   return response as IncomingMessage & Readable
 }
 
-async function requestJSON(options: RequestOptions, data?: RequestData) {
+async function requestJSON<T>(options: RequestOptions, data?: RequestData) {
   const response = await request(options, data)
   const chunk = await getStream(response, 'utf8')
-  return JSON.parse(chunk)
+  return JSON.parse(chunk) as T
 }
 
 async function requestFile(options: RequestOptions, file: string) {

@@ -88,7 +88,7 @@ loadingState.promise.then(() => {
 })
 
 let oldSettings: Settings | undefined
-const settings = $computed<Settings>({
+const settings = $computed({
   get() {
     const definition = cloneDeep({
       ...defaultSettings,

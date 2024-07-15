@@ -61,6 +61,7 @@ export default () => {
 
   commas.ipcMain.handle('upload-sync-files', async () => {
     const result = await uploadFiles(defaultPlan)
+    if (!result) return
     if (!settings['sync.plan.gist']) {
       settings['sync.plan.gist'] = `${result.owner.login}/${result.id}`
     }
@@ -69,6 +70,7 @@ export default () => {
 
   commas.ipcMain.handle('download-sync-files', async () => {
     const result = await downloadFiles(defaultPlan)
+    if (!result) return
     if (!settings['sync.plan.gist'].includes('/')) {
       settings['sync.plan.gist'] = `${result.owner.login}/${result.id}`
     }
@@ -90,6 +92,7 @@ export default () => {
 
   commas.ipcMain.handle('upload-sync-plan', async (event, plan) => {
     const result = await uploadFiles(plan)
+    if (!result) return
     if (!plan.gist.includes('/')) {
       return {
         gist: `${result.owner.login}/${result.id}`,
@@ -99,6 +102,7 @@ export default () => {
 
   commas.ipcMain.handle('download-sync-plan', async (event, plan) => {
     const result = await downloadFiles(plan)
+    if (!result) return
     if (!plan.gist.includes('/')) {
       return {
         gist: `${result.owner.login}/${result.id}`,

@@ -43,7 +43,7 @@ const hasFocusedWindow = $computed(() => Boolean(focusedWindow))
 function resolveBindingCommand(binding: MenuItem) {
   const result: MenuItemConstructorOptions = { ...binding }
   if (binding.label) {
-    result.label = translate(binding.label, binding.args as unknown as TranslationVariables | undefined)
+    result.label = translate(binding.label, binding.args as TranslationVariables | undefined)
   }
   if (binding.command) {
     if (binding.command.startsWith('global-main:')) {

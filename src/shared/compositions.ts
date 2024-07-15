@@ -100,7 +100,7 @@ export function watchBaseEffect<T>(
 }
 
 export function surface<T extends object>(valueRef: Ref<T>, lazy?: boolean) {
-  const reactiveObject = shallowReactive({} as T) as T
+  const reactiveObject = shallowReactive({} as T)
   if (lazy) {
     let initialized = false
     const reactiveEffect = effect(() => {

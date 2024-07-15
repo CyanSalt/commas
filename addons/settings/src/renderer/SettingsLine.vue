@@ -14,7 +14,7 @@ const { spec } = defineProps<{
 let open = $(defineModel<boolean>('open'))
 let modelValue = $(defineModel<any>({ required: true }))
 
-const isSimpleObject: boolean = $computed(() => {
+const isSimpleObject = $computed(() => {
   const schema = spec.schema
   if (accepts(schema, 'array')) {
     return !accepts(schema.items, ['array', 'object'])
@@ -26,12 +26,12 @@ const isSimpleObject: boolean = $computed(() => {
   return false
 })
 
-const isScalarEnum: boolean = $computed(() => {
+const isScalarEnum = $computed(() => {
   const schema = spec.schema
   return Boolean(schema?.enum?.every(item => typeof item !== 'object'))
 })
 
-const isNullableString: boolean = $computed(() => {
+const isNullableString = $computed(() => {
   const schema = spec.schema
   return schema?.['minLength'] === 0 && spec.default?.length !== 0
 })

@@ -26,7 +26,7 @@ defineSlots<{
 const settings = useSettings()
 const terminal = $(useCurrentTerminal())
 
-const isFocused: boolean = $computed(() => {
+const isFocused = $computed(() => {
   return Boolean(tab) && terminal === tab
 })
 

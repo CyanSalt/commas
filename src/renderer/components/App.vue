@@ -39,7 +39,7 @@ const theme = useTheme()
 const isFullscreen = $(useFullscreen())
 const isTabListEnabled = $(useIsTabListEnabled())
 const tabs = $(useTerminalTabs())
-const willQuit: boolean = $(useWillQuit())
+const willQuit = $(useWillQuit())
 
 const hasHorizontalTabList = $computed(() => {
   const position = settings['terminal.view.tabListPosition']

@@ -42,8 +42,8 @@ async function getProxyServerVersion() {
 
 async function getLatestProxyServerVersion() {
   try {
-    const data = await commas.shell.requestJSON('https://registry.npmjs.org/whistle/latest')
-    return data.version as string
+    const data = await commas.shell.requestJSON<{ version: string }>('https://registry.npmjs.org/whistle/latest')
+    return data.version
   } catch {
     return undefined
   }

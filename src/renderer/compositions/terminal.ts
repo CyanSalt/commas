@@ -90,7 +90,7 @@ export function useCurrentTerminal() {
   return $$(currentTerminal)
 }
 
-let paneTabURL = $ref<string>('')
+let paneTabURL = $ref('')
 export function usePaneTabURL() {
   return $$(paneTabURL)
 }

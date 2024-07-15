@@ -11,10 +11,10 @@ defineProps<{
 
 const { vI18n, VisualIcon, TerminalPane } = commas.ui.vueAssets
 
-const keyword: string = $ref('')
+const keyword = $ref('')
 
 const settings = commas.remote.useSettings()
-let paneTabURL: string = $(commas.workspace.usePaneTabURL())
+let paneTabURL = $(commas.workspace.usePaneTabURL())
 let open = $ref<Record<string, boolean>>({})
 let lines: Record<string, HTMLElement | undefined> = {}
 
@@ -74,7 +74,7 @@ watchEffect(() => {
   }, {})
 })
 
-let isCollapsed = $computed<boolean>({
+let isCollapsed = $computed({
   get() {
     return Object.values(open).every(item => !item)
   },

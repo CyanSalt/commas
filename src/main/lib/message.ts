@@ -1,3 +1,4 @@
+import type EventEmitter from 'node:events'
 import type { Dock, FindInPageOptions, MessageBoxOptions, MessageBoxReturnValue, NativeImage, Result, WebContents } from 'electron'
 import { app, BrowserWindow, dialog, nativeImage, shell } from 'electron'
 import * as fileIcon from 'file-icon'
@@ -104,8 +105,9 @@ function handleMessages() {
   })
   ipcMain.handle('message-box', (event, data) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
-    if (!frame) return undefined as never
-    return dialog.showMessageBox(frame, data)
+    return frame
+      ? dialog.showMessageBox(frame, data)
+      : dialog.showMessageBox(data)
   })
   ipcMain.handle('destroy', (event) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
@@ -171,7 +173,7 @@ function handleMessages() {
     }
   })
   ipcMain.handle('find', async (event, text, options) => {
-    const foundInPage = until(event.sender, 'found-in-page') as Promise<[unknown, Result]>
+    const foundInPage = until(event.sender as unknown as EventEmitter<{ 'found-in-page': [unknown, Result] }>, 'found-in-page')
     event.sender.findInPage(text, options)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [fountInPageEvent, result] = await foundInPage

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { ThemeDefinition } from '@commas/types/theme'
 import * as commas from 'commas:api/renderer'
 import { startCase } from 'lodash'
 
@@ -24,7 +23,7 @@ const model = $computed({
     ) ?? theme[field]
   },
   set: value => {
-    const customization: ThemeDefinition = {
+    const customization = {
       ...(isLightTheme
         ? settings['terminal.theme.lightCustomization']
         : settings['terminal.theme.customization']

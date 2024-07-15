@@ -47,7 +47,7 @@ function createPaneTab(pane: TerminalTabPane, info?: Partial<TerminalInfo>) {
     cwd: '',
     ...info,
     pane: markRaw(pane),
-  } as unknown as TerminalTab)
+  } as TerminalTab)
 }
 
 function openPaneTab(name: string) {

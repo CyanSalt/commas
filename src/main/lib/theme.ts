@@ -135,7 +135,7 @@ const theme = $computed(() => {
   const customization: ThemeDefinition = isLightTheme
     ? settings['terminal.theme.lightCustomization']
     : settings['terminal.theme.customization']
-  const userTheme: ThemeDefinition = {
+  const userTheme = {
     ...originalTheme,
     ...customization,
   }

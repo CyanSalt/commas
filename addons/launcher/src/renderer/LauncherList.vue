@@ -34,7 +34,7 @@ const isHorizontal = $computed(() => {
 const tabs = $(commas.workspace.useTerminalTabs())
 const launchers = $(useLaunchers())
 
-let isCollapsed: boolean = $ref(false)
+let isCollapsed = $ref(false)
 
 const filteredLaunchers = $computed(() => {
   if (!isCollapsed) return launchers

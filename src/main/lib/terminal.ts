@@ -59,11 +59,11 @@ async function createTerminal(
   if (!env) {
     env = settings['terminal.shell.env']
   }
-  let runtimeEnv = {
+  let runtimeEnv: Record<string, string> = {
     ...getDefaultEnv(),
     ...env,
     COMMAS_SENDER_ID: String(webContents.id),
-  } as Record<string, string>
+  }
   let runtimeArgs = args
   if (settings['terminal.shell.integration']) {
     const result = integrateShell({ shell, args: runtimeArgs, env: runtimeEnv })

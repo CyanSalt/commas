@@ -11,7 +11,7 @@ const order = $computed(() => {
   return index + 1
 })
 
-const checked = $computed<boolean>({
+const checked = $computed({
   get() {
     return Boolean(order)
   },

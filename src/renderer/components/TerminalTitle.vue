@@ -14,17 +14,17 @@ const terminal = $(useCurrentTerminal())
 
 let iconBuffer = $ref<Buffer>()
 
-const isEnabled: boolean = $computed(() => {
+const isEnabled = $computed(() => {
   return settings['terminal.view.frameType'] === 'immersive'
 })
 
-const isDirectory: boolean = $computed(() => {
+const isDirectory = $computed(() => {
   if (!terminal) return false
   if (terminal.pane && terminal.shell) return false
   return true
 })
 
-const fileOrDirectory: string = $computed(() => {
+const fileOrDirectory = $computed(() => {
   if (!terminal) return ''
   if (terminal.pane && terminal.shell) return terminal.shell
   return terminal.cwd

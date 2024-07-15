@@ -70,8 +70,8 @@ const dictionary = $computed(() => {
 
 function loadTranslationEntry(entry: TranslationFileEntry, priority: Priority) {
   const file = entry.file
-  const source = require(file) as Dictionary
-  const translation: Translation = { file, dictionary: source, priority }
+  const source: Dictionary = require(file)
+  const translation = { file, dictionary: source, priority }
   translations.add(translation)
   return translation
 }
@@ -123,7 +123,7 @@ function loadBuiltinTranslations() {
 }
 
 async function loadCustomTranslation() {
-  const translation: Translation = {
+  const translation = {
     file: userFile('translation.yaml'),
     dictionary: userDictionary,
     priority: Priority.custom,

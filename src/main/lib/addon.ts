@@ -26,13 +26,13 @@ function getAddonPaths() {
   ]
 }
 
-function resolveAddon(name: string) {
+function resolveAddon(name: string): AddonInfo | undefined {
   const paths = getAddonPaths()
   for (const { type, base } of paths) {
     try {
       const entry = path.join(base, name)
       const manifest = require(path.join(entry, 'package.json'))
-      return { type, name, entry, manifest } as AddonInfo
+      return { type, name, entry, manifest }
     } catch {
       // continue
     }
@@ -40,7 +40,7 @@ function resolveAddon(name: string) {
       try {
         const entry = path.join(base, `${name}.asar`)
         const manifest = require(path.join(entry, 'package.json'))
-        return { type, name, entry, manifest } as AddonInfo
+        return { type, name, entry, manifest }
       } catch {
         // ignore
       }

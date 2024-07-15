@@ -100,9 +100,9 @@ function filterAndSortCompletions(completions: CommandCompletion[]) {
         })
       }
       const existingItem = deduplicatedCompletions[existingIndex]
-      const replacement: CommandCompletion = {
+      const replacement = {
         ...existingItem,
-        type: 'default',
+        type: 'default' as const,
         description: existingItem.description || completion.description,
       }
       deduplicatedCompletions.splice(existingIndex, 1, replacement)
