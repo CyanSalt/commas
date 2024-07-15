@@ -30,16 +30,11 @@ function cloneAPIModule<T>(object: object, context: Omit<APIContext<T>, '_'>) {
   })
 }
 
-function cloneAPI<T extends CompatableAPI>(api: T, name: string, entry: string) {
+function cloneAPI<T extends CompatableAPI>(api: T, context: Omit<APIContext<T>, '$' | '_'>) {
   return new Proxy(api, {
     get(target, property, receiver) {
-      const context: Omit<APIContext<T>, '_'> = {
-        $: receiver,
-        __name__: name,
-        __entry__: entry,
-      }
       const value = Reflect.get(target, property, receiver)
-      return typeof value === 'object' && value !== null ? cloneAPIModule(value, context) : value
+      return typeof value === 'object' && value !== null ? cloneAPIModule(value, { $: receiver, ...context }) : value
     },
   })
 }
@@ -98,7 +93,10 @@ function loadAddon(addon: AddonInfo, api: CompatableAPI) {
   // Reserved names
   if (addon.name === 'terminal') return
   // Create addon API
-  const clonedAPI = cloneAPI(api, addon.name, addon.entry)
+  const clonedAPI = cloneAPI(api, {
+    __name__: addon.name,
+    __entry__: addon.entry,
+  })
   // Share reactivity system
   addCommasExternalModules(['@vue/reactivity', 'vue'])
   addCommasModule(clonedAPI)
