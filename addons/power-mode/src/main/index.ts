@@ -9,7 +9,7 @@ export default () => {
     async handler({ sender, argv }) {
       const [status] = argv
       const enabled = status !== 'off'
-      sender.send('toggle-power-mode', enabled)
+      commas.frame.send(sender, 'toggle-power-mode', enabled)
       if (enabled) {
         return commas.i18n.translate('Power mode is turned on. Enter ${command}to exit power mode.#!power-mode.1', {
           command: '\n\n    commas power off\n\n',

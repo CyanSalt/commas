@@ -1,4 +1,12 @@
 import * as commas from 'commas:api/main'
+import type { Session } from 'electron'
+
+declare module '@commas/electron-ipc' {
+  export interface Commands {
+    'get-cache-size': Session['getCacheSize'],
+    'clear-cache': Session['clearCache'],
+  }
+}
 
 export default () => {
 

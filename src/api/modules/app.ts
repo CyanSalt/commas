@@ -1,7 +1,8 @@
 import { EventEmitter } from 'node:events'
 import * as path from 'node:path'
 import type { ReactiveEffectOptions } from '@vue/reactivity'
-import { app, ipcRenderer } from 'electron'
+import { app } from 'electron'
+import { ipcRenderer } from '@commas/electron-ipc'
 import type { APIContext } from '../types'
 import { watchBaseEffect } from './helper'
 
@@ -28,13 +29,13 @@ function isPackaged() {
 function getPath(name?: Parameters<typeof app['getPath']>[0]) {
   return isMainProcess()
     ? (name ? app.getPath(name) : app.getAppPath())
-    : ipcRenderer.sendSync('get-path', name) as string
+    : ipcRenderer.sendSync('get-path', name)
 }
 
 function getVersion() {
   return isMainProcess()
     ? app.getVersion()
-    : ipcRenderer.sendSync('get-version') as string
+    : ipcRenderer.sendSync('get-version')
 }
 
 function getManifest(): Record<string, any> {

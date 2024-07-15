@@ -1,10 +1,41 @@
-import type { MessageBoxOptions, NativeImage, WebContents } from 'electron'
-import { app, BrowserWindow, dialog, ipcMain, nativeImage, shell } from 'electron'
+import type { Dock, FindInPageOptions, MessageBoxOptions, MessageBoxReturnValue, NativeImage, Result, WebContents } from 'electron'
+import { app, BrowserWindow, dialog, nativeImage, shell } from 'electron'
 import * as fileIcon from 'file-icon'
+import { ipcMain } from '@commas/electron-ipc'
 import { readFile, watchFile, writeFile } from '../utils/file'
 import { execa, until } from '../utils/helper'
 import { notify } from '../utils/notification'
-import { broadcast, hasWindow } from './frame'
+import { broadcast, hasWindow, send } from './frame'
+
+declare module '@commas/electron-ipc' {
+  export interface Commands {
+    'message-box': (data: MessageBoxOptions) => MessageBoxReturnValue,
+    destroy: () => void,
+    execute: typeof execa,
+    'inject-style': (style: string) => string,
+    'eject-style': (key: string) => void,
+    'update-window': (data: { title: BrowserWindow['title'], filename: BrowserWindow['representedFilename'] }) => void,
+    'drag-file': (path: string, iconBuffer?: Buffer) => void,
+    beep: () => void,
+    'get-icon': (path: string) => Buffer,
+    notify: typeof notify,
+    'activate-window': () => void,
+    bounce: (state: { active: boolean, type?: Parameters<Dock['bounce']>[0] }) => void,
+    find: (text: string, options?: FindInPageOptions) => Result,
+    'stop-finding': (type: Parameters<WebContents['stopFindInPage']>[0]) => void,
+    'read-file': typeof readFile,
+  }
+  export interface Events {
+    'get-path': (name?: Parameters<typeof app['getPath']>[0]) => string,
+    'get-version': typeof app.getVersion,
+  }
+  export interface Refs {
+    minimized: boolean,
+    maximized: boolean,
+    fullscreen: boolean,
+    file: string | undefined,
+  }
+}
 
 let currentBouncingId = -1
 
@@ -38,7 +69,7 @@ function handleMessages() {
     if (!frame) return false
     return frame.isMinimized()
   })
-  ipcMain.handle('set-ref:minimized', (event, value: boolean) => {
+  ipcMain.handle('set-ref:minimized', (event, value) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     if (!frame) return
     if (value) {
@@ -52,7 +83,7 @@ function handleMessages() {
     if (!frame) return false
     return frame.isMaximized()
   })
-  ipcMain.handle('set-ref:maximized', (event, value: boolean) => {
+  ipcMain.handle('set-ref:maximized', (event, value) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     if (!frame) return
     if (value) {
@@ -66,14 +97,14 @@ function handleMessages() {
     if (!frame) return false
     return frame.isFullScreen()
   })
-  ipcMain.handle('set-ref:fullscreen', (event, value: boolean) => {
+  ipcMain.handle('set-ref:fullscreen', (event, value) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     if (!frame) return
     frame.setFullScreen(value)
   })
-  ipcMain.handle('message-box', (event, data: MessageBoxOptions) => {
+  ipcMain.handle('message-box', (event, data) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
-    if (!frame) return
+    if (!frame) return undefined as never
     return dialog.showMessageBox(frame, data)
   })
   ipcMain.handle('destroy', (event) => {
@@ -84,19 +115,19 @@ function handleMessages() {
   ipcMain.handle('execute', (event, command) => {
     return execa(command)
   })
-  ipcMain.handle('inject-style', (event, style: string) => {
+  ipcMain.handle('inject-style', (event, style) => {
     return event.sender.insertCSS(style)
   })
-  ipcMain.handle('eject-style', (event, key: string) => {
+  ipcMain.handle('eject-style', (event, key) => {
     return event.sender.removeInsertedCSS(key)
   })
-  ipcMain.handle('update-window', (event, data: { title: string, filename: string }) => {
+  ipcMain.handle('update-window', (event, data) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
-    if (!frame) return false
+    if (!frame) return
     frame.title = data.title
     frame.representedFilename = data.filename
   })
-  ipcMain.handle('drag-file', async (event, path: string, iconBuffer?: Buffer) => {
+  ipcMain.handle('drag-file', async (event, path, iconBuffer) => {
     let icon: NativeImage
     if (iconBuffer) {
       icon = nativeImage.createFromBuffer(iconBuffer).resize({ width: 16 })
@@ -116,7 +147,7 @@ function handleMessages() {
   })
   ipcMain.handle('activate-window', event => {
     const frame = BrowserWindow.fromWebContents(event.sender)
-    if (!frame) return false
+    if (!frame) return
     frame.show()
   })
   ipcMain.handle('bounce', (event, { active, type }) => {
@@ -125,7 +156,7 @@ function handleMessages() {
         currentBouncingId = app.dock.bounce(type)
       } else {
         const frame = BrowserWindow.fromWebContents(event.sender)
-        if (!frame) return false
+        if (!frame) return
         frame.flashFrame(true)
       }
     } else {
@@ -134,13 +165,13 @@ function handleMessages() {
         currentBouncingId = -1
       } else {
         const frame = BrowserWindow.fromWebContents(event.sender)
-        if (!frame) return false
+        if (!frame) return
         frame.flashFrame(false)
       }
     }
   })
   ipcMain.handle('find', async (event, text, options) => {
-    const foundInPage = until(event.sender, 'found-in-page')
+    const foundInPage = until(event.sender, 'found-in-page') as Promise<[unknown, Result]>
     event.sender.findInPage(text, options)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [fountInPageEvent, result] = await foundInPage
@@ -149,7 +180,7 @@ function handleMessages() {
   ipcMain.handle('stop-finding', (event, action) => {
     event.sender.stopFindInPage(action)
   })
-  ipcMain.handle('read-file', (event, file: string) => {
+  ipcMain.handle('read-file', (event, file) => {
     return readFile(file)
   })
   let watcherCollections = new WeakMap<WebContents, Map<string, any>>()
@@ -161,16 +192,16 @@ function handleMessages() {
     }
     if (!watchers.has(file)) {
       const watcher = watchFile(file, async () => {
-        event.sender.send('update-ref:file', await readFile(file), file)
+        send(event.sender, 'update-ref:file', await readFile(file), file)
       })
       watchers.set(file, watcher)
     }
     return readFile(file)
   })
-  ipcMain.handle('set-ref:file', (event, content: string, file: string) => {
+  ipcMain.handle('set-ref:file', (event, content, file: string) => {
     return writeFile(file, content)
   })
-  ipcMain.handle('stop-ref:file', (event, file: string) => {
+  ipcMain.on('stop-ref:file', (event, file: string) => {
     const watchers = watcherCollections.get(event.sender)
     if (watchers) {
       watchers.delete(file)
@@ -180,22 +211,22 @@ function handleMessages() {
 
 function handleEvents(frame: BrowserWindow) {
   frame.on('minimize', () => {
-    frame.webContents.send('update-ref:minimized', true)
+    send(frame.webContents, 'update-ref:minimized', true)
   })
   frame.on('restore', () => {
-    frame.webContents.send('update-ref:minimized', false)
+    send(frame.webContents, 'update-ref:minimized', false)
   })
   frame.on('maximize', () => {
-    frame.webContents.send('update-ref:maximized', true)
+    send(frame.webContents, 'update-ref:maximized', true)
   })
   frame.on('unmaximize', () => {
-    frame.webContents.send('update-ref:maximized', false)
+    send(frame.webContents, 'update-ref:maximized', false)
   })
   frame.on('enter-full-screen', () => {
-    frame.webContents.send('update-ref:fullscreen', true)
+    send(frame.webContents, 'update-ref:fullscreen', true)
   })
   frame.on('leave-full-screen', () => {
-    frame.webContents.send('update-ref:fullscreen', false)
+    send(frame.webContents, 'update-ref:fullscreen', false)
   })
   if (process.platform === 'darwin') {
     frame.on('move', () => {

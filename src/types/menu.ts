@@ -1,16 +1,34 @@
 import type { MenuItemConstructorOptions } from 'electron'
+import type { RendererEvents } from '@commas/electron-ipc'
 
-export interface KeyBindingCommand {
-  command?: string,
-  args?: any[],
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface XtermEvents {}
+
+type ValueOf<T> = T[keyof T]
+
+type OptionalArgs<T extends { args: unknown[] }> = [] extends T['args'] ? Omit<T, 'args'> & Partial<Pick<T, 'args'>> : T
+
+export type KeyBindingCommand = ValueOf<{
+  [K in keyof RendererEvents]: OptionalArgs<{
+    command: K,
+    args: Parameters<RendererEvents[K]>,
+  }>
+}> | ValueOf<{
+  [K in keyof XtermEvents]: OptionalArgs<{
+    command: K,
+    args: Parameters<XtermEvents[K]>,
+  }>
+}> | {
+  command?: never,
+  args?: never[],
 }
 
-export interface MenuItem extends Partial<MenuItemConstructorOptions>, KeyBindingCommand {
+export type MenuItem = Partial<MenuItemConstructorOptions> & KeyBindingCommand & {
   submenu?: MenuItem[],
 }
 
-export interface KeyBinding extends MenuItem {
-  label: string,
-  accelerator: string,
+export type KeyBinding = MenuItem & {
+  label: NonNullable<MenuItem['label']>,
+  accelerator: NonNullable<MenuItem['accelerator']>,
   when?: 'keydown' | 'keyup',
 }

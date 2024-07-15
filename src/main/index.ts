@@ -3,7 +3,7 @@ import { app } from 'electron'
 import * as commas from '../api/core-main'
 import { handleA11yMessages } from './lib/a11y'
 import { handleAddonMessages, loadAddons, loadCustomJS } from './lib/addon'
-import { getLastWindow, hasWindow } from './lib/frame'
+import { getLastWindow, hasWindow, send } from './lib/frame'
 import { handleI18nMessages, loadTranslations } from './lib/i18n'
 import { createApplicationMenu, createDockMenu, handleMenuMessages, registerGlobalShortcuts } from './lib/menu'
 import { handleMessages } from './lib/message'
@@ -71,7 +71,7 @@ app.on('will-finish-launching', () => {
       createWindow()
     }
     const frame = getLastWindow()
-    frame.webContents.send('open-url', url)
+    send(frame.webContents, 'open-url', url)
   })
 })
 

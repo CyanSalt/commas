@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from 'commas:api/renderer'
-import { ipcRenderer } from 'electron'
 import { onMounted } from 'vue'
 
 const { vI18n } = commas.ui.vueAssets

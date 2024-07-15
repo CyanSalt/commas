@@ -8,6 +8,12 @@ declare module '@commas/api/modules/context' {
   }
 }
 
+declare module '@commas/electron-ipc' {
+  export interface RendererEvents {
+    'open-preference-pane': () => void,
+  }
+}
+
 export default () => {
 
   commas.workspace.registerTabPane('preference', {

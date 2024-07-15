@@ -1,9 +1,10 @@
 import * as fs from 'node:fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
-import { ipcMain, shell } from 'electron'
+import { shell } from 'electron'
 import { cloneDeep, isEqual } from 'lodash'
 import YAML from 'yaml'
+import { ipcMain } from '@commas/electron-ipc'
 import type { Settings, SettingsSpec } from '@commas/types/settings'
 import { surface } from '../../shared/compositions'
 import { globalHandler } from '../../shared/handler'
@@ -13,6 +14,21 @@ import { ensureFile, writeFile } from '../utils/file'
 import { translate } from './i18n'
 
 const defaultSpecs: SettingsSpec[] = require(resourceFile('settings.spec.json'))
+
+declare module '@commas/electron-ipc' {
+  export interface Commands {
+    'open-settings': () => void,
+    'open-user-directory': typeof openUserDirectory,
+    'prepare-settings-file': typeof prepareSettingsFile,
+    'prepare-default-settings': typeof prepareDefaultSettings,
+    'prepare-user-file': typeof prepareUserFile,
+    'write-user-file': typeof writeUserFile,
+  }
+  export interface Refs {
+    'settings-specs': typeof specs,
+    settings: typeof settings,
+  }
+}
 
 const specs = $ref(defaultSpecs)
 
@@ -154,8 +170,8 @@ export function writeUserFile(file: string, content?: string) {
 function handleSettingsMessages() {
   provideIPC('settings-specs', $$(specs))
   provideIPC('settings', $$(settings))
-  ipcMain.handle('open-settings', () => {
-    return openSettingsFile()
+  ipcMain.handle('open-settings', async () => {
+    await openSettingsFile()
   })
   globalHandler.handle('global:open-settings', () => {
     return openSettingsFile()

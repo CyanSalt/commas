@@ -1,12 +1,18 @@
+import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from 'commas:api/renderer'
-import { ipcRenderer } from 'electron'
+
+declare module '@commas/electron-ipc' {
+  export interface RendererCommands {
+    'ai-quick-fix': (command: string) => void,
+  }
+}
 
 export default () => {
 
   const terminal = $(commas.workspace.useCurrentTerminal())
   const settings = commas.remote.useSettings()
 
-  commas.ipcRenderer.handle('ai-quick-fix', (event, command: string) => {
+  commas.ipcRenderer.handle('ai-quick-fix', (event, command) => {
     if (!terminal) return
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     terminal.addons?.shellIntegration?.addQuickFixAction(command)

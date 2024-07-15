@@ -1,4 +1,6 @@
+import type { WebContents } from 'electron'
 import { app, BrowserWindow } from 'electron'
+import type { RendererEventDefinitions } from '@commas/electron-ipc'
 
 function hasWindow() {
   return Boolean(BrowserWindow.getAllWindows().length)
@@ -9,9 +11,21 @@ function getLastWindow() {
   return frames[frames.length - 1]
 }
 
-function broadcast(event: string, ...args: any[]) {
+function send<
+  K extends keyof RendererEventDefinitions,
+>(
+  sender: WebContents,
+  event: K,
+  ...args: Parameters<RendererEventDefinitions[K]>
+) {
+  sender.send(event, ...args)
+}
+
+function broadcast<
+  K extends keyof RendererEventDefinitions,
+>(event: K, ...args: Parameters<RendererEventDefinitions[K]>) {
   BrowserWindow.getAllWindows().forEach(frame => {
-    frame.webContents.send(event, ...args)
+    send(frame.webContents, event, ...args)
   })
 }
 
@@ -60,6 +74,7 @@ function useFocusedWindow() {
 export {
   hasWindow,
   getLastWindow,
+  send,
   broadcast,
   useFocusedWindow,
 }

@@ -1,5 +1,5 @@
 import type { Component } from 'vue'
-import type { TerminalTabCharacter } from '@commas/types/terminal'
+import type { TerminalTabCharacter, TerminalTabCharacterCommand } from '@commas/types/terminal'
 
 declare module './modules/context' {
   export interface Context {
@@ -10,7 +10,7 @@ declare module './modules/context' {
     'terminal.category': {
       title: string,
       characters: TerminalTabCharacter[],
-      command: string,
+      command: TerminalTabCharacterCommand,
       priority?: number,
     },
   }

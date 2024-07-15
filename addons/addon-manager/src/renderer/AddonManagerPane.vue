@@ -1,8 +1,9 @@
 <script lang="ts" setup>
+import { ipcRenderer } from '@commas/electron-ipc'
 import type { AddonInfo } from '@commas/types/addon'
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
-import { ipcRenderer, shell } from 'electron'
+import { shell } from 'electron'
 import { onMounted } from 'vue'
 import { useDiscoveredAddons } from './compositions'
 

@@ -9,6 +9,12 @@ declare module '@commas/types/settings' {
   }
 }
 
+declare module '@commas/electron-ipc' {
+  export interface Commands {
+    'ai-doctor': (command: string, output: string) => string,
+  }
+}
+
 function createSettingsError(key: string) {
   const message = commas.i18n.translate('Missing `${key}` in settings. You can open settings via Command+, key, or `commas open settings` command and add it.#!ai.1', { key })
   const error = new Error(message)
@@ -38,7 +44,7 @@ export default () => {
     },
   })
 
-  commas.ipcMain.handle('ai-doctor', async (event, command: string, output: string) => {
+  commas.ipcMain.handle('ai-doctor', async (event, command, output) => {
     try {
       const settings = commas.settings.useSettings()
       if (!settings['ai.ernie.key']) {

@@ -10,6 +10,15 @@ declare module '@commas/types/settings' {
   }
 }
 
+declare module '@commas/electron-ipc' {
+  export interface Commands {
+    'create-launcher': (data: LauncherInfo, index: number) => void,
+  }
+  export interface Refs {
+    launchers: ReturnType<typeof useLaunchers>,
+  }
+}
+
 export default () => {
 
   commas.context.provide('sync.file', 'launchers.yaml')
@@ -17,7 +26,7 @@ export default () => {
   let launchers = $(useLaunchers())
   commas.ipcMain.provide('launchers', $$(launchers))
 
-  commas.ipcMain.handle('create-launcher', async (event, data: LauncherInfo, index: number) => {
+  commas.ipcMain.handle('create-launcher', async (event, data, index) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     if (!frame) return
     const created = await createLauncher(data) as Launcher

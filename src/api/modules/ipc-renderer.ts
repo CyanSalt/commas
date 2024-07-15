@@ -1,20 +1,24 @@
-import type { IpcRendererEvent } from 'electron'
-import { ipcRenderer } from 'electron'
+import type { IpcRendererHandler, IpcRendererListener, RendererCommands, RendererEventDefinitions } from '@commas/electron-ipc'
+import { ipcRenderer } from '@commas/electron-ipc'
 import { injectIPC } from '../../renderer/utils/compositions'
 import { handleRenderer } from '../../renderer/utils/ipc'
 import type { RendererAPIContext } from '../types'
 
-function on(this: RendererAPIContext, channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) {
+function on<
+  K extends keyof RendererEventDefinitions,
+>(this: RendererAPIContext, channel: K, listener: IpcRendererListener<RendererEventDefinitions[K]>) {
   ipcRenderer.on(channel, listener)
   this.$.app.onInvalidate(() => {
     ipcRenderer.removeListener(channel, listener)
   })
 }
 
-function handle(
+function handle<
+  K extends keyof RendererCommands,
+>(
   this: RendererAPIContext,
-  channel: string,
-  listener: (event: IpcRendererEvent, ...args: any[]) => void,
+  channel: K,
+  listener: IpcRendererHandler<RendererCommands[K]>,
 ) {
   const { dispose } = handleRenderer(channel, listener)
   this.$.app.onInvalidate(dispose)

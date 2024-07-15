@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import { ipcRenderer } from '@commas/electron-ipc'
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
-import { clipboard, ipcRenderer, shell } from 'electron'
+import { clipboard, shell } from 'electron'
 import { useProxyRootCAStatus, useProxyServerInstalled, useProxyServerStatus, useProxyServerVersion, useSystemProxyStatus } from './compositions'
 
 defineProps<{
@@ -20,7 +21,7 @@ let status = $(useProxyServerStatus())
 const supportsSystemProxy = process.platform === 'darwin'
 const supportsKeyChain = process.platform === 'darwin'
 
-const latestVersion = $(commas.helper.useAsyncComputed<string | undefined>(
+const latestVersion = $(commas.helper.useAsyncComputed(
   () => ipcRenderer.invoke('get-latest-proxy-server-version'),
   undefined,
 ))
@@ -33,7 +34,7 @@ const port = $computed(() => {
   return settings['proxy.server.port']!
 })
 
-const ip = $(commas.helper.useAsyncComputed<string>(
+const ip = $(commas.helper.useAsyncComputed(
   () => ipcRenderer.invoke('get-ip'),
   'localhost',
 ))

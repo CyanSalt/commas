@@ -13,6 +13,12 @@ import { notify } from '../utils/notification'
 import { translate } from './i18n'
 import { useSettings } from './settings'
 
+declare module '@commas/electron-ipc' {
+  export interface Refs {
+    addons: typeof loadedAddons,
+  }
+}
+
 function getAddonPaths() {
   return [
     { type: 'builtin' as const, base: path.join(__dirname, '../../addons') },

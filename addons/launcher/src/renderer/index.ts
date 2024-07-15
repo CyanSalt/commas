@@ -1,5 +1,7 @@
+import type { TerminalTabCharacter } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import { watch } from 'vue'
+import type { Launcher } from '../types/launcher'
 import LauncherLink from './LauncherLink.vue'
 import LauncherList from './LauncherList.vue'
 import { getLauncherByTerminalTabCharacter, openLauncher, removeLauncher, runLauncherScript, startLauncher, startLauncherExternally, useLauncherCharacters, useLaunchers } from './launcher'
@@ -8,6 +10,16 @@ import { clearLauncherSessions, LauncherSessionAddon } from './session'
 declare module '@commas/types/terminal' {
   export interface TerminalTabAddons {
     launcherSession: LauncherSessionAddon,
+  }
+}
+
+declare module '@commas/electron-ipc' {
+  export interface RendererEvents {
+    'open-launcher-character': (charater: TerminalTabCharacter) => void,
+    'start-launcher': (launcher: Launcher) => void,
+    'start-launcher-externally': (launcher: Launcher) => void,
+    'run-script': (launcher: Launcher, index: number) => void,
+    'remove-launcher': (launcher: Launcher) => void,
   }
 }
 

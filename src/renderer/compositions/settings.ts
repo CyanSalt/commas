@@ -1,7 +1,6 @@
-import { ipcRenderer } from 'electron'
 import { watchEffect } from 'vue'
-import type { AddonInfo } from '@commas/types/addon'
-import type { Settings, SettingsSpec } from '@commas/types/settings'
+import { ipcRenderer } from '@commas/electron-ipc'
+import type { Settings } from '@commas/types/settings'
 import { surface } from '../../shared/compositions'
 import { reuse } from '../../shared/helper'
 import { injectIPC } from '../utils/compositions'
@@ -16,11 +15,11 @@ export function useSettings() {
 }
 
 export const useSettingsSpecs = reuse(() => {
-  return injectIPC<SettingsSpec[]>('settings-specs', [])
+  return injectIPC('settings-specs', [])
 })
 
 export const useAddons = reuse(() => {
-  return injectIPC<AddonInfo[]>('addons', [])
+  return injectIPC('addons', [])
 })
 
 export function injectSettingsStyle() {
@@ -39,7 +38,7 @@ export function injectSettingsStyle() {
     }
     const declarations = Object.entries(styles)
       .map(([key, value]) => `${key}: ${value};`).join(' ')
-    const injection: Promise<string> = ipcRenderer.invoke('inject-style', `:root[data-commas] body { ${declarations} }`)
+    const injection = ipcRenderer.invoke('inject-style', `:root[data-commas] body { ${declarations} }`)
     onInvalidate(async () => {
       ipcRenderer.invoke('eject-style', await injection)
     })

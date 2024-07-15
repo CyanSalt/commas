@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
+import { ipcRenderer } from '@commas/electron-ipc'
 import type { DraggableElementEventPayload } from '@commas/types/draggable'
 import type { TerminalTab, TerminalTabCharacter } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
-import { ipcRenderer } from 'electron'
 import { reactive, watch } from 'vue'
 import type { DraggableElementData } from '../../../../src/renderer/utils/draggable'
 import type { Launcher, LauncherInfo } from '../types/launcher'

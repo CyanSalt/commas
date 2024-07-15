@@ -7,6 +7,12 @@ declare module '@commas/types/terminal' {
   }
 }
 
+declare module '@commas/electron-ipc' {
+  export interface RendererEvents {
+    'toggle-power-mode': (active: boolean) => void,
+  }
+}
+
 export default () => {
 
   const toggle = commas.workspace.registerXtermAddon('powerMode', () => new PowerMode())

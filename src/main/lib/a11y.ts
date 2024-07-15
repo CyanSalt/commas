@@ -1,6 +1,12 @@
 import { app } from 'electron'
 import { provideIPC } from '../utils/compositions'
 
+declare module '@commas/electron-ipc' {
+  export interface Refs {
+    'a11y-enabled': typeof a11yEnabled,
+  }
+}
+
 const a11yEnabled = $customRef((track, trigger) => {
   let enabled = false
   app.on('ready', () => {

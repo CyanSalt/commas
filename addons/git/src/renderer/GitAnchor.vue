@@ -1,6 +1,7 @@
 <script lang="ts" setup>
+import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from 'commas:api/renderer'
-import { ipcRenderer, shell } from 'electron'
+import { shell } from 'electron'
 import { watchEffect } from 'vue'
 
 defineOptions({
@@ -11,13 +12,13 @@ const { VisualIcon } = commas.ui.vueAssets
 
 const terminal = $(commas.workspace.useCurrentTerminal())
 
-const directory: string = $computed(() => {
+const directory = $computed(() => {
   if (!terminal) return ''
   return terminal.cwd
 })
 
-let branch: string = $ref('')
-let remoteURL: string = $ref('')
+let branch = $ref('')
+let remoteURL = $ref('')
 
 async function updateBranch() {
   if (directory) {
@@ -45,7 +46,7 @@ watchEffect(() => {
   updateRemoteURL()
 })
 
-const remoteExternalURL: string = $computed(() => {
+const remoteExternalURL = $computed(() => {
   if (!remoteURL) return ''
   let targetURL = remoteURL
   if (targetURL.endsWith('.git')) {

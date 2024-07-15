@@ -8,6 +8,12 @@ declare module '@commas/types/settings' {
   }
 }
 
+declare module '@commas/electron-ipc' {
+  export interface Commands {
+    'check-for-updates': () => void,
+  }
+}
+
 export default () => {
 
   const supportsAutoUpdater = app.isPackaged && ['darwin', 'win32'].includes(process.platform)

@@ -19,6 +19,20 @@ declare module '@commas/api/modules/context' {
   }
 }
 
+declare module '@commas/electron-ipc' {
+  export interface Commands {
+    'set-sync-token': (token: string | null) => void,
+    'upload-sync-files': () => void,
+    'download-sync-files': () => void,
+    'add-sync-plan': () => void,
+    'upload-sync-plan': (plan: SyncPlan) => Partial<SyncPlan> | undefined,
+    'download-sync-plan': (plan: SyncPlan) => Partial<SyncPlan> | undefined,
+  }
+  export interface Refs {
+    'sync-data': ReturnType<typeof getSyncDataRef>,
+  }
+}
+
 export default () => {
 
   commas.context.provide('sync.file', 'custom.css')
@@ -41,7 +55,7 @@ export default () => {
 
   commas.ipcMain.provide('sync-data', getSyncDataRef())
 
-  commas.ipcMain.handle('set-sync-token', async (event, token: string) => {
+  commas.ipcMain.handle('set-sync-token', async (event, token) => {
     syncData.encryption = encryptToken(token)
   })
 
@@ -74,10 +88,7 @@ export default () => {
     settings['sync.plan.extraPlans'] = settings['sync.plan.extraPlans'].concat(plan)
   })
 
-  commas.ipcMain.handle('upload-sync-plan', async (
-    event,
-    plan: SyncPlan,
-  ): Promise<Partial<SyncPlan> | undefined> => {
+  commas.ipcMain.handle('upload-sync-plan', async (event, plan) => {
     const result = await uploadFiles(plan)
     if (!plan.gist.includes('/')) {
       return {
@@ -86,10 +97,7 @@ export default () => {
     }
   })
 
-  commas.ipcMain.handle('download-sync-plan', async (
-    event,
-    plan: SyncPlan,
-  ): Promise<Partial<SyncPlan> | undefined> => {
+  commas.ipcMain.handle('download-sync-plan', async (event, plan) => {
     const result = await downloadFiles(plan)
     if (!plan.gist.includes('/')) {
       return {

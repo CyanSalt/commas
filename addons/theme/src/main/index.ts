@@ -1,5 +1,11 @@
 import * as commas from 'commas:api/main'
 
+declare module '@commas/electron-ipc' {
+  export interface Commands {
+    'reset-theme': () => void,
+  }
+}
+
 export default () => {
 
   commas.i18n.addTranslationDirectory('locales')

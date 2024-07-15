@@ -2,16 +2,16 @@ import type { ReactiveEffectOptions, ReactiveEffectRunner, Ref } from '@vue/reac
 import { customRef, deferredComputed, effect, ref, shallowReactive, stop, toRaw, unref } from '@vue/reactivity'
 import { cloneDeep, difference, intersection, isEqual } from 'lodash'
 
-export function useAsyncComputed<T>(factory: () => Promise<T>): Ref<T | undefined>
-export function useAsyncComputed<T>(factory: () => Promise<T>, defaultValue: T): Ref<T>
+export function useAsyncComputed<T>(factory: () => Promise<T | undefined>): Ref<T | undefined>
+export function useAsyncComputed<T>(factory: () => Promise<T | undefined>, defaultValue: T): Ref<T>
 
-export function useAsyncComputed<T>(factory: () => Promise<T>, defaultValue?: T) {
+export function useAsyncComputed<T>(factory: () => Promise<T | undefined>, defaultValue?: T) {
   return customRef<T | undefined>((track, trigger) => {
     let currentValue = defaultValue
     let initialized = false
     const reactiveEffect = effect(async () => {
       try {
-        currentValue = await factory()
+        currentValue = (await factory()) ?? defaultValue
       } catch {
         currentValue = defaultValue
       }

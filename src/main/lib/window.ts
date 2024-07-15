@@ -1,14 +1,21 @@
 import * as path from 'node:path'
 import { effect, stop } from '@vue/reactivity'
 import type { BrowserWindowConstructorOptions } from 'electron'
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow } from 'electron'
+import { ipcMain } from '@commas/electron-ipc'
 import { globalHandler } from '../../shared/handler'
 import { loadCustomCSS } from './addon'
-import { getLastWindow, hasWindow } from './frame'
+import { getLastWindow, hasWindow, send } from './frame'
 import { createTouchBar, createWindowMenu } from './menu'
 import { handleEvents } from './message'
 import { useSettings, whenSettingsReady } from './settings'
 import { useThemeOptions } from './theme'
+
+declare module '@commas/electron-ipc' {
+  export interface Commands {
+    'open-window': () => void,
+  }
+}
 
 const themeOptions = $(useThemeOptions())
 
@@ -120,7 +127,7 @@ async function openFile(file: string) {
     return
   }
   const frame = getLastWindow()
-  frame.webContents.send('open-tab', { cwd: file })
+  send(frame.webContents, 'open-tab', { cwd: file })
   frame.show()
 }
 

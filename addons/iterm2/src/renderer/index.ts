@@ -9,6 +9,13 @@ declare module '@commas/types/terminal' {
   }
 }
 
+declare module '@commas/electron-ipc' {
+  export interface RendererEvents {
+    'set-mark': () => void,
+    'scroll-to-mark': (offset: number) => void,
+  }
+}
+
 export default () => {
 
   commas.ui.addCSSFile('dist/renderer/style.css')
@@ -25,7 +32,7 @@ export default () => {
     currentTerminal.addons?.iterm2?.setMark()
   })
 
-  commas.ipcRenderer.on('scroll-to-mark', (event, offset: number) => {
+  commas.ipcRenderer.on('scroll-to-mark', (event, offset) => {
     if (!currentTerminal) return
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     currentTerminal.addons?.iterm2?.scrollToMark(offset)

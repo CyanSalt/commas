@@ -1,14 +1,31 @@
 import * as fs from 'node:fs'
 import * as os from 'node:os'
 import type { WebContents } from 'electron'
-import { app, ipcMain } from 'electron'
+import { app } from 'electron'
 import type { IPty, IPtyForkOptions } from 'node-pty'
 import * as pty from 'node-pty'
+import { ipcMain } from '@commas/electron-ipc'
 import type { TerminalContext, TerminalInfo } from '@commas/types/terminal'
 import { getCompletions, refreshCompletions } from '../utils/completion'
 import { execa } from '../utils/helper'
 import { getDefaultEnv, getDefaultShell, integrateShell } from '../utils/shell'
+import { send } from './frame'
 import { useSettings, whenSettingsReady } from './settings'
+
+declare module '@commas/electron-ipc' {
+  export interface Commands {
+    'create-terminal': (data: Partial<TerminalContext>) => ReturnType<typeof createTerminal>,
+    'write-terminal': (pid: number, data: string) => void,
+    'resize-terminal': (pid: number, data: { cols: number, rows: number }) => void,
+    'close-terminal': (pid: number) => void,
+    'get-terminal-cwd': (pid: number) => string,
+    'get-shells': () => string[],
+    'get-completions': typeof getCompletions,
+  }
+  export interface Events {
+    'terminal-prompt-end': () => void,
+  }
+}
 
 const ptyProcessMap = new Map<number, IPty>()
 
@@ -64,7 +81,7 @@ async function createTerminal(
   const ptyProcess = pty.spawn(shell, runtimeArgs, options)
   ptyProcess.onData(data => {
     if (!webContents.isDestroyed()) {
-      webContents.send('input-terminal', {
+      send(webContents, 'input-terminal', {
         pid: ptyProcess.pid,
         process: ptyProcess.process,
         data,
@@ -74,7 +91,7 @@ async function createTerminal(
   ptyProcess.onExit(data => {
     ptyProcessMap.delete(ptyProcess.pid)
     if (!webContents.isDestroyed()) {
-      webContents.send('exit-terminal', { pid: ptyProcess.pid, data })
+      send(webContents, 'exit-terminal', { pid: ptyProcess.pid })
     }
   })
   webContents.once('destroyed', () => {
@@ -92,22 +109,22 @@ async function createTerminal(
 }
 
 function handleTerminalMessages() {
-  ipcMain.handle('create-terminal', (event, data: Partial<TerminalContext>) => {
+  ipcMain.handle('create-terminal', (event, data) => {
     return createTerminal(event.sender, data)
   })
-  ipcMain.handle('write-terminal', (event, pid: number, data: string) => {
+  ipcMain.handle('write-terminal', (event, pid, data) => {
     const ptyProcess = ptyProcessMap.get(pid)
     ptyProcess?.write(data)
   })
-  ipcMain.handle('resize-terminal', (event, pid: number, data: { cols: number, rows: number }) => {
+  ipcMain.handle('resize-terminal', (event, pid, data) => {
     const ptyProcess = ptyProcessMap.get(pid)
     ptyProcess?.resize(data.cols, data.rows)
   })
-  ipcMain.handle('close-terminal', (event, pid: number) => {
+  ipcMain.handle('close-terminal', (event, pid) => {
     const ptyProcess = ptyProcessMap.get(pid)
     ptyProcess?.kill()
   })
-  ipcMain.handle('get-terminal-cwd', async (event, pid: number) => {
+  ipcMain.handle('get-terminal-cwd', async (event, pid) => {
     try {
       if (process.platform === 'darwin') {
         const { stdout } = await execa(`lsof -p ${pid} | grep cwd`)
@@ -139,7 +156,7 @@ function handleTerminalMessages() {
       return []
     }
   })
-  ipcMain.handle('get-completions', (event, input: string, cwd: string) => {
+  ipcMain.handle('get-completions', (event, input, cwd) => {
     return getCompletions(input, cwd)
   })
   ipcMain.on('terminal-prompt-end', () => {

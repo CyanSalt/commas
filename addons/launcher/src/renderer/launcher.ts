@@ -1,12 +1,13 @@
+import { ipcRenderer } from '@commas/electron-ipc'
 import type { TerminalInfo, TerminalTab, TerminalTabCharacter } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
-import { ipcRenderer, shell } from 'electron'
+import { shell } from 'electron'
 import type { Launcher } from '../types/launcher'
 import { getLauncherCommand } from './utils'
 
 const settings = commas.remote.useSettings()
 
-let launchers = $(commas.ipcRenderer.inject<Launcher[]>('launchers', []))
+let launchers = $(commas.ipcRenderer.inject('launchers', []))
 
 export function useLaunchers() {
   return $$(launchers)

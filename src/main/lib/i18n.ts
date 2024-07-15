@@ -9,6 +9,13 @@ import { interpolateText } from '../../shared/text'
 import { provideIPC, useYAMLFile } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
 
+declare module '@commas/electron-ipc' {
+  export interface Refs {
+    language: typeof language,
+    dictionary: typeof dictionary,
+  }
+}
+
 export interface TranslationFileEntry {
   locale: string,
   file: string,

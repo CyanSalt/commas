@@ -11,7 +11,7 @@ function getTextSequence(text: string, readable?: boolean) {
   return readable ? sequences[0] : sequences[sequences.length - 1]
 }
 
-const dictionary = $(injectIPC<Dictionary>('dictionary', {}))
+const dictionary = $(injectIPC('dictionary', {}))
 
 const database = $computed<Dictionary>(() => {
   return Object.fromEntries(Object.entries(dictionary).map(

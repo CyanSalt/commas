@@ -1,15 +1,25 @@
 import type { MenuItemConstructorOptions, PopupOptions } from 'electron'
-import { app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, TouchBar } from 'electron'
+import { app, BrowserWindow, globalShortcut, Menu, nativeImage, TouchBar } from 'electron'
+import { ipcMain } from '@commas/electron-ipc'
 import type { TranslationVariables } from '@commas/types/i18n'
 import type { KeyBinding, MenuItem } from '@commas/types/menu'
 import { globalHandler } from '../../shared/handler'
 import { provideIPC, useYAMLFile } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
 import { execa } from '../utils/helper'
-import { useFocusedWindow } from './frame'
+import { send, useFocusedWindow } from './frame'
 import { translate } from './i18n'
 import { useSettings } from './settings'
 import { openFile } from './window'
+
+declare module '@commas/electron-ipc' {
+  export interface Commands {
+    contextmenu: (template: MenuItem[], options: PopupOptions) => void,
+  }
+  export interface Refs {
+    keybindings: typeof keyBindings,
+  }
+}
 
 const userKeyBindings = $(useYAMLFile<KeyBinding[]>(userFile('keybindings.yaml'), []))
 const addonKeyBindings = $ref<KeyBinding[]>([])
@@ -38,11 +48,13 @@ function resolveBindingCommand(binding: MenuItem) {
   if (binding.command) {
     if (binding.command.startsWith('global:')) {
       result.click = (self, frame) => {
-        globalHandler.invoke(binding.command!, ...(binding.args ?? []), frame)
+        globalHandler.invoke(binding.command, ...(binding.args ?? []), frame)
       }
     } else {
       result.click = (self, frame) => {
-        frame?.webContents.send(binding.command!, ...(binding.args ?? []))
+        if (frame) {
+          send(frame.webContents, binding.command as never, ...(binding.args ?? []) as never)
+        }
       }
       result.enabled = hasFocusedWindow
     }
@@ -152,18 +164,18 @@ function createTouchBar(frame: BrowserWindow) {
   const position = settings['terminal.view.tabListPosition']
   const isHorizontal = position === 'top' || position === 'bottom'
   const menu = [
-    { icon: 'NSImageNameTouchBarListViewTemplate', command: 'show-tab-options' },
+    { icon: 'NSImageNameTouchBarListViewTemplate', command: 'show-tab-options' } as const,
     ...(isHorizontal ? [] : [
-      { icon: 'NSImageNameTouchBarSidebarTemplate', command: 'toggle-tab-list' },
+      { icon: 'NSImageNameTouchBarSidebarTemplate', command: 'toggle-tab-list' } as const,
     ]),
-    { icon: 'NSImageNameTouchBarAddTemplate', command: 'open-tab' },
+    { icon: 'NSImageNameTouchBarAddTemplate', command: 'open-tab' } as const,
   ]
   const { TouchBarButton } = TouchBar
   const touchBar = new TouchBar({
     items: menu.map(item => new TouchBarButton({
       icon: nativeImage.createFromNamedImage(item.icon, [-1, 0, 1]).resize({ height: 16 }),
       click() {
-        frame.webContents.send(item.command)
+        send(frame.webContents, item.command)
       },
     })),
   })
@@ -197,7 +209,7 @@ function registerGlobalShortcuts() {
 
 function handleMenuMessages() {
   provideIPC('keybindings', $$(keyBindings))
-  ipcMain.handle('contextmenu', (event, template: MenuItem[], options: PopupOptions) => {
+  ipcMain.handle('contextmenu', (event, template, options) => {
     const frame = BrowserWindow.fromWebContents(event.sender)
     const menu = Menu.buildFromTemplate(
       template.map(resolveBindingCommand),

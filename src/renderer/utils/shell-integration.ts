@@ -1,8 +1,8 @@
 import type { IDecoration, IDisposable, IMarker, ITerminalAddon, Terminal } from '@xterm/xterm'
-import { ipcRenderer } from 'electron'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { isEqual } from 'lodash'
 import { nextTick, reactive, toRaw } from 'vue'
+import { ipcRenderer } from '@commas/electron-ipc'
 import type { MenuItem } from '@commas/types/menu'
 import type { CommandCompletion, TerminalTab } from '@commas/types/terminal'
 import * as commas from '../../api/core-renderer'
@@ -676,7 +676,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
 
   async _getRealtimeCompletions(input: string) {
     if (!input) return []
-    return ipcRenderer.invoke('get-completions', input, this.tab.cwd) as Promise<CommandCompletion[]>
+    return ipcRenderer.invoke('get-completions', input, this.tab.cwd)
   }
 
   async _getCompletions(input: string) {

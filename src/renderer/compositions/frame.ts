@@ -1,6 +1,13 @@
-import { ipcRenderer } from 'electron'
+import { ipcRenderer } from '@commas/electron-ipc'
 import { reuse } from '../../shared/helper'
 import { injectIPC } from '../utils/compositions'
+
+declare module '@commas/electron-ipc' {
+  export interface RendererEvents {
+    'open-window': () => void,
+    'close-window': () => void,
+  }
+}
 
 export function useFile(file: string) {
   return injectIPC('file', '', file)

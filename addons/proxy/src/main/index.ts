@@ -12,6 +12,22 @@ declare module '@commas/types/settings' {
   }
 }
 
+declare module '@commas/electron-ipc' {
+  export interface Commands {
+    'get-latest-proxy-server-version': typeof getLatestProxyServerVersion,
+    'get-ip': typeof address.ip,
+    'install-proxy-root-ca': () => void,
+    'uninstall-proxy-root-ca': () => void,
+  }
+  export interface Refs {
+    'proxy-server-installed': ReturnType<typeof useProxyServerInstalled>,
+    'proxy-server-status': ReturnType<typeof useProxyServerStatus>,
+    'proxy-server-version': ReturnType<typeof useProxyServerVersion>,
+    'system-proxy-status': ReturnType<typeof useSystemProxyStatus>,
+    'proxy-root-ca-status': boolean,
+  }
+}
+
 export default () => {
 
   let serverInstalled = $(useProxyServerInstalled())

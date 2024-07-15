@@ -3,6 +3,12 @@ import ProxyAnchor from './ProxyAnchor.vue'
 import ProxyLink from './ProxyLink.vue'
 import ProxyPane from './ProxyPane.vue'
 
+declare module '@commas/electron-ipc' {
+  export interface RendererEvents {
+    'configure-proxy': () => void,
+  }
+}
+
 export default () => {
 
   commas.ui.addCSSFile('dist/renderer/style.css')

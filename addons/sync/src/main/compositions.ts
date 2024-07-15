@@ -18,7 +18,8 @@ function useSyncData() {
   return reactiveSyncData
 }
 
-const encryptToken = memoize((plain: string) => {
+const encryptToken = memoize((plain: string | null) => {
+  if (!plain) return null
   try {
     return safeStorage.encryptString(plain).toString('base64')
   } catch {

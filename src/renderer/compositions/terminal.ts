@@ -11,13 +11,14 @@ import { WebLinksAddon } from '@xterm/addon-web-links'
 import { WebglAddon } from '@xterm/addon-webgl'
 import type { IMarker, ITerminalOptions } from '@xterm/xterm'
 import { Terminal } from '@xterm/xterm'
-import { clipboard, ipcRenderer, shell } from 'electron'
+import { clipboard, shell } from 'electron'
 import { toKeyEvent } from 'keyboardevent-from-electron-accelerator'
 import { isMatch, trim } from 'lodash'
 import type { MaybeRefOrGetter } from 'vue'
 import { effectScope, markRaw, nextTick, reactive, shallowReactive, toRaw, toValue, watch, watchEffect } from 'vue'
+import { ipcRenderer } from '@commas/electron-ipc'
 import type { KeyBindingCommand, MenuItem } from '@commas/types/menu'
-import type { ReadonlyTerminalTabAddons, TerminalContext, TerminalInfo, TerminalTab, TerminalTabCharacter } from '@commas/types/terminal'
+import type { ReadonlyTerminalTabAddons, TerminalContext, TerminalTab, TerminalTabCharacter, TerminalTabCharacterCommand } from '@commas/types/terminal'
 import * as commas from '../../api/core-renderer'
 import { createIDGenerator } from '../../shared/helper'
 import { openContextMenu } from '../utils/frame'
@@ -33,6 +34,41 @@ import { useTheme } from './theme'
 declare module '@commas/api/modules/app' {
   export interface Events {
     'terminal.addons-loaded': [TerminalTab],
+  }
+}
+
+declare module '@commas/electron-ipc' {
+  export interface RendererEvents {
+    'open-tab': (context?: Partial<TerminalContext>, options?: CreateTerminalTabOptions) => void,
+    'duplicate-tab': () => void,
+    'split-tab': () => void,
+    'close-tab': () => void,
+    'input-terminal': (data: Pick<TerminalTab, 'pid' | 'process'> & { data: string }) => void,
+    'exit-terminal': (data: Pick<TerminalTab, 'pid'>) => void,
+    'clear-terminal': () => void,
+    'close-terminal': () => void,
+    'execute-terminal': (command: string, restart?: boolean) => void,
+    'select-tab': (index: number) => void,
+    'select-previous-tab': () => void,
+    'select-next-tab': () => void,
+    'scroll-to-command': (offset: number) => void,
+    'go-back': () => void,
+    'go-forward': () => void,
+    'show-tab-options': () => void,
+    'open-url': (address: string) => void,
+    save: () => void,
+    copy: (text: string) => void,
+    'open-pane': (name: string) => void,
+  }
+  export interface RendererCommands {
+    'get-history': (count?: number) => string[],
+  }
+}
+
+declare module '@commas/types/menu' {
+  export interface XtermEvents {
+    'xterm:input': (...args: string[]) => void,
+    'xterm:completion': () => void,
   }
 }
 
@@ -80,7 +116,7 @@ interface TerminalTabCategory {
   items: {
     tab?: TerminalTab | undefined,
     character?: TerminalTabCharacter | undefined,
-    command?: string,
+    command?: TerminalTabCharacterCommand,
   }[],
 }
 
@@ -173,7 +209,7 @@ const stickyTerminalOptions = $computed(() => ({
   disableStdin: true,
 }))
 
-interface RendererKeyBinding extends KeyBindingCommand {
+type RendererKeyBinding = KeyBindingCommand & {
   pattern: Partial<KeyboardEvent>,
 }
 
@@ -189,8 +225,8 @@ const rendererKeybindings = $computed(() => {
         ...pattern,
         type: binding.when ?? 'keydown',
       },
-      command: binding.command!,
-      args: binding.args,
+      command: binding.command as never,
+      args: binding.args as never,
     }
   })
 })
@@ -204,7 +240,7 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
   command,
   character,
 }: CreateTerminalTabOptions = {}) {
-  const info: TerminalInfo = await ipcRenderer.invoke('create-terminal', {
+  const info = await ipcRenderer.invoke('create-terminal', {
     cwd: context.cwd,
     shell: context.shell,
     args: toRaw(context.args),
@@ -268,10 +304,10 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
       Object.assign(tab, getWindowsProcessInfo(tab.shell, title))
     }
   })
-  let latestPromise: Promise<string | undefined>
+  let latestPromise: Promise<string>
   xterm.onLineFeed(async () => {
     if (settings['terminal.tab.liveCwd'] && !settings['terminal.shell.integration']) {
-      const promise: Promise<string | undefined> = ipcRenderer.invoke('get-terminal-cwd', tab.pid)
+      const promise = ipcRenderer.invoke('get-terminal-cwd', tab.pid)
       latestPromise = promise
       const latestCwd = await promise
       if (latestCwd && latestPromise === promise) {
@@ -393,8 +429,8 @@ export function showTabOptions(event?: MouseEvent, type?: string) {
         options.push({
           type: index ? 'checkbox' : 'normal',
           label: item.tab ? getTerminalTabTitle(item.tab) : item.character?.title,
-          args: item.tab ? [currentIndex] : [item.character],
-          command: item.tab ? 'select-tab' : item.command,
+          args: item.tab ? [currentIndex] : [item.character] as never,
+          command: item.tab ? 'select-tab' : item.command as never,
           accelerator: number <= 9 ? String(number) : undefined,
           checked: index ? Boolean(item.tab) : undefined,
         })
@@ -441,7 +477,7 @@ export function handleTerminalMessages() {
       tab.xterm.focus()
     }
   })
-  ipcRenderer.on('open-tab', (event, context: Partial<TerminalContext>, options: CreateTerminalTabOptions) => {
+  ipcRenderer.on('open-tab', (event, context, options) => {
     createTerminalTab(context, options)
   })
   ipcRenderer.on('duplicate-tab', event => {
@@ -459,7 +495,7 @@ export function handleTerminalMessages() {
       closeTerminalTab(currentTerminal)
     }
   })
-  ipcRenderer.on('input-terminal', (event, data: Pick<TerminalTab, 'pid' | 'process'> & { data: string }) => {
+  ipcRenderer.on('input-terminal', (event, data) => {
     const tab = tabs.find(item => item.pid === data.pid)
     if (!tab) return
     const xterm = tab.xterm
@@ -479,7 +515,7 @@ export function handleTerminalMessages() {
       tab.process = data.process
     }
   })
-  ipcRenderer.on('exit-terminal', (event, data: Pick<TerminalTab, 'pid'>) => {
+  ipcRenderer.on('exit-terminal', (event, data) => {
     const tab = tabs.find(item => item.pid === data.pid)
     if (!tab) return
     tab.state.stop.resolve()
@@ -508,11 +544,11 @@ export function handleTerminalMessages() {
     if (!currentTerminal) return
     closeTerminalTab(currentTerminal)
   })
-  ipcRenderer.on('execute-terminal', (event, command: string, restart?: boolean) => {
+  ipcRenderer.on('execute-terminal', (event, command, restart) => {
     if (!currentTerminal) return
     executeTerminalTab(currentTerminal, command, restart)
   })
-  ipcRenderer.on('select-tab', (event, index: number) => {
+  ipcRenderer.on('select-tab', (event, index) => {
     if (!tabs.length) return
     let targetIndex = index % tabs.length
     if (targetIndex < 0) {
@@ -533,7 +569,7 @@ export function handleTerminalMessages() {
       activeIndex += 1
     }
   })
-  ipcRenderer.on('scroll-to-command', (event, offset: number) => {
+  ipcRenderer.on('scroll-to-command', (event, offset) => {
     if (!currentTerminal) return
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     currentTerminal.addons?.shellIntegration?.scrollToCommand(offset)
@@ -547,7 +583,7 @@ export function handleTerminalMessages() {
   ipcRenderer.on('show-tab-options', () => {
     showTabOptions()
   })
-  ipcRenderer.on('open-url', (event, address: string) => {
+  ipcRenderer.on('open-url', (event, address) => {
     const url = new URL(address)
     const paths = trim(url.pathname, '/').split('/')
     commas.proxy.workspace.openPaneTab(paths[0])
@@ -557,13 +593,13 @@ export function handleTerminalMessages() {
     if (!currentTerminal) return
     currentTerminal.pane?.instance?.save?.()
   })
-  ipcRenderer.on('copy', (event, text: string) => {
+  ipcRenderer.on('copy', (event, text) => {
     clipboard.writeText(text)
   })
-  ipcRenderer.on('open-pane', (event, name: string) => {
+  ipcRenderer.on('open-pane', (event, name) => {
     commas.proxy.workspace.openPaneTab(name)
   })
-  handleRenderer('get-history', (event, count?: number) => {
+  handleRenderer('get-history', (event, count) => {
     if (!currentTerminal) return []
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const commands = currentTerminal.addons?.shellIntegration?.commands

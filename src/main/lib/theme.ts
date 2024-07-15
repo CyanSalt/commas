@@ -7,6 +7,13 @@ import { provideIPC } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
 import { useDefaultSettings, useSettings } from './settings'
 
+declare module '@commas/electron-ipc' {
+  export interface Refs {
+    theme: typeof theme,
+    'is-light-theme': typeof isLightTheme,
+  }
+}
+
 interface BrowserWindowThemeOptions {
   backgroundColor: NonNullable<BrowserWindowConstructorOptions['backgroundColor']>,
   vibrancy: BrowserWindowConstructorOptions['vibrancy'],

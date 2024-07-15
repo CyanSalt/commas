@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import { ipcRenderer } from '@commas/electron-ipc'
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
-import { ipcRenderer, shell } from 'electron'
+import { shell } from 'electron'
 import { onMounted } from 'vue'
 import ThemeCard from './ThemeCard.vue'
 import ThemeColorPicker from './ThemeColorPicker.vue'
@@ -14,7 +15,7 @@ defineProps<{
 
 const { vI18n, LoadingSpinner, VisualIcon, TerminalPane } = commas.ui.vueAssets
 
-const keyword: string = $ref('')
+const keyword = $ref('')
 
 let list = $ref<RemoteTheme[]>([])
 

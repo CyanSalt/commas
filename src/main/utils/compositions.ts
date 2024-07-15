@@ -1,9 +1,10 @@
 import * as fs from 'node:fs'
 import type { Ref } from '@vue/reactivity'
 import { computed, customRef, effect, stop, unref } from '@vue/reactivity'
-import { ipcMain } from 'electron'
 import { cloneDeep } from 'lodash'
 import YAML from 'yaml'
+import type { IpcRefValue, Refs } from '@commas/electron-ipc'
+import { ipcMain } from '@commas/electron-ipc'
 import { broadcast } from '../lib/frame'
 import { watchFile, writeFile, writeYAMLFile } from './file'
 
@@ -76,20 +77,23 @@ function useYAMLFile<T>(file: string, defaultValue?: T, { onTrigger }: { onTrigg
   })
 }
 
-function provideIPC<T>(key: string, valueRef: Ref<T>) {
+function provideIPC<K extends keyof Refs = keyof Refs>(key: K, valueRef: Ref<IpcRefValue<Refs[K]>>) {
+  // @ts-expect-error inference limitation
   ipcMain.handle(`get-ref:${key}`, async () => {
     const value = await Promise.resolve(unref(valueRef))
     return cloneDeep(value)
   })
-  ipcMain.handle(`set-ref:${key}`, (event, value: T) => {
+  // @ts-expect-error inference limitation
+  ipcMain.handle(`set-ref:${key}`, (event, value: IpcRefValue<Refs[K]>) => {
     valueRef.value = value
   })
-  let latestValuePromise: Promise<Awaited<T>>
+  let latestValuePromise: Promise<Awaited<IpcRefValue<Refs[K]>>>
   const reactiveEffect = effect(async () => {
     const valuePromise = Promise.resolve(unref(valueRef))
     latestValuePromise = valuePromise
     const value = await valuePromise
     if (valuePromise === latestValuePromise) {
+      // @ts-expect-error inference limitation
       broadcast(`update-ref:${key}`, cloneDeep(value))
     }
   })

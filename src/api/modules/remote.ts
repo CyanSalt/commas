@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron'
+import { ipcRenderer } from '@commas/electron-ipc'
 import { useFile } from '../../renderer/compositions/frame'
 import { getI18nManifest, useLanguage } from '../../renderer/compositions/i18n'
 import {
@@ -17,17 +17,17 @@ function openUserDirectory() {
 }
 
 async function openDefaultSettings() {
-  const filePath: string = await ipcRenderer.invoke('prepare-default-settings')
+  const filePath = await ipcRenderer.invoke('prepare-default-settings')
   globalHandler.invoke('global:open-file', filePath)
 }
 
 async function openSettingsFile() {
-  const filePath: string = await ipcRenderer.invoke('prepare-settings-file')
+  const filePath = await ipcRenderer.invoke('prepare-settings-file')
   globalHandler.invoke('global:open-file', filePath)
 }
 
 async function openUserFile(file: string, example?: string) {
-  const filePath: string = await ipcRenderer.invoke('prepare-user-file', file, example)
+  const filePath = await ipcRenderer.invoke('prepare-user-file', file, example)
   globalHandler.invoke('global:open-file', filePath)
 }
 

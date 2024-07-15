@@ -1,8 +1,7 @@
-import type { KeyBinding } from '@commas/types/menu'
 import defaultKeyBindings from '../assets/keybindings'
 import { injectIPC } from '../utils/compositions'
 
-const allKeyBindings = $(injectIPC<KeyBinding[]>('keybindings', []))
+const allKeyBindings = $(injectIPC('keybindings', []))
 
 export function useAllKeyBindings() {
   return $$(allKeyBindings)

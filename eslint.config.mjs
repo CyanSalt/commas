@@ -3,12 +3,23 @@ import config from '@cyansalt/eslint-config'
 export default config({
   configs: [
     {
+      ignores: ['**/*.json'],
+    },
+    {
       languageOptions: {
         parserOptions: {
           project: './tsconfig.tools.json',
         },
       },
       rules: {
+        'no-restricted-imports': ['error', {
+          paths: [
+            {
+              name: 'electron',
+              importNames: ['ipcMain', 'ipcRenderer'],
+            },
+          ],
+        }],
         'vue/no-undef-components': 'error',
         'vue/no-undef-properties': 'error',
       },
@@ -20,7 +31,13 @@ export default config({
       ],
       rules: {
         'no-restricted-imports': ['error', {
-          paths: ['vue'],
+          paths: [
+            {
+              name: 'electron',
+              importNames: ['ipcMain', 'ipcRenderer'],
+            },
+            'vue',
+          ],
         }],
       },
     },

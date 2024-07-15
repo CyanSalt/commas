@@ -3,6 +3,12 @@ import * as path from 'node:path'
 import * as commas from 'commas:api/main'
 import { useEditorTheme } from './theme'
 
+declare module '@commas/electron-ipc' {
+  export interface Refs {
+    'editor-theme': ReturnType<typeof useEditorTheme>,
+  }
+}
+
 export default () => {
 
   commas.ipcMain.provide('editor-theme', useEditorTheme())
@@ -14,7 +20,7 @@ export default () => {
     async handler({ sender, argv, cwd }) {
       const file = path.resolve(cwd, argv[0])
       await fs.promises.access(file, fs.constants.R_OK)
-      sender.send('open-code-editor', file)
+      commas.frame.send(sender, 'open-code-editor', file)
     },
   })
 

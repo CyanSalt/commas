@@ -1,7 +1,7 @@
 import * as os from 'node:os'
 import * as path from 'node:path'
-import { ipcRenderer } from 'electron'
 import { parse } from 'shell-quote'
+import { ipcRenderer } from '@commas/electron-ipc'
 import type { MenuItem } from '@commas/types/menu'
 import type { TerminalTab } from '@commas/types/terminal'
 import { omitHome, resolveWindowsDisk } from '../../shared/terminal'

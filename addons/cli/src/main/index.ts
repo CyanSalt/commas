@@ -179,7 +179,7 @@ ${
     description: 'Run a command with arguments in a new tab#!cli.description.run',
     usage: '<...command-with-args>#!cli.usage.run',
     handler({ sender, argv }) {
-      sender.send('open-tab', undefined, {
+      commas.frame.send(sender, 'open-tab', undefined, {
         command: quote(argv),
       })
     },
@@ -190,7 +190,7 @@ ${
     description: 'Open built-in tab#!cli.description.open',
     usage: '<name>#!cli.usage.open',
     handler({ sender, argv }) {
-      sender.send('open-pane', argv)
+      commas.frame.send(sender, 'open-pane', argv[0])
     },
   })
 
@@ -201,7 +201,7 @@ ${
     handler({ sender, argv }) {
       const index = Number(argv[0])
       if (Number.isInteger(index)) {
-        sender.send('select-tab', index)
+        commas.frame.send(sender, 'select-tab', index)
       } else {
         const error = new Error('Invalid argument')
         error['stderr'] = ''
@@ -294,7 +294,7 @@ ${
     usage: '[num]#!cli.usage.history',
     async handler({ sender, argv }) {
       const index = Number(argv[0])
-      const recentCommands = await commas.ipcMain.invoke<string[]>(sender, 'get-history', Number.isInteger(index) ? index : undefined)
+      const recentCommands = await commas.ipcMain.invoke(sender, 'get-history', Number.isInteger(index) ? index : undefined)
       return recentCommands.join('\r\n')
     },
   })

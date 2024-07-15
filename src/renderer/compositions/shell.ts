@@ -1,6 +1,16 @@
-import { ipcRenderer, shell } from 'electron'
+import { shell } from 'electron'
+import { ipcRenderer } from '@commas/electron-ipc'
 import { globalHandler } from '../../shared/handler'
 import { translate } from '../utils/i18n'
+
+declare module '@commas/electron-ipc' {
+  export interface RendererEvents {
+    'uncaught-error': (error: string) => void,
+    'toggle-finding': () => void,
+    'toggle-tab-list': () => void,
+    'before-quit': () => void,
+  }
+}
 
 let isTabListEnabled = $ref(true)
 export function useIsTabListEnabled() {
@@ -19,7 +29,7 @@ export function useWillQuit() {
 
 export async function confirmClosing() {
   const args = {
-    type: 'question',
+    type: 'question' as const,
     message: translate('Close Window?#!terminal.1'),
     detail: translate('All tabs in this window will be closed.#!terminal.2'),
     buttons: [
@@ -34,8 +44,8 @@ export async function confirmClosing() {
 }
 
 export function handleShellMessages() {
-  ipcRenderer.on('uncaught-error', (event, error: Error) => {
-    console.error(`Uncaught error in main process: ${String(error)}`)
+  ipcRenderer.on('uncaught-error', (event, error) => {
+    console.error(`Uncaught error in main process: ${error}`)
   })
   ipcRenderer.on('toggle-finding', () => {
     isFinding = !isFinding
