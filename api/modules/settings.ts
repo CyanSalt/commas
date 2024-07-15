@@ -1,5 +1,6 @@
 import * as path from 'node:path'
 import { markRaw } from '@vue/reactivity'
+import type { SettingsSpec } from '@commas/types/settings'
 import {
   openSettingsFile,
   openUserDirectory,
@@ -9,7 +10,6 @@ import {
   writeUserFile,
 } from '../../src/main/lib/settings'
 import { THEME_CSS_COLORS, useTheme } from '../../src/main/lib/theme'
-import type { SettingsSpec } from '../../src/typings/settings'
 import type { MainAPIContext } from '../types'
 
 let currentSpecs = $(useSettingsSpecs())

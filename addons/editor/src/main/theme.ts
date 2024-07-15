@@ -1,5 +1,5 @@
 import * as commas from 'commas:api/main'
-import type { EditorTheme } from '../typings/theme'
+import type { EditorTheme } from '../../types/theme'
 
 const theme = $(commas.settings.useTheme())
 

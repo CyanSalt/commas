@@ -1,5 +1,5 @@
 import * as commas from 'commas:api/main'
-import type { Launcher, LauncherInfo } from '../../typings/launcher'
+import type { Launcher, LauncherInfo } from '../../types/launcher'
 
 const generateID = commas.helper.createIDGenerator()
 

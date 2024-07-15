@@ -1,4 +1,4 @@
-import type { TerminalTab } from '../../typings/terminal'
+import type { TerminalTab } from '@commas/types/terminal'
 
 export interface DraggableTabData {
   type: 'tab',

@@ -1,7 +1,7 @@
 import { differenceBy } from 'lodash'
 import { watchEffect } from 'vue'
+import type { AddonInfo } from '@commas/types/addon'
 import * as commas from '../../../api/core-renderer'
-import type { AddonInfo } from '../../typings/addon'
 import { useAddons } from './settings'
 
 const addons = $(useAddons())

@@ -1,10 +1,10 @@
 import * as commas from 'commas:api/main'
 import { BrowserWindow } from 'electron'
-import type { Launcher, LauncherInfo } from '../../typings/launcher'
+import type { Launcher, LauncherInfo } from '../../types/launcher'
 import { createLauncher } from './create'
 import { useLaunchers } from './launcher'
 
-declare module '../../../../src/typings/settings' {
+declare module '@commas/types/settings' {
   export interface Settings {
     'launcher.session.persist'?: boolean,
   }

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { TerminalTab } from '../../typings/terminal'
+import type { TerminalTab } from '@commas/types/terminal'
 import { createContextMenu, openContextMenu, withContextMenuSeparator } from '../utils/frame'
 import TerminalBlock from './TerminalBlock.vue'
 

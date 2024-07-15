@@ -5,7 +5,7 @@ import { checkRootCA, installRootCA, uninstallRootCA } from './cert'
 import { getLatestProxyServerVersion, useProxyServerInstalled, useProxyServerStatus, useProxyServerVersion } from './server'
 import { useSystemProxyStatus } from './system'
 
-declare module '../../../../src/typings/settings' {
+declare module '@commas/types/settings' {
   export interface Settings {
     'proxy.server.whistle'?: string,
     'proxy.server.port'?: number,

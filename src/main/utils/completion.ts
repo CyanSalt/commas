@@ -7,7 +7,7 @@ import type { ControlOperator, ParseEntry } from 'shell-quote'
 import { parse, quote } from 'shell-quote'
 import * as commas from '../../../api/core-main'
 import { resolveHome } from '../../shared/terminal'
-import type { CommandCompletion } from '../../typings/terminal'
+import type { CommandCompletion } from '@commas/types/terminal'
 import { execa, memoizeAsync } from './helper'
 import { loginExecute } from './shell'
 

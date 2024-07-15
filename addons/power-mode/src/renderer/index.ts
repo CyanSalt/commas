@@ -1,7 +1,7 @@
 import * as commas from 'commas:api/renderer'
 import { PowerMode } from './xterm'
 
-declare module '../../../../src/typings/terminal' {
+declare module '@commas/types/terminal' {
   export interface TerminalTabAddons {
     powerMode: PowerMode,
   }

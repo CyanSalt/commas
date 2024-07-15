@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { ipcRenderer } from 'electron'
-import type { TerminalTab } from '../../../../src/typings/terminal'
+import type { TerminalTab } from '@commas/types/terminal'
 
 defineProps<{
   tab: TerminalTab,

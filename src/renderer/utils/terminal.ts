@@ -2,9 +2,9 @@ import * as os from 'node:os'
 import * as path from 'node:path'
 import { ipcRenderer } from 'electron'
 import { parse } from 'shell-quote'
+import type { MenuItem } from '@commas/types/menu'
+import type { TerminalTab } from '@commas/types/terminal'
 import { omitHome, resolveWindowsDisk } from '../../shared/terminal'
-import type { MenuItem } from '../../typings/menu'
-import type { TerminalTab } from '../../typings/terminal'
 import icons from '../assets/icons'
 
 export function getProcessName(tab: TerminalTab) {

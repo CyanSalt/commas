@@ -2,7 +2,7 @@
 import * as commas from 'commas:api/renderer'
 import { ipcRenderer, shell } from 'electron'
 import { onMounted } from 'vue'
-import type { TerminalTab } from '../../../../src/typings/terminal'
+import type { TerminalTab } from '@commas/types/terminal'
 import ThemeCard from './ThemeCard.vue'
 import ThemeColorPicker from './ThemeColorPicker.vue'
 import type { RemoteTheme } from './utils'

@@ -3,7 +3,7 @@ import BadgeSlot from './BadgeSlot.vue'
 import { ITerm2Addon } from './xterm'
 import './style.scss'
 
-declare module '../../../../src/typings/terminal' {
+declare module '@commas/types/terminal' {
   export interface TerminalTabAddons {
     iterm2: ITerm2Addon,
   }

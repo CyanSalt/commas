@@ -1,6 +1,6 @@
 import * as path from 'node:path'
 import { quote } from 'shell-quote'
-import type { Launcher } from '../../typings/launcher'
+import type { Launcher } from '../../types/launcher'
 
 export function getLauncherCommand(launcher: Launcher, shellPath: string) {
   let command = launcher.command

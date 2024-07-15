@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
 import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
-import type { DraggableElementEventPayload } from '../../typings/draggable'
-import type { TerminalTab } from '../../typings/terminal'
+import type { DraggableElementEventPayload } from '@commas/types/draggable'
+import type { TerminalTab } from '@commas/types/terminal'
 import { appendTerminalTab, getTerminalTabIndex, splitTerminalTab } from '../compositions/terminal'
 import type { DraggableElementData } from '../utils/draggable'
 import DropTarget from './basic/DropTarget.vue'

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { startCase } from 'lodash'
-import type { ThemeDefinition } from '../../../../src/typings/theme'
+import type { ThemeDefinition } from '@commas/types/theme'
 
 const { vI18n } = commas.ui.vueAssets
 

@@ -1,5 +1,6 @@
 import { isMatch } from 'lodash'
 import { markRaw, reactive, shallowReactive } from 'vue'
+import type { TerminalInfo, TerminalTab, TerminalTabAddons, TerminalTabPane } from '@commas/types/terminal'
 import {
   activateOrAddTerminalTab,
   activateTerminalTab,
@@ -17,7 +18,6 @@ import {
   useTerminalTabs,
 } from '../../src/renderer/compositions/terminal'
 import { createTerminalTabContextMenu } from '../../src/renderer/utils/terminal'
-import type { TerminalInfo, TerminalTab, TerminalTabAddons, TerminalTabPane } from '../../src/typings/terminal'
 import type { RendererAPIContext } from '../types'
 
 const tabs = $(useTerminalTabs())
@@ -73,9 +73,9 @@ function registerXtermAddon<T extends keyof TerminalTabAddons>(
     if (addon) {
       if (active && !tab.addons[key]) {
         tab.addons[key] = addon
-        tab.xterm.loadAddon(tab.addons[key]!)
+        tab.xterm.loadAddon(tab.addons[key])
       } else if (!active && tab.addons[key]) {
-        tab.addons[key]!.dispose()
+        tab.addons[key].dispose()
         delete tab.addons[key]
       }
     }

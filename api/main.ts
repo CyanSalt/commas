@@ -1,4 +1,4 @@
-import type { CommandCompletion } from '../src/typings/terminal'
+import type { CommandCompletion } from '@commas/types/terminal'
 
 declare module './modules/context' {
   export interface Context {

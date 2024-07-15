@@ -1,9 +1,9 @@
 import type { Dirent } from 'node:fs'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
+import type { AddonInfo } from '@commas/types/addon'
 import * as commas from 'commas:api/main'
 import { uniq } from 'lodash'
-import type { AddonInfo } from '../../../../src/typings/addon'
 
 let discoveredAddons = $shallowRef<AddonInfo[]>([])
 

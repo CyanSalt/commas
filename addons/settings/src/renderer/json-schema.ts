@@ -1,4 +1,4 @@
-import type { JSONSchema, JSONSchemaType } from '../../../../src/typings/json-schema'
+import type { JSONSchema, JSONSchemaType } from '@commas/types/json-schema'
 
 export function accepts<T extends JSONSchemaType>(
   schema: boolean | JSONSchema | undefined,

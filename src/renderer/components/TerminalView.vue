@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { TerminalTab } from '../../typings/terminal'
+import type { TerminalTab } from '@commas/types/terminal'
 import { activateTerminalTab, getTerminalTabIndex, useCurrentTerminal, useTerminalTabs } from '../compositions/terminal'
 import { getTerminalTabID } from '../utils/terminal'
 import TerminalTeletype from './TerminalTeletype.vue'

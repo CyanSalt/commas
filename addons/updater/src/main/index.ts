@@ -2,7 +2,7 @@ import * as commas from 'commas:api/main'
 import { app, autoUpdater } from 'electron'
 import { checkForUpdates, setupAutoUpdater, useAutoUpdaterEffect } from './updater'
 
-declare module '../../../../src/typings/settings' {
+declare module '@commas/types/settings' {
   export interface Settings {
     'updater.polling.interval'?: number,
   }

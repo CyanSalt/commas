@@ -1,7 +1,7 @@
 import * as commas from 'commas:api/main'
 import { getCommand, getDoctorCommand } from './prompt'
 
-declare module '../../../../src/typings/settings' {
+declare module '@commas/types/settings' {
   export interface Settings {
     'ai.ernie.key'?: string,
     'ai.ernie.secret'?: string,

@@ -1,9 +1,9 @@
 import { ipcRenderer } from 'electron'
 import { watchEffect } from 'vue'
+import type { AddonInfo } from '@commas/types/addon'
+import type { Settings, SettingsSpec } from '@commas/types/settings'
 import { surface } from '../../shared/compositions'
 import { reuse } from '../../shared/helper'
-import type { AddonInfo } from '../../typings/addon'
-import type { Settings, SettingsSpec } from '../../typings/settings'
 import { injectIPC } from '../utils/compositions'
 
 const settings = surface(

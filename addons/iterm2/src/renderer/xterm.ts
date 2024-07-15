@@ -1,9 +1,9 @@
+import type { TerminalTab } from '@commas/types/terminal'
 import type { IDisposable, IMarker, ITerminalAddon, Terminal } from '@xterm/xterm'
 import confetti from 'canvas-confetti'
 import * as commas from 'commas:api/renderer'
 import { clipboard, ipcRenderer } from 'electron'
 import { nextTick } from 'vue'
-import type { TerminalTab } from '../../../../src/typings/terminal'
 import { useBadge } from './badge'
 import { parseITerm2EscapeSequence } from './utils'
 

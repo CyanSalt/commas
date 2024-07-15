@@ -5,7 +5,7 @@ import { app } from 'electron'
 import { useAsyncComputed, watchBaseEffect } from '../../shared/compositions'
 import { resolveManifest } from '../../shared/i18n'
 import { interpolateText } from '../../shared/text'
-import type { Dictionary, TranslationVariables } from '../../typings/i18n'
+import type { Dictionary, TranslationVariables } from '@commas/types/i18n'
 import { provideIPC, useYAMLFile } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
 

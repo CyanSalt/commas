@@ -1,6 +1,6 @@
 import type { VNode } from 'vue'
+import type { Dictionary, TranslationVariables } from '@commas/types/i18n'
 import { interpolateText } from '../../shared/text'
-import type { Dictionary, TranslationVariables } from '../../typings/i18n'
 import { injectIPC } from './compositions'
 import { createReactiveDirective } from './directives'
 

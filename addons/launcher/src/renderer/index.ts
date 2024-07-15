@@ -5,7 +5,7 @@ import LauncherList from './LauncherList.vue'
 import { getLauncherByTerminalTabCharacter, openLauncher, removeLauncher, runLauncherScript, startLauncher, startLauncherExternally, useLauncherCharacters, useLaunchers } from './launcher'
 import { clearLauncherSessions, LauncherSessionAddon } from './session'
 
-declare module '../../../../src/typings/terminal' {
+declare module '@commas/types/terminal' {
   export interface TerminalTabAddons {
     launcherSession: LauncherSessionAddon,
   }

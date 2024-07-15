@@ -1,7 +1,7 @@
 import * as commas from 'commas:api/main'
 import { safeStorage } from 'electron'
 import { memoize } from 'lodash'
-import type { SyncData } from '../../typings/sync'
+import type { SyncData } from '../../types/sync'
 
 let syncData = $(commas.file.useJSONFile<SyncData>(commas.file.userFile('sync-data.json'), {
   encryption: null,

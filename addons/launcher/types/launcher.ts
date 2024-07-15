@@ -1,4 +1,4 @@
-import type { TerminalProfile } from '../../../src/typings/settings'
+import type { TerminalProfile } from '@commas/types/settings'
 
 export interface LauncherInfo {
   name: string,

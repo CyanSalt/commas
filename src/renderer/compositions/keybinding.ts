@@ -1,4 +1,4 @@
-import type { KeyBinding } from '../../typings/menu'
+import type { KeyBinding } from '@commas/types/menu'
 import defaultKeyBindings from '../assets/keybindings'
 import { injectIPC } from '../utils/compositions'
 

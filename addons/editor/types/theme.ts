@@ -1,4 +1,4 @@
-import type { ThemeDefinition } from '../../../../src/typings/theme'
+import type { ThemeDefinition } from '@commas/types/theme'
 
 export interface EditorTheme extends Required<ThemeDefinition> {
   type: 'dark' | 'light',

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
 import { clipboard, ipcRenderer, shell } from 'electron'
-import type { TerminalTab } from '../../../../src/typings/terminal'
+import type { TerminalTab } from '@commas/types/terminal'
 import { useProxyRootCAStatus, useProxyServerInstalled, useProxyServerStatus, useProxyServerVersion, useSystemProxyStatus } from './compositions'
 
 defineProps<{

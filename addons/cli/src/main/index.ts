@@ -15,7 +15,7 @@ import table from 'text-table'
 import type { CommandModule } from './command'
 import { executeCommand, getCommandModule, useExternalURLCommands } from './command'
 
-declare module '../../../../src/typings/settings' {
+declare module '@commas/types/settings' {
   export interface Settings {
     'cli.command.externalURLs'?: { command: string, url: string }[],
     'cli.command.aliases'?: Record<string, string>,

@@ -1,4 +1,4 @@
-import type { ThemeDefinition } from '../../../../src/typings/theme'
+import type { ThemeDefinition } from '@commas/types/theme'
 
 export interface RemoteTheme extends ThemeDefinition {
   name: string,

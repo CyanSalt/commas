@@ -2,8 +2,8 @@
 import * as commas from 'commas:api/renderer'
 import { ipcRenderer, shell } from 'electron'
 import { toRaw, toRef } from 'vue'
-import type { TerminalTab } from '../../../../src/typings/terminal'
-import type { SyncPlan } from '../../typings/sync'
+import type { TerminalTab } from '@commas/types/terminal'
+import type { SyncPlan } from '@commas/types/sync'
 import { useSyncData } from './compositions'
 
 defineProps<{
