@@ -22,7 +22,7 @@ declare module '../../../../src/typings/settings' {
   }
 }
 
-declare module '../../../../api/modules/context' {
+declare module '@commas/api/modules/context' {
   export interface Context {
     'cli.command': CommandModule,
   }

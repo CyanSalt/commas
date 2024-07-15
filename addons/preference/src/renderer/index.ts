@@ -2,7 +2,7 @@ import * as commas from 'commas:api/renderer'
 import PreferencePane from './PreferencePane.vue'
 import type { PreferenceItem } from './preference'
 
-declare module '../../../../api/modules/context' {
+declare module '@commas/api/modules/context' {
   export interface Context {
     'preference.item': PreferenceItem,
   }

@@ -14,7 +14,7 @@ import { openContextMenu } from './frame'
 import { translate } from './i18n'
 import { getReadableSignal } from './terminal'
 
-declare module '../../../api/modules/app' {
+declare module '@commas/api/modules/app' {
   export interface Events {
     'terminal.command-complete': [IntegratedShellCommand, string],
   }

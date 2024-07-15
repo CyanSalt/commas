@@ -2,7 +2,7 @@ import * as commas from 'commas:api/renderer'
 import LocaleSelector from './LocaleSelector.vue'
 import type { LanguageOption } from './locales'
 
-declare module '../../../../api/modules/context' {
+declare module '@commas/api/modules/context' {
   export interface Context {
     'l10n-ext.locale': LanguageOption,
   }

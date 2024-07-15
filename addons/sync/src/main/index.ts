@@ -13,7 +13,7 @@ declare module '../../../../src/typings/settings' {
   }
 }
 
-declare module '../../../../api/modules/context' {
+declare module '@commas/api/modules/context' {
   export interface Context {
     'sync.file': string,
   }

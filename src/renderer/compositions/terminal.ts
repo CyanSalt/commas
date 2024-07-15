@@ -30,7 +30,7 @@ import { useKeyBindings } from './keybinding'
 import { useSettings } from './settings'
 import { useTheme } from './theme'
 
-declare module '../../../api/modules/app' {
+declare module '@commas/api/modules/app' {
   export interface Events {
     'terminal.addons-loaded': [TerminalTab],
   }
