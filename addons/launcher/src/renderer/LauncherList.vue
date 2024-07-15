@@ -6,7 +6,7 @@ import * as commas from 'commas:api/renderer'
 import { ipcRenderer } from 'electron'
 import { reactive, watch } from 'vue'
 import type { DraggableElementData } from '../../../../src/renderer/utils/draggable'
-import type { Launcher, LauncherInfo } from '../../types/launcher'
+import type { Launcher, LauncherInfo } from '../types/launcher'
 import {
   getLauncherByTerminalTabCharacter,
   getTerminalTabCharacterByLauncher,

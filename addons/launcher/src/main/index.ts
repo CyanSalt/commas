@@ -1,6 +1,6 @@
 import * as commas from 'commas:api/main'
 import { BrowserWindow } from 'electron'
-import type { Launcher, LauncherInfo } from '../../types/launcher'
+import type { Launcher, LauncherInfo } from '../types/launcher'
 import { createLauncher } from './create'
 import { useLaunchers } from './launcher'
 
