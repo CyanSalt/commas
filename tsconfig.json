@@ -4,6 +4,10 @@
     "checkJs": true,
     "sourceMap": true
   },
+  "include": [
+    "**/src",
+    "env.d.ts"
+  ],
   "exclude": [
     "**/dist",
     "**/node_modules"

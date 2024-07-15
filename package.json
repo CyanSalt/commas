@@ -18,7 +18,8 @@
     "release": "dotenv release-it --",
     "lint:script": "eslint --cache --fix './**/*.{cjs,js,mjs,ts,vue}'",
     "lint:style": "stylelint --ignore-path .gitignore --cache --fix ./**/*.{css,scss,vue}",
-    "lint": "npm run lint:script && npm run lint:style"
+    "lint": "npm run lint:script && npm run lint:style",
+    "typecheck": "vue-tsc --noEmit"
   },
   "repository": {
     "type": "git",
@@ -77,6 +78,7 @@
     "stylelint": "^16.6.1",
     "typescript": "^5.5.3",
     "vite": "^5.3.3",
+    "vue-tsc": "^2.0.26",
     "vue-virtual-scroller": "^2.0.0-beta.8"
   },
   "dependencies": {
