@@ -15,6 +15,10 @@ declare module '@commas/electron-ipc' {
   export interface Commands {
     'open-window': () => void,
   }
+  export interface GlobalCommands {
+    'global-main:open-window': () => void,
+    'global-main:look-up': (text: string, frame?: BrowserWindow) => void,
+  }
 }
 
 const themeOptions = $(useThemeOptions())
@@ -135,10 +139,10 @@ function handleWindowMessages() {
   ipcMain.handle('open-window', () => {
     createWindow()
   })
-  globalHandler.handle('global:open-window', () => {
+  globalHandler.handle('global-main:open-window', () => {
     createWindow()
   })
-  globalHandler.handle('global:look-up', (text: string, frame?: BrowserWindow) => {
+  globalHandler.handle('global-main:look-up', (text, frame) => {
     frame?.webContents.showDefinitionForSelection()
   })
 }

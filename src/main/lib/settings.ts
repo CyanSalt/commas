@@ -28,6 +28,9 @@ declare module '@commas/electron-ipc' {
     'settings-specs': typeof specs,
     settings: typeof settings,
   }
+  export interface GlobalCommands {
+    'global-main:open-settings': () => void,
+  }
 }
 
 const specs = $ref(defaultSpecs)
@@ -170,10 +173,10 @@ export function writeUserFile(file: string, content?: string) {
 function handleSettingsMessages() {
   provideIPC('settings-specs', $$(specs))
   provideIPC('settings', $$(settings))
-  ipcMain.handle('open-settings', async () => {
-    await openSettingsFile()
+  ipcMain.handle('open-settings', () => {
+    return openSettingsFile()
   })
-  globalHandler.handle('global:open-settings', () => {
+  globalHandler.handle('global-main:open-settings', () => {
     return openSettingsFile()
   })
   ipcMain.handle('open-user-directory', () => {

@@ -1,26 +1,31 @@
+import type { GlobalCommands } from '@commas/electron-ipc'
+
 const globalHandler = {
 
-  handlers: new Map<string, {
-    listener: (...args: any[]) => any,
+  handlers: new Map<keyof GlobalCommands, {
+    listener: GlobalCommands[keyof GlobalCommands],
     once?: boolean,
   }>(),
 
-  handle(channel: string, listener: (...args: any[]) => any) {
+  handle<K extends keyof GlobalCommands>(channel: K, listener: GlobalCommands[K]) {
     this.handlers.set(channel, { listener })
   },
 
-  handleOnce(channel: string, listener: (...args: any[]) => any) {
+  handleOnce<K extends keyof GlobalCommands>(channel: K, listener: GlobalCommands[K]) {
     this.handlers.set(channel, { listener, once: true })
   },
 
-  removeHandler(channel: string) {
+  removeHandler<K extends keyof GlobalCommands>(channel: K) {
     this.handlers.delete(channel)
   },
 
-  async invoke(channel: string, ...args: any[]) {
+  async invoke<K extends keyof GlobalCommands>(
+    channel: K,
+    ...args: Parameters<GlobalCommands[K]>
+  ): Promise<Awaited<ReturnType<GlobalCommands[K]>>> {
     const handler = this.handlers.get(channel)
     if (!handler) {
-      throw new ReferenceError(`No handler registered for '${channel}'`)
+      throw new ReferenceError(`No handler registered for '${channel as string}'`)
     }
     if (handler.once) {
       this.removeHandler(channel)

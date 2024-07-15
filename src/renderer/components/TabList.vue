@@ -57,12 +57,12 @@ const standaloneTabs = $computed(() => {
 })
 
 function selectShell(event: MouseEvent) {
-  const profileOptions = profiles.map((profile, index) => ({
+  const profileOptions = profiles.map<MenuItem>(profile => ({
     label: profile.label ?? JSON.stringify(profile),
     command: 'open-tab',
     args: [profile],
   }))
-  const shellOptions: MenuItem[] = shells.map(shell => ({
+  const shellOptions = shells.map<MenuItem>(shell => ({
     label: path.basename(shell),
     command: 'open-tab',
     args: [{ shell }],

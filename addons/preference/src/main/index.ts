@@ -11,24 +11,24 @@ declare module '@commas/electron-ipc' {
 export default () => {
 
   ipcMain.removeHandler('open-settings')
-  commas.context.removeHandler('global:open-settings')
+  commas.context.removeHandler('global-main:open-settings')
 
   commas.ipcMain.handle('open-settings', event => {
     commas.frame.send(event.sender, 'open-preference-pane')
   })
 
   const focusedWindow = $(commas.frame.useFocusedWindow())
-  commas.context.handle('global:open-settings', () => {
+  commas.context.handle('global-main:open-settings', () => {
     if (focusedWindow) {
       commas.frame.send(focusedWindow.webContents, 'open-preference-pane')
     }
   })
 
   commas.app.onCleanup(() => {
-    ipcMain.handle('open-settings', async () => {
-      await commas.settings.openSettingsFile()
+    ipcMain.handle('open-settings', () => {
+      return commas.settings.openSettingsFile()
     })
-    commas.context.handle('global:open-settings', () => {
+    commas.context.handle('global-main:open-settings', () => {
       return commas.settings.openSettingsFile()
     })
   })

@@ -18,6 +18,9 @@ export interface RendererCommands {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface RendererEvents {}
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface GlobalCommands {}
+
 type Unref<T> = T extends Ref<infer U> ? U : T
 
 export type IpcRefValue<T> = Unref<T>
@@ -41,11 +44,14 @@ export type RendererEventDefinitions = RendererEvents & {
 }
 
 type Async<T> = T | PromiseLike<T>
+type HandlerReturnType<
+  T extends (...args: any) => any,
+> = ReturnType<T> extends void ? void : Async<Awaited<ReturnType<T>>>
 
 export type IpcMainHandler<T extends (...args: any[]) => any> = (
   event: IpcMainInvokeEvent,
   ...args: Parameters<T>
-) => Async<Awaited<ReturnType<T>>>
+) => HandlerReturnType<T>
 
 export type IpcMainListener<T extends (...args: any[]) => any> = (
   event: Omit<IpcMainEvent, 'returnValue'> & { returnValue: ReturnType<T> },

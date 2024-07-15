@@ -29,7 +29,7 @@ export function createContextMenu() {
       definitionItems = [
         {
           label: 'Look Up "${0}"#!menu.lookup',
-          command: 'global:look-up',
+          command: 'global-main:look-up',
           args: [text],
         },
       ]

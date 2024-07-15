@@ -1,4 +1,5 @@
 import { shallowReactive } from '@vue/reactivity'
+import type { GlobalCommands } from '@commas/electron-ipc'
 import { globalHandler } from '../../shared/handler'
 import type { APIContext } from '../types'
 
@@ -32,19 +33,22 @@ function provide<T extends keyof Context>(this: APIContext, name: keyof Context,
   })
 }
 
-function handle(this: APIContext, channel: string, listener: (...args: any[]) => any) {
+function handle<K extends keyof GlobalCommands>(this: APIContext, channel: K, listener: GlobalCommands[K]) {
   globalHandler.handle(channel, listener)
 }
 
-function handleOnce(this: APIContext, channel: string, listener: (...args: any[]) => any) {
+function handleOnce<K extends keyof GlobalCommands>(this: APIContext, channel: K, listener: GlobalCommands[K]) {
   globalHandler.handleOnce(channel, listener)
 }
 
-function removeHandler(channel: string) {
+function removeHandler<K extends keyof GlobalCommands>(this: APIContext, channel: K) {
   globalHandler.removeHandler(channel)
 }
 
-function invoke(channel: string, ...args: any[]) {
+function invoke<K extends keyof GlobalCommands>(
+  channel: K,
+  ...args: Parameters<GlobalCommands[K]>
+) {
   return globalHandler.invoke(channel, ...args)
 }
 

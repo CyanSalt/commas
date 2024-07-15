@@ -10,6 +10,9 @@ declare module '@commas/electron-ipc' {
     'toggle-tab-list': () => void,
     'before-quit': () => void,
   }
+  export interface GlobalCommands {
+    'global-renderer:open-file': (file: string) => void,
+  }
 }
 
 let isTabListEnabled = $ref(true)
@@ -56,7 +59,7 @@ export function handleShellMessages() {
   ipcRenderer.on('before-quit', () => {
     willQuit = true
   })
-  globalHandler.handle('global:open-file', (file: string) => {
+  globalHandler.handle('global-renderer:open-file', (file) => {
     shell.showItemInFolder(file)
   })
 }

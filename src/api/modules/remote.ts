@@ -18,17 +18,17 @@ function openUserDirectory() {
 
 async function openDefaultSettings() {
   const filePath = await ipcRenderer.invoke('prepare-default-settings')
-  globalHandler.invoke('global:open-file', filePath)
+  globalHandler.invoke('global-renderer:open-file', filePath)
 }
 
 async function openSettingsFile() {
   const filePath = await ipcRenderer.invoke('prepare-settings-file')
-  globalHandler.invoke('global:open-file', filePath)
+  globalHandler.invoke('global-renderer:open-file', filePath)
 }
 
 async function openUserFile(file: string, example?: string) {
   const filePath = await ipcRenderer.invoke('prepare-user-file', file, example)
-  globalHandler.invoke('global:open-file', filePath)
+  globalHandler.invoke('global-renderer:open-file', filePath)
 }
 
 function writeUserFile(file: string, content?: string) {

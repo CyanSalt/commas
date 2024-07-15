@@ -22,14 +22,14 @@ export default () => {
     openCodeEditorTab(file)
   })
 
-  commas.context.removeHandler('global:open-file')
+  commas.context.removeHandler('global-renderer:open-file')
 
-  commas.context.handle('global:open-file', (file: string) => {
+  commas.context.handle('global-renderer:open-file', (file) => {
     openCodeEditorTab(file)
   })
 
   commas.app.onCleanup(() => {
-    commas.context.handle('global:open-file', (file: string) => {
+    commas.context.handle('global-renderer:open-file', (file) => {
       shell.showItemInFolder(file)
     })
   })

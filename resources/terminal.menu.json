@@ -7,7 +7,7 @@
   {
     "label": "New Window#!menu.newwindow",
     "accelerator": "CmdOrCtrl+N",
-    "command": "global:open-window"
+    "command": "global-main:open-window"
   },
   {
     "label": "Duplicate Tab#!menu.duplicatetab",

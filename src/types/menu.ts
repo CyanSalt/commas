@@ -1,5 +1,5 @@
 import type { MenuItemConstructorOptions } from 'electron'
-import type { RendererEvents } from '@commas/electron-ipc'
+import type { GlobalCommands, RendererEvents } from '@commas/electron-ipc'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface XtermEvents {}
@@ -12,6 +12,11 @@ export type KeyBindingCommand = ValueOf<{
   [K in keyof RendererEvents]: OptionalArgs<{
     command: K,
     args: Parameters<RendererEvents[K]>,
+  }>
+}> | ValueOf<{
+  [K in keyof GlobalCommands]: OptionalArgs<{
+    command: K,
+    args: Parameters<GlobalCommands[K]>,
   }>
 }> | ValueOf<{
   [K in keyof XtermEvents]: OptionalArgs<{

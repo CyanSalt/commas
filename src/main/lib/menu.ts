@@ -46,9 +46,9 @@ function resolveBindingCommand(binding: MenuItem) {
     result.label = translate(binding.label, binding.args as unknown as TranslationVariables | undefined)
   }
   if (binding.command) {
-    if (binding.command.startsWith('global:')) {
+    if (binding.command.startsWith('global-main:')) {
       result.click = (self, frame) => {
-        globalHandler.invoke(binding.command, ...(binding.args ?? []), frame)
+        globalHandler.invoke(binding.command as never, ...(binding.args ?? []) as never, frame)
       }
     } else {
       result.click = (self, frame) => {
@@ -134,7 +134,7 @@ function createApplicationMenu() {
           label: translate('Preferences...#!menu.preference'),
           accelerator: 'Command+,',
           click() {
-            globalHandler.invoke('global:open-settings')
+            globalHandler.invoke('global-main:open-settings')
           },
         },
         { type: 'separator' },
@@ -188,7 +188,7 @@ function createDockMenu() {
       label: translate('New Window#!menu.newwindow'),
       accelerator: 'CmdOrCtrl+N',
       click() {
-        globalHandler.invoke('global:open-window')
+        globalHandler.invoke('global-main:open-window')
       },
     },
   ])
