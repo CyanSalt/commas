@@ -578,6 +578,11 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       })
       return actions
     }
+    // PNPM
+    const pnpmMatches = output.match(/did you mean to (\w+)\?/)
+    if (pnpmMatches && /\bpnpm\b/.test(command)) {
+      return [{ type: 'recommendation' as const, command: `pnpm ${pnpmMatches[1]}` }]
+    }
   }
 
   _getCommandOutput(command: IntegratedShellCommand) {
