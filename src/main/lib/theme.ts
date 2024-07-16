@@ -2,7 +2,7 @@ import { effect } from '@vue/reactivity'
 import type { BrowserWindow, BrowserWindowConstructorOptions } from 'electron'
 import { nativeTheme, systemPreferences } from 'electron'
 import type { Theme, ThemeDefinition } from '@commas/types/theme'
-import { isDarkColor, mix, toCSSColor, toCSSHEX, toElectronHEX, toHSLA, toRGBA, toRGBAFromHSLA } from '../../shared/color'
+import { isDarkColor, mix, toCSSColor, toCSSHEX, toElectronHEX, toHSLA, toRGBA } from '../../shared/color'
 import { provideIPC } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
 import { useDefaultSettings, useSettings } from './settings'
@@ -176,10 +176,9 @@ const theme = $computed(() => {
     definition.systemMagenta = systemPreferences.getSystemColor('pink')
   }
   definition.systemAccent = accentColor ? `#${accentColor.slice(0, 6)}` : ''
-  const accentHSLA = accentColor ? toHSLA(toRGBA(`#${accentColor.slice(0, 6)}`)) : undefined
-  definition.acrylicBackground = accentHSLA ? toCSSHEX(
-    toRGBAFromHSLA({ ...accentHSLA, l: (0.5 + accentHSLA.l / 2) }),
-  ) : ''
+  const backgroundHSLA = toHSLA(backgroundRGBA)
+  const accentRGBA = accentColor ? toRGBA(`#${accentColor.slice(0, 6)}`) : undefined
+  definition.acrylicBackground = accentRGBA ? toCSSHEX(mix(backgroundRGBA, accentRGBA, backgroundHSLA.s)) : ''
   definition.vibrancy = opacity < 1 ? undefined : vibrancy
   definition.variables = Object.fromEntries([
     ...Object.entries({ ...THEME_CSS_COLORS, ...EXTRA_CSS_COLORS }).map(([key, attr]) => {
