@@ -344,7 +344,10 @@ const getCommandRawCompletions = memoizeAsync(async () => {
     getAllCommands(),
     getCommandAliases(),
   ])
-  return uniq(commands).sort().map<CommandCompletion>(item => ({
+  return uniq([
+    ...commands,
+    ...Object.keys(aliases),
+  ]).sort().map<CommandCompletion>(item => ({
     type: 'command',
     query: '',
     value: item,
