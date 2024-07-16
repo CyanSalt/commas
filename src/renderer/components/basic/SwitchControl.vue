@@ -14,7 +14,9 @@ function change(event: Event) {
       class="switch-checkbox"
       @change="change"
     >
-    <span class="switch-content"></span>
+    <span class="switch-track">
+      <span class="switch-content"></span>
+    </span>
   </label>
 </template>
 
@@ -25,12 +27,13 @@ function change(event: Event) {
 .switch-checkbox {
   display: none;
 }
-.switch-content {
+.switch-track {
   position: relative;
   display: inline-block;
   width: 2em;
   height: 1em;
   padding: 1px;
+  cursor: pointer;
   &::before {
     content: '';
     position: absolute;
@@ -48,20 +51,27 @@ function change(event: Event) {
       filter: grayscale(1);
     }
   }
-  &::after {
+  &:active::after {
     content: '';
     position: absolute;
-    top: 1px;
-    left: 1px;
-    display: inline-block;
-    width: 1em;
-    height: 1em;
-    background: white;
-    border-radius: 0.5em;
-    transition: transform 0.2s;
-    .switch-checkbox:checked + & {
-      transform: translateX(100%);
-    }
+    inset: 0;
+    background: rgb(0 0 0 / 25%);
+    border-radius: 1em;
+  }
+}
+.switch-content {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  z-index: 1;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background: white;
+  border-radius: 1em;
+  transition: transform 0.2s;
+  .switch-checkbox:checked + .switch-track > & {
+    transform: translateX(100%);
   }
 }
 </style>

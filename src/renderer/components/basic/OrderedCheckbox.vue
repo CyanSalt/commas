@@ -45,23 +45,19 @@ const checked = $computed({
   border: 1px solid rgb(118 118 118);
   background: white;
   border-radius: 3px;
+  cursor: pointer;
   &:hover {
     border-color: rgb(59 59 59);
   }
   .ordered-checkbox.is-checked & {
     border-width: 0px;
     background: rgb(var(--system-accent));
-    &:hover::before, &:active::before {
+    &:active::before {
       content: '';
       position: absolute;
       inset: 0;
       background: rgb(0 0 0 / 25%);
-    }
-    &:hover::before {
-      background: rgb(0 0 0 / 25%);
-    }
-    &:active::before {
-      background: rgb(255 255 255 / 25%);
+      border-radius: inherit;
     }
   }
 }
