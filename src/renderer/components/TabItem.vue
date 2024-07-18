@@ -173,6 +173,7 @@ function close() {
     transform: scale(0.98);
   }
   &.active {
+    background: linear-gradient(45deg, transparent, var(--design-active-background));
     box-shadow: var(--design-element-shadow);
   }
   &.focused {
