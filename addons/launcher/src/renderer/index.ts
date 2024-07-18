@@ -1,5 +1,6 @@
 import type { TerminalTabCharacter } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
+import type { KeyboardEvent } from 'electron'
 import { watch } from 'vue'
 import type { Launcher } from '../types/launcher'
 import LauncherLink from './LauncherLink.vue'
@@ -16,9 +17,9 @@ declare module '@commas/types/terminal' {
 declare module '@commas/electron-ipc' {
   export interface RendererEvents {
     'open-launcher-character': (charater: TerminalTabCharacter) => void,
-    'start-launcher': (launcher: Launcher) => void,
+    'start-launcher': (launcher: Launcher, keyboardEvent: KeyboardEvent) => void,
     'start-launcher-externally': (launcher: Launcher) => void,
-    'run-script': (launcher: Launcher, index: number) => void,
+    'run-script': (launcher: Launcher, index: number, keyboardEvent: KeyboardEvent) => void,
     'remove-launcher': (launcher: Launcher) => void,
   }
 }
@@ -33,14 +34,14 @@ export default () => {
       openLauncher(launcher)
     }
   })
-  commas.ipcRenderer.on('start-launcher', (event, launcher) => {
-    startLauncher(launcher)
+  commas.ipcRenderer.on('start-launcher', (event, launcher, keyboardEvent) => {
+    startLauncher(launcher, keyboardEvent.shiftKey)
   })
   commas.ipcRenderer.on('start-launcher-externally', (event, launcher) => {
     startLauncherExternally(launcher)
   })
-  commas.ipcRenderer.on('run-script', (event, launcher, index) => {
-    runLauncherScript(launcher, index)
+  commas.ipcRenderer.on('run-script', (event, launcher, index, keyboardEvent) => {
+    runLauncherScript(launcher, index, keyboardEvent.shiftKey)
   })
   commas.ipcRenderer.on('remove-launcher', (event, launcher) => {
     removeLauncher(launcher)

@@ -53,6 +53,7 @@
     "@types/shell-quote": "^1.7.5",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vue-macros/reactivity-transform": "^0.4.6",
+    "@vueuse/core": "^10.11.0",
     "@xterm/addon-canvas": "^0.7.0",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/addon-image": "^0.8.0",

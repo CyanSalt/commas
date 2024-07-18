@@ -3,6 +3,7 @@ import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge
 import { ipcRenderer } from '@commas/electron-ipc'
 import type { DraggableElementEventPayload } from '@commas/types/draggable'
 import type { TerminalTab, TerminalTabCharacter } from '@commas/types/terminal'
+import { useKeyModifier } from '@vueuse/core'
 import * as commas from 'commas:api/renderer'
 import { reactive, watch } from 'vue'
 import type { DraggableElementData } from '../../../../src/renderer/utils/draggable'
@@ -24,6 +25,8 @@ const { VisualIcon, DraggableElement, DropTarget, DropIndicator, TabItem } = com
 
 const settings = commas.remote.useSettings()
 let isGroupSeparating = $(commas.workspace.useTerminalTabGroupSeparating())
+
+const shiftKey = $(useKeyModifier('Shift', { initial: false }))
 
 const position = $computed(() => settings['terminal.view.tabListPosition'])
 
@@ -310,9 +313,9 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
               <template #operations>
                 <div
                   class="button launch"
-                  @click.stop="startLauncher(launcher)"
+                  @click.stop="startLauncher(launcher, shiftKey)"
                 >
-                  <VisualIcon name="lucide-play" />
+                  <VisualIcon :name="shiftKey ? 'lucide-copy-plus' : 'lucide-play'" />
                 </div>
                 <div
                   class="button launch-externally"

@@ -47,13 +47,13 @@ function resolveBindingCommand(binding: MenuItem) {
   }
   if (binding.command) {
     if (binding.command.startsWith('global-main:')) {
-      result.click = (self, frame) => {
-        globalHandler.invoke(binding.command as never, ...(binding.args ?? []) as never, frame)
+      result.click = (self, frame, event) => {
+        globalHandler.invoke(binding.command as never, ...(binding.args ?? []) as never, frame, event)
       }
     } else {
-      result.click = (self, frame) => {
+      result.click = (self, frame, event) => {
         if (frame) {
-          send(frame.webContents, binding.command as never, ...(binding.args ?? []) as never)
+          send(frame.webContents, binding.command as never, ...(binding.args ?? []) as never, event)
         }
       }
       result.enabled = hasFocusedWindow

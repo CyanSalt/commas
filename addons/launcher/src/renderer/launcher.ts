@@ -65,50 +65,57 @@ export function getTerminalTabsByLauncher(launcher: Launcher) {
 interface OpenLauncherOptions {
   tab?: TerminalTab,
   command?: string,
+  duplicate?: boolean,
 }
 
-export async function openLauncher(launcher: Launcher, { tab, command }: OpenLauncherOptions = {}) {
+export async function openLauncher(launcher: Launcher, { tab, command, duplicate }: OpenLauncherOptions = {}) {
   if (!tab) {
     const launcherTabs = getTerminalTabsByLauncher(launcher)
     tab = launcherTabs.length ? launcherTabs[0] : undefined
   }
-  if (tab) {
+  if (tab && !duplicate) {
     commas.workspace.activateTerminalTab(tab)
     if (command) {
       commas.workspace.executeTerminalTab(tab, command, true)
     }
     return tab
+  }
+  const profile = getLauncherProfile(launcher)
+  if (duplicate) {
+    return commas.workspace.createTerminalTab(profile, {
+      command,
+    })
+  }
+  const pane = launcher.pane ? commas.workspace.getPane(launcher.pane) : undefined
+  if (pane) {
+    const paneTab = commas.workspace.createPaneTab(pane, profile)
+    paneTab.character = getTerminalTabCharacterByLauncher(launcher)
+    commas.workspace.activateOrAddTerminalTab(paneTab)
+    return paneTab
   } else {
-    const profile = getLauncherProfile(launcher)
-    const pane = launcher.pane ? commas.workspace.getPane(launcher.pane) : undefined
-    if (pane) {
-      const paneTab = commas.workspace.createPaneTab(pane, profile)
-      paneTab.character = getTerminalTabCharacterByLauncher(launcher)
-      commas.workspace.activateOrAddTerminalTab(paneTab)
-      return paneTab
-    } else {
-      return commas.workspace.createTerminalTab(profile, {
-        command,
-        character: getTerminalTabCharacterByLauncher(launcher),
-      })
-    }
+    return commas.workspace.createTerminalTab(profile, {
+      command,
+      character: getTerminalTabCharacterByLauncher(launcher),
+    })
   }
 }
 
-export async function startLauncher(launcher: Launcher) {
+export async function startLauncher(launcher: Launcher, duplicate?: boolean) {
   const shellPath = settings['terminal.shell.path']
   return openLauncher(launcher, {
     command: getLauncherCommand(launcher, shellPath),
+    duplicate,
   })
 }
 
-export async function runLauncherScript(launcher: Launcher, index: number) {
+export async function runLauncherScript(launcher: Launcher, index: number, duplicate?: boolean) {
   const shellPath = settings['terminal.shell.path']
   return openLauncher(launcher, {
     command: getLauncherCommand({
       ...launcher,
       ...launcher.scripts![index],
     }, shellPath),
+    duplicate,
   })
 }
 

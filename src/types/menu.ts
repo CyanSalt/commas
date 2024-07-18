@@ -1,4 +1,4 @@
-import type { MenuItemConstructorOptions } from 'electron'
+import type { BrowserWindow, KeyboardEvent, MenuItemConstructorOptions } from 'electron'
 import type { GlobalCommands, RendererEvents } from '@commas/electron-ipc'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -8,15 +8,17 @@ type ValueOf<T> = T[keyof T]
 
 type OptionalArgs<T extends { args: unknown[] }> = [] extends T['args'] ? Omit<T, 'args'> & Partial<Pick<T, 'args'>> : T
 
+type OmitArgs<T extends unknown[], U extends unknown[]> = T extends [...infer V, ...U] ? V : T
+
 export type KeyBindingCommand = ValueOf<{
   [K in keyof RendererEvents]: OptionalArgs<{
     command: K,
-    args: Parameters<RendererEvents[K]>,
+    args: OmitArgs<Parameters<RendererEvents[K]>, [KeyboardEvent]>,
   }>
 }> | ValueOf<{
   [K in keyof GlobalCommands]: OptionalArgs<{
     command: K,
-    args: Parameters<GlobalCommands[K]>,
+    args: OmitArgs<Parameters<GlobalCommands[K]>, [BrowserWindow | undefined, KeyboardEvent]>,
   }>
 }> | ValueOf<{
   [K in keyof XtermEvents]: OptionalArgs<{
