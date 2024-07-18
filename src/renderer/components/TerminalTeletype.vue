@@ -290,7 +290,6 @@ function scrollToStickyCommand() {
   }
 }
 :deep(.terminal-highlight-block) {
-  z-index: 0 !important;
   margin-left: calc(#{0px - math.div(4px, 2)} - var(--integration-width) / 2);
   padding-left: calc(#{0px - math.div(4px, 2)} + var(--integration-width) / 2);
   border-left: 4px solid rgb(var(--color));
