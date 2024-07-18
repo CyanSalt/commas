@@ -1,5 +1,5 @@
 import { ipcRenderer } from '@commas/electron-ipc'
-import type { TerminalInfo, TerminalTab, TerminalTabCharacter } from '@commas/types/terminal'
+import type { TerminalContext, TerminalInfo, TerminalTab, TerminalTabCharacter } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import { shell } from 'electron'
 import type { Launcher } from '../types/launcher'
@@ -33,7 +33,7 @@ export function useLauncherCharacters() {
   return $$(launcherCharacters)
 }
 
-function getLauncherProfile(launcher: Launcher) {
+export function getLauncherProfile(launcher: Launcher) {
   const directory = launcher.remote ? undefined : launcher.directory
   const profile: Partial<TerminalInfo> = {
     ...launcher.profile,
@@ -60,10 +60,11 @@ export function getTerminalTabsByLauncher(launcher: Launcher) {
 interface OpenLauncherOptions {
   tab?: TerminalTab,
   command?: string,
+  profile?: Partial<TerminalContext>,
   duplicate?: boolean,
 }
 
-export async function openLauncher(launcher: Launcher, { tab, command, duplicate }: OpenLauncherOptions = {}) {
+export async function openLauncher(launcher: Launcher, { tab, command, profile, duplicate }: OpenLauncherOptions = {}) {
   if (!tab) {
     const launcherTabs = getTerminalTabsByLauncher(launcher)
     tab = launcherTabs.length ? launcherTabs[0] : undefined
@@ -75,7 +76,6 @@ export async function openLauncher(launcher: Launcher, { tab, command, duplicate
     }
     return tab
   }
-  const profile = getLauncherProfile(launcher)
   if (duplicate) {
     return commas.workspace.createTerminalTab(profile, {
       command,
@@ -99,17 +99,20 @@ export async function startLauncher(launcher: Launcher, duplicate?: boolean) {
   const shellPath = settings['terminal.shell.path']
   return openLauncher(launcher, {
     command: getLauncherCommand(launcher, shellPath),
+    profile: getLauncherProfile(launcher),
     duplicate,
   })
 }
 
 export async function runLauncherScript(launcher: Launcher, index: number, duplicate?: boolean) {
   const shellPath = settings['terminal.shell.path']
+  const script = {
+    ...launcher,
+    ...launcher.scripts![index],
+  }
   return openLauncher(launcher, {
-    command: getLauncherCommand({
-      ...launcher,
-      ...launcher.scripts![index],
-    }, shellPath),
+    command: getLauncherCommand(script, shellPath),
+    profile: getLauncherProfile(script),
     duplicate,
   })
 }

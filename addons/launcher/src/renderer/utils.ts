@@ -3,6 +3,7 @@ import { quote } from 'shell-quote'
 import type { Launcher } from '../types/launcher'
 
 export function getLauncherCommand(launcher: Launcher, shellPath: string) {
+  const shell = launcher.profile?.shell ?? shellPath
   let command = launcher.command
   if (launcher.login) {
     command = command
@@ -11,7 +12,7 @@ export function getLauncherCommand(launcher: Launcher, shellPath: string) {
   }
   if (launcher.directory) {
     const isPowerShell = process.platform === 'win32'
-      && (!shellPath || path.basename(shellPath) === 'powershell.exe')
+      && (!shell || path.basename(shell) === 'powershell.exe')
       && !launcher.remote
     if (isPowerShell) {
       command = command
