@@ -81,6 +81,7 @@ watchEffect(() => {
       'editorWidget.background': theme.background,
       'editorWidget.resizeBorder': theme.background,
       'editorSuggestWidget.border': '#00000000',
+      'editorStickyScroll.background': theme.background,
     },
   })
 })
