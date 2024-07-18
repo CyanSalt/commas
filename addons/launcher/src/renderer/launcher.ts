@@ -54,11 +54,6 @@ export function getTerminalTabCharacterByLauncher(launcher: Launcher) {
 }
 
 export function getTerminalTabsByLauncher(launcher: Launcher) {
-  const pane = launcher.pane ? commas.workspace.getPane(launcher.pane) : undefined
-  if (pane) {
-    const paneTab = commas.workspace.getTerminalTabByPane(pane, getLauncherProfile(launcher))
-    return paneTab ? [paneTab] : []
-  }
   return commas.workspace.getTerminalTabsByCharacter(getTerminalTabCharacterByLauncher(launcher))
 }
 
