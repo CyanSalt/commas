@@ -6,6 +6,7 @@
   "Print help information#!cli.description.help": "打印帮助信息",
   "[command]#!cli.usage.help": "[命令]",
   "Print version information#!cli.description.version": "打印版本信息",
+  "Print user data path#!cli.description.user": "打印用户数据路径",
   "Run a command with arguments in a new tab#!cli.description.run": "在新标签页执行带参数的命令",
   "Open built-in tab#!cli.description.open": "打开内置标签页",
   "<name>#!cli.usage.open": "<名称>",

@@ -175,6 +175,14 @@ ${
   })
 
   commas.context.provide('cli.command', {
+    command: 'user',
+    description: 'Print user data path#!cli.description.user',
+    handler() {
+      return commas.file.userFile()
+    },
+  })
+
+  commas.context.provide('cli.command', {
     command: 'run',
     description: 'Run a command with arguments in a new tab#!cli.description.run',
     usage: '<...command-with-args>#!cli.usage.run',
