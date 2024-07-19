@@ -101,17 +101,19 @@ export function getReadableSignal(code: number) {
       ?.[0]
   }
 }
-export function createTerminalTabContextMenu() {
+export function createTerminalTabContextMenu(tab?: TerminalTab) {
   let updatingItems: MenuItem[] = [
     {
       label: 'Duplicate Tab#!menu.duplicatetab',
       accelerator: 'CmdOrCtrl+D',
       command: 'duplicate-tab',
+      args: tab ? [{ pid: tab.pid }] : undefined,
     },
     {
       label: 'Split Tab#!menu.splittab',
       accelerator: 'CmdOrCtrl+Shift+D',
       command: 'split-tab',
+      args: tab ? [{ pid: tab.pid }] : undefined,
     },
   ]
   const deletingItems: MenuItem[] = [
@@ -119,6 +121,7 @@ export function createTerminalTabContextMenu() {
       label: 'Close Tab#!menu.closetab',
       accelerator: 'CmdOrCtrl+W',
       command: 'close-tab',
+      args: tab ? [{ pid: tab.pid }] : undefined,
     },
   ]
   return {

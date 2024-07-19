@@ -193,7 +193,7 @@ function handleDrop(args: DraggableElementEventPayload<LauncherDraggableElementD
 
 function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, event: MouseEvent) {
   const scripts = launcher.scripts ?? []
-  const { updatingItems, deletingItems } = commas.workspace.createTerminalTabContextMenu()
+  const { updatingItems, deletingItems } = commas.workspace.createTerminalTabContextMenu(tab)
   commas.ui.openContextMenu([
     ...commas.ui.withContextMenuSeparator([
       {

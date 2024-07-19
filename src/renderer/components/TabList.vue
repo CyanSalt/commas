@@ -166,8 +166,8 @@ function handleGroupSeparating(args: DraggableElementEventPayload<DraggableEleme
   }
 }
 
-function openTabItemMenu(event: MouseEvent) {
-  const { updatingItems, deletingItems } = createTerminalTabContextMenu()
+function openTabItemMenu(event: MouseEvent, tab: TerminalTab) {
+  const { updatingItems, deletingItems } = createTerminalTabContextMenu(tab)
   openContextMenu([
     ...withContextMenuSeparator(updatingItems, []),
     ...deletingItems,
@@ -212,7 +212,7 @@ function openTabItemMenu(event: MouseEvent) {
                     :tab="tab"
                     :character="tab.character"
                     @click="activateTerminalTab(tab)"
-                    @contextmenu="openTabItemMenu"
+                    @contextmenu="openTabItemMenu($event, tab)"
                   />
                 </div>
               </DropTarget>

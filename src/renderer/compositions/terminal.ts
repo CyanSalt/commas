@@ -40,9 +40,9 @@ declare module '@commas/api/modules/app' {
 declare module '@commas/electron-ipc' {
   export interface RendererEvents {
     'open-tab': (context?: Partial<TerminalContext>, options?: CreateTerminalTabOptions) => void,
-    'duplicate-tab': () => void,
-    'split-tab': () => void,
-    'close-tab': () => void,
+    'duplicate-tab': (data?: Pick<TerminalTab, 'pid'>) => void,
+    'split-tab': (data?: Pick<TerminalTab, 'pid'>) => void,
+    'close-tab': (data?: Pick<TerminalTab, 'pid'>) => void,
     'input-terminal': (data: Pick<TerminalTab, 'pid' | 'process'> & { data: string }) => void,
     'exit-terminal': (data: Pick<TerminalTab, 'pid'>) => void,
     'clear-terminal': () => void,
@@ -480,19 +480,20 @@ export function handleTerminalMessages() {
   ipcRenderer.on('open-tab', (event, context, options) => {
     createTerminalTab(context, options)
   })
-  ipcRenderer.on('duplicate-tab', event => {
-    if (currentTerminal) {
-      createTerminalTab(currentTerminal)
-    }
+  ipcRenderer.on('duplicate-tab', (event, data) => {
+    const tab = data ? tabs.find(item => item.pid === data.pid) : currentTerminal
+    if (!tab) return
+    createTerminalTab(tab)
   })
-  ipcRenderer.on('split-tab', () => {
-    if (currentTerminal) {
-      splitTerminalTab(currentTerminal)
-    }
+  ipcRenderer.on('split-tab', (event, data) => {
+    const tab = data ? tabs.find(item => item.pid === data.pid) : currentTerminal
+    if (!tab) return
+    splitTerminalTab(tab)
   })
-  ipcRenderer.on('close-tab', () => {
-    if (currentTerminal) {
-      closeTerminalTab(currentTerminal)
+  ipcRenderer.on('close-tab', (event, data) => {
+    const tab = data ? tabs.find(item => item.pid === data.pid) : currentTerminal
+    if (tab) {
+      closeTerminalTab(tab)
     }
   })
   ipcRenderer.on('input-terminal', (event, data) => {
