@@ -438,7 +438,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
         },
         {
           label: translate('Copy Command#!terminal.11'),
-          command: 'copy',
+          command: 'global-main:copy',
           args: [command.command],
         },
       )

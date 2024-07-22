@@ -1,8 +1,9 @@
 import type EventEmitter from 'node:events'
 import type { Dock, FindInPageOptions, MessageBoxOptions, MessageBoxReturnValue, NativeImage, Result, WebContents } from 'electron'
-import { app, BrowserWindow, dialog, nativeImage, shell } from 'electron'
+import { app, BrowserWindow, clipboard, dialog, nativeImage, shell } from 'electron'
 import * as fileIcon from 'file-icon'
 import { ipcMain } from '@commas/electron-ipc'
+import { globalHandler } from '../../shared/handler'
 import { readFile, watchFile, writeFile } from '../utils/file'
 import { execa, until } from '../utils/helper'
 import { notify } from '../utils/notification'
@@ -35,6 +36,10 @@ declare module '@commas/electron-ipc' {
     maximized: boolean,
     fullscreen: boolean,
     file: string | undefined,
+  }
+  export interface GlobalCommands {
+    'global-main:look-up': (text: string, frame?: BrowserWindow) => void,
+    'global-main:copy': (text: string) => void,
   }
 }
 
@@ -208,6 +213,12 @@ function handleMessages() {
     if (watchers) {
       watchers.delete(file)
     }
+  })
+  globalHandler.handle('global-main:look-up', (text, frame) => {
+    frame?.webContents.showDefinitionForSelection()
+  })
+  globalHandler.handle('global-main:copy', text => {
+    clipboard.writeText(text)
   })
 }
 

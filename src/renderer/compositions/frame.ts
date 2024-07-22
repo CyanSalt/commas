@@ -4,7 +4,6 @@ import { injectIPC } from '../utils/compositions'
 
 declare module '@commas/electron-ipc' {
   export interface RendererEvents {
-    'open-window': () => void,
     'close-window': () => void,
   }
 }
@@ -26,9 +25,6 @@ export const useFullscreen = reuse(() => {
 })
 
 export function handleFrameMessages() {
-  ipcRenderer.on('open-window', () => {
-    ipcRenderer.invoke('open-window')
-  })
   ipcRenderer.on('close-window', () => {
     window.close()
   })

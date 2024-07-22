@@ -2,7 +2,6 @@ import * as path from 'node:path'
 import { effect, stop } from '@vue/reactivity'
 import type { BrowserWindowConstructorOptions } from 'electron'
 import { app, BrowserWindow } from 'electron'
-import { ipcMain } from '@commas/electron-ipc'
 import { globalHandler } from '../../shared/handler'
 import { loadCustomCSS } from './addon'
 import { getLastWindow, hasWindow, send } from './frame'
@@ -12,12 +11,8 @@ import { useSettings, whenSettingsReady } from './settings'
 import { useThemeOptions } from './theme'
 
 declare module '@commas/electron-ipc' {
-  export interface Commands {
-    'open-window': () => void,
-  }
   export interface GlobalCommands {
     'global-main:open-window': () => void,
-    'global-main:look-up': (text: string, frame?: BrowserWindow) => void,
   }
 }
 
@@ -136,14 +131,8 @@ async function openFile(file: string) {
 }
 
 function handleWindowMessages() {
-  ipcMain.handle('open-window', () => {
-    createWindow()
-  })
   globalHandler.handle('global-main:open-window', () => {
     createWindow()
-  })
-  globalHandler.handle('global-main:look-up', (text, frame) => {
-    frame?.webContents.showDefinitionForSelection()
   })
 }
 

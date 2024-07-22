@@ -11,7 +11,7 @@ import { WebLinksAddon } from '@xterm/addon-web-links'
 import { WebglAddon } from '@xterm/addon-webgl'
 import type { IMarker, ITerminalOptions } from '@xterm/xterm'
 import { Terminal } from '@xterm/xterm'
-import { clipboard, shell } from 'electron'
+import { shell } from 'electron'
 import { toKeyEvent } from 'keyboardevent-from-electron-accelerator'
 import { isMatch, trim } from 'lodash'
 import type { MaybeRefOrGetter } from 'vue'
@@ -593,9 +593,6 @@ export function handleTerminalMessages() {
   ipcRenderer.on('save', () => {
     if (!currentTerminal) return
     currentTerminal.pane?.instance?.save?.()
-  })
-  ipcRenderer.on('copy', (event, text) => {
-    clipboard.writeText(text)
   })
   ipcRenderer.on('open-pane', (event, name) => {
     commas.proxy.workspace.openPaneTab(name)
