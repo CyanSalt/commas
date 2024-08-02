@@ -2,8 +2,6 @@
 import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from '../../api/core-renderer'
 import { useSettings } from '../compositions/settings'
-import { useIsTabListEnabled } from '../compositions/shell'
-import { showTabOptions } from '../compositions/terminal'
 import TabList from './TabList.vue'
 import TerminalTitle from './TerminalTitle.vue'
 import VisualIcon from './basic/VisualIcon.vue'
@@ -16,26 +14,6 @@ const rightAnchors = commas.proxy.context.getCollection('terminal.ui-right-actio
 function configure() {
   ipcRenderer.invoke('open-settings')
 }
-
-const hasHorizontalTabList = $computed(() => {
-  const position = settings['terminal.view.tabListPosition']
-  return position === 'top' || position === 'bottom'
-})
-
-const hasRightTabList = $computed(() => {
-  const position = settings['terminal.view.tabListPosition']
-  return position === 'right'
-})
-
-let isTabListEnabled = $(useIsTabListEnabled())
-
-function toggleTabList(event: MouseEvent) {
-  if (!hasHorizontalTabList) {
-    isTabListEnabled = !isTabListEnabled
-  } else {
-    showTabOptions(event)
-  }
-}
 </script>
 
 <template>
@@ -43,15 +21,6 @@ function toggleTabList(event: MouseEvent) {
     <div class="left-side">
       <div class="anchor" @click="configure">
         <VisualIcon name="lucide-settings" />
-      </div>
-      <div
-        v-if="!hasRightTabList"
-        class="anchor"
-        @click="toggleTabList"
-        @contextmenu="showTabOptions"
-      >
-        <VisualIcon v-if="hasHorizontalTabList" name="lucide-panel-left" />
-        <VisualIcon v-else :name="isTabListEnabled ? 'lucide-panel-left-close' : 'lucide-panel-left-open'" />
       </div>
       <component
         :is="anchor"
@@ -71,23 +40,15 @@ function toggleTabList(event: MouseEvent) {
         :key="index"
         class="anchor"
       />
-      <div
-        v-if="hasRightTabList"
-        class="anchor"
-        @click="toggleTabList"
-        @contextmenu="showTabOptions"
-      >
-        <VisualIcon :name="isTabListEnabled ? 'lucide-panel-right-close' : 'lucide-panel-right-open'" />
-      </div>
     </div>
   </footer>
 </template>
 
 <style lang="scss" scoped>
 .action-bar {
-  display: flex;
+  display: grid;
   flex: none;
-  justify-content: space-between;
+  grid-template-columns: 1fr auto 1fr;
   height: 32px;
   &:has(.tab-list) {
     height: 52px; // 36 + 2 * 8
@@ -102,17 +63,11 @@ function toggleTabList(event: MouseEvent) {
   &.active {
     opacity: 1;
   }
-  .left-side & {
-    margin-right: 8px;
-  }
-  .right-side & {
-    margin-left: 8px;
-  }
 }
 .left-side,
 .right-side {
   display: flex;
-  flex: none;
+  gap: 8px;
   align-items: center;
   padding: 8px 16px;
   .action-bar:has(.terminal-title) & {
@@ -127,8 +82,6 @@ function toggleTabList(event: MouseEvent) {
 }
 .title-wrapper {
   display: flex;
-  flex: 1;
-  min-width: 0;
   &:has(.terminal-title) {
     justify-content: center;
   }
