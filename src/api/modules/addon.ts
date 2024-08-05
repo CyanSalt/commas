@@ -111,7 +111,7 @@ function loadAddon(addon: AddonInfo, api: CompatableAPI) {
     }
   })
   addCommasModule(undefined)
-  loadedAddonContexts.push({ addon, scope })
+  loadedAddonContexts.unshift({ addon, scope })
 }
 
 function unloadAddon(addon: AddonInfo) {
