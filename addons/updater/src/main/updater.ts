@@ -4,7 +4,7 @@ import { app, autoUpdater } from 'electron'
 
 async function checkForUpdates() {
   try {
-    await fs.promises.access(app.getPath('exe'))
+    await fs.promises.access(app.getPath('exe'), fs.constants.W_OK)
     autoUpdater.checkForUpdates()
   } catch {
     // ignore error
