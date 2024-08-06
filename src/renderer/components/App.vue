@@ -127,7 +127,7 @@ onMounted(() => {
   --design-card-shadow: 0 2px 4px 0px rgb(0 0 0 / 10%);
   --design-element-shadow: 0 1px 2px 0px rgb(0 0 0 / 10%);
   --design-highlight-color: rgb(var(--system-blue));
-  --design-highlight-background: color-mix(in hsl, rgb(var(--theme-foreground) / 15%), rgb(var(--acrylic-background) / 10%));
+  --design-highlight-background: color-mix(in hsl, rgb(var(--theme-foreground) / 5%), rgb(var(--acrylic-background) / 5%));
   --design-input-background: color-mix(in hsl, rgb(var(--theme-foreground) / 10%) 75%, rgb(var(--acrylic-background) / 10%));
   --design-separator: rgb(var(--theme-foreground) / 10%);
   @media (prefers-color-scheme: dark) {
@@ -135,6 +135,7 @@ onMounted(() => {
     --design-active-background: rgb(255 255 255 / 16.667%);
     --design-alert-color: rgb(var(--system-yellow));
     --design-highlight-color: rgb(var(--system-cyan));
+    --design-highlight-background: rgb(255 255 255 / 5%);
   }
 }
 :global(::selection) {

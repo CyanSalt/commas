@@ -169,6 +169,9 @@ function close() {
   // https://github.com/react-dnd/react-dnd/issues/788
   transform: translate(0, 0);
   transition: transform 0.2s;
+  &:hover {
+    background: var(--design-highlight-background);
+  }
   &:active {
     transform: scale(0.98);
   }
