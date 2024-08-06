@@ -55,6 +55,7 @@ defineSlots<{
   margin: 0;
   overflow: hidden;
   border-radius: 4px;
+  box-shadow: var(--design-element-shadow);
 }
 .card-action {
   display: flex;
