@@ -4,17 +4,12 @@ import type { RemoteTheme } from './utils'
 const { theme } = defineProps<{
   theme: RemoteTheme,
 }>()
-
-defineSlots<{
-  default?: (props: {}) => any,
-}>()
 </script>
 
 <template>
   <figure class="theme-card" :style="{ 'background-color': theme.background, color: theme.foreground }">
     <figcaption class="card-action">
       <span class="theme-name">{{ theme.name }}</span>
-      <slot></slot>
     </figcaption>
     <div class="theme-preview">
       <div class="preview-line" :style="{ color: theme.brightRed }">

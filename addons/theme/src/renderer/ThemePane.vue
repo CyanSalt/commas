@@ -71,6 +71,7 @@ function openMarketplace() {
 }
 
 async function applyTheme(item: RemoteTheme) {
+  if (item.name === currentTheme) return
   await commas.remote.writeUserFile(`themes/${item.name}.json`, JSON.stringify(item, null, 2))
   const isDark = item.meta.isDark
   if (isDark) {
@@ -84,8 +85,6 @@ async function applyTheme(item: RemoteTheme) {
       settings['terminal.theme.type'] = 'light'
     }
   }
-  // Note that modifying `isLightTheme` will not be atomic
-  // isLightTheme = !isDark
 }
 </script>
 
@@ -117,11 +116,13 @@ async function applyTheme(item: RemoteTheme) {
       </div>
       <LoadingSpinner v-if="!list.length" class="theme-loading" />
       <div v-else class="theme-list">
-        <ThemeCard v-for="item in filteredList" :key="item.name" :theme="item">
-          <span v-if="item.name !== currentTheme" class="link" @click="applyTheme(item)">
-            <VisualIcon name="lucide-check" />
-          </span>
-        </ThemeCard>
+        <ThemeCard
+          v-for="item in filteredList"
+          :key="item.name"
+          :theme="item"
+          :class="{ active: item.name === currentTheme }"
+          @click="applyTheme(item)"
+        />
       </div>
     </div>
   </TerminalPane>
@@ -151,6 +152,12 @@ async function applyTheme(item: RemoteTheme) {
   grid-gap: 24px;
   width: 100%;
   padding: 12px 0;
+  :deep(.theme-card) {
+    cursor: pointer;
+    &.active {
+      outline: 2px solid rgb(var(--system-accent));
+    }
+  }
 }
 .theme-loading {
   margin: 12px 0;
