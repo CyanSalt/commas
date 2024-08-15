@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useMaximized, useMinimized } from '../compositions/frame'
+import { useSettings } from '../compositions/settings'
 import VisualIcon from './basic/VisualIcon.vue'
 
 let isMaximized = $(useMaximized())
@@ -7,6 +8,11 @@ let isMinimized = $(useMinimized())
 
 const platform = process.platform
 const isCustomControlEnabled = !['darwin', 'win32'].includes(platform)
+
+const settings = useSettings()
+const isInteractive = $computed(() => {
+  return settings['terminal.view.tabListPosition'] === 'top'
+})
 
 function minimize() {
   isMinimized = !isMinimized
@@ -22,7 +28,7 @@ function close() {
 </script>
 
 <template>
-  <div :class="['window-control', platform, { 'is-custom': isCustomControlEnabled }]">
+  <div :class="['window-control', platform, { 'is-custom': isCustomControlEnabled, 'is-interactive': isInteractive }]">
     <template v-if="isCustomControlEnabled">
       <div class="minimize button" @click="minimize">
         <VisualIcon name="lucide-minus" />
@@ -38,12 +44,19 @@ function close() {
 </template>
 
 <style lang="scss" scoped>
+@use 'sass:math';
+
 .window-control {
   display: flex;
   gap: 8px;
   // TODO: get the min size on win32
   &.darwin:not(.is-custom) {
-    width: #{12px * 2 + 56px};
+    $--traffic-light-width: 12px * 2 + 56px;
+    $--traffic-light-offset: math.div((36px + 8px * 2) - 36px, 2);
+    width: $--traffic-light-width;
+    &.is-interactive {
+      width: #{$--traffic-light-width + $--traffic-light-offset};
+    }
   }
 }
 .button {

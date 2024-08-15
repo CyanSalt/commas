@@ -54,11 +54,13 @@ const isUsingLeftControl = process.platform === 'darwin'
   display: grid;
   flex: none;
   grid-template-columns: 1fr auto 1fr;
+  gap: 8px;
   height: env(titlebar-area-height, 36px);
   padding: 0 16px;
   line-height: env(titlebar-area-height, 36px);
   -webkit-app-region: drag;
   &:has(.tab-list) {
+    display: flex;
     height: #{36px + 2 * 8px}; // var(--min-tab-height) + 2 * 8px
     line-height: 1;
   }
@@ -103,6 +105,7 @@ const isUsingLeftControl = process.platform === 'darwin'
 }
 .title-wrapper {
   display: flex;
+  flex: auto;
   &:has(.terminal-title) {
     justify-content: center;
   }
