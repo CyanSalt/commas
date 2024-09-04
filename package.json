@@ -31,7 +31,8 @@
   "homepage": "https://github.com/CyanSalt/commas#readme",
   "license": "ISC",
   "engines": {
-    "node": ">=14.0.0"
+    "node": "^20.0.0",
+    "pnpm": "^8.0.0"
   },
   "devDependencies": {
     "@atlaskit/pragmatic-drag-and-drop": "^1.3.0",
