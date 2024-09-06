@@ -1,12 +1,12 @@
 import { EventEmitter } from 'node:events'
 import * as path from 'node:path'
+import { ipcRenderer } from '@commas/electron-ipc'
 import type { ReactiveEffectOptions } from '@vue/reactivity'
 import { app } from 'electron'
-import { ipcRenderer } from '@commas/electron-ipc'
 import type { APIContext } from '../types'
 import { watchBaseEffect } from './helper'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface Events {}
 
 type Listener<T extends keyof Events> = T extends keyof Events ? (

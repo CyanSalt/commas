@@ -18,7 +18,7 @@
     "release": "dotenv release-it --",
     "lint:script": "eslint --cache --fix './**/*.{cjs,js,mjs,ts,vue}'",
     "lint:style": "stylelint --ignore-path .gitignore --cache --fix ./**/*.{css,scss,vue}",
-    "lint": "npm run lint:script && npm run lint:style",
+    "lint": "pnpm run lint:script && pnpm run lint:style",
     "typecheck": "vue-tsc --noEmit"
   },
   "repository": {
@@ -41,7 +41,7 @@
     "@commas/api": "file:src/api",
     "@commas/electron-ipc": "file:src/electron-ipc",
     "@commas/types": "file:src/types",
-    "@cyansalt/eslint-config": "^4.2.0",
+    "@cyansalt/eslint-config": "^4.2.1",
     "@cyansalt/stylelint-config": "^4.0.5",
     "@cyansalt/tsconfig": "^2.2.1",
     "@electron/packager": "^18.3.4",

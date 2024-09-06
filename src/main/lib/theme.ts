@@ -1,7 +1,7 @@
+import type { Theme, ThemeDefinition } from '@commas/types/theme'
 import { effect } from '@vue/reactivity'
 import type { BrowserWindow, BrowserWindowConstructorOptions } from 'electron'
 import { nativeTheme, systemPreferences } from 'electron'
-import type { Theme, ThemeDefinition } from '@commas/types/theme'
 import { isDarkColor, mix, toCSSColor, toCSSHEX, toElectronHEX, toHSLA, toRGBA } from '../../shared/color'
 import { provideIPC } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'

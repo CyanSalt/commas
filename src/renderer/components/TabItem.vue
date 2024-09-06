@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { nextTick, watchEffect } from 'vue'
 import type { TerminalTab, TerminalTabCharacter } from '@commas/types/terminal'
+import { nextTick, watchEffect } from 'vue'
 import type { IconEntry } from '../assets/icons'
 import { useSettings } from '../compositions/settings'
 import { closeTerminalTab, getTerminalTabTitle, useCurrentTerminal } from '../compositions/terminal'

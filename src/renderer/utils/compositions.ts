@@ -1,7 +1,7 @@
-import { cloneDeep } from 'lodash'
-import { customRef, watchEffect } from 'vue'
 import type { IpcRefValue, Refs } from '@commas/electron-ipc'
 import { ipcRenderer } from '@commas/electron-ipc'
+import { cloneDeep } from 'lodash'
+import { customRef, watchEffect } from 'vue'
 
 export function injectIPC<
   K extends keyof Refs,

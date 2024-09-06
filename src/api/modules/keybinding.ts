@@ -1,6 +1,6 @@
 import * as path from 'node:path'
-import { markRaw } from '@vue/reactivity'
 import type { KeyBinding } from '@commas/types/menu'
+import { markRaw } from '@vue/reactivity'
 import { useAddonKeyBindings } from '../../main/lib/menu'
 import type { MainAPIContext } from '../types'
 

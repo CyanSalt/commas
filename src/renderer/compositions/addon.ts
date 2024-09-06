@@ -1,6 +1,6 @@
+import type { AddonInfo } from '@commas/types/addon'
 import { differenceBy } from 'lodash'
 import { watchEffect } from 'vue'
-import type { AddonInfo } from '@commas/types/addon'
 import * as commas from '../../api/core-renderer'
 import { useAddons } from './settings'
 

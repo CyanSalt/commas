@@ -1,6 +1,6 @@
+import type { TerminalInfo, TerminalTab, TerminalTabAddons, TerminalTabPane } from '@commas/types/terminal'
 import { isMatch } from 'lodash'
 import { markRaw, reactive, shallowReactive } from 'vue'
-import type { TerminalInfo, TerminalTab, TerminalTabAddons, TerminalTabPane } from '@commas/types/terminal'
 import {
   activateOrAddTerminalTab,
   activateTerminalTab,

@@ -1,6 +1,6 @@
 import * as path from 'node:path'
-import { markRaw } from '@vue/reactivity'
 import type { SettingsSpec } from '@commas/types/settings'
+import { markRaw } from '@vue/reactivity'
 import {
   openSettingsFile,
   openUserDirectory,

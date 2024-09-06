@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import '@xterm/xterm/css/xterm.css'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
+import type { CommandCompletion, TerminalTab } from '@commas/types/terminal'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { quote } from 'shell-quote'
 import { onBeforeUpdate } from 'vue'
 import { RecycleScroller } from 'vue-virtual-scroller'
-import type { CommandCompletion, TerminalTab } from '@commas/types/terminal'
 import { isMatchLinkModifier, useTerminalElement } from '../compositions/terminal'
 import { createContextMenu, openContextMenu, withContextMenuSeparator } from '../utils/frame'
 import { escapeHTML } from '../utils/helper'

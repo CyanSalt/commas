@@ -1,7 +1,7 @@
-import type { BrowserWindow, KeyboardEvent, MenuItemConstructorOptions } from 'electron'
 import type { GlobalCommands, RendererEvents } from '@commas/electron-ipc'
+import type { BrowserWindow, KeyboardEvent, MenuItemConstructorOptions } from 'electron'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface XtermEvents {}
 
 type ValueOf<T> = T[keyof T]
@@ -20,6 +20,7 @@ export type KeyBindingCommand = ValueOf<{
     command: K,
     args: OmitArgs<Parameters<GlobalCommands[K]>, [BrowserWindow | undefined, KeyboardEvent]>,
   }>
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 }> | ValueOf<{
   [K in keyof XtermEvents]: OptionalArgs<{
     command: K,

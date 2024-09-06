@@ -1,5 +1,5 @@
-import type { Component } from 'vue'
 import type { TerminalTabCharacter, TerminalTabCharacterCommand } from '@commas/types/terminal'
+import type { Component } from 'vue'
 
 declare module './modules/context' {
   export interface Context {

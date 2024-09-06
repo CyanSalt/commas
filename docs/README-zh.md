@@ -32,8 +32,8 @@ brew install --cask cyansalt/cask/commas
 你可以克隆或下载这个仓库，在本地完成 Commas 的构建。
   - 确保你的设备上安装了最新的 LTS 版本的 Node.js；
   - 下载源代码，通过命令行进入代码目录；
-  - 运行 `npm install` 安装依赖；
-  - 运行 `npm run build` 以生成适用于当前平台的此应用。
+  - 运行 `pnpm install` 安装依赖；
+  - 运行 `pnpm run build` 以生成适用于当前平台的此应用。
 
 ## 功能
 

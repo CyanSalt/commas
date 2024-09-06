@@ -1,8 +1,8 @@
 import { Module } from 'node:module'
 import * as path from 'node:path'
+import type { AddonInfo } from '@commas/types/addon'
 import type { EffectScope } from '@vue/reactivity'
 import { effectScope } from '@vue/reactivity'
-import type { AddonInfo } from '@commas/types/addon'
 import type { APIAddon, APIContext, CompatableAPI } from '../types'
 import * as app from './app'
 

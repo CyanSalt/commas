@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import { ipcRenderer } from '@commas/electron-ipc'
 import { nativeImage, shell } from 'electron'
 import { watchEffect } from 'vue'
-import { ipcRenderer } from '@commas/electron-ipc'
 import { omitHome } from '../../shared/terminal'
 import { useSettings } from '../compositions/settings'
 import { useCurrentTerminal } from '../compositions/terminal'

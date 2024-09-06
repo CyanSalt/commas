@@ -1,9 +1,9 @@
-import { shallowReactive } from '@vue/reactivity'
 import type { GlobalCommands } from '@commas/electron-ipc'
+import { shallowReactive } from '@vue/reactivity'
 import { globalHandler } from '../../shared/handler'
 import type { APIContext } from '../types'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface Context {}
 
 const namespaces = shallowReactive<Record<string, any[]>>({})

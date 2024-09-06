@@ -1,6 +1,6 @@
+import type { RendererEventDefinitions } from '@commas/electron-ipc'
 import type { WebContents } from 'electron'
 import { app, BrowserWindow } from 'electron'
-import type { RendererEventDefinitions } from '@commas/electron-ipc'
 
 function hasWindow() {
   return Boolean(BrowserWindow.getAllWindows().length)
