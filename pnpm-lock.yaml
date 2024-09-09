@@ -64,14 +64,14 @@ importers:
         specifier: ^1.0.3
         version: 1.0.3
       '@commas/api':
-        specifier: file:src/api
-        version: file:src/api
+        specifier: workspace:*
+        version: link:src/api
       '@commas/electron-ipc':
-        specifier: file:src/electron-ipc
-        version: file:src/electron-ipc
+        specifier: workspace:*
+        version: link:src/electron-ipc
       '@commas/types':
-        specifier: file:src/types
-        version: file:src/types
+        specifier: workspace:*
+        version: link:src/types
       '@cyansalt/eslint-config':
         specifier: ^4.2.1
         version: 4.2.1(@babel/core@7.25.2)(eslint-plugin-import@2.30.0)(eslint@9.9.0)(typescript@5.5.4)
@@ -262,6 +262,12 @@ importers:
   addons/theme: {}
 
   addons/updater: {}
+
+  src/api: {}
+
+  src/electron-ipc: {}
+
+  src/types: {}
 
 packages:
 
@@ -8672,19 +8678,4 @@ packages:
   /yoctocolors-cjs@2.1.2:
     resolution: {integrity: sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==}
     engines: {node: '>=18'}
-    dev: true
-
-  file:src/api:
-    resolution: {directory: src/api, type: directory}
-    name: api
-    dev: true
-
-  file:src/electron-ipc:
-    resolution: {directory: src/electron-ipc, type: directory}
-    name: '@commas/electron-ipc'
-    dev: true
-
-  file:src/types:
-    resolution: {directory: src/types, type: directory}
-    name: types
     dev: true

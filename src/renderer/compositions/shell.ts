@@ -1,5 +1,5 @@
-import { ipcRenderer } from '@commas/electron-ipc'
 import { shell } from 'electron'
+import { ipcRenderer } from '@commas/electron-ipc'
 import { globalHandler } from '../../shared/handler'
 import { translate } from '../utils/i18n'
 
