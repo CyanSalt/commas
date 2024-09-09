@@ -1,6 +1,6 @@
+import { watchEffect } from 'vue'
 import { ipcRenderer } from '@commas/electron-ipc'
 import type { Theme } from '@commas/types/theme'
-import { watchEffect } from 'vue'
 import { surface } from '../../shared/compositions'
 import { injectIPC } from '../utils/compositions'
 

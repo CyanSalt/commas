@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ipcRenderer } from '@commas/electron-ipc'
 import type { ISearchOptions } from '@xterm/addon-search'
 import { reactive, watch, watchEffect } from 'vue'
+import { ipcRenderer } from '@commas/electron-ipc'
 import { toCSSHEX, toRGBA } from '../../shared/color'
 import { useIsFinding } from '../compositions/shell'
 import { useCurrentTerminal } from '../compositions/terminal'

@@ -1,8 +1,8 @@
 <script lang="ts" generic="T extends Record<string, unknown>" setup>
 import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
-import type { DraggableElementEventPayload } from '@commas/types/draggable'
 import type { ComponentPublicInstance } from 'vue'
 import { watchEffect } from 'vue'
+import type { DraggableElementEventPayload } from '@commas/types/draggable'
 
 const {
   data = (() => ({})) as never,

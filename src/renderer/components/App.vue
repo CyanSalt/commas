@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ipcRenderer } from '@commas/electron-ipc'
 import { onMounted } from 'vue'
+import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from '../../api/core-renderer'
 import { loadAddons, loadCustomJS } from '../compositions/addon'
 import {

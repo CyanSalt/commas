@@ -2,9 +2,9 @@
 import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
 import { attachClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
-import type { DraggableElementEventPayload } from '@commas/types/draggable'
 import type { ComponentPublicInstance } from 'vue'
 import { watchEffect } from 'vue'
+import type { DraggableElementEventPayload } from '@commas/types/draggable'
 
 const {
   data = (() => ({})) as never,

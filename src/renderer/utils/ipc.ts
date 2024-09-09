@@ -1,6 +1,6 @@
+import type { IpcRendererEvent } from 'electron'
 import type { IpcRendererHandler, RendererCommands } from '@commas/electron-ipc'
 import { ipcRenderer } from '@commas/electron-ipc'
-import type { IpcRendererEvent } from 'electron'
 
 export function handleRenderer<K extends keyof RendererCommands>(
   channel: K,
