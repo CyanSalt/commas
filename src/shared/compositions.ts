@@ -1,5 +1,5 @@
 import type { ReactiveEffectOptions, ReactiveEffectRunner, Ref } from '@vue/reactivity'
-import { customRef, deferredComputed, effect, ref, shallowReactive, stop, toRaw, unref } from '@vue/reactivity'
+import { computed, customRef, effect, ref, shallowReactive, stop, toRaw, unref } from '@vue/reactivity'
 import { cloneDeep, difference, intersection, isEqual } from 'lodash'
 
 export function useAsyncComputed<T>(factory: () => Promise<T | undefined>): Ref<T | undefined>
@@ -16,7 +16,7 @@ export function useAsyncComputed<T>(factory: () => Promise<T | undefined>, defau
         currentValue = defaultValue
       }
       trigger()
-    }, { lazy: true })
+    })
     return {
       get() {
         track()
@@ -56,7 +56,7 @@ function initializeSurface<T extends object>(valueRef: Ref<T>, reactiveObject: T
     })
   })
   // Make `Object.assign` to trigger once only
-  const objectRef = deferredComputed(() => ({ ...reactiveObject }))
+  const objectRef = computed(() => ({ ...reactiveObject }))
   effect(() => {
     const value = unref(objectRef)
     if (isUpdated) {

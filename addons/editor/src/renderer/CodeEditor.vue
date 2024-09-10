@@ -114,24 +114,6 @@ const options = $computed<monaco.editor.IStandaloneEditorConstructionOptions>(()
   }
 })
 
-let defaultModel = $shallowRef<monaco.editor.ITextModel>()
-watchEffect((onInvalidate) => {
-  const created = monaco.editor.createModel(modelValue, undefined, undefined)
-  defaultModel = created
-  onInvalidate(() => {
-    created.dispose()
-  })
-})
-
-let model = $shallowRef<monaco.editor.ITextModel>()
-watchEffect((onInvalidate) => {
-  const created = monaco.editor.createModel('', undefined, file ? monaco.Uri.file(file) : undefined)
-  model = created
-  onInvalidate(() => {
-    created.dispose()
-  })
-})
-
 let changes = $ref<monaco.editor.ILineChange[] | null>(null)
 
 let diffEditor = $shallowRef<monaco.editor.IDiffEditor>()
@@ -144,6 +126,33 @@ watchEffect((onInvalidate) => {
   diffEditor = created
   onInvalidate(() => {
     created.dispose()
+    diffEditor = undefined
+  })
+})
+
+let defaultModel = $shallowRef<monaco.editor.ITextModel>()
+watchEffect((onInvalidate) => {
+  const created = monaco.editor.createModel(modelValue, undefined, undefined)
+  defaultModel = created
+  onInvalidate(() => {
+    if (diffEditor) {
+      diffEditor.setModel(null)
+    }
+    created.dispose()
+    defaultModel = undefined
+  })
+})
+
+let model = $shallowRef<monaco.editor.ITextModel>()
+watchEffect((onInvalidate) => {
+  const created = monaco.editor.createModel('', undefined, file ? monaco.Uri.file(file) : undefined)
+  model = created
+  onInvalidate(() => {
+    if (diffEditor) {
+      diffEditor.setModel(null)
+    }
+    created.dispose()
+    model = undefined
   })
 })
 
@@ -199,6 +208,7 @@ watchEffect((onInvalidate) => {
   editor = created
   onInvalidate(() => {
     created.dispose()
+    editor = undefined
   })
 })
 
