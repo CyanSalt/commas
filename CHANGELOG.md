@@ -1,5 +1,46 @@
 
 
+## [0.34.0](https://github.com/CyanSalt/commas/compare/v0.33.1...v0.34.0) (2024-09-11)
+
+
+### Features
+
+* auto select custom title ([302f98a](https://github.com/CyanSalt/commas/commit/302f98a36107b0a5252704b595695a4d5093c766))
+* **cli:** add user command ([dee662d](https://github.com/CyanSalt/commas/commit/dee662d1eaf7ec8b8535256fb7a5e41ca3588c4c))
+* **launcher:** add key modifier ([2c7b69f](https://github.com/CyanSalt/commas/commit/2c7b69f2063d67646fe943544cec813150461c90))
+* **launcher:** drag to favorate when horizontal ([458cdb5](https://github.com/CyanSalt/commas/commit/458cdb55391b8ebf4a5bc87254a1a81bcbee9dcc))
+* **settings:** add reset to all changed items ([1ee639a](https://github.com/CyanSalt/commas/commit/1ee639aa6c5861cf056ac35e875d9f3392f4bceb))
+* **settings:** recoverable ([e1c0710](https://github.com/CyanSalt/commas/commit/e1c07102f07979775953ac26199c865921a9d0f1))
+* **shell-integration:** pnpm quick fix actions ([55c2c82](https://github.com/CyanSalt/commas/commit/55c2c82073006205990a146c8b3cdc91ca58b652))
+* tab list button on top ([3bb4b2f](https://github.com/CyanSalt/commas/commit/3bb4b2f206cd46835852ad069a6b6ff48287ae41))
+* update icons ([5261d11](https://github.com/CyanSalt/commas/commit/5261d117a50367fc6e5d2025d54d36c6a1854aa9))
+
+
+### Bug Fixes
+
+* **addon:** lifo ([a76f164](https://github.com/CyanSalt/commas/commit/a76f1645d5c266f3c67d336530c41d543e7e31e4))
+* aliases as completions ([22e244e](https://github.com/CyanSalt/commas/commit/22e244e8c7eb260bbb12b0a1377bdcf2ceaf8a53))
+* **cli:** cfonts spacing ([f39599e](https://github.com/CyanSalt/commas/commit/f39599e1ccbaa56ea189ef7f2170e5a612eea134))
+* **completion:** clear completion on processing ([216c5c2](https://github.com/CyanSalt/commas/commit/216c5c2113c3063e18a6bd7460a403816f7b0c88))
+* control style ([a482911](https://github.com/CyanSalt/commas/commit/a48291181d4a305389c67f5df75db9c9da9a1495))
+* **editor:** sticky widget style ([4fa0ebf](https://github.com/CyanSalt/commas/commit/4fa0ebf38f07abc17a1fcb4bab5d9209073609e7))
+* error highlighting ([08d8b7e](https://github.com/CyanSalt/commas/commit/08d8b7e1d116a63ee3b315b39d453e10c019155e))
+* group style ([3b64bf4](https://github.com/CyanSalt/commas/commit/3b64bf42d59d94a6ec1549b5bb236012761cb657))
+* **launcher:** remove pane logics ([3418fa5](https://github.com/CyanSalt/commas/commit/3418fa5833de864fd4503ce3ff76af428dbc8871))
+* **launcher:** respect script profile ([b708b80](https://github.com/CyanSalt/commas/commit/b708b80119204fb31d8533024fb5e77ccdffe6db))
+* lint errors ([868d533](https://github.com/CyanSalt/commas/commit/868d5338c7cbb589e5b40c9c8584577f56f5dbe5))
+* pnpm workspace packages ([c5d65a3](https://github.com/CyanSalt/commas/commit/c5d65a36f1f81a67143732cbc75f71ded47ccd89))
+* pnpm workspaces ([f0b895d](https://github.com/CyanSalt/commas/commit/f0b895da794d72528c6bbaceb05458a0d71e2094))
+* reduce renderer events ([b51f243](https://github.com/CyanSalt/commas/commit/b51f243a58b55cffb4aa634d1bb7f25b6eb98164))
+* **settings:** hide value if not customized ([06536a8](https://github.com/CyanSalt/commas/commit/06536a8dcc5f4627d1a79811489e0b941a5a3009))
+* tab item context menu key bindings ([57ced5a](https://github.com/CyanSalt/commas/commit/57ced5a75a4b1580605e8b91db4f2f84bc498cae))
+* tab item interaction ([b29b101](https://github.com/CyanSalt/commas/commit/b29b101872565dcf19892fc325ef563edaa8a9ca))
+* **theme:** add shadow ([f0c163a](https://github.com/CyanSalt/commas/commit/f0c163ad5d28b22b9adadcf6c58656ee40e6fdf0))
+* **theme:** refine user interaction ([42bc4aa](https://github.com/CyanSalt/commas/commit/42bc4aa3087d1f9210a1cc39bce0edd930f1a514))
+* top tab list ([9bd9d37](https://github.com/CyanSalt/commas/commit/9bd9d37419d06a69271429a848c09f6cf02d89a9))
+* **updater:** check only when writable ([629de87](https://github.com/CyanSalt/commas/commit/629de8709e36523c9ac1ffa1b4c79c49aacd33fd))
+* vibrancy with theme ([f86a6ea](https://github.com/CyanSalt/commas/commit/f86a6ea9f2a66336310a7abecbfde6a516be503a))
+
 ## [0.33.1](https://github.com/CyanSalt/commas/compare/v0.33.0...v0.33.1) (2024-07-12)
 
 
