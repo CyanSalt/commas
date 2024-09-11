@@ -20,7 +20,6 @@ export type KeyBindingCommand = ValueOf<{
     command: K,
     args: OmitArgs<Parameters<GlobalCommands[K]>, [BrowserWindow | undefined, KeyboardEvent]>,
   }>
-// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 }> | ValueOf<{
   [K in keyof XtermEvents]: OptionalArgs<{
     command: K,

@@ -1,6 +1,6 @@
+import type { IpcMainEvent, WebContents } from 'electron'
 import type { RendererCommands } from '@commas/electron-ipc'
 import { ipcMain } from '@commas/electron-ipc'
-import type { IpcMainEvent, WebContents } from 'electron'
 
 export function invokeRenderer<K extends keyof RendererCommands>(
   sender: WebContents,

@@ -5,7 +5,6 @@ import { fileURLToPath } from 'node:url'
 import util from 'node:util'
 import { packager } from '@electron/packager'
 import { rebuild } from '@electron/rebuild'
-import { findWorkspacePackages } from '@pnpm/workspace.find-packages'
 import chalk from 'chalk'
 import * as dotenv from 'dotenv'
 import png2icons from 'png2icons'
@@ -71,17 +70,18 @@ async function generateAppIcon(input, icon, suffix) {
 }
 
 async function resolveWorkspacePackages() {
-  const workspacePkgs = await findWorkspacePackages(path.dirname(pkgPath))
+  const workspacePkgs = pkg.workspaces
+    .map(dir => requireCommonJS(import.meta, path.join(path.dirname(pkgPath), dir, 'package.json')))
   const prunePkg = {
     ...pkg,
     devDependencies: Object.assign(
       {},
-      ...workspacePkgs.map(workspace => workspace.manifest.devDependencies),
+      ...workspacePkgs.map(workspace => workspace.devDependencies),
       pkg.devDependencies,
     ),
     dependencies: Object.assign(
       {},
-      ...workspacePkgs.map(workspace => workspace.manifest.dependencies),
+      ...workspacePkgs.map(workspace => workspace.dependencies),
       pkg.dependencies,
     ),
   }

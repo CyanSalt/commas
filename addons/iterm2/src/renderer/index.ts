@@ -28,13 +28,13 @@ export default () => {
 
   commas.ipcRenderer.on('set-mark', () => {
     if (!currentTerminal) return
-
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     currentTerminal.addons?.iterm2?.setMark()
   })
 
   commas.ipcRenderer.on('scroll-to-mark', (event, offset) => {
     if (!currentTerminal) return
-
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     currentTerminal.addons?.iterm2?.scrollToMark(offset)
   })
 

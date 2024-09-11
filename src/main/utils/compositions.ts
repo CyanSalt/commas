@@ -1,10 +1,10 @@
 import * as fs from 'node:fs'
-import type { IpcRefValue, Refs } from '@commas/electron-ipc'
-import { ipcMain } from '@commas/electron-ipc'
 import type { Ref } from '@vue/reactivity'
 import { computed, customRef, effect, stop, unref } from '@vue/reactivity'
 import { cloneDeep } from 'lodash'
 import YAML from 'yaml'
+import type { IpcRefValue, Refs } from '@commas/electron-ipc'
+import { ipcMain } from '@commas/electron-ipc'
 import { broadcast } from '../lib/frame'
 import { watchFile, writeFile, writeYAMLFile } from './file'
 
