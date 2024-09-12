@@ -450,7 +450,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     xterm: Terminal,
     marker: IMarker,
     color: string,
-    style?: 'strong' | 'stroked' | undefined,
+    style?: 'strong' | 'stroked',
     command?: IntegratedShellCommand,
   ) {
     const rgba = toRGBA(color)
