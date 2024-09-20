@@ -96,6 +96,7 @@ function loadAddon(addon: AddonInfo, api: CompatableAPI) {
   const clonedAPI = cloneAPI(api, {
     __name__: addon.name,
     __entry__: addon.entry,
+    __manifest__: addon.manifest,
   })
   // Share reactivity system
   addCommasExternalModules(['@vue/reactivity', 'vue'])

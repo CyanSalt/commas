@@ -4,6 +4,7 @@ import * as raw from './renderer'
 const proxy = addon.cloneAPI(raw, {
   __name__: 'terminal',
   __entry__: '',
+  __manifest__: {},
 })
 
 export {

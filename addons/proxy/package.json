@@ -10,6 +10,9 @@
   "dependencies": {
     "address": "^2.0.3"
   },
+  "commas:icon": {
+    "name": "lucide-router"
+  },
   "commas:i18n": {
     "zh-CN": {
       "productName": "代理",

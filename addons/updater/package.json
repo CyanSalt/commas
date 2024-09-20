@@ -7,6 +7,9 @@
   "main": "index.js",
   "author": "commas",
   "license": "ISC",
+  "commas:icon": {
+    "name": "lucide-circle-arrow-up"
+  },
   "commas:i18n": {
     "zh-CN": {
       "productName": "自动更新",

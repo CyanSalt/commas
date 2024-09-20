@@ -10,6 +10,9 @@
   "devDependencies": {
     "monaco-editor": "^0.51.0"
   },
+  "commas:icon": {
+    "name": "lucide-file-pen-line"
+  },
   "commas:i18n": {
     "zh-CN": {
       "productName": "编辑器",

@@ -10,6 +10,9 @@
   "devDependencies": {
     "clippyjs": "^0.0.3"
   },
+  "commas:icon": {
+    "name": "lucide-sticker"
+  },
   "commas:i18n": {
     "zh-CN": {
       "productName": "大眼夹",

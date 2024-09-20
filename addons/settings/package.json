@@ -7,6 +7,9 @@
   "main": "index.js",
   "author": "commas",
   "license": "ISC",
+  "commas:icon": {
+    "name": "lucide-user-cog"
+  },
   "commas:i18n": {
     "zh-CN": {
       "productName": "设置",

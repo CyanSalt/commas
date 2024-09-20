@@ -9,9 +9,6 @@ export default () => {
   commas.workspace.registerTabPane('addon-manager', {
     title: 'Addons#!addon-manager.1',
     component: AddonManagerPane,
-    icon: {
-      name: 'lucide-blocks',
-    },
   })
 
   commas.context.provide('preference.item', {

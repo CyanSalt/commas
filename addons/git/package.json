@@ -7,6 +7,9 @@
   "main": "index.js",
   "author": "commas",
   "license": "ISC",
+  "commas:icon": {
+    "name": "lucide-git-branch"
+  },
   "commas:i18n": {
     "zh-CN": {
       "productName": "Git 集成",

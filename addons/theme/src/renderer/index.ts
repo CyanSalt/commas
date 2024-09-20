@@ -9,9 +9,6 @@ export default () => {
   commas.workspace.registerTabPane('theme', {
     title: 'Theme#!theme.1',
     component: ThemePane,
-    icon: {
-      name: 'lucide-palette',
-    },
   })
 
   commas.context.provide('preference.item', {

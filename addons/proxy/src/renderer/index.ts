@@ -16,9 +16,6 @@ export default () => {
   commas.workspace.registerTabPane('proxy', {
     title: 'Proxy#!proxy.1',
     component: ProxyPane,
-    icon: {
-      name: 'lucide-router',
-    },
   })
 
   commas.ipcRenderer.on('configure-proxy', () => {

@@ -9,9 +9,6 @@ export default () => {
   commas.workspace.registerTabPane('sync', {
     title: 'Sync#!sync.1',
     component: SyncPane,
-    icon: {
-      name: 'lucide-cloud-upload',
-    },
   })
 
   commas.context.provide('preference.item', {

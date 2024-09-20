@@ -9,9 +9,6 @@ export default () => {
   commas.workspace.registerTabPane('settings', {
     title: 'Settings#!settings.1',
     component: SettingsPane,
-    icon: {
-      name: 'lucide-user-cog',
-    },
   })
 
   commas.context.provide('preference.item', {

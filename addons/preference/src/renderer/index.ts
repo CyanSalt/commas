@@ -19,9 +19,6 @@ export default () => {
   commas.workspace.registerTabPane('preference', {
     title: 'Preferences#!preference.1',
     component: PreferencePane,
-    icon: {
-      name: 'lucide-settings',
-    },
   })
 
   commas.ipcRenderer.on('open-preference-pane', () => {

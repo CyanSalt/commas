@@ -11,6 +11,9 @@
     "@types/canvas-confetti": "^1.6.4",
     "canvas-confetti": "^1.9.3"
   },
+  "commas:icon": {
+    "name": "lucide-dollar-sign"
+  },
   "commas:i18n": {
     "zh-CN": {
       "productName": "iTerm2 转义码",

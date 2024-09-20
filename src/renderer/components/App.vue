@@ -129,7 +129,6 @@ onMounted(() => {
   --design-highlight-color: rgb(var(--system-blue));
   --design-highlight-background: color-mix(in hsl, rgb(var(--theme-foreground) / 5%), rgb(var(--acrylic-background) / 5%));
   --design-input-background: color-mix(in hsl, rgb(var(--theme-foreground) / 10%) 75%, rgb(var(--acrylic-background) / 10%));
-  --design-separator: rgb(var(--theme-foreground) / 10%);
   @media (prefers-color-scheme: dark) {
     --system-cyan: 108 224 219;
     --design-active-background: rgb(255 255 255 / 16.667%);

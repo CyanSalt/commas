@@ -25,7 +25,11 @@ const tabs = $(useTerminalTabs())
 const panes = shallowReactive<Record<string, TerminalTabPane | undefined>>({})
 
 function registerTabPane(this: RendererAPIContext, name: string, pane: TerminalTabPane) {
-  panes[name] = { name, ...pane }
+  panes[name] = {
+    name,
+    icon: this.__manifest__?.['commas:icon'],
+    ...pane,
+  }
   this.$.app.onInvalidate(() => {
     delete panes[name]
   })

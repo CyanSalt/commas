@@ -15,6 +15,9 @@
     "chalk": "^4.1.2",
     "text-table": "^0.2.0"
   },
+  "commas:icon": {
+    "name": "lucide-terminal"
+  },
   "commas:i18n": {
     "zh-CN": {
       "description": "Commas 命令行工具"

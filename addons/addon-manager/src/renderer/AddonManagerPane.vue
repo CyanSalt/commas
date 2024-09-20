@@ -83,24 +83,29 @@ onMounted(() => {
           :key="addon.name"
           :class="['addon-card', { 'is-disabled': !enabled }]"
         >
-          <div class="addon-card-title">
-            <span class="addon-primary-info">
-              <span class="addon-name">{{ manifest.productName ?? manifest.name ?? addon.name }}</span>
-              <span
-                v-if="(manifest.productName ?? manifest.name) !== addon.name"
-                :class="['addon-id', { link: addon.type !== 'builtin' }]"
-                @click="showInFolder(addon)"
-              >{{ addon.name }}</span>
-              <span v-if="addon.type !== 'builtin'" class="addon-version">{{ manifest.version ?? '' }}</span>
-            </span>
-            <SwitchControl
-              :model-value="enabled"
-              @update:model-value="toggle(addon, $event)"
-            />
+          <div class="addon-icon">
+            <VisualIcon v-if="manifest['commas:icon']" :name="manifest['commas:icon'].name" />
           </div>
-          <div class="addon-description">{{ manifest.description ?? '' }}</div>
-          <span v-if="addon.type === 'builtin'" v-i18n class="addon-tag">Built-in#!addon-manager.3</span>
-          <span v-else class="addon-author">{{ manifest.author ?? '' }}</span>
+          <div class="addon-info">
+            <div class="addon-title">
+              <span class="addon-primary-info">
+                <span class="addon-name">{{ manifest.productName ?? manifest.name ?? addon.name }}</span>
+                <span
+                  v-if="(manifest.productName ?? manifest.name) !== addon.name"
+                  :class="['addon-id', { link: addon.type !== 'builtin' }]"
+                  @click="showInFolder(addon)"
+                >{{ addon.name }}</span>
+                <span v-if="addon.type !== 'builtin'" class="addon-version">{{ manifest.version ?? '' }}</span>
+              </span>
+              <SwitchControl
+                :model-value="enabled"
+                @update:model-value="toggle(addon, $event)"
+              />
+            </div>
+            <div class="addon-description">{{ manifest.description ?? '' }}</div>
+            <span v-if="addon.type === 'builtin'" v-i18n class="addon-tag">Built-in#!addon-manager.3</span>
+            <span v-else class="addon-author">{{ manifest.author ?? '' }}</span>
+          </div>
         </div>
       </div>
     </form>
@@ -117,14 +122,30 @@ onMounted(() => {
   margin-top: 8px;
 }
 .addon-card {
+  display: flex;
+  gap: 16px;
   padding: 8px 0;
-  border-top: 1px solid var(--design-separator);
-  line-height: 24px;
   &.is-disabled {
     color: rgb(var(--theme-foreground) / 50%);
   }
 }
-.addon-card-title {
+.addon-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  color: rgb(var(--system-accent));
+  font-size: 24px;
+  background: var(--design-highlight-background);
+  border-radius: 8px;
+}
+.addon-info {
+  flex: 1;
+  min-width: 0;
+  line-height: 24px;
+}
+.addon-title {
   display: flex;
   justify-content: space-between;
   align-items: center;
