@@ -51,6 +51,7 @@ function configure() {
   grid-template-columns: 1fr auto 1fr;
   height: 32px;
   &:has(.tab-list) {
+    display: flex;
     height: 52px; // 36 + 2 * 8
   }
 }
@@ -82,6 +83,7 @@ function configure() {
 }
 .title-wrapper {
   display: flex;
+  flex: auto;
   &:has(.terminal-title) {
     justify-content: center;
   }
