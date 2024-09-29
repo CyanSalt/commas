@@ -64,7 +64,8 @@ interface OpenLauncherOptions {
   duplicate?: boolean,
 }
 
-export async function openLauncher(launcher: Launcher, { tab, command, profile, duplicate }: OpenLauncherOptions = {}) {
+export async function openLauncher(launcher: Launcher, options: OpenLauncherOptions = {}) {
+  let { tab, command, profile, duplicate } = options
   if (!tab) {
     const launcherTabs = getTerminalTabsByLauncher(launcher)
     tab = launcherTabs.length ? launcherTabs[0] : undefined
@@ -75,6 +76,9 @@ export async function openLauncher(launcher: Launcher, { tab, command, profile, 
       commas.workspace.executeTerminalTab(tab, command, true)
     }
     return tab
+  }
+  if (!profile) {
+    profile = getLauncherProfile(launcher)
   }
   if (duplicate) {
     return commas.workspace.createTerminalTab(profile, {
@@ -99,7 +103,6 @@ export async function startLauncher(launcher: Launcher, duplicate?: boolean) {
   const shellPath = settings['terminal.shell.path']
   return openLauncher(launcher, {
     command: getLauncherCommand(launcher, shellPath),
-    profile: getLauncherProfile(launcher),
     duplicate,
   })
 }
