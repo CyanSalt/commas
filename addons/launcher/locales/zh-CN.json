@@ -3,6 +3,7 @@
   "Launch#!launcher.2": "启动",
   "Open in External#!launcher.3": "在外部打开",
   "Remove Launcher#!launcher.4": "移除启动项",
+  "Open Remote URL#!launcher.5": "打开远程 URL",
   "Persistent Launcher Session#!settings.label.launcher.session.persist": "保留启动项会话",
   "Persistent the history of a launcher after it has been closed#!settings.comments.0.launcher.session.persist": "在启动项关闭后保留其历史记录"
 }

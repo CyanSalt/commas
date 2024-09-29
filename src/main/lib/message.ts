@@ -40,6 +40,7 @@ declare module '@commas/electron-ipc' {
   export interface GlobalCommands {
     'global-main:look-up': (text: string, frame?: BrowserWindow) => void,
     'global-main:copy': (text: string) => void,
+    'global-main:open-url': (url: string) => void,
   }
 }
 
@@ -219,6 +220,9 @@ function handleMessages() {
   })
   globalHandler.handle('global-main:copy', text => {
     clipboard.writeText(text)
+  })
+  globalHandler.handle('global-main:open-url', url => {
+    shell.openExternal(url)
   })
 }
 

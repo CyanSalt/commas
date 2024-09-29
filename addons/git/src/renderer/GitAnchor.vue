@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from 'commas:api/renderer'
-import { shell } from 'electron'
 import { watchEffect } from 'vue'
 
 defineOptions({
@@ -57,27 +56,26 @@ const remoteExternalURL = $computed(() => {
   return `https://${matches[1]}/${matches[2]}${branch ? `/tree/${branch}` : ''}`
 })
 
-const isGithub = $computed(() => {
-  if (!remoteExternalURL) return false
-  try {
-    const url = new URL(remoteExternalURL)
-    return url.host === 'github.com' || url.host.endsWith('.github.com')
-  } catch {
-    return false
-  }
-})
-
-function openRemoteURL() {
+function openGitMenu(event: MouseEvent) {
   if (!remoteExternalURL) return
-  shell.openExternal(remoteExternalURL)
+  commas.ui.openContextMenu([
+    {
+      label: 'Open Remote URL#!launcher.5',
+      command: 'global-main:open-url',
+      args: [remoteExternalURL],
+    },
+  ], event)
 }
 </script>
 
 <template>
-  <div v-if="remoteExternalURL" v-bind="$attrs" class="git-remote-anchor" @click="openRemoteURL">
-    <VisualIcon :name="isGithub ? 'lucide-github' : 'lucide-gitlab'" />
-  </div>
-  <div v-if="directory" v-bind="$attrs" class="git-branch-anchor" @click="updateBranch">
+  <div
+    v-if="directory"
+    v-bind="$attrs"
+    class="git-branch-anchor"
+    @click="updateBranch"
+    @contextmenu="openGitMenu"
+  >
     <VisualIcon name="lucide-git-branch" />
     <span v-if="branch" class="branch-name">{{ branch }}</span>
   </div>
