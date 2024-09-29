@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" fill="none">
+  <rect width="780.423" height="780.423" x="121.788" y="121.789" fill="#000" rx="156" mask="url(#a)" />
+  <path stroke="#000" stroke-linecap="round" stroke-width="48" d="M441 553h168" />
+  <path fill="#000"
+    d="M339.64 291.9a77.84 77.84 0 1 0 0 155.61 72.59 72.59 0 0 0 17.5-2.24 3.92 3.92 0 0 1 4.41 5.81 107.59 107.59 0 0 1-92.61 55.51 19.67 19.67 0 0 0 0 39.34 152.95 152.95 0 0 0 148.54-156.66v-19.6a77.91 77.91 0 0 0-77.84-77.77z" />
+  <defs>
+    <mask id="a">
+      <rect width="780.423" height="780.423" x="121.788" y="121.789" fill="#FFF" rx="156" mask="url(#a)" />
+      <rect width="657.615" height="657.615" x="183.192" y="183.192" fill="#000" rx="94" />
+    </mask>
+  </defs>
+</svg>

@@ -1,0 +1,19 @@
+{
+  "name": "@commas/camera",
+  "private": true,
+  "version": "0.1.0",
+  "productName": "Camera",
+  "description": "Capture page contents",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC",
+  "commas:icon": {
+    "name": "lucide-camera"
+  },
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "照相机",
+      "description": "捕获页面内容"
+    }
+  }
+}
