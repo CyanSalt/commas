@@ -2,6 +2,7 @@
 import { nativeImage, shell } from 'electron'
 import { watchEffect } from 'vue'
 import { ipcRenderer } from '@commas/electron-ipc'
+import * as commas from '../../api/core-renderer'
 import { omitHome } from '../../shared/terminal'
 import { useSettings } from '../compositions/settings'
 import { useCurrentTerminal } from '../compositions/terminal'
@@ -11,6 +12,8 @@ import VisualIcon from './basic/VisualIcon.vue'
 
 const settings = useSettings()
 const terminal = $(useCurrentTerminal())
+
+const anchors = commas.proxy.context.getCollection('terminal.ui-title-anchor')
 
 let iconBuffer = $ref<Buffer>()
 
@@ -116,6 +119,12 @@ watchEffect(() => {
     </a>
     <div v-if="pane && !fileOrDirectory" v-i18n class="title-text">{{ pane.title }}</div>
     <div v-else class="title-text">{{ title }}</div>
+    <component
+      :is="anchor"
+      v-for="(anchor, index) in anchors"
+      :key="index"
+      class="anchor"
+    />
   </div>
 </template>
 
@@ -123,6 +132,7 @@ watchEffect(() => {
 .terminal-title {
   display: flex;
   flex: 1;
+  gap: 8px;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
@@ -130,7 +140,6 @@ watchEffect(() => {
 }
 .shortcut {
   flex: none;
-  margin-right: 8px;
   transition: color 0.2s;
   cursor: pointer;
   -webkit-app-region: no-drag;
@@ -152,5 +161,17 @@ watchEffect(() => {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+:deep(.anchor) {
+  display: inline-flex;
+  font-size: 12px;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+  &:hover:not(.disabled),
+  &.active {
+    opacity: 1;
+  }
 }
 </style>

@@ -70,23 +70,22 @@ function openGitMenu(event: MouseEvent) {
 
 <template>
   <div
-    v-if="directory"
+    v-if="branch"
     v-bind="$attrs"
     class="git-branch-anchor"
-    @click="updateBranch"
     @contextmenu="openGitMenu"
   >
     <VisualIcon name="lucide-git-branch" />
-    <span v-if="branch" class="branch-name">{{ branch }}</span>
+    <span class="branch-name">{{ branch }}</span>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .git-branch-anchor {
-  display: flex;
+  gap: 4px;
+  align-items: center;
 }
 .branch-name {
-  margin-left: 4px;
   font-size: 12px;
   text-overflow: ellipsis;
   overflow: hidden;

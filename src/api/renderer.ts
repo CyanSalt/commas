@@ -7,6 +7,7 @@ declare module './modules/context' {
     'terminal.ui-right-action-anchor': Component,
     'terminal.ui-side-list': Component,
     'terminal.ui-slot': Component,
+    'terminal.ui-title-anchor': Component,
     'terminal.category': {
       title: string,
       characters: TerminalTabCharacter[],
