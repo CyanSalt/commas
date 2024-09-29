@@ -1,5 +1,6 @@
 import * as os from 'node:os'
 import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
+import { useResizeObserver } from '@vueuse/core'
 import { CanvasAddon } from '@xterm/addon-canvas'
 import { FitAddon } from '@xterm/addon-fit'
 import { ImageAddon } from '@xterm/addon-image'
@@ -364,22 +365,18 @@ export function useTerminalElement(
   addons: MaybeRefOrGetter<ReadonlyTerminalTabAddons>,
   onInitialize?: (xterm: Terminal) => void,
 ) {
-  const observer = new ResizeObserver(() => {
+  useResizeObserver(element, () => {
     if (toValue(terminal).element?.clientWidth) {
       toValue(addons).fit.fit()
     }
   })
-  return watchEffect((onInvalidate) => {
+  return watchEffect(() => {
     const el = toValue(element)
     if (!el) return
     const xterm = toValue(terminal)
     if (xterm.element) return
     xterm.open(el)
     onInitialize?.(xterm)
-    observer.observe(el)
-    onInvalidate(() => {
-      observer.unobserve(el)
-    })
   })
 }
 

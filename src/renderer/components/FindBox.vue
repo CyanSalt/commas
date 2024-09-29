@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useIntersectionObserver } from '@vueuse/core'
 import type { ISearchOptions } from '@xterm/addon-search'
 import { reactive, watch, watchEffect } from 'vue'
 import { ipcRenderer } from '@commas/electron-ipc'
@@ -37,22 +38,14 @@ let totalNumber = $ref(0)
 
 let isFinding = $(useIsFinding())
 
-watchEffect((onInvalidate) => {
-  if (!root) return
-  const observer = new IntersectionObserver(([{ isIntersecting }]) => {
-    if (isIntersecting) {
-      finder?.focus()
-    } else {
-      if (terminal?.xterm) {
-        terminal.xterm.focus()
-      }
+useIntersectionObserver($$(root), ([{ isIntersecting }]) => {
+  if (isIntersecting) {
+    finder?.focus()
+  } else {
+    if (terminal?.xterm) {
+      terminal.xterm.focus()
     }
-  })
-  let el = root
-  observer.observe(el)
-  onInvalidate(() => {
-    observer.unobserve(el)
-  })
+  }
 })
 
 watchEffect((onInvalidate) => {

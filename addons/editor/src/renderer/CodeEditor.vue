@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useResizeObserver } from '@vueuse/core'
 import * as commas from 'commas:api/renderer'
 import { watchEffect } from 'vue'
 import { useEditorTheme } from './compositions'
@@ -235,18 +236,9 @@ watchEffect(() => {
   }
 })
 
-const observer = new ResizeObserver(() => {
+useResizeObserver($$(root), () => {
   if (!editor) return
   editor.layout()
-})
-
-watchEffect((onInvalidate) => {
-  const el = root
-  if (!el) return
-  observer.observe(el)
-  onInvalidate(() => {
-    observer.unobserve(el)
-  })
 })
 
 function save() {
