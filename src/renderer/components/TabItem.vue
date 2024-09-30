@@ -163,8 +163,10 @@ function close() {
 </template>
 
 <style lang="scss" scoped>
+@use 'sass:math';
+
 .tab-item {
-  padding: 0 8px;
+  padding: 0 #{8px - (math.div(18px - 14px, 2) + 2px)} 0 8px;
   border-radius: 8px;
   // https://github.com/react-dnd/react-dnd/issues/788
   transform: translate(0, 0);
@@ -234,7 +236,7 @@ function close() {
   display: inline-block;
   width: 6px;
   height: 6px;
-  margin: 0 6px;
+  margin: 0 #{math.div(18px + 2 * 2px - 6px, 2)};
   vertical-align: 1px;
   background: currentColor;
   border-radius: 50%;
@@ -264,11 +266,24 @@ function close() {
   .tab-item:hover & {
     display: flex;
   }
-}
-.button {
-  width: 18px;
-  transition: color 0.2s;
-  cursor: pointer;
+  :deep(.button) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 18px;
+    height: 18px;
+    padding: 2px;
+    border-radius: 4px;
+    transition: color 0.2s, transform 0.2s;
+    cursor: pointer;
+    &:hover {
+      background: var(--design-highlight-background);
+      opacity: 1;
+    }
+    &:active {
+      transform: scale(0.96);
+    }
+  }
 }
 .close:hover {
   color: rgb(var(--system-red));

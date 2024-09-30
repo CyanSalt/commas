@@ -239,8 +239,12 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
         @dragleave="handleDragLeave"
         @drop="handleDrop"
       >
-        <div :ref="mount" :class="['launcher-folder', { 'is-dropping-active': draggingEdges.get(FOLDER_ID) }]">
-          <div class="group-name" @click="showLauncherMenu">
+        <div
+          :ref="mount"
+          :class="['launcher-folder', { 'is-dropping-active': draggingEdges.get(FOLDER_ID) }]"
+          @click="showLauncherMenu"
+        >
+          <div class="group-name">
             <VisualIcon name="lucide-list-video" />
           </div>
         </div>
@@ -257,8 +261,12 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
         @dragleave="handleDragLeave"
         @drop="handleDrop"
       >
-        <div :ref="mount" class="launcher-folder" @click="toggleCollapsing">
-          <div :class="['group-name', { collapsed: isCollapsed }]">
+        <div
+          :ref="mount"
+          :class="['launcher-folder', { collapsed: isCollapsed }]"
+          @click="toggleCollapsing"
+        >
+          <div class="group-name">
             <VisualIcon :name="isCollapsed ? 'lucide-list-filter' : 'lucide-list-video'" />
           </div>
           <DropIndicator
@@ -369,41 +377,35 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
   }
 }
 .launcher-folder {
-  padding: 0 8px;
+  box-sizing: border-box;
+  padding: 4px 8px;
   line-height: 16px;
+  border-radius: 4px;
+  opacity: 0.5;
+  transition: opacity 0.2s, color 0.2s, transform 0.2s;
   cursor: pointer;
+  &:hover {
+    background: var(--design-highlight-background);
+    opacity: 1;
+  }
+  &:active {
+    transform: scale(0.98);
+  }
+  &.collapsed {
+    color: var(--design-highlight-color);
+    opacity: 1;
+  }
   .tab-list.horizontal & {
     display: flex;
+    justify-content: center;
     align-items: center;
-    height: calc(1em + 2 * 8px);
+    width: var(--min-tab-height);
+    height: var(--min-tab-height);
     line-height: var(--min-tab-height);
     border-radius: 8px;
     &.is-dropping-active {
       outline: 2px solid rgb(var(--system-accent));
     }
   }
-}
-.button {
-  width: 18px;
-  text-align: center;
-  transition: opacity 0.2s, color 0.2s;
-  cursor: pointer;
-}
-.group-name {
-  opacity: 0.5;
-  transition: opacity 0.2s, color 0.2s;
-  &.collapsed {
-    color: var(--design-highlight-color);
-    opacity: 1;
-  }
-  &:not(.collapsed):hover {
-    opacity: 1;
-  }
-}
-.launch:hover {
-  color: rgb(var(--system-green));
-}
-.launch-externally:hover {
-  color: rgb(var(--system-blue));
 }
 </style>

@@ -67,6 +67,7 @@ function openEditingMenu(event: MouseEvent) {
 :deep(.action-line) {
   display: flex;
   flex-wrap: wrap;
+  gap: 4px;
   align-items: center;
 }
 :deep(.form-line.block) {
@@ -169,9 +170,18 @@ function openEditingMenu(event: MouseEvent) {
   user-select: text;
 }
 :deep(.form-action) {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   width: 24px;
-  margin-left: 8px;
+  height: 24px;
   font-size: 16px;
-  text-align: center;
+  border-radius: 4px;
+  &:hover {
+    background: var(--design-highlight-background);
+  }
+  &:active {
+    transform: scale(0.96);
+  }
 }
 </style>

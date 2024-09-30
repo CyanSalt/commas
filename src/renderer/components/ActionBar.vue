@@ -57,10 +57,18 @@ function configure() {
 }
 :deep(.anchor) {
   display: inline-flex;
+  padding: 4px;
+  border-radius: 4px;
   opacity: 0.5;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, transform 0.2s;
   cursor: pointer;
-  &:hover:not(.disabled),
+  &:hover:not(.disabled) {
+    background: var(--design-highlight-background);
+    opacity: 1;
+  }
+  &:active {
+    transform: scale(0.96);
+  }
   &.active {
     opacity: 1;
   }
@@ -68,12 +76,8 @@ function configure() {
 .left-side,
 .right-side {
   display: flex;
-  gap: 8px;
   align-items: center;
-  padding: 8px 16px;
-  .action-bar:has(.terminal-title) & {
-    width: 120px;
-  }
+  padding: 0 12px;
 }
 .left-side {
   justify-content: flex-start;

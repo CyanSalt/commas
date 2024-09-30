@@ -100,7 +100,7 @@ onBeforeUpdate(() => {
     <form class="group">
       <div class="action-line settings-searcher">
         <span :class="['link form-action toggle-all', { collapsed: isCollapsed }]" @click="toggleAll">
-          <VisualIcon name="lucide-chevrons-down" />
+          <VisualIcon name="lucide-chevrons-down" class="toggle-all-icon" />
         </span>
         <input
           v-model="keyword"
@@ -137,7 +137,12 @@ onBeforeUpdate(() => {
 }
 .toggle-all.collapsed {
   opacity: 1;
-  transform: rotate(-90deg);
+}
+.toggle-all-icon {
+  transition: transform 0.2s;
+  .toggle-all.collapsed & {
+    transform: rotate(-90deg);
+  }
 }
 .settings-group-title {
   margin: 8px 0;

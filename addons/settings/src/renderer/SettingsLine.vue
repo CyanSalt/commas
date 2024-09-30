@@ -240,6 +240,7 @@ function recover() {
 }
 .line-summary {
   display: flex;
+  gap: 4px;
 }
 .line-description {
   display: flex;
@@ -275,7 +276,7 @@ function recover() {
   }
 }
 .setting-detail {
-  padding-left: 24px;
+  padding-left: #{24px + 4px};
   .settings-line:not([open]) & {
     display: none;
   }

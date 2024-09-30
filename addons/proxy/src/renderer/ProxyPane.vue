@@ -105,7 +105,7 @@ function update() {
       </div>
       <div class="form-line">
         <span v-i18n="{ version: version ?? '--' }">Current version: ${version}#!preference.9</span>
-        <span v-if="isOutdated" class="update-link link form-action" @click="update">
+        <span v-if="isOutdated" class="update-link link" @click="update">
           <VisualIcon name="lucide-chevrons-up" class="update-icon" />
           <span class="latest-version">{{ latestVersion }}</span>
         </span>

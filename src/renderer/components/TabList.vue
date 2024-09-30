@@ -228,7 +228,7 @@ function openTabItemMenu(event: MouseEvent, tab: TerminalTab) {
                 :ref="mount"
                 :class="['new-tab', { 'is-group-separating-active': groupSeparatingActive }]"
               >
-                <div v-if="shells.length" class="select-shell anchor" @click="selectShell">
+                <div v-if="!isHorizontal && shells.length" class="select-shell anchor" @click="selectShell">
                   <VisualIcon name="lucide-list-plus" />
                 </div>
                 <div
@@ -372,12 +372,16 @@ function openTabItemMenu(event: MouseEvent, tab: TerminalTab) {
 .new-tab {
   display: flex;
   align-items: center;
+  box-sizing: border-box;
   height: var(--min-tab-height);
   padding: 0 8px;
   line-height: var(--min-tab-height);
   text-align: center;
   border-radius: 8px;
   transition: transform 0.2s;
+  .tab-list.horizontal & {
+    width: var(--min-tab-height);
+  }
   &:hover {
     background: var(--design-highlight-background);
   }

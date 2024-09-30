@@ -37,12 +37,17 @@ function toggleTabList(event: MouseEvent) {
 <style lang="scss" scoped>
 .tab-list-control {
   display: inline-flex;
+  padding: 4px;
+  border-radius: 4px;
   opacity: 0.5;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, transform 0.2s;
   cursor: pointer;
-  &:hover:not(.disabled),
-  &.active {
+  &:hover {
+    background: var(--design-highlight-background);
     opacity: 1;
+  }
+  &:active {
+    transform: scale(0.96);
   }
   // FIXME: make it center visually
   :deep(.visual-icon) {
