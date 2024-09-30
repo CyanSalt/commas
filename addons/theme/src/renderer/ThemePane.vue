@@ -93,7 +93,7 @@ async function applyTheme(item: RemoteTheme) {
     <h2 v-i18n class="group-title">Configure Theme#!theme.2</h2>
     <div class="group">
       <div class="form-line">
-        <span v-i18n class="link" @click="reset">Reset to default#!preference.11</span>
+        <span v-i18n class="link" @click="reset">Reset to default#!preference.10</span>
       </div>
       <div class="form-line color-list">
         <ThemeColorPicker v-for="field in fields" :key="field" :field="field" />

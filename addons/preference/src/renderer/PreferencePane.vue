@@ -7,7 +7,7 @@ defineProps<{
   tab: TerminalTab,
 }>()
 
-const { vI18n, TerminalPane } = commas.ui.vueAssets
+const { vI18n, TerminalPane, VisualIcon } = commas.ui.vueAssets
 
 const preferenceItems = commas.context.getCollection('preference.item')
 
@@ -105,13 +105,27 @@ function openWebsite() {
     </div>
     <h2 v-i18n class="group-title">About#!preference.5</h2>
     <div class="group">
-      <span v-i18n="{ version }" class="text">Current version: ${version}#!preference.9</span>
+      <div class="form-line">
+        <label v-i18n class="form-label">Current version#!preference.9</label>
+        <span>{{ version }}</span>
+        <span class="link form-action" @click="openWebsite">
+          <VisualIcon name="simple-icons-github" class="github-icon" />
+        </span>
+      </div>
       <component
         :is="item.component"
         v-for="(item, index) in aboutItems"
         :key="index"
       />
-      <span v-i18n class="link" @click="openWebsite">Visit our website#!preference.10</span>
     </div>
   </TerminalPane>
 </template>
+
+<style lang="scss" scoped>
+.preference-pane .form-line {
+  margin-top: 0;
+}
+.github-icon {
+  transform: translateY(-1px);
+}
+</style>

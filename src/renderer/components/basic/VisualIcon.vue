@@ -11,12 +11,19 @@ const lucideSpritePath = $computed(() => {
     ? `${lucideSpriteURL}#${name.slice('lucide-'.length)}`
     : undefined
 })
+
+const simpleIconsClass = $computed(() => {
+  return name.startsWith('simple-icons')
+    ? `si si-${name.slice('simple-icons-'.length)}`
+    : undefined
+})
 </script>
 
 <template>
   <svg v-if="lucideSpritePath" viewBox="0 0 24 24" class="visual-icon lucide" aria-hidden="true">
     <use :href="lucideSpritePath" />
   </svg>
+  <span v-else-if="simpleIconsClass" :class="['visual-icon', simpleIconsClass]"></span>
   <span v-else :class="['visual-icon', name]"></span>
 </template>
 

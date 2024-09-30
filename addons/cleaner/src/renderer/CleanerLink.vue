@@ -3,7 +3,7 @@ import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from 'commas:api/renderer'
 import { onMounted } from 'vue'
 
-const { vI18n } = commas.ui.vueAssets
+const { vI18n, VisualIcon } = commas.ui.vueAssets
 
 let cacheSize = $ref<number>()
 
@@ -34,16 +34,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="form-line">
-    <span class="link cleaner-link" @click="clear">
-      <span v-i18n>Clear Cache#!cache.1</span>
-    </span>
+  <div class="form-line cleaner-link">
+    <label v-i18n class="form-label">Cache#!cache.1</label>
     <span class="cache-size" @click="check">{{ size }}</span>
+    <span class="link form-action" @click="clear">
+      <VisualIcon name="lucide-paintbrush" />
+    </span>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.cache-size {
-  margin-left: 1em;
-}
-</style>

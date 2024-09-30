@@ -16,6 +16,8 @@ declare module '@commas/electron-ipc' {
 
 export default () => {
 
+  commas.ui.addCSSFile('dist/renderer/style.css')
+
   commas.workspace.registerTabPane('preference', {
     title: 'Preferences#!preference.1',
     component: PreferencePane,

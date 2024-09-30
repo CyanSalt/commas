@@ -104,7 +104,8 @@ function update() {
         <SwitchControl v-model="isSystemProxyEnabled" />
       </div>
       <div class="form-line">
-        <span v-i18n="{ version: version ?? '--' }">Current version: ${version}#!preference.9</span>
+        <label v-i18n class="form-label">Current version#!preference.9</label>
+        <span>{{ version ?? '--' }}</span>
         <span v-if="isOutdated" class="update-link link" @click="update">
           <VisualIcon name="lucide-chevrons-up" class="update-icon" />
           <span class="latest-version">{{ latestVersion }}</span>

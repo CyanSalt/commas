@@ -6,53 +6,53 @@ export interface IconEntry {
 
 export default [
   {
-    name: 'si si-bun',
+    name: 'simple-icons-bun',
     patterns: ['bun', 'bunx'],
   },
   {
-    name: 'si si-curl',
+    name: 'simple-icons-curl',
     patterns: ['curl'],
   },
   {
-    name: 'si si-deno',
+    name: 'simple-icons-deno',
     patterns: ['deno'],
   },
   {
-    name: 'si si-docker',
+    name: 'simple-icons-docker',
     patterns: ['docker', 'docker-compose'],
     color: '#2496ed',
   },
   {
-    name: 'si si-git',
+    name: 'simple-icons-git',
     patterns: ['git'],
     color: '#f05032',
   },
   {
-    name: 'si si-nodedotjs',
+    name: 'simple-icons-nodedotjs',
     patterns: ['node'],
     color: '#339933',
   },
   {
-    name: 'si si-rust',
+    name: 'simple-icons-rust',
     patterns: ['rustc'],
   },
   {
-    name: 'si si-python',
+    name: 'simple-icons-python',
     patterns: [/^python\d*/],
     color: '#3776ab',
   },
   {
-    name: 'si si-ruby',
+    name: 'simple-icons-ruby',
     patterns: ['ruby'],
     color: '#cc342d',
   },
   {
-    name: 'si si-vim',
+    name: 'simple-icons-vim',
     patterns: ['vi', 'vim'],
     color: '#019733',
   },
   {
-    name: 'si si-neovim',
+    name: 'simple-icons-neovim',
     patterns: ['nvim'],
     color: '#57a143',
   },
