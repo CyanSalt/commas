@@ -377,6 +377,13 @@ function openTabItemMenu(event: MouseEvent, tab: TerminalTab) {
   line-height: var(--min-tab-height);
   text-align: center;
   border-radius: 8px;
+  transition: transform 0.2s;
+  &:hover {
+    background: var(--design-highlight-background);
+  }
+  &:active {
+    transform: scale(0.98);
+  }
   &.is-group-separating-active {
     outline: 2px solid rgb(var(--system-accent));
   }
