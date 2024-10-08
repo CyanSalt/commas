@@ -231,6 +231,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
               this.currentCommand.outputEndY = position.y
               this.currentCommand.startedAt = new Date()
             }
+            this.clearCompletion()
             return true
           case 'D':
             // CommandComplete
