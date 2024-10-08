@@ -35,6 +35,16 @@ function openSettingsFile() {
   commas.remote.openSettingsFile()
 }
 
+const language = $(commas.remote.useLanguage())
+const locales = commas.context.getCollection('preference.locale')
+const supportedLanguages = $computed(() => {
+  const languages = [...locales]
+  if (language && !languages.some(item => item.value === language)) {
+    languages.push({ label: language, value: language })
+  }
+  return languages
+})
+
 function openKeyBindings() {
   commas.remote.openUserFile('keybindings.yaml')
 }
@@ -85,6 +95,16 @@ function openWebsite() {
     </div>
     <h2 v-i18n class="group-title">Customization#!preference.4</h2>
     <div class="group">
+      <div class="form-line">
+        <label v-i18n class="form-label">Language#!preference.11</label>
+        <select v-model="language" class="form-control">
+          <option
+            v-for="option in supportedLanguages"
+            :key="option.value"
+            :value="option.value"
+          >{{ option.label }}</option>
+        </select>
+      </div>
       <component
         :is="item.component"
         v-for="(item, index) in customizationItems"

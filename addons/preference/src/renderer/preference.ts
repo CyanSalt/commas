@@ -5,3 +5,8 @@ export interface PreferenceItem {
   group: 'general' | 'feature' | 'customization' | 'about',
   priority?: number,
 }
+
+export interface LanguageOption {
+  label: string,
+  value: string,
+}

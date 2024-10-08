@@ -445,7 +445,7 @@
         "type": "string"
       }
     },
-    "recommendations": ["addon-manager", "ai", "camera", "cleaner", "cli", "clippy", "editor", "git", "iterm2", "l10n-ext", "launcher", "power-mode", "preference", "proxy", "settings", "sync", "theme", "updater"],
-    "default": ["addon-manager", "ai", "camera", "cleaner", "cli", "editor", "git", "iterm2", "l10n-ext", "launcher", "power-mode", "preference", "proxy", "settings", "sync", "theme", "updater"]
+    "recommendations": ["addon-manager", "ai", "camera", "cleaner", "cli", "clippy", "editor", "git", "iterm2", "launcher", "power-mode", "preference", "proxy", "settings", "sync", "theme", "updater"],
+    "default": ["addon-manager", "ai", "camera", "cleaner", "cli", "editor", "git", "iterm2", "launcher", "power-mode", "preference", "proxy", "settings", "sync", "theme", "updater"]
   }
 ]
