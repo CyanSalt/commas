@@ -1,5 +1,4 @@
 import * as commas from 'commas:api/renderer'
-import { shell } from 'electron'
 import CodeEditorPane from './CodeEditorPane.vue'
 import { openCodeEditorTab } from './compositions'
 
@@ -22,16 +21,16 @@ export default () => {
     openCodeEditorTab(file)
   })
 
-  commas.context.removeHandler('global-renderer:open-file')
+  const defaultHandler = commas.context.removeHandler('global-renderer:open-file')
 
   commas.context.handle('global-renderer:open-file', (file) => {
     openCodeEditorTab(file)
   })
 
-  commas.app.onCleanup(() => {
-    commas.context.handle('global-renderer:open-file', (file) => {
-      shell.showItemInFolder(file)
+  if (defaultHandler) {
+    commas.app.onCleanup(() => {
+      commas.context.handle('global-renderer:open-file', defaultHandler)
     })
-  })
+  }
 
 }

@@ -16,7 +16,9 @@ const globalHandler = {
   },
 
   removeHandler<K extends keyof GlobalCommands>(channel: K) {
+    const handler = this.handlers.get(channel)
     this.handlers.delete(channel)
+    return handler ? handler.listener as GlobalCommands[K] : undefined
   },
 
   async invoke<K extends keyof GlobalCommands>(

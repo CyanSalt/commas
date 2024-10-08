@@ -42,7 +42,7 @@ function handleOnce<K extends keyof GlobalCommands>(this: APIContext, channel: K
 }
 
 function removeHandler<K extends keyof GlobalCommands>(this: APIContext, channel: K) {
-  globalHandler.removeHandler(channel)
+  return globalHandler.removeHandler(channel)
 }
 
 function invoke<K extends keyof GlobalCommands>(

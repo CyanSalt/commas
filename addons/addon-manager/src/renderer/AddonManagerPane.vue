@@ -3,7 +3,6 @@ import { ipcRenderer } from '@commas/electron-ipc'
 import type { AddonInfo } from '@commas/types/addon'
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
-import { shell } from 'electron'
 import { onMounted, watchEffect } from 'vue'
 import { useDiscoveredAddons } from './compositions'
 
@@ -62,7 +61,7 @@ function refresh() {
 
 function showInFolder(addon: AddonInfo) {
   if (addon.type === 'builtin') return
-  shell.showItemInFolder(addon.entry)
+  ipcRenderer.invoke('show-file', addon.entry)
 }
 
 onMounted(() => {

@@ -11,7 +11,7 @@ declare module '@commas/electron-ipc' {
 export default () => {
 
   ipcMain.removeHandler('open-settings')
-  commas.context.removeHandler('global-main:open-settings')
+  const defaultHandler = commas.context.removeHandler('global-main:open-settings')
 
   commas.ipcMain.handle('open-settings', event => {
     commas.frame.send(event.sender, 'open-preference-pane')
@@ -24,14 +24,12 @@ export default () => {
     }
   })
 
-  commas.app.onCleanup(() => {
-    ipcMain.handle('open-settings', () => {
-      return commas.settings.openSettingsFile()
+  if (defaultHandler) {
+    commas.app.onCleanup(() => {
+      ipcMain.handle('open-settings', defaultHandler)
+      commas.context.handle('global-main:open-settings', defaultHandler)
     })
-    commas.context.handle('global-main:open-settings', () => {
-      return commas.settings.openSettingsFile()
-    })
-  })
+  }
 
   commas.ipcMain.handle('open-preference-website', () => {
     const manifest = commas.app.getManifest()

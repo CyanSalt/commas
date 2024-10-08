@@ -26,6 +26,7 @@ declare module '@commas/electron-ipc' {
     find: (text: string, options?: FindInPageOptions) => Result,
     'stop-finding': (type: Parameters<WebContents['stopFindInPage']>[0]) => void,
     'read-file': typeof readFile,
+    'show-file': (file: string) => void,
   }
   export interface Events {
     'get-path': (name?: Parameters<typeof app['getPath']>[0]) => string,
@@ -190,6 +191,9 @@ function handleMessages() {
   })
   ipcMain.handle('read-file', (event, file) => {
     return readFile(file)
+  })
+  ipcMain.handle('show-file', (event, file) => {
+    shell.showItemInFolder(file)
   })
   let watcherCollections = new WeakMap<WebContents, Map<string, any>>()
   ipcMain.handle('get-ref:file', (event, file: string) => {

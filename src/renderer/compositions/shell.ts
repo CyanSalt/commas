@@ -1,4 +1,3 @@
-import { shell } from 'electron'
 import { ipcRenderer } from '@commas/electron-ipc'
 import { globalHandler } from '../../shared/handler'
 import { translate } from '../utils/i18n'
@@ -60,6 +59,6 @@ export function handleShellMessages() {
     willQuit = true
   })
   globalHandler.handle('global-renderer:open-file', (file) => {
-    shell.showItemInFolder(file)
+    ipcRenderer.invoke('show-file', file)
   })
 }
