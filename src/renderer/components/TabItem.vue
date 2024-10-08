@@ -90,6 +90,11 @@ function customize() {
   isCustomizing = false
 }
 
+function resetTitle() {
+  customTitle = title
+  isCustomizing = false
+}
+
 function autoselect(event: FocusEvent) {
   (event.target as HTMLInputElement).select()
 }
@@ -135,17 +140,17 @@ function close() {
         />
         <VisualIcon v-else-if="pane && tab!.shell" name="lucide-file" class="tab-icon" />
         <VisualIcon v-else name="lucide-terminal" class="tab-icon" />
-        <input
-          v-if="isCustomizing"
-          ref="customTitleElement"
-          v-model="customTitle"
-          autofocus
-          class="custom-tab-name"
-          @focus="autoselect"
-          @blur="customize"
-          @keydown.enter="customize"
-          @keydown.esc="customize"
-        >
+        <form v-if="isCustomizing" class="tab-name-form" @submit.prevent="customize">
+          <input
+            ref="customTitleElement"
+            v-model="customTitle"
+            autofocus
+            class="custom-tab-name"
+            @focus="autoselect"
+            @blur="customize"
+            @keydown.esc="resetTitle"
+          >
+        </form>
         <span v-else class="tab-name" @click="startCustomization">{{ customTitle }}</span>
       </div>
       <div class="right-side">
@@ -210,6 +215,11 @@ function close() {
   text-overflow: ellipsis;
   overflow: hidden;
   transition: color 0.2s;
+}
+.tab-name-form {
+  display: flex;
+  flex: 1;
+  min-width: 0;
 }
 .custom-tab-name {
   flex: 1;
