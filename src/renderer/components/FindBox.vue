@@ -116,62 +116,66 @@ watch($$(isFinding), (value: boolean) => {
 </script>
 
 <template>
-  <div v-show="isFinding" ref="root" class="find-box">
-    <input
-      ref="finder"
-      v-model="keyword"
-      v-i18n:placeholder
-      type="search"
-      class="keyword"
-      placeholder="Find#!terminal.5"
-      autofocus
-      @keyup.enter="find"
-      @keyup.esc="cancel"
-    >
-    <div class="options">
-      <div
-        class="option case-sensitive"
-        :class="{ selected: options.caseSensitive }"
-        @click="toggle('caseSensitive')"
-      >Aa</div>
-      <template v-if="!terminal?.pane">
+  <div v-show="isFinding" ref="root" class="find-box" @submit.prevent="find">
+    <form class="finder">
+      <input
+        ref="finder"
+        v-model="keyword"
+        v-i18n:placeholder
+        type="search"
+        class="keyword"
+        placeholder="Find#!terminal.5"
+        autofocus
+        @keyup.esc="cancel"
+      >
+      <div class="options">
         <div
-          class="option whole-word"
-          :class="{ selected: options.wholeWord }"
-          @click="toggle('wholeWord')"
-        >|ab|</div>
-        <div
-          class="option use-regexp"
-          :class="{ selected: options.regex }"
-          @click="toggle('regex')"
-        >.*</div>
-      </template>
-    </div>
-    <div v-if="currentNumber && totalNumber" class="indicator">{{ currentNumber }} / {{ totalNumber }}</div>
-    <div class="buttons">
-      <div class="button previous">
-        <VisualIcon name="lucide-arrow-up" @click="findPrevious" />
+          class="option case-sensitive"
+          :class="{ selected: options.caseSensitive }"
+          @click="toggle('caseSensitive')"
+        >Aa</div>
+        <template v-if="!terminal?.pane">
+          <div
+            class="option whole-word"
+            :class="{ selected: options.wholeWord }"
+            @click="toggle('wholeWord')"
+          >|ab|</div>
+          <div
+            class="option use-regexp"
+            :class="{ selected: options.regex }"
+            @click="toggle('regex')"
+          >.*</div>
+        </template>
       </div>
-      <div class="button next">
-        <VisualIcon name="lucide-arrow-down" @click="findNext" />
+      <div v-if="currentNumber && totalNumber" class="indicator">{{ currentNumber }} / {{ totalNumber }}</div>
+      <div class="buttons">
+        <button type="button" class="button previous" @click.prevent="findPrevious">
+          <VisualIcon name="lucide-arrow-up" />
+        </button>
+        <button class="button next">
+          <VisualIcon name="lucide-arrow-down" />
+        </button>
+        <button type="button" class="button close" @click.prevent="cancel">
+          <VisualIcon name="lucide-x" />
+        </button>
       </div>
-      <div class="button close">
-        <VisualIcon name="lucide-x" @click="cancel" />
-      </div>
-    </div>
+    </form>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .find-box {
-  display: flex;
   flex: none;
-  height: #{36px - 2 * 8px}; // var(--min-tab-height) - 2 * 8px
   padding: 8px;
-  line-height: #{36px - 2 * 8px};
   background: rgb(var(--theme-background) / var(--theme-opacity));
   border-radius: var(--design-card-border-radius);
   box-shadow: var(--design-card-shadow);
+}
+.finder {
+  display: flex;
+  gap: 8px;
+  height: #{36px - 2 * 8px}; // var(--min-tab-height) - 2 * 8px
+  line-height: #{36px - 2 * 8px};
 }
 .keyword {
   flex: auto;
@@ -211,11 +215,24 @@ watch($$(isFinding), (value: boolean) => {
 .buttons {
   display: flex;
   flex: none;
+  gap: 4px;
 }
 .button {
-  display: inline-block;
-  width: 28px;
+  appearance: none;
+  width: 20px;
+  padding: 0;
+  border: none;
   text-align: center;
+  background: transparent;
+  border-radius: 4px;
+  transition: color 0.2s, transform 0.2s;
   cursor: pointer;
+  &:hover {
+    background: var(--design-highlight-background);
+    opacity: 1;
+  }
+  &:active {
+    transform: scale(0.96);
+  }
 }
 </style>
