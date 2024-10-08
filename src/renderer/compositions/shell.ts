@@ -11,6 +11,8 @@ declare module '@commas/electron-ipc' {
   }
   export interface GlobalCommands {
     'global-renderer:open-file': (file: string) => void,
+    'global-renderer:open-directory': (directory: string) => void,
+    'global-renderer:show-directory': (directory: string) => void,
   }
 }
 
@@ -60,5 +62,11 @@ export function handleShellMessages() {
   })
   globalHandler.handle('global-renderer:open-file', (file) => {
     ipcRenderer.invoke('show-file', file)
+  })
+  globalHandler.handle('global-renderer:open-directory', (directory) => {
+    ipcRenderer.invoke('open-path', directory)
+  })
+  globalHandler.handle('global-renderer:show-directory', (directory) => {
+    ipcRenderer.invoke('open-path', directory)
   })
 }

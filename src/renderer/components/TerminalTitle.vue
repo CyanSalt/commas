@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { nativeImage, shell } from 'electron'
+import { nativeImage } from 'electron'
 import { watchEffect } from 'vue'
 import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from '../../api/core-renderer'
+import { globalHandler } from '../../shared/handler'
 import { omitHome } from '../../shared/terminal'
 import { useSettings } from '../compositions/settings'
 import { useCurrentTerminal } from '../compositions/terminal'
@@ -24,14 +25,16 @@ const isEnabled = $computed(() => {
 const isDirectory = $computed(() => {
   if (!terminal) return false
   if (terminal.pane && terminal.shell) {
-    return terminal.shell === terminal.cwd
+    return terminal.process === terminal.cwd
   }
   return true
 })
 
 const fileOrDirectory = $computed(() => {
   if (!terminal) return ''
-  if (terminal.pane && terminal.shell) return terminal.shell
+  if (terminal.pane && terminal.shell) {
+    return isDirectory ? terminal.cwd : terminal.shell
+  }
   return terminal.cwd
 })
 
@@ -81,14 +84,14 @@ const icon = $computed(() => {
 function openDirectory(event: MouseEvent) {
   if (event.detail > 1) return
   if (isDirectory) {
-    shell.openPath(fileOrDirectory)
+    globalHandler.invoke('global-renderer:show-directory', fileOrDirectory)
   } else {
-    shell.showItemInFolder(fileOrDirectory)
+    ipcRenderer.invoke('show-file', fileOrDirectory)
   }
 }
 
 function openFile() {
-  shell.openPath(fileOrDirectory)
+  ipcRenderer.invoke('open-path', fileOrDirectory)
 }
 
 function startDraggingDirectory(event: DragEvent) {

@@ -1,0 +1,19 @@
+{
+  "name": "@commas/explorer",
+  "private": true,
+  "version": "0.1.0",
+  "productName": "Explorer",
+  "description": "File Manager",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC",
+  "commas:icon": {
+    "name": "lucide-folder-open"
+  },
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "文件管理",
+      "description": "文件管理器"
+    }
+  }
+}

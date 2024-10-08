@@ -18,7 +18,7 @@ const defaultSpecs: SettingsSpec[] = require(resourceFile('settings.spec.json'))
 declare module '@commas/electron-ipc' {
   export interface Commands {
     'open-settings': () => void,
-    'open-user-directory': typeof openUserDirectory,
+    'prepare-user-directory': typeof prepareUserDirectory,
     'prepare-settings-file': typeof prepareSettingsFile,
     'prepare-default-settings': typeof prepareDefaultSettings,
     'prepare-user-file': typeof prepareUserFile,
@@ -155,14 +155,14 @@ async function prepareUserFile(file: string, example?: string) {
   return filePath
 }
 
+async function prepareUserDirectory() {
+  await ensureFile(userFile('settings.yaml'))
+  return userFile()
+}
+
 async function openSettingsFile() {
   const file = await prepareSettingsFile()
   return shell.openPath(file)
-}
-
-async function openUserDirectory() {
-  await ensureFile(userFile('settings.yaml'))
-  return shell.openPath(userFile())
 }
 
 export function writeUserFile(file: string, content?: string) {
@@ -179,8 +179,8 @@ function handleSettingsMessages() {
   globalHandler.handle('global-main:open-settings', () => {
     return openSettingsFile()
   })
-  ipcMain.handle('open-user-directory', () => {
-    return openUserDirectory()
+  ipcMain.handle('prepare-user-directory', () => {
+    return prepareUserDirectory()
   })
   ipcMain.handle('prepare-settings-file', () => {
     return prepareSettingsFile()
@@ -202,6 +202,5 @@ export {
   useDefaultSettings,
   useSettingsSpecs,
   openSettingsFile,
-  openUserDirectory,
   handleSettingsMessages,
 }

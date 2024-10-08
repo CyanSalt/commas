@@ -3,7 +3,6 @@ import type { SettingsSpec } from '@commas/types/settings'
 import { markRaw } from '@vue/reactivity'
 import {
   openSettingsFile,
-  openUserDirectory,
   useDefaultSettings,
   useSettings,
   useSettingsSpecs,
@@ -44,7 +43,6 @@ export {
   useSettings,
   useDefaultSettings,
   openSettingsFile,
-  openUserDirectory,
   writeUserFile,
   useTheme,
 }

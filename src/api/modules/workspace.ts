@@ -4,11 +4,13 @@ import { markRaw, reactive, shallowReactive } from 'vue'
 import {
   activateOrAddTerminalTab,
   activateTerminalTab,
+  appendTerminalTab,
   closeTerminalTab,
   createTerminalTab,
   executeTerminalTab,
   getTerminalTabIndex,
   getTerminalTabsByCharacter,
+  getTerminalTabsByGroup,
   getTerminalTabTitle,
   scrollToMarker,
   showTabOptions,
@@ -135,4 +137,6 @@ export {
   useTerminalTabGroupSeparating,
   getTerminalTabIndex,
   createTerminalTabContextMenu,
+  getTerminalTabsByGroup,
+  appendTerminalTab,
 }

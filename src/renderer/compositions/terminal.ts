@@ -734,6 +734,7 @@ function releaseTabPosition(tab: TerminalTab, groupTabs: TerminalTab[]) {
   if (!position) return
   if (groupTabs.length <= 1) {
     groupTabs.forEach(item => {
+      delete item.group
       delete item.position
     })
     return

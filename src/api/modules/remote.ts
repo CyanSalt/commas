@@ -12,8 +12,9 @@ import { globalHandler } from '../../shared/handler'
 
 export * from '../shim'
 
-function openUserDirectory() {
-  return ipcRenderer.invoke('open-user-directory')
+async function openUserDirectory() {
+  const directory = await ipcRenderer.invoke('prepare-user-directory')
+  globalHandler.invoke('global-renderer:open-directory', directory)
 }
 
 async function openDefaultSettings() {

@@ -4,7 +4,7 @@ import lucideSpriteURL from 'lucide-static/sprite.svg'
 import { LucideIcon, SimpleIconsIcon } from './icon'
 
 const { name } = defineProps<{
-  name: LucideIcon | SimpleIconsIcon,
+  name: LucideIcon | SimpleIconsIcon | (string & {}),
 }>()
 
 const lucideSpritePath = $computed(() => {
