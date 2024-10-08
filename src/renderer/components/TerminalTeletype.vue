@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import '@xterm/xterm/css/xterm.css'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
+import { webUtils } from 'electron'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { quote } from 'shell-quote'
 import { onBeforeUpdate } from 'vue'
@@ -30,7 +31,7 @@ function dropFile(event: DragEvent) {
   if (!dataTransfer) return
   const files = dataTransfer.files
   if (files.length) {
-    const paths = Array.from(files).map(({ path }) => path)
+    const paths = Array.from(files).map(file => webUtils.getPathForFile(file))
     tab.xterm.paste(quote(paths))
   } else {
     const data = dataTransfer.getData('text')

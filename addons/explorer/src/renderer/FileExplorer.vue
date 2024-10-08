@@ -93,6 +93,13 @@ function openExternal(file: FileEntity) {
 function openExternalDirectory() {
   ipcRenderer.invoke('open-path', modelValue)
 }
+
+function startDragging(event: DragEvent, file: FileEntity) {
+  if (event.dataTransfer) {
+    event.dataTransfer.setData('text/plain', file.path)
+  }
+  ipcRenderer.invoke('drag-file', file.path)
+}
 </script>
 
 <template>
@@ -113,13 +120,16 @@ function openExternalDirectory() {
       <a
         v-for="file in files"
         :key="file.name"
+        draggable="true"
         :class="['file', { directory: file.isDirectory }]"
         @click="selectFile(file)"
+        @dragstart.prevent="startDragging($event, file)"
       >
         <VisualIcon
           :name="file.isSymlink
             ? (file.isDirectory ? 'lucide-folder-symlink' : 'lucide-file-symlink')
             : (file.isDirectory ? 'lucide-folder' : 'lucide-file')"
+          class="file-icon"
         />
         <span class="file-name">{{ file.name }}{{ file.isDirectory ? path.sep : '' }}</span>
         <span class="action-list">
@@ -166,13 +176,16 @@ function openExternalDirectory() {
   &:active {
     transform: scale(0.99);
   }
+  &.directory {
+    .file-icon,
+    .file-name {
+      color: rgb(var(--theme-blue));
+    }
+  }
 }
 .file-name {
   flex: 1;
   min-width: 0;
-  .file.directory & {
-    color: rgb(var(--theme-blue));
-  }
 }
 .action-list {
   display: flex;
