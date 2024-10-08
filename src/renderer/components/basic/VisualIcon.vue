@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import 'simple-icons-font/font/simple-icons.css'
 import lucideSpriteURL from 'lucide-static/sprite.svg'
+import { LucideIcon, SimpleIconsIcon } from './icon'
 
 const { name } = defineProps<{
-  name: string,
+  name: LucideIcon | SimpleIconsIcon,
 }>()
 
 const lucideSpritePath = $computed(() => {

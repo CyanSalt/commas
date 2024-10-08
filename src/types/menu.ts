@@ -1,10 +1,9 @@
 import type { GlobalCommands, RendererEvents } from '@commas/electron-ipc'
 import type { BrowserWindow, KeyboardEvent, MenuItemConstructorOptions } from 'electron'
+import type { ValueOf } from 'type-fest'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface XtermEvents {}
-
-type ValueOf<T> = T[keyof T]
 
 type OptionalArgs<T extends { args: unknown[] }> = [] extends T['args'] ? Omit<T, 'args'> & Partial<Pick<T, 'args'>> : T
 

@@ -78,6 +78,7 @@
     "sass-embedded": "^1.79.3",
     "simple-icons-font": "^13.9.0",
     "stylelint": "^16.9.0",
+    "type-fest": "^4.26.1",
     "typescript": "^5.6.2",
     "vite": "^5.4.3",
     "vue-tsc": "^2.1.6",
