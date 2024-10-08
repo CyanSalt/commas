@@ -103,6 +103,7 @@
   "workspaces": [
     "addons/addon-manager",
     "addons/ai",
+    "addons/camera",
     "addons/cleaner",
     "addons/cli",
     "addons/clippy",
