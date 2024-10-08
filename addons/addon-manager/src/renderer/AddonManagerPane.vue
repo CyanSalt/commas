@@ -4,7 +4,7 @@ import type { AddonInfo } from '@commas/types/addon'
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import { shell } from 'electron'
-import { onMounted } from 'vue'
+import { onMounted, watchEffect } from 'vue'
 import { useDiscoveredAddons } from './compositions'
 
 defineProps<{
@@ -27,6 +27,12 @@ let enabledAddons = $computed<string[]>({
 })
 
 let isBuiltinAddonsVisible = $ref(false)
+
+watchEffect(() => {
+  if (discoveredAddons.length && discoveredAddons.every(addon => addon.type === 'builtin')) {
+    isBuiltinAddonsVisible = true
+  }
+})
 
 const addonList = $computed(() => {
   return discoveredAddons
