@@ -15,7 +15,7 @@ export function getProcessName(tab: TerminalTab) {
       if (command) return path.basename(command)
     }
   }
-  return path.basename(tab.process)
+  return path.basename(tab.process) + (tab.process.endsWith(path.sep) ? path.sep : '')
 }
 
 export function getPrompt(expr: string, tab: TerminalTab | null) {

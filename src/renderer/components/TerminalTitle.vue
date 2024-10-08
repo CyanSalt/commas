@@ -23,7 +23,9 @@ const isEnabled = $computed(() => {
 
 const isDirectory = $computed(() => {
   if (!terminal) return false
-  if (terminal.pane && terminal.shell) return false
+  if (terminal.pane && terminal.shell) {
+    return terminal.shell === terminal.cwd
+  }
   return true
 })
 

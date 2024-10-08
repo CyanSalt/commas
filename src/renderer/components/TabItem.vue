@@ -138,7 +138,10 @@ function close() {
           class="tab-icon"
           :style="{ color: isFocused ? iconEntry.color : undefined }"
         />
-        <VisualIcon v-else-if="pane && tab!.shell" name="lucide-file" class="tab-icon" />
+        <template v-else-if="pane && tab!.shell">
+          <VisualIcon v-if="tab!.shell === tab!.cwd" name="lucide-folder-open" class="tab-icon" />
+          <VisualIcon v-else name="lucide-file" class="tab-icon" />
+        </template>
         <VisualIcon v-else name="lucide-terminal" class="tab-icon" />
         <form v-if="isCustomizing" class="tab-name-form" @submit.prevent="customize">
           <input
