@@ -51,5 +51,6 @@ export interface SettingsSpec {
   schema?: JSONSchema,
   recommendations?: any[],
   reload?: boolean,
+  overrides?: boolean,
   default?: any,
 }

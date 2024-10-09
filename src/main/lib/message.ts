@@ -149,7 +149,7 @@ function handleMessages() {
   ipcMain.handle('beep', () => {
     shell.beep()
   })
-  ipcMain.handle('get-icon', (event, path: string) => {
+  ipcMain.handle('get-icon', (event, path) => {
     return fileIcon.buffer(path, { size: 32 })
   })
   ipcMain.handle('notify', (event, data) => {

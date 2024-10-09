@@ -2,7 +2,7 @@ import * as fs from 'node:fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
 import { shell } from 'electron'
-import { cloneDeep, isEqual } from 'lodash'
+import { cloneDeep, difference, isEqual } from 'lodash'
 import YAML from 'yaml'
 import { ipcMain } from '@commas/electron-ipc'
 import type { Settings, SettingsSpec } from '@commas/types/settings'
@@ -87,6 +87,26 @@ loadingState.promise.then(() => {
   isReady = true
 })
 
+function resolveOverridden(values: string[]) {
+  const result = new Set<string>()
+  for (const value of values) {
+    if (value.startsWith('!')) {
+      result.delete(value.slice(1))
+    } else {
+      result.add(value)
+    }
+  }
+  return Array.from(result)
+}
+
+function createOverridden(previous: string[], current: string[]) {
+  const values = resolveOverridden(previous)
+  return [
+    ...difference(values, current).map(value => `!${value}`),
+    ...difference(current, values).map(value => value),
+  ]
+}
+
 let oldSettings: Settings | undefined
 const settings = $computed({
   get() {
@@ -94,6 +114,15 @@ const settings = $computed({
       ...defaultSettings,
       ...userSettings,
     })
+    for (const spec of specs) {
+      if (spec.overrides) {
+        definition[spec.key] = resolveOverridden([
+          ...(spec.recommendations ?? []),
+          ...spec.default,
+          ...definition[spec.key],
+        ])
+      }
+    }
     let actualSettings = {} as Settings
     if (oldSettings) {
       for (const spec of specs) {
@@ -112,8 +141,17 @@ const settings = $computed({
     return actualSettings
   },
   set(data) {
+    const definition: Settings = { ...data }
+    for (const spec of specs) {
+      if (spec.overrides) {
+        definition[spec.key] = createOverridden([
+          ...(spec.recommendations ?? []),
+          ...spec.default,
+        ], definition[spec.key])
+      }
+    }
     userSettings = Object.fromEntries(
-      Object.entries(data).filter(
+      Object.entries(definition).filter(
         ([key, value]) => (value !== undefined && !isEqual(value, defaultSettings[key])),
       ),
     ) as Settings

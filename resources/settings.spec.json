@@ -446,6 +446,7 @@
       }
     },
     "recommendations": ["addon-manager", "ai", "camera", "cleaner", "cli", "clippy", "editor", "explorer", "git", "iterm2", "launcher", "power-mode", "preference", "proxy", "settings", "sync", "theme", "updater"],
-    "default": ["addon-manager", "ai", "camera", "cleaner", "cli", "editor", "explorer", "git", "iterm2", "launcher", "power-mode", "preference", "proxy", "settings", "sync", "theme", "updater"]
+    "overrides": true,
+    "default": ["!clippy"]
   }
 ]
