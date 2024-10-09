@@ -15,13 +15,16 @@ export function useLaunchers() {
 
 const launcherCharacters = $computed(() => {
   return launchers.map<TerminalTabCharacter>(launcher => {
+    const pane = launcher.pane ? commas.workspace.getPane(launcher.pane) : undefined
     return {
       type: 'launcher',
       id: launcher.id,
       title: launcher.name,
-      defaultIcon: launcher.remote ? undefined : {
-        name: 'lucide-hash',
-      },
+      defaultIcon: pane ? pane.icon : (
+        launcher.remote ? undefined : {
+          name: 'lucide-hash',
+        }
+      ),
       icon: launcher.remote ? {
         name: 'lucide-link',
       } : undefined,
@@ -40,7 +43,7 @@ export function getLauncherProfile(launcher: Launcher) {
     cwd: directory && commas.helper.resolveHome(directory),
   }
   if (profile.shell) {
-    profile.process = profile.shell
+    profile.process = profile.shell === '/' ? profile.cwd : profile.shell
   }
   return profile
 }

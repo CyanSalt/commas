@@ -94,6 +94,10 @@ function openExternalDirectory() {
   ipcRenderer.invoke('open-path', modelValue)
 }
 
+function openNewTab() {
+  commas.workspace.createTerminalTab({ cwd: modelValue })
+}
+
 function startDragging(event: DragEvent, file: FileEntity) {
   if (event.dataTransfer) {
     event.dataTransfer.setData('text/plain', file.path)
@@ -111,6 +115,9 @@ function startDragging(event: DragEvent, file: FileEntity) {
       </span>
       <span v-if="isUnixLike" class="link form-action" @click="toggleDotFiles">
         <VisualIcon :name="isDotFilesVisible ? 'lucide-eye' : 'lucide-eye-closed'" />
+      </span>
+      <span class="link form-action" @click="openNewTab">
+        <VisualIcon name="lucide-terminal" />
       </span>
       <span class="link form-action" @click="openExternalDirectory">
         <VisualIcon name="lucide-external-link" />
