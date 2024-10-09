@@ -9,14 +9,28 @@ const { VisualIcon } = commas.ui.vueAssets
 
 let modelValue = $(defineModel<string>({ default: '' }))
 
+interface Breadcrumb {
+  path: string,
+  base: string,
+}
+
+function splitDirectory(directory: string): Breadcrumb[] {
+  const parsed = path.parse(directory)
+  if (!parsed.base) return [{ path: directory, base: directory }]
+  return [...splitDirectory(parsed.dir), {
+    path: directory,
+    base: parsed.base + path.sep,
+  }]
+}
+
+const breadcrumbs = $computed(() => {
+  return splitDirectory(modelValue)
+})
+
 let entities = $ref<FileEntity[]>([])
 
 watchEffect(async () => {
   entities = await ipcRenderer.invoke('read-directory', modelValue)
-})
-
-const isRoot = $computed(() => {
-  return path.dirname(modelValue) === modelValue
 })
 
 const isUnixLike = process.platform !== 'win32'
@@ -34,17 +48,6 @@ const files = $computed(() => {
       if (entity.name.startsWith('.')) return false
       return true
     })
-  }
-  if (!isRoot) {
-    result = [
-      {
-        name: '..',
-        path: path.dirname(modelValue),
-        isDirectory: true,
-        isSymlink: false,
-      },
-      ...result,
-    ]
   }
   return result
 })
@@ -98,11 +101,15 @@ function openNewTab() {
   commas.workspace.createTerminalTab({ cwd: modelValue })
 }
 
-function startDragging(event: DragEvent, file: FileEntity) {
+function startDragging(event: DragEvent, fileOrBreadcrumb: FileEntity | Breadcrumb) {
   if (event.dataTransfer) {
-    event.dataTransfer.setData('text/plain', file.path)
+    event.dataTransfer.setData('text/plain', fileOrBreadcrumb.path)
   }
-  ipcRenderer.invoke('drag-file', file.path)
+  ipcRenderer.invoke('drag-file', fileOrBreadcrumb.path)
+}
+
+function selectBreadcrumb(breadcrumb: Breadcrumb) {
+  modelValue = breadcrumb.path
 }
 </script>
 
@@ -112,6 +119,16 @@ function startDragging(event: DragEvent, file: FileEntity) {
       <slot></slot>
       <span :class="['link', 'form-action', { disabled: !hasPreviousValue }]" @click="goBack">
         <VisualIcon name="lucide-undo-2" />
+      </span>
+      <span class="breadcrumb-list">
+        <span
+          v-for="breadcrumb in breadcrumbs"
+          :key="breadcrumb.path"
+          draggable="true"
+          class="link form-action breadcrumb"
+          @click="selectBreadcrumb(breadcrumb)"
+          @dragstart.prevent="startDragging($event, breadcrumb)"
+        >{{ breadcrumb.base }}</span>
       </span>
       <span v-if="isUnixLike" class="link form-action" @click="toggleDotFiles">
         <VisualIcon :name="isDotFilesVisible ? 'lucide-eye' : 'lucide-eye-closed'" />
@@ -163,7 +180,24 @@ function startDragging(event: DragEvent, file: FileEntity) {
 @use 'sass:math';
 
 .action-line {
-  padding: 0 #{8px - math.div(24px - 16px, 2)};
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 8px #{8px - math.div(24px - 16px, 2)} 0;
+  background: rgb(var(--theme-background) / var(--theme-opacity));
+}
+.breadcrumb-list {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  min-width: 0;
+}
+.breadcrumb {
+  width: auto;
+  padding: 0 4px;
+  font-size: 12px;
 }
 .file-list {
   display: flex;

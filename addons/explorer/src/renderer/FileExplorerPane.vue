@@ -61,7 +61,7 @@ function send() {
 
 <style lang="scss" scoped>
 .file-editor-pane {
-  padding: 8px;
+  padding: 0 8px 8px;
 }
 .send {
   color: rgb(var(--system-accent));
