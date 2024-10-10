@@ -8,6 +8,7 @@ import type { FileEntity } from '../types/file'
 declare module '@commas/electron-ipc' {
   export interface Commands {
     'read-directory': (directory: string) => FileEntity[],
+    'access-directory': (directory: string) => string | undefined,
     'read-symlink': (file: string) => string,
   }
 }
@@ -26,6 +27,15 @@ export default () => {
       entity => (entity.isDirectory ? 0 : 1),
       entity => entity.name,
     ])
+  })
+
+  commas.ipcMain.handle('access-directory', async (event, directory) => {
+    try {
+      await fs.promises.access(directory)
+      return directory
+    } catch {
+      // ignore
+    }
   })
 
   commas.ipcMain.handle('read-symlink', async (event, file) => {

@@ -2,7 +2,7 @@
 import * as path from 'node:path'
 import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from 'commas:api/renderer'
-import { watch, watchEffect } from 'vue'
+import { nextTick, watch, watchEffect } from 'vue'
 import { FileEntity } from '../types/file'
 
 const { VisualIcon } = commas.ui.vueAssets
@@ -101,6 +101,37 @@ function openNewTab() {
   commas.workspace.createTerminalTab({ cwd: modelValue })
 }
 
+let isCustomizing = $ref(false)
+let customDirectory = $ref('')
+let customDirectoryElement = $ref<HTMLInputElement>()
+
+watchEffect(() => {
+  customDirectory = modelValue
+})
+
+async function startCustomization() {
+  isCustomizing = true
+  await nextTick()
+  if (customDirectoryElement) {
+    customDirectoryElement.select()
+  }
+}
+
+async function customize() {
+  if (customDirectory !== modelValue) {
+    const value = await ipcRenderer.invoke('access-directory', customDirectory)
+    if (value) {
+      modelValue = value
+    }
+  }
+  isCustomizing = false
+}
+
+function resetCustomization() {
+  customDirectory = modelValue
+  isCustomizing = false
+}
+
 function startDragging(event: DragEvent, fileOrBreadcrumb: FileEntity | Breadcrumb) {
   if (event.dataTransfer) {
     event.dataTransfer.setData('text/plain', fileOrBreadcrumb.path)
@@ -111,6 +142,10 @@ function startDragging(event: DragEvent, fileOrBreadcrumb: FileEntity | Breadcru
 function selectBreadcrumb(breadcrumb: Breadcrumb) {
   modelValue = breadcrumb.path
 }
+
+function autoselect(event: FocusEvent) {
+  (event.target as HTMLInputElement).select()
+}
 </script>
 
 <template>
@@ -120,7 +155,18 @@ function selectBreadcrumb(breadcrumb: Breadcrumb) {
       <span :class="['link', 'form-action', { disabled: !hasPreviousValue }]" @click="goBack">
         <VisualIcon name="lucide-undo-2" />
       </span>
-      <span class="breadcrumb-list">
+      <form v-if="isCustomizing" class="breadcrumb-form" @submit.prevent="customize">
+        <input
+          ref="customDirectoryElement"
+          v-model="customDirectory"
+          class="custom-directory"
+          autofocus
+          @focus="autoselect"
+          @blur="resetCustomization"
+          @keydown.esc="resetCustomization"
+        >
+      </form>
+      <span v-else class="breadcrumb-list">
         <span
           v-for="breadcrumb in breadcrumbs"
           :key="breadcrumb.path"
@@ -129,6 +175,9 @@ function selectBreadcrumb(breadcrumb: Breadcrumb) {
           @click="selectBreadcrumb(breadcrumb)"
           @dragstart.prevent="startDragging($event, breadcrumb)"
         >{{ breadcrumb.base }}</span>
+        <span class="link form-action breadcrumb" @click="startCustomization">
+          <VisualIcon name="lucide-pen" />
+        </span>
       </span>
       <span v-if="isUnixLike" class="link form-action" @click="toggleDotFiles">
         <VisualIcon :name="isDotFilesVisible ? 'lucide-eye' : 'lucide-eye-closed'" />
@@ -185,6 +234,22 @@ function selectBreadcrumb(breadcrumb: Breadcrumb) {
   z-index: 1;
   padding: 8px #{8px - math.div(24px - 16px, 2)} 0;
   background: rgb(var(--theme-background) / var(--theme-opacity));
+}
+.breadcrumb-form {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}
+.custom-directory {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 12px;
+  background: transparent;
+  outline: none;
 }
 .breadcrumb-list {
   display: flex;
