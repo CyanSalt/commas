@@ -1,6 +1,7 @@
+import * as os from 'node:os'
 import * as commas from 'commas:api/renderer'
 import FileExplorerPane from './FileExplorerPane.vue'
-import { openFileExplorerTab, splitOrCloseFileExplorerTab } from './compositions'
+import { getDirectoryProcess, openFileExplorerTab, splitOrCloseFileExplorerTab } from './compositions'
 
 export default () => {
 
@@ -9,6 +10,16 @@ export default () => {
   commas.workspace.registerTabPane('explorer', {
     title: '',
     component: FileExplorerPane,
+    volatile: true,
+    factory: info => {
+      const cwd = info?.cwd || os.homedir()
+      const dir = getDirectoryProcess(cwd)
+      return {
+        cwd: dir,
+        process: dir,
+        shell: commas.workspace.TERMINAL_DIRECTORY_SHELL,
+      }
+    },
   })
 
   const handleOpen = commas.context.removeHandler('global-renderer:open-directory')

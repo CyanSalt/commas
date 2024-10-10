@@ -1,4 +1,3 @@
-import * as path from 'node:path'
 import * as commas from 'commas:api/renderer'
 import { readonly } from 'vue'
 import type { EditorTheme } from '../types/theme'
@@ -11,15 +10,7 @@ export const useEditorTheme = commas.helper.reuse(() => {
 })
 
 export function openCodeEditorTab(file: string) {
-  const pane = commas.workspace.getPane('editor')!
-  let tab = commas.workspace.getTerminalTabByPane(pane, { shell: file })
-  if (!tab) {
-    tab = commas.workspace.createPaneTab(pane, {
-      pid: 0,
-      process: file,
-      cwd: path.dirname(file),
-      shell: file,
-    })
-  }
-  commas.workspace.activateOrAddTerminalTab(tab)
+  return commas.workspace.openPaneTab('editor', {
+    shell: file,
+  })!
 }

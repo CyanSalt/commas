@@ -1,23 +1,12 @@
 import * as path from 'node:path'
 import * as commas from 'commas:api/renderer'
 
-const generateID = commas.helper.createIDGenerator()
-
 export function getDirectoryProcess(directory: string) {
   return directory.endsWith(path.sep) ? directory : directory + path.sep
 }
 
 export function openFileExplorerTab(directory: string) {
-  const pane = commas.workspace.getPane('explorer')!
-  const dir = getDirectoryProcess(directory)
-  const tab = commas.workspace.createPaneTab(pane, {
-    pid: Number(generateID()),
-    process: dir,
-    cwd: dir,
-    shell: commas.workspace.TERMINAL_DIRECTORY_SHELL,
-  })
-  commas.workspace.activateOrAddTerminalTab(tab)
-  return tab
+  return commas.workspace.openPaneTab('explorer', { cwd: directory })!
 }
 
 const terminal = $(commas.workspace.useCurrentTerminal())
@@ -41,7 +30,7 @@ export function splitOrCloseFileExplorerTab(directory: string) {
   const tab = openFileExplorerTab(directory)
   if (current && !current.pane) {
     const siblings = current.group
-      ? commas.workspace.getTerminalTabsByGroup(tab.group)
+      ? commas.workspace.getTerminalTabsByGroup(current.group)
         .filter(item => item !== current)
       : []
     if (siblings.every(item => item.pane)) {

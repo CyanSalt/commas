@@ -1,3 +1,5 @@
+import * as os from 'node:os'
+import * as path from 'node:path'
 import * as commas from 'commas:api/renderer'
 import CodeEditorPane from './CodeEditorPane.vue'
 import { openCodeEditorTab } from './compositions'
@@ -15,6 +17,14 @@ export default () => {
   commas.workspace.registerTabPane('editor', {
     title: '',
     component: CodeEditorPane,
+    factory: info => {
+      const shell = info?.shell || path.join(os.tmpdir(), '.commas')
+      return {
+        shell,
+        process: shell,
+        cwd: path.dirname(shell),
+      }
+    },
   })
 
   commas.ipcRenderer.on('open-code-editor', (event, file) => {

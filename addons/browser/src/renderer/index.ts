@@ -9,6 +9,7 @@ export default () => {
   commas.workspace.registerTabPane('browser', {
     title: 'New Page#!browser.1',
     component: BrowserPane,
+    volatile: true,
   })
 
   const defaultHandler = commas.context.removeHandler('global-renderer:open-url')

@@ -19,6 +19,8 @@ export interface TerminalTabPane {
   icon?: IconEntry,
   component: Component<{ tab: TerminalTab }>,
   instance?: any,
+  volatile?: boolean,
+  factory?: (info?: Partial<TerminalTab>) => Partial<TerminalTab> | undefined,
 }
 
 export interface TerminalTabCharacter {

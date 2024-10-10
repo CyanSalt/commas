@@ -32,6 +32,14 @@ function registerTabPane(this: RendererAPIContext, name: string, pane: TerminalT
     icon: this.__manifest__?.['commas:icon'],
     ...pane,
   }
+  if (pane.volatile) {
+    const generateID = this.$.helper.createIDGenerator()
+    const factory = pane.factory
+    pane.factory = info => ({
+      pid: Number(generateID()),
+      ...factory?.(info),
+    })
+  }
   this.$.app.onInvalidate(() => {
     delete panes[name]
   })
@@ -52,20 +60,24 @@ function createPaneTab(pane: TerminalTabPane, info?: Partial<TerminalTab>) {
     title: '',
     cwd: '',
     ...info,
+    ...pane.factory?.(),
     pane: markRaw(pane),
   } as TerminalTab)
 }
 
-function openPaneTab(name: string) {
+function openPaneTab(name: string, info?: Partial<TerminalTab>) {
   const pane = getPane(name)
   if (!pane) return
-  const tab = getTerminalTabByPane(pane)
-  if (tab) {
-    activateTerminalTab(tab)
-  } else {
-    const paneTab = createPaneTab(pane)
-    activateOrAddTerminalTab(paneTab)
+  if (!pane.volatile) {
+    const tab = getTerminalTabByPane(pane, info)
+    if (tab) {
+      activateTerminalTab(tab)
+      return tab
+    }
   }
+  const paneTab = createPaneTab(pane, info)
+  activateOrAddTerminalTab(paneTab)
+  return paneTab
 }
 
 function registerXtermAddon<T extends keyof TerminalTabAddons>(
