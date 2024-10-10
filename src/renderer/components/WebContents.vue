@@ -1,36 +1,31 @@
 <script lang="ts" setup>
 import { useResizeObserver } from '@vueuse/core'
 import { onUnmounted, watch, watchEffect } from 'vue'
-import { ipcRenderer } from '@commas/electron-ipc'
-import { createWebContents, navigateWebContents, RendererWebContentsView, resizeWebContents } from '../compositions/web-contents'
+import { RendererWebContentsView } from '../compositions/web-contents'
 
 let url = $(defineModel<string>())
-let title = $(defineModel<string>('title'))
-let icon = $(defineModel<string>('icon'))
+
+const emit = defineEmits<{
+  (event: 'initialize', view: RendererWebContentsView): void,
+}>()
 
 let root = $ref<HTMLDivElement>()
 let view = $ref<RendererWebContentsView>()
 
 watch($$(root), async element => {
   if (!element) return
-  view = await createWebContents(element)
+  view = await RendererWebContentsView.create(element)
+  emit('initialize', view)
 }, { immediate: true })
 
 onUnmounted(async () => {
   if (!view) return
-  ipcRenderer.invoke('destroy-web-contents', view.id)
+  view.destroy()
 })
 
 useResizeObserver($$(root), async () => {
   if (!view) return
-  resizeWebContents(view.id, root!)
-})
-
-watchEffect(() => {
-  title = view?.title
-})
-watchEffect(() => {
-  icon = view?.icon
+  view.resize(root!)
 })
 
 watch(() => view?.url, value => {
@@ -42,7 +37,7 @@ watch(() => view?.url, value => {
 watchEffect(() => {
   if (!url || !view) return
   if (url !== view.url) {
-    navigateWebContents(view.id, url)
+    view.navigate(url)
   }
 })
 </script>

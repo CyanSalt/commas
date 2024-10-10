@@ -20,6 +20,7 @@ declare module '@commas/electron-ipc' {
     'destroy-web-contents': (id: number) => void,
     'navigate-web-contents': (id: number, url: string) => void,
     'resize-web-contents': (id: number, rect: Rectangle) => void,
+    'go-to-offset-web-contents': (id: number, offset: number) => void,
   }
 }
 
@@ -169,6 +170,11 @@ function handleWindowMessages() {
     const view = Array.from(webContentsViews).find(item => item.webContents.id === id)
     if (!view) return
     view.setBounds(rect)
+  })
+  ipcMain.handle('go-to-offset-web-contents', (event, id, offset) => {
+    const view = Array.from(webContentsViews).find(item => item.webContents.id === id)
+    if (!view) return
+    view.webContents.navigationHistory.goToOffset(offset)
   })
 }
 

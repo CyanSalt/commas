@@ -48,7 +48,7 @@ declare module '@commas/electron-ipc' {
   export interface RendererEvents {
     'view-title-updated': (id: number, title: string) => void,
     'view-icon-updated': (id: number, icon: string | undefined) => void,
-    'view-url-updated': (id: number, url: string) => void,
+    'view-url-updated': (id: number, url: string, canGoBack: boolean) => void,
     'view-open-url': (url: string) => void,
   }
 }
@@ -285,7 +285,7 @@ function handleViewEvents(view: WebContentsView, parent: WebContents) {
     send(parent, 'view-icon-updated', view.webContents.id, icons[icons.length - 1])
   })
   view.webContents.on('did-start-navigation', (details) => {
-    send(parent, 'view-url-updated', view.webContents.id, details.url)
+    send(parent, 'view-url-updated', view.webContents.id, details.url, view.webContents.navigationHistory.canGoBack())
   })
 }
 
