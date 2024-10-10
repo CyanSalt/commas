@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
+import { shell } from 'electron'
 import { nextTick, watchEffect } from 'vue'
 
 const { tab } = defineProps<{
@@ -71,6 +72,11 @@ function resetCustomization() {
 function autoselect(event: FocusEvent) {
   (event.target as HTMLInputElement).select()
 }
+
+function openExternal() {
+  if (!url) return
+  shell.openExternal(url)
+}
 </script>
 
 <template>
@@ -92,6 +98,9 @@ function autoselect(event: FocusEvent) {
           >
         </form>
         <span v-else class="page-url" @click="startCustomization">{{ url }}</span>
+        <span :class="['link', 'form-action', { disabled: !url }]" @click="openExternal">
+          <VisualIcon name="lucide-square-arrow-out-up-right" />
+        </span>
       </div>
       <WebContents
         v-model="url"

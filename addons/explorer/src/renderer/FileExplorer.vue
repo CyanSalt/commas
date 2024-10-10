@@ -186,7 +186,7 @@ function autoselect(event: FocusEvent) {
         <VisualIcon name="lucide-terminal" />
       </span>
       <span class="link form-action" @click="openExternalDirectory">
-        <VisualIcon name="lucide-external-link" />
+        <VisualIcon name="lucide-square-arrow-out-up-right" />
       </span>
     </div>
     <div class="file-list">
@@ -217,7 +217,7 @@ function autoselect(event: FocusEvent) {
             class="link form-action"
             @click.stop="openExternal(file)"
           >
-            <VisualIcon name="lucide-external-link" />
+            <VisualIcon name="lucide-square-arrow-out-up-right" />
           </span>
         </span>
       </a>

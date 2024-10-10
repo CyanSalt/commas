@@ -329,7 +329,7 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
                   class="button launch-externally"
                   @click.stop="startLauncherExternally(launcher)"
                 >
-                  <VisualIcon name="lucide-external-link" />
+                  <VisualIcon name="lucide-square-arrow-out-up-right" />
                 </div>
               </template>
             </TabItem>
