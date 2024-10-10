@@ -2,7 +2,6 @@
 import { ipcRenderer } from '@commas/electron-ipc'
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
-import { shell } from 'electron'
 import { onMounted } from 'vue'
 import ThemeCard from './ThemeCard.vue'
 import ThemeColorPicker from './ThemeColorPicker.vue'
@@ -67,7 +66,7 @@ function reset() {
 }
 
 function openMarketplace() {
-  shell.openExternal('https://windowsterminalthemes.dev')
+  commas.context.invoke('global-renderer:open-url', 'https://windowsterminalthemes.dev')
 }
 
 async function applyTheme(item: RemoteTheme) {
