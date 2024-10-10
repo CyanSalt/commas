@@ -28,6 +28,7 @@ const launcherCharacters = $computed(() => {
       icon: launcher.remote ? {
         name: 'lucide-link',
       } : undefined,
+      detached: true,
     }
   })
 })
@@ -43,7 +44,7 @@ export function getLauncherProfile(launcher: Launcher) {
     cwd: directory && commas.helper.resolveHome(directory),
   }
   if (profile.shell) {
-    profile.process = profile.shell === '/' ? profile.cwd : profile.shell
+    profile.process = profile.shell === commas.workspace.TERMINAL_DIRECTORY_SHELL ? profile.cwd : profile.shell
   }
   return profile
 }

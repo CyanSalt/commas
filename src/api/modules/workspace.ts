@@ -1,4 +1,4 @@
-import type { TerminalInfo, TerminalTab, TerminalTabAddons, TerminalTabPane } from '@commas/types/terminal'
+import type { TerminalTab, TerminalTabAddons, TerminalTabPane } from '@commas/types/terminal'
 import { isMatch } from 'lodash'
 import { markRaw, reactive, shallowReactive } from 'vue'
 import {
@@ -19,7 +19,7 @@ import {
   useTerminalTabGroupSeparating,
   useTerminalTabs,
 } from '../../renderer/compositions/terminal'
-import { createTerminalTabContextMenu } from '../../renderer/utils/terminal'
+import { createTerminalTabContextMenu, TERMINAL_DIRECTORY_SHELL } from '../../renderer/utils/terminal'
 import type { RendererAPIContext } from '../types'
 
 const tabs = $(useTerminalTabs())
@@ -41,11 +41,11 @@ function getPane(name: string) {
   return panes[name]
 }
 
-function getTerminalTabByPane(pane: TerminalTabPane, info: Partial<TerminalInfo> = {}) {
+function getTerminalTabByPane(pane: TerminalTabPane, info: Partial<TerminalTab> = {}) {
   return tabs.find(tab => tab.pane?.name === pane.name && isMatch(tab, info))
 }
 
-function createPaneTab(pane: TerminalTabPane, info?: Partial<TerminalInfo>) {
+function createPaneTab(pane: TerminalTabPane, info?: Partial<TerminalTab>) {
   return reactive({
     pid: 0,
     process: pane.name,
@@ -139,4 +139,5 @@ export {
   createTerminalTabContextMenu,
   getTerminalTabsByGroup,
   appendTerminalTab,
+  TERMINAL_DIRECTORY_SHELL,
 }

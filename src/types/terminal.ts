@@ -27,6 +27,7 @@ export interface TerminalTabCharacter {
   title?: string,
   icon?: IconEntry,
   defaultIcon?: IconEntry,
+  detached?: boolean,
 }
 
 export type TerminalTabCharacterCommand = keyof {
@@ -42,6 +43,10 @@ export interface TerminalContext {
 
 export interface TerminalInfo extends TerminalContext {
   pid: number,
+  // Difference between `cwd`, `shell` and `process`
+  // `shell`: Unique key for pane tab if `pid` is empty. The tab will be considered as revalent to a **FILE** if shell is not empty. `process` will inherit this unless `shell` is `TERMINAL_DIRECTORY_SHELL`
+  // `process`: Can be changed during tab running. The file will be considered as a directory if `process` is equal to `cwd` while `shell` is not empty
+  // `cwd`: Can be changed during tab running.
   process: string,
 }
 

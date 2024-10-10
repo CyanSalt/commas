@@ -7,6 +7,8 @@ import type { TerminalTab } from '@commas/types/terminal'
 import { omitHome, resolveWindowsDisk } from '../../shared/terminal'
 import icons from '../assets/icons'
 
+export const TERMINAL_DIRECTORY_SHELL = '/'
+
 export function getProcessName(tab: TerminalTab) {
   if (tab.process === tab.shell) {
     if (tab.command) {
@@ -88,7 +90,7 @@ export function getWindowsProcessInfo(shell: string, title: string): Partial<Ter
 
 export function getTerminalTabID(tab: TerminalTab) {
   if (tab.pane) {
-    return `${tab.pane.name ?? 'pane'}@${tab.shell || tab.process}`
+    return `${tab.pane.name ?? 'pane'}@${tab.pid || tab.shell}`
   } else {
     return `process@${tab.pid}`
   }

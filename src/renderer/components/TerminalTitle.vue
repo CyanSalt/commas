@@ -35,12 +35,18 @@ const fileOrDirectory = $computed(() => {
   if (terminal.pane && terminal.shell) {
     return isDirectory ? terminal.cwd : terminal.shell
   }
+  if (terminal.pane) return ''
   return terminal.cwd
 })
 
 const pane = $computed(() => {
   if (!terminal) return null
   return terminal.pane
+})
+
+const character = $computed(() => {
+  if (!terminal) return null
+  return terminal.character
 })
 
 const title = $computed(() => {
@@ -122,7 +128,8 @@ watchEffect(() => {
       <img v-if="icon" class="directory-icon" :src="icon">
       <VisualIcon v-else :name="isDirectory ? 'lucide-folder' : 'lucide-file'" />
     </a>
-    <div v-if="pane && !fileOrDirectory" v-i18n class="title-text">{{ pane.title }}</div>
+    <div v-if="pane && character" class="title-text">{{ character.title }}</div>
+    <div v-else-if="pane && !fileOrDirectory" v-i18n class="title-text">{{ pane.title }}</div>
     <div v-else class="title-text">{{ title }}</div>
     <component
       :is="anchor"
