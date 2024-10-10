@@ -1,0 +1,19 @@
+{
+  "name": "@commas/browser",
+  "private": true,
+  "version": "0.1.0",
+  "productName": "Browser",
+  "description": "Surf on the Internet",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC",
+  "commas:icon": {
+    "name": "lucide-globe"
+  },
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "浏览器",
+      "description": "网上冲浪"
+    }
+  }
+}

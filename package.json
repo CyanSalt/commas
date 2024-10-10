@@ -104,6 +104,7 @@
   "workspaces": [
     "addons/addon-manager",
     "addons/ai",
+    "addons/browser",
     "addons/camera",
     "addons/cleaner",
     "addons/cli",

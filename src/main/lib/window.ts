@@ -158,6 +158,7 @@ function handleWindowMessages() {
     if (!view) return
     webContentsViews.delete(view)
     frame.contentView.removeChildView(view)
+    view.webContents.close()
   })
   ipcMain.handle('navigate-web-contents', (event, id, url) => {
     const view = Array.from(webContentsViews).find(item => item.webContents.id === id)
