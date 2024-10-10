@@ -48,7 +48,7 @@ function configure() {
 .action-bar {
   display: grid;
   flex: none;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: 1fr minmax(0, auto) 1fr;
   height: 32px;
   &:has(.tab-list) {
     display: flex;

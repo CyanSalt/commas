@@ -53,7 +53,7 @@ const isUsingLeftControl = process.platform === 'darwin'
   z-index: 1;
   display: grid;
   flex: none;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: 1fr minmax(0, auto) 1fr;
   gap: 8px;
   height: env(titlebar-area-height, 36px);
   padding: 0 16px;

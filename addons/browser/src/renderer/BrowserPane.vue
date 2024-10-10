@@ -137,6 +137,9 @@ function autoselect(event: FocusEvent) {
   flex: 1;
   min-width: 0;
   font-size: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .web-page {
   flex: 1;
