@@ -27,7 +27,8 @@ const target = $computed(() => {
   if (!tab.group) return undefined
   const siblings = commas.workspace.getTerminalTabsByGroup(tab.group)
     .filter(item => item !== tab)
-  if (siblings.length === 1) return siblings[0]
+  const teletypes = siblings.filter(item => !item.pane)
+  if (teletypes.length === 1) return teletypes[0]
 })
 
 const isConnected = $computed(() => {

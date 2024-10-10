@@ -39,11 +39,17 @@ export function splitOrCloseFileExplorerTab(directory: string) {
   }
   const titlePosition = settings['terminal.view.tabListPosition'] === 'top' ? 'bottom' : 'top'
   const tab = openFileExplorerTab(directory)
-  if (current && !current.pane && !current.group) {
-    commas.workspace.appendTerminalTab(
-      current,
-      commas.workspace.getTerminalTabIndex(tab),
-      titlePosition,
-    )
+  if (current && !current.pane) {
+    const siblings = current.group
+      ? commas.workspace.getTerminalTabsByGroup(tab.group)
+        .filter(item => item !== current)
+      : []
+    if (siblings.every(item => item.pane)) {
+      commas.workspace.appendTerminalTab(
+        current,
+        commas.workspace.getTerminalTabIndex(tab),
+        titlePosition,
+      )
+    }
   }
 }
