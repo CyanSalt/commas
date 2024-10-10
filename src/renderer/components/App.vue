@@ -21,6 +21,7 @@ import {
   useTerminalTabs,
 } from '../compositions/terminal'
 import { injectThemeStyle, useTheme } from '../compositions/theme'
+import { handleWebContentsMessages } from '../compositions/web-contents'
 import ActionBar from './ActionBar.vue'
 import FindBox from './FindBox.vue'
 import TabList from './TabList.vue'
@@ -56,6 +57,7 @@ handleFrameMessages()
 handleI18nMessages()
 handleShellMessages()
 handleTerminalMessages()
+handleWebContentsMessages()
 
 const argIndex = process.argv.indexOf('--') + 1
 const args = argIndex ? process.argv.slice(argIndex) : []

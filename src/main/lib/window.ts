@@ -1,18 +1,25 @@
 import * as path from 'node:path'
 import { effect, stop } from '@vue/reactivity'
-import type { BrowserWindowConstructorOptions } from 'electron'
-import { app, BrowserWindow } from 'electron'
+import type { BrowserWindowConstructorOptions, Rectangle } from 'electron'
+import { app, BrowserWindow, WebContentsView } from 'electron'
+import { ipcMain } from '@commas/electron-ipc'
 import { globalHandler } from '../../shared/handler'
 import { loadCustomCSS } from './addon'
 import { getLastWindow, hasWindow, send } from './frame'
 import { createTouchBar, createWindowMenu } from './menu'
-import { handleEvents } from './message'
+import { handleEvents, handleViewEvents } from './message'
 import { useSettings, whenSettingsReady } from './settings'
 import { useThemeOptions } from './theme'
 
 declare module '@commas/electron-ipc' {
   export interface GlobalCommands {
     'global-main:open-window': () => void,
+  }
+  export interface Commands {
+    'create-web-contents': (rect: Rectangle) => number,
+    'destroy-web-contents': (id: number) => void,
+    'navigate-web-contents': (id: number, url: string) => void,
+    'resize-web-contents': (id: number, rect: Rectangle) => void,
   }
 }
 
@@ -130,9 +137,37 @@ async function openFile(file: string) {
   frame.show()
 }
 
+const webContentsViews = new Set<WebContentsView>()
+
 function handleWindowMessages() {
   globalHandler.handle('global-main:open-window', () => {
     createWindow()
+  })
+  ipcMain.handle('create-web-contents', (event, rect) => {
+    const frame = BrowserWindow.fromWebContents(event.sender)!
+    const view = new WebContentsView()
+    view.setBounds(rect)
+    frame.contentView.addChildView(view)
+    webContentsViews.add(view)
+    handleViewEvents(view, event.sender)
+    return view.webContents.id
+  })
+  ipcMain.handle('destroy-web-contents', (event, id) => {
+    const frame = BrowserWindow.fromWebContents(event.sender)!
+    const view = Array.from(webContentsViews).find(item => item.webContents.id === id)
+    if (!view) return
+    webContentsViews.delete(view)
+    frame.contentView.removeChildView(view)
+  })
+  ipcMain.handle('navigate-web-contents', (event, id, url) => {
+    const view = Array.from(webContentsViews).find(item => item.webContents.id === id)
+    if (!view) return
+    view.webContents.loadURL(url)
+  })
+  ipcMain.handle('resize-web-contents', (event, id, rect) => {
+    const view = Array.from(webContentsViews).find(item => item.webContents.id === id)
+    if (!view) return
+    view.setBounds(rect)
   })
 }
 

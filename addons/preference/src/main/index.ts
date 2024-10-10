@@ -1,12 +1,5 @@
 import { ipcMain } from '@commas/electron-ipc'
 import * as commas from 'commas:api/main'
-import { shell } from 'electron'
-
-declare module '@commas/electron-ipc' {
-  export interface Commands {
-    'open-preference-website': () => void,
-  }
-}
 
 export default () => {
 
@@ -30,11 +23,6 @@ export default () => {
       commas.context.handle('global-main:open-settings', defaultHandler)
     })
   }
-
-  commas.ipcMain.handle('open-preference-website', () => {
-    const manifest = commas.app.getManifest()
-    shell.openExternal(manifest.homepage)
-  })
 
   commas.i18n.addTranslationDirectory('locales')
 

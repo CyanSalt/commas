@@ -4,6 +4,7 @@ import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/clo
 import TabItem from '../../renderer/components/TabItem.vue'
 import TerminalBlock from '../../renderer/components/TerminalBlock.vue'
 import TerminalPane from '../../renderer/components/TerminalPane.vue'
+import WebContents from '../../renderer/components/WebContents.vue'
 import DraggableElement from '../../renderer/components/basic/DraggableElement.vue'
 import DropIndicator from '../../renderer/components/basic/DropIndicator.vue'
 import DropTarget from '../../renderer/components/basic/DropTarget.vue'
@@ -45,6 +46,7 @@ const vueAssets = {
   TerminalPane,
   ValueSelector,
   TabItem,
+  WebContents,
 }
 
 export * from '../shim'

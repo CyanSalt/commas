@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ipcRenderer } from '@commas/electron-ipc'
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 
@@ -62,7 +61,8 @@ function openCustomCSS() {
 }
 
 function openWebsite() {
-  ipcRenderer.invoke('open-preference-website')
+  const manifest = commas.app.getManifest()
+  commas.context.invoke('global-renderer:open-url', manifest.homepage)
 }
 </script>
 

@@ -1,5 +1,5 @@
 import type EventEmitter from 'node:events'
-import type { Dock, FindInPageOptions, MessageBoxOptions, MessageBoxReturnValue, NativeImage, Result, WebContents } from 'electron'
+import type { Dock, FindInPageOptions, MessageBoxOptions, MessageBoxReturnValue, NativeImage, Result, WebContents, WebContentsView } from 'electron'
 import { app, BrowserWindow, clipboard, dialog, nativeImage, shell } from 'electron'
 import * as fileIcon from 'file-icon'
 import { ipcMain } from '@commas/electron-ipc'
@@ -28,6 +28,7 @@ declare module '@commas/electron-ipc' {
     'read-file': typeof readFile,
     'show-file': (file: string) => void,
     'open-path': (uri: string) => void,
+    'open-url': (uri: string) => void,
   }
   export interface Events {
     'get-path': (name?: Parameters<typeof app['getPath']>[0]) => string,
@@ -43,6 +44,12 @@ declare module '@commas/electron-ipc' {
     'global-main:look-up': (text: string, frame?: BrowserWindow) => void,
     'global-main:copy': (text: string) => void,
     'global-main:open-url': (url: string) => void,
+  }
+  export interface RendererEvents {
+    'view-title-updated': (id: number, title: string) => void,
+    'view-icon-updated': (id: number, icon: string | undefined) => void,
+    'view-url-updated': (id: number, url: string) => void,
+    'view-open-url': (url: string) => void,
   }
 }
 
@@ -199,6 +206,9 @@ function handleMessages() {
   ipcMain.handle('open-path', (event, uri) => {
     shell.openPath(uri)
   })
+  ipcMain.handle('open-url', (event, url) => {
+    shell.openExternal(url)
+  })
   let watcherCollections = new WeakMap<WebContents, Map<string, any>>()
   ipcMain.handle('get-ref:file', (event, file: string) => {
     let watchers = watcherCollections.get(event.sender)
@@ -263,7 +273,24 @@ function handleEvents(frame: BrowserWindow) {
   }
 }
 
+function handleViewEvents(view: WebContentsView, parent: WebContents) {
+  view.webContents.setWindowOpenHandler((details) => {
+    send(parent, 'view-open-url', details.url)
+    return { action: 'deny' }
+  })
+  view.webContents.on('page-title-updated', (event, title) => {
+    send(parent, 'view-title-updated', view.webContents.id, title)
+  })
+  view.webContents.on('page-favicon-updated', (event, icons) => {
+    send(parent, 'view-icon-updated', view.webContents.id, icons[icons.length - 1])
+  })
+  view.webContents.on('did-start-navigation', (details) => {
+    send(parent, 'view-url-updated', view.webContents.id, details.url)
+  })
+}
+
 export {
   handleMessages,
   handleEvents,
+  handleViewEvents,
 }
