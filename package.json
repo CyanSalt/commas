@@ -92,7 +92,7 @@
     "file-icon": "^4.0.0",
     "fuzzaldrin-plus": "^0.6.0",
     "lodash": "^4.17.21",
-    "node-pty": "^1.1.0-beta9",
+    "node-pty": "^1.1.0-beta26",
     "properties": "^1.2.1",
     "semver": "^7.6.3",
     "shell-history": "^1.1.0",
