@@ -4,6 +4,7 @@ import { refAutoReset } from '@vueuse/core'
 import * as commas from 'commas:api/renderer'
 import { clipboard, nativeImage } from 'electron'
 import icon from './assets/icon-stroked.svg'
+import text from './assets/text.svg'
 
 defineOptions({
   inheritAttrs: false,
@@ -72,8 +73,26 @@ function roundCorners(
 
 async function createIconCanvas(color: string) {
   const size = 24 * devicePixelRatio
-  const { canvas, context } = createCanvas(size, size)
   const image = await loadImage(icon)
+  const { canvas, context } = createCanvas(size, size)
+  context.drawImage(image, 0, 0, canvas.width, canvas.height)
+  const data = context.getImageData(0, 0, canvas.width, canvas.height)
+  const bytes = data.data
+  const rgba = commas.helper.toRGBA(color)
+  for (let i = 0; i < bytes.length; i += 4) {
+    bytes[i] = rgba.r
+    bytes[i + 1] = rgba.g
+    bytes[i + 2] = rgba.b
+    bytes[i + 3] = bytes[i + 3] * rgba.a
+  }
+  context.putImageData(data, 0, 0)
+  return canvas
+}
+
+async function createTextCanvas(color: string) {
+  const size = 8 * devicePixelRatio
+  const image = await loadImage(text)
+  const { canvas, context } = createCanvas(size * image.naturalWidth / image.naturalHeight, size)
   context.drawImage(image, 0, 0, canvas.width, canvas.height)
   const data = context.getImageData(0, 0, canvas.width, canvas.height)
   const bytes = data.data
@@ -98,8 +117,9 @@ async function capture() {
       size.width + 128 * devicePixelRatio,
       size.height + 128 * devicePixelRatio,
     )
-    const watermarkColor = 'rgb(255 255 255 / 50%)'
+    const watermarkColor = 'rgb(255 255 255 / 75%)'
     const iconCanvas = await createIconCanvas(watermarkColor)
+    const textCanvas = await createTextCanvas(watermarkColor)
     const screenshotImage = await loadImage(screenshot.toDataURL())
     // Gradient background
     context.save()
@@ -156,27 +176,22 @@ async function capture() {
       (canvas.height - size.height) / 2,
     )
     context.restore()
-    // Watermark text
-    context.save()
-    context.font = 'bold 24px system-ui'
-    context.fillStyle = watermarkColor
-    context.textBaseline = 'middle'
-    const text = 'Commas'
-    const metrics = context.measureText(text)
-    const spacing = 8 * devicePixelRatio
-    const watermarkSize = iconCanvas.width + spacing + metrics.width
-    context.fillText(
-      text,
-      canvas.width / 2 - watermarkSize / 2 + iconCanvas.width + spacing,
-      canvas.height - (canvas.height - size.height) / 4,
-    )
-    context.restore()
+    const spacing = 4 * devicePixelRatio
+    const watermarkSize = iconCanvas.width + spacing + textCanvas.width
     // Watermark icon
     context.save()
     context.drawImage(
       iconCanvas,
       canvas.width / 2 - watermarkSize / 2,
       canvas.height - (canvas.height - size.height) / 4 - iconCanvas.height / 2,
+    )
+    context.restore()
+    // Watermark text
+    context.save()
+    context.drawImage(
+      textCanvas,
+      canvas.width / 2 - watermarkSize / 2 + iconCanvas.width + spacing,
+      canvas.height - (canvas.height - size.height) / 4 - textCanvas.height / 2,
     )
     context.restore()
     clipboard.writeImage(nativeImage.createFromDataURL(canvas.toDataURL('png')))
