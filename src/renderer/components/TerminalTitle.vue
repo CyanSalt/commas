@@ -7,7 +7,7 @@ import { globalHandler } from '../../shared/handler'
 import { omitHome } from '../../shared/terminal'
 import { useSettings } from '../compositions/settings'
 import { useCurrentTerminal } from '../compositions/terminal'
-import { translate, vI18n } from '../utils/i18n'
+import { translate } from '../utils/i18n'
 import { getPrompt } from '../utils/terminal'
 import VisualIcon from './basic/VisualIcon.vue'
 
@@ -52,7 +52,9 @@ const character = $computed(() => {
 const title = $computed(() => {
   if (!terminal) return ''
   if (fileOrDirectory) return omitHome(fileOrDirectory)
+  if (character?.title) return character.title
   if (terminal.title) return terminal.title
+  if (pane) return translate(pane.title)
   const expr = settings['terminal.tab.titleFormat']
   return getPrompt(expr, terminal)
 })
@@ -128,9 +130,7 @@ watchEffect(() => {
       <img v-if="icon" class="directory-icon" :src="icon">
       <VisualIcon v-else :name="isDirectory ? 'lucide-folder' : 'lucide-file'" />
     </a>
-    <div v-if="pane && character" class="title-text">{{ character.title }}</div>
-    <div v-else-if="pane && !fileOrDirectory" v-i18n class="title-text">{{ pane.title }}</div>
-    <div v-else class="title-text">{{ title }}</div>
+    <div class="title-text">{{ title }}</div>
     <component
       :is="anchor"
       v-for="(anchor, index) in anchors"

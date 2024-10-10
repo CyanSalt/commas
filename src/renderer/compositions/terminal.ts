@@ -395,14 +395,14 @@ export function scrollToMarker(xterm: Terminal, marker: IMarker) {
 }
 
 export function getTerminalTabTitle(tab: TerminalTab) {
-  if (tab.pane && !tab.shell) {
-    return translate(tab.pane.title)
-  }
   if (tab.character?.title) {
     return tab.character.title
   }
-  if (process.platform !== 'win32' && tab.title) {
+  if (tab.title && (tab.pane || process.platform !== 'win32')) {
     return tab.title
+  }
+  if (tab.pane && !tab.shell) {
+    return translate(tab.pane.title)
   }
   const expr = settings['terminal.tab.titleFormat']
   return getPrompt(expr, tab) || getProcessName(tab)

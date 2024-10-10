@@ -53,7 +53,7 @@ const profiles = $computed(() => {
 const standaloneTabs = $computed(() => {
   const entries = tabs.map((tab, index) => ({ tab, index }))
   if (isHorizontal) return entries
-  return entries.filter(({ tab }) => !tab.character || !tab.character.detached)
+  return entries.filter(({ tab }) => !tab.character)
 })
 
 function selectShell(event: MouseEvent) {

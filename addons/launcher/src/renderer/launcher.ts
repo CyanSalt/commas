@@ -28,7 +28,6 @@ const launcherCharacters = $computed(() => {
       icon: launcher.remote ? {
         name: 'lucide-link',
       } : undefined,
-      detached: true,
     }
   })
 })
@@ -89,16 +88,20 @@ export async function openLauncher(launcher: Launcher, options: OpenLauncherOpti
       command,
     })
   }
+  const character = getTerminalTabCharacterByLauncher(launcher)
   const pane = launcher.pane ? commas.workspace.getPane(launcher.pane) : undefined
   if (pane) {
-    const paneTab = commas.workspace.createPaneTab(pane, profile)
-    paneTab.character = getTerminalTabCharacterByLauncher(launcher)
+    const paneTab = commas.workspace.createPaneTab(pane, {
+      ...profile,
+      command,
+      character,
+    })
     commas.workspace.activateOrAddTerminalTab(paneTab)
     return paneTab
   } else {
     return commas.workspace.createTerminalTab(profile, {
       command,
-      character: getTerminalTabCharacterByLauncher(launcher),
+      character,
     })
   }
 }
