@@ -2,7 +2,7 @@
 import { ipcRenderer } from '@commas/electron-ipc'
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
-import { clipboard, shell } from 'electron'
+import { clipboard } from 'electron'
 import { useProxyRootCAStatus, useProxyServerInstalled, useProxyServerStatus, useProxyServerVersion, useSystemProxyStatus } from './compositions'
 
 defineProps<{
@@ -44,7 +44,7 @@ const address = $computed(() => {
 })
 
 function openEditor() {
-  shell.openExternal(`http://localhost:${port}`)
+  commas.remote.openURL(`http://localhost:${port}`)
 }
 
 function copyAddress() {
@@ -70,11 +70,11 @@ function openKeychainAccess() {
 }
 
 function install() {
-  shell.openExternal('https://github.com/avwo/whistle/')
+  commas.remote.openURL('https://github.com/avwo/whistle/')
 }
 
 function update() {
-  shell.openExternal('https://github.com/avwo/whistle/blob/master/CHANGELOG.md')
+  commas.remote.openURL('https://github.com/avwo/whistle/blob/master/CHANGELOG.md')
 }
 </script>
 

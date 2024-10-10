@@ -48,6 +48,22 @@ export async function confirmClosing() {
   return response === 0
 }
 
+export function openFile(file: string) {
+  globalHandler.invoke('global-renderer:open-file', file)
+}
+
+export function openDirectory(directory: string) {
+  globalHandler.invoke('global-renderer:open-directory', directory)
+}
+
+export function showDirectory(file: string) {
+  globalHandler.invoke('global-renderer:show-directory', file)
+}
+
+export function openURL(url: string) {
+  globalHandler.invoke('global-renderer:open-url', url)
+}
+
 export function handleShellMessages() {
   ipcRenderer.on('uncaught-error', (event, error) => {
     console.error(`Uncaught error in main process: ${error}`)

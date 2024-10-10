@@ -1,5 +1,5 @@
 import { ipcRenderer } from '@commas/electron-ipc'
-import { globalHandler } from '../../shared/handler'
+import { openURL } from './shell'
 
 const webContentsViews = $ref<RendererWebContentsView[]>([])
 export function useWebContentsViews() {
@@ -79,6 +79,6 @@ export function handleWebContentsMessages() {
     view.canGoBack = canGoBack
   })
   ipcRenderer.on('view-open-url', (event, url) => {
-    globalHandler.invoke('global-renderer:open-url', url)
+    openURL(url)
   })
 }

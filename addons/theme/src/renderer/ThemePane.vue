@@ -66,7 +66,7 @@ function reset() {
 }
 
 function openMarketplace() {
-  commas.context.invoke('global-renderer:open-url', 'https://windowsterminalthemes.dev')
+  commas.remote.openURL('https://windowsterminalthemes.dev')
 }
 
 async function applyTheme(item: RemoteTheme) {

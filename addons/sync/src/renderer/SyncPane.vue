@@ -34,6 +34,7 @@ function openGitHubTokenSettings() {
   const url = new URL('https://github.com/settings/tokens/new')
   url.searchParams.set('description', 'Commas Sync')
   url.searchParams.set('scopes', 'gist')
+  // Do not use `commas.remote.openURL` since authorization required
   shell.openExternal(url.href)
 }
 

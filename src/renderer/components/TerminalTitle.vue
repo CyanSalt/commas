@@ -3,9 +3,9 @@ import { nativeImage } from 'electron'
 import { watchEffect } from 'vue'
 import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from '../../api/core-renderer'
-import { globalHandler } from '../../shared/handler'
 import { omitHome } from '../../shared/terminal'
 import { useSettings } from '../compositions/settings'
+import { showDirectory } from '../compositions/shell'
 import { useCurrentTerminal } from '../compositions/terminal'
 import { translate } from '../utils/i18n'
 import { getPrompt } from '../utils/terminal'
@@ -92,7 +92,7 @@ const icon = $computed(() => {
 function openDirectory(event: MouseEvent) {
   if (event.detail > 1) return
   if (isDirectory) {
-    globalHandler.invoke('global-renderer:show-directory', fileOrDirectory)
+    showDirectory(fileOrDirectory)
   } else {
     ipcRenderer.invoke('show-file', fileOrDirectory)
   }

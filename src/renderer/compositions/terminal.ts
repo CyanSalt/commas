@@ -12,7 +12,6 @@ import { WebLinksAddon } from '@xterm/addon-web-links'
 import { WebglAddon } from '@xterm/addon-webgl'
 import type { IMarker, ITerminalOptions } from '@xterm/xterm'
 import { Terminal } from '@xterm/xterm'
-import { shell } from 'electron'
 import { toKeyEvent } from 'keyboardevent-from-electron-accelerator'
 import { isMatch, trim } from 'lodash'
 import type { MaybeRefOrGetter } from 'vue'
@@ -21,7 +20,6 @@ import { ipcRenderer } from '@commas/electron-ipc'
 import type { KeyBindingCommand, MenuItem } from '@commas/types/menu'
 import type { ReadonlyTerminalTabAddons, TerminalContext, TerminalTab, TerminalTabCharacter, TerminalTabCharacterCommand } from '@commas/types/terminal'
 import * as commas from '../../api/core-renderer'
-import { globalHandler } from '../../shared/handler'
 import { createIDGenerator } from '../../shared/helper'
 import { openContextMenu } from '../utils/frame'
 import { translate } from '../utils/i18n'
@@ -31,6 +29,7 @@ import { getProcessName, getPrompt, getTerminalTabID, getWindowsProcessInfo } fr
 import { useA11yEnabled } from './a11y'
 import { useKeyBindings } from './keybinding'
 import { useSettings } from './settings'
+import { openURL } from './shell'
 import { useTheme } from './theme'
 
 declare module '@commas/api/modules/app' {
@@ -172,7 +171,7 @@ export function isMatchLinkModifier(event: MouseEvent) {
 
 function handleTerminalLink(event: MouseEvent, uri: string) {
   if (isMatchLinkModifier(event)) {
-    globalHandler.invoke('global-renderer:open-url', uri)
+    openURL(uri)
   }
 }
 

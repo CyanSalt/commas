@@ -6,30 +6,30 @@ import {
   useSettings,
   useSettingsSpecs,
 } from '../../renderer/compositions/settings'
+import { openDirectory, openFile, openURL, showDirectory } from '../../renderer/compositions/shell'
 import { useIsLightTheme, useTheme } from '../../renderer/compositions/theme'
 import { translate } from '../../renderer/utils/i18n'
-import { globalHandler } from '../../shared/handler'
 
 export * from '../shim'
 
 async function openUserDirectory() {
   const directory = await ipcRenderer.invoke('prepare-user-directory')
-  globalHandler.invoke('global-renderer:open-directory', directory)
+  openDirectory(directory)
 }
 
 async function openDefaultSettings() {
   const filePath = await ipcRenderer.invoke('prepare-default-settings')
-  globalHandler.invoke('global-renderer:open-file', filePath)
+  openFile(filePath)
 }
 
 async function openSettingsFile() {
   const filePath = await ipcRenderer.invoke('prepare-settings-file')
-  globalHandler.invoke('global-renderer:open-file', filePath)
+  openFile(filePath)
 }
 
 async function openUserFile(file: string, example?: string) {
   const filePath = await ipcRenderer.invoke('prepare-user-file', file, example)
-  globalHandler.invoke('global-renderer:open-file', filePath)
+  openUserFile(filePath)
 }
 
 function writeUserFile(file: string, content?: string) {
@@ -51,4 +51,8 @@ export {
   openUserFile,
   writeUserFile,
   translate,
+  openFile,
+  openDirectory,
+  showDirectory,
+  openURL,
 }

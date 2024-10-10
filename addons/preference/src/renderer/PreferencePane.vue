@@ -62,7 +62,7 @@ function openCustomCSS() {
 
 function openWebsite() {
   const manifest = commas.app.getManifest()
-  commas.context.invoke('global-renderer:open-url', manifest.homepage)
+  commas.remote.openURL(manifest.homepage)
 }
 </script>
 

@@ -56,7 +56,7 @@ function selectFile(file: FileEntity) {
   if (file.isDirectory) {
     modelValue = file.path
   } else {
-    commas.context.invoke('global-renderer:open-file', file.path)
+    commas.remote.openFile(file.path)
   }
 }
 
