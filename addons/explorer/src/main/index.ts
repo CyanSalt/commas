@@ -40,9 +40,10 @@ export default () => {
   })
 
   commas.ipcMain.handle('access-directory', async (event, directory) => {
+    const dir = commas.helper.resolveHome(directory)
     try {
-      await fs.promises.access(directory)
-      return directory
+      await fs.promises.access(dir)
+      return dir
     } catch {
       // ignore
     }
