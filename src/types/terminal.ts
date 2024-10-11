@@ -18,7 +18,9 @@ export interface TerminalTabPane {
   title: string,
   icon?: IconEntry,
   component: Component<{ tab: TerminalTab }>,
-  instance?: any,
+  instance?: {
+    save?: () => void,
+  },
   volatile?: boolean,
   factory?: (info?: Partial<TerminalTab>) => Partial<TerminalTab> | undefined,
 }
@@ -100,4 +102,5 @@ export interface TerminalTab extends TerminalInfo {
   position?: TerminalTabPosition,
   stickyXterm?: Terminal,
   stickyAddons?: ReadonlyTerminalTabAddons,
+  iconURL?: string,
 }

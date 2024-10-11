@@ -77,6 +77,19 @@ function openExternal() {
   if (!url) return
   shell.openExternal(url)
 }
+
+watchEffect((onInvalidate) => {
+  if (tab.pane) {
+    // eslint-disable-next-line vue/no-mutating-props
+    tab.iconURL = view?.icon
+    onInvalidate(() => {
+      if (tab.pane) {
+        // eslint-disable-next-line vue/no-mutating-props
+        delete tab.iconURL
+      }
+    })
+  }
+})
 </script>
 
 <template>

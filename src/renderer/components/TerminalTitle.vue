@@ -44,6 +44,11 @@ const pane = $computed(() => {
   return terminal.pane
 })
 
+const iconURL = $computed(() => {
+  if (!terminal) return undefined
+  return terminal.iconURL
+})
+
 const character = $computed(() => {
   if (!terminal) return null
   return terminal.character
@@ -119,8 +124,9 @@ watchEffect(() => {
 
 <template>
   <div class="terminal-title">
+    <img v-if="iconURL" class="web-icon" :src="iconURL">
     <a
-      v-if="fileOrDirectory"
+      v-else-if="fileOrDirectory"
       draggable="true"
       class="shortcut open-directory"
       @click="openDirectory"
@@ -166,6 +172,10 @@ watchEffect(() => {
   .open-directory:active & {
     opacity: 0.5;
   }
+}
+.web-icon {
+  width: 16px;
+  height: 16px;
 }
 .title-text {
   font-weight: 500;
