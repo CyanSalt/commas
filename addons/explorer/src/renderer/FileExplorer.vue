@@ -283,9 +283,9 @@ function autoselect(event: FocusEvent) {
     transform: scale(0.99);
   }
   &.directory {
-    .file-icon,
-    .file-name {
-      color: rgb(var(--theme-blue));
+    .file-icon {
+      color: rgb(var(--system-blue));
+      fill: currentColor;
     }
   }
 }
