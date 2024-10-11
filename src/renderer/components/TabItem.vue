@@ -259,7 +259,7 @@ function close() {
     color: rgb(var(--system-green));
   }
   &.alerting {
-    color: var(--design-alert-color);
+    color: rgb(var(--system-yellow));
     opacity: 1;
   }
   .tab-item.virtual &:not(.alerting) {

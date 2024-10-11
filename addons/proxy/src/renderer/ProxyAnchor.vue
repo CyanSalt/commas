@@ -48,7 +48,7 @@ function configure(event: MouseEvent) {
   &.active {
     color: var(--design-highlight-color);
     &.system {
-      color: rgb(var(--system-magenta));
+      color: rgb(var(--system-purple));
     }
   }
 }

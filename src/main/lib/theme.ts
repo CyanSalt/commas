@@ -45,11 +45,18 @@ const THEME_CSS_COLORS: Partial<Record<keyof ThemeDefinition, string>> = {
 
 const EXTRA_CSS_COLORS: Partial<Record<Exclude<keyof Theme, keyof ThemeDefinition>, string>> = {
   systemRed: '--system-red',
+  systemOrange: '--system-orange',
   systemYellow: '--system-yellow',
   systemGreen: '--system-green',
+  systemMint: '--system-mint',
+  systemTeal: '--system-teal',
   systemCyan: '--system-cyan',
   systemBlue: '--system-blue',
-  systemMagenta: '--system-magenta',
+  systemIndigo: '--system-indigo',
+  systemPurple: '--system-purple',
+  systemPink: '--system-pink',
+  systemBrown: '--system-brown',
+  systemGray: '--system-gray',
   systemAccent: '--system-accent',
   acrylicBackground: '--acrylic-background',
 }
@@ -168,13 +175,17 @@ const theme = $computed(() => {
   if (!userTheme.cursorAccent) {
     definition.cursorAccent = toCSSHEX({ ...backgroundRGBA, a: 1 })
   }
-  if (process.platform === 'darwin') {
-    definition.systemRed = systemPreferences.getSystemColor('red')
-    definition.systemYellow = systemPreferences.getSystemColor('yellow')
-    definition.systemGreen = systemPreferences.getSystemColor('green')
-    definition.systemBlue = systemPreferences.getSystemColor('blue')
-    definition.systemMagenta = systemPreferences.getSystemColor('pink')
-  }
+  // if (process.platform === 'darwin') {
+  //   definition.systemRed = systemPreferences.getSystemColor('red')
+  //   definition.systemOrange = systemPreferences.getSystemColor('orange')
+  //   definition.systemYellow = systemPreferences.getSystemColor('yellow')
+  //   definition.systemGreen = systemPreferences.getSystemColor('green')
+  //   definition.systemBlue = systemPreferences.getSystemColor('blue')
+  //   definition.systemPurple = systemPreferences.getSystemColor('purple')
+  //   definition.systemPink = systemPreferences.getSystemColor('pink')
+  //   definition.systemBrown = systemPreferences.getSystemColor('brown')
+  //   definition.systemGray = systemPreferences.getSystemColor('gray')
+  // }
   definition.systemAccent = accentColor ? `#${accentColor.slice(0, 6)}` : ''
   const backgroundHSLA = toHSLA(backgroundRGBA)
   const accentRGBA = accentColor ? toRGBA(`#${accentColor.slice(0, 6)}`) : undefined

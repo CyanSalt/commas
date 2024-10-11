@@ -115,15 +115,21 @@ onMounted(() => {
 
 // https://developer.apple.com/design/human-interface-guidelines/color#macOS-system-colors
 :global(:root) {
-  --system-red: 255 49 38;
-  --system-yellow: 245 139 0;
-  --system-green: 30 195 55;
-  --system-cyan: 0 189 180;
-  --system-blue: 0 122 245;
-  --system-magenta: 245 35 75;
+  --system-red: 255 59 48;
+  --system-orange: 255 149 0;
+  --system-yellow: 255 204 0;
+  --system-green: 40 205 65;
+  --system-mint: 0 199 190;
+  --system-teal: 89 173 196;
+  --system-cyan: 85 190 240;
+  --system-blue: 0 122 255;
+  --system-indigo: 88 86 214;
+  --system-purple: 175 82 222;
+  --system-pink: 255 45 85;
+  --system-brown: 162 132 94;
+  --system-gray: 142 142 147;
   --system-accent: var(--system-blue);
   --design-active-background: rgb(var(--theme-background) / var(--theme-opacity));
-  --design-alert-color: rgb(var(--system-blue));
   --design-card-border-radius: var(--design-card-gap);
   --design-card-gap: 8px;
   --design-card-shadow: 0 2px 4px 0px rgb(0 0 0 / 10%);
@@ -132,10 +138,21 @@ onMounted(() => {
   --design-highlight-background: color-mix(in hsl, rgb(var(--theme-foreground) / 5%), rgb(var(--acrylic-background) / 5%));
   --design-input-background: color-mix(in hsl, rgb(var(--theme-foreground) / 10%) 75%, rgb(var(--acrylic-background) / 10%));
   @media (prefers-color-scheme: dark) {
-    --system-cyan: 108 224 219;
+    --system-red: 255 69 58;
+    --system-orange: 255 159 10;
+    --system-yellow: 255 214 10;
+    --system-green: 50 215 75;
+    --system-mint: 102 212 207;
+    --system-teal: 106 196 220;
+    --system-cyan: 90 200 245;
+    --system-blue: 10 132 255;
+    --system-indigo: 94 92 230;
+    --system-purple: 191 90 242;
+    --system-pink: 255 55 95;
+    --system-brown: 172 142 104;
+    --system-gray: 152 152 157;
     --design-active-background: rgb(255 255 255 / 16.667%);
-    --design-alert-color: rgb(var(--system-yellow));
-    --design-highlight-color: rgb(var(--system-cyan));
+    --design-highlight-color: rgb(var(--system-mint));
     --design-highlight-background: rgb(255 255 255 / 5%);
   }
 }
