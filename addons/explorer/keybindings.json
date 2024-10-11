@@ -1,0 +1,7 @@
+[
+  {
+    "label": "Open Explorer#!explorer.1",
+    "accelerator": "CmdOrCtrl+O",
+    "command": "open-explorer"
+  }
+]

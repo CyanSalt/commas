@@ -3,6 +3,12 @@ import * as commas from 'commas:api/renderer'
 import FileExplorerPane from './FileExplorerPane.vue'
 import { getDirectoryProcess, openFileExplorerTab, splitOrCloseFileExplorerTab } from './compositions'
 
+declare module '@commas/electron-ipc' {
+  export interface RendererEvents {
+    'open-explorer': (directory?: string) => void,
+  }
+}
+
 export default () => {
 
   commas.ui.addCSSFile('dist/renderer/style.css')
@@ -25,6 +31,10 @@ export default () => {
   const handleOpen = commas.context.removeHandler('global-renderer:open-directory')
 
   commas.context.handle('global-renderer:open-directory', (directory) => {
+    openFileExplorerTab(directory)
+  })
+
+  commas.ipcRenderer.on('open-explorer', (event, directory) => {
     openFileExplorerTab(directory)
   })
 

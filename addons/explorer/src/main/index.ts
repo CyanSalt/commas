@@ -43,4 +43,8 @@ export default () => {
     return path.join(path.dirname(file), target)
   })
 
+  commas.i18n.addTranslationDirectory('locales')
+
+  commas.keybinding.addKeyBindingsFile('keybindings.json')
+
 }

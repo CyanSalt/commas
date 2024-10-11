@@ -5,7 +5,7 @@ export function getDirectoryProcess(directory: string) {
   return directory.endsWith(path.sep) ? directory : directory + path.sep
 }
 
-export function openFileExplorerTab(directory: string) {
+export function openFileExplorerTab(directory?: string) {
   return commas.workspace.openPaneTab('explorer', { cwd: directory })!
 }
 
