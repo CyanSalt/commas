@@ -60,6 +60,11 @@ function selectFile(file: FileEntity) {
   }
 }
 
+function showSymlink(file: FileEntity) {
+  if (!file.symlink) return
+  modelValue = path.dirname(file.symlink)
+}
+
 let previousValue = $ref<string>()
 
 watch($$(modelValue), (value, oldValue) => {
@@ -78,11 +83,6 @@ function goBack() {
   if (previousValue !== undefined) {
     modelValue = previousValue
   }
-}
-
-async function showFile(file: FileEntity) {
-  const originalPath = await ipcRenderer.invoke('read-symlink', file.path)
-  modelValue = path.dirname(originalPath)
 }
 
 function openExternal(file: FileEntity) {
@@ -199,7 +199,7 @@ function autoselect(event: FocusEvent) {
         @dragstart.prevent="startDragging($event, file)"
       >
         <VisualIcon
-          :name="file.isSymlink
+          :name="file.symlink
             ? (file.isDirectory ? 'lucide-folder-symlink' : 'lucide-file-symlink')
             : (file.isDirectory ? 'lucide-folder' : 'lucide-file')"
           class="file-icon"
@@ -207,9 +207,9 @@ function autoselect(event: FocusEvent) {
         <span class="file-name">{{ file.name }}{{ file.isDirectory ? path.sep : '' }}</span>
         <span class="action-list">
           <span
-            v-if="file.isSymlink"
+            v-if="file.symlink"
             class="link form-action"
-            @click.stop="showFile(file)"
+            @click.stop="showSymlink(file)"
           >
             <VisualIcon name="lucide-iteration-ccw" />
           </span>
@@ -267,7 +267,7 @@ function autoselect(event: FocusEvent) {
 .file-list {
   display: flex;
   flex-direction: column;
-  margin-top: 8px;
+  margin-top: 4px;
 }
 .file {
   display: flex;
@@ -300,6 +300,11 @@ function autoselect(event: FocusEvent) {
   align-items: center;
   .file:not(:hover) & {
     visibility: hidden;
+  }
+  .form-action {
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
   }
 }
 </style>
