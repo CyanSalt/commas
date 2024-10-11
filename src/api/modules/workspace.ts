@@ -60,7 +60,7 @@ function createPaneTab(pane: TerminalTabPane, info?: Partial<TerminalTab>) {
     title: '',
     cwd: '',
     ...info,
-    ...pane.factory?.(),
+    ...pane.factory?.(info),
     pane: markRaw(pane),
   } as TerminalTab)
 }

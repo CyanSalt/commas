@@ -29,7 +29,7 @@ async function openSettingsFile() {
 
 async function openUserFile(file: string, example?: string) {
   const filePath = await ipcRenderer.invoke('prepare-user-file', file, example)
-  openUserFile(filePath)
+  openFile(filePath)
 }
 
 function writeUserFile(file: string, content?: string) {
