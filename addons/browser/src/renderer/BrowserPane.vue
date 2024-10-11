@@ -144,6 +144,7 @@ function openExternal() {
 }
 .page-url {
   flex: 1;
+  align-self: stretch;
   min-width: 0;
   font-size: 12px;
   white-space: nowrap;
