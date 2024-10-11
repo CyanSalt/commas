@@ -8,7 +8,7 @@
     "schema": {
       "type": "string"
     },
-    "default": "https://raw.githack.com/pi0/clippyjs/master/assets/"
+    "default": "https://cdn.jsdelivr.net/gh/pi0/clippyjs@master/assets/"
   },
   {
     "key": "clippy.agent.name",

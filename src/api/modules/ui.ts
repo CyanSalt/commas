@@ -1,5 +1,6 @@
 import * as path from 'node:path'
 import * as url from 'node:url'
+import { URL } from 'node:url'
 import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
 import TabItem from '../../renderer/components/TabItem.vue'
 import TerminalBlock from '../../renderer/components/TerminalBlock.vue'

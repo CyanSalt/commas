@@ -37,8 +37,9 @@ export default () => {
     }, undefined, assetsPath + 'agents/')
     onInvalidate(() => {
       if (currentAgent) {
+        const el = currentAgent._el
         currentAgent.hide(false, () => {
-          currentAgent!._el.remove()
+          el.remove()
         })
         currentAgent = undefined
       }
