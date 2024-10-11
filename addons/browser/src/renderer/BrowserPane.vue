@@ -125,6 +125,11 @@ function openExternal() {
   flex: none;
   gap: 4px;
   padding: 8px;
+  .form-action {
+    width: 18px;
+    height: 18px;
+    font-size: 14px;
+  }
 }
 .custom-url-form {
   display: flex;
@@ -143,8 +148,10 @@ function openExternal() {
   outline: none;
 }
 .page-url {
+  display: flex;
   flex: 1;
   align-self: stretch;
+  align-items: center;
   min-width: 0;
   font-size: 12px;
   white-space: nowrap;
