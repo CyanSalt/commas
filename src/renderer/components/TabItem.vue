@@ -198,13 +198,9 @@ function close() {
   flex: 1;
   align-items: center;
   min-width: 0;
-  opacity: 0.75;
   transition: opacity 0.2s;
   .tab-item.virtual & {
     opacity: 0.5;
-  }
-  .tab-item.focused & {
-    opacity: 1;
   }
 }
 .tab-icon {
@@ -253,20 +249,15 @@ function close() {
   vertical-align: 1px;
   background: currentColor;
   border-radius: 50%;
-  opacity: 0.75;
   transition: color 0.2s, opacity 0.2s;
   &.busy {
     color: rgb(var(--system-green));
   }
   &.alerting {
     color: rgb(var(--system-yellow));
-    opacity: 1;
   }
   .tab-item.virtual &:not(.alerting) {
     opacity: 0.5;
-  }
-  .tab-item.focused & {
-    opacity: 1;
   }
   .tab-item:hover & {
     display: none;
