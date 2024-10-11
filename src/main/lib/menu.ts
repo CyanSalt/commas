@@ -51,9 +51,9 @@ function resolveBindingCommand(binding: MenuItem) {
         globalHandler.invoke(binding.command as never, ...(binding.args ?? []) as never, frame, event)
       }
     } else {
-      result.click = (self, frame, event) => {
+      result.click = (self, frame) => {
         if (frame) {
-          send((frame as BrowserWindow).webContents, binding.command as never, ...(binding.args ?? []) as never, event)
+          send((frame as BrowserWindow).webContents, binding.command as never, ...(binding.args ?? []) as never)
         }
       }
       result.enabled = hasFocusedWindow
