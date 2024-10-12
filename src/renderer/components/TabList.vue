@@ -379,6 +379,7 @@ function openTabItemMenu(event: MouseEvent, tab: TerminalTab) {
   text-align: center;
   border-radius: 8px;
   transition: transform 0.2s;
+  view-transition-name: new-tab;
   .tab-list.horizontal & {
     width: var(--min-tab-height);
   }

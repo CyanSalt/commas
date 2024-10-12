@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { nextTick, watchEffect } from 'vue'
+import { nextTick, useId, watchEffect } from 'vue'
 import type { TerminalTab, TerminalTabCharacter } from '@commas/types/terminal'
 import type { IconEntry } from '../assets/icons'
 import { useSettings } from '../compositions/settings'
@@ -22,6 +22,8 @@ const emit = defineEmits<{
 defineSlots<{
   operations?: (props: {}) => any,
 }>()
+
+const id = useId()
 
 const settings = useSettings()
 const terminal = $(useCurrentTerminal())
@@ -129,7 +131,10 @@ function close() {
 </script>
 
 <template>
-  <div :class="['tab-item', { active: isActive, focused: isFocused, virtual: !tab }]">
+  <div
+    :class="['tab-item', { active: isActive, focused: isFocused, virtual: !tab }]"
+    :style="{ 'view-transition-name': `view-transition-${id}` }"
+  >
     <div class="tab-overview">
       <div class="tab-title">
         <VisualIcon

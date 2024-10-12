@@ -384,6 +384,7 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
   opacity: 0.5;
   transition: opacity 0.2s, color 0.2s, transform 0.2s;
   cursor: pointer;
+  view-transition-name: launcher-folder;
   &:hover {
     background: var(--design-highlight-background);
     opacity: 1;

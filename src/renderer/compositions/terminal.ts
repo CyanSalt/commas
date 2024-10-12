@@ -353,9 +353,11 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
   if (command) {
     executeTerminalTab(tab, command)
   }
-  const targetIndex = activeIndex + 1
-  tabs.splice(targetIndex, 0, tab)
-  activeIndex = targetIndex
+  document.startViewTransition(() => {
+    const targetIndex = activeIndex + 1
+    tabs.splice(targetIndex, 0, tab)
+    activeIndex = targetIndex
+  })
   return tab
 }
 
@@ -828,22 +830,24 @@ function reflowTabGroup(groupTabs: TerminalTab[]) {
   }
 }
 
-export async function removeTerminalTab(tab: TerminalTab) {
-  const index = getTerminalTabIndex(tab)
-  tabs.splice(index, 1)
-  const groupTabs = tab.group ? getTerminalTabsByGroup(tab.group) : []
-  if (!tabs.length) {
-    window.close()
-  } else if (activeIndex > index) {
-    activeIndex -= 1
-  } else if (activeIndex === index) {
-    const currentTabs = groupTabs.length ? groupTabs : tabs
-    activeIndex = getTerminalTabIndex(currentTabs[currentTabs.length - 1])
-  }
-  if (tab.group) {
-    releaseTabPosition(tab, groupTabs)
-    reflowTabGroup(groupTabs)
-  }
+export function removeTerminalTab(tab: TerminalTab) {
+  document.startViewTransition(() => {
+    const index = getTerminalTabIndex(tab)
+    tabs.splice(index, 1)
+    const groupTabs = tab.group ? getTerminalTabsByGroup(tab.group) : []
+    if (!tabs.length) {
+      window.close()
+    } else if (activeIndex > index) {
+      activeIndex -= 1
+    } else if (activeIndex === index) {
+      const currentTabs = groupTabs.length ? groupTabs : tabs
+      activeIndex = getTerminalTabIndex(currentTabs[currentTabs.length - 1])
+    }
+    if (tab.group) {
+      releaseTabPosition(tab, groupTabs)
+      reflowTabGroup(groupTabs)
+    }
+  })
 }
 
 export function activateTerminalTab(tab: TerminalTab) {
@@ -858,32 +862,36 @@ export function activateOrAddTerminalTab(tab: TerminalTab) {
   if (index !== -1) {
     activeIndex = index
   } else {
-    const targetIndex = activeIndex + 1
-    tabs.splice(targetIndex, 0, tab)
-    activeIndex = targetIndex
+    document.startViewTransition(() => {
+      const targetIndex = activeIndex + 1
+      tabs.splice(targetIndex, 0, tab)
+      activeIndex = targetIndex
+    })
   }
 }
 
 export function moveTerminalTab(tab: TerminalTab, index: number, edge?: 'start' | 'end') {
-  const fromIndex = tabs.indexOf(tab)
-  if (fromIndex === index) return
-  let targetIndex = index
-  if (fromIndex < index) {
-    targetIndex = edge === 'start' ? index - 1 : index
-    tabs.splice(targetIndex + 1, 0, tab)
-    tabs.splice(fromIndex, 1)
-  } else {
-    targetIndex = edge === 'end' ? index + 1 : index
-    tabs.splice(fromIndex, 1)
-    tabs.splice(targetIndex, 0, tab)
-  }
-  if (activeIndex === fromIndex) {
-    activeIndex = targetIndex
-  } else if (activeIndex > fromIndex && activeIndex < targetIndex) {
-    activeIndex -= 1
-  } else if (activeIndex < fromIndex && activeIndex > targetIndex) {
-    activeIndex += 1
-  }
+  document.startViewTransition(() => {
+    const fromIndex = tabs.indexOf(tab)
+    if (fromIndex === index) return
+    let targetIndex = index
+    if (fromIndex < index) {
+      targetIndex = edge === 'start' ? index - 1 : index
+      tabs.splice(targetIndex + 1, 0, tab)
+      tabs.splice(fromIndex, 1)
+    } else {
+      targetIndex = edge === 'end' ? index + 1 : index
+      tabs.splice(fromIndex, 1)
+      tabs.splice(targetIndex, 0, tab)
+    }
+    if (activeIndex === fromIndex) {
+      activeIndex = targetIndex
+    } else if (activeIndex > fromIndex && activeIndex < targetIndex) {
+      activeIndex -= 1
+    } else if (activeIndex < fromIndex && activeIndex > targetIndex) {
+      activeIndex += 1
+    }
+  })
 }
 
 export function separateTerminalTabGroup(tab: TerminalTab) {

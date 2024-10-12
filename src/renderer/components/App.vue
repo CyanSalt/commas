@@ -113,6 +113,14 @@ onMounted(() => {
   initial-value: 0;
 }
 
+:global(::view-transition-group(*)) {
+  animation-duration: 0.2s;
+}
+
+:global(::view-transition-group(root)) {
+  animation-duration: 0s !important;
+}
+
 // https://developer.apple.com/design/human-interface-guidelines/color#macOS-system-colors
 :global(:root) {
   --system-red: 255 59 48;
