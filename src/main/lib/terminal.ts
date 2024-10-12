@@ -88,14 +88,16 @@ async function createTerminal(
       })
     }
   })
+  const handleDestroy = () => {
+    ptyProcess.kill()
+  }
+  webContents.once('destroyed', handleDestroy)
   ptyProcess.onExit(data => {
     ptyProcessMap.delete(ptyProcess.pid)
+    webContents.off('destroyed', handleDestroy)
     if (!webContents.isDestroyed()) {
       send(webContents, 'exit-terminal', { pid: ptyProcess.pid })
     }
-  })
-  webContents.once('destroyed', () => {
-    ptyProcess.kill()
   })
   ptyProcessMap.set(ptyProcess.pid, ptyProcess)
   return {
