@@ -37,8 +37,9 @@ export function createContextMenu() {
   }
   const editingItems: MenuItem[] = [
     {
-      label: 'Copy#!menu.copy',
-      accelerator: 'CmdOrCtrl+C',
+      label: process.platform === 'darwin'
+        ? 'Copy#!menu.copy.darwin'
+        : 'Copy#!menu.copy',
       role: 'copy',
     },
     {
