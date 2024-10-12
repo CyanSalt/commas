@@ -285,7 +285,7 @@ function autoselect(event: FocusEvent) {
   &.directory {
     .file-icon {
       color: rgb(var(--system-blue));
-      fill: currentColor;
+      fill: rgb(var(--system-blue) / 50%);
     }
   }
 }

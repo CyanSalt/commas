@@ -110,7 +110,7 @@ function getCompletionIcon(item: CommandCompletion) {
     case 'file':
       return 'lucide-file'
     case 'directory':
-      return 'lucide-folder-open'
+      return 'lucide-folder-closed'
     case 'recommendation':
       return 'lucide-lightbulb'
     case 'third-party':
