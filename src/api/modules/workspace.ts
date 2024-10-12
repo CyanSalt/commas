@@ -53,7 +53,9 @@ function getTerminalTabByPane(pane: TerminalTabPane, info: Partial<TerminalTab> 
   return tabs.find(tab => tab.pane?.name === pane.name && isMatch(tab, info))
 }
 
-function createPaneTab(pane: TerminalTabPane, info?: Partial<TerminalTab>) {
+export type PaneTabInfo = Pick<TerminalTab, 'command' | 'process' | 'cwd' | 'shell'>
+
+function createPaneTab(pane: TerminalTabPane, info?: Partial<PaneTabInfo>) {
   return reactive({
     pid: 0,
     process: pane.name,
@@ -65,7 +67,7 @@ function createPaneTab(pane: TerminalTabPane, info?: Partial<TerminalTab>) {
   } as TerminalTab)
 }
 
-function openPaneTab(name: string, info?: Partial<TerminalTab>) {
+function openPaneTab(name: string, info?: Partial<PaneTabInfo>) {
   const pane = getPane(name)
   if (!pane) return
   if (!pane.volatile) {

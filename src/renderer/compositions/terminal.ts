@@ -13,7 +13,7 @@ import { WebglAddon } from '@xterm/addon-webgl'
 import type { IMarker, ITerminalOptions } from '@xterm/xterm'
 import { Terminal } from '@xterm/xterm'
 import { toKeyEvent } from 'keyboardevent-from-electron-accelerator'
-import { isMatch, trim } from 'lodash'
+import { isMatch, pick, trim } from 'lodash'
 import type { MaybeRefOrGetter } from 'vue'
 import { effectScope, markRaw, nextTick, reactive, shallowReactive, toRaw, toValue, watch, watchEffect } from 'vue'
 import { ipcRenderer } from '@commas/electron-ipc'
@@ -584,7 +584,15 @@ export function handleTerminalMessages() {
   ipcRenderer.on('open-url', (event, address) => {
     const url = new URL(address)
     const paths = trim(url.pathname, '/').split('/')
-    commas.proxy.workspace.openPaneTab(paths[0])
+    commas.proxy.workspace.openPaneTab(
+      paths[0],
+      pick(Object.fromEntries(url.searchParams), [
+        'command',
+        'process',
+        'cwd',
+        'shell',
+      ]),
+    )
     paneTabURL = address
   })
   ipcRenderer.on('save', () => {
