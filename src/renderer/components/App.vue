@@ -13,6 +13,7 @@ import {
   confirmClosing,
   handleShellMessages,
   useIsTabListEnabled,
+  useIsTabListToggling,
   useWillQuit,
 } from '../compositions/shell'
 import {
@@ -39,6 +40,7 @@ const settings = useSettings()
 const theme = useTheme()
 const isFullscreen = $(useFullscreen())
 const isTabListEnabled = $(useIsTabListEnabled())
+const isTabListToggling = $(useIsTabListToggling())
 const tabs = $(useTerminalTabs())
 const willQuit = $(useWillQuit())
 
@@ -87,9 +89,9 @@ onMounted(() => {
 <template>
   <div :class="['app', { 'is-opaque': isFullscreen, 'is-vibrant': theme.vibrancy }]">
     <TitleBar />
-    <div class="content">
+    <div class="page">
       <TabList v-if="!hasHorizontalTabList" v-show="isTabListEnabled" />
-      <main class="interface">
+      <main :class="['content', { 'is-tab-list-toggling': isTabListToggling }]">
         <FindBox />
         <TerminalView />
       </main>
@@ -104,7 +106,7 @@ onMounted(() => {
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @use '../assets/_partials';
 
 @property --scrollbar-opacity {
@@ -113,16 +115,15 @@ onMounted(() => {
   initial-value: 0;
 }
 
-:global(::view-transition-group(*)) {
+::view-transition-group(*) {
   animation-duration: 0.1s;
 }
-
-:global(::view-transition-group(root)) {
+::view-transition-group(root) {
   animation-duration: 0s !important;
 }
 
 // https://developer.apple.com/design/human-interface-guidelines/color#macOS-system-colors
-:global(:root) {
+:root {
   --system-red: 255 59 48;
   --system-orange: 255 149 0;
   --system-yellow: 255 204 0;
@@ -164,15 +165,22 @@ onMounted(() => {
     --design-highlight-background: rgb(255 255 255 / 5%);
   }
 }
-:global(::selection) {
+::selection {
   background: rgb(var(--theme-selectionbackground));
 }
-:global(body) {
+body {
   margin: 0;
   cursor: default;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
+::view-transition-old(tab-list-toggling-content),
+::view-transition-new(tab-list-toggling-content) {
+  height: 100%;
+}
+</style>
+
+<style lang="scss" scoped>
 .app {
   display: flex;
   flex-direction: column;
@@ -188,7 +196,7 @@ onMounted(() => {
     background-image: linear-gradient(to right bottom, rgb(var(--acrylic-background) / 6%), rgb(var(--acrylic-background) / 12%));
   }
 }
-.content {
+.page {
   z-index: 1;
   display: flex;
   flex: auto;
@@ -197,11 +205,14 @@ onMounted(() => {
   min-height: 0;
   padding: 0 var(--design-card-gap);
 }
-.interface {
+.content {
   display: flex;
   flex: 1;
   flex-direction: column;
   gap: var(--design-card-gap);
   min-width: 0;
+  &.is-tab-list-toggling {
+    view-transition-name: tab-list-toggling-content;
+  }
 }
 </style>

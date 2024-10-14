@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useSettings } from '../compositions/settings'
-import { useIsTabListEnabled } from '../compositions/shell'
+import { toggleTabList, useIsTabListEnabled } from '../compositions/shell'
 import { showTabOptions } from '../compositions/terminal'
 import VisualIcon from './basic/VisualIcon.vue'
 
@@ -13,9 +13,9 @@ const hasHorizontalTabList = $computed(() => {
 
 let isTabListEnabled = $(useIsTabListEnabled())
 
-function toggleTabList(event: MouseEvent) {
+async function toggleOrShowOptions(event: MouseEvent) {
   if (!hasHorizontalTabList) {
-    isTabListEnabled = !isTabListEnabled
+    toggleTabList()
   } else {
     showTabOptions(event)
   }
@@ -25,7 +25,7 @@ function toggleTabList(event: MouseEvent) {
 <template>
   <div
     class="tab-list-control"
-    @click="toggleTabList"
+    @click="toggleOrShowOptions"
     @contextmenu="showTabOptions"
     @dblclick.stop
   >

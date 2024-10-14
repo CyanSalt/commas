@@ -22,6 +22,11 @@ export function useIsTabListEnabled() {
   return $$(isTabListEnabled)
 }
 
+let isTabListToggling = $ref(false)
+export function useIsTabListToggling() {
+  return $$(isTabListToggling)
+}
+
 let isFinding = $ref(false)
 export function useIsFinding() {
   return $$(isFinding)
@@ -30,6 +35,15 @@ export function useIsFinding() {
 let willQuit = $ref(false)
 export function useWillQuit() {
   return $$(willQuit)
+}
+
+export async function toggleTabList() {
+  isTabListToggling = true
+  const transition = document.startViewTransition(() => {
+    isTabListEnabled = !isTabListEnabled
+  })
+  await transition.updateCallbackDone
+  isTabListToggling = false
 }
 
 export async function confirmClosing() {
@@ -72,7 +86,7 @@ export function handleShellMessages() {
     isFinding = !isFinding
   })
   ipcRenderer.on('toggle-tab-list', () => {
-    isTabListEnabled = !isTabListEnabled
+    toggleTabList()
   })
   ipcRenderer.on('before-quit', () => {
     willQuit = true
