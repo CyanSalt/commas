@@ -114,7 +114,7 @@ onMounted(() => {
 }
 
 :global(::view-transition-group(*)) {
-  animation-duration: 0.2s;
+  animation-duration: 0.1s;
 }
 
 :global(::view-transition-group(root)) {

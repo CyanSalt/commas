@@ -72,7 +72,9 @@ const launcherItems = $computed(() => {
 })
 
 function toggleCollapsing() {
-  isCollapsed = !isCollapsed
+  document.startViewTransition(() => {
+    isCollapsed = !isCollapsed
+  })
 }
 
 function createLauncher(data: LauncherInfo, index: number) {
