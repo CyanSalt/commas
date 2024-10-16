@@ -20,11 +20,13 @@ export class RendererWebContentsView {
 
   static async create(element: HTMLElement) {
     const rect = element.getBoundingClientRect()
+    const borderRadius = getComputedStyle(element).getPropertyValue('border-radius')
     const id = await ipcRenderer.invoke('create-web-contents', {
       x: rect.x,
       y: rect.y,
       width: rect.width,
       height: rect.height,
+      borderRadius: parseInt(borderRadius, 10) || 0,
     })
     const view = new RendererWebContentsView(id)
     webContentsViews.push(view)

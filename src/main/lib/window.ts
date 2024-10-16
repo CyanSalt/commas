@@ -16,10 +16,10 @@ declare module '@commas/electron-ipc' {
     'global-main:open-window': () => void,
   }
   export interface Commands {
-    'create-web-contents': (rect: Rectangle) => number,
+    'create-web-contents': (rect: Rectangle & { borderRadius?: number }) => number,
     'destroy-web-contents': (id: number) => void,
     'navigate-web-contents': (id: number, url: string) => void,
-    'resize-web-contents': (id: number, rect: Rectangle) => void,
+    'resize-web-contents': (id: number, rect: Rectangle & { borderRadius?: number }) => void,
     'go-to-offset-web-contents': (id: number, offset: number) => void,
   }
 }
@@ -148,6 +148,9 @@ function handleWindowMessages() {
     const frame = BrowserWindow.fromWebContents(event.sender)!
     const view = new WebContentsView()
     view.setBounds(rect)
+    if (rect.borderRadius) {
+      view.setBorderRadius(rect.borderRadius)
+    }
     frame.contentView.addChildView(view)
     webContentsViews.add(view)
     handleViewEvents(view, event.sender)
@@ -170,6 +173,9 @@ function handleWindowMessages() {
     const view = Array.from(webContentsViews).find(item => item.webContents.id === id)
     if (!view) return
     view.setBounds(rect)
+    if (rect.borderRadius) {
+      view.setBorderRadius(rect.borderRadius)
+    }
   })
   ipcMain.handle('go-to-offset-web-contents', (event, id, offset) => {
     const view = Array.from(webContentsViews).find(item => item.webContents.id === id)

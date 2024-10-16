@@ -45,3 +45,9 @@ watchEffect(() => {
 <template>
   <div ref="root" class="web-contents"></div>
 </template>
+
+<style lang="scss" scoped>
+.web-contents {
+  border-radius: var(--design-card-border-radius);
+}
+</style>
