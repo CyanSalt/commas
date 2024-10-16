@@ -12,6 +12,7 @@ export class RendererWebContentsView {
   url?: string
   title?: string
   icon?: string
+  loading?: boolean
   canGoBack?: boolean
 
   constructor(id: number) {
@@ -79,6 +80,11 @@ export function handleWebContentsMessages() {
     if (!view) return
     view.url = url
     view.canGoBack = canGoBack
+  })
+  ipcRenderer.on('view-loading-updated', (event, id, loading) => {
+    const view = webContentsViews.find(item => item.id === id)
+    if (!view) return
+    view.loading = loading
   })
   ipcRenderer.on('view-open-url', (event, url) => {
     openURL(url)

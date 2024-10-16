@@ -2,6 +2,7 @@
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import { shell } from 'electron'
+import normalizeURL from 'normalize-url'
 import { nextTick, watchEffect } from 'vue'
 
 const { tab } = defineProps<{
@@ -58,8 +59,16 @@ async function startCustomization() {
 }
 
 async function customize() {
-  if (customURL !== url) {
-    url = customURL
+  if (customURL && customURL !== url) {
+    url = normalizeURL(customURL, {
+      defaultProtocol: 'https',
+      stripTextFragment: false,
+      stripWWW: false,
+      removeQueryParameters: false,
+      removeTrailingSlash: false,
+      removeSingleSlash: false,
+      sortQueryParameters: false,
+    })
   }
   isCustomizing = false
 }
@@ -95,7 +104,7 @@ watchEffect((onInvalidate) => {
 <template>
   <TerminalPane :tab="tab" class="browser-pane">
     <div class="browser-view">
-      <div class="form-line action-line">
+      <div :class="['form-line', 'action-line', { 'is-loading': view?.loading }]">
         <span :class="['link', 'form-action', { disabled: !view?.canGoBack }]" @click="goBack">
           <VisualIcon name="lucide-undo-2" />
         </span>
@@ -134,10 +143,20 @@ watchEffect((onInvalidate) => {
   padding: 0;
   overflow: visible;
 }
+@keyframes background-continuous {
+  from {
+    background-position: right;
+  }
+}
 .action-line {
   flex: none;
   gap: 4px;
   padding: 8px;
+  &.is-loading {
+    background: linear-gradient(to right, transparent 25%, var(--design-highlight-background), transparent 66.6667%);
+    background-size: 300% 100%;
+    animation: background-continuous 1s infinite linear;
+  }
   .form-action {
     width: 18px;
     height: 18px;

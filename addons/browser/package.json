@@ -15,5 +15,8 @@
       "productName": "浏览器",
       "description": "网上冲浪"
     }
+  },
+  "devDependencies": {
+    "normalize-url": "^8.0.1"
   }
 }

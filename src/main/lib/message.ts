@@ -49,6 +49,7 @@ declare module '@commas/electron-ipc' {
     'view-title-updated': (id: number, title: string) => void,
     'view-icon-updated': (id: number, icon: string | undefined) => void,
     'view-url-updated': (id: number, url: string, canGoBack: boolean) => void,
+    'view-loading-updated': (id: number, loading: boolean) => void,
     'view-open-url': (url: string) => void,
   }
 }
@@ -286,6 +287,12 @@ function handleViewEvents(view: WebContentsView, parent: WebContents) {
   })
   view.webContents.on('did-start-navigation', (details) => {
     send(parent, 'view-url-updated', view.webContents.id, details.url, view.webContents.navigationHistory.canGoBack())
+  })
+  view.webContents.on('did-start-loading', () => {
+    send(parent, 'view-loading-updated', view.webContents.id, true)
+  })
+  view.webContents.on('did-stop-loading', () => {
+    send(parent, 'view-loading-updated', view.webContents.id, false)
   })
 }
 
