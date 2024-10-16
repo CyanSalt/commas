@@ -12,5 +12,5 @@ export const useEditorTheme = commas.helper.reuse(() => {
 export function openCodeEditorTab(file: string) {
   return commas.workspace.openPaneTab('editor', {
     shell: file,
-  })!
+  })
 }

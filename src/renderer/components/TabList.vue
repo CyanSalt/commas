@@ -149,7 +149,7 @@ async function handleDrop(args: DraggableElementEventPayload<DraggableElementDat
       const toEdge = edge === 'top' || edge === 'left'
         ? 'start'
         : (edge === 'bottom' || edge === 'right' ? 'end' : undefined)
-      moveTerminalTab(tab, args.self.data.index, toEdge)
+      await moveTerminalTab(tab, args.self.data.index, toEdge)
     }
     if (args.source.data.dispose) {
       args.source.data.dispose()

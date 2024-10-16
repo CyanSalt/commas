@@ -6,13 +6,13 @@ export function getDirectoryProcess(directory: string) {
 }
 
 export function openFileExplorerTab(directory?: string) {
-  return commas.workspace.openPaneTab('explorer', { cwd: directory })!
+  return commas.workspace.openPaneTab('explorer', { cwd: directory })
 }
 
 const terminal = $(commas.workspace.useCurrentTerminal())
 const settings = commas.remote.useSettings()
 
-export function splitOrCloseFileExplorerTab(directory: string) {
+export async function splitOrCloseFileExplorerTab(directory: string) {
   const current = terminal
   const pane = commas.workspace.getPane('explorer')!
   const dir = getDirectoryProcess(directory)
@@ -22,12 +22,11 @@ export function splitOrCloseFileExplorerTab(directory: string) {
       group: current.group,
     })
     if (existingTab) {
-      commas.workspace.closeTerminalTab(existingTab)
-      return
+      return commas.workspace.closeTerminalTab(existingTab)
     }
   }
   const titlePosition = settings['terminal.view.tabListPosition'] === 'top' ? 'bottom' : 'top'
-  const tab = openFileExplorerTab(directory)
+  const tab = await openFileExplorerTab(directory)
   if (current && !current.pane) {
     const siblings = current.group
       ? commas.workspace.getTerminalTabsByGroup(current.group)

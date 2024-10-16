@@ -96,7 +96,7 @@ export async function openLauncher(launcher: Launcher, options: OpenLauncherOpti
       command: launcher.command,
       character,
     })
-    commas.workspace.activateOrAddTerminalTab(paneTab)
+    await commas.workspace.activateOrAddTerminalTab(paneTab)
     return paneTab
   } else {
     return commas.workspace.createTerminalTab(profile, {

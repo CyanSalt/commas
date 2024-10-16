@@ -353,11 +353,12 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
   if (command) {
     executeTerminalTab(tab, command)
   }
-  document.startViewTransition(() => {
+  const transition = document.startViewTransition(() => {
     const targetIndex = activeIndex + 1
     tabs.splice(targetIndex, 0, tab)
     activeIndex = targetIndex
   })
+  await transition.updateCallbackDone
   return tab
 }
 
@@ -733,7 +734,7 @@ export function executeTerminalTab(tab: TerminalTab, command: string, restart?: 
 
 export function closeTerminalTab(tab: TerminalTab) {
   if (tab.pane) {
-    removeTerminalTab(tab)
+    return removeTerminalTab(tab)
   } else {
     return ipcRenderer.invoke('close-terminal', tab.pid)
   }
@@ -831,7 +832,7 @@ function reflowTabGroup(groupTabs: TerminalTab[]) {
 }
 
 export function removeTerminalTab(tab: TerminalTab) {
-  document.startViewTransition(() => {
+  const transition = document.startViewTransition(() => {
     const index = getTerminalTabIndex(tab)
     tabs.splice(index, 1)
     const groupTabs = tab.group ? getTerminalTabsByGroup(tab.group) : []
@@ -848,6 +849,7 @@ export function removeTerminalTab(tab: TerminalTab) {
       reflowTabGroup(groupTabs)
     }
   })
+  return transition.updateCallbackDone
 }
 
 export function activateTerminalTab(tab: TerminalTab) {
@@ -857,21 +859,22 @@ export function activateTerminalTab(tab: TerminalTab) {
   }
 }
 
-export function activateOrAddTerminalTab(tab: TerminalTab) {
+export async function activateOrAddTerminalTab(tab: TerminalTab) {
   const index = getTerminalTabIndex(tab)
   if (index !== -1) {
     activeIndex = index
   } else {
-    document.startViewTransition(() => {
+    const transition = document.startViewTransition(() => {
       const targetIndex = activeIndex + 1
       tabs.splice(targetIndex, 0, tab)
       activeIndex = targetIndex
     })
+    return transition.updateCallbackDone
   }
 }
 
 export function moveTerminalTab(tab: TerminalTab, index: number, edge?: 'start' | 'end') {
-  document.startViewTransition(() => {
+  const transition = document.startViewTransition(() => {
     const fromIndex = tabs.indexOf(tab)
     if (fromIndex === index) return
     let targetIndex = index
@@ -892,6 +895,7 @@ export function moveTerminalTab(tab: TerminalTab, index: number, edge?: 'start' 
       activeIndex += 1
     }
   })
+  return transition.updateCallbackDone
 }
 
 export function separateTerminalTabGroup(tab: TerminalTab) {
