@@ -49,11 +49,13 @@ async function createWindow(...args: string[]) {
   }
   if (frameType === 'immersive') {
     options.titleBarStyle = process.platform === 'darwin' ? 'hiddenInset' : 'hidden'
-    if (process.platform === 'win32') {
+    if (process.platform !== 'darwin') {
       options.titleBarOverlay = true
-    } else if (process.platform === 'linux') {
+    }
+    if (process.platform === 'linux') {
       options.frame = false
-    } else {
+    }
+    if (process.platform !== 'win32') {
       // Transparent window on Windows will lose border and shadow
       options.transparent = true
     }
@@ -102,7 +104,7 @@ async function createWindow(...args: string[]) {
     frame.setBackgroundColor(themeOptions.backgroundColor)
     // @ts-expect-error electron type error
     frame.setVibrancy(themeOptions.vibrancy ?? null)
-    if (process.platform === 'win32' && frameType === 'immersive') {
+    if (process.platform !== 'darwin' && frameType === 'immersive') {
       frame.setTitleBarOverlay(themeOptions.titleBarOverlay)
     }
     if (process.platform === 'darwin') {

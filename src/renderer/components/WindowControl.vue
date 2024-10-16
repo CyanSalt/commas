@@ -7,7 +7,7 @@ let isMaximized = $(useMaximized())
 let isMinimized = $(useMinimized())
 
 const platform = process.platform
-const isCustomControlEnabled = !['darwin', 'win32'].includes(platform)
+const isCustomControlEnabled = !['darwin', 'win32', 'linux'].includes(platform)
 
 const settings = useSettings()
 const isInteractive = $computed(() => {
