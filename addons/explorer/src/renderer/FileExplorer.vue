@@ -88,9 +88,9 @@ function goBack() {
 
 function openExternal(file: FileEntity) {
   if (file.isDirectory) {
-    ipcRenderer.invoke('open-path', file.path)
+    commas.remote.openDirectoryExternally(file.path)
   } else {
-    ipcRenderer.invoke('show-file', file.path)
+    commas.remote.showFileExternally(file.path)
   }
 }
 
@@ -108,7 +108,7 @@ function openExternalExplorer() {
 }
 
 function openDirectory() {
-  ipcRenderer.invoke('open-path', modelValue)
+  commas.remote.openDirectoryExternally(modelValue)
 }
 
 function openNewTab() {

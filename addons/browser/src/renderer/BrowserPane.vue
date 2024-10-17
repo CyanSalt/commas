@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
-import { shell } from 'electron'
 import normalizeURL from 'normalize-url'
 import { nextTick, watchEffect } from 'vue'
 
@@ -84,7 +83,7 @@ function autoselect(event: FocusEvent) {
 
 function openExternal() {
   if (!url) return
-  shell.openExternal(url)
+  commas.remote.openURLExternally(url)
 }
 
 watchEffect((onInvalidate) => {

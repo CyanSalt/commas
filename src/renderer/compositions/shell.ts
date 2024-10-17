@@ -66,8 +66,16 @@ export function openFile(file: string) {
   return globalHandler.invoke('global-renderer:open-file', file)
 }
 
+export function showFileExternally(file: string) {
+  return ipcRenderer.invoke('show-file', file)
+}
+
 export function openDirectory(directory: string) {
   return globalHandler.invoke('global-renderer:open-directory', directory)
+}
+
+export function openDirectoryExternally(directory: string) {
+  return ipcRenderer.invoke('open-path', directory)
 }
 
 export function showDirectory(file: string) {
@@ -76,6 +84,10 @@ export function showDirectory(file: string) {
 
 export function openURL(url: string) {
   return globalHandler.invoke('global-renderer:open-url', url)
+}
+
+export function openURLExternally(url: string) {
+  return ipcRenderer.invoke('open-url', url)
 }
 
 export function handleShellMessages() {
@@ -92,15 +104,15 @@ export function handleShellMessages() {
     willQuit = true
   })
   globalHandler.handle('global-renderer:open-file', (file) => {
-    ipcRenderer.invoke('show-file', file)
+    return showFileExternally(file)
   })
   globalHandler.handle('global-renderer:open-directory', (directory) => {
-    ipcRenderer.invoke('open-path', directory)
+    return openDirectoryExternally(directory)
   })
   globalHandler.handle('global-renderer:show-directory', (directory) => {
-    ipcRenderer.invoke('open-path', directory)
+    return openDirectoryExternally(directory)
   })
-  globalHandler.handle('global-renderer:open-url', (directory) => {
-    ipcRenderer.invoke('open-url', directory)
+  globalHandler.handle('global-renderer:open-url', (url) => {
+    return openURLExternally(url)
   })
 }

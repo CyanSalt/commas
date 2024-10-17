@@ -179,6 +179,19 @@
     "default": ""
   },
   {
+    "key": "terminal.external.extraLinkModifier",
+    "label": "Extra External Link Modifier",
+    "comments": [
+      "Extra keyboard modifier for opening external link by click",
+      "A value like 'no-Shift' means that links will be open externally by default unless Shift is pressed"
+    ],
+    "schema": {
+      "type": "string",
+      "enum": ["no-Shift", "Shift", "no-Alt", "Alt"]
+    },
+    "default": "no-Shift"
+  },
+  {
     "key": "terminal.tab.liveCwd",
     "label": "Enable Live CWD",
     "comments": [

@@ -2,7 +2,6 @@
 import { ipcRenderer } from '@commas/electron-ipc'
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
-import { shell } from 'electron'
 import { toRaw, toRef } from 'vue'
 import type { SyncPlan } from '../types/sync'
 import { useSyncData } from './compositions'
@@ -34,8 +33,7 @@ function openGitHubTokenSettings() {
   const url = new URL('https://github.com/settings/tokens/new')
   url.searchParams.set('description', 'Commas Sync')
   url.searchParams.set('scopes', 'gist')
-  // Do not use `commas.remote.openURL` since authorization required
-  shell.openExternal(url.href)
+  commas.remote.openURLExternally(url.href)
 }
 
 function confirmToken() {
@@ -56,7 +54,7 @@ function downloadDefaultSyncPlan() {
 }
 
 function openSyncPlanGist(gist: string) {
-  shell.openExternal(`https://gist.github.com/${gist}`)
+  commas.remote.openURLExternally(`https://gist.github.com/${gist}`)
 }
 
 async function uploadSyncPlan(plan: SyncPlan) {
@@ -74,7 +72,7 @@ async function downloadSyncPlan(plan: SyncPlan) {
 }
 
 function openSyncPlanDirectory(plan: SyncPlan) {
-  shell.openPath(plan.directory)
+  commas.remote.openDirectory(plan.directory)
 }
 
 function formatTime(time: string | null) {

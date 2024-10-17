@@ -61,7 +61,7 @@ function refresh() {
 
 function showInFolder(addon: AddonInfo) {
   if (addon.type === 'builtin') return
-  ipcRenderer.invoke('show-file', addon.entry)
+  commas.remote.showFileExternally(addon.entry)
 }
 
 onMounted(() => {

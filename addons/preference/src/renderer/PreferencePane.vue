@@ -60,9 +60,9 @@ function openCustomCSS() {
   commas.remote.openUserFile('custom.css')
 }
 
-function openWebsite() {
+function openWebsite(event: MouseEvent) {
   const manifest = commas.app.getManifest()
-  commas.remote.openURL(manifest.homepage)
+  commas.ui.openLink(manifest.homepage, event)
 }
 </script>
 

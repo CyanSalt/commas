@@ -65,8 +65,8 @@ function reset() {
   ipcRenderer.invoke('reset-theme')
 }
 
-function openMarketplace() {
-  commas.remote.openURL('https://windowsterminalthemes.dev')
+function openMarketplace(event: MouseEvent) {
+  commas.ui.openLink('https://windowsterminalthemes.dev', event)
 }
 
 async function applyTheme(item: RemoteTheme) {

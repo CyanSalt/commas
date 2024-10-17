@@ -5,7 +5,7 @@ import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from '../../api/core-renderer'
 import { omitHome } from '../../shared/terminal'
 import { useSettings } from '../compositions/settings'
-import { showDirectory } from '../compositions/shell'
+import { openDirectoryExternally, showDirectory, showFileExternally } from '../compositions/shell'
 import { useCurrentTerminal } from '../compositions/terminal'
 import { translate } from '../utils/i18n'
 import { getPrompt } from '../utils/terminal'
@@ -99,12 +99,12 @@ function openDirectory(event: MouseEvent) {
   if (isDirectory) {
     showDirectory(fileOrDirectory)
   } else {
-    ipcRenderer.invoke('show-file', fileOrDirectory)
+    showFileExternally(fileOrDirectory)
   }
 }
 
 function openFile() {
-  ipcRenderer.invoke('open-path', fileOrDirectory)
+  openDirectoryExternally(fileOrDirectory)
 }
 
 function startDraggingDirectory(event: DragEvent) {

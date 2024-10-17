@@ -43,8 +43,8 @@ const address = $computed(() => {
   return `http://${ip}:${port}`
 })
 
-function openEditor() {
-  commas.remote.openURL(`http://localhost:${port}`)
+function openEditor(event: MouseEvent) {
+  commas.ui.openLink(`http://localhost:${port}`, event)
 }
 
 function copyAddress() {
@@ -69,12 +69,12 @@ function openKeychainAccess() {
   return ipcRenderer.invoke('execute', `open -a 'Keychain Access'`)
 }
 
-function install() {
-  commas.remote.openURL('https://github.com/avwo/whistle/')
+function install(event: MouseEvent) {
+  commas.ui.openLink('https://github.com/avwo/whistle/', event)
 }
 
-function update() {
-  commas.remote.openURL('https://github.com/avwo/whistle/blob/master/CHANGELOG.md')
+function update(event: MouseEvent) {
+  commas.ui.openLink('https://github.com/avwo/whistle/blob/master/CHANGELOG.md', event)
 }
 </script>
 

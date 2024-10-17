@@ -1,6 +1,6 @@
 import * as os from 'node:os'
 import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
-import { useResizeObserver } from '@vueuse/core'
+import { useEventListener, useResizeObserver } from '@vueuse/core'
 import { CanvasAddon } from '@xterm/addon-canvas'
 import { FitAddon } from '@xterm/addon-fit'
 import { ImageAddon } from '@xterm/addon-image'
@@ -29,7 +29,7 @@ import { getProcessName, getPrompt, getTerminalTabID, getWindowsProcessInfo } fr
 import { useA11yEnabled } from './a11y'
 import { useKeyBindings } from './keybinding'
 import { useSettings } from './settings'
-import { openURL } from './shell'
+import { openURL, openURLExternally } from './shell'
 import { useTheme } from './theme'
 
 declare module '@commas/api/modules/app' {
@@ -158,7 +158,7 @@ export function getVisualTerminalTabIndex(tab: TerminalTab) {
     .indexOf(toRaw(tab))
 }
 
-export function isMatchLinkModifier(event: MouseEvent) {
+function isMatchLinkModifier(event: MouseEvent | KeyboardEvent) {
   switch (settings['terminal.view.linkModifier']) {
     case 'Alt':
       return event.altKey
@@ -169,9 +169,56 @@ export function isMatchLinkModifier(event: MouseEvent) {
   }
 }
 
+function isMatchExternalLinkModifier(event: MouseEvent | KeyboardEvent) {
+  switch (settings['terminal.external.extraLinkModifier']) {
+    case 'no-Shift':
+      return !event.shiftKey
+    case 'Shift':
+      return event.shiftKey
+    case 'Alt':
+      return event.altKey
+    case 'no-Alt':
+      return !event.altKey
+    default:
+      return false
+  }
+}
+
+let linkModifier = $ref(false)
+let externalLinkModifier = $ref(false)
+
+const events = ['mousedown', 'mouseup', 'keydown', 'keyup'] as const
+events.forEach(name => {
+  useEventListener(document, name, event => {
+    linkModifier = isMatchLinkModifier(event)
+    externalLinkModifier = isMatchExternalLinkModifier(event)
+  })
+})
+
+export function useLinkModifiers() {
+  return $$({
+    linkModifier,
+    externalLinkModifier,
+  })
+}
+
+export async function openLink(uri: string, event?: MouseEvent) {
+  let modifier: boolean
+  if (event) {
+    modifier = isMatchExternalLinkModifier(event)
+  } else {
+    modifier = externalLinkModifier
+  }
+  if (modifier) {
+    return openURLExternally(uri)
+  } else {
+    return openURL(uri)
+  }
+}
+
 function handleTerminalLink(event: MouseEvent, uri: string) {
   if (isMatchLinkModifier(event)) {
-    openURL(uri)
+    return openLink(uri, event)
   }
 }
 

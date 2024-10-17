@@ -7,7 +7,7 @@ import { quote } from 'shell-quote'
 import { onBeforeUpdate } from 'vue'
 import { RecycleScroller } from 'vue-virtual-scroller'
 import type { CommandCompletion, TerminalTab } from '@commas/types/terminal'
-import { isMatchLinkModifier, useTerminalElement } from '../compositions/terminal'
+import { useLinkModifiers, useTerminalElement } from '../compositions/terminal'
 import { createContextMenu, openContextMenu, withContextMenuSeparator } from '../utils/frame'
 import { escapeHTML } from '../utils/helper'
 import TerminalBlock from './TerminalBlock.vue'
@@ -19,6 +19,10 @@ const { tab } = defineProps<{
 
 const element = $ref<HTMLElement>()
 const stickyElement = $ref<HTMLElement>()
+
+const {
+  linkModifier,
+} = $(useLinkModifiers())
 
 function dragFileOver(event: DragEvent) {
   if (event.dataTransfer) {
@@ -126,7 +130,7 @@ function selectCompletion(event: MouseEvent, item: CommandCompletion) {
   const index = renderableCompletion!.items
     .findIndex(completion => completion.value === item.value)
   if (index === -1) return
-  if (isMatchLinkModifier(event)) {
+  if (linkModifier) {
     tab.addons.shellIntegration!.selectCompletion(index)
   } else {
     tab.addons.shellIntegration!.applyCompletion(index)
@@ -152,7 +156,10 @@ function scrollToStickyCommand() {
 <template>
   <TerminalBlock
     :tab="tab"
-    :class="['terminal-teletype', { 'has-shell-integration': tab.addons.shellIntegration }]"
+    :class="['terminal-teletype', {
+      'has-shell-integration': tab.addons.shellIntegration,
+      'is-link-active': linkModifier,
+    }]"
     :style="variables"
     @contextmenu="openEditingMenu"
     @dragover.prevent="dragFileOver"
@@ -248,6 +255,12 @@ function scrollToStickyCommand() {
     :deep(.xterm) {
       padding-bottom: 0;
     }
+  }
+  :deep(.xterm-cursor-pointer) {
+    cursor: text;
+  }
+  .terminal-teletype.is-link-active & :deep(.xterm-cursor-pointer) {
+    cursor: pointer;
   }
 }
 @keyframes fade-out {
