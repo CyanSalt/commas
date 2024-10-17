@@ -53,11 +53,11 @@ const files = $computed(() => {
   return result
 })
 
-function selectFile(file: FileEntity) {
+function selectFile(event: MouseEvent, file: FileEntity) {
   if (file.isDirectory) {
     modelValue = file.path
   } else {
-    commas.remote.openFile(file.path)
+    commas.ui.openItem(file.path, event)
   }
 }
 
@@ -88,7 +88,7 @@ function goBack() {
 
 function openExternal(file: FileEntity) {
   if (file.isDirectory) {
-    commas.remote.openDirectoryExternally(file.path)
+    commas.remote.openFileExternally(file.path)
   } else {
     commas.remote.showFileExternally(file.path)
   }
@@ -108,7 +108,7 @@ function openExternalExplorer() {
 }
 
 function openDirectory() {
-  commas.remote.openDirectoryExternally(modelValue)
+  commas.remote.openFileExternally(modelValue)
 }
 
 function openNewTab() {
@@ -212,7 +212,7 @@ function autoselect(event: FocusEvent) {
         :key="file.name"
         draggable="true"
         :class="['file', { directory: file.isDirectory }]"
-        @click="selectFile(file)"
+        @click="selectFile($event, file)"
         @dragstart.prevent="startDragging($event, file)"
       >
         <VisualIcon

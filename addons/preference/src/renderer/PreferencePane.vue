@@ -22,16 +22,16 @@ const aboutItems = $computed(() => getItems('about'))
 
 const version = commas.app.getVersion()
 
-function openUserDirectory() {
-  commas.remote.openUserDirectory()
+function openUserDirectory(event: MouseEvent) {
+  commas.remote.openUserDirectory(event)
 }
 
-function openDefaultSettings() {
-  commas.remote.openDefaultSettings()
+function openDefaultSettings(event: MouseEvent) {
+  commas.remote.openDefaultSettings(event)
 }
 
-function openSettingsFile() {
-  commas.remote.openSettingsFile()
+function openSettingsFile(event: MouseEvent) {
+  commas.remote.openSettingsFile(event)
 }
 
 const language = $(commas.remote.useLanguage())
@@ -44,20 +44,20 @@ const supportedLanguages = $computed(() => {
   return languages
 })
 
-function openKeyBindings() {
-  commas.remote.openUserFile('keybindings.yaml')
+function openKeyBindings(event: MouseEvent) {
+  commas.remote.openUserFile('keybindings.yaml', undefined, event)
 }
 
-function openTranslation() {
-  commas.remote.openUserFile('translation.yaml')
+function openTranslation(event: MouseEvent) {
+  commas.remote.openUserFile('translation.yaml', undefined, event)
 }
 
-function openCustomJS() {
-  commas.remote.openUserFile('custom.js')
+function openCustomJS(event: MouseEvent) {
+  commas.remote.openUserFile('custom.js', undefined, event)
 }
 
-function openCustomCSS() {
-  commas.remote.openUserFile('custom.css')
+function openCustomCSS(event: MouseEvent) {
+  commas.remote.openUserFile('custom.css', undefined, event)
 }
 
 function openWebsite(event: MouseEvent) {

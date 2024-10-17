@@ -71,8 +71,8 @@ async function downloadSyncPlan(plan: SyncPlan) {
   }
 }
 
-function openSyncPlanDirectory(plan: SyncPlan) {
-  commas.remote.openDirectory(plan.directory)
+function openSyncPlanDirectory(event: MouseEvent, plan: SyncPlan) {
+  commas.ui.openFolder(plan.directory, event)
 }
 
 function formatTime(time: string | null) {
@@ -144,7 +144,7 @@ function removeSyncPlan(index: number) {
             <VisualIcon name="lucide-package-minus" />
           </span>
           <input v-model.lazy="plan.name" class="immersive-control plan-name">
-          <span class="plan-directory" @click="openSyncPlanDirectory(plan)">
+          <span class="plan-directory" @click="openSyncPlanDirectory($event, plan)">
             <VisualIcon name="lucide-folder-output" class="directory-icon" />
             <span class="directory-path">{{ omitHome(plan.directory) }}</span>
           </span>

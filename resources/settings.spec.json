@@ -182,7 +182,7 @@
     "key": "terminal.external.extraLinkModifier",
     "label": "Extra External Link Modifier",
     "comments": [
-      "Extra keyboard modifier for opening external link by click"
+      "Extra keyboard modifier for opening external link (including local file) by click"
     ],
     "schema": {
       "type": "string",

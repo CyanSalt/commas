@@ -4,9 +4,9 @@ import * as commas from 'commas:api/renderer'
 
 const { vI18n } = commas.ui.vueAssets
 
-function openLaunchers() {
+function openLaunchers(event: MouseEvent) {
   const examplePath = path.join(__dirname, '../../examples/launchers.yaml')
-  commas.remote.openUserFile('launchers.yaml', examplePath)
+  commas.remote.openUserFile('launchers.yaml', examplePath, event)
 }
 </script>
 

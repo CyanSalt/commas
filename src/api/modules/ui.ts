@@ -14,7 +14,7 @@ import ObjectEditor from '../../renderer/components/basic/ObjectEditor.vue'
 import SwitchControl from '../../renderer/components/basic/SwitchControl.vue'
 import ValueSelector from '../../renderer/components/basic/ValueSelector.vue'
 import VisualIcon from '../../renderer/components/basic/VisualIcon.vue'
-import { openLink } from '../../renderer/compositions/terminal'
+import { openFolder, openItem, openLink } from '../../renderer/compositions/terminal'
 import { RendererWebContentsView } from '../../renderer/compositions/web-contents'
 import { createContextMenu, openContextMenu, withContextMenuSeparator } from '../../renderer/utils/frame'
 import { vI18n } from '../../renderer/utils/i18n'
@@ -63,4 +63,6 @@ export {
   extractClosestEdge,
   RendererWebContentsView,
   openLink,
+  openFolder,
+  openItem,
 }

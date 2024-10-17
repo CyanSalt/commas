@@ -135,7 +135,7 @@ export async function startLauncherExternally(launcher: Launcher) {
   )
   if (!explorer) {
     if (launcher.remote) return
-    return commas.remote.openDirectory(directory)
+    return commas.ui.openFolder(directory)
   }
   explorer = explorer
     .replace(/\$\{directory\}/g, directory)

@@ -6,30 +6,31 @@ import {
   useSettings,
   useSettingsSpecs,
 } from '../../renderer/compositions/settings'
-import { openDirectory, openDirectoryExternally, openFile, openURL, openURLExternally, showDirectory, showFileExternally } from '../../renderer/compositions/shell'
+import { openDirectory, openFile, openFileExternally, openURL, openURLExternally, showDirectory, showFileExternally } from '../../renderer/compositions/shell'
 import { useIsLightTheme, useTheme } from '../../renderer/compositions/theme'
 import { translate } from '../../renderer/utils/i18n'
+import type { RendererAPIContext } from '../types'
 
 export * from '../shim'
 
-async function openUserDirectory() {
+async function openUserDirectory(this: RendererAPIContext, event?: MouseEvent) {
   const directory = await ipcRenderer.invoke('prepare-user-directory')
-  openDirectory(directory)
+  return this.$.ui.openFolder(directory, event)
 }
 
-async function openDefaultSettings() {
+async function openDefaultSettings(this: RendererAPIContext, event?: MouseEvent) {
   const filePath = await ipcRenderer.invoke('prepare-default-settings')
-  openFile(filePath)
+  return this.$.ui.openItem(filePath, event)
 }
 
-async function openSettingsFile() {
+async function openSettingsFile(this: RendererAPIContext, event?: MouseEvent) {
   const filePath = await ipcRenderer.invoke('prepare-settings-file')
-  openFile(filePath)
+  return this.$.ui.openItem(filePath, event)
 }
 
-async function openUserFile(file: string, example?: string) {
+async function openUserFile(this: RendererAPIContext, file: string, example?: string, event?: MouseEvent) {
   const filePath = await ipcRenderer.invoke('prepare-user-file', file, example)
-  openFile(filePath)
+  return this.$.ui.openItem(filePath, event)
 }
 
 function writeUserFile(file: string, content?: string) {
@@ -54,7 +55,7 @@ export {
   openFile,
   showFileExternally,
   openDirectory,
-  openDirectoryExternally,
+  openFileExternally,
   showDirectory,
   openURL,
   openURLExternally,

@@ -29,7 +29,7 @@ import { getProcessName, getPrompt, getTerminalTabID, getWindowsProcessInfo } fr
 import { useA11yEnabled } from './a11y'
 import { useKeyBindings } from './keybinding'
 import { useSettings } from './settings'
-import { openURL, openURLExternally } from './shell'
+import { openDirectory, openFile, openFileExternally, openURL, openURLExternally, showFileExternally } from './shell'
 import { useTheme } from './theme'
 
 declare module '@commas/api/modules/app' {
@@ -211,6 +211,34 @@ export async function openLink(uri: string, event?: MouseEvent) {
     return openURLExternally(uri)
   } else {
     return openURL(uri)
+  }
+}
+
+export async function openFolder(folder: string, event?: MouseEvent) {
+  let modifier: boolean
+  if (event) {
+    modifier = isMatchExternalLinkModifier(event)
+  } else {
+    modifier = externalLinkModifier
+  }
+  if (modifier) {
+    return openFileExternally(folder)
+  } else {
+    return openDirectory(folder)
+  }
+}
+
+export async function openItem(file: string, event?: MouseEvent) {
+  let modifier: boolean
+  if (event) {
+    modifier = isMatchExternalLinkModifier(event)
+  } else {
+    modifier = externalLinkModifier
+  }
+  if (modifier) {
+    return showFileExternally(file)
+  } else {
+    return openFile(file)
   }
 }
 
