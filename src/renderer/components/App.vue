@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import { ipcRenderer } from '@commas/electron-ipc'
+import { TerminalContext } from '@commas/types/terminal'
 import * as commas from '../../api/core-renderer'
 import { loadAddons, loadCustomJS } from '../compositions/addon'
 import {
@@ -63,8 +64,13 @@ handleWebContentsMessages()
 
 const argIndex = process.argv.indexOf('--') + 1
 const args = argIndex ? process.argv.slice(argIndex) : []
-const initialPath = args[0]
-createTerminalTab({ cwd: initialPath })
+let context: Partial<TerminalContext> | undefined
+try {
+  context = JSON.parse(args[0])
+} catch {
+  // ignore error
+}
+createTerminalTab(context)
 
 window.addEventListener('beforeunload', async event => {
   if (!willQuit && tabs.length > 1) {

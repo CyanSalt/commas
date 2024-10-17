@@ -3,6 +3,7 @@ import { effect, stop } from '@vue/reactivity'
 import type { BrowserWindowConstructorOptions, Rectangle } from 'electron'
 import { app, BrowserWindow, WebContentsView } from 'electron'
 import { ipcMain } from '@commas/electron-ipc'
+import type { TerminalContext } from '@commas/types/terminal'
 import { globalHandler } from '../../shared/handler'
 import { loadCustomCSS } from './addon'
 import { getLastWindow, hasWindow, send } from './frame'
@@ -13,7 +14,7 @@ import { useThemeOptions } from './theme'
 
 declare module '@commas/electron-ipc' {
   export interface GlobalCommands {
-    'global-main:open-window': () => void,
+    'global-main:open-window': (context?: Partial<TerminalContext>) => void,
   }
   export interface Commands {
     'create-web-contents': (rect: Rectangle & { borderRadius?: number }) => number,
@@ -26,7 +27,7 @@ declare module '@commas/electron-ipc' {
 
 const themeOptions = $(useThemeOptions())
 
-async function createWindow(...args: string[]) {
+async function createWindow(args?: Partial<TerminalContext>) {
   await whenSettingsReady()
   const settings = useSettings()
   const tabListPosition = settings['terminal.view.tabListPosition']
@@ -41,10 +42,10 @@ async function createWindow(...args: string[]) {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-      additionalArguments: [
+      additionalArguments: args ? [
         '--',
-        ...args.filter(arg => (arg as string | undefined) !== undefined),
-      ],
+        JSON.stringify(args),
+      ] : [],
     },
   }
   if (frameType === 'immersive') {
@@ -121,7 +122,7 @@ async function createWindow(...args: string[]) {
 let cwd: string
 
 function createDefaultWindow() {
-  createWindow(cwd)
+  createWindow({ cwd })
 }
 
 async function openFile(file: string) {
@@ -132,7 +133,7 @@ async function openFile(file: string) {
     return
   }
   if (settings['terminal.external.openPathIn'] === 'new-window' || !hasWindow()) {
-    createWindow(file)
+    createWindow({ cwd: file })
     return
   }
   const frame = getLastWindow()
@@ -143,8 +144,10 @@ async function openFile(file: string) {
 const webContentsViews = new Set<WebContentsView>()
 
 function handleWindowMessages() {
-  globalHandler.handle('global-main:open-window', () => {
-    createWindow()
+  globalHandler.handle('global-main:open-window', (arg?: Partial<TerminalContext> | BrowserWindow) => {
+    // Convert BrowserWindow from menu
+    const context = arg && 'contentView' in arg ? undefined : arg
+    createWindow(context)
   })
   ipcMain.handle('create-web-contents', (event, rect) => {
     const frame = BrowserWindow.fromWebContents(event.sender)!
