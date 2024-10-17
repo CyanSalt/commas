@@ -63,19 +63,19 @@ export async function confirmClosing() {
 }
 
 export function openFile(file: string) {
-  globalHandler.invoke('global-renderer:open-file', file)
+  return globalHandler.invoke('global-renderer:open-file', file)
 }
 
 export function openDirectory(directory: string) {
-  globalHandler.invoke('global-renderer:open-directory', directory)
+  return globalHandler.invoke('global-renderer:open-directory', directory)
 }
 
 export function showDirectory(file: string) {
-  globalHandler.invoke('global-renderer:show-directory', file)
+  return globalHandler.invoke('global-renderer:show-directory', file)
 }
 
 export function openURL(url: string) {
-  globalHandler.invoke('global-renderer:open-url', url)
+  return globalHandler.invoke('global-renderer:open-url', url)
 }
 
 export function handleShellMessages() {

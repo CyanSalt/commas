@@ -6,6 +6,7 @@ import { nextTick, watch, watchEffect } from 'vue'
 import { FileEntity } from '../types/file'
 
 const { VisualIcon } = commas.ui.vueAssets
+const settings = commas.remote.useSettings()
 
 let modelValue = $(defineModel<string>({ default: '' }))
 
@@ -93,7 +94,20 @@ function openExternal(file: FileEntity) {
   }
 }
 
-function openExternalDirectory() {
+const externalExplorer = $computed(() => {
+  return settings['terminal.external.explorer']
+})
+
+function openExternalExplorer() {
+  if (!openExternalExplorer) {
+    return openDirectory()
+  }
+  const explorer = externalExplorer
+    .replace(/\$\{directory\}/g, modelValue)
+  return ipcRenderer.invoke('execute', explorer)
+}
+
+function openDirectory() {
   ipcRenderer.invoke('open-path', modelValue)
 }
 
@@ -185,8 +199,11 @@ function autoselect(event: FocusEvent) {
       <span class="link form-action" @click="openNewTab">
         <VisualIcon name="lucide-terminal" />
       </span>
-      <span class="link form-action" @click="openExternalDirectory">
+      <span v-if="externalExplorer" class="link form-action" @click="openExternalExplorer">
         <VisualIcon name="lucide-square-arrow-out-up-right" />
+      </span>
+      <span class="link form-action" @click="openDirectory">
+        <VisualIcon :name="externalExplorer ? 'lucide-folder-open' : 'lucide-square-arrow-out-up-right'" />
       </span>
     </div>
     <div class="file-list">

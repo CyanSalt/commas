@@ -1,7 +1,6 @@
 import { ipcRenderer } from '@commas/electron-ipc'
 import type { TerminalContext, TerminalInfo, TerminalTab, TerminalTabCharacter } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
-import { shell } from 'electron'
 import type { Launcher } from '../types/launcher'
 import { getLauncherCommand } from './utils'
 
@@ -136,7 +135,7 @@ export async function startLauncherExternally(launcher: Launcher) {
   )
   if (!explorer) {
     if (launcher.remote) return
-    return shell.openPath(directory)
+    return commas.remote.openDirectory(directory)
   }
   explorer = explorer
     .replace(/\$\{directory\}/g, directory)
