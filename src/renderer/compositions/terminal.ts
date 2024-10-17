@@ -171,16 +171,14 @@ function isMatchLinkModifier(event: MouseEvent | KeyboardEvent) {
 
 function isMatchExternalLinkModifier(event: MouseEvent | KeyboardEvent) {
   switch (settings['terminal.external.extraLinkModifier']) {
-    case 'no-Shift':
-      return !event.shiftKey
     case 'Shift':
       return event.shiftKey
     case 'Alt':
       return event.altKey
-    case 'no-Alt':
-      return !event.altKey
+    case 'CmdOrCtrl':
+      return process.platform === 'darwin' ? event.metaKey : event.ctrlKey
     default:
-      return false
+      return event.shiftKey || event.altKey || (process.platform === 'darwin' ? event.metaKey : event.ctrlKey)
   }
 }
 

@@ -38,7 +38,6 @@
   "Skip by default#!settings.comments.2.terminal.external.remoteExplorer": "默认跳过",
   "Extra External Link Modifier#!settings.label.terminal.external.extraLinkModifier": "外部链接额外修饰键",
   "Extra keyboard modifier for opening external link by click#!settings.comments.0.terminal.external.extraLinkModifier": "点击打开外部链接时的额外键盘修饰键",
-  "A value like 'no-Shift' means that links will be open externally by default unless Shift is pressed#!settings.comments.1.terminal.external.extraLinkModifier": "'no-Shift' 等值意味着链接默认在外部打开，除非按下 Shift 键",
   "Tab#!settings.group.terminal.tab": "标签页",
   "Enable Live CWD#!settings.label.terminal.tab.liveCwd": "启用实时工作路径",
   "Support dynamic \\w and \\W in formatting#!settings.comments.0.terminal.tab.liveCwd": "在格式中支持动态的 \\w 和 \\W",

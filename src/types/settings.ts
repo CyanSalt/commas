@@ -20,7 +20,7 @@ export interface Settings {
   'terminal.external.openPathIn': 'new-tab' | 'new-window',
   'terminal.external.explorer': string,
   'terminal.external.remoteExplorer': string,
-  'terminal.external.extraLinkModifier': 'no-Shift' | 'Shift' | 'no-Alt' | 'Alt',
+  'terminal.external.extraLinkModifier': 'any' | 'CmdOrCtrl' | 'Alt' | 'Shift',
   'terminal.tab.liveCwd': boolean,
   'terminal.tab.liveIcon': boolean,
   'terminal.tab.livePreview': boolean,
