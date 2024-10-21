@@ -23,6 +23,7 @@ const badge = useBadge()
   color: rgb(var(--theme-red) / 50%);
   font-weight: bold;
   font-size: 48px;
+  text-align: right;
   -webkit-text-stroke: 1px rgb(var(--theme-background));
 }
 </style>

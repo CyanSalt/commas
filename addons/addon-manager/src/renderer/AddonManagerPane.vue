@@ -170,7 +170,7 @@ onMounted(() => {
   opacity: 1;
 }
 .addon-tag {
-  color: rgb(var(--theme-green));
+  color: rgb(var(--system-green));
   font-size: 12px;
 }
 .addon-author {
