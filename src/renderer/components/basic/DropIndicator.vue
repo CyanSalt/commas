@@ -16,5 +16,25 @@ const { vertical } = defineProps<{
     width: 0;
     height: auto;
   }
+  &::before {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 4px;
+    height: 4px;
+    border: 2px solid rgb(var(--system-accent));
+    background: rgb(var(--theme-background));
+    border-radius: 6px;
+  }
+  &.vertical::before {
+    top: -2px;
+    left: 50%;
+    margin-left: -4px;
+  }
+  &:not(.vertical)::before {
+    top: 50%;
+    left: -2px;
+    margin-top: -4px;
+  }
 }
 </style>
