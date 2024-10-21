@@ -878,6 +878,7 @@ function releaseTabPosition(tab: TerminalTab, groupTabs: TerminalTab[]) {
 function reflowTabGroup(groupTabs: TerminalTab[]) {
   if (groupTabs.length <= 1) {
     groupTabs.forEach(tab => {
+      delete tab.group
       delete tab.position
     })
     return

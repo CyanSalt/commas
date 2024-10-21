@@ -56,7 +56,7 @@ function activate(item: TerminalTab, index: number) {
         :is="tab.pane ? tab.pane.component : TerminalTeletype"
         v-show="currentGroup.includes(index)"
         :tab="tab"
-        :class="{ active: index === activeIndex }"
+        :class="{ active: index === activeIndex, standalone: currentGroup.length <= 1 }"
         :style="{ 'grid-area': `a${index}` }"
         @click="activate(tab, index)"
       />
@@ -73,8 +73,9 @@ function activate(item: TerminalTab, index: number) {
   flex: 1;
   gap: var(--design-card-gap);
   min-height: 0;
-  :deep(.terminal-block:not(.active)) {
-    opacity: 0.5;
+  :deep(.terminal-block.active:not(.standalone)) {
+    outline: 2px solid rgb(var(--system-accent));
+    outline-offset: -2px;
   }
 }
 </style>

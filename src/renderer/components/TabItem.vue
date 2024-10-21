@@ -32,6 +32,11 @@ const isFocused = $computed(() => {
   return Boolean(tab) && terminal === tab
 })
 
+const isStandalone = $computed(() => {
+  if (!isFocused) return false
+  return !tab?.group
+})
+
 const isActive = $computed(() => {
   if (isFocused) return true
   return terminal?.group && tab?.group
@@ -132,7 +137,12 @@ function close() {
 
 <template>
   <div
-    :class="['tab-item', { active: isActive, focused: isFocused, virtual: !tab }]"
+    :class="['tab-item', {
+      active: isActive,
+      focused: isFocused,
+      standalone: isStandalone,
+      virtual: !tab,
+    }]"
     :style="{ 'view-transition-name': `view-transition-${id}` }"
   >
     <div class="tab-overview">
@@ -191,11 +201,12 @@ function close() {
     transform: scale(0.98);
   }
   &.active {
-    background: linear-gradient(45deg, transparent, var(--design-active-background));
+    background: var(--design-active-background);
     box-shadow: var(--design-element-shadow);
   }
-  &.focused {
-    background: var(--design-active-background);
+  &.focused:not(.standalone) {
+    outline: 2px solid rgb(var(--system-accent));
+    outline-offset: -2px;
   }
 }
 .tab-title {
