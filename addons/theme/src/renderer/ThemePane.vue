@@ -61,6 +61,10 @@ onMounted(() => {
   load()
 })
 
+function configure(event: MouseEvent) {
+  commas.ui.openLink('commas://settings/?command=terminal.theme.type', event)
+}
+
 function reset() {
   ipcRenderer.invoke('reset-theme')
 }
@@ -91,9 +95,8 @@ async function applyTheme(item: RemoteTheme) {
   <TerminalPane :tab="tab" class="theme-pane">
     <h2 v-i18n class="group-title">Configure Theme#!theme.2</h2>
     <div class="group">
-      <div class="form-line">
-        <span v-i18n class="link" @click="reset">Reset to default#!preference.10</span>
-      </div>
+      <span v-i18n class="link" @click="configure">Open Settings#!theme.5</span>
+      <span v-i18n class="link" @click="reset">Reset to default#!theme.4</span>
       <div class="form-line color-list">
         <ThemeColorPicker v-for="field in fields" :key="field" :field="field" />
       </div>

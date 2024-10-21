@@ -96,7 +96,7 @@ function openWebsite(event: MouseEvent) {
     <h2 v-i18n class="group-title">Customization#!preference.4</h2>
     <div class="group">
       <div class="form-line">
-        <label v-i18n class="form-label">Language#!preference.11</label>
+        <label v-i18n class="form-label">Language#!preference.10</label>
         <select v-model="language" class="form-control">
           <option
             v-for="option in supportedLanguages"
