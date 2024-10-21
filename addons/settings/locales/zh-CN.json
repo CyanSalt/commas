@@ -95,6 +95,8 @@
   "Enable font ligatures (if specified font family supports, like Fira Code or Iosevka)#!settings.comments.0.terminal.style.fontLigatures": "启用字体连字 (需要指定的字体族支持，例如 Fira Code 或 Iosevka)",
   "Cursor Style#!settings.label.terminal.style.cursorStyle": "光标样式",
   "Cursor style for terminals#!settings.comments.0.terminal.style.cursorStyle": "终端的光标样式",
+  "Accent Color#!settings.label.terminal.style.accentColor": "强调色",
+  "Accent color for window#!settings.comments.0.terminal.style.accentColor": "窗口的强调色",
   "Theme#!settings.group.terminal.theme": "主题",
   "Theme Type#!settings.label.terminal.theme.type": "主题类别",
   "Choose to use a dark or light theme#!settings.comments.0.terminal.theme.type": "选择使用深色或浅色主题",

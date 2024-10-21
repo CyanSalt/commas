@@ -61,7 +61,9 @@ const EXTRA_CSS_COLORS: Partial<Record<Exclude<keyof Theme, keyof ThemeDefinitio
   acrylicBackground: '--acrylic-background',
 }
 
-const accentColor = $customRef((track, trigger) => {
+const settings = useSettings()
+
+const systemAccentColor = $customRef((track, trigger) => {
   let color = ['darwin', 'win32'].includes(process.platform)
     ? systemPreferences.getAccentColor()
     : ''
@@ -86,8 +88,6 @@ const accentColor = $customRef((track, trigger) => {
     },
   }
 })
-
-const settings = useSettings()
 
 const isLightTheme = $customRef((track, trigger) => {
   effect(() => {
@@ -186,9 +186,12 @@ const theme = $computed(() => {
   //   definition.systemBrown = systemPreferences.getSystemColor('brown')
   //   definition.systemGray = systemPreferences.getSystemColor('gray')
   // }
-  definition.systemAccent = accentColor ? `#${accentColor.slice(0, 6)}` : ''
+  const accentColor = settings['terminal.style.accentColor'] || (
+    systemAccentColor ? `#${systemAccentColor.slice(0, 6)}` : ''
+  )
+  const accentRGBA = accentColor ? toRGBA(accentColor) : undefined
+  definition.systemAccent = accentRGBA ? toCSSHEX(accentRGBA) : ''
   const backgroundHSLA = toHSLA(backgroundRGBA)
-  const accentRGBA = accentColor ? toRGBA(`#${accentColor.slice(0, 6)}`) : undefined
   definition.acrylicBackground = accentRGBA ? toCSSHEX(mix(backgroundRGBA, accentRGBA, backgroundHSLA.s)) : ''
   definition.vibrancy = opacity < 1 ? undefined : vibrancy
   definition.variables = Object.fromEntries([

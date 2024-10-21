@@ -383,6 +383,18 @@
     "default": "block"
   },
   {
+    "key": "terminal.style.accentColor",
+    "label": "Accent Color",
+    "comments": [
+      "Accent color for window"
+    ],
+    "schema": {
+      "type": "string",
+      "format": "color"
+    },
+    "default": ""
+  },
+  {
     "key": "terminal.theme.type",
     "label": "Theme Type",
     "comments": [

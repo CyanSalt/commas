@@ -36,6 +36,7 @@ export interface Settings {
   'terminal.style.fontFamily': string,
   'terminal.style.fontLigatures': boolean,
   'terminal.style.cursorStyle': 'block' | 'bar' | 'underline',
+  'terminal.style.accentColor': string,
   'terminal.theme.type': 'system' | 'dark' | 'light',
   'terminal.theme.name': string,
   'terminal.theme.lightName': string,
