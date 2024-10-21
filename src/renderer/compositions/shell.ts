@@ -1,6 +1,7 @@
 import { ipcRenderer } from '@commas/electron-ipc'
 import { globalHandler } from '../../shared/handler'
 import { translate } from '../utils/i18n'
+import { openClientURL } from './terminal'
 
 declare module '@commas/electron-ipc' {
   export interface RendererEvents {
@@ -82,8 +83,17 @@ export function showDirectory(file: string) {
   return globalHandler.invoke('global-renderer:show-directory', file)
 }
 
-export function openURL(url: string) {
-  return globalHandler.invoke('global-renderer:open-url', url)
+export function openURL(uri: string) {
+  try {
+    const url = new URL(uri)
+    if (url.protocol === 'commas:') {
+      openClientURL(uri)
+      return
+    }
+  } catch {
+    // pass
+  }
+  return globalHandler.invoke('global-renderer:open-url', uri)
 }
 
 export function openURLExternally(url: string) {

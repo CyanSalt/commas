@@ -13,7 +13,7 @@ import { WebglAddon } from '@xterm/addon-webgl'
 import type { IMarker, ITerminalOptions } from '@xterm/xterm'
 import { Terminal } from '@xterm/xterm'
 import { toKeyEvent } from 'keyboardevent-from-electron-accelerator'
-import { isMatch, pick, trim } from 'lodash'
+import { isMatch, pick } from 'lodash'
 import type { MaybeRefOrGetter } from 'vue'
 import { effectScope, markRaw, nextTick, reactive, shallowReactive, toRaw, toValue, watch, watchEffect } from 'vue'
 import { ipcRenderer } from '@commas/electron-ipc'
@@ -89,11 +89,6 @@ const currentTerminal = $computed(() => {
 })
 export function useCurrentTerminal() {
   return $$(currentTerminal)
-}
-
-let paneTabURL = $ref('')
-export function usePaneTabURL() {
-  return $$(paneTabURL)
 }
 
 let isGroupSeparating = $ref(false)
@@ -539,11 +534,21 @@ function handleTerminalTabHistory() {
   })
 }
 
+export function openClientURL(uri: string) {
+  const url = new URL(uri)
+  commas.proxy.workspace.openPaneTab(
+    url.host,
+    pick(Object.fromEntries(url.searchParams), [
+      'command',
+      'process',
+      'cwd',
+      'shell',
+    ]),
+  )
+}
+
 export function handleTerminalMessages() {
   handleTerminalTabHistory()
-  watch($$(currentTerminal), () => {
-    paneTabURL = ''
-  }, { flush: 'sync' })
   watch($$(currentTerminal), async tab => {
     await nextTick()
     if (tab && !tab.pane) {
@@ -657,19 +662,8 @@ export function handleTerminalMessages() {
   ipcRenderer.on('show-tab-options', () => {
     showTabOptions()
   })
-  ipcRenderer.on('open-url', (event, address) => {
-    const url = new URL(address)
-    const paths = trim(url.pathname, '/').split('/')
-    commas.proxy.workspace.openPaneTab(
-      paths[0],
-      pick(Object.fromEntries(url.searchParams), [
-        'command',
-        'process',
-        'cwd',
-        'shell',
-      ]),
-    )
-    paneTabURL = address
+  ipcRenderer.on('open-url', (event, uri) => {
+    openClientURL(uri)
   })
   ipcRenderer.on('save', () => {
     if (!currentTerminal) return

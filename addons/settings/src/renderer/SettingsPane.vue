@@ -5,7 +5,7 @@ import { startCase } from 'lodash'
 import { nextTick, onBeforeUpdate, watchEffect } from 'vue'
 import SettingsLine from './SettingsLine.vue'
 
-defineProps<{
+const { tab } = defineProps<{
   tab: TerminalTab,
 }>()
 
@@ -14,7 +14,6 @@ const { vI18n, VisualIcon, TerminalPane } = commas.ui.vueAssets
 const keyword = $ref('')
 
 const settings = commas.remote.useSettings()
-let paneTabURL = $(commas.workspace.usePaneTabURL())
 let open = $ref<Record<string, boolean>>({})
 let lines: Record<string, HTMLElement | undefined> = {}
 
@@ -57,13 +56,12 @@ const groups = $computed(() => {
 
 watchEffect(async () => {
   if (!specs.length) return
-  if (paneTabURL) {
-    const url = new URL(paneTabURL)
-    const target = url.hash.slice(1)
-    if (target) {
-      await nextTick()
-      lines[target]?.scrollIntoView(true)
-    }
+  const id = tab.command
+  if (id) {
+    // eslint-disable-next-line vue/no-mutating-props
+    delete tab.command
+    await nextTick()
+    lines[id]?.scrollIntoView(true)
   }
 })
 

@@ -15,7 +15,6 @@ import {
   scrollToMarker,
   showTabOptions,
   useCurrentTerminal,
-  usePaneTabURL,
   useTerminalTabGroupSeparating,
   useTerminalTabs,
 } from '../../renderer/compositions/terminal'
@@ -146,7 +145,6 @@ export {
   scrollToMarker,
   showTabOptions,
   useCurrentTerminal,
-  usePaneTabURL,
   useTerminalTabs,
   useTerminalTabGroupSeparating,
   getTerminalTabIndex,
