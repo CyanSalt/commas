@@ -85,6 +85,13 @@ watchEffect(() => {
       'editorStickyScroll.background': theme.background,
     },
   })
+  monaco.editor.addKeybindingRules([
+    {
+      // eslint-disable-next-line no-bitwise
+      keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyF,
+      command: null,
+    },
+  ])
 })
 
 const options = $computed<monaco.editor.IStandaloneEditorConstructionOptions>(() => {

@@ -14,7 +14,7 @@ const editorTheme = $computed(() => {
     foreground: commas.helper.toCSSHEX(foregroundRGBA),
     type: theme.type,
     comment: commas.helper.toCSSHEX(commas.helper.mix(foregroundRGBA, backgroundRGBA, 0.5)),
-    lineHighlight: commas.helper.toCSSHEX(commas.helper.mix(foregroundRGBA, backgroundRGBA, 0.2)),
+    lineHighlight: commas.helper.toCSSHEX(commas.helper.mix(foregroundRGBA, backgroundRGBA, 0.1)),
     lineNumber: commas.helper.toCSSHEX(commas.helper.mix(foregroundRGBA, backgroundRGBA, 0.5)),
     activeLineNumber: commas.helper.toCSSHEX(foregroundRGBA),
   } as EditorTheme
