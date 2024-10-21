@@ -217,7 +217,7 @@ function recover() {
           v-model.lazy="model"
           :placeholder="placeholder"
           :pattern="spec.schema.pattern"
-          type="text"
+          :type="spec.schema.format === 'color' ? 'color' : 'text'"
           class="form-control"
         >
         <textarea

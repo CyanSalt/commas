@@ -77,7 +77,7 @@ function openEditingMenu(event: MouseEvent) {
     display: block;
     width: auto;
   }
-  input.form-control,
+  input.form-control:not([type='color']),
   textarea.form-control {
     box-sizing: border-box;
     width: 480px;
@@ -128,6 +128,12 @@ function openEditingMenu(event: MouseEvent) {
   }
   &:read-only {
     opacity: 0.5;
+  }
+  &[type='color'] {
+    width: 50px;
+    height: 27px;
+    padding: 2px 4px;
+    opacity: 1;
   }
 }
 :deep(textarea.form-control) {
