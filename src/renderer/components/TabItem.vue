@@ -187,6 +187,7 @@ function close() {
 
 <style lang="scss" scoped>
 @use 'sass:math';
+@use '../assets/_partials';
 
 .tab-item {
   padding: 0 #{8px - (math.div(18px - 14px, 2) + 2px)} 0 8px;
@@ -198,7 +199,8 @@ function close() {
     background: var(--design-highlight-background);
   }
   &:active {
-    transform: scale(0.98);
+    transform: scale(partials.nano-scale(156));
+    transition-delay: 100ms;
   }
   &.active {
     background: var(--design-active-background);
@@ -301,7 +303,7 @@ function close() {
       opacity: 1;
     }
     &:active {
-      transform: scale(0.96);
+      transform: scale(partials.nano-scale(18));
     }
   }
 }

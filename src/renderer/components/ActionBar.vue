@@ -45,6 +45,8 @@ function configure() {
 </template>
 
 <style lang="scss" scoped>
+@use '../assets/_partials';
+
 .action-bar {
   display: grid;
   flex: none;
@@ -67,7 +69,7 @@ function configure() {
     opacity: 1;
   }
   &:active {
-    transform: scale(0.96);
+    transform: scale(partials.nano-scale(22));
   }
   &.active {
     opacity: 1;

@@ -164,6 +164,8 @@ watch($$(isFinding), (value: boolean) => {
 </template>
 
 <style lang="scss" scoped>
+@use '../assets/_partials';
+
 .find-box {
   flex: none;
   padding: 8px;
@@ -222,6 +224,7 @@ watch($$(isFinding), (value: boolean) => {
   width: 20px;
   padding: 0;
   border: none;
+  color: inherit;
   text-align: center;
   background: transparent;
   border-radius: 4px;
@@ -232,7 +235,7 @@ watch($$(isFinding), (value: boolean) => {
     opacity: 1;
   }
   &:active {
-    transform: scale(0.96);
+    transform: scale(partials.nano-scale(20));
   }
 }
 </style>

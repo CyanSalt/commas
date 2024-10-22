@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 @mixin scroll-container($size) {
   --scrollbar-size: #{$size};
   --scrollbar-opacity: 0;
@@ -26,4 +28,8 @@
       --scrollbar-opacity: 0.2;
     }
   }
+}
+
+@function nano-scale($base) {
+  @return math.div($base - math.log($base, 10), $base);
 }

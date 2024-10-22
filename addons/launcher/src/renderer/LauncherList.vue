@@ -344,6 +344,8 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
 </template>
 
 <style lang="scss" scoped>
+@use '@commas/api/scss/_partials';
+
 .launcher-list {
   display: flex;
   &.vertical {
@@ -393,7 +395,7 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
     opacity: 1;
   }
   &:active {
-    transform: scale(0.98);
+    transform: scale(partials.nano-scale(156));
   }
   &.collapsed {
     color: var(--design-highlight-color);

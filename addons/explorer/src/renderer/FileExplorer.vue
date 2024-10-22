@@ -244,6 +244,7 @@ function autoselect(event: FocusEvent) {
 
 <style lang="scss" scoped>
 @use 'sass:math';
+@use '@commas/api/scss/_partials';
 
 .action-line {
   position: sticky;
@@ -301,7 +302,7 @@ function autoselect(event: FocusEvent) {
     background: var(--design-highlight-background);
   }
   &:active {
-    transform: scale(0.99);
+    transform: scale(partials.nano-scale(656));
   }
   &.directory {
     .file-icon {

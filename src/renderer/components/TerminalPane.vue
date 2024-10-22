@@ -187,7 +187,7 @@ function openEditingMenu(event: MouseEvent) {
     background: var(--design-highlight-background);
   }
   &:active {
-    transform: scale(0.96);
+    transform: scale(partials.nano-scale(24));
   }
 }
 </style>

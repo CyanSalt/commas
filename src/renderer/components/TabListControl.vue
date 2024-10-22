@@ -35,6 +35,8 @@ async function toggleOrShowOptions(event: MouseEvent) {
 </template>
 
 <style lang="scss" scoped>
+@use '../assets/_partials';
+
 .tab-list-control {
   display: inline-flex;
   padding: 4px;
@@ -47,7 +49,7 @@ async function toggleOrShowOptions(event: MouseEvent) {
     opacity: 1;
   }
   &:active {
-    transform: scale(0.96);
+    transform: scale(partials.nano-scale(22));
   }
   // FIXME: make it center visually
   :deep(.visual-icon) {
