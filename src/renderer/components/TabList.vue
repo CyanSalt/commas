@@ -388,6 +388,7 @@ function openTabItemMenu(event: MouseEvent, tab: TerminalTab) {
   }
   &:active {
     transform: scale(0.98);
+    transition-delay: 100ms;
   }
   &.is-group-separating-active {
     outline: 2px dashed rgb(var(--system-accent));

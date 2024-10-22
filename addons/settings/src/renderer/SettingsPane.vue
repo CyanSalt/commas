@@ -137,7 +137,7 @@ onBeforeUpdate(() => {
   opacity: 1;
 }
 .toggle-all-icon {
-  transition: transform 0.2s;
+  transition: transform var(--design-out-back-timing-function) 0.2s;
   .toggle-all.collapsed & {
     transform: rotate(-90deg);
   }

@@ -251,6 +251,10 @@ function autoselect(event: FocusEvent) {
   z-index: 1;
   padding: 8px #{8px - math.div(24px - 16px, 2)} 0;
   background: rgb(var(--theme-background) / var(--theme-opacity));
+  .terminal-block.active:not(.standalone) & {
+    top: 2px;
+    padding-top: #{8px - 2px};
+  }
 }
 .breadcrumb-form {
   display: flex;

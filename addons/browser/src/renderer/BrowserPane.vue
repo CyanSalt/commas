@@ -192,5 +192,6 @@ watchEffect((onInvalidate) => {
 .web-page {
   flex: 1;
   min-height: 0;
+  margin: 0 2px 2px;
 }
 </style>

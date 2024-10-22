@@ -152,6 +152,7 @@ onMounted(() => {
   --design-highlight-color: rgb(var(--system-blue));
   --design-highlight-background: color-mix(in hsl, rgb(var(--theme-foreground) / 5%), rgb(var(--acrylic-background) / 5%));
   --design-input-background: color-mix(in hsl, rgb(var(--theme-foreground) / 10%) 75%, rgb(var(--acrylic-background) / 10%));
+  --design-out-back-timing-function: cubic-bezier(0.18, 0.89, 0.32, 1.28);
   @media (prefers-color-scheme: dark) {
     --system-red: 255 69 58;
     --system-orange: 255 159 10;

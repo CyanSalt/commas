@@ -270,7 +270,7 @@ function recover() {
   width: 24px;
   text-align: center;
   opacity: 1;
-  transition: transform 0.2s;
+  transition: transform var(--design-out-back-timing-function) 0.2s;
   .settings-line:not([open]) & {
     transform: rotate(-90deg) translateX(2px);
   }
