@@ -355,7 +355,8 @@
       "Font family names for window"
     ],
     "schema": {
-      "type": "string"
+      "type": "string",
+      "format": "font"
     },
     "default": "Fira Code, Consolas, Monaco, Andale Mono, Ubuntu Mono"
   },

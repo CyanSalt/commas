@@ -1,6 +1,6 @@
 export type JSONSchemaType = 'string' | 'number' | 'integer' | 'boolean' | 'array' | 'object'
 
-export type JSONSchemaFormat = 'color'
+export type JSONSchemaFormat = 'color' | 'font'
 
 export interface JSONSchema {
   type?: JSONSchemaType | JSONSchemaType[],

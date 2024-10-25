@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { SettingsSpec } from '@commas/types/settings'
 import * as commas from 'commas:api/renderer'
-import { isEqual } from 'lodash'
+import { isEqual, uniq } from 'lodash'
 import { watchEffect } from 'vue'
 import { accepts, isObjectSchema } from './json-schema'
 
@@ -149,6 +149,16 @@ function recover() {
   model = staged
   staged = undefined
 }
+
+const localFonts = commas.helper.useAsyncComputed<string[]>(async () => {
+  const fonts = await window['queryLocalFonts']()
+  return uniq(fonts.map(font => font.family))
+}, [])
+
+function pickFont(event: InputEvent) {
+  model = (event.target as HTMLSelectElement).value;
+  (event.target as HTMLSelectElement).value = ''
+}
 </script>
 
 <template>
@@ -226,6 +236,14 @@ function recover() {
           :placeholder="placeholder"
           class="form-control"
         ></textarea>
+        <select
+          v-if="accepts(spec.schema, 'string') && spec.schema.format === 'font'"
+          class="form-control extra-control"
+          @change="pickFont"
+        >
+          <option v-i18n value="" disabled selected>Select local font#!settings.3</option>
+          <option v-for="font in localFonts" :key="font" :value="font">{{ font }}</option>
+        </select>
       </ValueSelector>
     </div>
   </details>
@@ -283,5 +301,8 @@ function recover() {
 }
 .recover {
   color: rgb(var(--system-red));
+}
+.extra-control {
+  margin-top: 8px;
 }
 </style>
