@@ -166,5 +166,8 @@ onBeforeUpdate(() => {
 .settings-group :deep(.link) {
   color: rgb(var(--system-accent));
   opacity: 1;
+  &:hover {
+    text-decoration: underline;
+  }
 }
 </style>
