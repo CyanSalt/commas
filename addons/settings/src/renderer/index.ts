@@ -1,6 +1,13 @@
 import * as commas from 'commas:api/renderer'
 import SettingsLink from './SettingsLink.vue'
 import SettingsPane from './SettingsPane.vue'
+import type { SettingsItem } from './utils'
+
+declare module '@commas/api/modules/context' {
+  export interface Context {
+    'settings.item': SettingsItem,
+  }
+}
 
 export default () => {
 

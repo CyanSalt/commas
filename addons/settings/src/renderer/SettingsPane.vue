@@ -2,7 +2,7 @@
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import { startCase } from 'lodash'
-import { nextTick, onBeforeUpdate, watchEffect } from 'vue'
+import { Component, nextTick, onBeforeUpdate, watchEffect } from 'vue'
 import SettingsLine from './SettingsLine.vue'
 
 const { tab } = defineProps<{
@@ -10,6 +10,12 @@ const { tab } = defineProps<{
 }>()
 
 const { vI18n, VisualIcon, TerminalPane } = commas.ui.vueAssets
+
+const settingsItems = commas.context.getCollection('settings.item')
+
+const settingsComponents = $computed(() => {
+  return new Map<string, Component>(settingsItems.map(item => [item.key, item.component]))
+})
 
 const keyword = $ref('')
 
@@ -123,7 +129,11 @@ onBeforeUpdate(() => {
           v-model:open="open[row.key]"
           :spec="row"
           :current-value="settings[row.key]"
-        />
+        >
+          <template v-if="settingsComponents.has(row.key)" #default>
+            <component :is="settingsComponents.get(row.key)" />
+          </template>
+        </SettingsLine>
       </div>
     </form>
   </TerminalPane>
@@ -152,5 +162,9 @@ onBeforeUpdate(() => {
   .form-control {
     width: 50%;
   }
+}
+.settings-group :deep(.link) {
+  color: rgb(var(--system-accent));
+  opacity: 1;
 }
 </style>

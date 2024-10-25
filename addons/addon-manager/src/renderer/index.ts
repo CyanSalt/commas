@@ -16,4 +16,9 @@ export default () => {
     group: 'general',
   })
 
+  commas.context.provide('settings.item', {
+    component: AddonManagerLink,
+    key: 'terminal.addon.includes',
+  })
+
 }

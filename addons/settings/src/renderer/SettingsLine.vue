@@ -191,60 +191,62 @@ function pickFont(event: InputEvent) {
           class="form-tip-line"
         >{{ comment }}#!settings.comments.{{ index }}.{{ spec.key }}</div>
       </div>
-      <SwitchControl v-if="accepts(spec.schema, 'boolean')" v-model="model" />
-      <ObjectEditor
-        v-else-if="isSimpleObject"
-        v-model="model"
-        :with-keys="accepts(spec.schema, 'object')"
-        :pinned="spec.recommendations"
-        lazy
-      />
-      <select
-        v-else-if="isScalarEnum"
-        v-model="model"
-        class="form-control"
-      >
-        <option
-          v-for="(option, index) in spec.schema!.enum"
-          :key="option"
-          v-i18n
-          :value="option"
-        >{{ option }}#!settings.options.{{ index }}.{{ spec.key }}</option>
-      </select>
-      <ValueSelector v-else v-model="model" :pinned="spec.recommendations">
-        <input
-          v-if="accepts(spec.schema, ['number', 'integer'])"
-          v-model.lazy="model"
-          :placeholder="placeholder"
-          type="number"
-          class="form-control"
-          :min="spec.schema.minimum"
-          :max="spec.schema.maximum"
-          :step="spec.schema.multipleOf"
-        >
-        <input
-          v-else-if="accepts(spec.schema, 'string')"
-          v-model.lazy="model"
-          :placeholder="placeholder"
-          :pattern="spec.schema.pattern"
-          :type="spec.schema.format === 'color' ? 'color' : 'text'"
-          class="form-control"
-        >
-        <textarea
-          v-else
-          v-model.lazy="model"
-          :placeholder="placeholder"
-          class="form-control"
-        ></textarea>
+      <slot>
+        <SwitchControl v-if="accepts(spec.schema, 'boolean')" v-model="model" />
+        <ObjectEditor
+          v-else-if="isSimpleObject"
+          v-model="model"
+          :with-keys="accepts(spec.schema, 'object')"
+          :pinned="spec.recommendations"
+          lazy
+        />
         <select
-          v-if="accepts(spec.schema, 'string') && spec.schema.format === 'font'"
-          class="form-control extra-control"
-          @change="pickFont"
+          v-else-if="isScalarEnum"
+          v-model="model"
+          class="form-control"
         >
-          <option v-i18n value="" disabled selected>Select local font#!settings.3</option>
-          <option v-for="font in localFonts" :key="font" :value="font">{{ font }}</option>
+          <option
+            v-for="(option, index) in spec.schema!.enum"
+            :key="option"
+            v-i18n
+            :value="option"
+          >{{ option }}#!settings.options.{{ index }}.{{ spec.key }}</option>
         </select>
-      </ValueSelector>
+        <ValueSelector v-else v-model="model" :pinned="spec.recommendations">
+          <input
+            v-if="accepts(spec.schema, ['number', 'integer'])"
+            v-model.lazy="model"
+            :placeholder="placeholder"
+            type="number"
+            class="form-control"
+            :min="spec.schema.minimum"
+            :max="spec.schema.maximum"
+            :step="spec.schema.multipleOf"
+          >
+          <input
+            v-else-if="accepts(spec.schema, 'string')"
+            v-model.lazy="model"
+            :placeholder="placeholder"
+            :pattern="spec.schema.pattern"
+            :type="spec.schema.format === 'color' ? 'color' : 'text'"
+            class="form-control"
+          >
+          <textarea
+            v-else
+            v-model.lazy="model"
+            :placeholder="placeholder"
+            class="form-control"
+          ></textarea>
+          <select
+            v-if="accepts(spec.schema, 'string') && spec.schema.format === 'font'"
+            class="form-control extra-control"
+            @change="pickFont"
+          >
+            <option v-i18n value="" disabled selected>Select local font#!settings.3</option>
+            <option v-for="font in localFonts" :key="font" :value="font">{{ font }}</option>
+          </select>
+        </ValueSelector>
+      </slot>
     </div>
   </details>
 </template>
