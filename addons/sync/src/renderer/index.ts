@@ -16,4 +16,14 @@ export default () => {
     group: 'general',
   })
 
+  commas.context.provide('settings.item', {
+    component: SyncLink,
+    key: 'sync.plan.gist',
+  })
+
+  commas.context.provide('settings.item', {
+    component: SyncLink,
+    key: 'sync.plan.extraPlans',
+  })
+
 }

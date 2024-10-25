@@ -163,7 +163,7 @@ onBeforeUpdate(() => {
     width: 50%;
   }
 }
-.settings-group :deep(.link) {
+.settings-group :deep(.setting-detail .link) {
   color: rgb(var(--system-accent));
   opacity: 1;
   &:hover {
