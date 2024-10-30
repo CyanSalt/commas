@@ -9,7 +9,6 @@ import WebContents from '../../renderer/components/WebContents.vue'
 import DraggableElement from '../../renderer/components/basic/DraggableElement.vue'
 import DropIndicator from '../../renderer/components/basic/DropIndicator.vue'
 import DropTarget from '../../renderer/components/basic/DropTarget.vue'
-import LoadingSpinner from '../../renderer/components/basic/LoadingSpinner.vue'
 import ObjectEditor from '../../renderer/components/basic/ObjectEditor.vue'
 import SwitchControl from '../../renderer/components/basic/SwitchControl.vue'
 import ValueSelector from '../../renderer/components/basic/ValueSelector.vue'
@@ -38,7 +37,6 @@ function addCSSFile(this: RendererAPIContext, file: string) {
 
 const vueAssets = {
   vI18n,
-  LoadingSpinner,
   VisualIcon,
   ObjectEditor,
   DraggableElement,

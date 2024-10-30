@@ -12,7 +12,7 @@ defineProps<{
   tab: TerminalTab,
 }>()
 
-const { vI18n, LoadingSpinner, VisualIcon, TerminalPane } = commas.ui.vueAssets
+const { vI18n, VisualIcon, TerminalPane } = commas.ui.vueAssets
 
 const keyword = $ref('')
 
@@ -111,15 +111,22 @@ async function applyTheme(item: RemoteTheme) {
           <span class="link marketplace-link" @click="openMarketplace">windowsterminalthemes.dev</span>
         </div>
       </div>
-      <LoadingSpinner v-if="!list.length" class="theme-loading" />
-      <div v-else class="theme-list">
-        <ThemeCard
-          v-for="item in filteredList"
-          :key="item.name"
-          :theme="item"
-          :class="{ active: item.name === currentTheme }"
-          @click="applyTheme(item)"
-        />
+      <div class="theme-list">
+        <template v-if="!list.length">
+          <ThemeCard
+            v-for="i in 10"
+            :key="i"
+          />
+        </template>
+        <template v-else>
+          <ThemeCard
+            v-for="item in filteredList"
+            :key="item.name"
+            :theme="item"
+            :class="{ active: item.name === currentTheme }"
+            @click="applyTheme(item)"
+          />
+        </template>
       </div>
     </div>
   </TerminalPane>
@@ -149,7 +156,7 @@ async function applyTheme(item: RemoteTheme) {
   grid-gap: 24px;
   width: 100%;
   padding: 12px 0;
-  :deep(.theme-card) {
+  :deep(.theme-card):not(.skeleton) {
     cursor: pointer;
     &.active {
       outline: 2px solid rgb(var(--system-accent));
