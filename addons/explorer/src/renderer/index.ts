@@ -28,8 +28,6 @@ export default () => {
     },
   })
 
-  const handleOpen = commas.context.removeHandler('global-renderer:open-directory')
-
   commas.context.handle('global-renderer:open-directory', (directory) => {
     openFileExplorerTab(directory)
   })
@@ -38,22 +36,8 @@ export default () => {
     openFileExplorerTab(directory)
   })
 
-  if (handleOpen) {
-    commas.app.onCleanup(() => {
-      commas.context.handle('global-renderer:open-directory', handleOpen)
-    })
-  }
-
-  const handleShow = commas.context.removeHandler('global-renderer:show-directory')
-
   commas.context.handle('global-renderer:show-directory', (directory) => {
     splitOrCloseFileExplorerTab(directory)
   })
-
-  if (handleShow) {
-    commas.app.onCleanup(() => {
-      commas.context.handle('global-renderer:show-directory', handleShow)
-    })
-  }
 
 }

@@ -18,8 +18,6 @@ export default () => {
     volatile: true,
   })
 
-  const defaultHandler = commas.context.removeHandler('global-renderer:open-url')
-
   commas.context.handle('global-renderer:open-url', (url) => {
     openBrowserTab(url)
   })
@@ -27,11 +25,5 @@ export default () => {
   commas.ipcRenderer.on('open-browser', (event, url) => {
     openBrowserTab(url)
   })
-
-  if (defaultHandler) {
-    commas.app.onCleanup(() => {
-      commas.context.handle('global-renderer:open-url', defaultHandler)
-    })
-  }
 
 }

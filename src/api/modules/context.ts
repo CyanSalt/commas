@@ -33,16 +33,22 @@ function provide<T extends keyof Context>(this: APIContext, name: keyof Context,
   })
 }
 
-function handle<K extends keyof GlobalCommands>(this: APIContext, channel: K, listener: GlobalCommands[K]) {
-  globalHandler.handle(channel, listener)
-}
-
 function handleOnce<K extends keyof GlobalCommands>(this: APIContext, channel: K, listener: GlobalCommands[K]) {
   globalHandler.handleOnce(channel, listener)
 }
 
 function removeHandler<K extends keyof GlobalCommands>(this: APIContext, channel: K) {
   return globalHandler.removeHandler(channel)
+}
+
+function handle<K extends keyof GlobalCommands>(this: APIContext, channel: K, listener: GlobalCommands[K]) {
+  const defaultHandler = globalHandler.removeHandler(channel)
+  globalHandler.handle(channel, listener)
+  if (defaultHandler) {
+    this.$.app.onInvalidate(() => {
+      globalHandler.handle(channel, defaultHandler)
+    })
+  }
 }
 
 function invoke<K extends keyof GlobalCommands>(

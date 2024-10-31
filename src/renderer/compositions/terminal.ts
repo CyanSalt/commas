@@ -20,6 +20,7 @@ import { ipcRenderer } from '@commas/electron-ipc'
 import type { KeyBindingCommand, MenuItem } from '@commas/types/menu'
 import type { ReadonlyTerminalTabAddons, TerminalContext, TerminalTab, TerminalTabCharacter, TerminalTabCharacterCommand } from '@commas/types/terminal'
 import * as commas from '../../api/core-renderer'
+import { globalHandler } from '../../shared/handler'
 import { createIDGenerator } from '../../shared/helper'
 import { openContextMenu } from '../utils/frame'
 import { translate } from '../utils/i18n'
@@ -547,143 +548,6 @@ export function openClientURL(uri: string) {
   )
 }
 
-export function handleTerminalMessages() {
-  handleTerminalTabHistory()
-  watch($$(currentTerminal), async tab => {
-    await nextTick()
-    if (tab && !tab.pane) {
-      tab.xterm.focus()
-    }
-  })
-  ipcRenderer.on('open-tab', (event, context, options) => {
-    createTerminalTab(context, options)
-  })
-  ipcRenderer.on('duplicate-tab', (event, data) => {
-    const tab = data ? tabs.find(item => item.pid === data.pid) : currentTerminal
-    if (!tab) return
-    createTerminalTab(tab)
-  })
-  ipcRenderer.on('split-tab', (event, data) => {
-    const tab = data ? tabs.find(item => item.pid === data.pid) : currentTerminal
-    if (!tab) return
-    splitTerminalTab(tab)
-  })
-  ipcRenderer.on('close-tab', (event, data) => {
-    const tab = data ? tabs.find(item => item.pid === data.pid) : currentTerminal
-    if (tab) {
-      closeTerminalTab(tab)
-    }
-  })
-  ipcRenderer.on('input-terminal', (event, data) => {
-    const tab = tabs.find(item => item.pid === data.pid)
-    if (!tab) return
-    const xterm = tab.xterm
-    xterm.write(data.data, () => {
-      const activeBuffer = xterm.buffer.active
-      let thumbnail: string | undefined
-      const startY = tab.addons.shellIntegration?.currentCommand?.marker.line ?? -1
-      for (let y = activeBuffer.baseY + activeBuffer.cursorY; y > startY; y -= 1) {
-        thumbnail = activeBuffer.getLine(y)?.translateToString(true)
-        if (thumbnail) break
-      }
-      tab.thumbnail = thumbnail
-    })
-    // data.process on Windows will be always equivalent to pty.name
-    // TODO: confirm after 1.0.0
-    if (process.platform !== 'win32') {
-      tab.process = data.process
-    }
-  })
-  ipcRenderer.on('exit-terminal', (event, data) => {
-    const tab = tabs.find(item => item.pid === data.pid)
-    if (!tab) return
-    tab.state.stop.resolve()
-    // FIXME: renderer cannot dispose correctly since the `dispose` will set a new DomRenderer
-    // which could not be finished when the terminal is disposed
-    if (tab.addons.webgl) {
-      tab.addons.webgl.dispose()
-      delete tab.addons.webgl
-    }
-    if (tab.addons.canvas) {
-      tab.addons.canvas.dispose()
-      delete tab.addons.canvas
-    }
-    const xterm = tab.xterm
-    // FIXME: clear paused resize task manually to remove renderer as dependency
-    xterm['_core']._renderService._pausedResizeTask.set(() => {})
-    xterm.dispose()
-    removeTerminalTab(tab)
-  })
-  ipcRenderer.on('clear-terminal', () => {
-    if (!currentTerminal) return
-    const xterm = currentTerminal.xterm
-    xterm.clear()
-  })
-  ipcRenderer.on('close-terminal', () => {
-    if (!currentTerminal) return
-    closeTerminalTab(currentTerminal)
-  })
-  ipcRenderer.on('execute-terminal', (event, command, restart) => {
-    if (!currentTerminal) return
-    executeTerminalTab(currentTerminal, command, restart)
-  })
-  ipcRenderer.on('select-tab', (event, index) => {
-    if (!tabs.length) return
-    let targetIndex = index % tabs.length
-    if (targetIndex < 0) {
-      targetIndex += tabs.length
-    }
-    const targetItem = tabCategories.flatMap(category => category.items)[targetIndex]
-    if (targetItem.tab) {
-      activateTerminalTab(targetItem.tab)
-    }
-  })
-  ipcRenderer.on('select-previous-tab', () => {
-    if (activeIndex > 0) {
-      activeIndex -= 1
-    }
-  })
-  ipcRenderer.on('select-next-tab', () => {
-    if (activeIndex < tabs.length - 1) {
-      activeIndex += 1
-    }
-  })
-  ipcRenderer.on('scroll-to-command', (event, offset) => {
-    if (!currentTerminal) return
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    currentTerminal.addons?.shellIntegration?.scrollToCommand(offset)
-  })
-  ipcRenderer.on('go-back', () => {
-    history.back()
-  })
-  ipcRenderer.on('go-forward', () => {
-    history.forward()
-  })
-  ipcRenderer.on('show-tab-options', () => {
-    showTabOptions()
-  })
-  ipcRenderer.on('open-url', (event, uri) => {
-    openClientURL(uri)
-  })
-  ipcRenderer.on('save', () => {
-    if (!currentTerminal) return
-    currentTerminal.pane?.instance?.save?.()
-  })
-  ipcRenderer.on('open-pane', (event, name) => {
-    commas.proxy.workspace.openPaneTab(name)
-  })
-  handleRenderer('get-history', (event, count) => {
-    if (!currentTerminal) return []
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    const commands = currentTerminal.addons?.shellIntegration?.commands
-      .filter(item => item.exitCode === 0)
-      .map(item => item.command)
-      .filter((command): command is string => Boolean(command))
-      ?? []
-    return count ? commands.slice(0 - count) : commands
-  })
-}
-
 function loadReadOnlyTerminalAddons(tab: TerminalTab, xterm: Terminal, addons: Record<string, any>) {
   if (!addons.fit) {
     addons.fit = new FitAddon()
@@ -1072,4 +936,147 @@ export async function splitTerminalTab(tab: TerminalTab) {
   const newTab = await createTerminalTab(tab)
   appendTerminalTab(tab, getTerminalTabIndex(newTab))
   return newTab
+}
+
+export function handleTerminalMessages() {
+  handleTerminalTabHistory()
+  watch($$(currentTerminal), async tab => {
+    await nextTick()
+    if (tab && !tab.pane) {
+      tab.xterm.focus()
+    }
+  })
+  ipcRenderer.on('open-tab', (event, context, options) => {
+    createTerminalTab(context, options)
+  })
+  ipcRenderer.on('duplicate-tab', (event, data) => {
+    const tab = data ? tabs.find(item => item.pid === data.pid) : currentTerminal
+    if (!tab) return
+    createTerminalTab(tab)
+  })
+  ipcRenderer.on('split-tab', (event, data) => {
+    const tab = data ? tabs.find(item => item.pid === data.pid) : currentTerminal
+    if (!tab) return
+    splitTerminalTab(tab)
+  })
+  ipcRenderer.on('close-tab', (event, data) => {
+    const tab = data ? tabs.find(item => item.pid === data.pid) : currentTerminal
+    if (tab) {
+      closeTerminalTab(tab)
+    }
+  })
+  ipcRenderer.on('input-terminal', (event, data) => {
+    const tab = tabs.find(item => item.pid === data.pid)
+    if (!tab) return
+    const xterm = tab.xterm
+    xterm.write(data.data, () => {
+      const activeBuffer = xterm.buffer.active
+      let thumbnail: string | undefined
+      const startY = tab.addons.shellIntegration?.currentCommand?.marker.line ?? -1
+      for (let y = activeBuffer.baseY + activeBuffer.cursorY; y > startY; y -= 1) {
+        thumbnail = activeBuffer.getLine(y)?.translateToString(true)
+        if (thumbnail) break
+      }
+      tab.thumbnail = thumbnail
+    })
+    // data.process on Windows will be always equivalent to pty.name
+    // TODO: confirm after 1.0.0
+    if (process.platform !== 'win32') {
+      tab.process = data.process
+    }
+  })
+  ipcRenderer.on('exit-terminal', (event, data) => {
+    const tab = tabs.find(item => item.pid === data.pid)
+    if (!tab) return
+    tab.state.stop.resolve()
+    // FIXME: renderer cannot dispose correctly since the `dispose` will set a new DomRenderer
+    // which could not be finished when the terminal is disposed
+    if (tab.addons.webgl) {
+      tab.addons.webgl.dispose()
+      delete tab.addons.webgl
+    }
+    if (tab.addons.canvas) {
+      tab.addons.canvas.dispose()
+      delete tab.addons.canvas
+    }
+    const xterm = tab.xterm
+    // FIXME: clear paused resize task manually to remove renderer as dependency
+    xterm['_core']._renderService._pausedResizeTask.set(() => {})
+    xterm.dispose()
+    removeTerminalTab(tab)
+  })
+  ipcRenderer.on('clear-terminal', () => {
+    if (!currentTerminal) return
+    const xterm = currentTerminal.xterm
+    xterm.clear()
+  })
+  ipcRenderer.on('close-terminal', () => {
+    if (!currentTerminal) return
+    closeTerminalTab(currentTerminal)
+  })
+  ipcRenderer.on('execute-terminal', (event, command, restart) => {
+    if (!currentTerminal) return
+    executeTerminalTab(currentTerminal, command, restart)
+  })
+  ipcRenderer.on('select-tab', (event, index) => {
+    if (!tabs.length) return
+    let targetIndex = index % tabs.length
+    if (targetIndex < 0) {
+      targetIndex += tabs.length
+    }
+    const targetItem = tabCategories.flatMap(category => category.items)[targetIndex]
+    if (targetItem.tab) {
+      activateTerminalTab(targetItem.tab)
+    }
+  })
+  ipcRenderer.on('select-previous-tab', () => {
+    if (activeIndex > 0) {
+      activeIndex -= 1
+    }
+  })
+  ipcRenderer.on('select-next-tab', () => {
+    if (activeIndex < tabs.length - 1) {
+      activeIndex += 1
+    }
+  })
+  ipcRenderer.on('scroll-to-command', (event, offset) => {
+    if (!currentTerminal) return
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    currentTerminal.addons?.shellIntegration?.scrollToCommand(offset)
+  })
+  ipcRenderer.on('go-back', () => {
+    history.back()
+  })
+  ipcRenderer.on('go-forward', () => {
+    history.forward()
+  })
+  ipcRenderer.on('show-tab-options', () => {
+    showTabOptions()
+  })
+  ipcRenderer.on('open-url', (event, uri) => {
+    openClientURL(uri)
+  })
+  ipcRenderer.on('save', () => {
+    if (!currentTerminal) return
+    currentTerminal.pane?.instance?.save?.()
+  })
+  ipcRenderer.on('open-pane', (event, name) => {
+    commas.proxy.workspace.openPaneTab(name)
+  })
+  handleRenderer('get-history', (event, count) => {
+    if (!currentTerminal) return []
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    const commands = currentTerminal.addons?.shellIntegration?.commands
+      .filter(item => item.exitCode === 0)
+      .map(item => item.command)
+      .filter((command): command is string => Boolean(command))
+      ?? []
+    return count ? commands.slice(0 - count) : commands
+  })
+  globalHandler.handle('global-renderer:add-directory', (directory) => {
+    return createTerminalTab({ cwd: directory })
+  })
+  globalHandler.handle('global-renderer:add-file', (file) => {
+    // pass
+  })
 }

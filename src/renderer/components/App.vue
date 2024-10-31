@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { webUtils } from 'electron'
 import { onMounted } from 'vue'
 import { ipcRenderer } from '@commas/electron-ipc'
 import { TerminalContext } from '@commas/types/terminal'
@@ -11,6 +12,7 @@ import {
 import { handleI18nMessages } from '../compositions/i18n'
 import { injectSettingsStyle, useSettings } from '../compositions/settings'
 import {
+  addFile,
   confirmClosing,
   handleShellMessages,
   useIsTabListEnabled,
@@ -90,10 +92,36 @@ window.addEventListener('beforeunload', async event => {
 onMounted(() => {
   commas.proxy.app.events.emit('ready')
 })
+
+function dragFileOver(event: DragEvent) {
+  const dataTransfer = event.dataTransfer
+  if (!dataTransfer) return
+  const files = dataTransfer.files
+  if (files.length) {
+    event.dataTransfer.dropEffect = 'copy'
+  }
+}
+
+function dropFile(event: DragEvent) {
+  const dataTransfer = event.dataTransfer
+  if (!dataTransfer) return
+  const files = dataTransfer.files
+  if (files.length) {
+    event.preventDefault()
+    const paths = Array.from(files).map(file => webUtils.getPathForFile(file))
+    for (const file of paths) {
+      addFile(file)
+    }
+  }
+}
 </script>
 
 <template>
-  <div :class="['app', { 'is-opaque': isFullscreen, 'is-vibrant': theme.vibrancy }]">
+  <div
+    :class="['app', { 'is-opaque': isFullscreen, 'is-vibrant': theme.vibrancy }]"
+    @dragover.prevent="dragFileOver"
+    @drop="dropFile"
+  >
     <TitleBar />
     <div class="page">
       <TabList v-if="!hasHorizontalTabList" v-show="isTabListEnabled" />

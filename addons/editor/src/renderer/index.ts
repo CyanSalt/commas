@@ -31,16 +31,8 @@ export default () => {
     openCodeEditorTab(file)
   })
 
-  const defaultHandler = commas.context.removeHandler('global-renderer:open-file')
-
   commas.context.handle('global-renderer:open-file', (file) => {
     openCodeEditorTab(file)
   })
-
-  if (defaultHandler) {
-    commas.app.onCleanup(() => {
-      commas.context.handle('global-renderer:open-file', defaultHandler)
-    })
-  }
 
 }

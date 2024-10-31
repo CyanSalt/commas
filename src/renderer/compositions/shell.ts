@@ -9,12 +9,16 @@ declare module '@commas/electron-ipc' {
     'toggle-finding': () => void,
     'toggle-tab-list': () => void,
     'before-quit': () => void,
+    'add-file': (file: string) => void,
+    'add-directory': (directory: string) => void,
   }
   export interface GlobalCommands {
     'global-renderer:open-file': (file: string) => void,
     'global-renderer:open-directory': (directory: string) => void,
     'global-renderer:show-directory': (directory: string) => void,
     'global-renderer:open-url': (url: string) => void,
+    'global-renderer:add-file': (file: string) => void,
+    'global-renderer:add-directory': (directory: string) => void,
   }
 }
 
@@ -75,8 +79,12 @@ export function openDirectory(directory: string) {
   return globalHandler.invoke('global-renderer:open-directory', directory)
 }
 
-export function openFileExternally(directory: string) {
-  return ipcRenderer.invoke('open-path', directory)
+export function openFileExternally(file: string) {
+  return ipcRenderer.invoke('open-path', file)
+}
+
+export async function addFile(file: string) {
+  return ipcRenderer.invoke('add-file', file)
 }
 
 export function showDirectory(file: string) {
@@ -112,6 +120,12 @@ export function handleShellMessages() {
   })
   ipcRenderer.on('before-quit', () => {
     willQuit = true
+  })
+  ipcRenderer.on('add-file', (event, file) => {
+    globalHandler.invoke('global-renderer:add-file', file)
+  })
+  ipcRenderer.on('add-directory', (event, directory) => {
+    globalHandler.invoke('global-renderer:add-directory', directory)
   })
   globalHandler.handle('global-renderer:open-file', (file) => {
     return showFileExternally(file)

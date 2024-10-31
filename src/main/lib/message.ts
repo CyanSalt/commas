@@ -1,4 +1,5 @@
 import type EventEmitter from 'node:events'
+import * as fs from 'node:fs'
 import type { Dock, FindInPageOptions, MessageBoxOptions, MessageBoxReturnValue, NativeImage, Result, WebContents, WebContentsView } from 'electron'
 import { app, BrowserWindow, clipboard, dialog, nativeImage, shell } from 'electron'
 import * as fileIcon from 'file-icon'
@@ -27,6 +28,7 @@ declare module '@commas/electron-ipc' {
     'stop-finding': (type: Parameters<WebContents['stopFindInPage']>[0]) => void,
     'read-file': typeof readFile,
     'show-file': (file: string) => void,
+    'add-file': (file: string) => void,
     'open-path': (uri: string) => void,
     'open-url': (uri: string) => void,
   }
@@ -203,6 +205,14 @@ function handleMessages() {
   })
   ipcMain.handle('show-file', (event, file) => {
     shell.showItemInFolder(file)
+  })
+  ipcMain.handle('add-file', async (event, file) => {
+    const stat = await fs.promises.stat(file)
+    if (stat.isDirectory()) {
+      send(event.sender, 'add-directory', file)
+    } else {
+      send(event.sender, 'add-file', file)
+    }
   })
   ipcMain.handle('open-path', (event, uri) => {
     shell.openPath(uri)

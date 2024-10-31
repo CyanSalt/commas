@@ -162,8 +162,8 @@ function scrollToStickyCommand() {
     }]"
     :style="variables"
     @contextmenu="openEditingMenu"
-    @dragover.prevent="dragFileOver"
-    @drop.prevent="dropFile"
+    @dragover.stop.prevent="dragFileOver"
+    @drop.stop.prevent="dropFile"
   >
     <div ref="element" class="terminal-content"></div>
     <div
