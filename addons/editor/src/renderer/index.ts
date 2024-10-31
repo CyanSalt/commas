@@ -35,4 +35,8 @@ export default () => {
     openCodeEditorTab(file)
   })
 
+  commas.context.handle('global-renderer:add-file', (file) => {
+    openCodeEditorTab(file)
+  })
+
 }
