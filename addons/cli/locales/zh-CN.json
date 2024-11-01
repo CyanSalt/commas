@@ -18,6 +18,8 @@
   "[n-times]#!cli.usage.roll": "[n 次]",
   "Preview a file#!cli.description.preview": "预览文件",
   "[file]#!cli.usage.preview": "[文件]",
+  "Display a image in terminal#!cli.description.imgcat": "在终端中显示图片",
+  "<file>#!cli.usage.imgcat": "<文件>",
   "Terminate all processes on a port#!cli.description.free": "终止端口上的所有进程",
   "<port>#!cli.usage.free": "<端口>",
   "Get history in current session#!cli.description.history": "获取当前会话的历史",

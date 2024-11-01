@@ -2,8 +2,6 @@ import type EventEmitter from 'node:events'
 import * as fs from 'node:fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
-import * as util from 'node:util'
-import * as vm from 'node:vm'
 import ipc from '@achrinza/node-ipc'
 import * as cfonts from 'cfonts'
 import chalk from 'chalk'
@@ -242,6 +240,19 @@ ${
       const file = argv[0] ? path.resolve(cwd, argv[0]) : cwd
       await fs.promises.access(file, fs.constants.R_OK)
       frame.previewFile(file, argv[0] || file)
+    },
+  })
+
+  commas.context.provide('cli.command', {
+    command: 'imgcat',
+    description: 'Display a image in terminal#!cli.description.imgcat',
+    usage: '<file>#!cli.usage.imgcat',
+    async handler({ argv, cwd }) {
+      if (!argv.length) return
+      const relativePath = argv[0]
+      const file = path.resolve(cwd, relativePath)
+      const image = await fs.promises.readFile(file)
+      return `\u001B]1337;File=inline=1;size=${image.length};name=${relativePath}:${image.toString('base64')}`
     },
   })
 
