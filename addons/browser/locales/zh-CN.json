@@ -1,4 +1,6 @@
 {
   "New Page#!browser.1": "新页面",
-  "Open Web Page#!browser.2": "打开网页"
+  "Open Web Page#!browser.2": "打开网页",
+  "Browse URL#!cli.description.browse": "访问 URL",
+  "<url>#!cli.usage.browse": "<url>"
 }
