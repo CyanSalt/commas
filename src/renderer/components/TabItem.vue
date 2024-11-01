@@ -264,6 +264,7 @@ function close() {
   width: 6px;
   height: 6px;
   margin: 0 #{math.div(18px + 2 * 2px - 6px, 2)};
+  color: rgb(var(--theme-foreground) / 25%);
   vertical-align: 1px;
   background: currentColor;
   border-radius: 50%;
@@ -273,9 +274,6 @@ function close() {
   }
   &.alerting {
     color: rgb(var(--system-yellow));
-  }
-  .tab-item.virtual &:not(.alerting) {
-    opacity: 0.5;
   }
   .tab-item:hover & {
     display: none;
