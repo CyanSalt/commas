@@ -12,7 +12,7 @@ export function openRecorderTab(file: string) {
 }
 
 export function useTTYRecFrames(file: MaybeRefOrGetter<string>) {
-  let frames = $shallowRef<TTYRecFrame[]>([])
+  let frames = $ref<TTYRecFrame[]>([])
   watchEffect(onInvalidate => {
     const source = toValue(file)
     ipcRenderer.invoke('ttyrec-read', source)

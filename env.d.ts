@@ -5,6 +5,19 @@ interface Element {
   scrollIntoViewIfNeeded(centerIfNeeded?: boolean): void,
 }
 
+declare namespace Intl {
+  interface DurationFormat {
+    format(value: any): string,
+  }
+  interface DurationFormatConstructor {
+    new (locales?: string | string[], options?: any): DurationFormat,
+    (locales?: string | string[], options?: any): DurationFormat,
+    supportedLocalesOf(locales: string | string[], options?: any): string[],
+    readonly prototype: DurationFormat,
+  }
+  const DurationFormat: DurationFormatConstructor
+}
+
 declare module '@achrinza/node-ipc' {
   export { default } from 'node-ipc'
 }
