@@ -258,14 +258,14 @@ const baseTerminalOptions = $computed<Partial<ITerminalOptions>>(() => {
     lineHeight: settings['terminal.style.lineHeight'] / 1.2,
     screenReaderMode: a11yEnabled,
     theme: { ...theme },
+    linkHandler: {
+      activate: handleTerminalLink,
+    },
   }
 })
 
 const interactiveTerminalOptions = $computed<Partial<ITerminalOptions>>(() => {
   return {
-    linkHandler: {
-      activate: handleTerminalLink,
-    },
     overviewRulerWidth: 16,
   }
 })
@@ -615,18 +615,8 @@ function loadBaseTerminalAddons(tab: TerminalTab, xterm: Terminal, addons: Recor
   }
 }
 
-function loadInteractiveTerminalAddons(tab: TerminalTab, xterm: Terminal, addons: Record<string, any>) {
-  if (settings['terminal.shell.integration']) {
-    if (!addons.shellIntegration) {
-      addons.shellIntegration = new ShellIntegrationAddon(tab)
-      xterm.loadAddon(addons.shellIntegration)
-    }
-  } else {
-    if (addons.shellIntegration) {
-      addons.shellIntegration.dispose()
-      delete addons.shellIntegration
-    }
-  }
+function loadReadonlyTerminalAddons(tab: TerminalTab, xterm: Terminal, addons: Record<string, any>) {
+  loadBaseTerminalAddons(tab, xterm, addons)
   if (!addons.search) {
     addons.search = new SearchAddon()
     xterm.loadAddon(addons.search)
@@ -641,10 +631,24 @@ function loadInteractiveTerminalAddons(tab: TerminalTab, xterm: Terminal, addons
   }
 }
 
+function loadInteractiveTerminalAddons(tab: TerminalTab, xterm: Terminal, addons: Record<string, any>) {
+  if (settings['terminal.shell.integration']) {
+    if (!addons.shellIntegration) {
+      addons.shellIntegration = new ShellIntegrationAddon(tab)
+      xterm.loadAddon(addons.shellIntegration)
+    }
+  } else {
+    if (addons.shellIntegration) {
+      addons.shellIntegration.dispose()
+      delete addons.shellIntegration
+    }
+  }
+}
+
 function loadTerminalAddons(tab: TerminalTab) {
   const xterm = tab.xterm
   const addons: Record<string, any> = tab.addons
-  loadBaseTerminalAddons(tab, xterm, addons)
+  loadReadonlyTerminalAddons(tab, xterm, addons)
   loadInteractiveTerminalAddons(tab, xterm, addons)
   nextTick(() => {
     commas.proxy.app.events.emit('terminal.addons-loaded', tab)
@@ -654,7 +658,7 @@ function loadTerminalAddons(tab: TerminalTab) {
 function loadStickyTerminalAddons(tab: TerminalTab) {
   const xterm = tab.stickyXterm!
   const addons: Record<string, any> = tab.stickyAddons!
-  loadBaseTerminalAddons(tab, xterm, addons)
+  loadReadonlyTerminalAddons(tab, xterm, addons)
 }
 
 export function useReadonlyTerminal(
@@ -675,7 +679,7 @@ export function useReadonlyTerminal(
       xterm.options[key] = value
     }
     const currentTab = toValue(tab)
-    loadBaseTerminalAddons(currentTab, xterm, addons)
+    loadReadonlyTerminalAddons(currentTab, xterm, addons)
   })
   useTerminalElement(
     element,
