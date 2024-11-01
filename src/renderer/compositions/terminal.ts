@@ -36,6 +36,7 @@ import { useTheme } from './theme'
 declare module '@commas/api/modules/app' {
   export interface Events {
     'terminal.addons-loaded': [TerminalTab],
+    'terminal.data': [TerminalTab, string],
   }
 }
 
@@ -645,7 +646,9 @@ function loadTerminalAddons(tab: TerminalTab) {
   const addons: Record<string, any> = tab.addons
   loadBaseTerminalAddons(tab, xterm, addons)
   loadInteractiveTerminalAddons(tab, xterm, addons)
-  commas.proxy.app.events.emit('terminal.addons-loaded', tab)
+  nextTick(() => {
+    commas.proxy.app.events.emit('terminal.addons-loaded', tab)
+  })
 }
 
 function loadStickyTerminalAddons(tab: TerminalTab) {
@@ -1020,6 +1023,7 @@ export function handleTerminalMessages() {
         if (thumbnail) break
       }
       tab.thumbnail = thumbnail
+      commas.proxy.app.events.emit('terminal.data', tab, data.data)
     })
     // data.process on Windows will be always equivalent to pty.name
     // TODO: confirm after 1.0.0

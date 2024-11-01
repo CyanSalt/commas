@@ -77,4 +77,6 @@ export default () => {
     })
   })
 
+  commas.i18n.addTranslationDirectory('locales')
+
 }

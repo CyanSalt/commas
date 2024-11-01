@@ -89,15 +89,15 @@ function registerXtermAddon<T extends keyof TerminalTabAddons>(
   immediate?: boolean,
 ) {
   const apply = (tab: TerminalTab, active: boolean) => {
-    const addon = factory(tab)
-    if (addon) {
-      if (active && !tab.addons[key]) {
+    if (active && !tab.addons[key]) {
+      const addon = factory(tab)
+      if (addon) {
         tab.addons[key] = addon
         tab.xterm.loadAddon(tab.addons[key])
-      } else if (!active && tab.addons[key]) {
-        tab.addons[key].dispose()
-        delete tab.addons[key]
       }
+    } else if (!active && tab.addons[key]) {
+      tab.addons[key].dispose()
+      delete tab.addons[key]
     }
   }
 
@@ -107,14 +107,19 @@ function registerXtermAddon<T extends keyof TerminalTabAddons>(
     apply(tab, active)
   })
 
-  const toggle = (enabled: boolean) => {
-    if (active === enabled) return
-    active = enabled
-    tabs.forEach(tab => {
+  const toggle = (enabled: boolean, tab?: TerminalTab) => {
+    if (tab) {
       if (!tab.pane) {
-        apply(tab, active)
+        apply(tab, enabled)
       }
-    })
+    } else if (active !== enabled) {
+      active = enabled
+      tabs.forEach(item => {
+        if (!item.pane) {
+          apply(item, enabled)
+        }
+      })
+    }
   }
 
   this.$.app.onInvalidate(() => {

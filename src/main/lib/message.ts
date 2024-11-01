@@ -1,5 +1,6 @@
 import type EventEmitter from 'node:events'
 import * as fs from 'node:fs'
+import * as path from 'node:path'
 import type { Dock, FindInPageOptions, MessageBoxOptions, MessageBoxReturnValue, NativeImage, Result, WebContents, WebContentsView } from 'electron'
 import { app, BrowserWindow, clipboard, dialog, nativeImage, shell } from 'electron'
 import * as fileIcon from 'file-icon'
@@ -18,9 +19,9 @@ declare module '@commas/electron-ipc' {
     'inject-style': (style: string) => string,
     'eject-style': (key: string) => void,
     'update-window': (data: { title: BrowserWindow['title'], filename: BrowserWindow['representedFilename'] }) => void,
-    'drag-file': (path: string, iconBuffer?: Buffer) => void,
+    'drag-file': (file: string, iconBuffer?: Buffer) => void,
     beep: () => void,
-    'get-icon': (path: string) => Buffer,
+    'get-icon': (file: string) => Buffer,
     notify: typeof notify,
     'activate-window': () => void,
     bounce: (state: { active: boolean, type?: Parameters<Dock['bounce']>[0] }) => void,
@@ -31,6 +32,7 @@ declare module '@commas/electron-ipc' {
     'add-file': (file: string) => void,
     'open-path': (uri: string) => void,
     'open-url': (uri: string) => void,
+    'save-file': (name: string, content: Buffer | string) => Promise<void>,
   }
   export interface Events {
     'get-path': (name?: Parameters<typeof app['getPath']>[0]) => string,
@@ -147,20 +149,20 @@ function handleMessages() {
     frame.title = data.title
     frame.representedFilename = data.filename
   })
-  ipcMain.handle('drag-file', async (event, path, iconBuffer) => {
+  ipcMain.handle('drag-file', async (event, file, iconBuffer) => {
     let icon: NativeImage
     if (iconBuffer) {
       icon = nativeImage.createFromBuffer(iconBuffer).resize({ width: 16 })
     } else {
-      icon = await app.getFileIcon(path, { size: 'small' })
+      icon = await app.getFileIcon(file, { size: 'small' })
     }
-    event.sender.startDrag({ file: path, icon })
+    event.sender.startDrag({ file, icon })
   })
   ipcMain.handle('beep', () => {
     shell.beep()
   })
-  ipcMain.handle('get-icon', (event, path) => {
-    return fileIcon.buffer(path, { size: 32 })
+  ipcMain.handle('get-icon', (event, file) => {
+    return fileIcon.buffer(file, { size: 32 })
   })
   ipcMain.handle('notify', (event, data) => {
     return notify(data)
@@ -219,6 +221,12 @@ function handleMessages() {
   })
   ipcMain.handle('open-url', (event, url) => {
     shell.openExternal(url)
+  })
+  ipcMain.handle('save-file', (event, name, content) => {
+    return fs.promises.writeFile(
+      path.join(app.getPath('downloads'), name),
+      content,
+    )
   })
   let watcherCollections = new WeakMap<WebContents, Map<string, any>>()
   ipcMain.handle('get-ref:file', (event, file: string) => {
