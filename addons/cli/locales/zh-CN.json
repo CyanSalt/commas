@@ -14,7 +14,6 @@
   "<...command-with-args>#!cli.usage.run": "<...命令和参数>",
   "Jump to the nth tab#!cli.description.select": "跳转到第 n 个标签页",
   "<nth-tab>#!cli.usage.select": "<第 n 个标签页>",
-  "Evaluate a JS expression#!cli.description.eval": "计算 JS 表达式",
   "Generate random numbers from 1 to 100#!cli.description.roll": "生成 1 到 100 之间的随机数",
   "[n-times]#!cli.usage.roll": "[n 次]",
   "Preview a file#!cli.description.preview": "预览文件",

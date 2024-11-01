@@ -218,29 +218,6 @@ ${
     },
   })
 
-  let context: vm.Context | undefined
-
-  commas.context.provide('cli.command', {
-    command: 'eval',
-    description: 'Evaluate a JS expression#!cli.description.eval',
-    handler({ argv }) {
-      const script = argv[0]
-      if (script === 'reset') {
-        context = undefined
-        return
-      }
-      if (!context) {
-        context = Object.create(null)
-        vm.createContext(context)
-      }
-      return util.inspect(vm.runInContext(script, context!), {
-        showHidden: true,
-        showProxy: true,
-        colors: true,
-      })
-    },
-  })
-
   commas.context.provide('cli.command', {
     command: 'roll',
     description: 'Generate random numbers from 1 to 100#!cli.description.roll',
