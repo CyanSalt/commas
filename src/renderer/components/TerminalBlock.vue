@@ -70,6 +70,8 @@ async function handleDrop(args: DraggableElementEventPayload<DraggableElementDat
 </template>
 
 <style lang="scss" scoped>
+@use '../assets/_partials';
+
 .terminal-block {
   position: relative;
   overflow: hidden;
@@ -78,6 +80,18 @@ async function handleDrop(args: DraggableElementEventPayload<DraggableElementDat
   box-shadow: var(--design-card-shadow);
   .app.is-opaque & {
     background: rgb(var(--theme-background));
+  }
+  // Both for TerminalTeletype and other teletypes
+  :deep(.xterm) {
+    padding: 8px;
+  }
+  :deep(.xterm-viewport) {
+    background-color: transparent !important;
+    @include partials.scroll-container(8px);
+  }
+  /* issue@xterm: pointer behavior */
+  :deep(.xterm-screen) {
+    z-index: 0;
   }
 }
 .terminal-container {

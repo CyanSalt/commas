@@ -15,7 +15,7 @@ import { Terminal } from '@xterm/xterm'
 import { toKeyEvent } from 'keyboardevent-from-electron-accelerator'
 import { isMatch, pick } from 'lodash'
 import type { MaybeRefOrGetter } from 'vue'
-import { effectScope, markRaw, nextTick, reactive, shallowReactive, toRaw, toValue, watch, watchEffect } from 'vue'
+import { effectScope, getCurrentScope, markRaw, nextTick, onScopeDispose, reactive, shallowReactive, toRaw, toValue, watch, watchEffect } from 'vue'
 import { ipcRenderer } from '@commas/electron-ipc'
 import type { KeyBindingCommand, MenuItem } from '@commas/types/menu'
 import type { ReadonlyTerminalTabAddons, TerminalContext, TerminalTab, TerminalTabCharacter, TerminalTabCharacterCommand } from '@commas/types/terminal'
@@ -246,7 +246,7 @@ function handleTerminalLink(event: MouseEvent, uri: string) {
 
 const a11yEnabled = $(useA11yEnabled())
 
-const readonlyTerminalOptions = $computed<Partial<ITerminalOptions>>(() => {
+const baseTerminalOptions = $computed<Partial<ITerminalOptions>>(() => {
   return {
     allowProposedApi: true,
     allowTransparency: theme.opacity < 1,
@@ -270,12 +270,12 @@ const interactiveTerminalOptions = $computed<Partial<ITerminalOptions>>(() => {
 })
 
 const terminalOptions = $computed(() => ({
-  ...readonlyTerminalOptions,
+  ...baseTerminalOptions,
   ...interactiveTerminalOptions,
 }))
 
-const stickyTerminalOptions = $computed(() => ({
-  ...readonlyTerminalOptions,
+const readonlyTerminalOptions = $computed(() => ({
+  ...baseTerminalOptions,
   disableStdin: true,
 }))
 
@@ -306,6 +306,13 @@ export interface CreateTerminalTabOptions {
   character?: TerminalTabCharacter,
 }
 
+function createTerminalState() {
+  return {
+    open: Promise.withResolvers<void>(),
+    stop: Promise.withResolvers<void>(),
+  }
+}
+
 export async function createTerminalTab(context: Partial<TerminalContext> = {}, {
   command,
   character,
@@ -322,10 +329,7 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
     title: '',
     xterm: markRaw(xterm),
     addons: shallowReactive<any>({}),
-    state: {
-      open: Promise.withResolvers(),
-      stop: Promise.withResolvers(),
-    },
+    state: createTerminalState(),
     alerting: false,
     thumbnail: '',
     character,
@@ -393,7 +397,7 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
     activateTerminalTab(tab)
   })
   const stickyXterm = settings['terminal.shell.integration'] && settings['terminal.shell.stickyScroll']
-    ? new Terminal(stickyTerminalOptions)
+    ? new Terminal(readonlyTerminalOptions)
     : undefined
   if (stickyXterm) {
     tab.stickyXterm = stickyXterm
@@ -409,7 +413,7 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
     })
     if (stickyXterm) {
       watchEffect(() => {
-        for (const [key, value] of Object.entries(stickyTerminalOptions)) {
+        for (const [key, value] of Object.entries(readonlyTerminalOptions)) {
           stickyXterm.options[key] = value
         }
         loadStickyTerminalAddons(tab)
@@ -548,7 +552,7 @@ export function openClientURL(uri: string) {
   )
 }
 
-function loadReadOnlyTerminalAddons(tab: TerminalTab, xterm: Terminal, addons: Record<string, any>) {
+function loadBaseTerminalAddons(tab: TerminalTab, xterm: Terminal, addons: Record<string, any>) {
   if (!addons.fit) {
     addons.fit = new FitAddon()
     xterm.loadAddon(addons.fit)
@@ -639,7 +643,7 @@ function loadInteractiveTerminalAddons(tab: TerminalTab, xterm: Terminal, addons
 function loadTerminalAddons(tab: TerminalTab) {
   const xterm = tab.xterm
   const addons: Record<string, any> = tab.addons
-  loadReadOnlyTerminalAddons(tab, xterm, addons)
+  loadBaseTerminalAddons(tab, xterm, addons)
   loadInteractiveTerminalAddons(tab, xterm, addons)
   commas.proxy.app.events.emit('terminal.addons-loaded', tab)
 }
@@ -647,7 +651,45 @@ function loadTerminalAddons(tab: TerminalTab) {
 function loadStickyTerminalAddons(tab: TerminalTab) {
   const xterm = tab.stickyXterm!
   const addons: Record<string, any> = tab.stickyAddons!
-  loadReadOnlyTerminalAddons(tab, xterm, addons)
+  loadBaseTerminalAddons(tab, xterm, addons)
+}
+
+export function useReadonlyTerminal(
+  tab: MaybeRefOrGetter<TerminalTab>,
+  element: MaybeRefOrGetter<HTMLElement | undefined>,
+) {
+  watchEffect(() => {
+    const currentTab = toValue(tab)
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!currentTab.state) {
+      currentTab.state = createTerminalState()
+    }
+  })
+  const xterm = new Terminal(readonlyTerminalOptions)
+  const addons = shallowReactive<any>({})
+  watchEffect(() => {
+    for (const [key, value] of Object.entries(readonlyTerminalOptions)) {
+      xterm.options[key] = value
+    }
+    const currentTab = toValue(tab)
+    loadBaseTerminalAddons(currentTab, xterm, addons)
+  })
+  useTerminalElement(
+    element,
+    () => xterm,
+    () => addons,
+    () => {
+      const currentTab = toValue(tab)
+      currentTab.state.open.resolve()
+    },
+  )
+  const scope = getCurrentScope()
+  if (scope) {
+    onScopeDispose(() => {
+      xterm.dispose()
+    })
+  }
+  return xterm
 }
 
 export function executeTerminalTab(tab: TerminalTab, command: string, restart?: boolean) {

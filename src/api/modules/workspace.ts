@@ -15,6 +15,7 @@ import {
   scrollToMarker,
   showTabOptions,
   useCurrentTerminal,
+  useReadonlyTerminal,
   useTerminalTabGroupSeparating,
   useTerminalTabs,
 } from '../../renderer/compositions/terminal'
@@ -152,4 +153,5 @@ export {
   getTerminalTabsByGroup,
   appendTerminalTab,
   TERMINAL_DIRECTORY_SHELL,
+  useReadonlyTerminal,
 }

@@ -14,6 +14,10 @@ declare module './modules/context' {
       command: TerminalTabCharacterCommand,
       priority?: number,
     },
+    'terminal.file-opener': {
+      extensions: string[],
+      handler: (file: string) => void,
+    },
   }
 }
 

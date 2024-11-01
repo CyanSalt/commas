@@ -227,18 +227,10 @@ function scrollToStickyCommand() {
   min-width: 0;
   overflow: hidden;
   :deep(.xterm) {
-    padding: 8px var(--overview-width) 8px 8px;
+    padding-right: var(--overview-width);
   }
   .terminal-teletype.has-shell-integration & :deep(.xterm) {
     padding-left: var(--integration-width);
-  }
-  :deep(.xterm-viewport) {
-    background-color: transparent !important;
-    @include partials.scroll-container(8px);
-  }
-  /* issue@xterm: pointer behavior */
-  :deep(.xterm-screen) {
-    z-index: 0;
   }
   &.is-sticky {
     position: absolute;

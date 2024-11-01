@@ -1,4 +1,6 @@
+import * as path from 'node:path'
 import { ipcRenderer } from '@commas/electron-ipc'
+import * as commas from '../../api/core-renderer'
 import { globalHandler } from '../../shared/handler'
 import { translate } from '../utils/i18n'
 import { openClientURL } from './terminal'
@@ -121,8 +123,15 @@ export function handleShellMessages() {
   ipcRenderer.on('before-quit', () => {
     willQuit = true
   })
+  const openers = commas.proxy.context.getCollection('terminal.file-opener')
   ipcRenderer.on('add-file', (event, file) => {
-    globalHandler.invoke('global-renderer:add-file', file)
+    const ext = path.extname(file).toLowerCase()
+    const opener = openers.find(item => item.extensions.includes(ext))
+    if (opener) {
+      opener.handler(file)
+    } else {
+      globalHandler.invoke('global-renderer:add-file', file)
+    }
   })
   ipcRenderer.on('add-directory', (event, directory) => {
     globalHandler.invoke('global-renderer:add-directory', directory)
