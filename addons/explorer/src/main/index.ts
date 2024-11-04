@@ -56,7 +56,7 @@ export default () => {
     async handler({ sender, argv, cwd }) {
       const directory = argv.length ? path.resolve(cwd, argv[0]) : cwd
       await fs.promises.access(directory, fs.constants.R_OK)
-      commas.frame.send(sender, 'open-explorer', directory)
+      commas.frame.send(sender, 'split-explorer', directory)
     },
   })
 

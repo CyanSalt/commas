@@ -12,7 +12,7 @@ export function openFileExplorerTab(directory?: string) {
 const terminal = $(commas.workspace.useCurrentTerminal())
 const settings = commas.remote.useSettings()
 
-export async function splitOrCloseFileExplorerTab(directory: string) {
+export async function splitFileExplorerTab(directory: string) {
   const current = terminal
   const pane = commas.workspace.getPane('explorer')!
   const dir = getDirectoryProcess(directory)
@@ -22,7 +22,10 @@ export async function splitOrCloseFileExplorerTab(directory: string) {
       group: current.group,
     })
     if (existingTab) {
-      return commas.workspace.closeTerminalTab(existingTab)
+      return {
+        tab: existingTab,
+        exists: true,
+      }
     }
   }
   const titlePosition = settings['terminal.view.tabListPosition'] === 'top' ? 'bottom' : 'top'
@@ -39,5 +42,16 @@ export async function splitOrCloseFileExplorerTab(directory: string) {
         titlePosition,
       )
     }
+  }
+  return {
+    tab,
+    exists: false,
+  }
+}
+
+export async function splitOrCloseFileExplorerTab(directory: string) {
+  const { tab, exists } = await splitFileExplorerTab(directory)
+  if (exists) {
+    return commas.workspace.closeTerminalTab(tab)
   }
 }
