@@ -3,14 +3,13 @@ import { app } from 'electron'
 import * as commas from '../api/core-main'
 import { handleA11yMessages } from './lib/a11y'
 import { handleAddonMessages, loadAddons, loadCustomJS } from './lib/addon'
-import { getLastWindow, hasWindow, send } from './lib/frame'
 import { handleI18nMessages, loadTranslations } from './lib/i18n'
 import { createApplicationMenu, createDockMenu, handleMenuMessages, registerGlobalShortcuts } from './lib/menu'
 import { handleMessages } from './lib/message'
 import { handleSettingsMessages } from './lib/settings'
 import { handleTerminalMessages } from './lib/terminal'
 import { handleThemeMessages } from './lib/theme'
-import { createDefaultWindow, createWindow, handleWindowMessages, openFile } from './lib/window'
+import { createDefaultWindow, createWindow, handleWindowMessages, openFile, openURL } from './lib/window'
 
 declare module '@commas/api/modules/app' {
   export interface Events {
@@ -66,12 +65,7 @@ app.on('will-finish-launching', () => {
   })
   app.on('open-url', async (event, url) => {
     event.preventDefault()
-    await app.whenReady()
-    if (!hasWindow()) {
-      createWindow()
-    }
-    const frame = getLastWindow()
-    send(frame.webContents, 'open-url', url)
+    openURL(url)
   })
 })
 

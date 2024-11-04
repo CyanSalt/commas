@@ -1,3 +1,4 @@
+import * as fs from 'node:fs'
 import * as path from 'node:path'
 import { effect, stop } from '@vue/reactivity'
 import type { BrowserWindowConstructorOptions, Rectangle } from 'electron'
@@ -17,6 +18,7 @@ declare module '@commas/electron-ipc' {
     'global-main:open-window': (context?: Partial<TerminalContext>) => void,
   }
   export interface Commands {
+    'open-file': (file: string) => void,
     'create-web-contents': (rect: Rectangle & { borderRadius?: number }) => number,
     'destroy-web-contents': (id: number) => void,
     'navigate-web-contents': (id: number, url: string) => void,
@@ -119,31 +121,55 @@ async function createWindow(args?: Partial<TerminalContext>) {
   return frame
 }
 
-let cwd: string
+let defaultArgs: Parameters<typeof createWindow>[0]
 
 function createDefaultWindow() {
-  createWindow({ cwd })
+  createWindow(defaultArgs)
 }
 
-async function openFile(file: string) {
-  await whenSettingsReady()
-  const settings = useSettings()
-  if (!app.isReady()) {
-    cwd = file
-    return
+async function openFile(file: string, frame?: BrowserWindow | null) {
+  const stat = await fs.promises.stat(file)
+  const isDirectory = stat.isDirectory()
+  const args = isDirectory ? { cwd: file } : undefined
+  if (!frame) {
+    if (!app.isReady()) {
+      defaultArgs = args
+      if (args) return
+    }
+    await app.whenReady()
+    await whenSettingsReady()
+    const settings = useSettings()
+    if (settings['terminal.external.openPathIn'] === 'new-window' || !hasWindow()) {
+      frame = await createWindow(args)
+      if (args) return
+    } else {
+      frame = getLastWindow()
+    }
   }
-  if (settings['terminal.external.openPathIn'] === 'new-window' || !hasWindow()) {
-    createWindow({ cwd: file })
-    return
+  if (isDirectory) {
+    send(frame.webContents, 'open-tab', args)
+  } else {
+    send(frame.webContents, 'add-file', file)
   }
-  const frame = getLastWindow()
-  send(frame.webContents, 'open-tab', { cwd: file })
+  frame.show()
+}
+
+async function openURL(url: string, frame?: BrowserWindow | null) {
+  if (!frame) {
+    await app.whenReady()
+    frame = hasWindow() ? getLastWindow() : await createWindow()
+  }
+  send(frame.webContents, 'open-url', url)
   frame.show()
 }
 
 const webContentsViews = new Set<WebContentsView>()
 
 function handleWindowMessages() {
+  ipcMain.handle('open-file', async (event, file) => {
+    const frame = BrowserWindow.fromWebContents(event.sender)
+    openFile(file, frame)
+  })
   globalHandler.handle('global-main:open-window', (arg?: Partial<TerminalContext> | BrowserWindow) => {
     // Convert BrowserWindow from menu
     const context = arg && 'contentView' in arg ? undefined : arg
@@ -193,5 +219,6 @@ export {
   createWindow,
   createDefaultWindow,
   openFile,
+  openURL,
   handleWindowMessages,
 }

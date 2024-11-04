@@ -30,7 +30,6 @@ declare module '@commas/electron-ipc' {
     'read-file': typeof readFile,
     'show-file': (file: string) => void,
     'preview-file': (file: string) => void,
-    'add-file': (file: string) => void,
     'open-path': (uri: string) => void,
     'open-url': (uri: string) => void,
     'save-file': (name: string, content: Buffer | string) => Promise<void>,
@@ -213,14 +212,6 @@ function handleMessages() {
     const frame = BrowserWindow.fromWebContents(event.sender)
     if (!frame) return
     frame.previewFile(file)
-  })
-  ipcMain.handle('add-file', async (event, file) => {
-    const stat = await fs.promises.stat(file)
-    if (stat.isDirectory()) {
-      send(event.sender, 'add-directory', file)
-    } else {
-      send(event.sender, 'add-file', file)
-    }
   })
   ipcMain.handle('open-path', (event, uri) => {
     shell.openPath(uri)

@@ -1123,9 +1123,6 @@ export function handleTerminalMessages() {
       ?? []
     return count ? commands.slice(0 - count) : commands
   })
-  globalHandler.handle('global-renderer:add-directory', (directory) => {
-    return createTerminalTab({ cwd: directory })
-  })
   globalHandler.handle('global-renderer:add-file', (file) => {
     // pass
   })
