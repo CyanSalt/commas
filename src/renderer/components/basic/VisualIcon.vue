@@ -14,7 +14,7 @@ const lucideSpritePath = $computed(() => {
 })
 
 const simpleIconsClass = $computed(() => {
-  return name.startsWith('simple-icons')
+  return name.startsWith('simple-icons-')
     ? `si si-${name.slice('simple-icons-'.length)}`
     : undefined
 })
