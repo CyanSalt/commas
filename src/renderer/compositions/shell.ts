@@ -69,7 +69,58 @@ export async function confirmClosing() {
   return response === 0
 }
 
+/**
+ * {@link https://en.wikipedia.org/wiki/Quick_Look#Supported_file_types_by_default}
+ */
+const QUICK_LOOK_EXTENSIONS = [
+  '.aac',
+  '.psd',
+  '.aiff',
+  '.icns',
+  '.avi',
+  '.bmp',
+  '.dae',
+  '.c4d',
+  '.gif',
+  // '.html',
+  '.ichat',
+  '.jpg',
+  '.jpeg',
+  '.jp2',
+  '.xls',
+  '.xlsx',
+  '.ppt',
+  '.pptx',
+  '.doc',
+  '.docx',
+  '.midi',
+  '.mp3',
+  '.mp4',
+  '.mpo',
+  '.pdf',
+  '.pictureclipping',
+  '.pict',
+  '.pct',
+  '.pic',
+  '.png',
+  '.mov',
+  '.movie',
+  '.qt',
+  '.rtf',
+  // '.svg',
+  // '.txt',
+  '.textclipping',
+  '.tiff',
+  '.wav',
+]
+
 export function openFile(file: string) {
+  if (process.platform === 'darwin') {
+    const ext = path.extname(file).toLowerCase()
+    if (QUICK_LOOK_EXTENSIONS.includes(ext)) {
+      return ipcRenderer.invoke('preview-file', file)
+    }
+  }
   return globalHandler.invoke('global-renderer:open-file', file)
 }
 

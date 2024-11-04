@@ -29,6 +29,7 @@ declare module '@commas/electron-ipc' {
     'stop-finding': (type: Parameters<WebContents['stopFindInPage']>[0]) => void,
     'read-file': typeof readFile,
     'show-file': (file: string) => void,
+    'preview-file': (file: string) => void,
     'add-file': (file: string) => void,
     'open-path': (uri: string) => void,
     'open-url': (uri: string) => void,
@@ -207,6 +208,11 @@ function handleMessages() {
   })
   ipcMain.handle('show-file', (event, file) => {
     shell.showItemInFolder(file)
+  })
+  ipcMain.handle('preview-file', (event, file) => {
+    const frame = BrowserWindow.fromWebContents(event.sender)
+    if (!frame) return
+    frame.previewFile(file)
   })
   ipcMain.handle('add-file', async (event, file) => {
     const stat = await fs.promises.stat(file)
