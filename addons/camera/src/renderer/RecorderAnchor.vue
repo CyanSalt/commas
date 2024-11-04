@@ -26,9 +26,10 @@ async function stopCapturing() {
   const { startedAt, data } = terminal.addons.recorder.save()
   commas.context.invoke('toggle-recorder', terminal, false)
   const date = new Date(startedAt)
-  await ipcRenderer.invoke('save-file', commas.remote.translate('Terminal Recording ${date}#!camera.1', {
+  const file = await ipcRenderer.invoke('save-file', commas.remote.translate('Terminal Recording ${date}#!camera.1', {
     date: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}.${String(date.getMinutes()).padStart(2, '0')}.${String(date.getSeconds()).padStart(2, '0')}`,
   }) + '.ttyrec', data)
+  commas.remote.addFile(file)
 }
 
 const isCapturing = $computed(() => {

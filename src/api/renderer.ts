@@ -16,7 +16,7 @@ declare module './modules/context' {
     },
     'terminal.file-opener': {
       extensions: string[],
-      handler: (file: string) => void,
+      handler: (file: string) => Promise<void> | void,
     },
   }
 }

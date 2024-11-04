@@ -32,7 +32,7 @@ declare module '@commas/electron-ipc' {
     'preview-file': (file: string) => void,
     'open-path': (uri: string) => void,
     'open-url': (uri: string) => void,
-    'save-file': (name: string, content: Buffer | string) => Promise<void>,
+    'save-file': (name: string, content: Buffer | string) => Promise<string>,
   }
   export interface Events {
     'get-path': (name?: Parameters<typeof app['getPath']>[0]) => string,
@@ -219,11 +219,10 @@ function handleMessages() {
   ipcMain.handle('open-url', (event, url) => {
     shell.openExternal(url)
   })
-  ipcMain.handle('save-file', (event, name, content) => {
-    return fs.promises.writeFile(
-      path.join(app.getPath('downloads'), name),
-      content,
-    )
+  ipcMain.handle('save-file', async (event, name, content) => {
+    const file = path.join(app.getPath('downloads'), name)
+    await fs.promises.writeFile(file, content)
+    return file
   })
   let watcherCollections = new WeakMap<WebContents, Map<string, any>>()
   ipcMain.handle('get-ref:file', (event, file: string) => {

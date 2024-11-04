@@ -67,6 +67,12 @@ export async function confirmClosing() {
   return response === 0
 }
 
+function getFileOpener(file: string) {
+  const ext = path.extname(file).toLowerCase()
+  const openers = commas.proxy.context.getCollection('terminal.file-opener')
+  return openers.find(item => item.extensions.includes(ext))
+}
+
 /**
  * {@link https://en.wikipedia.org/wiki/Quick_Look#Supported_file_types_by_default}
  */
@@ -113,6 +119,10 @@ const QUICK_LOOK_EXTENSIONS = [
 ]
 
 export function openFile(file: string) {
+  const opener = getFileOpener(file)
+  if (opener) {
+    return opener.handler(file)
+  }
   if (process.platform === 'darwin') {
     const ext = path.extname(file).toLowerCase()
     if (QUICK_LOOK_EXTENSIONS.includes(ext)) {
@@ -120,6 +130,14 @@ export function openFile(file: string) {
     }
   }
   return globalHandler.invoke('global-renderer:open-file', file)
+}
+
+export async function addFile(file: string) {
+  const opener = getFileOpener(file)
+  if (opener) {
+    return opener.handler(file)
+  }
+  return globalHandler.invoke('global-renderer:add-file', file)
 }
 
 export function showFileExternally(file: string) {
@@ -132,10 +150,6 @@ export function openDirectory(directory: string) {
 
 export function openFileExternally(file: string) {
   return ipcRenderer.invoke('open-path', file)
-}
-
-export async function addFile(file: string) {
-  return ipcRenderer.invoke('open-file', file)
 }
 
 export function showDirectory(file: string) {
@@ -172,15 +186,8 @@ export function handleShellMessages() {
   ipcRenderer.on('before-quit', () => {
     willQuit = true
   })
-  const openers = commas.proxy.context.getCollection('terminal.file-opener')
   ipcRenderer.on('add-file', (event, file) => {
-    const ext = path.extname(file).toLowerCase()
-    const opener = openers.find(item => item.extensions.includes(ext))
-    if (opener) {
-      opener.handler(file)
-    } else {
-      globalHandler.invoke('global-renderer:add-file', file)
-    }
+    return addFile(file)
   })
   globalHandler.handle('global-renderer:open-file', (file) => {
     return showFileExternally(file)
@@ -193,5 +200,8 @@ export function handleShellMessages() {
   })
   globalHandler.handle('global-renderer:open-url', (url) => {
     return openURLExternally(url)
+  })
+  globalHandler.handle('global-renderer:add-file', (file) => {
+    // pass
   })
 }

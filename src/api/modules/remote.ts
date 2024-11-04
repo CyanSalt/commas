@@ -6,7 +6,7 @@ import {
   useSettings,
   useSettingsSpecs,
 } from '../../renderer/compositions/settings'
-import { openDirectory, openFile, openFileExternally, openURL, openURLExternally, showDirectory, showFileExternally } from '../../renderer/compositions/shell'
+import { addFile, openDirectory, openFile, openFileExternally, openURL, openURLExternally, showDirectory, showFileExternally } from '../../renderer/compositions/shell'
 import { useIsLightTheme, useTheme } from '../../renderer/compositions/theme'
 import { translate } from '../../renderer/utils/i18n'
 import type { RendererAPIContext } from '../types'
@@ -59,4 +59,5 @@ export {
   showDirectory,
   openURL,
   openURLExternally,
+  addFile,
 }

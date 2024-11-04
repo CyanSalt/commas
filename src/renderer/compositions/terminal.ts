@@ -20,7 +20,6 @@ import { ipcRenderer } from '@commas/electron-ipc'
 import type { KeyBindingCommand, MenuItem } from '@commas/types/menu'
 import type { ReadonlyTerminalTabAddons, TerminalContext, TerminalTab, TerminalTabCharacter, TerminalTabCharacterCommand } from '@commas/types/terminal'
 import * as commas from '../../api/core-renderer'
-import { globalHandler } from '../../shared/handler'
 import { createIDGenerator } from '../../shared/helper'
 import { openContextMenu } from '../utils/frame'
 import { translate } from '../utils/i18n'
@@ -1122,8 +1121,5 @@ export function handleTerminalMessages() {
       .filter((command): command is string => Boolean(command))
       ?? []
     return count ? commands.slice(0 - count) : commands
-  })
-  globalHandler.handle('global-renderer:add-file', (file) => {
-    // pass
   })
 }
