@@ -452,6 +452,7 @@ export function useTerminalElement(
     const xterm = toValue(terminal)
     if (xterm.element) return
     xterm.open(el)
+    xterm.focus()
     onInitialize?.(xterm)
   })
 }

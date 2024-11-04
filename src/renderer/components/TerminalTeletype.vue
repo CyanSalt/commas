@@ -73,7 +73,6 @@ useTerminalElement(
   xterm => {
     cell = xterm['_core']._renderService.dimensions.css.cell
     tab.state.open.resolve()
-    xterm.focus()
   },
 )
 
