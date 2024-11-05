@@ -1,7 +1,7 @@
 import type { Readable } from 'node:stream'
 import type { ClientRequestConstructorOptions, IncomingMessage } from 'electron'
 import { net } from 'electron'
-import { getStream, until } from './helper'
+import { until } from './helper'
 
 type RequestOptions = string | ClientRequestConstructorOptions
 
@@ -26,13 +26,6 @@ async function request(options: RequestOptions, data?: RequestData) {
   return response as IncomingMessage & Readable
 }
 
-async function requestJSON<T>(options: RequestOptions, data?: RequestData) {
-  const response = await request(options, data)
-  const chunk = await getStream(response, 'utf8')
-  return JSON.parse(chunk) as T
-}
-
 export {
   request,
-  requestJSON,
 }

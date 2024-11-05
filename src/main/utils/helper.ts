@@ -1,6 +1,5 @@
 import * as childProcess from 'node:child_process'
 import type { EventEmitter } from 'node:events'
-import type { Readable } from 'node:stream'
 import * as util from 'node:util'
 
 const execa = util.promisify(childProcess.exec)
@@ -22,19 +21,6 @@ function until<T extends EventEmitter, U extends string>(emitter: T, finish: U, 
           })
         }
       })
-}
-
-async function getStream(input: Readable): Promise<Buffer>
-async function getStream(input: Readable, encoding: BufferEncoding): Promise<string>
-
-async function getStream(input: Readable, encoding?: BufferEncoding) {
-  const chunks: Buffer[] = []
-  input.on('data', chunk => {
-    chunks.push(chunk)
-  })
-  await until(input, 'end', 'error')
-  const buffer = Buffer.concat(chunks)
-  return encoding ? buffer.toString(encoding) : buffer
 }
 
 function memoizeAsync<
@@ -67,6 +53,5 @@ function memoizeAsync<
 export {
   execa,
   until,
-  getStream,
   memoizeAsync,
 }

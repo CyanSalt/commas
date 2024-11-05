@@ -20,15 +20,16 @@ async function getAccessTokenFromServer(): Promise<AccessToken> {
     expires_from: Date.now(),
     api_key: apiKey!,
   }
-  const response = await commas.shell.requestJSON<AccessTokenData>({
-    method: 'POST',
-    url: `https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=${apiKey}&client_secret=${secretKey}`,
-  })
-  if (response.error) {
-    throw Object.assign(new Error(response.error_description), response)
+  const response = await fetch(
+    `https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=${apiKey}&client_secret=${secretKey}`,
+    { method: 'POST' },
+  )
+  const data: AccessTokenData = await response.json()
+  if (data.error) {
+    throw Object.assign(new Error(data.error_description), data)
   }
   return {
-    ...response,
+    ...data,
     ...params,
   }
 }
@@ -58,23 +59,25 @@ async function getAccessToken() {
 
 async function chat(message: string) {
   const token = await getAccessToken()
-  const response = await commas.shell.requestJSON<{ result: string }>({
-    method: 'POST',
-    url: `https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-speed-128k?access_token=${token}`,
-    headers: {
-      'Content-Type': 'application/json',
+  const response = await fetch(
+    `https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-speed-128k?access_token=${token}`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        messages: [
+          {
+            role: 'user',
+            content: message,
+          },
+        ],
+      }),
     },
-  }, {
-    body: JSON.stringify({
-      messages: [
-        {
-          role: 'user',
-          content: message,
-        },
-      ],
-    }),
-  })
-  return response.result
+  )
+  const data: { result: string } = await response.json()
+  return data.result
 }
 
 export {
