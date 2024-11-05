@@ -3,21 +3,28 @@ import type { ITerminalAddon } from '@xterm/xterm'
 import * as commas from 'commas:api/renderer'
 import type { TTYRecFrame } from '../types/ttyrec'
 
+interface RecorderOptions {
+  onInitialize: (startedAt: number) => string,
+  onData: (data: Buffer, channel: string) => void,
+  onEnd: (channel: string) => void,
+}
+
 export class RecorderAddon implements ITerminalAddon {
 
   tab: TerminalTab
-  frames: TTYRecFrame[]
+  options: RecorderOptions
   startedAt: number
+  channel?: string
 
-  constructor(tab: TerminalTab) {
+  constructor(tab: TerminalTab, options: RecorderOptions) {
     this.tab = tab
-    this.frames = []
     this.startedAt = 0
+    this.options = options
   }
 
   onData = (tab: TerminalTab, data: string) => {
     if (typeof this.startedAt === 'number' && tab === this.tab) {
-      this.frames.push({
+      this.write({
         offset: Date.now() - this.startedAt,
         data,
       })
@@ -25,9 +32,9 @@ export class RecorderAddon implements ITerminalAddon {
   }
 
   activate() {
-    this.frames = []
     this.startedAt = Date.now()
-    this.frames.push({
+    this.channel = this.options.onInitialize(this.startedAt)
+    this.write({
       offset: 0,
       data: this.tab.addons.serialize.serialize(),
     })
@@ -36,29 +43,30 @@ export class RecorderAddon implements ITerminalAddon {
 
   dispose() {
     commas.app.events.off('terminal.data', this.onData)
-    this.frames = []
     this.startedAt = 0
+    this.channel = undefined
   }
 
-  read() {
-    return this.frames
-  }
-
-  save() {
-    const data = Buffer.concat(
-      this.frames.flatMap(item => {
-        const header = Buffer.alloc(12)
-        const body = Buffer.from(item.data)
-        header.writeUInt32LE(Math.floor(item.offset / 1000), 0)
-        header.writeUInt32LE((item.offset % 1000) * 1000, 4)
-        header.writeUInt32LE(body.length, 8)
-        return [header, body]
-      }),
+  write(frame: TTYRecFrame) {
+    if (!this.channel) return
+    this.options.onData.call(
+      undefined,
+      this.serialize(frame),
+      this.channel,
     )
-    return {
-      startedAt: this.startedAt,
-      data,
-    }
+  }
+
+  serialize(frame: TTYRecFrame) {
+    const header = Buffer.alloc(12)
+    const body = Buffer.from(frame.data)
+    header.writeUInt32LE(Math.floor(frame.offset / 1000), 0)
+    header.writeUInt32LE((frame.offset % 1000) * 1000, 4)
+    header.writeUInt32LE(body.length, 8)
+    return Buffer.concat([header, body])
+  }
+
+  getChannel() {
+    return this.channel
   }
 
 }

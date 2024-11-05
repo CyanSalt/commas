@@ -87,6 +87,7 @@
   "dependencies": {
     "@achrinza/node-ipc": "^10.1.11",
     "@vue/reactivity": "^3.4.3",
+    "address": "^2.0.3",
     "chokidar": "^4.0.1",
     "colord": "^2.9.3",
     "file-icon": "^4.0.0",

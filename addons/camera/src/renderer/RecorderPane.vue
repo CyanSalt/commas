@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { pathToFileURL } from 'node:url'
 import type { TerminalTab } from '@commas/types/terminal'
 import { useTimestamp } from '@vueuse/core'
 import * as commas from 'commas:api/renderer'
@@ -11,7 +12,10 @@ const { tab } = defineProps<{
 
 const { TerminalBlock, VisualIcon } = commas.ui.vueAssets
 
-const file = $computed(() => tab.shell)
+const url = $computed(() => {
+  if (tab.command) return tab.command
+  return pathToFileURL(tab.shell).href
+})
 
 function openEditingMenu(event: MouseEvent) {
   const { definitionItems, editingItems } = commas.ui.createContextMenu()
@@ -25,7 +29,7 @@ const element = $ref<HTMLElement>()
 
 const xterm = commas.workspace.useReadonlyTerminal(() => tab, $$(element))
 
-const frames = $(useTTYRecFrames($$(file)))
+const frames = $(useTTYRecFrames($$(url)))
 
 const isFinished = $computed(() => {
   return frames.length ? frames[frames.length - 1].offset === -1 : false
@@ -33,6 +37,10 @@ const isFinished = $computed(() => {
 
 const actualFrames = $computed(() => {
   return isFinished ? frames.slice(0, -1) : frames
+})
+
+const isLive = $computed(() => {
+  return Boolean(tab.command) && !isFinished
 })
 
 let {
@@ -68,6 +76,7 @@ function play() {
 }
 
 const duration = $computed(() => {
+  if (isLive) return 0
   if (!actualFrames.length) return 0
   return actualFrames[actualFrames.length - 1].offset
 })
@@ -79,7 +88,9 @@ const isEnded = $computed(() => {
 })
 
 watchEffect(() => {
-  const lastRenderingFrameIndex = actualFrames.findLastIndex(item => currentTime >= item.offset)
+  const lastRenderingFrameIndex = isLive
+    ? actualFrames.length - 1
+    : actualFrames.findLastIndex(item => currentTime >= item.offset)
   let firstRenderingFrameIndex: number
   if (lastFrameIndex > lastRenderingFrameIndex) {
     xterm.clear()
@@ -107,11 +118,19 @@ watchEffect(onInvalidate => {
   }
 })
 
+const isPaused = $computed(() => {
+  if (isLive) return false
+  if (isActive) return false
+  if (isEnded) return isFinished
+  return true
+})
+
 function playOrPause() {
-  if (isActive) {
-    pause()
-  } else {
+  if (isLive) return
+  if (isPaused) {
     play()
+  } else {
+    pause()
   }
 }
 
@@ -136,16 +155,27 @@ onMounted(() => {
   lastFrameIndex = -1
   play()
 })
+
+watchEffect((onInvalidate) => {
+  if (tab.command) {
+    // eslint-disable-next-line vue/no-mutating-props
+    tab.title = tab.command!
+    onInvalidate(() => {
+      // eslint-disable-next-line vue/no-mutating-props
+      tab.title = ''
+    })
+  }
+})
 </script>
 
 <template>
   <TerminalBlock :tab="tab" class="recorder-pane" @contextmenu="openEditingMenu">
     <div class="recorder-control">
       <button class="action" @click="playOrPause">
-        <VisualIcon :name="isActive ? 'lucide-pause' : 'lucide-play'" class="play-icon" />
+        <VisualIcon :name="isPaused ? 'lucide-play' : 'lucide-pause'" class="play-icon" />
       </button>
       <span class="time-indicator">{{ formatTime(currentTime) }}</span>
-      <input v-model="currentTime" type="range" :max="duration" class="progress">
+      <input v-model="currentTime" type="range" :disabled="isLive" :max="duration" class="progress">
       <span class="time-indicator">{{ formatTime(duration) }}</span>
     </div>
     <div ref="element" class="terminal-content"></div>
@@ -178,6 +208,7 @@ onMounted(() => {
   appearance: none;
   padding: 4px;
   border: none;
+  color: inherit;
   font-size: 14px;
   background: transparent;
   border-radius: 4px;
@@ -207,6 +238,9 @@ onMounted(() => {
     color: rgb(var(--system-accent));
     background: currentColor;
     border-radius: 4px;
+  }
+  &:disabled::-webkit-slider-thumb {
+    filter: grayscale(1);
   }
   &::-webkit-slider-runnable-track {
     height: 4px;

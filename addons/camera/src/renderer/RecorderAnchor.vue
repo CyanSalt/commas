@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { ipcRenderer } from '@commas/electron-ipc'
+import { refAutoReset } from '@vueuse/core'
 import * as commas from 'commas:api/renderer'
+import { clipboard } from 'electron'
 import { watchEffect } from 'vue'
 
 defineOptions({
@@ -23,13 +25,11 @@ function startCapturing() {
 async function stopCapturing() {
   if (!terminal) return
   if (!terminal.addons.recorder) return
-  const { startedAt, data } = terminal.addons.recorder.save()
-  commas.context.invoke('toggle-recorder', terminal, false)
-  const date = new Date(startedAt)
-  const file = await ipcRenderer.invoke('save-file', commas.remote.translate('Terminal Recording ${date}#!camera.1', {
-    date: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}.${String(date.getMinutes()).padStart(2, '0')}.${String(date.getSeconds()).padStart(2, '0')}`,
-  }) + '.ttyrec', data)
+  const channel = terminal.addons.recorder.getChannel()
+  if (!channel) return
+  const file = await ipcRenderer.invoke('ttyrec-write-finish', channel)
   commas.remote.addFile(file)
+  commas.context.invoke('toggle-recorder', terminal, false)
 }
 
 const isCapturing = $computed(() => {
@@ -54,17 +54,38 @@ function capture() {
     stopCapturing()
   }
 }
+
+let feedbacking = $(refAutoReset(false, 1000))
+
+async function share() {
+  if (!terminal) return
+  const channel = terminal.addons.recorder.getChannel()
+  if (!channel) return
+  const url = await ipcRenderer.invoke('ttyrec-share', channel)
+  clipboard.writeText(url)
+  feedbacking = true
+}
 </script>
 
 <template>
-  <div
-    v-if="isTeletype"
-    v-bind="$attrs"
-    :class="['recorder-anchor', { active: isCapturing }]"
-    @click="capture"
-  >
-    <VisualIcon name="lucide-video" class="recorder-icon" />
-  </div>
+  <template v-if="isTeletype">
+    <div
+      v-if="isCapturing"
+      v-bind="$attrs"
+      class="recorder-share-anchor"
+      @click="share"
+    >
+      <VisualIcon v-if="feedbacking" name="lucide-clipboard-check" />
+      <VisualIcon v-else name="lucide-share-2" />
+    </div>
+    <div
+      v-bind="$attrs"
+      :class="['recorder-anchor', { active: isCapturing }]"
+      @click="capture"
+    >
+      <VisualIcon name="lucide-video" class="recorder-icon" />
+    </div>
+  </template>
 </template>
 
 <style lang="scss" scoped>
