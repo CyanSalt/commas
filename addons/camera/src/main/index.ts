@@ -58,7 +58,9 @@ export default () => {
     description: 'Connect to a remote TTY#!cli.description.connect',
     usage: '<url>#!cli.usage.connect',
     async handler({ sender, argv }) {
-      commas.frame.send(sender, 'open-remote-recorder', argv[0])
+      const url = argv[0]
+      if (!url) return
+      commas.frame.send(sender, 'open-remote-recorder', url)
     },
   })
 

@@ -36,7 +36,8 @@ const shells = $(useAsyncComputed(() => getShells(), []))
 const tabs = $(useTerminalTabs())
 const terminal = $(useCurrentTerminal())
 
-let width = $ref(176) // 160 + 2 * var(--design-card-gap)
+const defaultWidth = 176 // 160 + 2 * var(--design-card-gap)
+let width = $ref(defaultWidth)
 
 const settings = useSettings()
 
@@ -96,6 +97,10 @@ function resize(startingEvent: DragEvent) {
       width = Math.min(Math.max(target, 120), max)
     },
   })
+}
+
+function reset() {
+  width = defaultWidth
 }
 
 interface DropTargetData extends Record<string | symbol, unknown> {
@@ -250,7 +255,13 @@ function openTabItemMenu(event: MouseEvent, tab: TerminalTab) {
         </div>
       </div>
     </AutoScroll>
-    <div v-if="!isHorizontal" draggable="true" class="sash" @dragstart.prevent="resize"></div>
+    <div
+      v-if="!isHorizontal"
+      draggable="true"
+      class="sash"
+      @dblclick="reset"
+      @dragstart.prevent="resize"
+    ></div>
   </nav>
 </template>
 

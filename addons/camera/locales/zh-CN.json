@@ -1,3 +1,5 @@
 {
-  "Terminal Recording ${date}#!camera.1": "终端录制 ${date}"
+  "Terminal Recording ${date}#!camera.1": "终端录制 ${date}",
+  "Connect to a remote TTY#!cli.description.connect": "连接至远程终端",
+  "<url>#!cli.usage.connect": "<url>"
 }
