@@ -147,7 +147,7 @@ async function capture() {
         width: size.width + 8 * devicePixelRatio,
         height: size.height + 8 * devicePixelRatio,
       },
-      8 * devicePixelRatio,
+      (8 + 8 / 2) * devicePixelRatio,
     )
     context.fill()
     context.closePath()
