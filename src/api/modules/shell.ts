@@ -1,5 +1,5 @@
 import { execa, until } from '../../main/utils/helper'
-import { request, requestFile, requestJSON } from '../../main/utils/net'
+import { request, requestJSON } from '../../main/utils/net'
 import { sudoExecute } from '../../main/utils/privilege'
 import { loginExecute } from '../../main/utils/shell'
 
@@ -10,5 +10,4 @@ export {
   loginExecute,
   request,
   requestJSON,
-  requestFile,
 }

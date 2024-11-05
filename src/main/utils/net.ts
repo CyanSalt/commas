@@ -1,4 +1,3 @@
-import * as fs from 'node:fs'
 import type { Readable } from 'node:stream'
 import type { ClientRequestConstructorOptions, IncomingMessage } from 'electron'
 import { net } from 'electron'
@@ -33,16 +32,7 @@ async function requestJSON<T>(options: RequestOptions, data?: RequestData) {
   return JSON.parse(chunk) as T
 }
 
-async function requestFile(options: RequestOptions, file: string) {
-  const writeStream = fs.createWriteStream(file)
-  await until(writeStream, 'open')
-  const response = await request(options)
-  response.pipe(writeStream)
-  await until(writeStream, 'finish')
-}
-
 export {
   request,
   requestJSON,
-  requestFile,
 }

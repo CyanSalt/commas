@@ -71,9 +71,7 @@ export default () => {
       readable = fs.createReadStream(fileURLToPath(url))
     } else {
       const response = await fetch(url)
-      readable = response.body
-        ? stream.Readable.fromWeb(response.body as never)
-        : new stream.PassThrough()
+      readable = stream.Readable.fromWeb(response.body as never)
     }
     let data = Buffer.alloc(0)
     let block: TTYRecBlock | undefined
