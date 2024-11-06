@@ -93,6 +93,13 @@ async function handleDrop(args: DraggableElementEventPayload<DraggableElementDat
   :deep(.xterm-screen) {
     z-index: 0;
   }
+  /* issue@xterm: selection text */
+  :deep(.xterm-selection-layer) {
+    mix-blend-mode: darken;
+    @media (prefers-color-scheme: dark) {
+      mix-blend-mode: lighten;
+    }
+  }
 }
 .terminal-container {
   height: 100%;
