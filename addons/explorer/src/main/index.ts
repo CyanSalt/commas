@@ -23,9 +23,14 @@ export default () => {
       const symlink = isSymlink
         ? path.join(dirent.parentPath, await fs.promises.readlink(fullPath))
         : undefined
-      const stats = symlink
-        ? await fs.promises.stat(symlink)
-        : dirent
+      let stats: fs.Stats | fs.Dirent = dirent
+      if (symlink) {
+        try {
+          stats = await fs.promises.stat(symlink)
+        } catch {
+          // ignore
+        }
+      }
       return {
         name: dirent.name,
         path: fullPath,
