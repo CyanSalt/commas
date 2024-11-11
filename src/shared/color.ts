@@ -11,22 +11,6 @@ export function toRGBA(color: string): RGBA {
   return colord(color).toRgb()
 }
 
-interface HSLA {
-  h: number,
-  s: number,
-  l: number,
-  a: number,
-}
-
-export function toHSLA(rgba: RGBA): HSLA {
-  const { h, s, l, a } = colord(rgba).toHsl()
-  return { h, s: s / 100, l: l / 100, a }
-}
-
-export function toRGBAFromHSLA(hsla: HSLA): RGBA {
-  return colord({ h: hsla.h, s: hsla.s * 100, l: hsla.l * 100 }).toRgb()
-}
-
 export function toCSSColor(rgba: RGBA) {
   return `rgb(${rgba.r} ${rgba.g} ${rgba.b} / ${rgba.a})`
 }

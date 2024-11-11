@@ -2,7 +2,7 @@ import { effect } from '@vue/reactivity'
 import type { BrowserWindow, BrowserWindowConstructorOptions } from 'electron'
 import { nativeTheme, systemPreferences } from 'electron'
 import type { Theme, ThemeDefinition } from '@commas/types/theme'
-import { isDarkColor, mix, toCSSColor, toCSSHEX, toElectronHEX, toHSLA, toRGBA } from '../../shared/color'
+import { isDarkColor, mix, toCSSColor, toCSSHEX, toElectronHEX, toRGBA } from '../../shared/color'
 import { provideIPC } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
 import { useDefaultSettings, useSettings } from './settings'
@@ -58,7 +58,6 @@ const EXTRA_CSS_COLORS: Partial<Record<Exclude<keyof Theme, keyof ThemeDefinitio
   systemBrown: '--system-brown',
   systemGray: '--system-gray',
   systemAccent: '--system-accent',
-  acrylicBackground: '--acrylic-background',
 }
 
 const settings = useSettings()
@@ -191,8 +190,6 @@ const theme = $computed(() => {
   )
   const accentRGBA = accentColor ? toRGBA(accentColor) : undefined
   definition.systemAccent = accentRGBA ? toCSSHEX(accentRGBA) : ''
-  const backgroundHSLA = toHSLA(backgroundRGBA)
-  definition.acrylicBackground = accentRGBA ? toCSSHEX(mix(backgroundRGBA, accentRGBA, backgroundHSLA.s)) : ''
   definition.vibrancy = opacity < 1 ? undefined : vibrancy
   definition.variables = Object.fromEntries([
     ...Object.entries({ ...THEME_CSS_COLORS, ...EXTRA_CSS_COLORS }).map(([key, attr]) => {
@@ -219,16 +216,15 @@ const defaultWindowButtonPosition = {
 const themeOptions = $computed<BrowserWindowThemeOptions>(() => {
   const foregroundRGBA = toRGBA(theme.foreground)
   const backgroundRGBA = toRGBA(theme.background)
-  const acrylicBackgroundRGBA = toRGBA(theme.acrylicBackground)
   const trafficLightOffset = ((36 + 8 * 2) - 36) / 2
   return {
     /** {@link https://github.com/electron/electron/issues/10420} */
     backgroundColor: toElectronHEX({ ...backgroundRGBA, a: process.platform !== 'win32' ? 0 : 1 }),
     vibrancy: theme.vibrancy ? (
-      typeof theme.vibrancy === 'string' ? theme.vibrancy : 'header'
+      typeof theme.vibrancy === 'string' ? theme.vibrancy : 'hud'
     ) : undefined,
     titleBarOverlay: {
-      color: toElectronHEX(acrylicBackgroundRGBA),
+      color: toElectronHEX(backgroundRGBA),
       symbolColor: toElectronHEX({ ...foregroundRGBA, a: 1 }),
       height: 36,
     },

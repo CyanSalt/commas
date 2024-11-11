@@ -178,8 +178,8 @@ function dropFile(event: DragEvent) {
   --design-card-shadow: 0 2px 4px 0px rgb(0 0 0 / 10%);
   --design-element-shadow: 0 1px 2px 0px rgb(0 0 0 / 10%);
   --design-highlight-color: rgb(var(--system-blue));
-  --design-highlight-background: color-mix(in hsl, rgb(var(--theme-foreground) / 5%), rgb(var(--acrylic-background) / 5%));
-  --design-input-background: color-mix(in hsl, rgb(var(--theme-foreground) / 10%) 75%, rgb(var(--acrylic-background) / 10%));
+  --design-highlight-background: color-mix(in hsl, rgb(var(--theme-foreground) / 5%), rgb(var(--system-accent) / 5%));
+  --design-input-background: color-mix(in hsl, rgb(var(--theme-foreground) / 10%) 75%, rgb(var(--system-accent) / 10%));
   --design-out-back-timing-function: cubic-bezier(0.18, 0.89, 0.32, 1.28);
   @media (prefers-color-scheme: dark) {
     --system-red: 255 69 58;
@@ -225,10 +225,11 @@ body {
   /* Default line height of xterm.js */
   line-height: 1.2;
   overflow: hidden;
-  background-image: linear-gradient(to right bottom, color-mix(in sRGB, rgb(var(--acrylic-background) / var(--theme-opacity)) 6%, rgb(var(--theme-background) / var(--theme-opacity))), color-mix(in sRGB, rgb(var(--acrylic-background) / var(--theme-opacity)) 12%, rgb(var(--theme-background) / var(--theme-opacity))));
+  background-image: linear-gradient(to right bottom, color-mix(in sRGB, rgb(var(--system-accent) / var(--theme-opacity)) 4%, rgb(var(--theme-background) / var(--theme-opacity))), color-mix(in sRGB, rgb(var(--system-accent) / var(--theme-opacity)) 8%, rgb(var(--theme-background) / var(--theme-opacity))));
   transition: color 0.2s;
   &.is-vibrant {
-    background-image: linear-gradient(to right bottom, rgb(var(--acrylic-background) / 6%), rgb(var(--acrylic-background) / 12%));
+    background-image: linear-gradient(to right bottom, rgb(var(--system-accent) / 4%), rgb(var(--system-accent) / 8%));
+    background-color: rgb(var(--theme-background) / 50%);
   }
 }
 .page {

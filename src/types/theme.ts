@@ -27,5 +27,4 @@ export interface Theme extends Required<ThemeDefinition> {
   systemGray: string,
   systemAccent: string,
   vibrancy: BrowserWindowConstructorOptions['vibrancy'] | boolean,
-  acrylicBackground: string,
 }
