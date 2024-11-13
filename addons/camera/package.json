@@ -10,6 +10,10 @@
   "dependencies": {
     "get-port": "^5.1.1"
   },
+  "devDependencies": {
+    "@fontsource/montserrat": "^5.1.0",
+    "os-name": "^6.0.0"
+  },
   "commas:icon": {
     "name": "lucide-camera"
   },

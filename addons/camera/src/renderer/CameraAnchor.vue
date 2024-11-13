@@ -1,10 +1,11 @@
 <script lang="ts" setup>
+import '@fontsource/montserrat/500.css'
 import { ipcRenderer } from '@commas/electron-ipc'
 import { refAutoReset } from '@vueuse/core'
 import * as commas from 'commas:api/renderer'
 import { clipboard, nativeImage } from 'electron'
+import osName from 'os-name'
 import icon from './assets/icon-stroked.svg'
-import text from './assets/text.svg'
 
 defineOptions({
   inheritAttrs: false,
@@ -90,20 +91,29 @@ async function createIconCanvas(color: string) {
 }
 
 async function createTextCanvas(color: string) {
-  const size = 8 * devicePixelRatio
-  const image = await loadImage(text)
-  const { canvas, context } = createCanvas(size * image.naturalWidth / image.naturalHeight, size)
-  context.drawImage(image, 0, 0, canvas.width, canvas.height)
-  const data = context.getImageData(0, 0, canvas.width, canvas.height)
-  const bytes = data.data
-  const rgba = commas.helper.toRGBA(color)
-  for (let i = 0; i < bytes.length; i += 4) {
-    bytes[i] = rgba.r
-    bytes[i + 1] = rgba.g
-    bytes[i + 2] = rgba.b
-    bytes[i + 3] = bytes[i + 3] * rgba.a
-  }
-  context.putImageData(data, 0, 0)
+  const textContent = `Commas on ${osName()}`
+  const size = 12 * devicePixelRatio
+  const fontFamily = 'Montserrat'
+  const fontWeight = '500'
+  const fontStyle = `${fontWeight} ${size}px ${fontFamily}`
+  await Promise.all(Array.from(document.fonts, async font => {
+    if (font.family === fontFamily && font.weight === fontWeight) {
+      return font.load()
+    }
+  }))
+  const { canvas, context } = createCanvas(300, 150)
+  context.font = fontStyle
+  const { width } = context.measureText(textContent)
+  canvas.width = width
+  canvas.height = size
+  context.save()
+  context.font = fontStyle
+  context.fillStyle = color
+  context.textBaseline = 'middle'
+  context.shadowColor = 'rgb(0 0 0 / 13%)'
+  context.shadowBlur = 4 * devicePixelRatio
+  context.fillText(textContent, 0, size / 2)
+  context.restore()
   return canvas
 }
 
