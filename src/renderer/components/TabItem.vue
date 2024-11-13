@@ -151,7 +151,7 @@ function close() {
           v-if="iconEntry"
           :name="iconEntry.name"
           class="tab-icon"
-          :style="{ color: isFocused ? iconEntry.color : undefined }"
+          :style="{ color: iconEntry.color }"
         />
         <template v-else-if="pane && tab!.shell">
           <VisualIcon v-if="tab!.process === tab!.cwd" name="lucide-folder-open" class="tab-icon" />
@@ -216,15 +216,15 @@ function close() {
   flex: 1;
   align-items: center;
   min-width: 0;
-  transition: opacity 0.2s;
-  .tab-item.virtual & {
-    opacity: 0.5;
-  }
 }
 .tab-icon {
   display: inline-block;
   flex: none;
   margin-right: 6px;
+  color: rgb(var(--system-accent));
+  .tab-item.virtual & {
+    color: rgb(var(--theme-foreground) / 50%);
+  }
 }
 .tab-name {
   flex: auto;

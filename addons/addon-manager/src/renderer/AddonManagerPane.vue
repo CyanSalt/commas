@@ -89,7 +89,11 @@ onMounted(() => {
           :class="['addon-card', { 'is-disabled': !enabled }]"
         >
           <div class="addon-icon">
-            <VisualIcon v-if="manifest['commas:icon']" :name="manifest['commas:icon'].name" />
+            <VisualIcon
+              v-if="manifest['commas:icon']"
+              :name="manifest['commas:icon'].name"
+              :style="{ color: manifest['commas:icon'].color }"
+            />
           </div>
           <div class="addon-info">
             <div class="addon-title">
