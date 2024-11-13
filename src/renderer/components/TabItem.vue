@@ -4,7 +4,7 @@ import type { TerminalTab, TerminalTabCharacter } from '@commas/types/terminal'
 import type { IconEntry } from '../assets/icons'
 import { useSettings } from '../compositions/settings'
 import { closeTerminalTab, getTerminalTabTitle, useCurrentTerminal } from '../compositions/terminal'
-import { getIconEntry } from '../utils/terminal'
+import { getIconEntry, isShellProcess } from '../utils/terminal'
 import VisualIcon from './basic/VisualIcon.vue'
 
 const { tab, character, closable = false, customizable = false } = defineProps<{
@@ -112,7 +112,7 @@ const idleState = $computed(() => {
   if (typeof tab.idle === 'boolean') return tab.idle ? 'idle' : 'busy'
   if (tab.command === '') return 'idle'
   if (pane) return ''
-  if (tab.process === tab.shell) return 'idle'
+  if (isShellProcess(tab)) return 'idle'
   return 'busy'
 })
 

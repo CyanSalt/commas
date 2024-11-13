@@ -70,7 +70,7 @@ app.on('will-finish-launching', () => {
 })
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+  if (process.platform !== 'darwin' || !app.isPackaged) {
     app.quit()
   }
 })

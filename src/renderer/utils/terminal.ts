@@ -9,8 +9,14 @@ import icons from '../assets/icons'
 
 export const TERMINAL_DIRECTORY_SHELL = '/'
 
+export function isShellProcess(tab: TerminalTab) {
+  return tab.process === (
+    path.isAbsolute(tab.process) ? tab.shell : path.basename(tab.shell)
+  )
+}
+
 export function getProcessName(tab: TerminalTab) {
-  if (tab.process === tab.shell) {
+  if (isShellProcess(tab)) {
     if (tab.command) {
       const entries = parse(tab.command)
       const command = entries.find((item): item is string => typeof item === 'string')
@@ -42,6 +48,7 @@ export function getPrompt(expr: string, tab: TerminalTab | null) {
 }
 
 export function getIconEntry(tab: TerminalTab) {
+  if (isShellProcess(tab)) return undefined
   let name = getProcessName(tab).toLowerCase()
   const ext = path.extname(name)
   // strip '.exe' extname in process name (Windows only)

@@ -6,8 +6,18 @@ export interface IconEntry {
 
 export default [
   {
+    name: 'simple-icons-gnubash',
+    patterns: ['bash'],
+    color: '#4eaa25',
+  },
+  {
     name: 'simple-icons-bun',
     patterns: ['bun', 'bunx'],
+  },
+  {
+    name: 'simple-icons-dash',
+    patterns: ['dash'],
+    color: '#008de4',
   },
   {
     name: 'simple-icons-curl',
@@ -16,6 +26,7 @@ export default [
   {
     name: 'simple-icons-deno',
     patterns: ['deno'],
+    color: '#70ffaf',
   },
   {
     name: 'simple-icons-docker',
@@ -30,7 +41,7 @@ export default [
   {
     name: 'simple-icons-nodedotjs',
     patterns: ['node'],
-    color: '#339933',
+    color: '#5fa04e',
   },
   {
     name: 'simple-icons-rust',
@@ -55,5 +66,10 @@ export default [
     name: 'simple-icons-neovim',
     patterns: ['nvim'],
     color: '#57a143',
+  },
+  {
+    name: 'simple-icons-zsh',
+    patterns: ['zsh'],
+    color: '#f15a24',
   },
 ] as (IconEntry & { patterns: NonNullable<IconEntry['patterns']> })[]
