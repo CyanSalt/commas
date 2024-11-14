@@ -75,15 +75,15 @@ function openWebsite(event: MouseEvent) {
         v-for="(item, index) in generalItems"
         :key="index"
       />
-      <span class="link" @click="openUserDirectory">
+      <a tabindex="0" class="link" @click="openUserDirectory">
         <span v-i18n>Open user directory#!preference.6</span>
-      </span>
-      <span class="link" @click="openDefaultSettings">
+      </a>
+      <a tabindex="0" class="link" @click="openDefaultSettings">
         <span v-i18n>Open default settings#!preference.7</span>
-      </span>
-      <span class="link" @click="openSettingsFile">
+      </a>
+      <a tabindex="0" class="link" @click="openSettingsFile">
         <span v-i18n="{ file: 'settings.yaml' }">Edit ${file}#!preference.8</span>
-      </span>
+      </a>
     </div>
     <h2 v-i18n class="group-title">Features#!preference.3</h2>
     <div class="group">
@@ -110,27 +110,27 @@ function openWebsite(event: MouseEvent) {
         v-for="(item, index) in customizationItems"
         :key="index"
       />
-      <span class="link" @click="openKeyBindings">
+      <a tabindex="0" class="link" @click="openKeyBindings">
         <span v-i18n="{ file: 'keybindings.yaml' }">Edit ${file}#!preference.8</span>
-      </span>
-      <span class="link" @click="openTranslation">
+      </a>
+      <a tabindex="0" class="link" @click="openTranslation">
         <span v-i18n="{ file: 'translation.yaml' }">Edit ${file}#!preference.8</span>
-      </span>
-      <span class="link" @click="openCustomJS">
+      </a>
+      <a tabindex="0" class="link" @click="openCustomJS">
         <span v-i18n="{ file: 'custom.js' }">Edit ${file}#!preference.8</span>
-      </span>
-      <span class="link" @click="openCustomCSS">
+      </a>
+      <a tabindex="0" class="link" @click="openCustomCSS">
         <span v-i18n="{ file: 'custom.css' }">Edit ${file}#!preference.8</span>
-      </span>
+      </a>
     </div>
     <h2 v-i18n class="group-title">About#!preference.5</h2>
     <div class="group">
       <div class="form-line">
         <label v-i18n class="form-label">Current version#!preference.9</label>
         <span>{{ version }}</span>
-        <span class="link form-action" @click="openWebsite">
+        <button type="button" class="link form-action" @click="openWebsite">
           <VisualIcon name="simple-icons-github" class="github-icon" />
-        </span>
+        </button>
       </div>
       <component
         :is="item.component"

@@ -9,7 +9,7 @@ function configure() {
 </script>
 
 <template>
-  <span class="link theme-link" @click="configure">
+  <a tabindex="0" class="link theme-link" @click="configure">
     <span v-i18n>Configure Theme#!theme.2</span>
-  </span>
+  </a>
 </template>

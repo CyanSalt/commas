@@ -261,10 +261,16 @@ function pickFont(event: InputEvent) {
 .line-summary {
   display: flex;
   gap: 4px;
+  &:focus-visible {
+    outline: none;
+  }
 }
 .line-description {
   display: flex;
   gap: 8px;
+  .line-summary:focus-visible & {
+    text-decoration: underline;
+  }
 }
 .item-label {
   flex: none;
@@ -293,6 +299,9 @@ function pickFont(event: InputEvent) {
   transition: transform var(--design-out-back-timing-function) 0.2s;
   .settings-line:not([open]) & {
     transform: rotate(-90deg) translateX(2px);
+  }
+  .line-summary:focus-visible & {
+    color: rgb(var(--system-accent));
   }
 }
 .setting-detail {

@@ -10,7 +10,7 @@ function check() {
 </script>
 
 <template>
-  <span class="link updater-link" @click="check">
+  <a tabindex="0" class="link updater-link" @click="check">
     <span v-i18n>Check for updates#!updater.4</span>
-  </span>
+  </a>
 </template>

@@ -9,7 +9,7 @@ function configure() {
 </script>
 
 <template>
-  <span class="link proxy-link" @click="configure">
+  <a tabindex="0" class="link proxy-link" @click="configure">
     <span v-i18n>Configure Proxy#!proxy.2</span>
-  </span>
+  </a>
 </template>

@@ -50,14 +50,25 @@ function openEditingMenu(event: MouseEvent) {
   line-height: 32px;
 }
 :deep(.link) {
+  appearance: none;
+  padding: 0;
+  border: none;
+  color: inherit;
+  font: inherit;
+  background: transparent;
   opacity: 0.5;
   transition: opacity 0.2s, color 0.2s, transform 0.2s;
   cursor: pointer;
   &.disabled {
     pointer-events: none;
   }
-  &:hover {
+  &:hover,
+  &:focus-visible {
     opacity: 1;
+  }
+  &:focus-visible {
+    text-decoration: underline;
+    outline: none;
   }
 }
 :deep(.text) {
@@ -183,8 +194,12 @@ function openEditingMenu(event: MouseEvent) {
   height: 24px;
   font-size: 16px;
   border-radius: 4px;
-  &:hover {
+  &:hover,
+  &:focus-visible {
     background: var(--design-highlight-background);
+  }
+  &:focus-visible {
+    text-decoration: none;
   }
   &:active {
     transform: scale(partials.nano-scale(24));

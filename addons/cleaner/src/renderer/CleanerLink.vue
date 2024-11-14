@@ -37,8 +37,8 @@ onMounted(() => {
   <div class="form-line cleaner-link">
     <label v-i18n class="form-label">Cache#!cache.1</label>
     <span class="cache-size" @click="check">{{ size }}</span>
-    <span class="link form-action" @click="clear">
+    <button type="button" class="link form-action" @click="clear">
       <VisualIcon name="lucide-paintbrush" />
-    </span>
+    </button>
   </div>
 </template>

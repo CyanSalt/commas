@@ -9,7 +9,7 @@ function configure() {
 </script>
 
 <template>
-  <span class="link addon-manager-link" @click="configure">
+  <a tabindex="0" class="link addon-manager-link" @click="configure">
     <span v-i18n>Manage Addons#!addon-manager.2</span>
-  </span>
+  </a>
 </template>
