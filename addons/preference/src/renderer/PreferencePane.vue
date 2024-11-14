@@ -128,7 +128,7 @@ function openWebsite(event: MouseEvent) {
       <div class="form-line">
         <label v-i18n class="form-label">Current version#!preference.9</label>
         <span>{{ version }}</span>
-        <button type="button" class="link form-action" @click="openWebsite">
+        <button type="button" class="form-action" @click="openWebsite">
           <VisualIcon name="simple-icons-github" class="github-icon" />
         </button>
       </div>

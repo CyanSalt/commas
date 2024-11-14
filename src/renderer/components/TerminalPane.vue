@@ -187,19 +187,29 @@ function openEditingMenu(event: MouseEvent) {
   user-select: text;
 }
 :deep(.form-action) {
+  appearance: none;
   display: inline-flex;
   justify-content: center;
   align-items: center;
   width: 24px;
   height: 24px;
+  padding: 0;
+  border: none;
+  color: inherit;
+  font: inherit;
   font-size: 16px;
+  background: transparent;
   border-radius: 4px;
+  opacity: 0.5;
+  transition: opacity 0.2s, color 0.2s, transform 0.2s;
+  cursor: pointer;
   &:hover,
   &:focus-visible {
     background: var(--design-highlight-background);
+    opacity: 1;
   }
   &:focus-visible {
-    text-decoration: none;
+    outline: none;
   }
   &:active {
     transform: scale(partials.nano-scale(24));

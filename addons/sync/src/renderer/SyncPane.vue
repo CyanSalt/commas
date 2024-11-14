@@ -108,28 +108,29 @@ function removeSyncPlan(index: number) {
           v-i18n:placeholder
           class="form-control"
         >
-        <span class="link form-action" @click="openGitHubTokenSettings">
+        <button type="button" class="form-action" @click="openGitHubTokenSettings">
           <VisualIcon name="lucide-github" />
-        </span>
-        <span class="link form-action confirm" @click="confirmToken">
+        </button>
+        <button type="button" class="form-action confirm" @click="confirmToken">
           <VisualIcon name="lucide-check" />
-        </span>
+        </button>
       </div>
       <span v-else v-i18n class="link" @click="addToken">Add GitHub Token#!sync.3</span>
       <div v-if="syncData.encryption" class="form-line">
-        <span class="link form-action" @click="uploadDefaultSyncPlan">
+        <button type="button" class="form-action" @click="uploadDefaultSyncPlan">
           <VisualIcon name="lucide-cloud-upload" />
-        </span>
-        <span v-if="defaultPlanGist" class="link form-action" @click="downloadDefaultSyncPlan">
+        </button>
+        <button v-if="defaultPlanGist" type="button" class="form-action" @click="downloadDefaultSyncPlan">
           <VisualIcon name="lucide-cloud-download" />
-        </span>
-        <span
+        </button>
+        <button
           v-if="defaultPlanGist.includes('/')"
-          class="link form-action"
+          type="button"
+          class="form-action"
           @click="openSyncPlanGist(defaultPlanGist)"
         >
           <VisualIcon name="lucide-github" />
-        </span>
+        </button>
       </div>
       <div class="history">
         <label v-i18n>Recently synced at:#!sync.5</label>
@@ -140,9 +141,9 @@ function removeSyncPlan(index: number) {
     <div class="group">
       <div v-for="(plan, index) in extraPlans" :key="index" class="extra-plan">
         <div class="form-line">
-          <span class="link form-action remove-plan" @click="removeSyncPlan(index)">
+          <button type="button" class="form-action remove-plan" @click="removeSyncPlan(index)">
             <VisualIcon name="lucide-package-minus" />
-          </span>
+          </button>
           <input v-model.lazy="plan.name" class="immersive-control plan-name">
           <span class="plan-directory" @click="openSyncPlanDirectory($event, plan)">
             <VisualIcon name="lucide-folder-output" class="directory-icon" />
@@ -151,26 +152,27 @@ function removeSyncPlan(index: number) {
         </div>
         <ObjectEditor v-model="plan.files" lazy>
           <template #extra>
-            <span class="link form-action" @click="uploadSyncPlan(plan)">
+            <button type="button" class="form-action" @click="uploadSyncPlan(plan)">
               <VisualIcon name="lucide-cloud-upload" />
-            </span>
-            <span v-if="plan.gist" class="link form-action" @click="downloadSyncPlan(plan)">
+            </button>
+            <button v-if="plan.gist" type="button" class="form-action" @click="downloadSyncPlan(plan)">
               <VisualIcon name="lucide-cloud-download" />
-            </span>
-            <span
+            </button>
+            <button
               v-if="plan.gist.includes('/')"
-              class="link form-action"
+              type="button"
+              class="form-action"
               @click="openSyncPlanGist(plan.gist)"
             >
               <VisualIcon name="lucide-github" />
-            </span>
+            </button>
           </template>
         </ObjectEditor>
       </div>
       <div class="form-line action-line">
-        <span class="link form-action" @click="addSyncPlan">
+        <button type="button" class="form-action" @click="addSyncPlan">
           <VisualIcon name="lucide-package-plus" />
-        </span>
+        </button>
       </div>
     </div>
   </TerminalPane>

@@ -78,9 +78,9 @@ onMounted(() => {
         <SwitchControl v-model="isBuiltinAddonsVisible" />
       </div>
       <div class="action-line">
-        <span class="link form-action" @click="refresh">
+        <button type="button" class="form-action" @click="refresh">
           <VisualIcon name="lucide-refresh-cw" />
-        </span>
+        </button>
       </div>
       <div class="addon-list">
         <div

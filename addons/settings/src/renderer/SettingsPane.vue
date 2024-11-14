@@ -103,9 +103,9 @@ onBeforeUpdate(() => {
     <h2 v-i18n class="group-title">Settings#!settings.1</h2>
     <form class="group">
       <div class="action-line settings-searcher">
-        <span :class="['link form-action toggle-all', { collapsed: isCollapsed }]" @click="toggleAll">
+        <button type="button" :class="['form-action toggle-all', { collapsed: isCollapsed }]" @click="toggleAll">
           <VisualIcon name="lucide-chevrons-down" class="toggle-all-icon" />
-        </span>
+        </button>
         <input
           v-model="keyword"
           v-i18n:placeholder

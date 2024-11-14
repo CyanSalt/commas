@@ -103,9 +103,9 @@ async function applyTheme(item: RemoteTheme) {
           placeholder="Find#!terminal.5"
           class="form-control"
         >
-        <span class="link form-action" @click="load">
+        <button type="button" class="form-action" @click="load">
           <VisualIcon name="lucide-refresh-cw" />
-        </span>
+        </button>
         <div class="form-line-tip">
           <span v-i18n>Theme will be downloaded from#!theme.3</span>
           <span class="link marketplace-link" @click="openMarketplace">windowsterminalthemes.dev</span>

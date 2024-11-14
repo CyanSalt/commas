@@ -104,9 +104,9 @@ watchEffect((onInvalidate) => {
   <TerminalPane :tab="tab" class="browser-pane">
     <div class="browser-view">
       <div :class="['form-line', 'action-line', { 'is-loading': view?.loading }]">
-        <span :class="['link', 'form-action', { disabled: !view?.canGoBack }]" @click="goBack">
+        <button type="button" :class="['form-action', { disabled: !view?.canGoBack }]" @click="goBack">
           <VisualIcon name="lucide-undo-2" />
-        </span>
+        </button>
         <form v-if="isCustomizing" class="custom-url-form" @submit.prevent="customize">
           <input
             ref="customURLElement"
@@ -119,9 +119,9 @@ watchEffect((onInvalidate) => {
           >
         </form>
         <span v-else class="page-url" @click="startCustomization">{{ url }}</span>
-        <span :class="['link', 'form-action', { disabled: !url }]" @click="openExternal">
+        <button type="button" :class="['form-action', { disabled: !url }]" @click="openExternal">
           <VisualIcon name="lucide-square-arrow-out-up-right" />
-        </span>
+        </button>
       </div>
       <WebContents
         v-model="url"
