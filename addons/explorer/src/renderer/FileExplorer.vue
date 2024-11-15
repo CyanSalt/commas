@@ -166,7 +166,7 @@ function autoselect(event: FocusEvent) {
   <div class="file-explorer">
     <div class="form-line action-line">
       <slot></slot>
-      <button type="button" :class="['form-action', { disabled: !hasPreviousValue }]" @click="goBack">
+      <button type="button" data-commas :class="{ disabled: !hasPreviousValue }" @click="goBack">
         <VisualIcon name="lucide-undo-2" />
       </button>
       <form v-if="isCustomizing" class="breadcrumb-form" @submit.prevent="customize">
@@ -185,25 +185,26 @@ function autoselect(event: FocusEvent) {
           v-for="breadcrumb in breadcrumbs"
           :key="breadcrumb.path"
           type="button"
+          data-commas
           draggable="true"
-          class="form-action breadcrumb"
+          class="breadcrumb"
           @click="selectBreadcrumb(breadcrumb)"
           @dragstart.prevent="startDragging($event, breadcrumb)"
         >{{ breadcrumb.base }}</button>
-        <button type="button" class="form-action breadcrumb" @click="startCustomization">
+        <button type="button" data-commas class="breadcrumb" @click="startCustomization">
           <VisualIcon name="lucide-pen" />
         </button>
       </span>
-      <button v-if="isUnixLike" type="button" class="form-action" @click="toggleDotFiles">
+      <button v-if="isUnixLike" type="button" data-commas @click="toggleDotFiles">
         <VisualIcon :name="isDotFilesVisible ? 'lucide-eye' : 'lucide-eye-closed'" />
       </button>
-      <button type="button" class="form-action" @click="openNewTab">
+      <button type="button" data-commas @click="openNewTab">
         <VisualIcon name="lucide-terminal" />
       </button>
-      <button v-if="externalExplorer" type="button" class="form-action" @click="openExternalExplorer">
+      <button v-if="externalExplorer" type="button" data-commas @click="openExternalExplorer">
         <VisualIcon name="lucide-square-arrow-out-up-right" />
       </button>
-      <button type="button" class="form-action" @click="openDirectory">
+      <button type="button" data-commas @click="openDirectory">
         <VisualIcon :name="externalExplorer ? 'lucide-folder-open' : 'lucide-square-arrow-out-up-right'" />
       </button>
     </div>
@@ -227,14 +228,14 @@ function autoselect(event: FocusEvent) {
           <button
             v-if="file.symlink"
             type="button"
-            class="form-action"
+            class="file-action"
             @click.stop="showSymlink(file)"
           >
             <VisualIcon name="lucide-iteration-ccw" />
           </button>
           <button
             type="button"
-            class="form-action"
+            class="file-action"
             @click.stop="openExternal(file)"
           >
             <VisualIcon name="lucide-square-arrow-out-up-right" />
@@ -326,10 +327,10 @@ function autoselect(event: FocusEvent) {
   .file:not(:hover) & {
     visibility: hidden;
   }
-  .form-action {
-    width: 20px;
-    height: 20px;
-    font-size: 14px;
-  }
+}
+.file-action {
+  width: 20px;
+  height: 20px;
+  font-size: 14px;
 }
 </style>

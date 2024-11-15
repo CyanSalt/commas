@@ -142,6 +142,7 @@ function dropFile(event: DragEvent) {
 
 <style lang="scss">
 @use '../assets/_partials';
+@use '../assets/layers';
 
 @property --scrollbar-opacity {
   syntax: '<number>';

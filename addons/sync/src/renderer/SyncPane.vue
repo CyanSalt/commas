@@ -96,37 +96,38 @@ function removeSyncPlan(index: number) {
   <TerminalPane :tab="tab" class="sync-pane">
     <h2 v-i18n class="group-title">Sync#!sync.1</h2>
     <div class="group">
-      <span
+      <a
         v-if="syncData.encryption"
         v-i18n
-        class="link"
+        tabindex="0"
+        data-commas
         @click="removeToken"
-      >Remove GitHub Token#!sync.4</span>
+      >Remove GitHub Token#!sync.4</a>
       <div v-else-if="isAddingToken" class="form-line">
         <input
           v-model="stagingToken"
           v-i18n:placeholder
           class="form-control"
         >
-        <button type="button" class="form-action" @click="openGitHubTokenSettings">
+        <button type="button" data-commas @click="openGitHubTokenSettings">
           <VisualIcon name="lucide-github" />
         </button>
-        <button type="button" class="form-action confirm" @click="confirmToken">
+        <button type="button" data-commas class="confirm" @click="confirmToken">
           <VisualIcon name="lucide-check" />
         </button>
       </div>
-      <span v-else v-i18n class="link" @click="addToken">Add GitHub Token#!sync.3</span>
+      <a v-else v-i18n tabindex="0" data-commas @click="addToken">Add GitHub Token#!sync.3</a>
       <div v-if="syncData.encryption" class="form-line">
-        <button type="button" class="form-action" @click="uploadDefaultSyncPlan">
+        <button type="button" data-commas @click="uploadDefaultSyncPlan">
           <VisualIcon name="lucide-cloud-upload" />
         </button>
-        <button v-if="defaultPlanGist" type="button" class="form-action" @click="downloadDefaultSyncPlan">
+        <button v-if="defaultPlanGist" type="button" data-commas @click="downloadDefaultSyncPlan">
           <VisualIcon name="lucide-cloud-download" />
         </button>
         <button
           v-if="defaultPlanGist.includes('/')"
           type="button"
-          class="form-action"
+          data-commas
           @click="openSyncPlanGist(defaultPlanGist)"
         >
           <VisualIcon name="lucide-github" />
@@ -141,7 +142,7 @@ function removeSyncPlan(index: number) {
     <div class="group">
       <div v-for="(plan, index) in extraPlans" :key="index" class="extra-plan">
         <div class="form-line">
-          <button type="button" class="form-action remove-plan" @click="removeSyncPlan(index)">
+          <button type="button" data-commas class="remove-plan" @click="removeSyncPlan(index)">
             <VisualIcon name="lucide-package-minus" />
           </button>
           <input v-model.lazy="plan.name" class="immersive-control plan-name">
@@ -152,16 +153,16 @@ function removeSyncPlan(index: number) {
         </div>
         <ObjectEditor v-model="plan.files" lazy>
           <template #extra>
-            <button type="button" class="form-action" @click="uploadSyncPlan(plan)">
+            <button type="button" data-commas @click="uploadSyncPlan(plan)">
               <VisualIcon name="lucide-cloud-upload" />
             </button>
-            <button v-if="plan.gist" type="button" class="form-action" @click="downloadSyncPlan(plan)">
+            <button v-if="plan.gist" type="button" data-commas @click="downloadSyncPlan(plan)">
               <VisualIcon name="lucide-cloud-download" />
             </button>
             <button
               v-if="plan.gist.includes('/')"
               type="button"
-              class="form-action"
+              data-commas
               @click="openSyncPlanGist(plan.gist)"
             >
               <VisualIcon name="lucide-github" />
@@ -170,7 +171,7 @@ function removeSyncPlan(index: number) {
         </ObjectEditor>
       </div>
       <div class="form-line action-line">
-        <button type="button" class="form-action" @click="addSyncPlan">
+        <button type="button" data-commas @click="addSyncPlan">
           <VisualIcon name="lucide-package-plus" />
         </button>
       </div>
@@ -179,12 +180,6 @@ function removeSyncPlan(index: number) {
 </template>
 
 <style lang="scss" scoped>
-.form-action {
-  &:first-child,
-  :deep(.extra-line .add) + & {
-    margin-left: 0;
-  }
-}
 .confirm:hover {
   color: rgb(var(--system-green));
 }

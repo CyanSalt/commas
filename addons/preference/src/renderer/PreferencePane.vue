@@ -75,13 +75,13 @@ function openWebsite(event: MouseEvent) {
         v-for="(item, index) in generalItems"
         :key="index"
       />
-      <a tabindex="0" class="link" @click="openUserDirectory">
+      <a tabindex="0" data-commas @click="openUserDirectory">
         <span v-i18n>Open user directory#!preference.6</span>
       </a>
-      <a tabindex="0" class="link" @click="openDefaultSettings">
+      <a tabindex="0" data-commas @click="openDefaultSettings">
         <span v-i18n>Open default settings#!preference.7</span>
       </a>
-      <a tabindex="0" class="link" @click="openSettingsFile">
+      <a tabindex="0" data-commas @click="openSettingsFile">
         <span v-i18n="{ file: 'settings.yaml' }">Edit ${file}#!preference.8</span>
       </a>
     </div>
@@ -110,16 +110,16 @@ function openWebsite(event: MouseEvent) {
         v-for="(item, index) in customizationItems"
         :key="index"
       />
-      <a tabindex="0" class="link" @click="openKeyBindings">
+      <a tabindex="0" data-commas @click="openKeyBindings">
         <span v-i18n="{ file: 'keybindings.yaml' }">Edit ${file}#!preference.8</span>
       </a>
-      <a tabindex="0" class="link" @click="openTranslation">
+      <a tabindex="0" data-commas @click="openTranslation">
         <span v-i18n="{ file: 'translation.yaml' }">Edit ${file}#!preference.8</span>
       </a>
-      <a tabindex="0" class="link" @click="openCustomJS">
+      <a tabindex="0" data-commas @click="openCustomJS">
         <span v-i18n="{ file: 'custom.js' }">Edit ${file}#!preference.8</span>
       </a>
-      <a tabindex="0" class="link" @click="openCustomCSS">
+      <a tabindex="0" data-commas @click="openCustomCSS">
         <span v-i18n="{ file: 'custom.css' }">Edit ${file}#!preference.8</span>
       </a>
     </div>
@@ -128,7 +128,7 @@ function openWebsite(event: MouseEvent) {
       <div class="form-line">
         <label v-i18n class="form-label">Current version#!preference.9</label>
         <span>{{ version }}</span>
-        <button type="button" class="form-action" @click="openWebsite">
+        <button type="button" data-commas @click="openWebsite">
           <VisualIcon name="simple-icons-github" class="github-icon" />
         </button>
       </div>

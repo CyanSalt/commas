@@ -85,19 +85,19 @@ function update(event: MouseEvent) {
       <div class="form-line">
         <label v-i18n class="form-label">Proxy Server Address#!proxy.4</label>
         <span v-if="status" class="proxy-address">
-          <span class="link" @click="openEditor">{{ address }}</span>
-          <span class="link" @click="copyAddress">
+          <a tabindex="0" data-commas @click="openEditor">{{ address }}</a>
+          <button type="button" data-commas @click="copyAddress">
             <VisualIcon name="lucide-clipboard-copy" />
-          </span>
+          </button>
         </span>
-        <span v-else-if="installed" class="link shortcut" @click="toggleProxyServer">
+        <a v-else-if="installed" tabindex="0" data-commas class="shortcut" @click="toggleProxyServer">
           <VisualIcon name="lucide-router" class="shortcut-icon" />
           <span v-i18n>Click this icon to start#!proxy.10</span>
-        </span>
-        <span v-else class="link shortcut" @click="install">
+        </a>
+        <a v-else tabindex="0" data-commas class="shortcut" @click="install">
           <VisualIcon name="lucide-hard-drive-download" class="shortcut-icon" />
           <span v-i18n>Install whistle#!proxy.11</span>
-        </span>
+        </a>
       </div>
       <div v-if="supportsSystemProxy" class="form-line">
         <label v-i18n class="form-label">Enable system proxy#!proxy.3</label>
@@ -106,10 +106,10 @@ function update(event: MouseEvent) {
       <div class="form-line">
         <label v-i18n class="form-label">Current version#!preference.9</label>
         <span>{{ version ?? '--' }}</span>
-        <span v-if="isOutdated" class="update-link link" @click="update">
+        <a v-if="isOutdated" tabindex="0" data-commas class="update-link" @click="update">
           <VisualIcon name="lucide-chevrons-up" class="update-icon" />
           <span class="latest-version">{{ latestVersion }}</span>
-        </span>
+        </a>
       </div>
     </div>
     <template v-if="supportsKeyChain">
@@ -119,14 +119,26 @@ function update(event: MouseEvent) {
           <VisualIcon name="lucide-award" class="cert-icon" />
           <span v-i18n>Certification installed#!proxy.8</span>
         </span>
-        <span
+        <a
           v-if="isCertInstalled"
           v-i18n
-          class="link"
+          tabindex="0"
+          data-commas
           @click="uninstallRootCA"
-        >Uninstall Root Certification#!proxy.7</span>
-        <span v-else v-i18n class="link" @click="installRootCA">Install Root Certification#!proxy.6</span>
-        <span v-i18n class="link" @click="openKeychainAccess">Open Keychain Access#!proxy.9</span>
+        >Uninstall Root Certification#!proxy.7</a>
+        <a
+          v-else
+          v-i18n
+          tabindex="0"
+          data-commas
+          @click="installRootCA"
+        >Install Root Certification#!proxy.6</a>
+        <a
+          v-i18n
+          tabindex="0"
+          data-commas
+          @click="openKeychainAccess"
+        >Open Keychain Access#!proxy.9</a>
       </div>
     </template>
   </TerminalPane>
@@ -145,7 +157,7 @@ function update(event: MouseEvent) {
 }
 .proxy-address {
   display: flex;
-  gap: 1em;
+  gap: 4px;
   align-items: center;
 }
 .update-link {

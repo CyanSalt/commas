@@ -122,9 +122,9 @@ function togglePinned(item: EditorEntryItem) {
       <slot name="note" :item="item"></slot>
     </template>
     <div class="property-line extra-line">
-      <span class="link add" @click="add">
+      <button type="button" data-commas class="add" @click="add">
         <VisualIcon name="lucide-plus" />
-      </span>
+      </button>
       <slot name="extra"></slot>
     </div>
   </div>
@@ -138,12 +138,8 @@ function togglePinned(item: EditorEntryItem) {
     padding-left: 28px;
   }
 }
-.link {
-  width: 24px;
-  text-align: center;
-  &:first-child {
-    margin-right: 4px;
-  }
+.extra-line {
+  margin: 4px 0;
 }
 .property-arrow {
   width: 36px;

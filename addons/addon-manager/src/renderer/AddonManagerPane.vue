@@ -78,7 +78,7 @@ onMounted(() => {
         <SwitchControl v-model="isBuiltinAddonsVisible" />
       </div>
       <div class="action-line">
-        <button type="button" class="form-action" @click="refresh">
+        <button type="button" data-commas @click="refresh">
           <VisualIcon name="lucide-refresh-cw" />
         </button>
       </div>
@@ -99,11 +99,16 @@ onMounted(() => {
             <div class="addon-title">
               <span class="addon-primary-info">
                 <span class="addon-name">{{ manifest.productName ?? manifest.name ?? addon.name }}</span>
-                <span
-                  v-if="(manifest.productName ?? manifest.name) !== addon.name"
-                  :class="['addon-id', { link: addon.type !== 'builtin' }]"
-                  @click="showInFolder(addon)"
-                >{{ addon.name }}</span>
+                <template v-if="(manifest.productName ?? manifest.name) !== addon.name">
+                  <a
+                    v-if="addon.type !== 'builtin'"
+                    tabindex="0"
+                    data-commas
+                    class="addon-id"
+                    @click="showInFolder(addon)"
+                  >{{ addon.name }}</a>
+                  <span v-else class="addon-id">{{ addon.name }}</span>
+                </template>
                 <span v-if="addon.type !== 'builtin'" class="addon-version">{{ manifest.version ?? '' }}</span>
               </span>
               <SwitchControl
@@ -122,9 +127,6 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.form-action {
-  margin: 0;
-}
 .addon-list {
   width: 100%;
   max-width: 50vw;

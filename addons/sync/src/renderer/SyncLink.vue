@@ -9,7 +9,7 @@ function configure() {
 </script>
 
 <template>
-  <a tabindex="0" class="link sync-link" @click="configure">
+  <a tabindex="0" data-commas class="sync-link" @click="configure">
     <span v-i18n>Configure Sync Settings#!sync.2</span>
   </a>
 </template>

@@ -103,7 +103,7 @@ onBeforeUpdate(() => {
     <h2 v-i18n class="group-title">Settings#!settings.1</h2>
     <form class="group">
       <div class="action-line settings-searcher">
-        <button type="button" :class="['form-action toggle-all', { collapsed: isCollapsed }]" @click="toggleAll">
+        <button type="button" data-commas :class="['toggle-all', { collapsed: isCollapsed }]" @click="toggleAll">
           <VisualIcon name="lucide-chevrons-down" class="toggle-all-icon" />
         </button>
         <input
@@ -140,9 +140,6 @@ onBeforeUpdate(() => {
 </template>
 
 <style lang="scss" scoped>
-.form-action {
-  margin: 0;
-}
 .toggle-all.collapsed {
   opacity: 1;
 }
@@ -163,7 +160,7 @@ onBeforeUpdate(() => {
     width: 50%;
   }
 }
-.settings-group :deep(.setting-detail .link) {
+.settings-group :deep(.setting-detail a[data-commas]) {
   color: rgb(var(--system-accent));
   opacity: 1;
   &:hover {

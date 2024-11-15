@@ -168,18 +168,18 @@ function pickFont(event: InputEvent) {
     @toggle="toggle"
   >
     <summary :class="['line-summary', { customized: isCustomized }]">
-      <span class="link tree-node">
+      <a data-commas class="tree-node">
         <VisualIcon name="lucide-chevron-down" />
-      </span>
+      </a>
       <span class="line-description">
         <span v-i18n class="item-label" @click.prevent>{{ spec.label }}#!settings.label.{{ spec.key }}</span>
         <span class="item-key" @click.prevent>{{ spec.key }}</span>
-        <span v-if="isRecoverable" class="link recover" @click.prevent="recover">
+        <a v-if="isRecoverable" data-commas class="recover" @click.prevent="recover">
           <VisualIcon name="lucide-rotate-cw" />
-        </span>
-        <span v-else-if="isCustomized" class="link reset" @click.prevent="reset">
+        </a>
+        <a v-else-if="isCustomized" data-commas class="reset" @click.prevent="reset">
           <VisualIcon name="lucide-rotate-ccw" />
-        </span>
+        </a>
       </span>
     </summary>
     <div class="setting-detail">

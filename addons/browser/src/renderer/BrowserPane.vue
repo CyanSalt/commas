@@ -104,7 +104,7 @@ watchEffect((onInvalidate) => {
   <TerminalPane :tab="tab" class="browser-pane">
     <div class="browser-view">
       <div :class="['form-line', 'action-line', { 'is-loading': view?.loading }]">
-        <button type="button" :class="['form-action', { disabled: !view?.canGoBack }]" @click="goBack">
+        <button type="button" data-commas :class="['browser-action', { disabled: !view?.canGoBack }]" @click="goBack">
           <VisualIcon name="lucide-undo-2" />
         </button>
         <form v-if="isCustomizing" class="custom-url-form" @submit.prevent="customize">
@@ -119,7 +119,7 @@ watchEffect((onInvalidate) => {
           >
         </form>
         <span v-else class="page-url" @click="startCustomization">{{ url }}</span>
-        <button type="button" :class="['form-action', { disabled: !url }]" @click="openExternal">
+        <button type="button" data-commas :class="['browser-action', { disabled: !url }]" @click="openExternal">
           <VisualIcon name="lucide-square-arrow-out-up-right" />
         </button>
       </div>
@@ -156,11 +156,11 @@ watchEffect((onInvalidate) => {
     background-size: 300% 100%;
     animation: background-continuous 1s infinite linear;
   }
-  .form-action {
-    width: 18px;
-    height: 18px;
-    font-size: 14px;
-  }
+}
+.browser-action {
+  width: 18px;
+  height: 18px;
+  font-size: 14px;
 }
 .custom-url-form {
   display: flex;

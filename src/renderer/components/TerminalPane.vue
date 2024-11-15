@@ -49,28 +49,6 @@ function openEditingMenu(event: MouseEvent) {
   margin-bottom: 24px;
   line-height: 32px;
 }
-:deep(.link) {
-  appearance: none;
-  padding: 0;
-  border: none;
-  color: inherit;
-  font: inherit;
-  background: transparent;
-  opacity: 0.5;
-  transition: opacity 0.2s, color 0.2s, transform 0.2s;
-  cursor: pointer;
-  &.disabled {
-    pointer-events: none;
-  }
-  &:hover,
-  &:focus-visible {
-    opacity: 1;
-  }
-  &:focus-visible {
-    text-decoration: underline;
-    outline: none;
-  }
-}
 :deep(.text) {
   line-height: 32px;
 }
@@ -185,34 +163,5 @@ function openEditingMenu(event: MouseEvent) {
   opacity: 0.5;
   cursor: text;
   user-select: text;
-}
-:deep(.form-action) {
-  appearance: none;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border: none;
-  color: inherit;
-  font: inherit;
-  font-size: 16px;
-  background: transparent;
-  border-radius: 4px;
-  opacity: 0.5;
-  transition: opacity 0.2s, color 0.2s, transform 0.2s;
-  cursor: pointer;
-  &:hover,
-  &:focus-visible {
-    background: var(--design-highlight-background);
-    opacity: 1;
-  }
-  &:focus-visible {
-    outline: none;
-  }
-  &:active {
-    transform: scale(partials.nano-scale(24));
-  }
 }
 </style>

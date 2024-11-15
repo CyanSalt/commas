@@ -53,7 +53,7 @@ function send() {
 <template>
   <TerminalPane :tab="tab" class="file-editor-pane">
     <FileExplorer v-model="directory">
-      <button v-if="isConnected" type="button" class="form-action send" @click="send">
+      <button v-if="isConnected" type="button" data-commas @click="send">
         <VisualIcon name="lucide-arrow-right" />
       </button>
     </FileExplorer>

@@ -91,7 +91,7 @@ async function applyTheme(item: RemoteTheme) {
   <TerminalPane :tab="tab" class="theme-pane">
     <h2 v-i18n class="group-title">Configure Theme#!theme.2</h2>
     <div class="group">
-      <span v-i18n class="link" @click="reset">Reset to default#!theme.4</span>
+      <a v-i18n tabindex="0" data-commas @click="reset">Reset to default#!theme.4</a>
       <div class="form-line color-list">
         <ThemeColorPicker v-for="field in fields" :key="field" :field="field" />
       </div>
@@ -103,12 +103,12 @@ async function applyTheme(item: RemoteTheme) {
           placeholder="Find#!terminal.5"
           class="form-control"
         >
-        <button type="button" class="form-action" @click="load">
+        <button type="button" data-commas @click="load">
           <VisualIcon name="lucide-refresh-cw" />
         </button>
         <div class="form-line-tip">
           <span v-i18n>Theme will be downloaded from#!theme.3</span>
-          <span class="link marketplace-link" @click="openMarketplace">windowsterminalthemes.dev</span>
+          <a tabindex="0" data-commas class="marketplace-link" @click="openMarketplace">windowsterminalthemes.dev</a>
         </div>
       </div>
       <div class="theme-list">
