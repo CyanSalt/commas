@@ -22,10 +22,13 @@ function change(event: Event) {
 
 <style lang="scss" scoped>
 .switch-control {
+  position: relative;
   display: inline-flex;
 }
 .switch-checkbox {
-  display: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
 }
 .switch-track {
   position: relative;
@@ -72,6 +75,9 @@ function change(event: Event) {
   transition: transform 0.2s;
   .switch-checkbox:checked + .switch-track > & {
     transform: translateX(100%);
+  }
+  .switch-checkbox:focus-visible + .switch-track > & {
+    background: rgb(255 255 255 / 75%);
   }
 }
 </style>
