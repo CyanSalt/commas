@@ -37,11 +37,6 @@ function openEditingMenu(event: MouseEvent) {
   padding: 8px 16px;
   @include partials.scroll-container(8px);
 }
-:deep(.group-title) {
-  margin: 8px 0;
-  font-size: 18px;
-  line-height: 24px;
-}
 :deep(.group) {
   display: flex;
   flex-direction: column;

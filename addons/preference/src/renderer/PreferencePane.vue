@@ -68,7 +68,7 @@ function openWebsite(event: MouseEvent) {
 
 <template>
   <TerminalPane :tab="tab" class="preference-pane">
-    <h2 v-i18n class="group-title">General#!preference.2</h2>
+    <h2 v-i18n data-commas>General#!preference.2</h2>
     <div class="group">
       <component
         :is="item.component"
@@ -85,7 +85,7 @@ function openWebsite(event: MouseEvent) {
         <span v-i18n="{ file: 'settings.yaml' }">Edit ${file}#!preference.8</span>
       </a>
     </div>
-    <h2 v-i18n class="group-title">Features#!preference.3</h2>
+    <h2 v-i18n data-commas>Features#!preference.3</h2>
     <div class="group">
       <component
         :is="item.component"
@@ -93,7 +93,7 @@ function openWebsite(event: MouseEvent) {
         :key="index"
       />
     </div>
-    <h2 v-i18n class="group-title">Customization#!preference.4</h2>
+    <h2 v-i18n data-commas>Customization#!preference.4</h2>
     <div class="group">
       <div class="form-line">
         <label v-i18n class="form-label">Language#!preference.10</label>
@@ -123,7 +123,7 @@ function openWebsite(event: MouseEvent) {
         <span v-i18n="{ file: 'custom.css' }">Edit ${file}#!preference.8</span>
       </a>
     </div>
-    <h2 v-i18n class="group-title">About#!preference.5</h2>
+    <h2 v-i18n data-commas>About#!preference.5</h2>
     <div class="group">
       <div class="form-line">
         <label v-i18n class="form-label">Current version#!preference.9</label>

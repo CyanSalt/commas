@@ -89,7 +89,7 @@ async function applyTheme(item: RemoteTheme) {
 
 <template>
   <TerminalPane :tab="tab" class="theme-pane">
-    <h2 v-i18n class="group-title">Configure Theme#!theme.2</h2>
+    <h2 v-i18n data-commas>Configure Theme#!theme.2</h2>
     <div class="group">
       <a v-i18n href="" data-commas @click.prevent="reset">Reset to default#!theme.4</a>
       <div class="form-line color-list">

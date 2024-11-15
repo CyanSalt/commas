@@ -94,7 +94,7 @@ function removeSyncPlan(index: number) {
 
 <template>
   <TerminalPane :tab="tab" class="sync-pane">
-    <h2 v-i18n class="group-title">Sync#!sync.1</h2>
+    <h2 v-i18n data-commas>Sync#!sync.1</h2>
     <div class="group">
       <a
         v-if="syncData.encryption"
@@ -138,7 +138,7 @@ function removeSyncPlan(index: number) {
         <span>{{ formatTime(syncData.updatedAt) }}</span>
       </div>
     </div>
-    <h2 v-i18n class="group-title">Plans#!sync.8</h2>
+    <h2 v-i18n data-commas>Plans#!sync.8</h2>
     <div class="group">
       <div v-for="(plan, index) in extraPlans" :key="index" class="extra-plan">
         <div class="form-line">

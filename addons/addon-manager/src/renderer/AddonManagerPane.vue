@@ -71,7 +71,7 @@ onMounted(() => {
 
 <template>
   <TerminalPane :tab="tab" class="addon-manager-pane">
-    <h2 v-i18n class="group-title">Addons#!addon-manager.1</h2>
+    <h2 v-i18n data-commas>Addons#!addon-manager.1</h2>
     <form class="group">
       <div class="form-line">
         <label v-i18n class="form-label">Show Built-in Addons#!addon-manager.4</label>

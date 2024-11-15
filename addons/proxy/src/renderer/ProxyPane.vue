@@ -80,7 +80,7 @@ function update(event: MouseEvent) {
 
 <template>
   <TerminalPane :tab="tab" class="proxy-pane">
-    <h2 v-i18n class="group-title">Proxy#!proxy.1</h2>
+    <h2 v-i18n data-commas>Proxy#!proxy.1</h2>
     <div class="group">
       <div class="form-line">
         <label v-i18n class="form-label">Proxy Server Address#!proxy.4</label>
@@ -113,7 +113,7 @@ function update(event: MouseEvent) {
       </div>
     </div>
     <template v-if="supportsKeyChain">
-      <h2 v-i18n class="group-title">HTTPS Proxy#!proxy.5</h2>
+      <h2 v-i18n data-commas>HTTPS Proxy#!proxy.5</h2>
       <div class="group">
         <span v-if="isCertInstalled" class="cert-status">
           <VisualIcon name="lucide-award" class="cert-icon" />
