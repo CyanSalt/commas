@@ -183,7 +183,7 @@ function pickFont(event: InputEvent) {
       </span>
     </summary>
     <div class="setting-detail">
-      <div class="form-tips">
+      <div class="setting-comment">
         <div
           v-for="(comment, index) in spec.comments"
           :key="index"
@@ -203,7 +203,7 @@ function pickFont(event: InputEvent) {
         <select
           v-else-if="isScalarEnum"
           v-model="model"
-          class="form-control"
+          data-commas
         >
           <option
             v-for="(option, index) in spec.schema!.enum"
@@ -218,10 +218,10 @@ function pickFont(event: InputEvent) {
             v-model.lazy="model"
             :placeholder="placeholder"
             type="number"
-            class="form-control"
             :min="spec.schema.minimum"
             :max="spec.schema.maximum"
             :step="spec.schema.multipleOf"
+            data-commas
           >
           <input
             v-else-if="accepts(spec.schema, 'string')"
@@ -229,17 +229,18 @@ function pickFont(event: InputEvent) {
             :placeholder="placeholder"
             :pattern="spec.schema.pattern"
             :type="spec.schema.format === 'color' ? 'color' : 'text'"
-            class="form-control"
+            data-commas
           >
           <textarea
             v-else
             v-model.lazy="model"
             :placeholder="placeholder"
-            class="form-control"
+            data-commas
           ></textarea>
           <select
             v-if="accepts(spec.schema, 'string') && spec.schema.format === 'font'"
-            class="form-control extra-control"
+            data-commas
+            class="extra-control"
             @change="pickFont"
           >
             <option v-i18n value="" disabled selected>Select local font#!settings.3</option>
@@ -256,6 +257,17 @@ function pickFont(event: InputEvent) {
   &.form-line.block .form-label {
     display: flex;
     align-items: center;
+  }
+  :deep(input[data-commas]:not([type='color'])),
+  :deep(textarea[data-commas]) {
+    box-sizing: border-box;
+    width: 480px;
+  }
+  :deep(.object-editor input[data-commas]) {
+    width: 208px;
+    &:only-of-type {
+      width: 452px;
+    }
   }
 }
 .line-summary {
@@ -295,9 +307,9 @@ function pickFont(event: InputEvent) {
   flex: none;
   width: 24px;
   text-align: center;
-  opacity: 1;
   transition: transform var(--design-out-back-timing-function) 0.2s;
   .settings-line:not([open]) & {
+    opacity: 1;
     transform: rotate(-90deg) translateX(2px);
   }
   .line-summary:focus-visible & {
@@ -309,6 +321,14 @@ function pickFont(event: InputEvent) {
   .settings-line:not([open]) & {
     display: none;
   }
+}
+.setting-comment {
+  margin: 4px 0;
+  font-size: 12px;
+  line-height: 24px;
+  opacity: 0.5;
+  cursor: text;
+  user-select: text;
 }
 .recover {
   color: rgb(var(--system-red));

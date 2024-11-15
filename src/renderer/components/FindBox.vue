@@ -149,13 +149,13 @@ watch($$(isFinding), (value: boolean) => {
       </div>
       <div v-if="currentNumber && totalNumber" class="indicator">{{ currentNumber }} / {{ totalNumber }}</div>
       <div class="buttons">
-        <button type="button" class="button previous" @click.prevent="findPrevious">
+        <button type="button" data-commas class="button previous" @click.prevent="findPrevious">
           <VisualIcon name="lucide-arrow-up" />
         </button>
-        <button class="button next">
+        <button data-commas class="button next">
           <VisualIcon name="lucide-arrow-down" />
         </button>
-        <button type="button" class="button close" @click.prevent="cancel">
+        <button type="button" data-commas class="button close" @click.prevent="cancel">
           <VisualIcon name="lucide-x" />
         </button>
       </div>
@@ -220,20 +220,7 @@ watch($$(isFinding), (value: boolean) => {
   gap: 4px;
 }
 .button {
-  appearance: none;
-  width: 20px;
-  padding: 0;
-  border: none;
-  color: inherit;
-  text-align: center;
-  background: transparent;
-  border-radius: 4px;
-  transition: color 0.2s, transform 0.2s;
-  cursor: pointer;
-  &:hover {
-    background: var(--design-highlight-background);
-    opacity: 1;
-  }
+  padding: 2px;
   &:active {
     transform: scale(partials.nano-scale(20));
   }

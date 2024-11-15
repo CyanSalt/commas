@@ -93,7 +93,6 @@ function togglePinned(item: EditorEntryItem) {
 }
 </script>
 
-
 <template>
   <div class="object-editor">
     <template v-for="item in entryItems" :key="item.id">
@@ -103,20 +102,20 @@ function togglePinned(item: EditorEntryItem) {
         </label>
         <template v-if="withKeys">
           <template v-if="lazy">
-            <input v-model.lazy="item.entry.key" :readonly="item.pinned" type="text" class="form-control">
+            <input v-model.lazy="item.entry.key" :readonly="item.pinned" type="text" data-commas>
           </template>
           <template v-else>
-            <input v-model="item.entry.key" :readonly="item.pinned" type="text" class="form-control">
+            <input v-model="item.entry.key" :readonly="item.pinned" type="text" data-commas>
           </template>
           <span class="property-arrow">
             <VisualIcon name="lucide-arrow-right" />
           </span>
         </template>
         <template v-if="lazy">
-          <input v-model.lazy="item.entry.value" :readonly="item.pinned" type="text" class="form-control">
+          <input v-model.lazy="item.entry.value" :readonly="item.pinned" type="text" data-commas>
         </template>
         <template v-else>
-          <input v-model="item.entry.value" :readonly="item.pinned" type="text" class="form-control">
+          <input v-model="item.entry.value" :readonly="item.pinned" type="text" data-commas>
         </template>
       </div>
       <slot name="note" :item="item"></slot>
@@ -134,9 +133,6 @@ function togglePinned(item: EditorEntryItem) {
 .property-line {
   display: flex;
   align-items: center;
-  & + :deep(.form-tips) {
-    padding-left: 28px;
-  }
 }
 .extra-line {
   margin: 4px 0;

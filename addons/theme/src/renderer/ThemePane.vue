@@ -91,7 +91,7 @@ async function applyTheme(item: RemoteTheme) {
   <TerminalPane :tab="tab" class="theme-pane">
     <h2 v-i18n class="group-title">Configure Theme#!theme.2</h2>
     <div class="group">
-      <a v-i18n tabindex="0" data-commas @click="reset">Reset to default#!theme.4</a>
+      <a v-i18n href="" data-commas @click.prevent="reset">Reset to default#!theme.4</a>
       <div class="form-line color-list">
         <ThemeColorPicker v-for="field in fields" :key="field" :field="field" />
       </div>
@@ -101,14 +101,15 @@ async function applyTheme(item: RemoteTheme) {
           v-i18n:placeholder
           type="search"
           placeholder="Find#!terminal.5"
-          class="form-control"
+          data-commas
+          class="searcher-control"
         >
         <button type="button" data-commas @click="load">
           <VisualIcon name="lucide-refresh-cw" />
         </button>
-        <div class="form-line-tip">
+        <div class="theme-source-tip">
           <span v-i18n>Theme will be downloaded from#!theme.3</span>
-          <a tabindex="0" data-commas class="marketplace-link" @click="openMarketplace">windowsterminalthemes.dev</a>
+          <a href="" data-commas class="marketplace-link" @click.prevent="openMarketplace">windowsterminalthemes.dev</a>
         </div>
       </div>
       <div class="theme-list">
@@ -143,12 +144,18 @@ async function applyTheme(item: RemoteTheme) {
 }
 .theme-searcher {
   width: 100%;
-  .form-control {
-    width: 50%;
+}
+.theme-source-tip {
+  flex-basis: 100%;
+  font-style: italic;
+  font-size: 12px;
+  &::before {
+    content: '*';
+    margin-right: 1ch;
   }
-  .form-line-tip {
-    margin-top: 8px;
-  }
+}
+.searcher-control {
+  width: 50%;
 }
 .theme-list {
   display: grid;

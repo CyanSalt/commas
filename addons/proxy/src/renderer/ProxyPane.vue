@@ -85,16 +85,16 @@ function update(event: MouseEvent) {
       <div class="form-line">
         <label v-i18n class="form-label">Proxy Server Address#!proxy.4</label>
         <span v-if="status" class="proxy-address">
-          <a tabindex="0" data-commas @click="openEditor">{{ address }}</a>
+          <a href="" data-commas @click.prevent="openEditor">{{ address }}</a>
           <button type="button" data-commas @click="copyAddress">
             <VisualIcon name="lucide-clipboard-copy" />
           </button>
         </span>
-        <a v-else-if="installed" tabindex="0" data-commas class="shortcut" @click="toggleProxyServer">
+        <a v-else-if="installed" href="" data-commas class="shortcut" @click.prevent="toggleProxyServer">
           <VisualIcon name="lucide-router" class="shortcut-icon" />
           <span v-i18n>Click this icon to start#!proxy.10</span>
         </a>
-        <a v-else tabindex="0" data-commas class="shortcut" @click="install">
+        <a v-else href="" data-commas class="shortcut" @click.prevent="install">
           <VisualIcon name="lucide-hard-drive-download" class="shortcut-icon" />
           <span v-i18n>Install whistle#!proxy.11</span>
         </a>
@@ -106,7 +106,7 @@ function update(event: MouseEvent) {
       <div class="form-line">
         <label v-i18n class="form-label">Current version#!preference.9</label>
         <span>{{ version ?? '--' }}</span>
-        <a v-if="isOutdated" tabindex="0" data-commas class="update-link" @click="update">
+        <a v-if="isOutdated" href="" data-commas class="update-link" @click.prevent="update">
           <VisualIcon name="lucide-chevrons-up" class="update-icon" />
           <span class="latest-version">{{ latestVersion }}</span>
         </a>
@@ -122,22 +122,22 @@ function update(event: MouseEvent) {
         <a
           v-if="isCertInstalled"
           v-i18n
-          tabindex="0"
+          href=""
           data-commas
-          @click="uninstallRootCA"
+          @click.prevent="uninstallRootCA"
         >Uninstall Root Certification#!proxy.7</a>
         <a
           v-else
           v-i18n
-          tabindex="0"
+          href=""
           data-commas
-          @click="installRootCA"
+          @click.prevent="installRootCA"
         >Install Root Certification#!proxy.6</a>
         <a
           v-i18n
-          tabindex="0"
+          href=""
           data-commas
-          @click="openKeychainAccess"
+          @click.prevent="openKeychainAccess"
         >Open Keychain Access#!proxy.9</a>
       </div>
     </template>

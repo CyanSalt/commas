@@ -166,7 +166,7 @@ function autoselect(event: FocusEvent) {
   <div class="file-explorer">
     <div class="form-line action-line">
       <slot></slot>
-      <button type="button" data-commas :class="{ disabled: !hasPreviousValue }" @click="goBack">
+      <button type="button" data-commas :disabled="!hasPreviousValue" @click="goBack">
         <VisualIcon name="lucide-undo-2" />
       </button>
       <form v-if="isCustomizing" class="breadcrumb-form" @submit.prevent="customize">
@@ -228,6 +228,7 @@ function autoselect(event: FocusEvent) {
           <button
             v-if="file.symlink"
             type="button"
+            data-commas
             class="file-action"
             @click.stop="showSymlink(file)"
           >
@@ -235,6 +236,7 @@ function autoselect(event: FocusEvent) {
           </button>
           <button
             type="button"
+            data-commas
             class="file-action"
             @click.stop="openExternal(file)"
           >
@@ -286,8 +288,6 @@ function autoselect(event: FocusEvent) {
   min-width: 0;
 }
 .breadcrumb {
-  width: auto;
-  padding: 0 4px;
   font-size: 12px;
 }
 .file-list {
@@ -329,8 +329,7 @@ function autoselect(event: FocusEvent) {
   }
 }
 .file-action {
-  width: 20px;
-  height: 20px;
+  padding: 3px;
   font-size: 14px;
 }
 </style>

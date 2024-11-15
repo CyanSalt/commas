@@ -49,9 +49,6 @@ function openEditingMenu(event: MouseEvent) {
   margin-bottom: 24px;
   line-height: 32px;
 }
-:deep(.text) {
-  line-height: 32px;
-}
 :deep(.form-line),
 :deep(.action-line) {
   display: flex;
@@ -66,17 +63,6 @@ function openEditingMenu(event: MouseEvent) {
     display: block;
     width: auto;
   }
-  input.form-control:not([type='color']),
-  textarea.form-control {
-    box-sizing: border-box;
-    width: 480px;
-  }
-  .object-editor input.form-control {
-    width: 208px;
-    &:only-of-type {
-      width: 452px;
-    }
-  }
 }
 :deep(.form-line + .form-line) {
   margin-top: 10px;
@@ -84,84 +70,5 @@ function openEditingMenu(event: MouseEvent) {
 :deep(.form-label) {
   align-self: flex-start;
   width: 14em;
-}
-:deep(.form-line-tip) {
-  flex-basis: 100%;
-  margin-bottom: 8px;
-  font-style: italic;
-  font-size: 12px;
-  line-height: 24px;
-  &::before {
-    content: '*';
-    margin-right: 1em;
-  }
-}
-:deep(input.form-control),
-:deep(textarea.form-control) {
-  width: 165px;
-  padding: 4px 8px;
-  border: none;
-  color: inherit;
-  font-family: inherit;
-  font-size: inherit;
-  line-height: 20px;
-  background: var(--design-input-background);
-  border-radius: 4px;
-  outline: none;
-  &::placeholder {
-    color: rgb(var(--theme-foreground));
-    opacity: 0.25;
-  }
-  &:not(:read-only):focus {
-    outline: 1px solid rgb(var(--system-accent));
-  }
-  &:read-only {
-    opacity: 0.5;
-  }
-  &[type='color'] {
-    width: 50px;
-    height: 27px;
-    padding: 2px 4px;
-    opacity: 1;
-  }
-}
-:deep(textarea.form-control) {
-  height: 60px;
-  resize: none;
-}
-:deep(input.immersive-control) {
-  appearance: none;
-  padding: 0;
-  border: none;
-  color: inherit;
-  font: inherit;
-  line-height: inherit;
-  background: transparent;
-  outline: none;
-}
-:deep(select.form-control) {
-  padding: 4px 8px;
-  border: none;
-  color: var(--theme-foreground);
-  font: inherit;
-  line-height: 20px;
-  background: var(--design-input-background);
-  border-radius: 4px;
-  outline: none;
-  &:focus {
-    outline: 1px solid rgb(var(--system-accent));
-  }
-  // Fix windows native control style
-  option {
-    color: initial;
-  }
-}
-:deep(.form-tips) {
-  margin: 4px 0;
-  font-size: 12px;
-  line-height: 24px;
-  opacity: 0.5;
-  cursor: text;
-  user-select: text;
 }
 </style>

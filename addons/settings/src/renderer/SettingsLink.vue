@@ -9,7 +9,7 @@ function configure() {
 </script>
 
 <template>
-  <a tabindex="0" data-commas class="settings-link" @click="configure">
+  <a href="" data-commas class="settings-link" @click.prevent="configure">
     <span v-i18n>Configure Settings#!settings.2</span>
   </a>
 </template>

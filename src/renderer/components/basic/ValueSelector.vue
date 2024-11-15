@@ -46,7 +46,7 @@ function unpin(value) {
             @change="update(value, true)"
           >
         </label>
-        <input :value="value" readonly type="text" :placeholder="placeholder" class="form-control">
+        <input :value="value" readonly type="text" :placeholder="placeholder" data-commas>
         <button v-if="unpinable" type="button" data-commas class="remove" @click="unpin(value)">
           <VisualIcon name="lucide-x" />
         </button>

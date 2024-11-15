@@ -158,8 +158,7 @@ watchEffect((onInvalidate) => {
   }
 }
 .browser-action {
-  width: 18px;
-  height: 18px;
+  padding: 2px;
   font-size: 14px;
 }
 .custom-url-form {

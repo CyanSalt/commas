@@ -99,15 +99,15 @@ function removeSyncPlan(index: number) {
       <a
         v-if="syncData.encryption"
         v-i18n
-        tabindex="0"
+        href=""
         data-commas
-        @click="removeToken"
+        @click.prevent="removeToken"
       >Remove GitHub Token#!sync.4</a>
       <div v-else-if="isAddingToken" class="form-line">
         <input
           v-model="stagingToken"
           v-i18n:placeholder
-          class="form-control"
+          data-commas
         >
         <button type="button" data-commas @click="openGitHubTokenSettings">
           <VisualIcon name="lucide-github" />
@@ -116,7 +116,7 @@ function removeSyncPlan(index: number) {
           <VisualIcon name="lucide-check" />
         </button>
       </div>
-      <a v-else v-i18n tabindex="0" data-commas @click="addToken">Add GitHub Token#!sync.3</a>
+      <a v-else v-i18n href="" data-commas @click.prevent="addToken">Add GitHub Token#!sync.3</a>
       <div v-if="syncData.encryption" class="form-line">
         <button type="button" data-commas @click="uploadDefaultSyncPlan">
           <VisualIcon name="lucide-cloud-upload" />
@@ -145,7 +145,7 @@ function removeSyncPlan(index: number) {
           <button type="button" data-commas class="remove-plan" @click="removeSyncPlan(index)">
             <VisualIcon name="lucide-package-minus" />
           </button>
-          <input v-model.lazy="plan.name" class="immersive-control plan-name">
+          <input v-model.lazy="plan.name" data-commas-alt class="plan-name">
           <span class="plan-directory" @click="openSyncPlanDirectory($event, plan)">
             <VisualIcon name="lucide-folder-output" class="directory-icon" />
             <span class="directory-path">{{ omitHome(plan.directory) }}</span>
@@ -204,7 +204,6 @@ function removeSyncPlan(index: number) {
   margin: 0 0.5em;
 }
 .remove-plan {
-  margin-right: 4px;
   &:hover {
     color: rgb(var(--system-red));
   }

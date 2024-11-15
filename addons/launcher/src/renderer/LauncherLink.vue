@@ -11,7 +11,7 @@ function openLaunchers(event: MouseEvent) {
 </script>
 
 <template>
-  <a tabindex="0" data-commas class="launcher-link" @click="openLaunchers">
+  <a href="" data-commas class="launcher-link" @click.prevent="openLaunchers">
     <span v-i18n="{ file: 'launchers.yaml' }">Edit ${file}#!preference.8</span>
   </a>
 </template>

@@ -102,10 +102,10 @@ onMounted(() => {
                 <template v-if="(manifest.productName ?? manifest.name) !== addon.name">
                   <a
                     v-if="addon.type !== 'builtin'"
-                    tabindex="0"
+                    href=""
                     data-commas
                     class="addon-id"
-                    @click="showInFolder(addon)"
+                    @click.prevent="showInFolder(addon)"
                   >{{ addon.name }}</a>
                   <span v-else class="addon-id">{{ addon.name }}</span>
                 </template>

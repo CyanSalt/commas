@@ -111,7 +111,8 @@ onBeforeUpdate(() => {
           v-i18n:placeholder
           type="search"
           placeholder="Find#!terminal.5"
-          class="form-control"
+          data-commas
+          class="searcher-control"
         >
       </div>
       <div
@@ -156,9 +157,9 @@ onBeforeUpdate(() => {
 }
 .settings-searcher {
   width: 100%;
-  .form-control {
-    width: 50%;
-  }
+}
+.searcher-control {
+  width: 50%;
 }
 .settings-group :deep(.setting-detail a[data-commas]) {
   color: rgb(var(--system-accent));

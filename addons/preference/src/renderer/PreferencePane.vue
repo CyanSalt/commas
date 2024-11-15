@@ -75,13 +75,13 @@ function openWebsite(event: MouseEvent) {
         v-for="(item, index) in generalItems"
         :key="index"
       />
-      <a tabindex="0" data-commas @click="openUserDirectory">
+      <a href="" data-commas @click.prevent="openUserDirectory">
         <span v-i18n>Open user directory#!preference.6</span>
       </a>
-      <a tabindex="0" data-commas @click="openDefaultSettings">
+      <a href="" data-commas @click.prevent="openDefaultSettings">
         <span v-i18n>Open default settings#!preference.7</span>
       </a>
-      <a tabindex="0" data-commas @click="openSettingsFile">
+      <a href="" data-commas @click.prevent="openSettingsFile">
         <span v-i18n="{ file: 'settings.yaml' }">Edit ${file}#!preference.8</span>
       </a>
     </div>
@@ -97,7 +97,7 @@ function openWebsite(event: MouseEvent) {
     <div class="group">
       <div class="form-line">
         <label v-i18n class="form-label">Language#!preference.10</label>
-        <select v-model="language" class="form-control">
+        <select v-model="language" data-commas>
           <option
             v-for="option in supportedLanguages"
             :key="option.value"
@@ -110,16 +110,16 @@ function openWebsite(event: MouseEvent) {
         v-for="(item, index) in customizationItems"
         :key="index"
       />
-      <a tabindex="0" data-commas @click="openKeyBindings">
+      <a href="" data-commas @click.prevent="openKeyBindings">
         <span v-i18n="{ file: 'keybindings.yaml' }">Edit ${file}#!preference.8</span>
       </a>
-      <a tabindex="0" data-commas @click="openTranslation">
+      <a href="" data-commas @click.prevent="openTranslation">
         <span v-i18n="{ file: 'translation.yaml' }">Edit ${file}#!preference.8</span>
       </a>
-      <a tabindex="0" data-commas @click="openCustomJS">
+      <a href="" data-commas @click.prevent="openCustomJS">
         <span v-i18n="{ file: 'custom.js' }">Edit ${file}#!preference.8</span>
       </a>
-      <a tabindex="0" data-commas @click="openCustomCSS">
+      <a href="" data-commas @click.prevent="openCustomCSS">
         <span v-i18n="{ file: 'custom.css' }">Edit ${file}#!preference.8</span>
       </a>
     </div>

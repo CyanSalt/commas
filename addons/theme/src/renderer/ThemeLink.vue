@@ -9,7 +9,7 @@ function configure() {
 </script>
 
 <template>
-  <a tabindex="0" data-commas class="theme-link" @click="configure">
+  <a href="" data-commas class="theme-link" @click.prevent="configure">
     <span v-i18n>Configure Theme#!theme.2</span>
   </a>
 </template>
