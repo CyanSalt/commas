@@ -117,6 +117,7 @@ async function applyTheme(item: RemoteTheme) {
           <ThemeCard
             v-for="i in 10"
             :key="i"
+            disabled
           />
         </template>
         <template v-else>
@@ -164,7 +165,6 @@ async function applyTheme(item: RemoteTheme) {
   grid-gap: 24px;
   width: 100%;
   :deep(.theme-card):not(.skeleton) {
-    cursor: pointer;
     &.active {
       outline: 2px solid rgb(var(--system-accent));
     }

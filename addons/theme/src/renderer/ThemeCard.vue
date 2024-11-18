@@ -7,41 +7,50 @@ const { theme } = defineProps<{
 </script>
 
 <template>
-  <figure
+  <button
+    type="button"
+    data-commas-alt
     :class="['theme-card', { skeleton: !theme }]"
-    :style="{ 'background-color': theme?.background, color: theme?.foreground }"
   >
-    <figcaption class="card-header">
-      <span class="theme-name">{{ theme?.name }}</span>
-    </figcaption>
-    <div class="theme-preview">
-      <div class="preview-line" :style="{ color: theme?.brightRed }">
-        <div class="preview-line" :style="{ color: theme?.red }"></div>
+    <figure
+      class="card-content"
+      :style="{ 'background-color': theme?.background, color: theme?.foreground }"
+    >
+      <figcaption class="card-header">
+        <span class="theme-name">{{ theme?.name }}</span>
+      </figcaption>
+      <div class="theme-preview">
+        <div class="preview-line" :style="{ color: theme?.brightRed }">
+          <div class="preview-line" :style="{ color: theme?.red }"></div>
+        </div>
+        <div class="preview-line" :style="{ color: theme?.brightGreen }">
+          <div class="preview-line" :style="{ color: theme?.green }"></div>
+        </div>
+        <div class="preview-line" :style="{ color: theme?.brightYellow }">
+          <div class="preview-line" :style="{ color: theme?.yellow }"></div>
+        </div>
+        <div class="preview-line" :style="{ color: theme?.brightBlue }">
+          <div class="preview-line" :style="{ color: theme?.blue }"></div>
+        </div>
+        <div class="preview-line" :style="{ color: theme?.brightMagenta ?? theme?.brightPurple }">
+          <div class="preview-line" :style="{ color: theme?.magenta ?? theme?.purple }"></div>
+        </div>
+        <div class="preview-line" :style="{ color: theme?.brightCyan }">
+          <div class="preview-line" :style="{ color: theme?.cyan }"></div>
+        </div>
+        <div class="preview-line" :style="{ color: theme?.meta.isDark ? theme.white : theme?.black }">
+          <div
+            class="preview-line"
+            :style="{ color: theme?.meta.isDark ? theme.brightWhite : theme?.brightBlack }"
+          ></div>
+        </div>
+        <!-- Invert brightWhite and white for light themes -->
+        <div class="preview-line" :style="{ color: theme?.meta.isDark ? theme.black : theme?.brightWhite }">
+          <div class="preview-line" :style="{ color: theme?.meta.isDark ? theme.brightBlack : theme?.white }"></div>
+        </div>
       </div>
-      <div class="preview-line" :style="{ color: theme?.brightGreen }">
-        <div class="preview-line" :style="{ color: theme?.green }"></div>
-      </div>
-      <div class="preview-line" :style="{ color: theme?.brightYellow }">
-        <div class="preview-line" :style="{ color: theme?.yellow }"></div>
-      </div>
-      <div class="preview-line" :style="{ color: theme?.brightBlue }">
-        <div class="preview-line" :style="{ color: theme?.blue }"></div>
-      </div>
-      <div class="preview-line" :style="{ color: theme?.brightMagenta ?? theme?.brightPurple }">
-        <div class="preview-line" :style="{ color: theme?.magenta ?? theme?.purple }"></div>
-      </div>
-      <div class="preview-line" :style="{ color: theme?.brightCyan }">
-        <div class="preview-line" :style="{ color: theme?.cyan }"></div>
-      </div>
-      <div class="preview-line" :style="{ color: theme?.meta.isDark ? theme.white : theme?.black }">
-        <div class="preview-line" :style="{ color: theme?.meta.isDark ? theme.brightWhite : theme?.brightBlack }"></div>
-      </div>
-      <!-- Invert brightWhite and white for light themes -->
-      <div class="preview-line" :style="{ color: theme?.meta.isDark ? theme.black : theme?.brightWhite }">
-        <div class="preview-line" :style="{ color: theme?.meta.isDark ? theme.brightBlack : theme?.white }"></div>
-      </div>
-    </div>
-  </figure>
+    </figure>
+  </button>
 </template>
 
 <style lang="scss" scoped>
@@ -54,12 +63,15 @@ const { theme } = defineProps<{
 }
 
 .theme-card {
+  border-radius: 4px;
+}
+.card-content {
   display: flex;
   flex-direction: column;
   margin: 0;
   overflow: hidden;
   background: var(--design-highlight-background);
-  border-radius: 4px;
+  border-radius: inherit;
   box-shadow: var(--design-element-shadow);
 }
 .card-header {
