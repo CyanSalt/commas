@@ -164,7 +164,7 @@ function pickFont(event: InputEvent) {
 <template>
   <details
     :open="open"
-    class="settings-line form-line"
+    class="settings-line"
     @toggle="toggle"
   >
     <summary :class="['line-summary', { customized: isCustomized }]">

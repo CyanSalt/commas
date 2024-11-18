@@ -181,7 +181,7 @@ function openTabItemMenu(event: MouseEvent, tab: TerminalTab) {
 </script>
 
 <template>
-  <nav :class="['tab-list', position, isHorizontal ? 'horizontal' : 'vertical']">
+  <aside :class="['tab-list', position, isHorizontal ? 'horizontal' : 'vertical']">
     <AutoScroll v-slot="{ mount: autoScroll }">
       <div :ref="autoScroll" class="list-container" :style="{ width: isHorizontal ? '' : width + 'px' }">
         <div class="list-content">
@@ -262,7 +262,7 @@ function openTabItemMenu(event: MouseEvent, tab: TerminalTab) {
       @dblclick="reset"
       @dragstart.prevent="resize"
     ></div>
-  </nav>
+  </aside>
 </template>
 
 <style lang="scss" scoped>

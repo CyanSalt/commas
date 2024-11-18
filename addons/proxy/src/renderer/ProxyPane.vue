@@ -81,8 +81,8 @@ function update(event: MouseEvent) {
 <template>
   <TerminalPane :tab="tab" class="proxy-pane">
     <h2 v-i18n data-commas>Proxy#!proxy.1</h2>
-    <div class="group">
-      <div class="form-line">
+    <form data-commas>
+      <div data-commas>
         <label v-i18n data-commas>Proxy Server Address#!proxy.4</label>
         <span v-if="status" class="proxy-address">
           <a href="" data-commas @click.prevent="openEditor">{{ address }}</a>
@@ -99,11 +99,11 @@ function update(event: MouseEvent) {
           <span v-i18n>Install whistle#!proxy.11</span>
         </a>
       </div>
-      <div v-if="supportsSystemProxy" class="form-line">
+      <div v-if="supportsSystemProxy" data-commas>
         <label v-i18n data-commas>Enable system proxy#!proxy.3</label>
         <SwitchControl v-model="isSystemProxyEnabled" />
       </div>
-      <div class="form-line">
+      <div data-commas>
         <label v-i18n data-commas>Current version#!preference.9</label>
         <span>{{ version ?? '--' }}</span>
         <a v-if="isOutdated" href="" data-commas class="update-link" @click.prevent="update">
@@ -111,10 +111,10 @@ function update(event: MouseEvent) {
           <span class="latest-version">{{ latestVersion }}</span>
         </a>
       </div>
-    </div>
+    </form>
     <template v-if="supportsKeyChain">
       <h2 v-i18n data-commas>HTTPS Proxy#!proxy.5</h2>
-      <div class="group">
+      <form data-commas>
         <span v-if="isCertInstalled" class="cert-status">
           <VisualIcon name="lucide-award" class="cert-icon" />
           <span v-i18n>Certification installed#!proxy.8</span>
@@ -139,7 +139,7 @@ function update(event: MouseEvent) {
           data-commas
           @click.prevent="openKeychainAccess"
         >Open Keychain Access#!proxy.9</a>
-      </div>
+      </form>
     </template>
   </TerminalPane>
 </template>
@@ -151,9 +151,6 @@ function update(event: MouseEvent) {
 }
 .shortcut-icon {
   margin-right: 8px;
-}
-.proxy-pane .form-line {
-  margin-top: 0;
 }
 .proxy-address {
   display: flex;

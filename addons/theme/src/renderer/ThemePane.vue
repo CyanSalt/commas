@@ -90,12 +90,12 @@ async function applyTheme(item: RemoteTheme) {
 <template>
   <TerminalPane :tab="tab" class="theme-pane">
     <h2 v-i18n data-commas>Configure Theme#!theme.2</h2>
-    <div class="group">
+    <form data-commas>
       <a v-i18n href="" data-commas @click.prevent="reset">Reset to default#!theme.4</a>
-      <div class="form-line color-list">
+      <div data-commas class="color-list">
         <ThemeColorPicker v-for="field in fields" :key="field" :field="field" />
       </div>
-      <div class="form-line theme-searcher">
+      <div data-commas class="theme-searcher">
         <input
           v-model="keyword"
           v-i18n:placeholder
@@ -129,7 +129,7 @@ async function applyTheme(item: RemoteTheme) {
           />
         </template>
       </div>
-    </div>
+    </form>
   </TerminalPane>
 </template>
 
@@ -144,6 +144,7 @@ async function applyTheme(item: RemoteTheme) {
 }
 .theme-searcher {
   width: 100%;
+  margin: 12px 0;
 }
 .theme-source-tip {
   flex-basis: 100%;
@@ -162,7 +163,6 @@ async function applyTheme(item: RemoteTheme) {
   grid-template-columns: repeat(2, minmax(90px, 1fr));
   grid-gap: 24px;
   width: 100%;
-  padding: 12px 0;
   :deep(.theme-card):not(.skeleton) {
     cursor: pointer;
     &.active {

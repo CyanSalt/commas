@@ -95,7 +95,7 @@ function removeSyncPlan(index: number) {
 <template>
   <TerminalPane :tab="tab" class="sync-pane">
     <h2 v-i18n data-commas>Sync#!sync.1</h2>
-    <div class="group">
+    <form data-commas>
       <a
         v-if="syncData.encryption"
         v-i18n
@@ -103,7 +103,7 @@ function removeSyncPlan(index: number) {
         data-commas
         @click.prevent="removeToken"
       >Remove GitHub Token#!sync.4</a>
-      <div v-else-if="isAddingToken" class="form-line">
+      <div v-else-if="isAddingToken" data-commas>
         <input
           v-model="stagingToken"
           v-i18n:placeholder
@@ -117,7 +117,7 @@ function removeSyncPlan(index: number) {
         </button>
       </div>
       <a v-else v-i18n href="" data-commas @click.prevent="addToken">Add GitHub Token#!sync.3</a>
-      <div v-if="syncData.encryption" class="form-line">
+      <div v-if="syncData.encryption" data-commas>
         <button type="button" data-commas @click="uploadDefaultSyncPlan">
           <VisualIcon name="lucide-cloud-upload" />
         </button>
@@ -137,11 +137,11 @@ function removeSyncPlan(index: number) {
         <label v-i18n>Recently synced at:#!sync.5</label>
         <span>{{ formatTime(syncData.updatedAt) }}</span>
       </div>
-    </div>
+    </form>
     <h2 v-i18n data-commas>Plans#!sync.8</h2>
-    <div class="group">
+    <form data-commas>
       <div v-for="(plan, index) in extraPlans" :key="index" class="extra-plan">
-        <div class="form-line">
+        <nav data-commas>
           <button type="button" data-commas class="remove-plan" @click="removeSyncPlan(index)">
             <VisualIcon name="lucide-package-minus" />
           </button>
@@ -150,7 +150,7 @@ function removeSyncPlan(index: number) {
             <VisualIcon name="lucide-folder-output" class="directory-icon" />
             <span class="directory-path">{{ omitHome(plan.directory) }}</span>
           </span>
-        </div>
+        </nav>
         <ObjectEditor v-model="plan.files" lazy>
           <template #extra>
             <button type="button" data-commas @click="uploadSyncPlan(plan)">
@@ -170,12 +170,12 @@ function removeSyncPlan(index: number) {
           </template>
         </ObjectEditor>
       </div>
-      <div class="form-line action-line">
+      <div data-commas class="action-line">
         <button type="button" data-commas @click="addSyncPlan">
           <VisualIcon name="lucide-package-plus" />
         </button>
       </div>
-    </div>
+    </form>
   </TerminalPane>
 </template>
 
@@ -185,9 +185,6 @@ function removeSyncPlan(index: number) {
 }
 .history label {
   padding-right: 1em;
-}
-.action-line {
-  margin: 0;
 }
 .plan-name {
   padding: 0 6px;

@@ -164,7 +164,7 @@ function autoselect(event: FocusEvent) {
 
 <template>
   <div class="file-explorer">
-    <div class="form-line action-line">
+    <nav data-commas class="action-line">
       <slot></slot>
       <button type="button" data-commas :disabled="!hasPreviousValue" @click="goBack">
         <VisualIcon name="lucide-undo-2" />
@@ -207,7 +207,7 @@ function autoselect(event: FocusEvent) {
       <button type="button" data-commas @click="openDirectory">
         <VisualIcon :name="externalExplorer ? 'lucide-folder-open' : 'lucide-square-arrow-out-up-right'" />
       </button>
-    </div>
+    </nav>
     <div class="file-list">
       <a
         v-for="file in files"
@@ -261,6 +261,7 @@ function autoselect(event: FocusEvent) {
   .terminal-block.active:not(.standalone) & {
     top: 2px;
     padding-top: #{8px - 2px};
+    padding-bottom: 2px;
   }
 }
 .breadcrumb-form {

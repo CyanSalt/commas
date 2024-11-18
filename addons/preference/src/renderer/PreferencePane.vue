@@ -69,7 +69,7 @@ function openWebsite(event: MouseEvent) {
 <template>
   <TerminalPane :tab="tab" class="preference-pane">
     <h2 v-i18n data-commas>General#!preference.2</h2>
-    <div class="group">
+    <form data-commas>
       <component
         :is="item.component"
         v-for="(item, index) in generalItems"
@@ -84,18 +84,18 @@ function openWebsite(event: MouseEvent) {
       <a href="" data-commas @click.prevent="openSettingsFile">
         <span v-i18n="{ file: 'settings.yaml' }">Edit ${file}#!preference.8</span>
       </a>
-    </div>
+    </form>
     <h2 v-i18n data-commas>Features#!preference.3</h2>
-    <div class="group">
+    <form data-commas>
       <component
         :is="item.component"
         v-for="(item, index) in featureItems"
         :key="index"
       />
-    </div>
+    </form>
     <h2 v-i18n data-commas>Customization#!preference.4</h2>
-    <div class="group">
-      <div class="form-line">
+    <form data-commas>
+      <div data-commas>
         <label v-i18n data-commas>Language#!preference.10</label>
         <select v-model="language" data-commas>
           <option
@@ -122,10 +122,10 @@ function openWebsite(event: MouseEvent) {
       <a href="" data-commas @click.prevent="openCustomCSS">
         <span v-i18n="{ file: 'custom.css' }">Edit ${file}#!preference.8</span>
       </a>
-    </div>
+    </form>
     <h2 v-i18n data-commas>About#!preference.5</h2>
-    <div class="group">
-      <div class="form-line">
+    <form data-commas>
+      <div data-commas>
         <label v-i18n data-commas>Current version#!preference.9</label>
         <span>{{ version }}</span>
         <button type="button" data-commas @click="openWebsite">
@@ -137,14 +137,11 @@ function openWebsite(event: MouseEvent) {
         v-for="(item, index) in aboutItems"
         :key="index"
       />
-    </div>
+    </form>
   </TerminalPane>
 </template>
 
 <style lang="scss" scoped>
-.preference-pane .form-line {
-  margin-top: 0;
-}
 .github-icon {
   transform: translateY(-1px);
 }

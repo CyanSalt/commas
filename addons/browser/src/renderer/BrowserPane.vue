@@ -103,7 +103,7 @@ watchEffect((onInvalidate) => {
 <template>
   <TerminalPane :tab="tab" class="browser-pane">
     <div class="browser-view">
-      <div :class="['form-line', 'action-line', { 'is-loading': view?.loading }]">
+      <nav data-commas :class="['action-line', { 'is-loading': view?.loading }]">
         <button type="button" data-commas :class="['browser-action', { disabled: !view?.canGoBack }]" @click="goBack">
           <VisualIcon name="lucide-undo-2" />
         </button>
@@ -122,7 +122,7 @@ watchEffect((onInvalidate) => {
         <button type="button" data-commas :class="['browser-action', { disabled: !url }]" @click="openExternal">
           <VisualIcon name="lucide-square-arrow-out-up-right" />
         </button>
-      </div>
+      </nav>
       <WebContents
         v-model="url"
         class="web-page"
@@ -149,7 +149,6 @@ watchEffect((onInvalidate) => {
 }
 .action-line {
   flex: none;
-  gap: 4px;
   padding: 8px;
   &.is-loading {
     background: linear-gradient(to right, transparent 25%, var(--design-highlight-background), transparent 66.6667%);

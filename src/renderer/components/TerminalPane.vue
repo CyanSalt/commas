@@ -37,21 +37,4 @@ function openEditingMenu(event: MouseEvent) {
   padding: 8px 16px;
   @include partials.scroll-container(8px);
 }
-:deep(.group) {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-bottom: 24px;
-  line-height: 32px;
-}
-:deep(.form-line),
-:deep(.action-line) {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  align-items: center;
-}
-:deep(.form-line + .form-line) {
-  margin-top: 10px;
-}
 </style>

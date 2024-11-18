@@ -6,6 +6,8 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
+    box-sizing: content-box;
+    height: 1em;
     padding: 4px;
     border: none;
     color: inherit;
@@ -120,5 +122,19 @@
   label[data-commas] {
     align-self: flex-start;
     width: 14em;
+  }
+  form > div[data-commas],
+  nav[data-commas] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+  }
+  form[data-commas] {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    line-height: 32px;
   }
 }

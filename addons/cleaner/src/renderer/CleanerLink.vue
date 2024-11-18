@@ -34,7 +34,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="form-line cleaner-link">
+  <div data-commas class="cleaner-link">
     <label v-i18n data-commas>Cache#!cache.1</label>
     <span class="cache-size" @click="check">{{ size }}</span>
     <button type="button" data-commas @click="clear">
