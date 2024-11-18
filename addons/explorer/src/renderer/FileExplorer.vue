@@ -160,13 +160,25 @@ function selectBreadcrumb(breadcrumb: Breadcrumb) {
 function autoselect(event: FocusEvent) {
   (event.target as HTMLInputElement).select()
 }
+
+let container = $ref<HTMLElement>()
+let back = $ref<HTMLButtonElement>()
+
+watchEffect(async () => {
+  if (files.length) {
+    await nextTick()
+    container?.querySelector<HTMLAnchorElement>('.file')?.focus()
+  } else {
+    back?.focus()
+  }
+})
 </script>
 
 <template>
   <div class="file-explorer">
     <nav data-commas class="action-line">
       <slot></slot>
-      <button type="button" data-commas :disabled="!hasPreviousValue" @click="goBack">
+      <button ref="back" type="button" data-commas :disabled="!hasPreviousValue" @click="goBack">
         <VisualIcon name="lucide-undo-2" />
       </button>
       <form v-if="isCustomizing" class="breadcrumb-form" @submit.prevent="customize">
@@ -208,13 +220,14 @@ function autoselect(event: FocusEvent) {
         <VisualIcon :name="externalExplorer ? 'lucide-folder-open' : 'lucide-square-arrow-out-up-right'" />
       </button>
     </nav>
-    <div class="file-list">
+    <div ref="container" class="file-list">
       <a
         v-for="file in files"
         :key="file.name"
+        href=""
         draggable="true"
         :class="['file', { directory: file.isDirectory }]"
-        @click="selectFile($event, file)"
+        @click.prevent="selectFile($event, file)"
         @dragstart.prevent="startDragging($event, file)"
       >
         <VisualIcon
@@ -301,10 +314,16 @@ function autoselect(event: FocusEvent) {
   gap: 4px;
   align-items: center;
   padding: 4px 8px;
+  color: inherit;
+  text-decoration: none;
   border-radius: 4px;
   transition: transform 0.2s;
   &:hover {
     background: var(--design-highlight-background);
+  }
+  &:focus-visible {
+    background: var(--design-highlight-background);
+    outline: none;
   }
   &:active {
     transform: scale(partials.nano-scale(656));
