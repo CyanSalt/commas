@@ -77,5 +77,9 @@ function activate(item: TerminalTab, index: number) {
     outline: 2px solid rgb(var(--system-accent));
     outline-offset: -2px;
   }
+  :deep(.terminal-block:has(.xterm-viewport:focus-visible)) {
+    outline: 2px dashed rgb(var(--system-accent));
+    outline-offset: -2px;
+  }
 }
 </style>

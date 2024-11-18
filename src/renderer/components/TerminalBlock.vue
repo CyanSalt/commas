@@ -88,6 +88,9 @@ async function handleDrop(args: DraggableElementEventPayload<DraggableElementDat
   :deep(.xterm-viewport) {
     background-color: transparent !important;
     @include partials.scroll-container(8px);
+    &:focus-visible {
+      outline: none;
+    }
   }
   /* issue@xterm: pointer behavior */
   :deep(.xterm-screen) {
