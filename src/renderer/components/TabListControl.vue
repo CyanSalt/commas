@@ -23,7 +23,9 @@ async function toggleOrShowOptions(event: MouseEvent) {
 </script>
 
 <template>
-  <div
+  <button
+    type="button"
+    data-commas
     class="tab-list-control"
     @click="toggleOrShowOptions"
     @contextmenu="showTabOptions"
@@ -31,26 +33,14 @@ async function toggleOrShowOptions(event: MouseEvent) {
   >
     <VisualIcon v-if="hasHorizontalTabList" name="lucide-panel-left" />
     <VisualIcon v-else :name="isTabListEnabled ? 'lucide-panel-left-close' : 'lucide-panel-left-open'" />
-  </div>
+  </button>
 </template>
 
 <style lang="scss" scoped>
 @use '../assets/_partials';
 
 .tab-list-control {
-  display: inline-flex;
-  padding: 4px;
-  border-radius: 4px;
-  opacity: 0.5;
-  transition: opacity 0.2s, transform 0.2s;
-  cursor: pointer;
-  &:hover {
-    background: var(--design-highlight-background);
-    opacity: 1;
-  }
-  &:active {
-    transform: scale(partials.nano-scale(22));
-  }
+  font-size: 14px;
   // FIXME: make it center visually
   :deep(.visual-icon) {
     transform: translateY(1.5px);

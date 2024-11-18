@@ -30,7 +30,9 @@ function configure(event: MouseEvent) {
 </script>
 
 <template>
-  <div
+  <button
+    type="button"
+    data-commas
     :class="['proxy-anchor', { active: status, disabled: status === undefined, system: systemStatus }]"
     @click="toggle"
     @contextmenu="configure"
@@ -38,7 +40,7 @@ function configure(event: MouseEvent) {
     <VisualIcon v-if="status === undefined" name="lucide-loader" />
     <VisualIcon v-else name="lucide-router" />
     <span v-if="status" class="server-port">{{ port }}</span>
-  </div>
+  </button>
 </template>
 
 <style lang="scss" scoped>

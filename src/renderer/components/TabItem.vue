@@ -175,9 +175,9 @@ function close() {
         <div v-if="idleState" :class="['idle-light', idleState]"></div>
         <div class="operations">
           <slot name="operations"></slot>
-          <div v-if="closable || tab" class="button close" @click.stop="close">
+          <button v-if="closable || tab" type="button" data-commas class="close" @click.stop="close">
             <VisualIcon name="lucide-x" />
-          </div>
+          </button>
         </div>
       </div>
     </div>
@@ -286,20 +286,8 @@ function close() {
   .tab-item:hover & {
     display: flex;
   }
-  :deep(.button) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 18px;
-    height: 18px;
-    padding: 2px;
-    border-radius: 4px;
-    transition: color 0.2s, transform 0.2s;
-    cursor: pointer;
-    &:hover {
-      background: var(--design-highlight-background);
-      opacity: 1;
-    }
+  :deep(button[data-commas]) {
+    font-size: 14px;
     &:active {
       transform: scale(partials.nano-scale(18));
     }

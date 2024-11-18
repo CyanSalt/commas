@@ -5,10 +5,6 @@ import * as commas from 'commas:api/renderer'
 import { clipboard } from 'electron'
 import { watchEffect } from 'vue'
 
-defineOptions({
-  inheritAttrs: false,
-})
-
 const { VisualIcon } = commas.ui.vueAssets
 
 const terminal = $(commas.workspace.useCurrentTerminal())
@@ -69,22 +65,24 @@ async function share() {
 
 <template>
   <template v-if="isTeletype">
-    <div
+    <button
       v-if="isCapturing"
-      v-bind="$attrs"
+      type="button"
+      data-commas
       class="recorder-share-anchor"
       @click="share"
     >
       <VisualIcon v-if="feedbacking" name="lucide-clipboard-check" />
       <VisualIcon v-else name="lucide-share-2" />
-    </div>
-    <div
-      v-bind="$attrs"
+    </button>
+    <button
+      type="button"
+      data-commas
       :class="['recorder-anchor', { active: isCapturing }]"
       @click="capture"
     >
       <VisualIcon name="lucide-video" class="recorder-icon" />
-    </div>
+    </button>
   </template>
 </template>
 

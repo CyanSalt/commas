@@ -126,6 +126,7 @@ watch($$(isFinding), (value: boolean) => {
         class="keyword"
         placeholder="Find#!terminal.5"
         autofocus
+        data-commas-alt
         @keyup.esc="cancel"
       >
       <div class="options">
@@ -149,13 +150,13 @@ watch($$(isFinding), (value: boolean) => {
       </div>
       <div v-if="currentNumber && totalNumber" class="indicator">{{ currentNumber }} / {{ totalNumber }}</div>
       <div class="buttons">
-        <button type="button" data-commas class="button previous" @click.prevent="findPrevious">
+        <button type="button" data-commas class="previous" @click.prevent="findPrevious">
           <VisualIcon name="lucide-arrow-up" />
         </button>
-        <button data-commas class="button next">
+        <button data-commas class="next">
           <VisualIcon name="lucide-arrow-down" />
         </button>
-        <button type="button" data-commas class="button close" @click.prevent="cancel">
+        <button type="button" data-commas class="close" @click.prevent="cancel">
           <VisualIcon name="lucide-x" />
         </button>
       </div>
@@ -182,13 +183,6 @@ watch($$(isFinding), (value: boolean) => {
 .keyword {
   flex: auto;
   padding: 2px 6px;
-  border: none;
-  color: inherit;
-  font-family: inherit;
-  font-size: inherit;
-  line-height: #{36px - 2 * 8px - 2 * 2px};
-  background: transparent;
-  outline: none;
   &::placeholder {
     color: rgb(var(--theme-foreground));
     opacity: 0.25;
@@ -218,11 +212,8 @@ watch($$(isFinding), (value: boolean) => {
   display: flex;
   flex: none;
   gap: 4px;
-}
-.button {
-  padding: 2px;
-  &:active {
-    transform: scale(partials.nano-scale(20));
+  :deep(button[data-commas]) {
+    padding: 2px;
   }
 }
 </style>

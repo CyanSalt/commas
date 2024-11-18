@@ -45,7 +45,7 @@ const model = $computed({
 
 <template>
   <div class="theme-color-picker">
-    <label v-i18n class="form-label">{{ name }}#!theme.field.{{ field }}</label>
+    <label v-i18n data-commas>{{ name }}#!theme.field.{{ field }}</label>
     <input v-model.lazy="model" type="color" data-commas>
   </div>
 </template>

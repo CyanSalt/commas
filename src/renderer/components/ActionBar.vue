@@ -19,14 +19,13 @@ function configure() {
 <template>
   <footer class="action-bar">
     <div class="left-side">
-      <div class="anchor" @click="configure">
+      <button type="button" data-commas @click="configure">
         <VisualIcon name="lucide-cog" />
-      </div>
+      </button>
       <component
         :is="anchor"
         v-for="(anchor, index) in leftAnchors"
         :key="index"
-        class="anchor"
       />
     </div>
     <div class="title-wrapper">
@@ -38,7 +37,6 @@ function configure() {
         :is="anchor"
         v-for="(anchor, index) in rightAnchors"
         :key="index"
-        class="anchor"
       />
     </div>
   </footer>
@@ -56,23 +54,8 @@ function configure() {
     display: flex;
     height: 52px; // 36 + 2 * 8
   }
-}
-:deep(.anchor) {
-  display: inline-flex;
-  padding: 4px;
-  border-radius: 4px;
-  opacity: 0.5;
-  transition: opacity 0.2s, transform 0.2s;
-  cursor: pointer;
-  &:hover:not(.disabled) {
-    background: var(--design-highlight-background);
-    opacity: 1;
-  }
-  &:active {
-    transform: scale(partials.nano-scale(22));
-  }
-  &.active {
-    opacity: 1;
+  :deep(button[data-commas]) {
+    font-size: 14px;
   }
 }
 .left-side,

@@ -171,7 +171,7 @@ watchEffect((onInvalidate) => {
 <template>
   <TerminalBlock :tab="tab" class="recorder-pane" @contextmenu="openEditingMenu">
     <div class="recorder-control">
-      <button class="action" @click="playOrPause">
+      <button type="button" data-commas class="action" @click="playOrPause">
         <VisualIcon :name="isPaused ? 'lucide-play' : 'lucide-pause'" class="play-icon" />
       </button>
       <span class="time-indicator">{{ formatTime(currentTime) }}</span>
@@ -205,21 +205,7 @@ watchEffect((onInvalidate) => {
   font-size: 12px;
 }
 .action {
-  appearance: none;
-  padding: 4px;
-  border: none;
-  color: inherit;
   font-size: 14px;
-  background: transparent;
-  border-radius: 4px;
-  transition: opacity 0.2s, transform 0.2s;
-  cursor: pointer;
-  &:hover {
-    background: var(--design-highlight-background);
-  }
-  &:active {
-    transform: scale(partials.nano-scale(22));
-  }
 }
 .play-icon {
   fill: currentColor !important;

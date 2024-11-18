@@ -74,7 +74,7 @@ onMounted(() => {
     <h2 v-i18n data-commas>Addons#!addon-manager.1</h2>
     <form class="group">
       <div class="form-line">
-        <label v-i18n class="form-label">Show Built-in Addons#!addon-manager.4</label>
+        <label v-i18n data-commas>Show Built-in Addons#!addon-manager.4</label>
         <SwitchControl v-model="isBuiltinAddonsVisible" />
       </div>
       <div class="action-line">

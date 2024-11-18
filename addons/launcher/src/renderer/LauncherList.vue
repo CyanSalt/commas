@@ -322,18 +322,22 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
               @contextmenu="openLauncherMenu(launcher, tab, $event)"
             >
               <template #operations>
-                <div
-                  class="button launch"
+                <button
+                  type="button"
+                  data-commas
+                  class="launch"
                   @click.stop="startLauncher(launcher, shiftKey)"
                 >
                   <VisualIcon :name="shiftKey ? 'lucide-copy-plus' : 'lucide-play'" />
-                </div>
-                <div
-                  class="button launch-externally"
+                </button>
+                <button
+                  type="button"
+                  data-commas
+                  class="launch-externally"
                   @click.stop="startLauncherExternally(launcher)"
                 >
                   <VisualIcon name="lucide-square-arrow-out-up-right" />
-                </div>
+                </button>
               </template>
             </TabItem>
           </div>

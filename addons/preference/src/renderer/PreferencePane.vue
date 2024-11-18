@@ -96,7 +96,7 @@ function openWebsite(event: MouseEvent) {
     <h2 v-i18n data-commas>Customization#!preference.4</h2>
     <div class="group">
       <div class="form-line">
-        <label v-i18n class="form-label">Language#!preference.10</label>
+        <label v-i18n data-commas>Language#!preference.10</label>
         <select v-model="language" data-commas>
           <option
             v-for="option in supportedLanguages"
@@ -126,7 +126,7 @@ function openWebsite(event: MouseEvent) {
     <h2 v-i18n data-commas>About#!preference.5</h2>
     <div class="group">
       <div class="form-line">
-        <label v-i18n class="form-label">Current version#!preference.9</label>
+        <label v-i18n data-commas>Current version#!preference.9</label>
         <span>{{ version }}</span>
         <button type="button" data-commas @click="openWebsite">
           <VisualIcon name="simple-icons-github" class="github-icon" />

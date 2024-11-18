@@ -7,10 +7,6 @@ import { clipboard, nativeImage } from 'electron'
 import osName from 'os-name'
 import icon from './assets/icon-stroked.svg'
 
-defineOptions({
-  inheritAttrs: false,
-})
-
 const { VisualIcon } = commas.ui.vueAssets
 const theme = commas.remote.useTheme()
 
@@ -211,12 +207,13 @@ async function capture() {
 </script>
 
 <template>
-  <div
-    v-bind="$attrs"
+  <button
+    type="button"
+    data-commas
     class="camera-anchor"
     @click="capture"
   >
     <VisualIcon v-if="feedbacking" name="lucide-clipboard-check" />
     <VisualIcon v-else name="lucide-camera" />
-  </div>
+  </button>
 </template>

@@ -117,4 +117,8 @@
     font-size: 18px;
     line-height: 24px;
   }
+  label[data-commas] {
+    align-self: flex-start;
+    width: 14em;
+  }
 }

@@ -139,7 +139,7 @@ async function applyTheme(item: RemoteTheme) {
   grid-template-columns: repeat(2, 1fr);
   gap: 0 24px;
 }
-:deep(.theme-color-picker) .form-label {
+:deep(.theme-color-picker label[data-commas]) {
   width: 10em;
 }
 .theme-searcher {

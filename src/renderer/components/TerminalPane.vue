@@ -51,19 +51,7 @@ function openEditingMenu(event: MouseEvent) {
   gap: 4px;
   align-items: center;
 }
-:deep(.form-line.block) {
-  display: block;
-  align-self: stretch;
-  .form-label {
-    display: block;
-    width: auto;
-  }
-}
 :deep(.form-line + .form-line) {
   margin-top: 10px;
-}
-:deep(.form-label) {
-  align-self: flex-start;
-  width: 14em;
 }
 </style>

@@ -164,7 +164,7 @@ function pickFont(event: InputEvent) {
 <template>
   <details
     :open="open"
-    class="settings-line form-line block"
+    class="settings-line form-line"
     @toggle="toggle"
   >
     <summary :class="['line-summary', { customized: isCustomized }]">
@@ -254,10 +254,6 @@ function pickFont(event: InputEvent) {
 
 <style lang="scss" scoped>
 .settings-line {
-  &.form-line.block .form-label {
-    display: flex;
-    align-items: center;
-  }
   :deep(input[data-commas]:not([type='color'])),
   :deep(textarea[data-commas]) {
     box-sizing: border-box;

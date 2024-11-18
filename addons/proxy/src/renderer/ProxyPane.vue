@@ -83,7 +83,7 @@ function update(event: MouseEvent) {
     <h2 v-i18n data-commas>Proxy#!proxy.1</h2>
     <div class="group">
       <div class="form-line">
-        <label v-i18n class="form-label">Proxy Server Address#!proxy.4</label>
+        <label v-i18n data-commas>Proxy Server Address#!proxy.4</label>
         <span v-if="status" class="proxy-address">
           <a href="" data-commas @click.prevent="openEditor">{{ address }}</a>
           <button type="button" data-commas @click="copyAddress">
@@ -100,11 +100,11 @@ function update(event: MouseEvent) {
         </a>
       </div>
       <div v-if="supportsSystemProxy" class="form-line">
-        <label v-i18n class="form-label">Enable system proxy#!proxy.3</label>
+        <label v-i18n data-commas>Enable system proxy#!proxy.3</label>
         <SwitchControl v-model="isSystemProxyEnabled" />
       </div>
       <div class="form-line">
-        <label v-i18n class="form-label">Current version#!preference.9</label>
+        <label v-i18n data-commas>Current version#!preference.9</label>
         <span>{{ version ?? '--' }}</span>
         <a v-if="isOutdated" href="" data-commas class="update-link" @click.prevent="update">
           <VisualIcon name="lucide-chevrons-up" class="update-icon" />
