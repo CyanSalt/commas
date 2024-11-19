@@ -258,14 +258,13 @@
     "label": "Renderer Type",
     "comments": [
       "Specify how to render the terminal",
-      "Options: 'dom', 'canvas' or 'webgl'",
-      "'webgl' has the best performance but may have display flaws"
+      "Options: 'dom', 'canvas' or 'webgl'"
     ],
     "schema": {
       "type": "string",
       "enum": ["dom", "canvas", "webgl"]
     },
-    "default": "canvas"
+    "default": "webgl"
   },
   {
     "key": "terminal.view.frameType",
