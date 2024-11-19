@@ -133,11 +133,7 @@ export function openFile(file: string) {
 }
 
 export async function addFile(file: string) {
-  const opener = getFileOpener(file)
-  if (opener) {
-    return opener.handler(file)
-  }
-  return globalHandler.invoke('global-renderer:add-file', file)
+  return ipcRenderer.invoke('open-file', file)
 }
 
 export function showFileExternally(file: string) {
@@ -187,7 +183,11 @@ export function handleShellMessages() {
     willQuit = true
   })
   ipcRenderer.on('add-file', (event, file) => {
-    return addFile(file)
+    const opener = getFileOpener(file)
+    if (opener) {
+      return opener.handler(file)
+    }
+    return globalHandler.invoke('global-renderer:add-file', file)
   })
   globalHandler.handle('global-renderer:open-file', (file) => {
     return showFileExternally(file)
