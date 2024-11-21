@@ -28,6 +28,11 @@ export default (versions, tap) => vite.build(tap({
     reactivityTransform(),
   ],
   css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler',
+      },
+    },
     postcss: {
       plugins: [
         radicalizeFontFace(),
