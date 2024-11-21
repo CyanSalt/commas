@@ -49,6 +49,7 @@ function configure(event: MouseEvent) {
   align-items: center;
   &.active {
     color: var(--design-highlight-color);
+    opacity: 1;
     &.system {
       color: rgb(var(--system-purple));
     }

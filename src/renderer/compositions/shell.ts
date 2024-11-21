@@ -68,9 +68,10 @@ export async function confirmClosing() {
 }
 
 function getFileOpener(file: string) {
-  const ext = path.extname(file).toLowerCase()
   const openers = commas.proxy.context.getCollection('terminal.file-opener')
-  return openers.find(item => item.extensions.includes(ext))
+  return openers.find(item => item.extensions.some(ext => {
+    return ext.startsWith('.') ? file.endsWith(ext) : file === ext
+  }))
 }
 
 /**

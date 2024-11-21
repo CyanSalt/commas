@@ -90,6 +90,7 @@ async function share() {
 .recorder-anchor {
   &.active {
     color: rgb(var(--system-red));
+    opacity: 1;
   }
 }
 .recorder-icon {
