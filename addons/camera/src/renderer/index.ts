@@ -30,6 +30,12 @@ function formatDateAsFileName(date: Date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}.${String(date.getMinutes()).padStart(2, '0')}.${String(date.getSeconds()).padStart(2, '0')}`
 }
 
+function generateFileName(date: Date) {
+  return commas.remote.translate('Terminal Recording ${date}#!camera.1', {
+    date: formatDateAsFileName(date),
+  }) + '.ttyrec'
+}
+
 export default () => {
 
   commas.ui.addCSSFile('dist/renderer/style.css')
@@ -43,9 +49,7 @@ export default () => {
     tab => new RecorderAddon(tab, {
       onInitialize(startedAt) {
         const date = new Date(startedAt)
-        return commas.remote.translate('Terminal Recording ${date}#!camera.1', {
-          date: formatDateAsFileName(date),
-        }) + '.ttyrec'
+        return generateFileName(date)
       },
       onData(data, channel) {
         ipcRenderer.invoke('ttyrec-write-data', channel, data)
@@ -69,7 +73,7 @@ export default () => {
           command: info.command,
         }
       }
-      const shell = info?.shell || path.join(os.tmpdir(), '.commas')
+      const shell = info?.shell || path.join(commas.app.getPath('downloads'), generateFileName(new Date()))
       return {
         shell,
         process: shell,

@@ -96,9 +96,13 @@ export default () => {
         resolve()
       }
     }
-    for await (const chunk of readable) {
-      data = Buffer.concat([data, chunk])
-      resolve()
+    try {
+      for await (const chunk of readable) {
+        data = Buffer.concat([data, chunk])
+        resolve()
+      }
+    } catch {
+      // continue
     }
     commas.frame.send(event.sender, 'ttyrec-read-data', url, {
       offset: -1,

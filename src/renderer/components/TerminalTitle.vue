@@ -73,7 +73,8 @@ if (process.platform === 'darwin') {
 
 async function updateIcon() {
   if (fileOrDirectory && process.platform === 'darwin' && settings['terminal.tab.liveIcon']) {
-    iconBuffer = await ipcRenderer.invoke('get-icon', fileOrDirectory)
+    const buffer = await ipcRenderer.invoke('get-icon', fileOrDirectory)
+    iconBuffer = buffer ?? defaultIconBuffer
   } else {
     iconBuffer = defaultIconBuffer
   }

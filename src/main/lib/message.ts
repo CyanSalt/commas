@@ -21,7 +21,7 @@ declare module '@commas/electron-ipc' {
     'update-window': (data: { title: BrowserWindow['title'], filename: BrowserWindow['representedFilename'] }) => void,
     'drag-file': (file: string, iconBuffer?: Buffer) => void,
     beep: () => void,
-    'get-icon': (file: string) => Buffer,
+    'get-icon': (file: string) => Buffer | null,
     notify: typeof notify,
     'activate-window': () => void,
     bounce: (state: { active: boolean, type?: Parameters<Dock['bounce']>[0] }) => void,
@@ -161,8 +161,12 @@ function handleMessages() {
   ipcMain.handle('beep', () => {
     shell.beep()
   })
-  ipcMain.handle('get-icon', (event, file) => {
-    return fileIcon.buffer(file, { size: 32 })
+  ipcMain.handle('get-icon', async (event, file) => {
+    try {
+      return await fileIcon.buffer(file, { size: 32 })
+    } catch {
+      return null
+    }
   })
   ipcMain.handle('notify', (event, data) => {
     return notify(data)
