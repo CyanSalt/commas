@@ -7,6 +7,9 @@
   "main": "index.js",
   "author": "commas",
   "license": "ISC",
+  "dependencies": {
+    "unused-filename": "^3.0.1"
+  },
   "devDependencies": {
     "monaco-editor": "^0.52.0"
   },
