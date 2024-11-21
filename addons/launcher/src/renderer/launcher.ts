@@ -90,7 +90,7 @@ export async function openLauncher(launcher: Launcher, options: OpenLauncherOpti
   const character = getTerminalTabCharacterByLauncher(launcher)
   const pane = launcher.pane ? commas.workspace.getPane(launcher.pane) : undefined
   if (pane) {
-    const paneTab = commas.workspace.createPaneTab(pane, {
+    const paneTab = await commas.workspace.createPaneTab(pane, {
       ...profile,
       command: launcher.command,
       character,

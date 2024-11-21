@@ -35,9 +35,9 @@ function registerTabPane(this: RendererAPIContext, name: string, pane: TerminalT
   if (pane.volatile) {
     const generateID = this.$.helper.createIDGenerator()
     const factory = pane.factory
-    pane.factory = info => ({
+    pane.factory = async info => ({
       pid: Number(generateID()),
-      ...factory?.(info),
+      ...await factory?.(info),
     })
   }
   this.$.app.onInvalidate(() => {
@@ -55,14 +55,14 @@ function getTerminalTabByPane(pane: TerminalTabPane, info: Partial<TerminalTab> 
 
 export type PaneTabInfo = Pick<TerminalTab, 'command' | 'process' | 'cwd' | 'shell' | 'character'>
 
-function createPaneTab(pane: TerminalTabPane, info?: Partial<PaneTabInfo>) {
+async function createPaneTab(pane: TerminalTabPane, info?: Partial<PaneTabInfo>) {
   return reactive({
     pid: 0,
     process: pane.name,
     title: '',
     cwd: '',
     ...info,
-    ...pane.factory?.(info),
+    ...await pane.factory?.(info),
     pane: markRaw(pane),
   } as TerminalTab)
 }
@@ -77,7 +77,7 @@ async function openPaneTab(name: string, info?: Partial<PaneTabInfo>) {
       return tab
     }
   }
-  const paneTab = createPaneTab(pane, info)
+  const paneTab = await createPaneTab(pane, info)
   await activateOrAddTerminalTab(paneTab)
   return paneTab
 }

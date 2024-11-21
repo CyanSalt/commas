@@ -22,7 +22,9 @@ export interface TerminalTabPane {
     save?: () => void,
   },
   volatile?: boolean,
-  factory?: (info?: Partial<TerminalTab>) => Partial<TerminalTab> | undefined,
+  factory?: (
+    info?: Partial<TerminalTab>
+  ) => Partial<TerminalTab> | undefined | Promise<Partial<TerminalTab> | undefined>,
 }
 
 export interface TerminalTabCharacter {
