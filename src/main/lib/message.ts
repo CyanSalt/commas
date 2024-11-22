@@ -4,6 +4,7 @@ import * as path from 'node:path'
 import type { Dock, FindInPageOptions, MessageBoxOptions, MessageBoxReturnValue, NativeImage, Result, WebContents, WebContentsView } from 'electron'
 import { app, BrowserWindow, clipboard, dialog, nativeImage, shell } from 'electron'
 import * as fileIcon from 'file-icon'
+import unusedFilename from 'unused-filename'
 import { ipcMain } from '@commas/electron-ipc'
 import { globalHandler } from '../../shared/handler'
 import { readFile, watchFile, writeFile } from '../utils/file'
@@ -32,6 +33,7 @@ declare module '@commas/electron-ipc' {
     'preview-file': (file: string) => void,
     'open-path': (uri: string) => void,
     'open-url': (uri: string) => void,
+    'save-file-path': (name: string) => Promise<string>,
     'save-file': (name: string, content: Buffer | string) => Promise<string>,
   }
   export interface Events {
@@ -222,6 +224,10 @@ function handleMessages() {
   })
   ipcMain.handle('open-url', (event, url) => {
     shell.openExternal(url)
+  })
+  ipcMain.handle('save-file-path', (event, name) => {
+    const file = path.join(app.getPath('downloads'), name)
+    return unusedFilename(file)
   })
   ipcMain.handle('save-file', async (event, name, content) => {
     const file = path.join(app.getPath('downloads'), name)

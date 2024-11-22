@@ -66,13 +66,13 @@ export default () => {
   commas.workspace.registerTabPane('recorder', {
     title: '',
     component: RecorderPane,
-    factory: info => {
+    factory: async info => {
       if (info?.command) {
         return {
           command: info.command,
         }
       }
-      const shell = info?.shell || path.join(commas.app.getPath('downloads'), generateFileName(new Date()))
+      const shell = info?.shell || await ipcRenderer.invoke('save-file-path', generateFileName(new Date()))
       return {
         shell,
         process: shell,

@@ -1,6 +1,6 @@
 import * as path from 'node:path'
+import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from 'commas:api/renderer'
-import unusedFilename from 'unused-filename'
 import CodeEditorPane from './CodeEditorPane.vue'
 import { openCodeEditorTab } from './compositions'
 
@@ -11,11 +11,9 @@ declare module '@commas/electron-ipc' {
 }
 
 function getNewFileName() {
-  const name = commas.remote.translate('New File#!editor.1', {
+  return commas.remote.translate('New File#!editor.1', {
     increment: '',
   }) + '.txt'
-  const file = path.join(commas.app.getPath('downloads'), name)
-  return unusedFilename.sync(file)
 }
 
 export default () => {
@@ -25,8 +23,8 @@ export default () => {
   commas.workspace.registerTabPane('editor', {
     title: '',
     component: CodeEditorPane,
-    factory: info => {
-      const shell = info?.shell || getNewFileName()
+    factory: async info => {
+      const shell = info?.shell || await ipcRenderer.invoke('save-file-path', getNewFileName())
       return {
         shell,
         process: shell,

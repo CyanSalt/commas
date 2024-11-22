@@ -99,6 +99,7 @@
     "shell-history": "^1.1.0",
     "shell-quote": "^1.8.1",
     "sudo-prompt": "^9.2.1",
+    "unused-filename": "^3.0.1",
     "vue": "^3.4.3",
     "yaml": "^2.6.0"
   },
