@@ -9,7 +9,7 @@ const { file } = defineProps<{
   file?: string,
 }>()
 
-let modelValue = $(defineModel<string>({ default: '' }))
+let modelValue = $(defineModel<string>())
 
 const theme = useEditorTheme()
 const settings = commas.remote.useSettings()
@@ -140,7 +140,7 @@ watchEffect((onInvalidate) => {
 
 let defaultModel = $shallowRef<monaco.editor.ITextModel>()
 watchEffect((onInvalidate) => {
-  const created = monaco.editor.createModel(modelValue, undefined, undefined)
+  const created = monaco.editor.createModel(modelValue ?? '', undefined, undefined)
   defaultModel = created
   onInvalidate(() => {
     if (diffEditor) {
@@ -238,8 +238,9 @@ watchEffect(() => {
 watchEffect(() => {
   if (!model) return
   const code = model.getValue()
-  if (code !== modelValue) {
-    model.setValue(modelValue)
+  const defaultValue = modelValue ?? ''
+  if (code !== defaultValue) {
+    model.setValue(defaultValue)
   }
 })
 

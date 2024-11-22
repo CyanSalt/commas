@@ -17,7 +17,7 @@ const file = $computed(() => tab.shell)
 let source = $(commas.remote.useFile($$(file)))
 
 let code = $computed({
-  get: () => source ?? '',
+  get: () => source,
   set: (value: string) => {
     source = value
   },
