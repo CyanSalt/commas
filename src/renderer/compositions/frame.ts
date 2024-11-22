@@ -1,3 +1,4 @@
+import type { MaybeRefOrGetter } from 'vue'
 import { ipcRenderer } from '@commas/electron-ipc'
 import { reuse } from '../../shared/helper'
 import { injectIPC } from '../utils/compositions'
@@ -8,7 +9,7 @@ declare module '@commas/electron-ipc' {
   }
 }
 
-export function useFile(file: string) {
+export function useFile(file: MaybeRefOrGetter<string>) {
   return injectIPC('file', undefined, file)
 }
 

@@ -14,18 +14,22 @@ let editor = $ref<InstanceType<typeof CodeEditor>>()
 
 const file = $computed(() => tab.shell)
 
-const source = $computed(() => commas.remote.useFile(file))
+let source = $(commas.remote.useFile($$(file)))
 
 let code = $computed({
-  get: () => source.value ?? '',
+  get: () => source ?? '',
   set: (value: string) => {
-    source.value = value
+    source = value
   },
+})
+
+const isDirty = $computed(() => {
+  return Boolean(source === undefined || editor?.isDirty)
 })
 
 watchEffect((onInvalidate) => {
   // eslint-disable-next-line vue/no-mutating-props
-  tab.alerting = Boolean(source.value === undefined || editor?.isDirty)
+  tab.alerting = isDirty
   onInvalidate(() => {
     // eslint-disable-next-line vue/no-mutating-props
     delete tab.alerting
