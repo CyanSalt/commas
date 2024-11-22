@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
-import { computed, watchEffect } from 'vue'
+import { watchEffect } from 'vue'
 import CodeEditor from './CodeEditor.vue'
 
 const { tab } = defineProps<{
@@ -17,7 +17,7 @@ const file = $computed(() => tab.shell)
 const source = $computed(() => commas.remote.useFile(file))
 
 let code = $computed({
-  get: () => source.value,
+  get: () => source.value ?? '',
   set: (value: string) => {
     source.value = value
   },
@@ -25,7 +25,7 @@ let code = $computed({
 
 watchEffect((onInvalidate) => {
   // eslint-disable-next-line vue/no-mutating-props
-  tab.alerting = computed(() => Boolean(editor?.isDirty)) as unknown as boolean
+  tab.alerting = Boolean(source.value === undefined || editor?.isDirty)
   onInvalidate(() => {
     // eslint-disable-next-line vue/no-mutating-props
     delete tab.alerting

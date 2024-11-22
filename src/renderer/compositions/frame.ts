@@ -9,7 +9,7 @@ declare module '@commas/electron-ipc' {
 }
 
 export function useFile(file: string) {
-  return injectIPC('file', '', file)
+  return injectIPC('file', undefined, file)
 }
 
 export const useMinimized = reuse(() => {
