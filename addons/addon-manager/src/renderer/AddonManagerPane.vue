@@ -3,6 +3,7 @@ import { ipcRenderer } from '@commas/electron-ipc'
 import type { AddonInfo } from '@commas/types/addon'
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
+import { sortBy } from 'lodash'
 import { onMounted, watchEffect } from 'vue'
 import { useDiscoveredAddons } from './compositions'
 
@@ -34,16 +35,23 @@ watchEffect(() => {
 })
 
 const addonList = $computed(() => {
-  return discoveredAddons
-    .filter(addon => {
-      if (!isBuiltinAddonsVisible && addon.type === 'builtin') return false
-      return true
-    })
-    .map(addon => ({
-      addon,
-      manifest: commas.remote.getI18nManifest(addon.manifest),
-      enabled: enabledAddons.includes(addon.name),
-    }))
+  return sortBy(
+    discoveredAddons
+      .filter(addon => {
+        if (!isBuiltinAddonsVisible && addon.type === 'builtin') return false
+        return true
+      })
+      .map(addon => ({
+        addon,
+        manifest: commas.remote.getI18nManifest(addon.manifest),
+        enabled: enabledAddons.includes(addon.name),
+      })),
+    [
+      ({ enabled }) => (enabled ? 0 : 1),
+      ({ addon }) => (addon.type === 'builtin' ? 1 : 0),
+      ({ addon }) => addon.name,
+    ],
+  )
 })
 
 function toggle(addon: AddonInfo, enabled: boolean) {
