@@ -68,9 +68,11 @@ function selectShell(event: MouseEvent) {
     command: 'open-tab',
     args: [{ shell }],
   }))
+  const customOptions = commas.proxy.context.getCollection('terminal.shell')
   openContextMenu([
     profileOptions,
     shellOptions,
+    customOptions,
   ], event)
 }
 

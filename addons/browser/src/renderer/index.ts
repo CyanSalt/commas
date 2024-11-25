@@ -26,4 +26,10 @@ export default () => {
     openBrowserTab(url)
   })
 
+  commas.context.provide('terminal.shell', {
+    label: 'Web Page#!browser.3',
+    command: 'open-pane',
+    args: ['browser'],
+  })
+
 }

@@ -1,3 +1,4 @@
+import type { MenuItem } from '@commas/types/menu'
 import type { TerminalTabCharacter, TerminalTabCharacterCommand } from '@commas/types/terminal'
 import type { Component } from 'vue'
 
@@ -18,6 +19,7 @@ declare module './modules/context' {
       extensions: string[],
       handler: (file: string) => Promise<void> | void,
     },
+    'terminal.shell': MenuItem,
   }
 }
 

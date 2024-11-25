@@ -45,4 +45,10 @@ export default () => {
     openCodeEditorTab(file)
   })
 
+  commas.context.provide('terminal.shell', {
+    label: 'Text File#!editor.2',
+    command: 'open-pane',
+    args: ['editor'],
+  })
+
 }
