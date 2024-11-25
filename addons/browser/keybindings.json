@@ -2,6 +2,7 @@
   {
     "label": "Open Web Page#!browser.2",
     "accelerator": "CmdOrCtrl+Alt+O",
-    "command": "open-browser"
+    "command": "open-browser",
+    "args": [""]
   }
 ]
