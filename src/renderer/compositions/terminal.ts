@@ -488,11 +488,11 @@ export function getTerminalTabTitle(tab: TerminalTab) {
 export function showTabOptions(event?: MouseEvent, type?: string) {
   let currentIndex = 0
   let number = 1
-  let options: MenuItem[] = []
+  let options: (MenuItem | MenuItem[])[] = []
   let defaultIndex = -1
   for (let index = 0; index < tabCategories.length; index += 1) {
     if (index) {
-      options.push({ type: 'separator' })
+      options.push([])
     }
     const items = tabCategories[index].items
     for (const item of items) {

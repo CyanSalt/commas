@@ -20,7 +20,7 @@ import {
   useTerminalTabs,
 } from '../compositions/terminal'
 import type { DraggableElementData, DraggableTabData } from '../utils/draggable'
-import { openContextMenu, withContextMenuSeparator } from '../utils/frame'
+import { openContextMenu } from '../utils/frame'
 import { handleMousePressing } from '../utils/helper'
 import { createTerminalTabContextMenu, getShells } from '../utils/terminal'
 import TabItem from './TabItem.vue'
@@ -68,11 +68,9 @@ function selectShell(event: MouseEvent) {
     command: 'open-tab',
     args: [{ shell }],
   }))
-  if (!profileOptions.length && !shellOptions.length) return
   openContextMenu([
-    ...profileOptions,
-    ...(profiles.length && shellOptions.length ? [{ type: 'separator' as const }] : []),
-    ...shellOptions,
+    profileOptions,
+    shellOptions,
   ], event)
 }
 
@@ -174,8 +172,8 @@ function handleGroupSeparating(args: DraggableElementEventPayload<DraggableEleme
 function openTabItemMenu(event: MouseEvent, tab: TerminalTab) {
   const { updatingItems, deletingItems } = createTerminalTabContextMenu(tab)
   openContextMenu([
-    ...withContextMenuSeparator(updatingItems, []),
-    ...deletingItems,
+    updatingItems,
+    deletingItems,
   ], event)
 }
 </script>

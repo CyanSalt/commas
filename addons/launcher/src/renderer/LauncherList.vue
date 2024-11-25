@@ -198,33 +198,30 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
   const scripts = launcher.scripts ?? []
   const { updatingItems, deletingItems } = commas.workspace.createTerminalTabContextMenu(tab)
   commas.ui.openContextMenu([
-    ...commas.ui.withContextMenuSeparator([
-      {
-        label: 'Launch#!launcher.2',
-        command: 'start-launcher',
-        args: [launcher],
-      },
-      {
-        label: 'Open in External#!launcher.3',
-        command: 'start-launcher-externally',
-        args: [launcher],
-      },
-    ], []),
-    ...commas.ui.withContextMenuSeparator(
-      scripts.map((script, index) => ({
-        label: script.name,
-        command: 'run-launcher-script',
-        args: [launcher, index],
-      })),
-      [],
-    ),
-    ...(tab ? commas.ui.withContextMenuSeparator(updatingItems, []) : []),
-    ...(tab ? deletingItems : []),
     {
-      label: 'Remove Launcher#!launcher.4',
-      command: 'remove-launcher',
+      label: 'Launch#!launcher.2',
+      command: 'start-launcher',
       args: [launcher],
     },
+    {
+      label: 'Open in External#!launcher.3',
+      command: 'start-launcher-externally',
+      args: [launcher],
+    },
+    scripts.map((script, index) => ({
+      label: script.name,
+      command: 'run-launcher-script',
+      args: [launcher, index],
+    })),
+    tab ? updatingItems : [],
+    [
+      ...(tab ? deletingItems : []),
+      {
+        label: 'Remove Launcher#!launcher.4',
+        command: 'remove-launcher',
+        args: [launcher],
+      },
+    ],
   ], event)
 }
 </script>

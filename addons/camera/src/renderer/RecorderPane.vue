@@ -20,8 +20,8 @@ const url = $computed(() => {
 function openEditingMenu(event: MouseEvent) {
   const { definitionItems, editingItems } = commas.ui.createContextMenu()
   commas.ui.openContextMenu([
-    ...commas.ui.withContextMenuSeparator(definitionItems, []),
-    ...editingItems,
+    definitionItems,
+    editingItems,
   ], event)
 }
 

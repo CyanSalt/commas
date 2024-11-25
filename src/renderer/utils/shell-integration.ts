@@ -394,7 +394,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   }
 
   _createCommandMenu(command: IntegratedShellCommand) {
-    const menu: MenuItem[] = []
+    const menu: (MenuItem | MenuItem[])[] = []
     if (command.exitCode) {
       const signal = getReadableSignal(command.exitCode)
       menu.push({
@@ -428,10 +428,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       })
     }
     if (command.command) {
-      if (menu.length) {
-        menu.push({ type: 'separator' })
-      }
-      menu.push(
+      menu.push([
         {
           label: translate('Rerun Command#!terminal.10'),
           command: 'execute-terminal',
@@ -442,7 +439,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
           command: 'global-main:copy',
           args: [command.command],
         },
-      )
+      ])
     }
     return menu
   }

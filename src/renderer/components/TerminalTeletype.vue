@@ -8,7 +8,7 @@ import { onBeforeUpdate } from 'vue'
 import { RecycleScroller } from 'vue-virtual-scroller'
 import type { CommandCompletion, TerminalTab } from '@commas/types/terminal'
 import { useLinkModifiers, useTerminalElement } from '../compositions/terminal'
-import { createContextMenu, openContextMenu, withContextMenuSeparator } from '../utils/frame'
+import { createContextMenu, openContextMenu } from '../utils/frame'
 import { escapeHTML } from '../utils/helper'
 import TerminalBlock from './TerminalBlock.vue'
 import VisualIcon from './basic/VisualIcon.vue'
@@ -46,8 +46,8 @@ function dropFile(event: DragEvent) {
 function openEditingMenu(event: MouseEvent) {
   const { definitionItems, editingItems } = createContextMenu()
   openContextMenu([
-    ...withContextMenuSeparator(definitionItems, []),
-    ...withContextMenuSeparator(editingItems, []),
+    definitionItems,
+    editingItems,
     {
       label: 'Clear#!menu.clear',
       accelerator: 'CmdOrCtrl+K',

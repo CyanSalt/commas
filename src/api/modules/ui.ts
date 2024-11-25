@@ -15,7 +15,7 @@ import ValueSelector from '../../renderer/components/basic/ValueSelector.vue'
 import VisualIcon from '../../renderer/components/basic/VisualIcon.vue'
 import { openFolder, openItem, openLink } from '../../renderer/compositions/terminal'
 import { RendererWebContentsView } from '../../renderer/compositions/web-contents'
-import { createContextMenu, openContextMenu, withContextMenuSeparator } from '../../renderer/utils/frame'
+import { createContextMenu, openContextMenu } from '../../renderer/utils/frame'
 import { vI18n } from '../../renderer/utils/i18n'
 import type { RendererAPIContext } from '../types'
 
@@ -57,7 +57,6 @@ export {
   addCSSFile,
   openContextMenu,
   createContextMenu,
-  withContextMenuSeparator,
   extractClosestEdge,
   RendererWebContentsView,
   openLink,
