@@ -4,7 +4,10 @@ import type { Theme } from '@commas/types/theme'
 import { surface } from '../../shared/compositions'
 import { injectIPC } from '../utils/compositions'
 
-const isLightTheme = injectIPC('is-light-theme', false)
+const isLightTheme = injectIPC(
+  'is-light-theme',
+  matchMedia('(prefers-color-scheme: light)').matches,
+)
 
 export function useIsLightTheme() {
   return isLightTheme
