@@ -16,13 +16,6 @@ const file = $computed(() => tab.shell)
 
 let source = $(commas.remote.useFile($$(file)))
 
-let code = $computed({
-  get: () => source,
-  set: (value: string) => {
-    source = value
-  },
-})
-
 const isDirty = $computed(() => {
   return Boolean(source === undefined || editor?.isDirty)
 })
@@ -77,7 +70,7 @@ defineExpose({
   <TerminalBlock :tab="tab" class="code-editor-pane" @contextmenu="openEditingMenu">
     <CodeEditor
       ref="editor"
-      v-model="code"
+      v-model="source"
       :file="file"
     />
   </TerminalBlock>
