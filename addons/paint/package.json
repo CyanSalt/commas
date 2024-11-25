@@ -1,0 +1,25 @@
+{
+  "name": "@commas/paint",
+  "private": true,
+  "version": "0.1.0",
+  "productName": "Paint",
+  "description": "Draw something on your whiteboard",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC",
+  "commas:icon": {
+    "name": "lucide-brush"
+  },
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "画图",
+      "description": "在画板上画点东西"
+    }
+  },
+  "devDependencies": {
+    "@excalidraw/excalidraw": "^0.17.1-d9ad7c0",
+    "@types/react-dom": "^18.3.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
