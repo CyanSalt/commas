@@ -19,7 +19,7 @@ declare module '@commas/electron-ipc' {
     'open-launcher-character': (charater: TerminalTabCharacter) => void,
     'start-launcher': (launcher: Launcher, keyboardEvent: KeyboardEvent) => void,
     'start-launcher-externally': (launcher: Launcher) => void,
-    'run-script': (launcher: Launcher, index: number, keyboardEvent: KeyboardEvent) => void,
+    'run-launcher-script': (launcher: Launcher, index: number, keyboardEvent: KeyboardEvent) => void,
     'remove-launcher': (launcher: Launcher) => void,
   }
 }
@@ -40,7 +40,7 @@ export default () => {
   commas.ipcRenderer.on('start-launcher-externally', (event, launcher) => {
     startLauncherExternally(launcher)
   })
-  commas.ipcRenderer.on('run-script', (event, launcher, index, keyboardEvent) => {
+  commas.ipcRenderer.on('run-launcher-script', (event, launcher, index, keyboardEvent) => {
     runLauncherScript(launcher, index, keyboardEvent.shiftKey)
   })
   commas.ipcRenderer.on('remove-launcher', (event, launcher) => {

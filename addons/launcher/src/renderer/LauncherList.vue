@@ -213,7 +213,7 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
     ...commas.ui.withContextMenuSeparator(
       scripts.map((script, index) => ({
         label: script.name,
-        command: 'run-script',
+        command: 'run-launcher-script',
         args: [launcher, index],
       })),
       [],
