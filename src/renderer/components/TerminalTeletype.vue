@@ -268,6 +268,7 @@ function scrollToStickyCommand() {
 }
 :deep(.terminal-command-mark) {
   --command-mark-padding: 2px;
+  z-index: 10;
   width: calc(var(--integration-width) - var(--command-mark-padding) * 2) !important;
   margin-left: calc(var(--command-mark-padding) - var(--integration-width));
   border-radius: 4px;
