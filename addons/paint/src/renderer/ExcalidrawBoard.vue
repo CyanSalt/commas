@@ -5,7 +5,7 @@ import React from 'react'
 import { createRoot, Root } from 'react-dom/client'
 import { watch, watchEffect } from 'vue'
 import type { ExcalidrawImperativeAPI, State } from './excalidraw'
-import { Excalidraw, exportToBlob, exportToSvg, hashElementsVersion, loadFromBlob, serializeAsJSON } from './excalidraw'
+import { Excalidraw, exportToBlob, exportToSvg, hashElementsVersion, loadFromBlob, MainMenu, serializeAsJSON } from './excalidraw'
 import { useVueRef } from './react'
 
 const { file } = defineProps<{
@@ -86,32 +86,30 @@ const isLightTheme = commas.remote.useIsLightTheme()
 
 const ExcalidrawApp = () => {
   const isLight = useVueRef(isLightTheme)
-  return React.createElement(Excalidraw, {
-    initialData: state,
-    excalidrawAPI: api => {
-      excalidraw = api
-    },
-    onChange: (elements, appState, files) => {
-      state = {
-        elements,
-        appState: { ...appState, exportEmbedScene: true },
-        files,
-      }
-    },
-    UIOptions: {
-      canvasActions: {
-        changeViewBackgroundColor: false,
-        export: false,
-        loadScene: false,
-        saveToActiveFile: false,
-        toggleTheme: false,
-        saveAsImage: false,
+  return React.createElement(
+    Excalidraw,
+    {
+      initialData: state,
+      excalidrawAPI: api => {
+        excalidraw = api
       },
+      onChange: (elements, appState, files) => {
+        state = {
+          elements,
+          appState: { ...appState, exportEmbedScene: true },
+          files,
+        }
+      },
+      langCode: navigator.language,
+      name: file,
+      theme: isLight ? 'light' : 'dark',
     },
-    langCode: navigator.language,
-    name: file,
-    theme: isLight ? 'light' : 'dark',
-  })
+    React.createElement(
+      MainMenu,
+      null,
+      React.createElement(MainMenu.DefaultItems.ClearCanvas),
+    ),
+  )
 }
 
 watchEffect(() => {
