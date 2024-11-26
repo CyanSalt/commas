@@ -4,6 +4,7 @@ import { parse } from 'shell-quote'
 import { ipcRenderer } from '@commas/electron-ipc'
 import type { MenuItem } from '@commas/types/menu'
 import type { TerminalTab } from '@commas/types/terminal'
+import * as commas from '../../api/core-renderer'
 import { omitHome, resolveWindowsDisk } from '../../shared/terminal'
 import icons from '../assets/icons'
 
@@ -48,16 +49,26 @@ export function getPrompt(expr: string, tab: TerminalTab | null) {
 }
 
 export function getIconEntry(tab: TerminalTab) {
-  if (isShellProcess(tab)) return undefined
   let name = getProcessName(tab).toLowerCase()
-  const ext = path.extname(name)
+  let ext = path.extname(name)
   // strip '.exe' extname in process name (Windows only)
   if (ext === '.exe') {
     name = name.slice(0, ext.length)
-  } else if (ext) {
+  } else {
+    let extension = ext
+    let basename = path.basename(name, extension)
+    while (extension) {
+      extension = path.extname(basename)
+      basename = path.basename(basename, extension)
+      ext = extension + ext
+    }
     name = ext
   }
-  return icons.find(icon => icon.patterns.some(item => {
+  const allIcons = [
+    ...commas.proxy.context.getCollection('terminal.icon'),
+    ...icons,
+  ]
+  return allIcons.find(icon => icon.patterns.some(item => {
     return typeof item === 'string'
       ? item === name
       : item.test(name)

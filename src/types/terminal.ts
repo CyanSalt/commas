@@ -10,8 +10,13 @@ import type { WebLinksAddon } from '@xterm/addon-web-links'
 import type { WebglAddon } from '@xterm/addon-webgl'
 import type { Terminal } from '@xterm/xterm'
 import type { Component } from 'vue'
-import type { IconEntry } from '../renderer/assets/icons'
 import type { ShellIntegrationAddon } from '../renderer/utils/shell-integration'
+
+export interface IconEntry {
+  name: string,
+  patterns?: (string | RegExp)[],
+  color?: string,
+}
 
 export interface TerminalTabPane {
   name?: string,

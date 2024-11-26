@@ -88,6 +88,11 @@ export default () => {
     },
   })
 
+  commas.context.provide('terminal.icon', {
+    name: 'lucide-file-video-2',
+    patterns: [/\.ttyrec$/],
+  })
+
   commas.ipcRenderer.on('open-remote-recorder', (event, url) => {
     openRemoteRecorderTab(url)
   })

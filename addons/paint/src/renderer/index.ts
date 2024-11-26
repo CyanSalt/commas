@@ -34,6 +34,12 @@ export default () => {
     },
   })
 
+  commas.context.provide('terminal.icon', {
+    name: 'simple-icons-excalidraw',
+    patterns: [/\.excalidraw(\.svg|\.json)?$/],
+    color: '#6965DB',
+  })
+
   commas.context.provide('terminal.shell', {
     label: 'Whiteboard#!paint.2',
     command: 'open-pane',

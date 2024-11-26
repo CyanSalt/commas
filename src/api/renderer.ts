@@ -1,5 +1,5 @@
 import type { MenuItem } from '@commas/types/menu'
-import type { TerminalTabCharacter, TerminalTabCharacterCommand } from '@commas/types/terminal'
+import type { IconEntry, TerminalTabCharacter, TerminalTabCharacterCommand } from '@commas/types/terminal'
 import type { Component } from 'vue'
 
 declare module './modules/context' {
@@ -20,6 +20,7 @@ declare module './modules/context' {
       handler: (file: string) => Promise<void> | void,
     },
     'terminal.shell': MenuItem,
+    'terminal.icon': IconEntry & { patterns: NonNullable<IconEntry['patterns']> },
   }
 }
 

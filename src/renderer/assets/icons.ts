@@ -1,8 +1,4 @@
-export interface IconEntry {
-  name: string,
-  patterns?: (string | RegExp)[],
-  color?: string,
-}
+import type { IconEntry } from '@commas/types/terminal'
 
 export default [
   {

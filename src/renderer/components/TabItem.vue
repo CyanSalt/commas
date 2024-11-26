@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { nextTick, useId, watchEffect } from 'vue'
-import type { TerminalTab, TerminalTabCharacter } from '@commas/types/terminal'
-import type { IconEntry } from '../assets/icons'
+import type { IconEntry, TerminalTab, TerminalTabCharacter } from '@commas/types/terminal'
 import { useSettings } from '../compositions/settings'
 import { closeTerminalTab, getTerminalTabTitle, useCurrentTerminal } from '../compositions/terminal'
 import { getIconEntry, isShellProcess } from '../utils/terminal'
@@ -58,10 +57,16 @@ const iconEntry = $computed(() => {
     }
   }
   if (tab) {
-    if (pane && !tab.shell) {
-      if (pane.icon) return pane.icon
+    if (!pane) {
+      if (!isShellProcess(tab)) {
+        return getIconEntry(tab)
+      }
     } else {
-      return getIconEntry(tab)
+      if (tab.shell) {
+        return getIconEntry(tab)
+      } else if (pane.icon) {
+        return pane.icon
+      }
     }
   }
   return defaultIcon
