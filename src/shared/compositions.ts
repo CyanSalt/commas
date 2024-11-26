@@ -12,7 +12,8 @@ export function useAsyncComputed<T>(factory: () => Promise<T | undefined>, defau
     const reactiveEffect = effect(async () => {
       try {
         currentValue = (await factory()) ?? defaultValue
-      } catch {
+      } catch (err) {
+        Promise.reject(err) // trigger global rejection
         currentValue = defaultValue
       }
       trigger()

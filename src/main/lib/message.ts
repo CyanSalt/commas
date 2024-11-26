@@ -71,6 +71,16 @@ function reportError(error: Error) {
   }
 }
 
+function parenthesesIncrementer(inputFilename: string, extension: string): [string, string] {
+  const ext = path.extname(inputFilename)
+  if (ext) return parenthesesIncrementer(path.basename(inputFilename, ext), ext + extension)
+  // default parentheses incrementer
+  const matches = inputFilename.match(/^(.*)\((\d+)\)$/)
+  const filename = matches ? matches[1].trim() : inputFilename
+  const index = matches ? parseInt(matches[2], 10) : 0
+  return [`${filename}${extension}`, `${filename} (${index + 1})${extension}`]
+}
+
 function handleMessages() {
   process.on('uncaughtException', error => {
     reportError(error)
@@ -227,7 +237,7 @@ function handleMessages() {
   })
   ipcMain.handle('save-file-path', (event, name) => {
     const file = path.join(app.getPath('downloads'), name)
-    return unusedFilename(file)
+    return unusedFilename(file, { incrementer: parenthesesIncrementer })
   })
   ipcMain.handle('save-file', async (event, name, content) => {
     const file = path.join(app.getPath('downloads'), name)
