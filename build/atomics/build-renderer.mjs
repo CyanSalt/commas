@@ -39,9 +39,6 @@ export default (versions, tap) => vite.build(tap({
       ],
     },
   },
-  json: {
-    stringify: true,
-  },
   build: {
     target: `chrome${versions.chrome.split('.')[0]}`,
     assetsDir: '.',
