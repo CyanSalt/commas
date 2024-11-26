@@ -96,9 +96,23 @@ const ExcalidrawApp = () => {
       onChange: (elements, appState, files) => {
         state = {
           elements,
-          appState: { ...appState, exportEmbedScene: true },
+          appState: {
+            ...appState,
+            exportBackground: false,
+            exportEmbedScene: true,
+          },
           files,
         }
+      },
+      UIOptions: {
+        canvasActions: {
+          changeViewBackgroundColor: false,
+          export: false,
+          loadScene: false,
+          saveToActiveFile: false,
+          toggleTheme: false,
+          saveAsImage: false,
+        },
       },
       langCode: navigator.language,
       name: file,
