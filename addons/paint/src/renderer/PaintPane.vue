@@ -14,14 +14,6 @@ const file = $computed(() => tab.shell)
 
 let source = $(commas.remote.useFile($$(file)))
 
-function openEditingMenu(event: MouseEvent) {
-  const { definitionItems, editingItems } = commas.ui.createContextMenu()
-  commas.ui.openContextMenu([
-    definitionItems,
-    editingItems,
-  ], event)
-}
-
 let board = $ref<InstanceType<typeof ExcalidrawBoard>>()
 
 const isDirty = $computed(() => {
@@ -57,7 +49,7 @@ watchEffect((onInvalidate) => {
 </script>
 
 <template>
-  <TerminalBlock :tab="tab" class="paint-pane" @contextmenu="openEditingMenu">
+  <TerminalBlock :tab="tab" class="paint-pane">
     <ExcalidrawBoard ref="board" v-model="source" :file="file" />
   </TerminalBlock>
 </template>
