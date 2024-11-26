@@ -101,7 +101,7 @@ onBeforeUpdate(() => {
 <template>
   <TerminalPane :tab="tab" class="settings-pane">
     <h2 v-i18n data-commas>Settings#!settings.1</h2>
-    <form data-commas>
+    <form data-commas class="settings-form">
       <div class="settings-searcher" data-commas>
         <button type="button" data-commas :class="['toggle-all', { collapsed: isCollapsed }]" @click="toggleAll">
           <VisualIcon name="lucide-chevrons-down" class="toggle-all-icon" />
@@ -154,6 +154,9 @@ onBeforeUpdate(() => {
   margin: 8px 0;
   font-size: 16px;
   line-height: 24px;
+}
+.settings-form {
+  gap: 12px;
 }
 .settings-searcher {
   width: 100%;

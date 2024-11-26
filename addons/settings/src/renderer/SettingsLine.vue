@@ -254,6 +254,7 @@ function pickFont(event: InputEvent) {
 
 <style lang="scss" scoped>
 .settings-line {
+  margin: 12px 0;
   :deep(input[data-commas]:not([type='color'])),
   :deep(textarea[data-commas]) {
     box-sizing: border-box;
