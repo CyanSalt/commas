@@ -53,7 +53,7 @@ export function getIconEntry(tab: TerminalTab) {
   let ext = path.extname(name)
   // strip '.exe' extname in process name (Windows only)
   if (ext === '.exe') {
-    name = name.slice(0, ext.length)
+    name = path.basename(name, ext)
   } else {
     let extension = ext
     let basename = path.basename(name, extension)
@@ -62,7 +62,9 @@ export function getIconEntry(tab: TerminalTab) {
       basename = path.basename(basename, extension)
       ext = extension + ext
     }
-    name = ext
+    if (ext) {
+      name = ext
+    }
   }
   const allIcons = [
     ...commas.proxy.context.getCollection('terminal.icon'),
