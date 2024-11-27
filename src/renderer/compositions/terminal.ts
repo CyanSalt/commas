@@ -21,6 +21,7 @@ import type { KeyBindingCommand, MenuItem } from '@commas/types/menu'
 import type { ReadonlyTerminalTabAddons, TerminalContext, TerminalTab, TerminalTabCharacter, TerminalTabCharacterCommand } from '@commas/types/terminal'
 import * as commas from '../../api/core-renderer'
 import { createIDGenerator } from '../../shared/helper'
+import { resolveHome } from '../../shared/terminal'
 import { openContextMenu } from '../utils/frame'
 import { translate } from '../utils/i18n'
 import { handleRenderer } from '../utils/ipc'
@@ -985,6 +986,29 @@ export async function splitTerminalTab(tab: TerminalTab) {
   const newTab = await createTerminalTab(tab)
   appendTerminalTab(tab, getTerminalTabIndex(newTab))
   return newTab
+}
+
+export interface ExternalExplorerOptions {
+  directory?: string,
+  explorer?: string,
+  remote?: string,
+}
+
+export function openExternalExplorer(options?: ExternalExplorerOptions) {
+  const directory = options?.directory ? resolveHome(options.directory) : ''
+  let explorer = options?.explorer ?? (
+    options?.remote
+      ? settings['terminal.external.remoteExplorer']
+      : settings['terminal.external.explorer']
+  )
+  if (!explorer) {
+    if (options?.remote) return
+    return openFolder(directory)
+  }
+  explorer = explorer
+    .replace(/\$\{directory\}/g, directory)
+    .replace(/\$\{remote\}/g, options?.remote ?? '')
+  return ipcRenderer.invoke('execute', explorer)
 }
 
 export function handleTerminalMessages() {

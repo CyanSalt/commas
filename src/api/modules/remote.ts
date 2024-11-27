@@ -7,6 +7,7 @@ import {
   useSettingsSpecs,
 } from '../../renderer/compositions/settings'
 import { addFile, openDirectory, openFile, openFileExternally, openURL, openURLExternally, showDirectory, showFileExternally } from '../../renderer/compositions/shell'
+import { openExternalExplorer } from '../../renderer/compositions/terminal'
 import { useIsLightTheme, useTheme } from '../../renderer/compositions/theme'
 import { translate } from '../../renderer/utils/i18n'
 import type { RendererAPIContext } from '../types'
@@ -60,4 +61,5 @@ export {
   openURL,
   openURLExternally,
   addFile,
+  openExternalExplorer,
 }

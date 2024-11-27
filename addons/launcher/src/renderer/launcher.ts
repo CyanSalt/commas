@@ -1,4 +1,3 @@
-import { ipcRenderer } from '@commas/electron-ipc'
 import type { TerminalContext, TerminalInfo, TerminalTab, TerminalTabCharacter } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import type { Launcher } from '../types/launcher'
@@ -127,20 +126,7 @@ export async function runLauncherScript(launcher: Launcher, index: number, dupli
 }
 
 export async function startLauncherExternally(launcher: Launcher) {
-  const directory = launcher.directory ? commas.helper.resolveHome(launcher.directory) : ''
-  let explorer = launcher.explorer ?? (
-    launcher.remote
-      ? settings['terminal.external.remoteExplorer']
-      : settings['terminal.external.explorer']
-  )
-  if (!explorer) {
-    if (launcher.remote) return
-    return commas.ui.openFolder(directory)
-  }
-  explorer = explorer
-    .replace(/\$\{directory\}/g, directory)
-    .replace(/\$\{remote\}/g, launcher.remote ?? '')
-  return ipcRenderer.invoke('execute', explorer)
+  return commas.remote.openExternalExplorer(launcher)
 }
 
 export function moveLauncher(launcher: Launcher, index: number, edge?: 'start' | 'end') {
