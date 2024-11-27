@@ -1,5 +1,6 @@
 {
   "Open Explorer#!explorer.1": "打开文件管理",
+  "Show All Files#!explorer.2": "显示全部文件",
   "List files in directory#!cli.description.list": "列出目录下的文件",
   "[directory]#!cli.usage.list": "[目录]"
 }

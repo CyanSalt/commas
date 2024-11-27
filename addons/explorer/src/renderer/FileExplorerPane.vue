@@ -10,7 +10,7 @@ const { tab } = defineProps<{
   tab: TerminalTab,
 }>()
 
-const { TerminalPane, VisualIcon } = commas.ui.vueAssets
+const { TerminalBlock, VisualIcon } = commas.ui.vueAssets
 
 let directory = $computed({
   get: () => tab.cwd,
@@ -51,18 +51,21 @@ function send() {
 </script>
 
 <template>
-  <TerminalPane :tab="tab" class="file-editor-pane">
+  <TerminalBlock :tab="tab" class="file-editor-pane">
     <FileExplorer v-model="directory">
       <button v-if="isConnected" type="button" data-commas @click="send">
         <VisualIcon name="lucide-arrow-right" />
       </button>
     </FileExplorer>
-  </TerminalPane>
+  </TerminalBlock>
 </template>
 
 <style lang="scss" scoped>
+@use '@commas/api/scss/_partials';
+
 .file-editor-pane {
   padding: 0 8px 8px;
+  @include partials.scroll-container(8px);
 }
 .send {
   color: rgb(var(--system-accent));

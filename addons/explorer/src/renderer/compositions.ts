@@ -55,3 +55,9 @@ export async function splitOrCloseFileExplorerTab(directory: string) {
     return commas.workspace.closeTerminalTab(tab)
   }
 }
+
+const isDotFileVisible = $ref(false)
+
+export function useIsDotFileVisible() {
+  return $$(isDotFileVisible)
+}

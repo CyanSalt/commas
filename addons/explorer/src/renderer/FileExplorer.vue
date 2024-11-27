@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import * as path from 'node:path'
 import { ipcRenderer } from '@commas/electron-ipc'
+import { MenuItem } from '@commas/types/menu'
 import * as commas from 'commas:api/renderer'
 import { nextTick, watch, watchEffect } from 'vue'
 import { FileEntity } from '../types/file'
+import { useIsDotFileVisible } from './compositions'
 
 const { VisualIcon } = commas.ui.vueAssets
 const settings = commas.remote.useSettings()
@@ -36,11 +38,7 @@ watchEffect(async () => {
 
 const isUnixLike = process.platform !== 'win32'
 
-let isDotFilesVisible = $ref(false)
-
-function toggleDotFiles() {
-  isDotFilesVisible = !isDotFilesVisible
-}
+let isDotFilesVisible = $(useIsDotFileVisible())
 
 const files = $computed(() => {
   let result = entities
@@ -172,10 +170,24 @@ watchEffect(async () => {
     back?.focus()
   }
 })
+
+function openContextMenu(event: MouseEvent) {
+  commas.ui.openContextMenu([
+    ...(isUnixLike ? [
+      {
+        label: 'Show All Files#!explorer.2',
+        type: 'checkbox',
+        checked: isDotFilesVisible,
+        command: 'show-all-files',
+        args: [!isDotFilesVisible],
+      },
+    ] satisfies MenuItem[] : []),
+  ], event)
+}
 </script>
 
 <template>
-  <div class="file-explorer">
+  <div class="file-explorer" @contextmenu="openContextMenu">
     <nav data-commas class="action-line">
       <slot></slot>
       <button ref="back" type="button" data-commas :disabled="!hasPreviousValue" @click="goBack">
@@ -207,9 +219,6 @@ watchEffect(async () => {
           <VisualIcon name="lucide-pen" />
         </button>
       </span>
-      <button v-if="isUnixLike" type="button" data-commas @click="toggleDotFiles">
-        <VisualIcon :name="isDotFilesVisible ? 'lucide-eye' : 'lucide-eye-closed'" />
-      </button>
       <button type="button" data-commas @click="openNewTab">
         <VisualIcon name="lucide-terminal" />
       </button>
@@ -243,7 +252,7 @@ watchEffect(async () => {
             type="button"
             data-commas
             class="file-action"
-            @click.stop="showSymlink(file)"
+            @click.prevent.stop="showSymlink(file)"
           >
             <VisualIcon name="lucide-iteration-ccw" />
           </button>
@@ -251,7 +260,7 @@ watchEffect(async () => {
             type="button"
             data-commas
             class="file-action"
-            @click.stop="openExternal(file)"
+            @click.prevent.stop="openExternal(file)"
           >
             <VisualIcon name="lucide-square-arrow-out-up-right" />
           </button>

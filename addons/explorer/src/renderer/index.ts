@@ -1,12 +1,13 @@
 import * as os from 'node:os'
 import * as commas from 'commas:api/renderer'
 import FileExplorerPane from './FileExplorerPane.vue'
-import { getDirectoryProcess, openFileExplorerTab, splitFileExplorerTab, splitOrCloseFileExplorerTab } from './compositions'
+import { getDirectoryProcess, openFileExplorerTab, splitFileExplorerTab, splitOrCloseFileExplorerTab, useIsDotFileVisible } from './compositions'
 
 declare module '@commas/electron-ipc' {
   export interface RendererEvents {
     'open-explorer': (directory?: string) => void,
     'split-explorer': (directory: string) => void,
+    'show-all-files': (value: boolean) => void,
   }
 }
 
@@ -43,6 +44,13 @@ export default () => {
 
   commas.context.handle('global-renderer:show-directory', (directory) => {
     splitOrCloseFileExplorerTab(directory)
+  })
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let isDotFileVisible = $(useIsDotFileVisible())
+
+  commas.ipcRenderer.on('show-all-files', (event, value) => {
+    isDotFileVisible = value
   })
 
 }
