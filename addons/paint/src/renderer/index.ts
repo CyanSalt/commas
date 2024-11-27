@@ -36,7 +36,7 @@ export default () => {
 
   commas.context.provide('terminal.icon', {
     name: 'simple-icons-excalidraw',
-    patterns: [/\.excalidraw(\.svg|\.json)?$/],
+    patterns: [/\.excalidraw(\.|$)/],
     color: '#6965DB',
   })
 
