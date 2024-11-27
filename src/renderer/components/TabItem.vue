@@ -85,8 +85,12 @@ watchEffect(() => {
   customTitle = title
 })
 
+const isCustomizable = $computed(() => {
+  return customizable || Boolean(pane?.instance?.rename)
+})
+
 async function startCustomization() {
-  if (customizable && isActive) {
+  if (isCustomizable && isActive) {
     isCustomizing = true
     await nextTick()
     if (customTitleElement) {
@@ -96,8 +100,13 @@ async function startCustomization() {
 }
 
 function customize() {
+  if (!isCustomizing) return
   if (customTitle !== title) {
-    emit('customize', customTitle)
+    if (pane?.instance?.rename) {
+      pane.instance.rename(customTitle)
+    } else {
+      emit('customize', customTitle)
+    }
   }
   isCustomizing = false
 }

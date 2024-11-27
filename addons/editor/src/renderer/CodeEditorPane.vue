@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import { ipcRenderer } from '@commas/electron-ipc'
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import { watchEffect } from 'vue'
 import CodeEditor from './CodeEditor.vue'
+import { setCodeEditorTabFile } from './compositions'
 
 const { tab } = defineProps<{
   tab: TerminalTab,
@@ -33,10 +35,18 @@ function save() {
   editor!.save()
 }
 
+async function rename(name: string) {
+  const newPath = await ipcRenderer.invoke('rename-file', file, name)
+  setCodeEditorTabFile(tab, newPath)
+}
+
 watchEffect((onInvalidate) => {
   if (tab.pane) {
     // eslint-disable-next-line vue/no-mutating-props
-    tab.pane.instance = { save }
+    tab.pane.instance = {
+      save,
+      rename,
+    }
     onInvalidate(() => {
       if (tab.pane) {
         // eslint-disable-next-line vue/no-mutating-props

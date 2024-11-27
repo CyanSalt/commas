@@ -35,6 +35,7 @@ declare module '@commas/electron-ipc' {
     'open-url': (uri: string) => void,
     'save-file-path': (name: string) => Promise<string>,
     'save-file': (name: string, content: Buffer | string) => Promise<string>,
+    'rename-file': (file: string, name: string) => Promise<string>,
   }
   export interface Events {
     'get-path': (name?: Parameters<typeof app['getPath']>[0]) => string,
@@ -243,6 +244,11 @@ function handleMessages() {
     const file = path.join(app.getPath('downloads'), name)
     await fs.promises.writeFile(file, content)
     return file
+  })
+  ipcMain.handle('rename-file', async (event, file, name) => {
+    const newPath = path.join(path.dirname(file), name)
+    await fs.promises.rename(file, newPath)
+    return newPath
   })
   let watcherCollections = new WeakMap<WebContents, Map<string, any>>()
   ipcMain.handle('get-ref:file', (event, file: string) => {

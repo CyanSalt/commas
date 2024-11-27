@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import { ipcRenderer } from '@commas/electron-ipc'
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import { watchEffect } from 'vue'
 import ExcalidrawBoard from './ExcalidrawBoard.vue'
+import { setPaintTabFile } from './compositions'
 
 const { tab } = defineProps<{
   tab: TerminalTab,
@@ -34,10 +36,18 @@ async function save() {
   await board.save()
 }
 
+async function rename(name: string) {
+  const newPath = await ipcRenderer.invoke('rename-file', file, name)
+  setPaintTabFile(tab, newPath)
+}
+
 watchEffect((onInvalidate) => {
   if (tab.pane) {
     // eslint-disable-next-line vue/no-mutating-props
-    tab.pane.instance = { save }
+    tab.pane.instance = {
+      save,
+      rename,
+    }
     onInvalidate(() => {
       if (tab.pane) {
         // eslint-disable-next-line vue/no-mutating-props

@@ -25,6 +25,7 @@ export interface TerminalTabPane {
   component: Component<{ tab: TerminalTab }>,
   instance?: {
     save?: () => void,
+    rename?: (name: string) => void,
   },
   volatile?: boolean,
   factory?: (
