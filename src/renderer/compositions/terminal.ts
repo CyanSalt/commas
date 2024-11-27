@@ -18,7 +18,7 @@ import type { MaybeRefOrGetter } from 'vue'
 import { effectScope, getCurrentScope, markRaw, nextTick, onScopeDispose, reactive, shallowReactive, toRaw, toValue, watch, watchEffect } from 'vue'
 import { ipcRenderer } from '@commas/electron-ipc'
 import type { KeyBindingCommand, MenuItem } from '@commas/types/menu'
-import type { ReadonlyTerminalTabAddons, TerminalContext, TerminalTab, TerminalTabCharacter, TerminalTabCharacterCommand } from '@commas/types/terminal'
+import type { ReadonlyTerminalTabAddons, TerminalContext, TerminalExecutor, TerminalTab, TerminalTabCharacter, TerminalTabCharacterCommand } from '@commas/types/terminal'
 import * as commas from '../../api/core-renderer'
 import { createIDGenerator } from '../../shared/helper'
 import { resolveHome } from '../../shared/terminal'
@@ -62,7 +62,7 @@ declare module '@commas/electron-ipc' {
     save: () => void,
     copy: (text: string) => void,
     'open-pane': (name: string) => void,
-    'open-external-explorer': (options?: ExternalExplorerOptions) => void,
+    'open-external-explorer': (executor?: TerminalExecutor) => void,
   }
   export interface RendererCommands {
     'get-history': (count?: number) => string[],
@@ -989,26 +989,20 @@ export async function splitTerminalTab(tab: TerminalTab) {
   return newTab
 }
 
-export interface ExternalExplorerOptions {
-  directory?: string,
-  explorer?: string,
-  remote?: string,
-}
-
-export function openExternalExplorer(options?: ExternalExplorerOptions) {
-  const directory = options?.directory ? resolveHome(options.directory) : ''
-  let explorer = options?.explorer ?? (
-    options?.remote
+export function openExternalExplorer(executor?: TerminalExecutor) {
+  const directory = executor?.directory ? resolveHome(executor.directory) : ''
+  let explorer = executor?.explorer ?? (
+    executor?.remote
       ? settings['terminal.external.remoteExplorer']
       : settings['terminal.external.explorer']
   )
   if (!explorer) {
-    if (options?.remote) return
+    if (executor?.remote) return
     return openFolder(directory)
   }
   explorer = explorer
     .replace(/\$\{directory\}/g, directory)
-    .replace(/\$\{remote\}/g, options?.remote ?? '')
+    .replace(/\$\{remote\}/g, executor?.remote ?? '')
   return ipcRenderer.invoke('execute', explorer)
 }
 
@@ -1138,8 +1132,8 @@ export function handleTerminalMessages() {
   ipcRenderer.on('open-pane', (event, name) => {
     commas.proxy.workspace.openPaneTab(name)
   })
-  ipcRenderer.on('open-external-explorer', (event, options) => {
-    return openExternalExplorer(options)
+  ipcRenderer.on('open-external-explorer', (event, executor) => {
+    return openExternalExplorer(executor)
   })
   handleRenderer('get-history', (event, count) => {
     if (!currentTerminal) return []

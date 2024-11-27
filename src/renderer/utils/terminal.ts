@@ -1,9 +1,9 @@
 import * as os from 'node:os'
 import * as path from 'node:path'
-import { parse } from 'shell-quote'
+import { parse, quote } from 'shell-quote'
 import { ipcRenderer } from '@commas/electron-ipc'
 import type { MenuItem } from '@commas/types/menu'
-import type { TerminalTab } from '@commas/types/terminal'
+import type { TerminalExecutor, TerminalTab } from '@commas/types/terminal'
 import * as commas from '../../api/core-renderer'
 import { omitHome, resolveWindowsDisk } from '../../shared/terminal'
 import icons from '../assets/icons'
@@ -108,6 +108,35 @@ export function getWindowsProcessInfo(shell: string, title: string): Partial<Ter
   return null
 }
 
+export function getTerminalExecutorCommand(executor: TerminalExecutor) {
+  let command = executor.command
+  if (executor.login) {
+    command = command
+      ? `$SHELL -lic ${quote([command])}`
+      : '$SHELL -li'
+  }
+  if (executor.directory) {
+    const isPowerShell = process.platform === 'win32'
+      && (!executor.shell || path.basename(executor.shell) === 'powershell.exe')
+      && !executor.remote
+    if (isPowerShell) {
+      command = command
+        ? `Set-Location -Path ${quote([executor.directory])}; if ($?) { ${command} }`
+        : `Set-Location -Path ${quote([executor.directory])}`
+    } else {
+      command = command
+        ? `cd ${quote([executor.directory])} && (${command})`
+        : `cd ${quote([executor.directory])}`
+    }
+  }
+  if (executor.remote) {
+    command = command
+      ? `ssh -t ${executor.remote} ${quote([command])}`
+      : `ssh -t ${executor.remote}`
+  }
+  return command ?? ''
+}
+
 export function getTerminalTabID(tab: TerminalTab) {
   if (tab.pane) {
     return `${tab.pane.name ?? 'pane'}@${tab.pid || tab.shell}`
@@ -123,6 +152,7 @@ export function getReadableSignal(code: number) {
       ?.[0]
   }
 }
+
 export function createTerminalTabContextMenu(tab?: TerminalTab) {
   let updatingItems: MenuItem[] = [
     {

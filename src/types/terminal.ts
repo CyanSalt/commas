@@ -112,3 +112,13 @@ export interface TerminalTab extends TerminalInfo {
   stickyAddons?: ReadonlyTerminalTabAddons,
   iconURL?: string,
 }
+
+export interface TerminalExecutor {
+  // `directory` may omit home directory, while `cwd` is always an absolute path
+  directory?: string,
+  shell?: string,
+  command?: string,
+  explorer?: string,
+  remote?: string,
+  login?: boolean,
+}

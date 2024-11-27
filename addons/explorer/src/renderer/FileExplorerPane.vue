@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import * as path from 'node:path'
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
-import { quote } from 'shell-quote'
 import FileExplorer from './FileExplorer.vue'
 import { getDirectoryProcess } from './compositions'
 
@@ -38,11 +36,10 @@ const isConnected = $computed(() => {
 
 function send() {
   if (!target) return
-  const isPowerShell = process.platform === 'win32'
-    && (!target.shell || path.basename(target.shell) === 'powershell.exe')
-  const command = isPowerShell
-    ? `Set-Location -Path ${quote([directory])}`
-    : `cd ${quote([directory])}`
+  const command = commas.workspace.getTerminalExecutorCommand({
+    directory,
+    shell: target.shell,
+  })
   commas.workspace.executeTerminalTab(target, command)
   setTimeout(() => {
     commas.workspace.activateTerminalTab(target)

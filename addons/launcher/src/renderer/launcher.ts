@@ -1,7 +1,6 @@
 import type { TerminalContext, TerminalInfo, TerminalTab, TerminalTabCharacter } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import type { Launcher } from '../types/launcher'
-import { getLauncherCommand } from './utils'
 
 const settings = commas.remote.useSettings()
 
@@ -102,6 +101,16 @@ export async function openLauncher(launcher: Launcher, options: OpenLauncherOpti
       character,
     })
   }
+}
+
+function getLauncherCommand(launcher: Launcher, shellPath: string) {
+  return commas.workspace.getTerminalExecutorCommand({
+    command: launcher.command,
+    login: launcher.login,
+    directory: launcher.directory,
+    remote: launcher.remote,
+    shell: launcher.profile?.shell ?? shellPath,
+  })
 }
 
 export async function startLauncher(launcher: Launcher, duplicate?: boolean) {
