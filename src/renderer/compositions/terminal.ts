@@ -62,6 +62,7 @@ declare module '@commas/electron-ipc' {
     save: () => void,
     copy: (text: string) => void,
     'open-pane': (name: string) => void,
+    'open-external-explorer': (options?: ExternalExplorerOptions) => void,
   }
   export interface RendererCommands {
     'get-history': (count?: number) => string[],
@@ -1136,6 +1137,9 @@ export function handleTerminalMessages() {
   })
   ipcRenderer.on('open-pane', (event, name) => {
     commas.proxy.workspace.openPaneTab(name)
+  })
+  ipcRenderer.on('open-external-explorer', (event, options) => {
+    return openExternalExplorer(options)
   })
   handleRenderer('get-history', (event, count) => {
     if (!currentTerminal) return []

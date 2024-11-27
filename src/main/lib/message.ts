@@ -51,6 +51,8 @@ declare module '@commas/electron-ipc' {
     'global-main:look-up': (text: string, frame?: BrowserWindow) => void,
     'global-main:copy': (text: string) => void,
     'global-main:open-url': (url: string) => void,
+    'global-main:open-path': (uri: string) => void,
+    'global-main:show-file': (file: string) => void,
   }
   export interface RendererEvents {
     'view-title-updated': (id: number, title: string) => void,
@@ -282,6 +284,12 @@ function handleMessages() {
   })
   globalHandler.handle('global-main:open-url', url => {
     shell.openExternal(url)
+  })
+  globalHandler.handle('global-main:open-path', uri => {
+    shell.openPath(uri)
+  })
+  globalHandler.handle('global-main:show-file', file => {
+    shell.showItemInFolder(file)
   })
 }
 

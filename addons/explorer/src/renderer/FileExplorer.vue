@@ -8,7 +8,6 @@ import { FileEntity } from '../types/file'
 import { useIsDotFileVisible } from './compositions'
 
 const { VisualIcon } = commas.ui.vueAssets
-const settings = commas.remote.useSettings()
 
 let modelValue = $(defineModel<string>({ default: '' }))
 
@@ -84,31 +83,6 @@ function goBack() {
   }
 }
 
-function openExternal(file: FileEntity) {
-  if (file.isDirectory) {
-    commas.remote.openFileExternally(file.path)
-  } else {
-    commas.remote.showFileExternally(file.path)
-  }
-}
-
-const externalExplorer = $computed(() => {
-  return settings['terminal.external.explorer']
-})
-
-function openExternalExplorer() {
-  if (!openExternalExplorer) {
-    return openDirectory()
-  }
-  const explorer = externalExplorer
-    .replace(/\$\{directory\}/g, modelValue)
-  return ipcRenderer.invoke('execute', explorer)
-}
-
-function openDirectory() {
-  commas.remote.openFileExternally(modelValue)
-}
-
 function openNewTab() {
   commas.workspace.createTerminalTab({ cwd: modelValue })
 }
@@ -171,7 +145,7 @@ watchEffect(async () => {
   }
 })
 
-function openContextMenu(event: MouseEvent) {
+function openContextMenu(event: MouseEvent, file?: FileEntity) {
   commas.ui.openContextMenu([
     ...(isUnixLike ? [
       {
@@ -182,6 +156,11 @@ function openContextMenu(event: MouseEvent) {
         args: [!isDotFilesVisible],
       },
     ] satisfies MenuItem[] : []),
+    {
+      label: 'Open in System#!explorer.4',
+      command: !file || file.isDirectory ? 'global-main:open-path' : 'global-main:show-file',
+      args: [file ? file.path : modelValue],
+    },
   ], event)
 }
 </script>
@@ -222,12 +201,6 @@ function openContextMenu(event: MouseEvent) {
       <button type="button" data-commas @click="openNewTab">
         <VisualIcon name="lucide-terminal" />
       </button>
-      <button v-if="externalExplorer" type="button" data-commas @click="openExternalExplorer">
-        <VisualIcon name="lucide-square-arrow-out-up-right" />
-      </button>
-      <button type="button" data-commas @click="openDirectory">
-        <VisualIcon :name="externalExplorer ? 'lucide-folder-open' : 'lucide-square-arrow-out-up-right'" />
-      </button>
     </nav>
     <div ref="container" class="file-list">
       <a
@@ -238,6 +211,7 @@ function openContextMenu(event: MouseEvent) {
         :class="['file', { directory: file.isDirectory }]"
         @click.prevent="selectFile($event, file)"
         @dragstart.prevent="startDragging($event, file)"
+        @contextmenu.stop="openContextMenu($event, file)"
       >
         <VisualIcon
           :name="file.symlink
@@ -246,25 +220,15 @@ function openContextMenu(event: MouseEvent) {
           class="file-icon"
         />
         <span class="file-name">{{ file.name }}{{ file.isDirectory ? path.sep : '' }}</span>
-        <span class="action-list">
-          <button
-            v-if="file.symlink"
-            type="button"
-            data-commas
-            class="file-action"
-            @click.prevent.stop="showSymlink(file)"
-          >
-            <VisualIcon name="lucide-iteration-ccw" />
-          </button>
-          <button
-            type="button"
-            data-commas
-            class="file-action"
-            @click.prevent.stop="openExternal(file)"
-          >
-            <VisualIcon name="lucide-square-arrow-out-up-right" />
-          </button>
-        </span>
+        <button
+          v-if="file.symlink"
+          type="button"
+          data-commas
+          class="file-action"
+          @click.prevent.stop="showSymlink(file)"
+        >
+          <VisualIcon name="lucide-iteration-ccw" />
+        </button>
       </a>
     </div>
   </div>
@@ -316,12 +280,14 @@ function openContextMenu(event: MouseEvent) {
 .file-list {
   display: flex;
   flex-direction: column;
+  gap: 2px;
   margin-top: 4px;
 }
 .file {
   display: flex;
   gap: 4px;
   align-items: center;
+  height: #{14px + 3px * 2};
   padding: 4px 8px;
   color: inherit;
   text-decoration: none;
@@ -348,17 +314,10 @@ function openContextMenu(event: MouseEvent) {
   flex: 1;
   min-width: 0;
 }
-.action-list {
-  display: flex;
-  flex: none;
-  gap: 4px;
-  align-items: center;
+.file-action {
+  padding: 3px;
   .file:not(:hover) & {
     visibility: hidden;
   }
-}
-.file-action {
-  padding: 3px;
-  font-size: 14px;
 }
 </style>
