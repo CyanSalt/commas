@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
+import { watch } from 'vue'
 import FileExplorer from './FileExplorer.vue'
 import { getDirectoryProcess } from './compositions'
 
@@ -8,7 +9,7 @@ const { tab } = defineProps<{
   tab: TerminalTab,
 }>()
 
-const { TerminalBlock, VisualIcon } = commas.ui.vueAssets
+const { TerminalBlock } = commas.ui.vueAssets
 
 let directory = $computed({
   get: () => tab.cwd,
@@ -29,31 +30,19 @@ const target = $computed(() => {
   if (teletypes.length === 1) return teletypes[0]
 })
 
-const isConnected = $computed(() => {
-  if (!target) return false
-  return !target.pane && target.idle
-})
-
-function send() {
-  if (!target) return
+watch($$(directory), () => {
+  if (!target || target.pane || !target.idle) return
   const command = commas.workspace.getTerminalExecutorCommand({
     directory,
     shell: target.shell,
   })
   commas.workspace.executeTerminalTab(target, command)
-  setTimeout(() => {
-    commas.workspace.activateTerminalTab(target)
-  })
-}
+})
 </script>
 
 <template>
   <TerminalBlock :tab="tab" class="file-editor-pane">
-    <FileExplorer v-model="directory">
-      <button v-if="isConnected" type="button" data-commas @click="send">
-        <VisualIcon name="lucide-arrow-right" />
-      </button>
-    </FileExplorer>
+    <FileExplorer v-model="directory" />
   </TerminalBlock>
 </template>
 

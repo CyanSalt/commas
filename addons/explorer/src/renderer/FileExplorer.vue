@@ -168,7 +168,6 @@ function openContextMenu(event: MouseEvent, file?: FileEntity) {
 <template>
   <div class="file-explorer" @contextmenu="openContextMenu">
     <nav data-commas class="action-line">
-      <slot></slot>
       <button ref="back" type="button" data-commas :disabled="!hasPreviousValue" @click="goBack">
         <VisualIcon name="lucide-undo-2" />
       </button>
