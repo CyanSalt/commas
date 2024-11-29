@@ -111,7 +111,6 @@ const ExcalidrawApp = () => {
           loadScene: false,
           saveToActiveFile: false,
           toggleTheme: false,
-          saveAsImage: false,
         },
       },
       langCode: navigator.language,
@@ -121,6 +120,7 @@ const ExcalidrawApp = () => {
     React.createElement(
       MainMenu,
       null,
+      React.createElement(MainMenu.DefaultItems.SaveAsImage),
       React.createElement(MainMenu.DefaultItems.ClearCanvas),
     ),
   )
