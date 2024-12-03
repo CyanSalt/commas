@@ -8,7 +8,7 @@ import type { CommandCompletion, TerminalTab } from '@commas/types/terminal'
 import * as commas from '../../api/core-renderer'
 import { toCSSHEX, toRGBA } from '../../shared/color'
 import { useSettings } from '../compositions/settings'
-import { scrollToMarker } from '../compositions/terminal'
+import { getCursorPosition, scrollToMarker } from '../compositions/terminal'
 import { useTheme } from '../compositions/theme'
 import { openContextMenu } from './frame'
 import { translate } from './i18n'
@@ -198,7 +198,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
               this.currentCommand.decoration = decoration
             } else {
               this.tab.command = ''
-              const position = this._getCurrentPosition()
+              const position = getCursorPosition(this.tab.xterm)
               currentCommand = {
                 marker,
                 decoration,
@@ -218,7 +218,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             // PromptEnd
             ipcRenderer.send('terminal-prompt-end')
             if (this.currentCommand) {
-              const position = this._getCurrentPosition()
+              const position = getCursorPosition(this.tab.xterm)
               this.currentCommand.commandStartX = position.x
               this.currentCommand.commandStartY = position.y
             }
@@ -228,7 +228,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             // OutputStart
             this.tab.idle = false
             if (this.currentCommand) {
-              const position = this._getCurrentPosition()
+              const position = getCursorPosition(this.tab.xterm)
               this.currentCommand.outputStartY = position.y
               this.currentCommand.outputEndY = position.y
               this.currentCommand.startedAt = new Date()
@@ -239,7 +239,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             // CommandComplete
             this.tab.idle = true
             if (this.currentCommand) {
-              const position = this._getCurrentPosition()
+              const position = getCursorPosition(this.tab.xterm)
               this.currentCommand.outputEndY = position.y
               this.currentCommand.endedAt = new Date()
               const exitCode = args[0] ? Number(args[0]) : undefined
@@ -253,7 +253,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
                     this._createHighlightDecoration(
                       xterm,
                       this.currentCommand.marker.line,
-                      xterm.buffer.active.baseY + xterm.buffer.active.cursorY - 1,
+                      getCursorPosition(xterm).y - 1,
                       theme.red,
                     )
                   }
@@ -495,7 +495,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     to: number,
     color: string,
   ) {
-    const line = xterm.buffer.active.baseY + xterm.buffer.active.cursorY
+    const line = getCursorPosition(xterm).y
     const rgba = toRGBA(color)
     for (let offset = from - line; offset <= to - line; offset += 1) {
       const highlightMarker = this._createHighlightMarker(xterm, offset)
@@ -640,16 +640,8 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       marker,
       decoration,
       renderer,
-      position: this._getCurrentPosition(),
+      position: getCursorPosition(this.tab.xterm),
     })
-  }
-
-  _getCurrentPosition(): IntegratedShellPosition {
-    const { xterm } = this.tab
-    return {
-      x: xterm.buffer.active.cursorX,
-      y: xterm.buffer.active.baseY + xterm.buffer.active.cursorY,
-    }
   }
 
   _getCurrentCommandInput(position: IntegratedShellPosition) {
@@ -701,7 +693,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   }
 
   async triggerCompletion() {
-    const currentPosition = this._getCurrentPosition()
+    const currentPosition = getCursorPosition(this.tab.xterm)
     const input = this._getCurrentCommandInput(currentPosition)
     let shouldReuseDecoration = false
     if (this.completion) {
@@ -766,7 +758,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
 
   _applyCompletion(value: string, back = 0) {
     const { xterm } = this.tab
-    const position = this._getCurrentPosition()
+    const position = getCursorPosition(this.tab.xterm)
     const input = this._getCurrentCommandInput(position)
     position.x += value.length - back
     while (position.x > xterm.cols) {

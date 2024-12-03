@@ -473,6 +473,13 @@ export function scrollToMarker(xterm: Terminal, marker: IMarker) {
   })
 }
 
+export function getCursorPosition(xterm: Terminal) {
+  return {
+    x: xterm.buffer.active.cursorX,
+    y: xterm.buffer.active.baseY + xterm.buffer.active.cursorY,
+  }
+}
+
 export function getTerminalTabTitle(tab: TerminalTab) {
   if (tab.character?.title) {
     return tab.character.title
