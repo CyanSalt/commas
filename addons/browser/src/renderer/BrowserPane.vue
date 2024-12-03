@@ -2,13 +2,13 @@
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import normalizeURL from 'normalize-url'
-import { nextTick, watchEffect } from 'vue'
+import { watchEffect } from 'vue'
 
 const { tab } = defineProps<{
   tab: TerminalTab,
 }>()
 
-const { TerminalPane, WebContents, VisualIcon } = commas.ui.vueAssets
+const { TerminalPane, WebContents, VisualIcon, vI18n } = commas.ui.vueAssets
 
 let url = $computed({
   get: () => tab.command,
@@ -41,21 +41,12 @@ function goBack() {
   view.goToOffset(-1)
 }
 
-let isCustomizing = $ref(false)
 let customURL: string | undefined = $ref<string>()
 let customURLElement = $ref<HTMLInputElement>()
 
 watchEffect(() => {
   customURL = url
 })
-
-async function startCustomization() {
-  isCustomizing = true
-  await nextTick()
-  if (customURLElement) {
-    customURLElement.select()
-  }
-}
 
 async function customize() {
   if (customURL && customURL !== url) {
@@ -69,12 +60,10 @@ async function customize() {
       sortQueryParameters: false,
     })
   }
-  isCustomizing = false
 }
 
 function resetCustomization() {
   customURL = url
-  isCustomizing = false
 }
 
 function autoselect(event: FocusEvent) {
@@ -107,18 +96,18 @@ watchEffect((onInvalidate) => {
         <button type="button" data-commas :class="['browser-action', { disabled: !view?.canGoBack }]" @click="goBack">
           <VisualIcon name="lucide-undo-2" />
         </button>
-        <form v-if="isCustomizing" class="custom-url-form" @submit.prevent="customize">
+        <form class="custom-url-form" @submit.prevent="customize">
           <input
             ref="customURLElement"
             v-model="customURL"
+            v-i18n:placeholder
             class="custom-url"
+            placeholder="Enter URL...#!browser.4"
             autofocus
             @focus="autoselect"
-            @blur="resetCustomization"
             @keydown.esc="resetCustomization"
           >
         </form>
-        <span v-else class="page-url" @click="startCustomization">{{ url }}</span>
         <button type="button" data-commas :class="['browser-action', { disabled: !url }]" @click="openExternal">
           <VisualIcon name="lucide-square-arrow-out-up-right" />
         </button>
@@ -175,17 +164,6 @@ watchEffect((onInvalidate) => {
   font-size: 12px;
   background: transparent;
   outline: none;
-}
-.page-url {
-  display: flex;
-  flex: 1;
-  align-self: stretch;
-  align-items: center;
-  min-width: 0;
-  font-size: 12px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
 }
 .web-page {
   flex: 1;
