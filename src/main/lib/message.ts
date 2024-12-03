@@ -306,7 +306,9 @@ function handleMessages() {
       await fs.promises.copyFile(file, target)
       return target
     }))
-    broadcast('directory-updated', directory)
+    if (pasted.length) {
+      broadcast('directory-updated', directory)
+    }
     return pasted
   })
   globalHandler.handle('global-main:move-to-trash', async file => {
