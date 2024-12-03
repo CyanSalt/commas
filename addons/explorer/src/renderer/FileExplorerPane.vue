@@ -36,7 +36,7 @@ watch($$(directory), () => {
     directory,
     shell: target.shell,
   })
-  commas.workspace.executeTerminalTab(target, command)
+  commas.workspace.executeTerminalTab(target, command, true)
 })
 </script>
 

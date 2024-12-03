@@ -704,6 +704,15 @@ export function useReadonlyTerminal(
 export function executeTerminalTab(tab: TerminalTab, command: string, restart?: boolean) {
   tab.command = command
   if (restart) {
+    // Move cursor to the start of current command
+    const currentCommand = tab.addons.shellIntegration?.currentCommand
+    if (currentCommand) {
+      const activeBuffer = tab.xterm.buffer.active
+      const lines = activeBuffer.baseY + activeBuffer.cursorY - currentCommand.promptStartY + 1
+      if (lines > 0) {
+        tab.xterm.write('\x1b[F'.repeat(lines))
+      }
+    }
     tab.xterm.input('\u0003')
   }
   if (tab.xterm.element) {

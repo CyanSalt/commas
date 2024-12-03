@@ -30,6 +30,7 @@ interface IntegratedShellCommand {
   exitCode?: number,
   marker: IMarker,
   decoration: IDecoration,
+  promptStartY: number,
   commandStartX: number,
   commandStartY: number,
   outputStartY: number,
@@ -201,6 +202,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
               currentCommand = {
                 marker,
                 decoration,
+                promptStartY: position.y,
                 commandStartX: position.x,
                 commandStartY: position.y,
                 outputStartY: position.y + 1,
