@@ -31,8 +31,16 @@ const breadcrumbs = $computed(() => {
 
 let entities = $ref<FileEntity[]>([])
 
-watchEffect(async () => {
+async function readDirectory() {
   entities = await ipcRenderer.invoke('read-directory', modelValue)
+}
+
+watchEffect(() => {
+  readDirectory()
+})
+
+commas.ipcRenderer.useListener('directory-updated', () => {
+  readDirectory()
 })
 
 const isUnixLike = process.platform !== 'win32'
@@ -147,6 +155,32 @@ watchEffect(async () => {
 
 function openContextMenu(event: MouseEvent, file?: FileEntity) {
   commas.ui.openContextMenu([
+    [
+      ...(file ? [
+        {
+          label: process.platform === 'darwin'
+            ? 'Copy#!menu.copy.darwin'
+            : 'Copy#!menu.copy',
+          command: 'global-main:copy-file',
+          args: [file.path],
+        },
+      ] satisfies MenuItem[] : [
+        {
+          label: 'Paste#!menu.paste',
+          command: 'global-main:paste-file',
+          args: [modelValue],
+        },
+      ] satisfies MenuItem[]),
+    ],
+    file ? [
+      {
+        label: process.platform === 'darwin'
+          ? 'Move to Trash#!explorer.5.darwin'
+          : 'Move to Trash#!explorer.5',
+        command: 'global-main:move-to-trash',
+        args: [file.path],
+      },
+    ] : [],
     ...(isUnixLike ? [
       {
         label: 'Show All Files#!explorer.2',

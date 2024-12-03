@@ -3,6 +3,7 @@ import * as fs from 'node:fs'
 import * as path from 'node:path'
 import type { Dock, FindInPageOptions, MessageBoxOptions, MessageBoxReturnValue, NativeImage, Result, WebContents, WebContentsView } from 'electron'
 import { app, BrowserWindow, clipboard, dialog, nativeImage, shell } from 'electron'
+import clipboardEx from 'electron-clipboard-ex'
 import * as fileIcon from 'file-icon'
 import unusedFilename from 'unused-filename'
 import { ipcMain } from '@commas/electron-ipc'
@@ -53,6 +54,9 @@ declare module '@commas/electron-ipc' {
     'global-main:open-url': (url: string) => void,
     'global-main:open-path': (uri: string) => void,
     'global-main:show-file': (file: string) => void,
+    'global-main:copy-file': (file: string) => void,
+    'global-main:paste-file': (directory: string) => Promise<string[]>,
+    'global-main:move-to-trash': (file: string) => void,
   }
   export interface RendererEvents {
     'view-title-updated': (id: number, title: string) => void,
@@ -60,6 +64,7 @@ declare module '@commas/electron-ipc' {
     'view-url-updated': (id: number, url: string, canGoBack: boolean) => void,
     'view-loading-updated': (id: number, loading: boolean) => void,
     'view-open-url': (url: string) => void,
+    'directory-updated': (directory: string) => void,
   }
 }
 
@@ -290,6 +295,23 @@ function handleMessages() {
   })
   globalHandler.handle('global-main:show-file', file => {
     shell.showItemInFolder(file)
+  })
+  globalHandler.handle('global-main:copy-file', file => {
+    clipboardEx.writeFilePaths([file])
+  })
+  globalHandler.handle('global-main:paste-file', async directory => {
+    const files = clipboardEx.readFilePaths()
+    const pasted = await Promise.all(files.map(async file => {
+      const target = path.join(directory, path.basename(file))
+      await fs.promises.copyFile(file, target)
+      return target
+    }))
+    broadcast('directory-updated', directory)
+    return pasted
+  })
+  globalHandler.handle('global-main:move-to-trash', async file => {
+    await shell.trashItem(file)
+    broadcast('directory-updated', path.dirname(file))
   })
 }
 

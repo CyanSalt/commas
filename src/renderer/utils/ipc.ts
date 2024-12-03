@@ -1,5 +1,6 @@
 import type { IpcRendererEvent } from 'electron'
-import type { IpcRendererHandler, RendererCommands } from '@commas/electron-ipc'
+import { watchEffect } from 'vue'
+import type { IpcRendererHandler, IpcRendererListener, RendererCommands, RendererEventDefinitions } from '@commas/electron-ipc'
 import { ipcRenderer } from '@commas/electron-ipc'
 
 export function handleRenderer<K extends keyof RendererCommands>(
@@ -20,4 +21,15 @@ export function handleRenderer<K extends keyof RendererCommands>(
   return {
     dispose,
   }
+}
+
+export function useListener<
+  K extends keyof RendererEventDefinitions,
+>(channel: K, listener: IpcRendererListener<RendererEventDefinitions[K]>) {
+  watchEffect(onInvalidate => {
+    ipcRenderer.on(channel, listener)
+    onInvalidate(() => {
+      ipcRenderer.off(channel, listener)
+    })
+  })
 }
