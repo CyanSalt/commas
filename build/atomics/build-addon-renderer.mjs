@@ -21,6 +21,7 @@ export default async (versions, dir, external) => {
       entry: 'src/renderer/index.ts',
       formats: ['cjs'],
       fileName: () => 'index.js',
+      cssFileName: 'style',
     }
     if (external) {
       const alias = {

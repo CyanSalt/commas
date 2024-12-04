@@ -6,7 +6,7 @@ const execa = util.promisify(childProcess.exec)
 
 function until<T extends EventEmitter, U extends string>(emitter: T, finish: U, error?: string) {
   return new Promise<
-    T extends EventEmitter<{ [P in U]: infer V extends any[] }> ? V : (
+    T extends EventEmitter<Record<U, infer V extends any[]>> ? V : (
     T extends {
       once(name: U, listener: (...args: infer V) => unknown): unknown,
     } ? V : unknown[]
