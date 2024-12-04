@@ -223,6 +223,9 @@ function close() {
   &.active {
     background: var(--design-active-background);
     box-shadow: var(--design-element-shadow);
+    .app:not(.is-window-focused) & {
+      background: color-mix(in oklab, var(--design-active-background) 50%, transparent);
+    }
   }
   &.focused:not(.standalone) {
     outline: 2px solid rgb(var(--system-accent));

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useWindowFocus } from '@vueuse/core'
 import { webUtils } from 'electron'
 import { onMounted } from 'vue'
 import { ipcRenderer } from '@commas/electron-ipc'
@@ -51,6 +52,8 @@ const hasHorizontalTabList = $computed(() => {
   const position = settings['terminal.view.tabListPosition']
   return position === 'top' || position === 'bottom'
 })
+
+const isWindowFocused = $(useWindowFocus())
 
 const slots = commas.proxy.context.getCollection('terminal.ui-slot')
 
@@ -118,7 +121,7 @@ function dropFile(event: DragEvent) {
 
 <template>
   <div
-    :class="['app', { 'is-opaque': isFullscreen, 'is-vibrant': theme.vibrancy }]"
+    :class="['app', { 'is-opaque': isFullscreen, 'is-vibrant': theme.vibrancy, 'is-window-focused': isWindowFocused }]"
     @dragover.prevent="dragFileOver"
     @drop="dropFile"
   >
