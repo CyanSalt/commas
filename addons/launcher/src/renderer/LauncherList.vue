@@ -318,7 +318,7 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
               @customize="customizeLauncher(launcher, $event)"
               @contextmenu="openLauncherMenu(launcher, tab, $event)"
             >
-              <template #operations>
+              <template v-if="!launcher.pane" #operations>
                 <button
                   type="button"
                   data-commas
