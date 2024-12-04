@@ -72,6 +72,13 @@ const iconEntry = $computed(() => {
   return defaultIcon
 })
 
+const iconStyle = $computed(() => {
+  if (!iconEntry) return undefined
+  return {
+    '--icon-color': iconEntry.color,
+  }
+})
+
 const title = $computed(() => {
   if (character?.title) return character.title
   return tab ? getTerminalTabTitle(tab) : ''
@@ -161,17 +168,14 @@ function close() {
   >
     <div class="tab-overview">
       <div class="tab-title">
-        <VisualIcon
-          v-if="iconEntry"
-          :name="iconEntry.name"
-          class="tab-icon"
-          :style="{ color: iconEntry.color }"
-        />
-        <template v-else-if="pane && tab!.shell">
-          <VisualIcon v-if="tab!.process === tab!.cwd" name="lucide-folder-open" class="tab-icon" />
-          <VisualIcon v-else name="lucide-file" class="tab-icon" />
-        </template>
-        <VisualIcon v-else name="lucide-terminal" class="tab-icon" />
+        <span class="tab-icon" :style="iconStyle">
+          <VisualIcon v-if="iconEntry" :name="iconEntry.name" />
+          <template v-else-if="pane && tab!.shell">
+            <VisualIcon v-if="tab!.process === tab!.cwd" name="lucide-folder-open" />
+            <VisualIcon v-else name="lucide-file" />
+          </template>
+          <VisualIcon v-else name="lucide-terminal" />
+        </span>
         <form v-if="isCustomizing" class="tab-name-form" @submit.prevent="customize">
           <input
             ref="customTitleElement"
@@ -232,12 +236,22 @@ function close() {
   min-width: 0;
 }
 .tab-icon {
-  display: inline-block;
+  --icon-color: rgb(var(--system-accent));
+  --icon-color-alt: white;
+  display: flex;
   flex: none;
+  justify-content: center;
+  align-items: center;
+  height: 1em;
   margin-right: 6px;
-  color: rgb(var(--system-accent));
+  padding: 3px;
+  color: var(--icon-color-alt);
+  font-size: 12px;
+  background: var(--icon-color);
+  border-radius: 4px;
   .tab-item.virtual & {
-    color: rgb(var(--theme-foreground) / 50%);
+    color: var(--icon-color);
+    background: color-mix(in oklab, var(--icon-color) 16.6667%, transparent);
   }
 }
 .tab-name {
