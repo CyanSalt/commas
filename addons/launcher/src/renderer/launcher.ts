@@ -7,7 +7,7 @@ const settings = commas.remote.useSettings()
 let launchers = $(commas.ipcRenderer.inject('launchers', []))
 
 export function useLaunchers() {
-  return $$(launchers)
+  return commas.ui.useViewTransition($$(launchers))
 }
 
 const launcherCharacters = $computed(() => {

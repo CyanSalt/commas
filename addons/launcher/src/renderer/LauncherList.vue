@@ -39,8 +39,10 @@ const launchers = $(useLaunchers())
 
 let isCollapsed = $ref(false)
 
+const isLauncherCollapsed = $(commas.ui.useViewTransition($$(isCollapsed)))
+
 const filteredLaunchers = $computed(() => {
-  if (!isCollapsed) return launchers
+  if (!isLauncherCollapsed) return launchers
   return launchers.filter(launcher => {
     const launcherTabs = getTerminalTabsByLauncher(launcher)
     return launcherTabs.length > 0
@@ -72,10 +74,7 @@ const launcherItems = $computed(() => {
 })
 
 function toggleCollapsing() {
-  const transition = document.startViewTransition(() => {
-    isCollapsed = !isCollapsed
-  })
-  return transition.updateCallbackDone
+  isCollapsed = !isCollapsed
 }
 
 function createLauncher(data: LauncherInfo, index: number) {
@@ -263,11 +262,11 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
       >
         <div
           :ref="mount"
-          :class="['launcher-folder', { collapsed: isCollapsed }]"
+          :class="['launcher-folder', { collapsed: isLauncherCollapsed }]"
           @click="toggleCollapsing"
         >
           <div class="group-name">
-            <VisualIcon :name="isCollapsed ? 'lucide-list-filter' : 'lucide-list-video'" />
+            <VisualIcon :name="isLauncherCollapsed ? 'lucide-list-filter' : 'lucide-list-video'" />
           </div>
           <DropIndicator
             v-if="draggingEdges.get(FOLDER_ID)"

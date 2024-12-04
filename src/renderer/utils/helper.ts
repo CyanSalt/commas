@@ -1,4 +1,6 @@
 import { memoize } from 'lodash'
+import type { Ref } from 'vue'
+import { toValue, watch } from 'vue'
 
 interface MousePressingOptions {
   element?: Window | HTMLElement,
@@ -41,4 +43,14 @@ export function escapeHTML(text: string) {
   const wrapper = getHTMLWrapper()
   wrapper.textContent = text
   return wrapper.innerHTML
+}
+
+export function useViewTransition<T>(refOrGetter: Ref<T> | (() => T)) {
+  let value = $shallowRef(toValue(refOrGetter))
+  watch(refOrGetter, newValue => {
+    document.startViewTransition(() => {
+      value = newValue as typeof value
+    })
+  })
+  return $$(value) as Ref<T> & { readonly value: T }
 }

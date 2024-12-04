@@ -16,6 +16,7 @@ import VisualIcon from '../../renderer/components/basic/VisualIcon.vue'
 import { openFolder, openItem, openLink } from '../../renderer/compositions/terminal'
 import { RendererWebContentsView } from '../../renderer/compositions/web-contents'
 import { createContextMenu, openContextMenu } from '../../renderer/utils/frame'
+import { useViewTransition } from '../../renderer/utils/helper'
 import { vI18n } from '../../renderer/utils/i18n'
 import type { RendererAPIContext } from '../types'
 
@@ -62,4 +63,5 @@ export {
   openLink,
   openFolder,
   openItem,
+  useViewTransition,
 }
