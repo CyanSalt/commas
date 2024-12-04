@@ -75,7 +75,7 @@ export default [
   // Files
   {
     name: 'simple-icons-css3',
-    patterns: [/\.css/],
+    patterns: [/\.css$/],
     color: '#1572b6',
   },
   {
