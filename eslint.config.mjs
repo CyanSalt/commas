@@ -1,6 +1,7 @@
 import config from '@cyansalt/eslint-config'
 
 export default config({
+  react: false,
   configs: [
     {
       ignores: ['**/*.json'],
@@ -9,6 +10,7 @@ export default config({
       languageOptions: {
         parserOptions: {
           project: './tsconfig.tools.json',
+          extraFileExtensions: ['.vue'],
         },
       },
       rules: {

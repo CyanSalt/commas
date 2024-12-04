@@ -46,7 +46,7 @@ export function translate(text: string, variables?: TranslationVariables) {
 function getVNodeTextContent(vnode: VNode): string {
   return Array.isArray(vnode.children)
     ? vnode.children.map(getVNodeTextContent).join('')
-    : String(vnode.children ?? '')
+    : (typeof vnode.children === 'string' ? vnode.children : '')
 }
 
 export const vI18n = createReactiveDirective<HTMLElement, TranslationVariables | undefined>(
