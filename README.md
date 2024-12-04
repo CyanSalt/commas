@@ -32,8 +32,8 @@ brew install --cask cyansalt/cask/commas
 You can clone or download the repository and build Commas locally.
   - Make sure you have the latest LTS version of Node.js installed on your device.
   - Download the source code and enter the directory through the command line.
-  - Run `npm install` to install dependencies
-  - Run `npm run build` to build this application for the current platform
+  - Run `pnpm install` to install dependencies
+  - Run `pnpm run build` to build this application for the current platform
 
 ## Features
 

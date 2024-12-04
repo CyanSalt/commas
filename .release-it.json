@@ -18,6 +18,6 @@
     }
   },
   "hooks": {
-    "before:release": "npm run pack"
+    "before:release": "pnpm run pack"
   }
 }
