@@ -83,9 +83,11 @@ watchEffect(onInvalidate => {
 })
 
 const isLightTheme = commas.remote.useIsLightTheme()
+const language = commas.remote.useLanguage()
 
 const ExcalidrawApp = () => {
   const isLight = useVueRef(isLightTheme)
+  const langCode = useVueRef(language)
   return React.createElement(
     Excalidraw,
     {
@@ -113,7 +115,7 @@ const ExcalidrawApp = () => {
           toggleTheme: false,
         },
       },
-      langCode: navigator.language,
+      langCode,
       name: file,
       theme: isLight ? 'light' : 'dark',
     },
