@@ -10,6 +10,7 @@ export default [
   {
     name: 'simple-icons-bun',
     patterns: ['bun', 'bunx'],
+    color: '#000000',
   },
   {
     name: 'simple-icons-dash',
@@ -19,6 +20,7 @@ export default [
   {
     name: 'simple-icons-curl',
     patterns: ['curl'],
+    color: '#073551',
   },
   {
     name: 'simple-icons-deno',
@@ -43,6 +45,7 @@ export default [
   {
     name: 'simple-icons-rust',
     patterns: ['rustc'],
+    color: '#000000',
   },
   {
     name: 'simple-icons-python',
@@ -77,16 +80,22 @@ export default [
   },
   {
     name: 'simple-icons-javascript',
-    patterns: [/\.(c|m)?js/],
+    patterns: [/\.(c|m)?jsx?$/],
     color: '#f7df1e',
   },
   {
     name: 'simple-icons-json',
-    patterns: [/\.json/],
+    patterns: [/\.json$/],
+    color: '#000000',
+  },
+  {
+    name: 'simple-icons-typescript',
+    patterns: [/\.(c|m)?tsx?$/],
+    color: '##3178c6',
   },
   {
     name: 'simple-icons-yaml',
-    patterns: [/\.yaml/],
+    patterns: [/\.yaml$/],
     color: '#cb171e',
   },
 ] as (IconEntry & { patterns: NonNullable<IconEntry['patterns']> })[]
