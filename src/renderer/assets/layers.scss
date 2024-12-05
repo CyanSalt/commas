@@ -134,9 +134,6 @@
       color: rgb(var(--theme-foreground));
       opacity: 0.25;
     }
-    &:focus-visible {
-      outline: 1px solid rgb(var(--system-accent));
-    }
     &:read-only {
       opacity: 0.5;
     }
