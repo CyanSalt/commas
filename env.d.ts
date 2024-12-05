@@ -22,6 +22,10 @@ declare module '@achrinza/node-ipc' {
   export { default } from 'node-ipc'
 }
 
+declare module '@commas/native' {
+  export * from './native'
+}
+
 declare module 'commas:api/main' {
   export * from '@commas/api/main'
 }

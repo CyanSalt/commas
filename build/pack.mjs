@@ -110,8 +110,9 @@ const options = {
   },
   icon: 'resources/images/icon.png',
   ignore: [
-    /^\/(?!addons|dist|node_modules|resources|package\.json)/,
+    /^\/(?!addons|dist|native|node_modules|resources|package\.json)/,
     /^\/addons\/[^/]+\/src/,
+    /^\/native\/src/,
     /^\/resources\/.*\.(ico|icns)$/,
   ],
   extraResource: [

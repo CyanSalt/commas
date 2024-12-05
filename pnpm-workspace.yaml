@@ -1,5 +1,6 @@
 packages:
   - 'addons/*'
+  - 'native'
   - 'src/api'
   - 'src/electron-ipc'
   - 'src/types'

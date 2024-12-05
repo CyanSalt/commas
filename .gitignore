@@ -3,6 +3,8 @@ node_modules
 dist
 release
 .*cache
+/native/bin
+/native/build
 /resources/images/*.ico
 /resources/images/*.icns
 /userdata

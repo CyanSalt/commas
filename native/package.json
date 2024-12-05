@@ -1,0 +1,16 @@
+{
+  "name": "@commas/native",
+  "private": true,
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "install": "node-gyp-build",
+    "rebuild": "rm -rf ./bin ./build && node-gyp-build"
+  },
+  "author": "commas",
+  "license": "ISC",
+  "devDependencies": {
+    "node-addon-api": "^8.3.0",
+    "node-gyp-build": "^4.8.4"
+  }
+}
