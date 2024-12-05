@@ -11,6 +11,10 @@ const { VisualIcon } = commas.ui.vueAssets
 
 let modelValue = $(defineModel<string>({ default: '' }))
 
+const { focused } = defineProps<{
+  focused?: boolean,
+}>()
+
 interface Breadcrumb {
   path: string,
   base: string,
@@ -145,6 +149,7 @@ let container = $ref<HTMLElement>()
 let back = $ref<HTMLButtonElement>()
 
 watchEffect(async () => {
+  if (!focused) return
   if (files.length) {
     await nextTick()
     container?.querySelector<HTMLAnchorElement>('.file')?.focus()
