@@ -229,10 +229,10 @@ async function pack() {
   let appPaths
   try {
     appPaths = await runPackager(options, local ? undefined : [
-      { arch: 'x64', platform: 'darwin' },
-      { arch: 'x64', platform: 'linux' },
-      { arch: 'x64', platform: 'win32' },
       { arch: 'arm64', platform: 'darwin' },
+      { arch: 'x64', platform: 'darwin' },
+      // { arch: 'x64', platform: 'linux' },
+      // { arch: 'x64', platform: 'win32' },
     ])
   } finally {
     await restorePackage()
