@@ -240,7 +240,6 @@ function close() {
 }
 .tab-icon {
   --icon-color: rgb(var(--system-accent));
-  --icon-color-alt: white;
   display: flex;
   flex: none;
   justify-content: center;
@@ -248,13 +247,19 @@ function close() {
   height: 1em;
   margin-right: 6px;
   padding: 3px;
-  color: var(--icon-color-alt);
+  color: white;
   font-size: 12px;
   background: var(--icon-color);
   border-radius: 4px;
+  :deep(.visual-icon) {
+    filter: drop-shadow(2px 2px 2px rgb(0 0 0 / 25%));
+  }
   .tab-item.virtual & {
     color: var(--icon-color);
     background: color-mix(in oklab, var(--icon-color) 16.6667%, transparent);
+    :deep(.visual-icon) {
+      filter: none;
+    }
   }
 }
 .tab-name {
