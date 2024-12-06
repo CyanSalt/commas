@@ -47,7 +47,7 @@ async function getAccessToken() {
   if (!currentAccessTokenData) {
     throw new AccessTokenError()
   }
-  if (Date.now() * 1000 < currentAccessTokenData.expires_in) {
+  if (Date.now() < currentAccessTokenData.expires_in * 1000) {
     return currentAccessTokenData.access_token
   } else {
     const refreshed = await refreshOAuthToken({
