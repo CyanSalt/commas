@@ -3,10 +3,6 @@ import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from 'commas:api/renderer'
 import { watchEffect } from 'vue'
 
-defineOptions({
-  inheritAttrs: false,
-})
-
 const { VisualIcon } = commas.ui.vueAssets
 
 const terminal = $(commas.workspace.useCurrentTerminal())
@@ -71,7 +67,6 @@ function openGitMenu(event: MouseEvent) {
 <template>
   <div
     v-if="branch"
-    v-bind="$attrs"
     class="git-branch-anchor"
     @contextmenu="openGitMenu"
   >

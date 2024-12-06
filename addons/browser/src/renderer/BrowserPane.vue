@@ -76,14 +76,12 @@ function openExternal() {
 }
 
 watchEffect((onInvalidate) => {
-  if (tab.pane) {
+  if (view) {
     // eslint-disable-next-line vue/no-mutating-props
-    tab.iconURL = view?.icon
+    tab.iconURL = view.icon
     onInvalidate(() => {
-      if (tab.pane) {
-        // eslint-disable-next-line vue/no-mutating-props
-        delete tab.iconURL
-      }
+      // eslint-disable-next-line vue/no-mutating-props
+      delete tab.iconURL
     })
   }
 })
