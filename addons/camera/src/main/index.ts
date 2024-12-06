@@ -1,13 +1,11 @@
 import * as fs from 'node:fs'
-import * as http from 'node:http'
 import * as path from 'node:path'
 import * as stream from 'node:stream'
 import { fileURLToPath } from 'node:url'
-import * as address from 'address'
 import * as commas from 'commas:api/main'
 import type { NativeImage, Rectangle } from 'electron'
 import { app } from 'electron'
-import getPort from 'get-port'
+import { endStream, finishStream, getStream, getURL, startServer, stopServer } from './server'
 
 declare module '@commas/electron-ipc' {
   export interface Commands {
@@ -116,67 +114,17 @@ export default () => {
     })
   })
 
-  let streams = new Map<string, stream.PassThrough>()
-  let outputs = new Map<string, stream.PassThrough>()
-
-  let listeningPort: number | undefined
-  let currentServer: Promise<http.Server> | undefined
-
-  async function createServer() {
-    const port = await getPort()
-    const server = http.createServer(async (req, res) => {
-      const route = new URL(`http://localhost:${port}${req.url ?? '/'}`)
-      const search = route.searchParams.get('channel')
-      if (!search) return
-      const channel = Buffer.from(search, 'base64url').toString('utf8')
-      const duplex = streams.get(channel)!
-      res.writeHead(200, {
-        'Content-Type': 'application/octet-stream',
-        'Transfer-Encoding': 'chunked',
-      })
-      await stream.promises.pipeline(duplex, res)
-      res.end()
-    })
-    listeningPort = port
-    server.listen(port)
-    return server
-  }
-
-  async function startServer() {
-    if (!currentServer) {
-      currentServer = createServer()
-    }
-    return currentServer
-  }
-
-  async function stopServer() {
-    const value = currentServer
-    if (value) {
-      currentServer = undefined
-      listeningPort = undefined
-      const server = await value
-      server.close()
-    }
-  }
-
   commas.app.onCleanup(() => {
     stopServer()
   })
 
   commas.ipcMain.handle('ttyrec-write-data', async (event, channel, data) => {
-    let duplex = streams.get(channel)
-    if (!duplex) {
-      duplex = new stream.PassThrough()
-      streams.set(channel, duplex)
-      outputs.set(channel, duplex.pipe(new stream.PassThrough()))
-    }
+    const duplex = getStream(channel)
     duplex.push(data)
   })
 
   commas.ipcMain.handle('ttyrec-write-finish', async (event, channel) => {
-    const duplex = streams.get(channel)!
-    duplex.end()
-    const output = outputs.get(channel)!
+    const output = finishStream(channel)
     const file = path.join(app.getPath('downloads'), channel)
     await stream.promises.pipeline(
       output,
@@ -186,20 +134,17 @@ export default () => {
   })
 
   commas.ipcMain.handle('ttyrec-write-end', async (event, channel) => {
-    streams.delete(channel)
-    if (!streams.size) {
+    const size = endStream(channel)
+    if (!size) {
       stopServer()
     }
   })
 
   commas.ipcMain.handle('ttyrec-share', async (event, channel) => {
     await startServer()
-    const search = Buffer.from(channel, 'utf8').toString('base64url')
-    const ip = address.ip() ?? 'localhost'
-    const route = new URL(`http://${ip}:${listeningPort}`)
-    route.searchParams.set('channel', search)
+    const remote = getURL(channel)
     const url = new URL('commas://recorder/')
-    url.searchParams.set('command', route.href)
+    url.searchParams.set('command', remote)
     return url.href
   })
 
