@@ -3,7 +3,6 @@ import * as fs from 'node:fs'
 import * as path from 'node:path'
 import type { Dock, FindInPageOptions, MessageBoxOptions, MessageBoxReturnValue, NativeImage, Result, WebContents, WebContentsView } from 'electron'
 import { app, BrowserWindow, clipboard, dialog, nativeImage, shell } from 'electron'
-import clipboardEx from 'electron-clipboard-ex'
 import * as fileIcon from 'file-icon'
 import unusedFilename from 'unused-filename'
 import { ipcMain } from '@commas/electron-ipc'
@@ -12,6 +11,16 @@ import { readFile, watchFile, writeFile } from '../utils/file'
 import { execa, until } from '../utils/helper'
 import { notify } from '../utils/notification'
 import { broadcast, hasWindow, send } from './frame'
+
+// `electron-clipboard-ex` does not support Linux
+const clipboardEx = (function () {
+  try {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+    return require('electron-clipboard-ex') as typeof import('electron-clipboard-ex')
+  } catch {
+    return undefined
+  }
+})()
 
 declare module '@commas/electron-ipc' {
   export interface Commands {
@@ -297,9 +306,11 @@ function handleMessages() {
     shell.showItemInFolder(file)
   })
   globalHandler.handle('global-main:copy-file', file => {
+    if (!clipboardEx) return
     clipboardEx.writeFilePaths([file])
   })
   globalHandler.handle('global-main:paste-file', async directory => {
+    if (!clipboardEx) return []
     const files = clipboardEx.readFilePaths()
     const pasted = await Promise.all(files.map(async file => {
       const target = path.join(directory, path.basename(file))

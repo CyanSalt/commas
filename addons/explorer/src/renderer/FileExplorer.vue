@@ -160,7 +160,7 @@ watchEffect(async () => {
 
 function openContextMenu(event: MouseEvent, file?: FileEntity) {
   commas.ui.openContextMenu([
-    [
+    ['darwin', 'win32'].includes(process.platform) ? [
       ...(file ? [
         {
           label: process.platform === 'darwin'
@@ -176,7 +176,7 @@ function openContextMenu(event: MouseEvent, file?: FileEntity) {
           args: [modelValue],
         },
       ] satisfies MenuItem[]),
-    ],
+    ] : [],
     file ? [
       {
         label: process.platform === 'darwin'
