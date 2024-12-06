@@ -60,7 +60,13 @@ export default () => {
     async handler({ sender, argv }) {
       const url = argv[0]
       if (!url) return
-      commas.frame.send(sender, 'open-remote-recorder', url)
+      const remote = new URL(url)
+      // Compatible with external URLs
+      if (remote.protocol === 'commas:' && remote.host === 'recorder') {
+        commas.frame.send(sender, 'open-remote-recorder', remote.searchParams.get('command')!)
+      } else {
+        commas.frame.send(sender, 'open-remote-recorder', url)
+      }
     },
   })
 
@@ -192,7 +198,9 @@ export default () => {
     const ip = address.ip() ?? 'localhost'
     const route = new URL(`http://${ip}:${listeningPort}`)
     route.searchParams.set('channel', search)
-    return route.href
+    const url = new URL('commas://recorder/')
+    url.searchParams.set('command', route.href)
+    return url.href
   })
 
   commas.i18n.addTranslationDirectory('locales')
