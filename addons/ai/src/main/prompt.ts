@@ -1,4 +1,5 @@
 import { chat } from './chat'
+import { access } from './server'
 
 function getOSName() {
   switch (process.platform) {
@@ -11,33 +12,35 @@ function getOSName() {
   }
 }
 
-function stringifyQuestion(question: string) {
-  return JSON.stringify({
-    question,
-    request: `answer in json like ${JSON.stringify({ answer: 'your answer here' })}`,
-    jsonOnly: true,
-    noDescriptions: true,
+async function getAnswer(input: unknown) {
+  const answer = await access(() => chat(JSON.stringify(input)))
+  try {
+    const data = JSON.parse(answer)
+    return data.answer
+  } catch {
+    return answer
+  }
+}
+
+function getCommand(query: string) {
+  return getAnswer({
+    type: 'translate',
+    query,
+    os: getOSName(),
   })
 }
 
-function parseAnswer(message: string) {
-  const raw = message.trim().replace(/^```\S*\n(.+)```$/s, '$1').replace(/^`(.+)`$/, '$1')
-  // Let it throw
-  const { answer } = JSON.parse(raw)
-  return answer
-}
-
-async function getCommand(query: string) {
-  const answer = await chat(stringifyQuestion(`Translate my prompt to one terminal command. My operating system is ${getOSName()}. My prompt is: ${query}`))
-  return parseAnswer(answer)
-}
-
-async function getDoctorCommand(command: string, output: string) {
-  const answer = await chat(stringifyQuestion(`Fix the error in my command with one new terminal command. My operating system is ${getOSName()}. The error command is: \`${command}\`. Its output is: \`${output}\``))
-  return parseAnswer(answer)
+function getDoctorCommand(command: string, output: string) {
+  return getAnswer({
+    type: 'fix',
+    command,
+    error: output,
+    os: getOSName(),
+  })
 }
 
 export {
+  access,
   getCommand,
   getDoctorCommand,
 }

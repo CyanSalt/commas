@@ -1,5 +1,7 @@
 import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from 'commas:api/renderer'
+import AIAnchor from './AIAnchor.vue'
+import { useAIServerStatus } from './compositions'
 
 declare module '@commas/electron-ipc' {
   export interface RendererCommands {
@@ -9,8 +11,9 @@ declare module '@commas/electron-ipc' {
 
 export default () => {
 
+  commas.ui.addCSSFile('dist/renderer/style.css')
+
   const terminal = $(commas.workspace.useCurrentTerminal())
-  const settings = commas.remote.useSettings()
 
   commas.ipcRenderer.handle('ai-quick-fix', (event, command) => {
     if (!terminal) return
@@ -18,9 +21,11 @@ export default () => {
     terminal.addons?.shellIntegration?.addQuickFixAction(command)
   })
 
+  const status = $(useAIServerStatus())
+
   commas.app.on('terminal.command-complete', async (command, output) => {
     if (
-      settings['ai.shell.doctor']
+      status
       && command.command
       && command.exitCode
       && !command.actions?.length
@@ -32,5 +37,7 @@ export default () => {
       }
     }
   })
+
+  commas.context.provide('terminal.ui-left-action-anchor', AIAnchor)
 
 }

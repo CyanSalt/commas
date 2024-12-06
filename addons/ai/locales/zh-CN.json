@@ -1,11 +1,4 @@
 {
   "Get command with AI prompt#!cli.description.ai": "通过 AI 提示词获取命令",
-  "API Key for ERNIE#!settings.label.ai.ernie.key": "ERNIE API Key",
-  "Specify the API key of the ERNIE Speed language model#!settings.comments.0.ai.ernie.key": "为 ERNIE Speed 语言模型指定 API key",
-  "Secret Key for ERNIE#!settings.label.ai.ernie.secret": "ERNIE Secret Key",
-  "Specify the API key of the ERNIE Speed language model#!settings.comments.0.ai.ernie.secret": "为 ERNIE Speed 语言模型指定 Secret key",
-  "Command Doctor#!settings.label.ai.shell.doctor": "命令诊断",
-  "Whether to generate completions for failed commands#!settings.comments.0.ai.shell.doctor": "是否为失败的命令生成补全信息",
-  "Requires Shell Integration to be enabled#!settings.comments.1.ai.shell.doctor": "需要启用 Shell 集成",
-  "Missing `${key}` in settings. You can open settings via Command+, key, or `commas open settings` command and add it.#!ai.1": "配置缺少 `${key}`。你可以通过 Command+, 快捷键，或者是 `commas open settings` 命令打开配置并添加它。"
+  "Please complete the authorization in your browser.": "请在浏览器内完成授权"
 }

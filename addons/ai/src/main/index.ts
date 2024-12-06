@@ -1,42 +1,55 @@
 import * as commas from 'commas:api/main'
+import { getAccessToken } from './chat'
 import { getCommand, getDoctorCommand } from './prompt'
-
-declare module '@commas/types/settings' {
-  export interface Settings {
-    'ai.ernie.key'?: string,
-    'ai.ernie.secret'?: string,
-    'ai.shell.doctor'?: boolean,
-  }
-}
+import { access, startServer, stopServer } from './server'
 
 declare module '@commas/electron-ipc' {
   export interface Commands {
     'ai-doctor': (command: string, output: string) => string,
+    'toggle-ai-server': (value: boolean) => void,
+  }
+  export interface Refs {
+    'ai-server-status': boolean,
   }
 }
 
-function createSettingsError(key: string) {
-  const message = commas.i18n.translate('Missing `${key}` in settings. You can open settings via Command+, key, or `commas open settings` command and add it.#!ai.1', { key })
-  const error = new Error(message)
-  error['stderr'] = message
-  return error
-}
-
 export default () => {
+
+  let status = $customRef<boolean>((track, trigger) => {
+    let started = false
+    return {
+      get: () => {
+        track()
+        return started
+      },
+      set: async value => {
+        if (started === value) return
+        if (value) {
+          await startServer()
+        } else {
+          await stopServer()
+        }
+        started = value
+        trigger()
+      },
+    }
+  })
+
+  commas.ipcMain.provide('ai-server-status', $$(status))
+
+  commas.app.onCleanup(() => {
+    stopServer()
+  })
 
   commas.context.provide('cli.command', {
     command: 'ai',
     description: 'Get command with AI prompt#!cli.description.ai',
     async *handler({ sender }) {
-      const settings = commas.settings.useSettings()
-      if (!settings['ai.ernie.key']) {
-        throw createSettingsError('ai.ernie.key')
-      }
-      if (!settings['ai.ernie.secret']) {
-        throw createSettingsError('ai.ernie.secret')
-      }
       const query = yield '? \x05'
       if (query) {
+        // Ensure server
+        await startServer()
+        status = true
         const command = await getCommand(query)
         await commas.ipcMain.invoke(sender, 'ai-quick-fix', command)
         return `> ${command}`
@@ -46,20 +59,25 @@ export default () => {
 
   commas.ipcMain.handle('ai-doctor', async (event, command, output) => {
     try {
-      const settings = commas.settings.useSettings()
-      if (!settings['ai.ernie.key']) {
-        throw createSettingsError('ai.ernie.key')
-      }
-      if (!settings['ai.ernie.secret']) {
-        throw createSettingsError('ai.ernie.secret')
-      }
       return await getDoctorCommand(command, output)
     } catch {
       return ''
     }
   })
 
-  commas.settings.addSettingsSpecsFile('settings.spec.json')
+  commas.ipcMain.handle('toggle-ai-server', async (event, value) => {
+    if (value) {
+      await startServer()
+      status = true
+      try {
+        await access(() => getAccessToken())
+      } catch {
+        // ignore error
+      }
+    } else {
+      status = false
+    }
+  })
 
   commas.i18n.addTranslationDirectory('locales')
 

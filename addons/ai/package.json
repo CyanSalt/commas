@@ -15,5 +15,8 @@
       "productName": "AI",
       "description": "AI 支持的自动补全"
     }
+  },
+  "dependencies": {
+    "@coze/api": "^1.0.14"
   }
 }

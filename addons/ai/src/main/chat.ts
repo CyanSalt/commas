@@ -1,85 +1,95 @@
+import type { OAuthToken } from '@coze/api'
+import { ChatEventType, COZE_CN_BASE_URL, CozeAPI, getPKCEAuthenticationUrl, getPKCEOAuthToken, refreshOAuthToken, RoleType } from '@coze/api'
 import * as commas from 'commas:api/main'
 
-interface AccessTokenData {
-  access_token: string,
-  expires_in: number,
-  error: string,
-  error_description: string,
+const CLIENT_ID = '88988664625581608245457445089829.app.coze'
+const BOT_ID = '7445173967130066979'
+
+const verifiers = new Map<string, string>()
+
+async function getAuthorizationURL(redirectURL: string) {
+  const state = String(Math.random()).slice(2)
+  const data = await getPKCEAuthenticationUrl({
+    clientId: CLIENT_ID,
+    redirectUrl: redirectURL,
+    baseURL: COZE_CN_BASE_URL,
+    state,
+  })
+  verifiers.set(state, data.codeVerifier)
+  return data.url
 }
 
-interface AccessToken extends AccessTokenData {
-  api_key: string,
-  expires_from: number,
-}
-
-async function getAccessTokenFromServer(): Promise<AccessToken> {
-  const settings = commas.settings.useSettings()
-  const apiKey = settings['ai.ernie.key']
-  const secretKey = settings['ai.ernie.secret']
-  const params = {
-    expires_from: Date.now(),
-    api_key: apiKey!,
-  }
-  const response = await fetch(
-    `https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=${apiKey}&client_secret=${secretKey}`,
-    { method: 'POST' },
-  )
-  const data: AccessTokenData = await response.json()
-  if (data.error) {
-    throw Object.assign(new Error(data.error_description), data)
-  }
-  return {
-    ...data,
-    ...params,
+class AccessTokenError extends Error {
+  stderr: string
+  constructor() {
+    super('Invalid access token')
+    this.stderr = commas.i18n.translate('Please complete the authorization in your browser.#!ai.2')
   }
 }
 
-let accessTokenFromFileSystem = $(commas.file.useJSONFile<AccessToken | undefined>(commas.file.userFile('ai.json')))
+let currentAccessTokenData = $(commas.file.useJSONFile<OAuthToken | undefined>(commas.file.userFile('ai.json')))
 
-async function getAccessTokenFromFileSystem() {
-  if (accessTokenFromFileSystem) {
-    const settings = commas.settings.useSettings()
-    const token = accessTokenFromFileSystem
-    if (
-      token.api_key === settings['ai.ernie.key']
-      && Date.now() < token.expires_from + token.expires_in * 1000
-    ) {
-      return token
-    }
-  }
-  const token = await getAccessTokenFromServer()
-  accessTokenFromFileSystem = token
-  return token
+async function resolveAuthorization(code: string, state: string, redirectURL: string) {
+  const verifier = verifiers.get(state)
+  if (!verifier) return undefined
+  const data = await getPKCEOAuthToken({
+    clientId: CLIENT_ID,
+    redirectUrl: redirectURL,
+    baseURL: COZE_CN_BASE_URL,
+    code,
+    codeVerifier: verifier,
+  })
+  currentAccessTokenData = data
+  return data
 }
 
 async function getAccessToken() {
-  const token = await getAccessTokenFromFileSystem()
-  return token.access_token
+  if (!currentAccessTokenData) {
+    throw new AccessTokenError()
+  }
+  if (Date.now() * 1000 < currentAccessTokenData.expires_in) {
+    return currentAccessTokenData.access_token
+  } else {
+    const refreshed = await refreshOAuthToken({
+      clientId: CLIENT_ID,
+      refreshToken: currentAccessTokenData.refresh_token,
+      baseURL: COZE_CN_BASE_URL,
+    })
+    // TODO: throw if refresh token expired
+    currentAccessTokenData = refreshed
+    return refreshed.access_token
+  }
 }
 
 async function chat(message: string) {
   const token = await getAccessToken()
-  const response = await fetch(
-    `https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-speed-128k?access_token=${token}`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+  const client = new CozeAPI({
+    baseURL: COZE_CN_BASE_URL,
+    token,
+  })
+  const stream = client.chat.stream({
+    bot_id: BOT_ID,
+    additional_messages: [
+      {
+        role: RoleType.User,
+        content: message,
+        content_type: 'text',
       },
-      body: JSON.stringify({
-        messages: [
-          {
-            role: 'user',
-            content: message,
-          },
-        ],
-      }),
-    },
-  )
-  const data: { result: string } = await response.json()
-  return data.result
+    ],
+  })
+  let answer = ''
+  for await (const part of stream) {
+    if (part.event === ChatEventType.CONVERSATION_MESSAGE_DELTA) {
+      answer += part.data.content
+    }
+  }
+  return answer
 }
 
 export {
+  getAuthorizationURL,
+  resolveAuthorization,
+  getAccessToken,
   chat,
+  AccessTokenError,
 }
