@@ -125,8 +125,7 @@ export default () => {
   async function createServer() {
     const port = await getPort()
     const server = http.createServer(async (req, res) => {
-      if (!req.url) return
-      const route = new URL(`http://localhost${req.url}`)
+      const route = new URL(`http://localhost:${port}${req.url ?? '/'}`)
       const search = route.searchParams.get('channel')
       if (!search) return
       const channel = Buffer.from(search, 'base64url').toString('utf8')
@@ -136,6 +135,7 @@ export default () => {
         'Transfer-Encoding': 'chunked',
       })
       await stream.promises.pipeline(duplex, res)
+      res.end()
     })
     listeningPort = port
     server.listen(port)
