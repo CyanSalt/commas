@@ -101,10 +101,11 @@ function resolveOverridden(values: string[]) {
 
 function createOverridden(previous: string[], current: string[]) {
   const values = resolveOverridden(previous)
-  return [
+  const overridden = [
     ...difference(values, current).map(value => `!${value}`),
     ...difference(current, values).map(value => value),
   ]
+  return overridden.length ? overridden : undefined
 }
 
 let oldSettings: Settings | undefined
