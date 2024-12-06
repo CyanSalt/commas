@@ -1,4 +1,4 @@
 {
-  "Get command with AI prompt#!cli.description.ai": "通过 AI 提示词获取命令",
-  "Please complete the authorization in your browser.": "请在浏览器内完成授权"
+  "Please complete the authorization in your browser and try again.#!ai.1": "请在浏览器内完成授权后重试。",
+  "Get command with AI prompt#!cli.description.ai": "通过 AI 提示词获取命令"
 }

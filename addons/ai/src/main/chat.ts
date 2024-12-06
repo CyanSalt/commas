@@ -23,7 +23,7 @@ class AccessTokenError extends Error {
   stderr: string
   constructor() {
     super('Invalid access token')
-    this.stderr = commas.i18n.translate('Please complete the authorization in your browser.#!ai.2')
+    this.stderr = commas.i18n.translate('Please complete the authorization in your browser and try again.#!ai.1')
   }
 }
 
