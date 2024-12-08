@@ -387,6 +387,8 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   _createCompletionMarker(xterm: Terminal) {
     const marker = xterm.registerMarker()
     marker.onDispose(() => {
+      // Skip for replacement on prompt starting
+      if (this.currentCommand && this.currentCommand.marker === marker) return
       const index = this.commands.findIndex(item => item.marker === marker)
       if (index !== -1) {
         this.commands.splice(index, 1)
