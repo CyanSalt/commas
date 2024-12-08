@@ -1,11 +1,11 @@
 import * as commas from 'commas:api/main'
 import { getAccessToken, useAIStatus } from './chat'
-import { getCommand, getDoctorCommand } from './prompt'
+import { fixCommand, translateCommand } from './prompt'
 import { access, stopServer } from './server'
 
 declare module '@commas/electron-ipc' {
   export interface Commands {
-    'ai-doctor': (command: string, output: string) => string,
+    'ai-fix': (command: string, output: string) => string,
     'toggle-ai': (value: boolean) => void,
   }
   export interface Refs {
@@ -33,16 +33,16 @@ export default () => {
     async *handler({ sender }) {
       const query = yield '? \x05'
       if (query) {
-        const command = await getCommand(query)
+        const command = await translateCommand(query)
         await commas.ipcMain.invoke(sender, 'ai-quick-fix', command)
         return `> ${command}`
       }
     },
   })
 
-  commas.ipcMain.handle('ai-doctor', async (event, command, output) => {
+  commas.ipcMain.handle('ai-fix', async (event, command, output) => {
     try {
-      return await getDoctorCommand(command, output)
+      return await fixCommand(command, output)
     } catch {
       return ''
     }

@@ -22,7 +22,7 @@ async function getAnswer(input: unknown) {
   }
 }
 
-function getCommand(query: string) {
+function translateCommand(query: string) {
   return getAnswer({
     type: 'translate',
     query,
@@ -30,7 +30,7 @@ function getCommand(query: string) {
   })
 }
 
-function getDoctorCommand(command: string, output: string) {
+function fixCommand(command: string, output: string) {
   return getAnswer({
     type: 'fix',
     command,
@@ -41,6 +41,6 @@ function getDoctorCommand(command: string, output: string) {
 
 export {
   access,
-  getCommand,
-  getDoctorCommand,
+  translateCommand,
+  fixCommand,
 }

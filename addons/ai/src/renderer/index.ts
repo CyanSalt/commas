@@ -30,7 +30,7 @@ export default () => {
       && command.exitCode
       && !command.actions?.length
     ) {
-      const recommendation = await ipcRenderer.invoke('ai-doctor', command.command, output)
+      const recommendation = await ipcRenderer.invoke('ai-fix', command.command, output)
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (recommendation && terminal?.addons?.shellIntegration) {
         terminal.addons.shellIntegration.addQuickFixAction(recommendation, command)
