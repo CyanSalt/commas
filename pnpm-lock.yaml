@@ -219,6 +219,9 @@ importers:
       '@coze/api':
         specifier: ^1.0.14
         version: 1.0.14(axios@1.7.9)
+      axios:
+        specifier: ^1.7.9
+        version: 1.7.9
 
   addons/browser:
     devDependencies:

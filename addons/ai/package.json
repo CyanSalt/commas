@@ -17,6 +17,7 @@
     }
   },
   "dependencies": {
-    "@coze/api": "^1.0.14"
+    "@coze/api": "^1.0.14",
+    "axios": "^1.7.9"
   }
 }
