@@ -35,6 +35,15 @@ export default () => {
     }
   })
 
+  getAccessToken().then(
+    () => {
+      status = true
+    },
+    () => {
+      // ignore error
+    },
+  )
+
   commas.ipcMain.provide('ai-server-status', $$(status))
 
   commas.app.onCleanup(() => {
