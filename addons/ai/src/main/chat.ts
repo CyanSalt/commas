@@ -27,7 +27,13 @@ class AccessTokenError extends Error {
   }
 }
 
-let currentAccessTokenData = $(commas.file.useJSONFile<OAuthToken | undefined>(commas.file.userFile('ai.json')))
+const loadingAccessTokenDataState = Promise.withResolvers<void>()
+
+let currentAccessTokenData = $(commas.file.useJSONFile<OAuthToken | undefined>(commas.file.userFile('ai.json'), undefined, {
+  onTrigger: () => {
+    loadingAccessTokenDataState.resolve()
+  },
+}))
 
 async function resolveAuthorization(code: string, state: string, redirectURL: string) {
   const verifier = verifiers.get(state)
@@ -44,6 +50,7 @@ async function resolveAuthorization(code: string, state: string, redirectURL: st
 }
 
 async function getAccessToken() {
+  await loadingAccessTokenDataState.promise
   if (!currentAccessTokenData) {
     throw new AccessTokenError()
   }
