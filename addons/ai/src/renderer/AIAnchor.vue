@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from 'commas:api/renderer'
-import { useAIServerStatus } from './compositions'
+import { useAIStatus } from './compositions'
 
 const { VisualIcon } = commas.ui.vueAssets
 
-let status = $(useAIServerStatus())
+let status = $(useAIStatus())
 
 function toggle() {
-  ipcRenderer.invoke('toggle-ai-server', !status)
+  ipcRenderer.invoke('toggle-ai', !status)
 }
 </script>
 

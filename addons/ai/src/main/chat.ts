@@ -5,6 +5,12 @@ import * as commas from 'commas:api/main'
 const CLIENT_ID = '88988664625581608245457445089829.app.coze'
 const BOT_ID = '7445173967130066979'
 
+let status = $ref(false)
+
+function useAIStatus() {
+  return $$(status)
+}
+
 const verifiers = new Map<string, string>()
 
 async function getAuthorizationURL(redirectURL: string) {
@@ -46,11 +52,11 @@ async function resolveAuthorization(code: string, state: string, redirectURL: st
     codeVerifier: verifier,
   })
   currentAccessTokenData = data
+  status = true
   return data
 }
 
-async function getAccessToken() {
-  await loadingAccessTokenDataState.promise
+async function loadAccessToken() {
   if (!currentAccessTokenData) {
     throw new AccessTokenError()
   }
@@ -64,8 +70,16 @@ async function getAccessToken() {
     })
     // TODO: throw if refresh token expired
     currentAccessTokenData = refreshed
+    status = true
     return refreshed.access_token
   }
+}
+
+async function getAccessToken() {
+  await loadingAccessTokenDataState.promise
+  const token = await loadAccessToken()
+  status = true
+  return token
 }
 
 async function chat(message: string) {
@@ -94,6 +108,7 @@ async function chat(message: string) {
 }
 
 export {
+  useAIStatus,
   getAuthorizationURL,
   resolveAuthorization,
   getAccessToken,

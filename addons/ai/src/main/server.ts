@@ -47,6 +47,7 @@ function getServerURL() {
 }
 
 async function authorize() {
+  await startServer()
   const redirectURL = getServerURL()
   if (redirectURL) {
     const url = await getAuthorizationURL(redirectURL)
@@ -66,7 +67,6 @@ async function access<T>(fn: () => Promise<T>): Promise<T> {
 }
 
 export {
-  startServer,
   stopServer,
   authorize,
   access,

@@ -1,50 +1,27 @@
 import * as commas from 'commas:api/main'
-import { getAccessToken } from './chat'
+import { getAccessToken, useAIStatus } from './chat'
 import { getCommand, getDoctorCommand } from './prompt'
-import { access, startServer, stopServer } from './server'
+import { access, stopServer } from './server'
 
 declare module '@commas/electron-ipc' {
   export interface Commands {
     'ai-doctor': (command: string, output: string) => string,
-    'toggle-ai-server': (value: boolean) => void,
+    'toggle-ai': (value: boolean) => void,
   }
   export interface Refs {
-    'ai-server-status': boolean,
+    'ai-status': boolean,
   }
 }
 
 export default () => {
 
-  let status = $customRef<boolean>((track, trigger) => {
-    let started = false
-    return {
-      get: () => {
-        track()
-        return started
-      },
-      set: async value => {
-        if (started === value) return
-        if (value) {
-          await startServer()
-        } else {
-          await stopServer()
-        }
-        started = value
-        trigger()
-      },
-    }
+  let status = $(useAIStatus())
+
+  getAccessToken().catch(() => {
+    // ignore error
   })
 
-  getAccessToken().then(
-    () => {
-      status = true
-    },
-    () => {
-      // ignore error
-    },
-  )
-
-  commas.ipcMain.provide('ai-server-status', $$(status))
+  commas.ipcMain.provide('ai-status', $$(status))
 
   commas.app.onCleanup(() => {
     stopServer()
@@ -56,9 +33,6 @@ export default () => {
     async *handler({ sender }) {
       const query = yield '? \x05'
       if (query) {
-        // Ensure server
-        await startServer()
-        status = true
         const command = await getCommand(query)
         await commas.ipcMain.invoke(sender, 'ai-quick-fix', command)
         return `> ${command}`
@@ -74,10 +48,8 @@ export default () => {
     }
   })
 
-  commas.ipcMain.handle('toggle-ai-server', async (event, value) => {
+  commas.ipcMain.handle('toggle-ai', async (event, value) => {
     if (value) {
-      await startServer()
-      status = true
       try {
         await access(() => getAccessToken())
       } catch {

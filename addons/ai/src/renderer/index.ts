@@ -1,7 +1,7 @@
 import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from 'commas:api/renderer'
 import AIAnchor from './AIAnchor.vue'
-import { useAIServerStatus } from './compositions'
+import { useAIStatus } from './compositions'
 
 declare module '@commas/electron-ipc' {
   export interface RendererCommands {
@@ -21,7 +21,7 @@ export default () => {
     terminal.addons?.shellIntegration?.addQuickFixAction(command)
   })
 
-  const status = $(useAIServerStatus())
+  const status = $(useAIStatus())
 
   commas.app.on('terminal.command-complete', async (command, output) => {
     if (
