@@ -1,0 +1,13 @@
+[
+  {
+    "key": "paint.assets.path",
+    "label": "Excalidraw Assets Path",
+    "comments": [
+      "External URL for assets of Excalidraw"
+    ],
+    "schema": {
+      "type": "string"
+    },
+    "default": "https://cdn.jsdelivr.net/npm/@excalidraw/excalidraw@0.17.1-d9ad7c0/dist/prod/"
+  }
+]

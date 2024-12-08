@@ -12,6 +12,17 @@ function getNewFileName() {
 
 export default () => {
 
+  const settings = commas.remote.useSettings()
+
+  const assetsPath = $computed(() => {
+    const userAssetsPath = settings['paint.assets.path']
+    return userAssetsPath.endsWith('/') ? userAssetsPath : userAssetsPath + '/'
+  })
+
+  commas.app.effect(() => {
+    window['EXCALIDRAW_ASSET_PATH'] = assetsPath
+  })
+
   commas.ui.addCSSFile('dist/renderer/style.css')
 
   commas.workspace.registerTabPane('paint', {

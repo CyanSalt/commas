@@ -16,10 +16,8 @@
       "description": "在画板上画点东西"
     }
   },
-  "dependencies": {
-    "@excalidraw/excalidraw": "0.17.1-d9ad7c0"
-  },
   "devDependencies": {
+    "@excalidraw/excalidraw": "0.17.1-d9ad7c0",
     "@types/react-dom": "^18.3.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
