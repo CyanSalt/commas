@@ -8,7 +8,7 @@ EN | [中文](docs/README-zh.md)
 
 | Dark | Light |
 | --- | --- |
-| ![Screenshot](https://github.com/CyanSalt/commas/assets/5101076/1c034b43-0fed-4183-abe0-ad2077fd261b) | ![Screenshot](https://github.com/CyanSalt/commas/assets/5101076/7592723f-fd56-4437-bc2f-cd49b99908cd) |
+| ![Screenshot](https://github.com/user-attachments/assets/0a478846-7079-46aa-9e2d-341e2de97dcc) | ![Screenshot](https://github.com/user-attachments/assets/56ccb758-0433-4295-af77-980d91642f24) |
 
 *Theme: [OneHalf](https://github.com/sonph/onehalf)*
 
@@ -43,11 +43,14 @@ You can clone or download the repository and build Commas locally.
 - Plug-in i18n support
 - Built-in addons
   - Run commands instantly on local or remote server
-  - Edit configuration files within the application
   - Interact with the application in the terminal
+  - Access the local file system, edit files, and open web pages in the application
   - Visual settings editor
+  - Command completion or fix based on AI
+  - Take screenshots, record, or share terminal sessions via LAN
   - Integration with [whistle](https://github.com/avwo/whistle) proxy
   - Gist-based configuration synchronization
+  - Other easter egg features
 - User scripts and third-party addons
 
 ## Customization

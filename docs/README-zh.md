@@ -8,7 +8,7 @@
 
 | 深色 | 浅色 |
 | --- | --- |
-| ![截图](https://github.com/CyanSalt/commas/assets/5101076/1c034b43-0fed-4183-abe0-ad2077fd261b) | ![截图](https://github.com/CyanSalt/commas/assets/5101076/7592723f-fd56-4437-bc2f-cd49b99908cd) |
+| ![截图](https://github.com/user-attachments/assets/0a478846-7079-46aa-9e2d-341e2de97dcc) | ![截图](https://github.com/user-attachments/assets/56ccb758-0433-4295-af77-980d91642f24) |
 
 *主题: [OneHalf](https://github.com/sonph/onehalf)*
 
@@ -43,11 +43,14 @@ brew install --cask cyansalt/cask/commas
 - 外挂国际化支持
 - 内置多个附加功能
   - 在本地或远程服务器即时运行命令
-  - 在应用内编辑配置文件
   - 在终端内与所在的应用交互
+  - 在应用内访问本地文件系统、编辑文件及打开网页
   - 可视化配置编辑器
+  - 基于 AI 自动补全或修复命令
+  - 截图、录制或通过局域网分享终端会话
   - 集成 [whistle](https://github.com/avwo/whistle) 代理
   - 基于 Gist 的配置同步
+  - 其他彩蛋功能
 - 用户脚本和第三方附加功能
 
 ## 定制
