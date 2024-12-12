@@ -305,10 +305,9 @@ function scrollToStickyCommand() {
 :deep(.terminal-completion) {
   max-height: calc(var(--cell-height) * var(--row-span) + 8px); // --scrollbar-size
   margin-left: calc(var(--column) * var(--cell-width));
-  border: 1px solid rgb(127 127 127 / 50%);
   overflow: hidden;
-  background: rgb(var(--theme-background) / var(--theme-opacity));
-  border-radius: 4px;
+  background: color-mix(in oklab, rgb(var(--theme-background)) 95%, white);
+  border-radius: 6px;
   box-shadow: 0 0 1em 0 rgb(0 0 0 / 25%);
   // TODO: This may slightly slow down, but is friendlier visually
   transition: transform 50ms, margin-left 50ms;
