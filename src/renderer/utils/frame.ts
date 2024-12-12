@@ -68,7 +68,6 @@ export function createContextMenu() {
     },
     {
       label: 'Paste#!menu.paste',
-      accelerator: 'CmdOrCtrl+V',
       role: 'paste',
     },
   ]
