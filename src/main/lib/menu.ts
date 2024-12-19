@@ -1,4 +1,4 @@
-import type { MenuItemConstructorOptions, PopupOptions } from 'electron'
+import type { BaseWindow, KeyboardEvent, MenuItemConstructorOptions, PopupOptions } from 'electron'
 import { app, BrowserWindow, globalShortcut, Menu, nativeImage, TouchBar } from 'electron'
 import { ipcMain } from '@commas/electron-ipc'
 import type { TranslationVariables } from '@commas/types/i18n'
@@ -40,6 +40,17 @@ const terminalKeyBindings: MenuItem[] = require(resourceFile('terminal.menu.json
 const focusedWindow = $(useFocusedWindow())
 const hasFocusedWindow = $computed(() => Boolean(focusedWindow))
 
+interface CommandSource {
+  $window: BaseWindow | undefined,
+  $event: KeyboardEvent,
+}
+
+function replaceCommandArgs(args: unknown[], source: CommandSource) {
+  return args.map(value => {
+    return typeof value === 'string' && Object.hasOwn(source, value) ? source[value] : value
+  })
+}
+
 function resolveBindingCommand(binding: MenuItem) {
   const result: MenuItemConstructorOptions = { ...binding }
   if (binding.label) {
@@ -48,12 +59,19 @@ function resolveBindingCommand(binding: MenuItem) {
   if (binding.command) {
     if (binding.command.startsWith('global-main:')) {
       result.click = (self, frame, event) => {
-        globalHandler.invoke(binding.command as never, ...(binding.args ?? []) as never, frame, event)
+        globalHandler.invoke(
+          binding.command as never,
+          ...replaceCommandArgs(binding.args ?? [], { $window: frame, $event: event }) as never,
+        )
       }
     } else {
       result.click = (self, frame, event) => {
         if (frame) {
-          send((frame as BrowserWindow).webContents, binding.command as never, ...(binding.args ?? []) as never, event)
+          send(
+            (frame as BrowserWindow).webContents,
+            binding.command as never,
+            ...replaceCommandArgs(binding.args ?? [], { $window: frame, $event: event }) as never,
+          )
         }
       }
       result.enabled = hasFocusedWindow

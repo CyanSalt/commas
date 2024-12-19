@@ -58,7 +58,7 @@ declare module '@commas/electron-ipc' {
     file: string | undefined,
   }
   export interface GlobalCommands {
-    'global-main:look-up': (text: string, frame?: BrowserWindow) => void,
+    'global-main:look-up': (text: string, frame: BrowserWindow | undefined) => void,
     'global-main:copy': (text: string) => void,
     'global-main:open-url': (url: string) => void,
     'global-main:open-path': (uri: string) => void,

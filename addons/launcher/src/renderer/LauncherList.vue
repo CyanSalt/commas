@@ -200,7 +200,7 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
     {
       label: 'Launch#!launcher.2',
       command: 'start-launcher',
-      args: [launcher],
+      args: [launcher, '$event'],
     },
     {
       label: 'Open in External#!launcher.3',
@@ -210,7 +210,7 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
     scripts.map((script, index) => ({
       label: script.name,
       command: 'run-launcher-script',
-      args: [launcher, index],
+      args: [launcher, index, '$event'],
     })),
     tab ? updatingItems : [],
     [

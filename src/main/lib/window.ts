@@ -170,9 +170,7 @@ function handleWindowMessages() {
     const frame = BrowserWindow.fromWebContents(event.sender)
     openFile(file, frame)
   })
-  globalHandler.handle('global-main:open-window', (arg?: Partial<TerminalContext> | BrowserWindow) => {
-    // Convert BrowserWindow from menu
-    const context = arg && 'contentView' in arg ? undefined : arg
+  globalHandler.handle('global-main:open-window', context => {
     createWindow(context)
   })
   ipcMain.handle('create-web-contents', (event, rect) => {

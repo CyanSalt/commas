@@ -54,7 +54,7 @@ export function createContextMenu() {
         {
           label: 'Look Up "${0}"#!menu.lookup',
           command: 'global-main:look-up',
-          args: [text.length > 50 ? text.slice(0, 50) + '...' : text],
+          args: [text.length > 50 ? text.slice(0, 50) + '...' : text, '$window'],
         },
       ]
     }
