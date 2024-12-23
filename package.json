@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@atlaskit/pragmatic-drag-and-drop": "^1.4.0",
-    "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "^1.4.0",
+    "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "^2.1.0",
     "@atlaskit/pragmatic-drag-and-drop-hitbox": "^1.0.3",
     "@commas/api": "workspace:*",
     "@commas/electron-ipc": "workspace:*",
@@ -68,7 +68,7 @@
     "@xterm/xterm": "^5.5.0",
     "css-font-face-src": "^2.0.0",
     "dotenv": "^16.4.7",
-    "dotenv-cli": "^7.4.4",
+    "dotenv-cli": "^8.0.0",
     "electron": "^33.3.0",
     "esbuild": "^0.24.2",
     "eslint": "^9.17.0",
