@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { nextTick, useId, watchEffect } from 'vue'
-import type { IconEntry, TerminalTab, TerminalTabCharacter } from '@commas/types/terminal'
+import type { TerminalTab, TerminalTabCharacter } from '@commas/types/terminal'
 import { useSettings } from '../compositions/settings'
 import { closeTerminalTab, getTerminalTabTitle, useCurrentTerminal } from '../compositions/terminal'
 import { getIconEntry, isShellProcess } from '../utils/terminal'
@@ -47,13 +47,24 @@ const pane = $computed(() => {
   return tab.pane
 })
 
+const defaultIconEntry = $computed(() => {
+  if (character) {
+    if (character.defaultIcon) {
+      return character.defaultIcon
+    }
+  }
+  if (pane) {
+    if (pane.icon) {
+      return pane.icon
+    }
+  }
+  return undefined
+})
+
 const iconEntry = $computed(() => {
-  let defaultIcon: IconEntry | undefined
   if (character) {
     if (character.icon) {
       return character.icon
-    } else {
-      defaultIcon = character.defaultIcon
     }
   }
   if (tab) {
@@ -64,12 +75,17 @@ const iconEntry = $computed(() => {
     } else {
       if (tab.shell) {
         return getIconEntry(tab)
-      } else if (pane.icon) {
-        return pane.icon
       }
     }
   }
-  return defaultIcon
+  return defaultIconEntry
+})
+
+const iconClass = $computed(() => {
+  if (!iconEntry) return undefined
+  return {
+    'is-filled': iconEntry.filled,
+  }
 })
 
 const iconStyle = $computed(() => {
@@ -168,7 +184,7 @@ function close() {
   >
     <div class="tab-overview">
       <div class="tab-title">
-        <span class="tab-icon" :style="iconStyle">
+        <span :class="['tab-icon', iconClass]" :style="iconStyle">
           <VisualIcon v-if="iconEntry" :name="iconEntry.name" />
           <template v-else-if="pane && tab!.shell">
             <VisualIcon v-if="tab!.process === tab!.cwd" name="lucide-folder-open" />
@@ -254,11 +270,25 @@ function close() {
   :deep(.visual-icon) {
     filter: drop-shadow(2px 2px 2px rgb(0 0 0 / 25%));
   }
+  &.is-filled {
+    padding: 0;
+    color: var(--icon-color);
+    font-size: #{12px + 3px * 2};
+    overflow: hidden;
+    background: white;
+    :deep(.visual-icon) {
+      filter: none;
+    }
+  }
   .tab-item.virtual & {
     color: var(--icon-color);
     background: color-mix(in oklab, var(--icon-color) 16.6667%, transparent);
     :deep(.visual-icon) {
       filter: none;
+    }
+    &.is-filled {
+      color: color-mix(in oklab, var(--icon-color) 16.6667%, white);
+      background: var(--icon-color);
     }
   }
 }

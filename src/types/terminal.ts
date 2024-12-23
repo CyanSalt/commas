@@ -16,6 +16,7 @@ export interface IconEntry {
   name: string,
   patterns?: (string | RegExp)[],
   color?: string,
+  filled?: boolean,
 }
 
 export interface TerminalTabPane {

@@ -74,14 +74,16 @@ export default [
   },
   // Files
   {
-    name: 'simple-icons-css3',
+    name: 'simple-icons-css',
     patterns: [/\.css$/],
-    color: '#1572b6',
+    color: '#663399',
+    filled: true,
   },
   {
     name: 'simple-icons-javascript',
     patterns: [/\.(c|m)?jsx?$/],
     color: '#f7df1e',
+    filled: true,
   },
   {
     name: 'simple-icons-json',
