@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@excalidraw/excalidraw": "0.17.1-d9ad7c0",
-    "@types/react-dom": "^18.3.1",
+    "@types/react-dom": "^18.3.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   }
