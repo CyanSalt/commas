@@ -19,16 +19,37 @@ function toggle() {
     :class="['ai-anchor', { active: status }]"
     @click="toggle"
   >
+    <svg class="svg-reference" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient
+          id="ai-anchor-gradient"
+          gradientUnits="userSpaceOnUse"
+          x1="0"
+          y1="0"
+          x2="20"
+          y2="20"
+        >
+          <stop offset="25%" stop-color="rgb(var(--system-cyan))" />
+          <stop offset="50%" stop-color="rgb(var(--system-blue))" />
+          <stop offset="75%" stop-color="rgb(var(--system-purple))" />
+        </linearGradient>
+      </defs>
+    </svg>
     <VisualIcon name="lucide-sparkles" />
   </button>
 </template>
 
 <style lang="scss" scoped>
 .ai-anchor.active {
-  color: rgb(var(--system-purple));
   opacity: 1;
   :deep(.visual-icon) {
-    fill: currentColor;
+    fill: url('#ai-anchor-gradient');
+    stroke: url('#ai-anchor-gradient');
   }
+}
+.svg-reference {
+  position: absolute;
+  width: 0;
+  height: 0;
 }
 </style>
