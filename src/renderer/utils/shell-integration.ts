@@ -12,7 +12,7 @@ import { getCursorPosition, scrollToMarker } from '../compositions/terminal'
 import { useTheme } from '../compositions/theme'
 import { openContextMenu } from './frame'
 import { translate } from './i18n'
-import { getReadableSignal } from './terminal'
+import { getReadableSignal, isErrorExitCode } from './terminal'
 
 declare module '@commas/api/modules/app' {
   export interface Events {
@@ -248,7 +248,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
                 if (!this.currentCommand.marker.isDisposed) {
                   const theme = useTheme()
                   this.currentCommand.decoration.dispose()
-                  const shouldHighlight = exitCode > 0 && exitCode < 128 && settings['terminal.shell.highlightErrors']
+                  const shouldHighlight = isErrorExitCode(exitCode) && settings['terminal.shell.highlightErrors']
                   if (shouldHighlight) {
                     this._createHighlightDecoration(
                       xterm,
@@ -599,7 +599,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   }
 
   _generateQuickFixActions(command: IntegratedShellCommand | undefined) {
-    if (command?.command && command.exitCode) {
+    if (command?.command && command.exitCode && isErrorExitCode(command.exitCode)) {
       const output = this._getCommandOutput(command)
       return this._getQuickFixActionsByOutput(command.command, output)
     }

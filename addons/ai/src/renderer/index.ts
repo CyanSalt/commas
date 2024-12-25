@@ -28,6 +28,7 @@ export default () => {
       status
       && command.command
       && command.exitCode
+      && commas.workspace.isErrorExitCode(command.exitCode)
       && !command.actions?.length
     ) {
       const recommendation = await ipcRenderer.invoke('ai-fix', command.command, output)

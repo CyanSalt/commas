@@ -19,7 +19,7 @@ import {
   useTerminalTabGroupSeparating,
   useTerminalTabs,
 } from '../../renderer/compositions/terminal'
-import { createTerminalTabContextMenu, getTerminalExecutorCommand, TERMINAL_DIRECTORY_SHELL } from '../../renderer/utils/terminal'
+import { createTerminalTabContextMenu, getTerminalExecutorCommand, isErrorExitCode, TERMINAL_DIRECTORY_SHELL } from '../../renderer/utils/terminal'
 import type { RendererAPIContext } from '../types'
 
 const tabs = $(useTerminalTabs())
@@ -160,4 +160,5 @@ export {
   TERMINAL_DIRECTORY_SHELL,
   useReadonlyTerminal,
   getTerminalExecutorCommand,
+  isErrorExitCode,
 }
