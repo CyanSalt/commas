@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { nextTick, useId, watchEffect } from 'vue'
 import type { TerminalTab, TerminalTabCharacter } from '@commas/types/terminal'
+import { isDarkColor, toRGBA } from '../../shared/color'
 import { useSettings } from '../compositions/settings'
 import { closeTerminalTab, getTerminalTabTitle, useCurrentTerminal } from '../compositions/terminal'
 import { getIconEntry, isShellProcess } from '../utils/terminal'
@@ -92,6 +93,9 @@ const iconStyle = $computed(() => {
   if (!iconEntry) return undefined
   return {
     '--icon-color': iconEntry.color,
+    '--icon-alt-color': iconEntry.color ? (
+      isDarkColor(toRGBA(iconEntry.color)) ? 'white' : 'black'
+    ) : undefined,
   }
 })
 
@@ -256,6 +260,7 @@ function close() {
 }
 .tab-icon {
   --icon-color: rgb(var(--system-accent));
+  --icon-alt-color: white;
   display: flex;
   flex: none;
   justify-content: center;
@@ -263,7 +268,7 @@ function close() {
   height: 1em;
   margin-right: 6px;
   padding: 3px;
-  color: white;
+  color: var(--icon-alt-color);
   font-size: 12px;
   background: var(--icon-color);
   border-radius: 4px;
@@ -275,7 +280,7 @@ function close() {
     color: var(--icon-color);
     font-size: #{12px + 3px * 2};
     overflow: hidden;
-    background: white;
+    background: var(--icon-alt-color);
     :deep(.visual-icon) {
       filter: none;
     }
@@ -287,7 +292,7 @@ function close() {
       filter: none;
     }
     &.is-filled {
-      color: color-mix(in oklab, var(--icon-color) 16.6667%, white);
+      color: color-mix(in oklab, var(--icon-color) 16.6667%, rgb(var(--theme-background)));
       background: var(--icon-color);
     }
   }
