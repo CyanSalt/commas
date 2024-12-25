@@ -2,7 +2,7 @@ import type EventEmitter from 'node:events'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
 import type { Dock, FindInPageOptions, MessageBoxOptions, MessageBoxReturnValue, NativeImage, Result, WebContents, WebContentsView } from 'electron'
-import { app, BrowserWindow, clipboard, dialog, nativeImage, shell } from 'electron'
+import { app, BrowserWindow, clipboard, dialog, nativeImage, shell, webContents } from 'electron'
 import * as fileIcon from 'file-icon'
 import unusedFilename from 'unused-filename'
 import { ipcMain } from '@commas/electron-ipc'
@@ -36,8 +36,8 @@ declare module '@commas/electron-ipc' {
     notify: typeof notify,
     'activate-window': () => void,
     bounce: (state: { active: boolean, type?: Parameters<Dock['bounce']>[0] }) => void,
-    find: (text: string, options?: FindInPageOptions) => Result,
-    'stop-finding': (type: Parameters<WebContents['stopFindInPage']>[0]) => void,
+    find: (text: string, options?: FindInPageOptions, viewId?: number) => Result,
+    'stop-finding': (type: Parameters<WebContents['stopFindInPage']>[0], viewId?: number) => void,
     'read-file': typeof readFile,
     'show-file': (file: string) => void,
     'preview-file': (file: string) => void,
@@ -225,15 +225,19 @@ function handleMessages() {
       }
     }
   })
-  ipcMain.handle('find', async (event, text, options) => {
-    const foundInPage = until(event.sender as unknown as EventEmitter<{ 'found-in-page': [unknown, Result] }>, 'found-in-page')
-    event.sender.findInPage(text, options)
+  ipcMain.handle('find', async (event, text, options, viewId) => {
+    const view = viewId ? webContents.fromId(viewId) : undefined
+    const sender = view ?? event.sender
+    const foundInPage = until(sender as unknown as EventEmitter<{ 'found-in-page': [unknown, Result] }>, 'found-in-page')
+    sender.findInPage(text, options)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [fountInPageEvent, result] = await foundInPage
     return result
   })
-  ipcMain.handle('stop-finding', (event, action) => {
-    event.sender.stopFindInPage(action)
+  ipcMain.handle('stop-finding', (event, action, viewId) => {
+    const view = viewId ? webContents.fromId(viewId) : undefined
+    const sender = view ?? event.sender
+    sender.stopFindInPage(action)
   })
   ipcMain.handle('read-file', (event, file) => {
     return readFile(file)

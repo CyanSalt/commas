@@ -27,6 +27,7 @@ export interface TerminalTabPane {
   instance?: {
     save?: () => void,
     rename?: (name: string) => void,
+    viewId?: number,
   },
   volatile?: boolean,
   factory?: (

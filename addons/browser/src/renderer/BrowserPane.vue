@@ -85,6 +85,26 @@ watchEffect((onInvalidate) => {
     })
   }
 })
+
+const viewId = $computed(() => {
+  if (!view) return undefined
+  return view.id
+})
+
+watchEffect((onInvalidate) => {
+  if (tab.pane) {
+    // eslint-disable-next-line vue/no-mutating-props
+    tab.pane.instance = {
+      viewId,
+    }
+    onInvalidate(() => {
+      if (tab.pane) {
+        // eslint-disable-next-line vue/no-mutating-props
+        delete tab.pane.instance
+      }
+    })
+  }
+})
 </script>
 
 <template>

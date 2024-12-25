@@ -66,7 +66,7 @@ async function findPrevious() {
     const result = await ipcRenderer.invoke('find', keyword, {
       forward: false,
       matchCase: searchOptions.caseSensitive,
-    })
+    }, terminal.pane.instance?.viewId)
     totalNumber = result.matches
     currentNumber = result.activeMatchOrdinal
   } else {
@@ -80,7 +80,7 @@ async function findNext() {
     const result = await ipcRenderer.invoke('find', keyword, {
       forward: true,
       matchCase: searchOptions.caseSensitive,
-    })
+    }, terminal.pane.instance?.viewId)
     totalNumber = result.matches
     currentNumber = result.activeMatchOrdinal
   } else {
@@ -108,7 +108,7 @@ function toggle(key: keyof typeof options) {
 watch($$(isFinding), (value: boolean) => {
   if (!terminal || value) return
   if (terminal.pane) {
-    ipcRenderer.invoke('stop-finding', 'clearSelection')
+    ipcRenderer.invoke('stop-finding', 'clearSelection', terminal.pane.instance?.viewId)
   } else {
     terminal.addons.search.clearDecorations()
   }
