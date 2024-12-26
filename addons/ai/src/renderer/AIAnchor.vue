@@ -29,9 +29,10 @@ function toggle() {
           x2="20"
           y2="20"
         >
-          <stop offset="25%" stop-color="rgb(var(--system-cyan))" />
-          <stop offset="50%" stop-color="rgb(var(--system-blue))" />
-          <stop offset="75%" stop-color="rgb(var(--system-purple))" />
+          <stop offset="22%" stop-color="rgb(var(--system-cyan))" />
+          <stop offset="44%" stop-color="rgb(var(--system-blue))" />
+          <stop offset="66%" stop-color="rgb(var(--system-purple))" />
+          <stop offset="88%" stop-color="rgb(var(--theme-foreground))" />
         </linearGradient>
       </defs>
     </svg>
