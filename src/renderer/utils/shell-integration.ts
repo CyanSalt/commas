@@ -1,6 +1,6 @@
 import type { IDecoration, IDisposable, IMarker, ITerminalAddon, Terminal } from '@xterm/xterm'
 import fuzzaldrin from 'fuzzaldrin-plus'
-import { isEqual } from 'lodash'
+import { isEqual, sortBy } from 'lodash'
 import { nextTick, reactive, toRaw } from 'vue'
 import { ipcRenderer } from '@commas/electron-ipc'
 import type { MenuItem } from '@commas/types/menu'
@@ -109,26 +109,31 @@ function filterAndSortCompletions(completions: CommandCompletion[]) {
       deduplicatedCompletions.splice(existingIndex, 1, replacement)
     }
   }
-  const sortedCompletions = deduplicatedCompletions
-    .map(item => {
-      const duplicatedTimesItem = duplicatedTimes.find(record => {
-        return record.value === item.value
-          && record.query === item.query
+  const sortedCompletions = sortBy(
+    deduplicatedCompletions
+      .map(item => {
+        const duplicatedTimesItem = duplicatedTimes.find(record => {
+          return record.value === item.value
+            && record.query === item.query
+        })
+        const times = duplicatedTimesItem ? duplicatedTimesItem.times : 1
+        let score: number
+        if (item.value === item.query) {
+          score = Infinity
+        } else if (item.query) {
+          const max = fuzzaldrin.score(item.query, item.query)
+          score = fuzzaldrin.score(item.value, item.query) / max
+        } else {
+          score = 0
+        }
+        return [item, score, times] as const
       })
-      const scale = duplicatedTimesItem ? duplicatedTimesItem.times : 1
-      let score: number
-      if (item.value === item.query) {
-        score = Infinity
-      } else if (item.query) {
-        score = fuzzaldrin.score(item.value, item.query)
-      } else {
-        score = 1
-      }
-      return [item, score * scale] as const
-    })
-    .filter(([item, score]) => score > 0)
-    .sort(([itemA, scoreA], [itemB, scoreB]) => scoreB - scoreA)
-    .map(([item]) => item)
+      .filter(([item, score]) => score > 0.2),
+    [
+      ([item, score, times]) => -score,
+      ([item, score, times]) => -times,
+    ],
+  ).map(([item]) => item)
   // Always make history second at most
   if (sortedCompletions.length && sortedCompletions[0].type === 'history') {
     sortedCompletions.unshift({

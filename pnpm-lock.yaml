@@ -26,9 +26,6 @@ importers:
       file-icon:
         specifier: ^4.0.0
         version: 4.0.0
-      fuzzaldrin-plus:
-        specifier: ^0.6.0
-        version: 0.6.0
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -175,6 +172,9 @@ importers:
       eslint:
         specifier: ^9.17.0
         version: 9.17.0
+      fuzzaldrin-plus:
+        specifier: ^0.6.0
+        version: 0.6.0
       keyboardevent-from-electron-accelerator:
         specifier: ^2.0.0
         version: 2.0.0
