@@ -298,8 +298,11 @@ async function getFrequentlyUsedProgramCompletions(query: string, cwd: string, c
 const getShellHistoryTokenLists = memoize(() => {
   const history = uniq((shellHistory() as string[]).reverse()).slice(0, 100)
   return history.map(line => {
-    return parse(line)
-      .filter((item): item is string => (typeof item === 'string' && Boolean(item)))
+    try {
+      return parse(line).filter((item): item is string => (typeof item === 'string' && Boolean(item)))
+    } catch {
+      return []
+    }
   })
 })
 
