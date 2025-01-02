@@ -50,7 +50,10 @@ function ask(query) {
     input: process.stdin,
     output: process.stdout,
   })
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
+    rl.once('close', () => {
+      reject(new Error('Aborted'))
+    })
     rl.question(query, answer => {
       resolve(answer)
       rl.close()
@@ -69,8 +72,13 @@ async function connect() {
     output = true
   })
   server.on('pause', async (data) => {
-    const answer = await ask(data)
-    server.emit('resume', answer)
+    try {
+      const answer = await ask(data)
+      server.emit('resume', answer)
+    } catch {
+      ipc.disconnect(server.id)
+      process.exitCode = os.constants.signals.SIGINT
+    }
   })
   server.on('error', (data) => {
     process.stderr.write(data)
