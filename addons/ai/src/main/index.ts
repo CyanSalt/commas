@@ -30,8 +30,13 @@ export default () => {
   commas.context.provide('cli.command', {
     command: 'ai',
     description: 'Get command with AI prompt#!cli.description.ai',
-    async *handler({ sender }) {
-      const query = yield '? \x05'
+    async *handler({ argv, sender }) {
+      let query: string
+      if (argv.length) {
+        query = argv.join(' ')
+      } else {
+        query = yield '? \x05'
+      }
       if (query) {
         const command = await translateCommand(query)
         await commas.ipcMain.invoke(sender, 'ai-quick-fix', command)
