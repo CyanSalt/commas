@@ -105,8 +105,12 @@ const stickyVariables = $computed(() => {
   }
 })
 
+function isPassthrough(item: CommandCompletion) {
+  return !item.loading && item.value === item.query
+}
+
 function getCompletionIcon(item: CommandCompletion) {
-  if (item.value === item.query) return 'lucide-corner-down-left'
+  if (isPassthrough(item)) return 'lucide-corner-down-left'
   switch (item.type) {
     case 'history':
       return 'lucide-clock'
@@ -129,7 +133,7 @@ function selectCompletion(event: MouseEvent, item: CommandCompletion) {
   const index = renderableCompletion!.items
     .findIndex(completion => completion.value === item.value)
   if (index === -1) return
-  if (linkModifier) {
+  if (linkModifier || renderableCompletion!.items[index].loading) {
     tab.addons.shellIntegration!.selectCompletion(index)
   } else {
     tab.addons.shellIntegration!.applyCompletion(index)
@@ -193,13 +197,16 @@ function scrollToStickyCommand() {
             :class="[
               'terminal-completion-item',
               item.type ?? 'default',
-              { 'is-passthrough': item.value === item.query },
+              { 'is-passthrough': isPassthrough(item) },
               { 'is-active': item.value === selectedCompletion?.value },
             ]"
             @click.stop.prevent="selectCompletion($event, item)"
           >
             <VisualIcon :name="getCompletionIcon(item)" class="completion-item-icon" />
-            <span class="completion-item-label" v-html="highlightLabel(item.value, item.query)"></span>
+            <span v-if="item.loading" class="completion-item-label">
+              <span class="completion-item-loader"></span>
+            </span>
+            <span v-else class="completion-item-label" v-html="highlightLabel(item.value, item.query)"></span>
           </span>
         </template>
         <template #after>
@@ -389,6 +396,35 @@ function scrollToStickyCommand() {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+@keyframes loader-switch {
+  0% {
+    background: var(--loader-color);
+    box-shadow: 2em 0 var(--loader-color), -2em 0 var(--loader-active-color);
+  }
+  33% {
+    background: var(--loader-active-color);
+    box-shadow: 2em 0 var(--loader-color), -2em 0 var(--loader-color);
+  }
+  66% {
+    background: var(--loader-color);
+    box-shadow: 2em 0 var(--loader-active-color), -2em 0 var(--loader-color);
+  }
+  100% {
+    background: var(--loader-color);
+    box-shadow: 2em 0 var(--loader-color), -2em 0 var(--loader-active-color);
+  }
+}
+.completion-item-loader {
+  --loader-color: rgb(var(--theme-foreground) / 25%);
+  --loader-active-color: rgb(var(--theme-foreground) / 50%);
+  display: block;
+  width: 1em;
+  height: 1em;
+  margin: 0 2em;
+  font-size: 4px;
+  border-radius: 1em;
+  animation: loader-switch 1s infinite linear;
 }
 .terminal-completion-desc {
   padding: 0 0.375ch;

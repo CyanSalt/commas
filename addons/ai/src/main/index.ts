@@ -39,7 +39,7 @@ export default () => {
       }
       if (query) {
         const command = await translateCommand(query)
-        await commas.ipcMain.invoke(sender, 'ai-quick-fix', command)
+        await commas.ipcMain.invoke(sender, 'ai-chat-fix', command)
         return `> ${command}`
       }
     },

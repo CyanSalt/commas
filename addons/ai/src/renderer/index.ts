@@ -5,7 +5,7 @@ import { useAIStatus } from './compositions'
 
 declare module '@commas/electron-ipc' {
   export interface RendererCommands {
-    'ai-quick-fix': (command: string) => void,
+    'ai-chat-fix': (command: string) => void,
   }
 }
 
@@ -15,13 +15,15 @@ export default () => {
 
   const terminal = $(commas.workspace.useCurrentTerminal())
 
-  commas.ipcRenderer.handle('ai-quick-fix', (event, command) => {
+  commas.ipcRenderer.handle('ai-chat-fix', (event, command) => {
     if (!terminal) return
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    terminal.addons?.shellIntegration?.addQuickFixAction(command)
+    terminal.addons?.shellIntegration?.addQuickFixAction(undefined, { command })
   })
 
   const status = $(useAIStatus())
+
+  const generateID = commas.helper.createIDGenerator()
 
   commas.app.on('terminal.command-complete', async (command, output) => {
     if (
@@ -31,10 +33,13 @@ export default () => {
       && commas.workspace.isErrorExitCode(command.exitCode)
       && !command.actions?.length
     ) {
-      const recommendation = await ipcRenderer.invoke('ai-fix', command.command, output)
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (recommendation && terminal?.addons?.shellIntegration) {
-        terminal.addons.shellIntegration.addQuickFixAction(recommendation, command)
+      const shellIntegration = terminal?.addons?.shellIntegration
+      if (shellIntegration) {
+        const id = `ai.fix@${generateID()}`
+        shellIntegration.addQuickFixAction(command, { loading: id })
+        const recommendation = await ipcRenderer.invoke('ai-fix', command.command, output)
+        shellIntegration.resolveLoadingCompletion(id, recommendation)
       }
     }
   })
