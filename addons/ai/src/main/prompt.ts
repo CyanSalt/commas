@@ -12,13 +12,15 @@ function getOSName() {
   }
 }
 
+class AnswerSyntaxError extends Error {}
+
 async function getAnswer(input: unknown) {
   const answer = await access(() => chat(JSON.stringify(input)))
   try {
     const data = JSON.parse(answer)
-    return data.answer
+    return data.answer as string
   } catch {
-    return answer
+    throw new AnswerSyntaxError(answer)
   }
 }
 
@@ -41,6 +43,7 @@ function fixCommand(command: string, output: string) {
 
 export {
   access,
+  AnswerSyntaxError,
   translateCommand,
   fixCommand,
 }

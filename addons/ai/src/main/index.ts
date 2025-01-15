@@ -1,6 +1,6 @@
 import * as commas from 'commas:api/main'
 import { getAccessToken, useAIStatus } from './chat'
-import { fixCommand, translateCommand } from './prompt'
+import { AnswerSyntaxError, fixCommand, translateCommand } from './prompt'
 import { access, stopServer } from './server'
 
 declare module '@commas/electron-ipc' {
@@ -38,7 +38,15 @@ export default () => {
         query = yield '? \x05'
       }
       if (query) {
-        const command = await translateCommand(query)
+        let command: string
+        try {
+          command = await translateCommand(query)
+        } catch (err) {
+          if (err instanceof AnswerSyntaxError) {
+            return `# ${err.message}`
+          }
+          throw err
+        }
         await commas.ipcMain.invoke(sender, 'ai-chat-fix', command)
         return `> ${command}`
       }
