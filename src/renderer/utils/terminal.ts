@@ -146,7 +146,7 @@ export function getTerminalTabID(tab: TerminalTab) {
 }
 
 export function isErrorExitCode(code: number) {
-  return code > 0 && code < 128
+  return code > 0 && code <= 128
 }
 
 export function getReadableSignal(code: number) {
