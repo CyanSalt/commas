@@ -306,8 +306,10 @@ ${
         type: 'command' as const,
         query,
         value: item.command,
-        description: commas.i18n.translate(item.usage ?? '')
-          + (item.description ? '\n\n' + commas.i18n.translate(item.description) : ''),
+        description: [
+          item.usage ? commas.i18n.translate(item.usage) : '',
+          item.description ? commas.i18n.translate(item.description) : '',
+        ].filter(Boolean).join('\n\n'),
       }))
     }
     return []
