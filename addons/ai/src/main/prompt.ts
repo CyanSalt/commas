@@ -41,9 +41,18 @@ function fixCommand(command: string, output: string) {
   })
 }
 
+function completeCommand(query: string) {
+  return getAnswer({
+    type: 'complete',
+    query,
+    os: getOSName(),
+  })
+}
+
 export {
   access,
   AnswerSyntaxError,
   translateCommand,
   fixCommand,
+  completeCommand,
 }

@@ -123,7 +123,7 @@ function filterAndSortCompletions(completions: CommandCompletion[]) {
         })
         const times = duplicatedTimesItem ? duplicatedTimesItem.times : 1
         let score: number
-        if (item.value === item.query) {
+        if (item.state || item.value === item.query) {
           score = Infinity
         } else if (item.query) {
           const max = fuzzaldrin.score(item.query, item.query)
@@ -815,6 +815,17 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (item) {
       if (item.state === 'loading') return true
+      if (item.state === 'pending') {
+        const loaders = commas.proxy.context.getCollection('terminal.completion-loader')
+        // Do not use `.some` directly since it will return earlier
+        const completion = this.renderableCompletion.raw[index]
+        const matched = loaders.map(loader => loader(completion, this))
+          .some(value => value)
+        if (matched) {
+          completion.state = 'loading'
+        }
+        return matched
+      }
       const back = item.query.length
       if (isEnterPressing && item.value.length === back) return false
       this._applyCompletion(item.value, back)

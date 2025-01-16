@@ -133,7 +133,7 @@ function selectCompletion(event: MouseEvent, item: CommandCompletion) {
   const index = renderableCompletion!.items
     .findIndex(completion => completion.value === item.value)
   if (index === -1) return
-  if (linkModifier || renderableCompletion!.items[index].state !== 'loading') {
+  if (linkModifier) {
     tab.addons.shellIntegration!.selectCompletion(index)
   } else {
     tab.addons.shellIntegration!.applyCompletion(index)
@@ -206,6 +206,7 @@ function scrollToStickyCommand() {
             <span v-if="item.state === 'loading'" class="completion-item-label">
               <span class="completion-item-loader"></span>
             </span>
+            <span v-else-if="item.state === 'pending'" class="completion-item-label is-pending">{{ item.value }}</span>
             <span v-else class="completion-item-label" v-html="highlightLabel(item.value, item.query)"></span>
           </span>
         </template>
@@ -396,6 +397,11 @@ function scrollToStickyCommand() {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  &.is-pending {
+    color: rgb(var(--theme-foreground) / 50%);
+    font-style: italic;
+    font-size: 12px;
+  }
 }
 @keyframes loader-switch {
   0% {

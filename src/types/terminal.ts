@@ -85,7 +85,7 @@ export interface CommandCompletion {
   query: string,
   type?: 'history' | 'file' | 'directory' | 'recommendation' | 'third-party' | 'command' | 'default',
   description?: string,
-  state?: 'loading',
+  state?: 'pending' | 'loading',
   key?: string,
 }
 

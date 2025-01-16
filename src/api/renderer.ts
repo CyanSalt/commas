@@ -1,5 +1,5 @@
 import type { MenuItem } from '@commas/types/menu'
-import type { IconEntry, TerminalTabCharacter, TerminalTabCharacterCommand } from '@commas/types/terminal'
+import type { CommandCompletion, IconEntry, TerminalTabAddons, TerminalTabCharacter, TerminalTabCharacterCommand } from '@commas/types/terminal'
 import type { Component } from 'vue'
 
 declare module './modules/context' {
@@ -21,6 +21,10 @@ declare module './modules/context' {
     },
     'terminal.shell': MenuItem,
     'terminal.icon': IconEntry & { patterns: NonNullable<IconEntry['patterns']> },
+    'terminal.completion-loader': (
+      completion: CommandCompletion,
+      shellIntegration: NonNullable<TerminalTabAddons['shellIntegration']>
+    ) => boolean,
   }
 }
 

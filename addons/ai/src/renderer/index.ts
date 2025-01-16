@@ -44,6 +44,17 @@ export default () => {
     }
   })
 
+  commas.context.provide('terminal.completion-loader', (completion, shellIntegration) => {
+    const key = completion.key
+    if (key?.startsWith('ai-completion@')) {
+      ipcRenderer.invoke('ai-completion', completion.query).then(command => {
+        shellIntegration.resolveLoadingCompletion(key, command)
+      })
+      return true
+    }
+    return false
+  })
+
   commas.context.provide('terminal.ui-left-action-anchor', AIAnchor)
 
 }

@@ -1,11 +1,12 @@
 import * as commas from 'commas:api/main'
 import { getAccessToken, useAIStatus } from './chat'
-import { AnswerSyntaxError, fixCommand, translateCommand } from './prompt'
+import { AnswerSyntaxError, completeCommand, fixCommand, translateCommand } from './prompt'
 import { access, stopServer } from './server'
 
 declare module '@commas/electron-ipc' {
   export interface Commands {
     'ai-fix': (command: string, output: string) => string,
+    'ai-completion': (input: string) => string,
     'toggle-ai': (value: boolean) => void,
   }
   export interface Refs {
@@ -53,9 +54,31 @@ export default () => {
     },
   })
 
+  const generateID = commas.helper.createIDGenerator()
+
+  commas.context.provide('terminal.completion', async params => {
+    return [
+      {
+        value: commas.i18n.translate('<Autocomplete with AI>#!ai.2'),
+        query: params.input,
+        type: 'third-party',
+        state: 'pending',
+        key: `ai-completion@${generateID()}`,
+      },
+    ]
+  })
+
   commas.ipcMain.handle('ai-fix', async (event, command, output) => {
     try {
       return await fixCommand(command, output)
+    } catch {
+      return ''
+    }
+  })
+
+  commas.ipcMain.handle('ai-completion', async (event, input) => {
+    try {
+      return await completeCommand(input)
     } catch {
       return ''
     }
