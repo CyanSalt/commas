@@ -125,7 +125,7 @@ function getCompletionIcon(item: CommandCompletion) {
     case 'command':
       return 'lucide-terminal'
     default:
-      return 'lucide-more-horizontal'
+      return 'lucide-ellipsis'
   }
 }
 
