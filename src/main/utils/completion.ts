@@ -405,7 +405,7 @@ async function getCompletions(input: string, cwd: string) {
     : ''
   const subcommand = command && isWordStart || subcommandArgs.length > 0
     ? undeterminedSubcommand
-    : ''
+    : undefined
   let asyncCompletionLists: Promise<CommandCompletion[]>[] = []
   // Registered
   const factories = commas.proxy.context.getCollection('terminal.completion')

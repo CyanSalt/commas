@@ -128,7 +128,7 @@ function filterAndSortCompletions(completions: CommandCompletion[]) {
           const max = fuzzaldrin.score(item.query, item.query)
           score = fuzzaldrin.score(item.value, item.query) / max
         } else {
-          score = 0
+          score = 1
         }
         return [item, score, times] as const
       })
