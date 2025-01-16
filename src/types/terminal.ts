@@ -85,7 +85,8 @@ export interface CommandCompletion {
   query: string,
   type?: 'history' | 'file' | 'directory' | 'recommendation' | 'third-party' | 'command' | 'default',
   description?: string,
-  loading?: string,
+  state?: 'loading',
+  key?: string,
 }
 
 export interface TerminalTabPosition {

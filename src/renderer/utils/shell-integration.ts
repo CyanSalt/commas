@@ -23,7 +23,8 @@ declare module '@commas/api/modules/app' {
 interface IntegratedShellCommandAction {
   type: Extract<CommandCompletion['type'], 'recommendation' | 'third-party'>,
   command: string,
-  loading?: CommandCompletion['loading'],
+  state?: CommandCompletion['state'],
+  key?: CommandCompletion['key'],
 }
 
 interface IntegratedShellCommand {
@@ -59,7 +60,7 @@ interface RenderableIntegratedShellCompletion {
   index: number,
   element?: HTMLElement,
   mounted: Map<CommandCompletion['value'], HTMLElement>,
-  loaded: Map<NonNullable<CommandCompletion['loading']>, CommandCompletion['value']>,
+  loaded: Map<NonNullable<CommandCompletion['key']>, CommandCompletion['value']>,
 }
 
 interface RenderableIntegratedStickyCommand {
@@ -81,9 +82,9 @@ function filterAndSortCompletions(completions: CommandCompletion[]) {
   const duplicatedTimes: (Pick<CommandCompletion, 'value' | 'query'> & { times: number })[] = []
   const deduplicatedCompletions: CommandCompletion[] = []
   for (const completion of completions) {
-    const isPassthrough = !completion.loading && completion.value === completion.query
-    const existingIndex = completion.loading ? -1 : deduplicatedCompletions.findIndex(item => {
-      if (item.loading) return false
+    const isPassthrough = !completion.state && completion.value === completion.query
+    const existingIndex = completion.state ? -1 : deduplicatedCompletions.findIndex(item => {
+      if (item.state) return false
       return isPassthrough
         ? item.value === item.query
         : item.value === completion.value && item.query === completion.query
@@ -135,8 +136,9 @@ function filterAndSortCompletions(completions: CommandCompletion[]) {
       .filter(([item, score]) => score > 0.2),
     [
       ([item, score, times]) => {
-        if (item.value.startsWith(item.query)) return -1
-        if (item.loading) return 0
+        if (item.state) return 0
+        if (item.value === item.query) return -Infinity
+        if (item.query && item.value.startsWith(item.query)) return -1
         return 1
       },
       ([item, score, times]) => -score,
@@ -182,13 +184,12 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       loaded: new Map(),
       items: computed(() => {
         return this.renderableCompletion.raw.map(item => {
-          if (!item.loading) return item
-          const value = this.renderableCompletion.loaded.get(item.loading)
-          if (value !== undefined) {
-            const { loading, ...props } = item
-            return { ...props, value }
-          }
-          return item
+          const value = item.state === 'loading' && item.key
+            ? this.renderableCompletion.loaded.get(item.key)
+            : undefined
+          const key = item.key ? `key:${item.key}` : `value:${item.value}`
+          const state = value ? undefined : item.state
+          return { ...item, state, key, value: value ?? item.value }
         })
       }),
     })
@@ -712,7 +713,8 @@ export class ShellIntegrationAddon implements ITerminalAddon {
         type: action.type,
         query: input,
         value: action.command,
-        loading: action.loading,
+        state: action.state,
+        key: action.key,
       }))
       completions = completions.concat(actionCompletions)
     }
@@ -721,8 +723,8 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     return filterAndSortCompletions(completions)
   }
 
-  resolveLoadingCompletion(loading: NonNullable<IntegratedShellCommandAction['loading']>, value: CommandCompletion['value']) {
-    this.renderableCompletion.loaded.set(loading, value)
+  resolveLoadingCompletion(key: NonNullable<IntegratedShellCommandAction['key']>, value: CommandCompletion['value']) {
+    this.renderableCompletion.loaded.set(key, value)
   }
 
   async triggerCompletion() {
@@ -812,7 +814,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     const item = this.renderableCompletion.items[index]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (item) {
-      if (item.loading) return true
+      if (item.state === 'loading') return true
       const back = item.query.length
       if (isEnterPressing && item.value.length === back) return false
       this._applyCompletion(item.value, back)
@@ -860,7 +862,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
 
   addQuickFixAction(
     target: IntegratedShellCommand | undefined,
-    action: Omit<IntegratedShellCommandAction, 'type'> | Required<Pick<IntegratedShellCommandAction, 'loading'>>,
+    action: Omit<IntegratedShellCommandAction, 'type'> | Required<Pick<IntegratedShellCommandAction, 'state' | 'key'>>,
   ) {
     const targetCommand = target ?? this.currentCommand
     if (!targetCommand) return

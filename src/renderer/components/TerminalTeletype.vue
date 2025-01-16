@@ -106,7 +106,7 @@ const stickyVariables = $computed(() => {
 })
 
 function isPassthrough(item: CommandCompletion) {
-  return !item.loading && item.value === item.query
+  return !item.state && item.value === item.query
 }
 
 function getCompletionIcon(item: CommandCompletion) {
@@ -133,7 +133,7 @@ function selectCompletion(event: MouseEvent, item: CommandCompletion) {
   const index = renderableCompletion!.items
     .findIndex(completion => completion.value === item.value)
   if (index === -1) return
-  if (linkModifier || renderableCompletion!.items[index].loading) {
+  if (linkModifier || renderableCompletion!.items[index].state !== 'loading') {
     tab.addons.shellIntegration!.selectCompletion(index)
   } else {
     tab.addons.shellIntegration!.applyCompletion(index)
@@ -184,26 +184,26 @@ function scrollToStickyCommand() {
       <RecycleScroller
         :items="renderableCompletion.items"
         :item-size="cell!.height"
-        key-field="value"
+        key-field="key"
         class="terminal-completion-wrapper"
         list-tag="ul"
         list-class="terminal-completion-list"
         item-tag="li"
         item-class="terminal-completion-item-wrapper"
       >
-        <template #default="{ item }">
+        <template #default="{ item }: { item: CommandCompletion }">
           <span
             :ref="(el: HTMLDivElement) => mountCompletion(el, item)"
             :class="[
               'terminal-completion-item',
               item.type ?? 'default',
               { 'is-passthrough': isPassthrough(item) },
-              { 'is-active': item.value === selectedCompletion?.value },
+              { 'is-active': item.key === selectedCompletion?.key },
             ]"
             @click.stop.prevent="selectCompletion($event, item)"
           >
             <VisualIcon :name="getCompletionIcon(item)" class="completion-item-icon" />
-            <span v-if="item.loading" class="completion-item-label">
+            <span v-if="item.state === 'loading'" class="completion-item-label">
               <span class="completion-item-loader"></span>
             </span>
             <span v-else class="completion-item-label" v-html="highlightLabel(item.value, item.query)"></span>

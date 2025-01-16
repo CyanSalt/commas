@@ -453,7 +453,12 @@ async function getCompletions(input: string, cwd: string) {
     )
   }
   const lists = await Promise.all(asyncCompletionLists)
-  return lists.flat()
+  const completions = lists.flat()
+  // Always add a passthrough option
+  if (completions.length && !currentWord) {
+    completions.push({ value: '', query: '' })
+  }
+  return completions
 }
 
 function refreshCompletions() {

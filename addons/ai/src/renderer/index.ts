@@ -36,10 +36,10 @@ export default () => {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       const shellIntegration = terminal?.addons?.shellIntegration
       if (shellIntegration) {
-        const id = `ai.fix@${generateID()}`
-        shellIntegration.addQuickFixAction(command, { loading: id })
+        const key = `ai.fix@${generateID()}`
+        shellIntegration.addQuickFixAction(command, { state: 'loading', key })
         const recommendation = await ipcRenderer.invoke('ai-fix', command.command, output)
-        shellIntegration.resolveLoadingCompletion(id, recommendation)
+        shellIntegration.resolveLoadingCompletion(key, recommendation)
       }
     }
   })
