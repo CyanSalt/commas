@@ -2,7 +2,12 @@ import type { CommandCompletion } from '@commas/types/terminal'
 
 declare module './modules/context' {
   export interface Context {
-    'terminal.completion': (query: string, command: string, subcommand?: string) => Promise<CommandCompletion[]>,
+    'terminal.completion': (params: {
+      input: string,
+      query: string,
+      command: string,
+      subcommand?: string,
+    }) => Promise<CommandCompletion[]>,
   }
 }
 

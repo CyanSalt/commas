@@ -410,7 +410,12 @@ async function getCompletions(input: string, cwd: string) {
   // Registered
   const factories = commas.proxy.context.getCollection('terminal.completion')
   asyncCompletionLists = asyncCompletionLists.concat(
-    factories.map(factory => factory(currentWord, command, subcommand)),
+    factories.map(factory => factory({
+      input,
+      query: currentWord,
+      command,
+      subcommand,
+    })),
   )
   // History
   if (currentWord) {
