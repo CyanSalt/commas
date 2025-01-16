@@ -54,7 +54,7 @@ export default () => {
     },
   })
 
-  const generateID = commas.helper.createIDGenerator()
+  let id = 1n
 
   commas.context.provide('terminal.completion', async params => {
     return [
@@ -63,7 +63,7 @@ export default () => {
         query: params.input,
         type: 'third-party',
         state: 'pending',
-        key: `ai-completion@${generateID()}`,
+        key: `ai-completion@${id}`,
       },
     ]
   })
@@ -77,6 +77,7 @@ export default () => {
   })
 
   commas.ipcMain.handle('ai-completion', async (event, input) => {
+    id += 1n
     try {
       return await completeCommand(input)
     } catch {
