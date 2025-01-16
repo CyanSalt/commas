@@ -276,7 +276,6 @@ function scrollToStickyCommand() {
 }
 :deep(.terminal-command-mark) {
   --command-mark-padding: 2px;
-  z-index: 10;
   width: calc(var(--integration-width) - var(--command-mark-padding) * 2) !important;
   margin-left: calc(var(--command-mark-padding) - var(--integration-width));
   border-radius: 4px;
@@ -302,6 +301,9 @@ function scrollToStickyCommand() {
     background: rgb(var(--theme-background) / var(--opacity));
     box-shadow: 0 0 0 1px rgb(var(--color)), 0 0 0 1px rgb(var(--color)) inset;
   }
+}
+:global(.xterm-screen .xterm-decoration-container .xterm-decoration.terminal-command-mark) {
+  z-index: 10;
 }
 :deep(.terminal-highlight-block) {
   margin-left: calc(#{0px - math.div(4px, 2)} - var(--integration-width) / 2);

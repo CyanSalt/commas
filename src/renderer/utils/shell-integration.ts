@@ -146,7 +146,10 @@ function filterAndSortCompletions(completions: CommandCompletion[]) {
     ],
   ).map(([item]) => item)
   // Always make history second at most
-  if (sortedCompletions.length && sortedCompletions[0].type === 'history') {
+  if (sortedCompletions.length && (
+    sortedCompletions[0].state === 'pending'
+    || sortedCompletions[0].type === 'history'
+  )) {
     sortedCompletions.unshift({
       type: 'recommendation',
       query: '',
