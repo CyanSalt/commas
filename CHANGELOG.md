@@ -1,4 +1,52 @@
+# Changelog
 
+## [0.37.0](https://github.com/CyanSalt/commas/compare/v0.36.0...v0.37.0) (2025-01-16)
+
+### Features
+
+* **ai:** add command completion ([2f58c3b](https://github.com/CyanSalt/commas/commit/2f58c3b0f5f9892e2ba89fdb0926c4c3ce8c298c))
+* **ai:** refactor with coze ([fd9afcb](https://github.com/CyanSalt/commas/commit/fd9afcb41a36d470bda71cddc3bd2ffd5d966a2f))
+* loading completions ([13e5065](https://github.com/CyanSalt/commas/commit/13e506522e8cc5967339c2bc085314efc5befbcd))
+
+### Bug Fixes
+
+* **addon-manager:** preserve order when toggling ([1e49f35](https://github.com/CyanSalt/commas/commit/1e49f35d2ba8dd2015eb2eae0152d582fcb101ac))
+* ai anchor colors ([811327a](https://github.com/CyanSalt/commas/commit/811327af6610a0a2a9a6d586c80de335c70113f6))
+* **ai:** auto enable ([26d052b](https://github.com/CyanSalt/commas/commit/26d052b73b97efaabccbd3e6b72e3929e6641acb))
+* **ai:** auto enable after authorization ([de72678](https://github.com/CyanSalt/commas/commit/de7267808a4d586bab162a9bb353e8602c42b923))
+* **ai:** cli error message ([04b0430](https://github.com/CyanSalt/commas/commit/04b0430ca11f10f994c0694c3822734395a7f5c7))
+* **ai:** colorful ai icon ([c9ab88f](https://github.com/CyanSalt/commas/commit/c9ab88f478ecbe815987050dc8ba886b2b37ac1c))
+* **ai:** compatible with invalid output ([45b4b58](https://github.com/CyanSalt/commas/commit/45b4b58f72882c4b0a193e90521f387008f7d8aa))
+* **ai:** dependencies ([776aa2b](https://github.com/CyanSalt/commas/commit/776aa2b3ef980053f83dafefba1f5285e15f1fdb))
+* **ai:** execute with args ([6e5a12c](https://github.com/CyanSalt/commas/commit/6e5a12c014f5f5d4ca3da54ec6699091c00962af))
+* **ai:** reduce id generation ([90b581d](https://github.com/CyanSalt/commas/commit/90b581d2c5e243417cd12eb1b747c69e9b7af5da))
+* **ai:** refresh token only after file loaded ([a1aaf47](https://github.com/CyanSalt/commas/commit/a1aaf47d2bd6dff547a1420806557a8fc08c3754))
+* **ai:** skip fixing terminated command ([fdb18ef](https://github.com/CyanSalt/commas/commit/fdb18eff134dbe7ccb8c6226751a11ac7236625a))
+* **ai:** token expires ([c8e215f](https://github.com/CyanSalt/commas/commit/c8e215f04867aff6b5f23138e4e8784968e0b0e7))
+* **browser:** clean useless logics ([28b7cc8](https://github.com/CyanSalt/commas/commit/28b7cc88a5747ed761354771e1d93ae626314070))
+* **browser:** find in pane view ([9406846](https://github.com/CyanSalt/commas/commit/9406846b4855b5a1b113b4930c1f36fda264c463))
+* **camera:** end stream after closed ([4b96ade](https://github.com/CyanSalt/commas/commit/4b96ade78ea6da47931de0c969c33284326a3b2d))
+* **camera:** remove text shadow ([21a1475](https://github.com/CyanSalt/commas/commit/21a14751f71b34c99ce6bb9affd0b1ce15984701))
+* **cli:** manually exit ai prompt ([7b9e083](https://github.com/CyanSalt/commas/commit/7b9e08396f1c6f57b50972ac935ff828764c5d90))
+* clipboard-ex issues ([df6cf10](https://github.com/CyanSalt/commas/commit/df6cf10596a8e62c9827b6e04799f9b5dcc26136))
+* **cli:** terminal completions ([b1b89b3](https://github.com/CyanSalt/commas/commit/b1b89b3c88aa8afe9910279c16543ed398ea0a8d))
+* completion when query is empty ([76cf09f](https://github.com/CyanSalt/commas/commit/76cf09fb62f272878908da51161f42294f298488))
+* error code range ([ce5992b](https://github.com/CyanSalt/commas/commit/ce5992bde96e2493c5eae47d5f040f61a6bfee05))
+* **explorer:** refine interaction between target xterm and explorer pane ([27ab25d](https://github.com/CyanSalt/commas/commit/27ab25d5479318b3133a358a900368c113fa6fea))
+* filled icons ([73b36a4](https://github.com/CyanSalt/commas/commit/73b36a42a2ca77e741d87970623e1e27f6f9cfb1))
+* flat completion style ([3695bda](https://github.com/CyanSalt/commas/commit/3695bda5734bb8330291b5b6fdef9bc20112f7ad))
+* icon foreground color ([9a0f488](https://github.com/CyanSalt/commas/commit/9a0f488c62bb2220cf3c2d131c634b2c3d85a374))
+* incomplete commands in history ([b0ace15](https://github.com/CyanSalt/commas/commit/b0ace15ec55dbf0d3ab4e97b0c30bd89f7a88d84))
+* key binding args ([e905f6e](https://github.com/CyanSalt/commas/commit/e905f6e245f3eaba10b14066007ff0925509cc77))
+* look up keyword ellipsis ([3c69d85](https://github.com/CyanSalt/commas/commit/3c69d85503998555956dc5d0bc7d34bd29fdab13))
+* lucide icon ([874c244](https://github.com/CyanSalt/commas/commit/874c244747c31edcee20ecab972e8a6fe83b2bf3))
+* optimize fuzzy searching for completions ([ff8b68f](https://github.com/CyanSalt/commas/commit/ff8b68fa769881e12b3533c04542ae5b6090a472))
+* **paint:** use cdn assets ([99bb2c6](https://github.com/CyanSalt/commas/commit/99bb2c6e7b6ca26e799055747c0c98dca72a505b))
+* **recorder:** share commas url scheme ([79ca59e](https://github.com/CyanSalt/commas/commit/79ca59e5b6e784f84fe9981524685e1e7569a088))
+* remove editing accelerator ([89f515d](https://github.com/CyanSalt/commas/commit/89f515d4d78f4e2f7b1f48525c4d91ebbc2f1eb6))
+* remove empty overridden list ([547bb74](https://github.com/CyanSalt/commas/commit/547bb742f409b6fd9ac10aee6629823e6fcf9fd5))
+* **shell-integration:** preserve command record on replacement ([8b32084](https://github.com/CyanSalt/commas/commit/8b32084cc5051a8f60e9f1759217e70fc9eeb380))
+* update completion api ([7004c86](https://github.com/CyanSalt/commas/commit/7004c86842626da9e6cf0a43088cfa58c68840c4))
 
 ## [0.36.0](https://github.com/CyanSalt/commas/compare/v0.35.0...v0.36.0) (2024-12-05)
 
