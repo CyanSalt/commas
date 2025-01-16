@@ -3,7 +3,6 @@ import '@fontsource/montserrat/500.css'
 import { ipcRenderer } from '@commas/electron-ipc'
 import { refAutoReset } from '@vueuse/core'
 import * as commas from 'commas:api/renderer'
-import { clipboard, nativeImage } from 'electron'
 import osName from 'os-name'
 import icon from './assets/icon-stroked.svg'
 
@@ -106,8 +105,6 @@ async function createTextCanvas(color: string) {
   context.font = fontStyle
   context.fillStyle = color
   context.textBaseline = 'middle'
-  context.shadowColor = 'rgb(0 0 0 / 13%)'
-  context.shadowBlur = 4 * devicePixelRatio
   context.fillText(textContent, 0, size / 2)
   context.restore()
   return canvas
@@ -115,94 +112,98 @@ async function createTextCanvas(color: string) {
 
 async function capture() {
   const activeElement = document.querySelector('.terminal-view > .active')
-  if (activeElement) {
-    const { x, y, width, height } = activeElement.getBoundingClientRect()
-    const screenshot = await ipcRenderer.invoke('capture-page', { x, y, width, height })
-    const size = screenshot.getSize()
-    const { canvas, context } = createCanvas(
-      size.width + 128 * devicePixelRatio,
-      size.height + 128 * devicePixelRatio,
-    )
-    const watermarkColor = 'rgb(255 255 255 / 75%)'
-    const iconCanvas = await createIconCanvas(watermarkColor)
-    const textCanvas = await createTextCanvas(watermarkColor)
-    const screenshotImage = await loadImage(screenshot.toDataURL())
-    // Gradient background
-    context.save()
-    const gradient = context.createLinearGradient(0, 0, canvas.width, canvas.height)
-    const systemAccentRGBA = commas.helper.toRGBA(theme.systemAccent)
-    const backgroundRGBA = commas.helper.toRGBA(theme.background)
-    gradient.addColorStop(0, commas.helper.toCSSHEX(commas.helper.mix(systemAccentRGBA, backgroundRGBA, 0.12)))
-    gradient.addColorStop(1, commas.helper.toCSSHEX(commas.helper.mix(systemAccentRGBA, backgroundRGBA, 0.48)))
-    context.fillStyle = gradient
-    context.fillRect(0, 0, canvas.width, canvas.height)
-    context.restore()
-    // Translucent border
-    context.save()
-    context.beginPath()
-    context.fillStyle = commas.helper.toCSSHEX({ ...backgroundRGBA, a: 0.5 })
-    context.shadowOffsetX = 0
-    context.shadowOffsetY = 2 * devicePixelRatio
-    context.shadowBlur = 4 * devicePixelRatio
-    context.shadowColor = 'rgb(0 0 0 / 10%)'
-    roundCorners(
-      context,
-      {
-        x: (canvas.width - (size.width + 8 * devicePixelRatio)) / 2,
-        y: (canvas.height - (size.height + 8 * devicePixelRatio)) / 2,
-        width: size.width + 8 * devicePixelRatio,
-        height: size.height + 8 * devicePixelRatio,
-      },
-      (8 + 8 / 2) * devicePixelRatio,
-    )
-    context.fill()
-    context.closePath()
-    context.clip()
-    context.restore()
-    // Screenshot
-    context.save()
-    context.beginPath()
-    context.fillStyle = theme.background
-    roundCorners(
-      context,
-      {
-        x: (canvas.width - size.width) / 2,
-        y: (canvas.height - size.height) / 2,
-        width: size.width,
-        height: size.height,
-      },
-      8 * devicePixelRatio,
-    )
-    context.fill()
-    context.closePath()
-    context.clip()
-    context.drawImage(
-      screenshotImage,
-      (canvas.width - size.width) / 2,
-      (canvas.height - size.height) / 2,
-    )
-    context.restore()
-    const spacing = 4 * devicePixelRatio
-    const watermarkSize = iconCanvas.width + spacing + textCanvas.width
-    // Watermark icon
-    context.save()
-    context.drawImage(
-      iconCanvas,
-      canvas.width / 2 - watermarkSize / 2,
-      canvas.height - (canvas.height - size.height) / 4 - iconCanvas.height / 2,
-    )
-    context.restore()
-    // Watermark text
-    context.save()
-    context.drawImage(
-      textCanvas,
-      canvas.width / 2 - watermarkSize / 2 + iconCanvas.width + spacing,
-      canvas.height - (canvas.height - size.height) / 4 - textCanvas.height / 2,
-    )
-    context.restore()
-    clipboard.writeImage(nativeImage.createFromDataURL(canvas.toDataURL('png')))
-    feedbacking = true
-  }
+  if (!activeElement) return
+  const { x, y, width, height } = activeElement.getBoundingClientRect()
+  const screenshot = await ipcRenderer.invoke('capture-page', { x, y, width, height })
+  const size = screenshot.getSize()
+  const { canvas, context } = createCanvas(
+    size.width + 128 * devicePixelRatio,
+    size.height + 128 * devicePixelRatio,
+  )
+  const watermarkColor = 'rgb(255 255 255 / 75%)'
+  const iconCanvas = await createIconCanvas(watermarkColor)
+  const textCanvas = await createTextCanvas(watermarkColor)
+  const screenshotImage = await loadImage(screenshot.toDataURL())
+  // Gradient background
+  context.save()
+  const gradient = context.createLinearGradient(0, 0, canvas.width, canvas.height)
+  const systemAccentRGBA = commas.helper.toRGBA(theme.systemAccent)
+  const backgroundRGBA = commas.helper.toRGBA(theme.background)
+  gradient.addColorStop(0, commas.helper.toCSSHEX(commas.helper.mix(systemAccentRGBA, backgroundRGBA, 0.12)))
+  gradient.addColorStop(1, commas.helper.toCSSHEX(commas.helper.mix(systemAccentRGBA, backgroundRGBA, 0.48)))
+  context.fillStyle = gradient
+  context.fillRect(0, 0, canvas.width, canvas.height)
+  context.restore()
+  // Translucent border
+  context.save()
+  context.beginPath()
+  context.fillStyle = commas.helper.toCSSHEX({ ...backgroundRGBA, a: 0.5 })
+  context.shadowOffsetX = 0
+  context.shadowOffsetY = 2 * devicePixelRatio
+  context.shadowBlur = 4 * devicePixelRatio
+  context.shadowColor = 'rgb(0 0 0 / 10%)'
+  roundCorners(
+    context,
+    {
+      x: (canvas.width - (size.width + 8 * devicePixelRatio)) / 2,
+      y: (canvas.height - (size.height + 8 * devicePixelRatio)) / 2,
+      width: size.width + 8 * devicePixelRatio,
+      height: size.height + 8 * devicePixelRatio,
+    },
+    (8 + 8 / 2) * devicePixelRatio,
+  )
+  context.fill()
+  context.closePath()
+  context.clip()
+  context.restore()
+  // Screenshot
+  context.save()
+  context.beginPath()
+  context.fillStyle = theme.background
+  roundCorners(
+    context,
+    {
+      x: (canvas.width - size.width) / 2,
+      y: (canvas.height - size.height) / 2,
+      width: size.width,
+      height: size.height,
+    },
+    8 * devicePixelRatio,
+  )
+  context.fill()
+  context.closePath()
+  context.clip()
+  context.drawImage(
+    screenshotImage,
+    (canvas.width - size.width) / 2,
+    (canvas.height - size.height) / 2,
+  )
+  context.restore()
+  const spacing = 4 * devicePixelRatio
+  const watermarkSize = iconCanvas.width + spacing + textCanvas.width
+  // Watermark icon
+  context.save()
+  context.drawImage(
+    iconCanvas,
+    canvas.width / 2 - watermarkSize / 2,
+    canvas.height - (canvas.height - size.height) / 4 - iconCanvas.height / 2,
+  )
+  context.restore()
+  // Watermark text
+  context.save()
+  context.drawImage(
+    textCanvas,
+    canvas.width / 2 - watermarkSize / 2 + iconCanvas.width + spacing,
+    canvas.height - (canvas.height - size.height) / 4 - textCanvas.height / 2,
+  )
+  context.restore()
+  const blob = await new Promise<Blob>(resolve => canvas.toBlob(value => resolve(value!), 'image/png'))
+  await navigator.clipboard.write([
+    new ClipboardItem({
+      'image/png': blob,
+    }),
+  ])
+  feedbacking = true
 }
 </script>
 
