@@ -1,7 +1,6 @@
 import reactivityTransform from '@vue-macros/reactivity-transform/esbuild'
 import esbuild from 'esbuild'
 import bypass from '../utils/esbuild-bypass.mjs'
-import externalNodeModules from '../utils/esbuild-external-node-modules.mjs'
 
 /**
  * @typedef {import('esbuild').BuildOptions} BuildOptions
@@ -14,9 +13,9 @@ import externalNodeModules from '../utils/esbuild-external-node-modules.mjs'
 export default (versions, tap) => esbuild.build(tap({
   bundle: true,
   platform: 'node',
+  packages: 'external',
   plugins: [
     bypass(/^@commas\//),
-    externalNodeModules(),
     reactivityTransform(),
   ],
   target: `node${versions.node}`,
