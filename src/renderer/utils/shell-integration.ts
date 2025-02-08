@@ -829,6 +829,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
         }
         return matched
       }
+      if (item.value === item.query) return false
       const back = item.query.length
       if (isEnterPressing && item.value.length === back) return false
       this._applyCompletion(item.value, back)
