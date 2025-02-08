@@ -172,6 +172,7 @@ function pickFont(event: InputEvent) {
         <VisualIcon name="lucide-chevron-down" />
       </a>
       <span class="line-description">
+        <span v-if="spec.experimental" v-i18n class="item-tag" @click.prevent>Experimental#!settings.4</span>
         <span v-i18n class="item-label" @click.prevent>{{ spec.label }}#!settings.label.{{ spec.key }}</span>
         <span class="item-key" @click.prevent>{{ spec.key }}</span>
         <a v-if="isRecoverable" data-commas class="recover" @click.prevent="recover">
@@ -288,6 +289,17 @@ function pickFont(event: InputEvent) {
   .line-summary.customized & {
     font-style: italic;
   }
+}
+.item-tag {
+  flex: none;
+  align-self: center;
+  padding: 4px 0.5em;
+  color: white;
+  font-size: 12px;
+  line-height: 1em;
+  text-transform: uppercase;
+  background: rgb(var(--theme-red));
+  border-radius: 1em;
 }
 .item-key {
   flex: none;

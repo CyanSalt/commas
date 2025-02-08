@@ -17,6 +17,7 @@ export interface Settings {
   'terminal.shell.highlightErrors': boolean,
   'terminal.shell.autoCompletion': boolean,
   'terminal.shell.stickyScroll': boolean,
+  'terminal.shell.captureCompletion': boolean,
   'terminal.external.openPathIn': 'new-tab' | 'new-window',
   'terminal.external.explorer': string,
   'terminal.external.remoteExplorer': string,
@@ -55,4 +56,5 @@ export interface SettingsSpec {
   reload?: boolean,
   overrides?: boolean,
   default?: any,
+  experimental?: boolean,
 }
