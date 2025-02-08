@@ -111,6 +111,7 @@ async function createTerminal(
 }
 
 function handleTerminalMessages() {
+  const settings = useSettings()
   ipcMain.handle('create-terminal', (event, data) => {
     return createTerminal(event.sender, data)
   })
@@ -159,7 +160,7 @@ function handleTerminalMessages() {
     }
   })
   ipcMain.handle('get-completions', (event, input, cwd) => {
-    return getCompletions(input, cwd)
+    return getCompletions(input, cwd, settings['terminal.shell.captureCompletion'])
   })
   ipcMain.on('terminal-prompt-end', () => {
     refreshCompletions()

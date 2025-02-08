@@ -9,7 +9,7 @@ import type { CommandCompletion } from '@commas/types/terminal'
 import * as commas from '../../api/core-main'
 import { resolveHome } from '../../shared/terminal'
 import { execa, memoizeAsync } from './helper'
-import { loginExecute } from './shell'
+import { BIN_PATH, loginExecute } from './shell'
 
 function isCommandLineArgument(query: string) {
   return query.startsWith('-')
@@ -321,6 +321,29 @@ async function getHistoryCompletions(query: string, command: string) {
   }))
 }
 
+async function getZshCaptureCompletions(input: string, query: string, cwd: string) {
+  try {
+    const { stdout } = await loginExecute(quote([path.join(BIN_PATH, 'zsh-capture-completion.sh'), input]), {
+      shell: '/bin/zsh',
+      cwd,
+    })
+    const choices = uniq(stdout.trim().split(/[\r\n]+/))
+    return choices.map<CommandCompletion>(choice => {
+      const matches = choice.match(/^(.+?)\s+--\s+(.+)$/)
+      const value = matches ? matches[1] : choice
+      const description = matches ? matches[2] : undefined
+      return {
+        type: 'command',
+        query,
+        value,
+        description,
+      }
+    })
+  } catch {
+    return []
+  }
+}
+
 async function getAllCommands() {
   if (process.platform === 'win32') return []
   try {
@@ -381,13 +404,14 @@ function isCommandEntry(entry: ParseEntry): entry is string {
   return typeof entry === 'string' && /^\w/.test(entry)
 }
 
-async function getCompletions(input: string, cwd: string) {
+async function getCompletions(input: string, cwd: string, capture?: boolean) {
   const entries = parse(input).filter(item => {
     return !(typeof item === 'object' && 'comment' in item)
   })
   if (!entries.length) return []
   const lastToken = entries[entries.length - 1]
   const isWordStart = /\s$/.test(input) || typeof lastToken !== 'string'
+  const currentWord = isWordStart ? '' : lastToken
   const tokenIndex = entries.findLastIndex(item => {
     return isControlOperatorEntry(item) && item.op !== '>'
   })
@@ -398,8 +422,6 @@ async function getCompletions(input: string, cwd: string) {
   const subcommandIndex = args.findIndex(isCommandEntry)
   const undeterminedSubcommand = subcommandIndex !== -1 ? args[subcommandIndex] as string : undefined
   const subcommandArgs = subcommandIndex !== -1 ? args.slice(subcommandIndex + 1) : []
-  const currentWord = isWordStart ? '' : lastToken
-  const isInputingArgs = isCommandLineArgument(currentWord)
   const command = undeterminedCommand && (isWordStart || args.length > 0)
     ? undeterminedCommand.toLowerCase()
     : ''
@@ -417,40 +439,48 @@ async function getCompletions(input: string, cwd: string) {
       subcommand,
     })),
   )
-  // History
-  if (currentWord) {
+  if (capture) {
+    // Zsh capture
     asyncCompletionLists.push(
-      getHistoryCompletions(currentWord, command),
+      getZshCaptureCompletions(input, currentWord, cwd),
     )
-  }
-  // Commands
-  if (!command && !/^(.+|~)?[\\/]/.test(currentWord)) {
-    asyncCompletionLists.push(
-      getCommandCompletions(currentWord),
-    )
-  }
-  // Files
-  const frequentlyUsedFileCommands = ['.', 'cat', 'cd', 'cp', 'diff', 'more', 'mv', 'rm', 'source', 'vi']
-  if (!isInputingArgs && (
-    isControlOperatorEntry(lastToken) && lastToken.op === '>'
-    || command && (currentWord || frequentlyUsedFileCommands.includes(command))
-    || !command && /^(.+|~)?[\\/]/.test(currentWord)
-  )) {
-    const directoryCommands = ['cd', 'dir', 'ls']
-    const directoryOnly = directoryCommands.includes(command)
-    asyncCompletionLists.push(
-      getFileCompletions(currentWord, cwd, directoryOnly),
-    )
-  }
-  if (command) {
-    asyncCompletionLists.push(
-      getManPageCompletions(currentWord, command, subcommand),
-    )
-  }
-  if (command === 'npm' && subcommand === 'run') {
-    asyncCompletionLists.push(
-      getFrequentlyUsedProgramCompletions(currentWord, cwd, command, subcommand),
-    )
+  } else {
+    // History
+    if (currentWord) {
+      asyncCompletionLists.push(
+        getHistoryCompletions(currentWord, command),
+      )
+    }
+    // Commands
+    if (!command && !/^(.+|~)?[\\/]/.test(currentWord)) {
+      asyncCompletionLists.push(
+        getCommandCompletions(currentWord),
+      )
+    }
+    // Files
+    const isInputingArgs = isCommandLineArgument(currentWord)
+    const frequentlyUsedFileCommands = ['.', 'cat', 'cd', 'cp', 'diff', 'more', 'mv', 'rm', 'source', 'vi']
+    if (!isInputingArgs && (
+      isControlOperatorEntry(lastToken) && lastToken.op === '>'
+      || command && (currentWord || frequentlyUsedFileCommands.includes(command))
+      || !command && /^(.+|~)?[\\/]/.test(currentWord)
+    )) {
+      const directoryCommands = ['cd', 'dir', 'ls']
+      const directoryOnly = directoryCommands.includes(command)
+      asyncCompletionLists.push(
+        getFileCompletions(currentWord, cwd, directoryOnly),
+      )
+    }
+    if (command) {
+      asyncCompletionLists.push(
+        getManPageCompletions(currentWord, command, subcommand),
+      )
+    }
+    if (command === 'npm' && subcommand === 'run') {
+      asyncCompletionLists.push(
+        getFrequentlyUsedProgramCompletions(currentWord, cwd, command, subcommand),
+      )
+    }
   }
   const lists = await Promise.all(asyncCompletionLists)
   const completions = lists.flat()

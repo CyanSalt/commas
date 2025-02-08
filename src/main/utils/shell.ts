@@ -86,22 +86,24 @@ function integrateShell(context: ShellContext) {
   }
 }
 
-function loginExecute(command: string, options: Pick<ExecOptions, 'shell' | 'env'> = {}) {
+function loginExecute(command: string, options: Pick<ExecOptions, 'shell' | 'env' | 'cwd'> = {}) {
   const env = getDefaultEnv()
   if (process.platform === 'win32') {
     return execa(command, {
       env: { ...env, ...options.env },
+      cwd: options.cwd,
     })
   } else {
     const shell = options.shell ?? getDefaultShell()
     const expression = options.env
       ? Object.entries(options.env).map(kv => kv.join('=')).concat(command).join(' ')
       : command
-    return execa(quote([shell!, '-lic', expression]), { env })
+    return execa(quote([shell!, '-lic', expression]), { env, cwd: options.cwd })
   }
 }
 
 export {
+  BIN_PATH,
   getDefaultShell,
   getDefaultEnv,
   integrateShell,
