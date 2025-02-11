@@ -4,10 +4,10 @@ import * as os from 'node:os'
 import * as path from 'node:path'
 import ipc from '@achrinza/node-ipc'
 import * as cfonts from 'cfonts'
-import chalk from 'chalk'
 import * as commas from 'commas:api/main'
 import { app, BrowserWindow, webContents } from 'electron'
 import { random, sortBy } from 'lodash'
+import picocolors from 'picocolors'
 import { quote } from 'shell-quote'
 import table from 'text-table'
 import type { CommandModule } from './command'
@@ -25,8 +25,6 @@ declare module '@commas/api/modules/context' {
     'cli.command': CommandModule,
   }
 }
-
-chalk.level = 3
 
 export default () => {
 
@@ -116,8 +114,8 @@ export default () => {
       const manual = helpingCommand ? getCommandModule(helpingCommand, commands) : undefined
       if (manual) {
         return `
-${manual.description ? commas.i18n.translate(manual.description) + '\n\n' : ''}${chalk.bold(commas.i18n.translate('Usage:#!cli.1'))}
-    commas ${helpingCommand}${manual.usage ? ' ' + chalk.italic(commas.i18n.translate(manual.usage)) : ''}
+${manual.description ? commas.i18n.translate(manual.description) + '\n\n' : ''}${picocolors.bold(commas.i18n.translate('Usage:#!cli.1'))}
+    commas ${helpingCommand}${manual.usage ? ' ' + picocolors.italic(commas.i18n.translate(manual.usage)) : ''}
 `
       }
 
@@ -127,10 +125,10 @@ ${ansiArt}
 ${app.name} ${app.getVersion()}
 ${manifest.description}
 
-${chalk.bold(commas.i18n.translate('Usage:#!cli.1'))}
-    commas ${chalk.italic(commas.i18n.translate('<command> [...options]#!cli.3'))}
+${picocolors.bold(commas.i18n.translate('Usage:#!cli.1'))}
+    commas ${picocolors.italic(commas.i18n.translate('<command> [...options]#!cli.3'))}
 
-${chalk.bold(commas.i18n.translate('Commands:#!cli.2'))}
+${picocolors.bold(commas.i18n.translate('Commands:#!cli.2'))}
 ${indent(table(sortBy(commandList, entry => entry[0])), '    ')}
 ${
   helpingCommand

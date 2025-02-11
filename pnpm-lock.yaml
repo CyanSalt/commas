@@ -181,6 +181,9 @@ importers:
       lucide-static:
         specifier: ^0.473.0
         version: 0.473.0
+      picocolors:
+        specifier: ^1.1.1
+        version: 1.1.1
       png2icons:
         specifier: ^2.0.1
         version: 2.0.1
@@ -249,9 +252,9 @@ importers:
       cfonts:
         specifier: ^3.3.0
         version: 3.3.0
-      chalk:
-        specifier: ^4.1.2
-        version: 4.1.2
+      picocolors:
+        specifier: ^1.1.1
+        version: 1.1.1
       text-table:
         specifier: ^0.2.0
         version: 0.2.0
