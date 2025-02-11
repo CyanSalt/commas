@@ -70,7 +70,7 @@
     "dotenv": "^16.4.7",
     "dotenv-cli": "^8.0.0",
     "electron": "^34.0.1",
-    "esbuild": "^0.24.2",
+    "esbuild": "^0.25.0",
     "eslint": "^9.18.0",
     "fuzzaldrin-plus": "^0.6.0",
     "keyboardevent-from-electron-accelerator": "^2.0.0",
