@@ -337,6 +337,7 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
     character,
   })
   xterm.attachCustomKeyEventHandler(event => {
+    if (event.isComposing) return true
     // Support shortcuts on Windows
     if (process.platform === 'win32' && event.ctrlKey) {
       if (event.key === 'c' && xterm.hasSelection()) return false
