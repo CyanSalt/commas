@@ -300,6 +300,7 @@ const getShellHistoryTokenLists = memoize(() => {
   return history.map(line => {
     try {
       return parse(line).filter((item): item is string => (typeof item === 'string' && Boolean(item)))
+        .map(item => item.trim()) // grep 'cd ' -> ['grep', 'cd']
     } catch {
       return []
     }
