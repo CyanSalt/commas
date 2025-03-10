@@ -117,7 +117,7 @@
     "key": "terminal.shell.autoCompletion",
     "label": "Auto Trigger Completion",
     "comments": [
-      "Trigger intelligent completion automatically when inputing",
+      "Trigger intelligent completion automatically when inputting",
       "Requires Shell Integration to be enabled"
     ],
     "schema": {
@@ -247,7 +247,7 @@
     "key": "terminal.tab.titleFormat",
     "label": "Tab Title Format",
     "comments": [
-      "Title format of terminal tab in grammer of bash prompt",
+      "Title format of terminal tab in grammar of bash prompt",
       "It will not work if title is set from OSC 0 or OSC 2",
       "Supported identifiers: \\h \\H \\l \\s \\u \\w \\W"
     ],

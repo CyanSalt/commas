@@ -459,9 +459,9 @@ async function getCompletions(input: string, cwd: string, capture?: boolean) {
       )
     }
     // Files
-    const isInputingArgs = isCommandLineArgument(currentWord)
+    const isInputtingArgs = isCommandLineArgument(currentWord)
     const frequentlyUsedFileCommands = ['.', 'cat', 'cd', 'cp', 'diff', 'more', 'mv', 'rm', 'source', 'vi']
-    if (!isInputingArgs && (
+    if (!isInputtingArgs && (
       isControlOperatorEntry(lastToken) && lastToken.op === '>'
       || command && (currentWord || frequentlyUsedFileCommands.includes(command))
       || !command && /^(.+|~)?[\\/]/.test(currentWord)

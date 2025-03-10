@@ -16,7 +16,7 @@ declare module '@commas/types/terminal' {
 
 declare module '@commas/electron-ipc' {
   export interface RendererEvents {
-    'open-launcher-character': (charater: TerminalTabCharacter) => void,
+    'open-launcher-character': (character: TerminalTabCharacter) => void,
     'start-launcher': (launcher: Launcher, keyboardEvent: KeyboardEvent) => void,
     'start-launcher-externally': (launcher: Launcher) => void,
     'run-launcher-script': (launcher: Launcher, index: number, keyboardEvent: KeyboardEvent) => void,

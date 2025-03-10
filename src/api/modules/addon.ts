@@ -3,7 +3,7 @@ import * as path from 'node:path'
 import type { AddonInfo } from '@commas/types/addon'
 import type { EffectScope } from '@vue/reactivity'
 import { effectScope } from '@vue/reactivity'
-import type { APIAddon, APIContext, CompatableAPI } from '../types'
+import type { APIAddon, APIContext, CompatibleAPI } from '../types'
 import * as app from './app'
 
 declare module './app' {
@@ -30,7 +30,7 @@ function cloneAPIModule<T>(object: object, context: Omit<APIContext<T>, '_'>) {
   })
 }
 
-function cloneAPI<T extends CompatableAPI>(api: T, context: Omit<APIContext<T>, '$' | '_'>) {
+function cloneAPI<T extends CompatibleAPI>(api: T, context: Omit<APIContext<T>, '$' | '_'>) {
   return new Proxy(api, {
     get(target, property, receiver) {
       const value = Reflect.get(target, property, receiver)
@@ -88,7 +88,7 @@ function loadAddonEntry(addon: AddonInfo): APIAddon {
   return require(addon.entry)
 }
 
-function loadAddon(addon: AddonInfo, api: CompatableAPI) {
+function loadAddon(addon: AddonInfo, api: CompatibleAPI) {
   if (loadedAddonContexts.some(item => item.addon.name === addon.name)) return
   // Reserved names
   if (addon.name === 'terminal') return

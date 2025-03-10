@@ -8,9 +8,9 @@ type MixValues<T, U> = {
 export type MainAPI = typeof main
 export type RendererAPI = typeof renderer
 export type API = MainAPI & RendererAPI
-export type CompatableAPI = MainAPI | RendererAPI
+export type CompatibleAPI = MainAPI | RendererAPI
 
-export type APIAddon = (api: CompatableAPI) => void
+export type APIAddon = (api: CompatibleAPI) => void
 
 export interface APIContext<T = API> {
   __name__: string,
