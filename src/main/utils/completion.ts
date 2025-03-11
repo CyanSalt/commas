@@ -3,11 +3,11 @@ import * as path from 'node:path'
 import { memoize, uniq } from 'lodash'
 import * as properties from 'properties'
 import shellHistory from 'shell-history'
-import type { ControlOperator, ParseEntry } from 'shell-quote'
 import { parse, quote } from 'shell-quote'
 import type { CommandCompletion } from '@commas/types/terminal'
 import * as commas from '../../api/core-main'
 import { resolveHome } from '../../shared/terminal'
+import { extractCommand, extractCommandEntries } from './command'
 import { execa, memoizeAsync } from './helper'
 import { BIN_PATH, loginExecute } from './shell'
 
@@ -397,113 +397,70 @@ async function getCommandCompletions(query: string) {
   }))
 }
 
-function isControlOperatorEntry(entry: ParseEntry): entry is Extract<ParseEntry, { op: ControlOperator }> {
-  return typeof entry === 'object' && 'op' in entry && entry.op !== 'glob'
-}
-
-function isCommandEntry(entry: ParseEntry): entry is string {
-  return typeof entry === 'string' && /^\w/.test(entry)
-}
-
-function getInputtingCommandEntries(input: string) {
-  const entries = parse(input).filter(item => {
-    return !(typeof item === 'object' && 'comment' in item)
-  })
-  if (!entries.length) {
-    return {
-      entries: [],
-      operator: undefined,
-    }
-  }
-  const lastToken = entries[entries.length - 1]
-  const isWordStart = /\s$/.test(input) || typeof lastToken !== 'string'
-  const tokenIndex = entries.findLastIndex(item => isControlOperatorEntry(item))
-  const currentEntries = entries.slice(tokenIndex + 1) as Exclude<ParseEntry, { op: ControlOperator }>[]
-  return {
-    entries: [
-      ...currentEntries,
-      ...(isWordStart ? [''] : []),
-    ],
-    operator: entries[tokenIndex] as Extract<ParseEntry, { op: ControlOperator }> | undefined,
-  }
-}
-
-function getInputtingCommand(entries: ParseEntry[]) {
-  const commandIndex = entries.findIndex(entry => isCommandEntry(entry))
-  const args = commandIndex === -1 ? [] : entries.slice(commandIndex + 1)
-  const command = args.length > 0
-    ? (entries[commandIndex] as string).toLowerCase()
-    : ''
-  return {
-    command,
-    args,
-  }
-}
-
 async function getCompletions(input: string, cwd: string, capture?: boolean) {
-  const { entries, operator } = getInputtingCommandEntries(input)
+  const { entries, operator } = extractCommandEntries(input)
   if (!entries.length) return []
-  const { command, args } = getInputtingCommand(entries)
-  const { command: subcommand } = getInputtingCommand(args)
-  const currentWord = entries[entries.length - 1] as string
+  const { command, args } = extractCommand(entries)
+  const query = entries[entries.length - 1]
   let asyncCompletionLists: Promise<CommandCompletion[]>[] = []
   // Registered
   const factories = commas.proxy.context.getCollection('terminal.completion')
   asyncCompletionLists = asyncCompletionLists.concat(
     factories.map(factory => factory({
       input,
-      query: currentWord,
+      query,
       command,
-      subcommand,
+      args,
     })),
   )
   if (capture) {
     // Zsh capture
     asyncCompletionLists.push(
-      getZshCaptureCompletions(input, currentWord, cwd),
+      getZshCaptureCompletions(input, query, cwd),
     )
   } else {
     // History
-    if (currentWord) {
+    if (query) {
       asyncCompletionLists.push(
-        getHistoryCompletions(currentWord, command),
+        getHistoryCompletions(query, command),
       )
     }
     // Commands
-    if (!command && !/^(.+|~)?[\\/]/.test(currentWord)) {
+    if (!command && !/^(.+|~)?[\\/]/.test(query)) {
       asyncCompletionLists.push(
-        getCommandCompletions(currentWord),
+        getCommandCompletions(query),
       )
     }
     // Files
-    const isInputtingArgs = isCommandLineArgument(currentWord)
+    const isInputtingArgs = isCommandLineArgument(query)
     const frequentlyUsedFileCommands = ['.', 'cat', 'cd', 'cp', 'diff', 'more', 'mv', 'rm', 'source', 'vi']
     if (!isInputtingArgs && (
       operator && operator.op === '>'
-      || command && (currentWord || frequentlyUsedFileCommands.includes(command))
-      || !command && /^(.+|~)?[\\/]/.test(currentWord)
+      || command && (query || frequentlyUsedFileCommands.includes(command))
+      || !command && /^(.+|~)?[\\/]/.test(query)
     )) {
       const directoryCommands = ['cd', 'dir', 'ls']
       const directoryOnly = directoryCommands.includes(command)
       asyncCompletionLists.push(
-        getFileCompletions(currentWord, cwd, directoryOnly),
+        getFileCompletions(query, cwd, directoryOnly),
       )
     }
     if (command) {
+      const { command: subcommand } = extractCommand(args)
       asyncCompletionLists.push(
-        getManPageCompletions(currentWord, command, subcommand),
+        getManPageCompletions(query, command, subcommand),
       )
-    }
-    if (command === 'npm' && subcommand === 'run') {
-      asyncCompletionLists.push(
-        getFrequentlyUsedProgramCompletions(currentWord, cwd, command, subcommand),
-      )
+      if (command === 'npm' && subcommand === 'run') {
+        asyncCompletionLists.push(
+          getFrequentlyUsedProgramCompletions(query, cwd, command, subcommand),
+        )
+      }
     }
   }
   const lists = await Promise.all(asyncCompletionLists)
   const completions = lists.flat()
   // Always add a passthrough option
-  if (completions.length && !currentWord) {
+  if (completions.length && !query) {
     completions.push({ value: '', query: '' })
   }
   return completions

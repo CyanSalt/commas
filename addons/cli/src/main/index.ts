@@ -299,7 +299,9 @@ ${
   })
 
   commas.context.provide('terminal.completion', async params => {
-    if (params.command === 'commas' && !params.subcommand) {
+    if (params.command === 'commas') {
+      const { command: subcommand } = commas.shell.extractCommand(params.args)
+      if (subcommand) return []
       return commands.map(item => ({
         type: 'command' as const,
         query: params.query,

@@ -6,7 +6,7 @@ declare module './modules/context' {
       input: string,
       query: string,
       command: string,
-      subcommand?: string,
+      args: string[],
     }) => Promise<CommandCompletion[]>,
   }
 }
