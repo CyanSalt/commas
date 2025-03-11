@@ -405,30 +405,47 @@ function isCommandEntry(entry: ParseEntry): entry is string {
   return typeof entry === 'string' && /^\w/.test(entry)
 }
 
-async function getCompletions(input: string, cwd: string, capture?: boolean) {
+function getInputtingCommandEntries(input: string) {
   const entries = parse(input).filter(item => {
     return !(typeof item === 'object' && 'comment' in item)
   })
-  if (!entries.length) return []
+  if (!entries.length) {
+    return {
+      entries: [],
+      operator: undefined,
+    }
+  }
   const lastToken = entries[entries.length - 1]
   const isWordStart = /\s$/.test(input) || typeof lastToken !== 'string'
-  const currentWord = isWordStart ? '' : lastToken
-  const tokenIndex = entries.findLastIndex(item => {
-    return isControlOperatorEntry(item) && item.op !== '>'
-  })
-  const undeterminedCommand = tokenIndex !== entries.length - 1 && isCommandEntry(entries[tokenIndex + 1])
-    ? entries[tokenIndex + 1] as string
-    : undefined
-  const args = entries.slice(tokenIndex + 2)
-  const subcommandIndex = args.findIndex(isCommandEntry)
-  const undeterminedSubcommand = subcommandIndex !== -1 ? args[subcommandIndex] as string : undefined
-  const subcommandArgs = subcommandIndex !== -1 ? args.slice(subcommandIndex + 1) : []
-  const command = undeterminedCommand && (isWordStart || args.length > 0)
-    ? undeterminedCommand.toLowerCase()
+  const tokenIndex = entries.findLastIndex(item => isControlOperatorEntry(item))
+  const currentEntries = entries.slice(tokenIndex + 1) as Exclude<ParseEntry, { op: ControlOperator }>[]
+  return {
+    entries: [
+      ...currentEntries,
+      ...(isWordStart ? [''] : []),
+    ],
+    operator: entries[tokenIndex] as Extract<ParseEntry, { op: ControlOperator }> | undefined,
+  }
+}
+
+function getInputtingCommand(entries: ParseEntry[]) {
+  const commandIndex = entries.findIndex(entry => isCommandEntry(entry))
+  const args = commandIndex === -1 ? [] : entries.slice(commandIndex + 1)
+  const command = args.length > 0
+    ? (entries[commandIndex] as string).toLowerCase()
     : ''
-  const subcommand = command && isWordStart || subcommandArgs.length > 0
-    ? undeterminedSubcommand
-    : undefined
+  return {
+    command,
+    args,
+  }
+}
+
+async function getCompletions(input: string, cwd: string, capture?: boolean) {
+  const { entries, operator } = getInputtingCommandEntries(input)
+  if (!entries.length) return []
+  const { command, args } = getInputtingCommand(entries)
+  const { command: subcommand } = getInputtingCommand(args)
+  const currentWord = entries[entries.length - 1] as string
   let asyncCompletionLists: Promise<CommandCompletion[]>[] = []
   // Registered
   const factories = commas.proxy.context.getCollection('terminal.completion')
@@ -462,7 +479,7 @@ async function getCompletions(input: string, cwd: string, capture?: boolean) {
     const isInputtingArgs = isCommandLineArgument(currentWord)
     const frequentlyUsedFileCommands = ['.', 'cat', 'cd', 'cp', 'diff', 'more', 'mv', 'rm', 'source', 'vi']
     if (!isInputtingArgs && (
-      isControlOperatorEntry(lastToken) && lastToken.op === '>'
+      operator && operator.op === '>'
       || command && (currentWord || frequentlyUsedFileCommands.includes(command))
       || !command && /^(.+|~)?[\\/]/.test(currentWord)
     )) {
