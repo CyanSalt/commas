@@ -1,6 +1,7 @@
 import type { IDecoration, IDisposable, IMarker, ITerminalAddon, Terminal } from '@xterm/xterm'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { isEqual, sortBy } from 'lodash'
+import type { SetRequired } from 'type-fest'
 import { computed, nextTick, reactive, toRaw } from 'vue'
 import { ipcRenderer } from '@commas/electron-ipc'
 import type { MenuItem } from '@commas/types/menu'
@@ -56,7 +57,7 @@ interface IntegratedShellCompletion {
 
 interface RenderableIntegratedShellCompletion {
   raw: CommandCompletion[],
-  items: CommandCompletion[],
+  items: SetRequired<CommandCompletion, 'key'>[],
   index: number,
   element?: HTMLElement,
   mounted: Map<CommandCompletion['value'], HTMLElement>,
@@ -192,7 +193,13 @@ export class ShellIntegrationAddon implements ITerminalAddon {
             : undefined
           const key = item.key ? `key:${item.key}` : `value:${item.value}`
           const state = value ? undefined : item.state
-          return { ...item, state, key, value: value ?? item.value }
+          return {
+            ...item,
+            state,
+            key,
+            label: value ? undefined : item.label,
+            value: value ?? item.value,
+          }
         })
       }),
     })

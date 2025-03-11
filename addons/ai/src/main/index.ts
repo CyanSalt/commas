@@ -59,7 +59,8 @@ export default () => {
   commas.context.provide('terminal.completion', async params => {
     return [
       {
-        value: commas.i18n.translate('<Autocomplete with AI>#!ai.2'),
+        label: commas.i18n.translate('<Autocomplete with AI>#!ai.2'),
+        value: '',
         query: params.input,
         type: 'third-party',
         state: 'pending',

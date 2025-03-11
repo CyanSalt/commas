@@ -82,8 +82,12 @@ useTerminalElement(
   () => tab.stickyAddons!,
 )
 
-function highlightLabel(label: string, query: string) {
-  return query ? fuzzaldrin.wrap(escapeHTML(label), escapeHTML(query)) : label
+function highlight(text: string, query: string) {
+  return query ? fuzzaldrin.wrap(escapeHTML(text), escapeHTML(query)) : text
+}
+
+function suffix(text: string, prefix: string) {
+  return text.startsWith(prefix) ? text.slice(prefix.length) : '...'
 }
 
 const renderableCompletion = $computed(() => {
@@ -131,7 +135,7 @@ function getCompletionIcon(item: CommandCompletion) {
 
 function selectCompletion(event: MouseEvent, item: CommandCompletion) {
   const index = renderableCompletion!.items
-    .findIndex(completion => completion.value === item.value)
+    .findIndex(completion => completion.key === item.key)
   if (index === -1) return
   if (linkModifier) {
     tab.addons.shellIntegration!.selectCompletion(index)
@@ -203,11 +207,23 @@ function scrollToStickyCommand() {
             @click.stop.prevent="selectCompletion($event, item)"
           >
             <VisualIcon :name="getCompletionIcon(item)" class="completion-item-icon" />
-            <span v-if="item.state === 'loading'" class="completion-item-label">
+            <span
+              v-if="item.state === 'loading'"
+              class="completion-item-label"
+            >
               <span class="completion-item-loader"></span>
             </span>
-            <span v-else-if="item.state === 'pending'" class="completion-item-label is-pending">{{ item.value }}</span>
-            <span v-else class="completion-item-label" v-html="highlightLabel(item.value, item.query)"></span>
+            <span
+              v-else
+              :class="['completion-item-label', { 'is-pending': item.state === 'pending' }]"
+            >
+              <span
+                v-if="item.value"
+                class="completion-item-value"
+                v-html="highlight(item.value, item.query)"
+              ></span>
+              <span v-if="item.label" class="completion-item-suffix">{{ suffix(item.label, item.value) }}</span>
+            </span>
           </span>
         </template>
         <template #after>
@@ -394,16 +410,19 @@ function scrollToStickyCommand() {
   }
 }
 .completion-item-label {
+  display: flex;
   flex: 1;
   min-width: 0;
-  white-space: nowrap;
+  white-space: pre;
   text-overflow: ellipsis;
   overflow: hidden;
-  &.is-pending {
-    color: rgb(var(--theme-foreground) / 50%);
-    font-style: italic;
-    font-size: 12px;
-  }
+}
+.completion-item-suffix {
+  flex: 1;
+  min-width: 0;
+  color: rgb(var(--theme-foreground) / 50%);
+  font-style: italic;
+  font-size: 12px;
 }
 @keyframes loader-switch {
   0% {

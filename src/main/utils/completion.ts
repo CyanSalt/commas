@@ -251,9 +251,9 @@ const getManPageRawCompletions = memoizeAsync(async (command: string, subcommand
       completions.push({
         type: 'command',
         query: '',
+        label: paragraph[0].trim(),
         value: matches[1],
-        description: (matches[2] ? [matches[2], ...paragraph.slice(1)] : paragraph.slice(1))
-          .map(line => line.trim()).join(' '),
+        description: paragraph.slice(1).map(line => line.trim()).join(' '),
       })
     }
   }

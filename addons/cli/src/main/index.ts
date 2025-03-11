@@ -306,10 +306,8 @@ ${
         type: 'command' as const,
         query: params.query,
         value: item.command,
-        description: [
-          item.usage ? commas.i18n.translate(item.usage) : '',
-          item.description ? commas.i18n.translate(item.description) : '',
-        ].filter(Boolean).join('\n\n'),
+        label: item.usage ? `${item.command} ${commas.i18n.translate(item.usage)}` : undefined,
+        description: item.description ? commas.i18n.translate(item.description) : undefined,
       }))
     }
     return []
