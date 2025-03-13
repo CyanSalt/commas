@@ -82,7 +82,7 @@ async function createTerminal(
   const ptyProcess = pty.spawn(shell, runtimeArgs, options)
   ptyProcess.onData(data => {
     if (!webContents.isDestroyed()) {
-      send(webContents, 'input-terminal', {
+      send(webContents, 'print-terminal', {
         pid: ptyProcess.pid,
         process: ptyProcess.process,
         data,

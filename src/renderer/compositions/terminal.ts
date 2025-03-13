@@ -46,7 +46,7 @@ declare module '@commas/electron-ipc' {
     'duplicate-tab': (data?: Pick<TerminalTab, 'pid'>) => void,
     'split-tab': (data?: Pick<TerminalTab, 'pid'>) => void,
     'close-tab': (data?: Pick<TerminalTab, 'pid'>) => void,
-    'input-terminal': (data: Pick<TerminalTab, 'pid' | 'process'> & { data: string }) => void,
+    'print-terminal': (data: Pick<TerminalTab, 'pid' | 'process'> & { data: string }) => void,
     'exit-terminal': (data: Pick<TerminalTab, 'pid'>) => void,
     'clear-terminal': () => void,
     'close-terminal': () => void,
@@ -1050,7 +1050,7 @@ export function handleTerminalMessages() {
       closeTerminalTab(tab)
     }
   })
-  ipcRenderer.on('input-terminal', (event, data) => {
+  ipcRenderer.on('print-terminal', (event, data) => {
     const tab = tabs.find(item => item.pid === data.pid)
     if (!tab) return
     const xterm = tab.xterm
