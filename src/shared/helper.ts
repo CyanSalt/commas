@@ -40,3 +40,8 @@ export async function *iterate<T, U, V>(iteratee: Generable<T, U, V>): AsyncGene
   }
   return undefined as never
 }
+
+export async function flatAsync<T>(values: Iterable<T[] | PromiseLike<T[]>>) {
+  const result = await Promise.all(values)
+  return result.flat()
+}

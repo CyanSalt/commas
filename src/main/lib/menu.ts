@@ -6,7 +6,7 @@ import type { KeyBinding, MenuItem } from '@commas/types/menu'
 import { globalHandler } from '../../shared/handler'
 import { provideIPC, useYAMLFile } from '../utils/compositions'
 import { resourceFile, userFile } from '../utils/directory'
-import { execa } from '../utils/helper'
+import { execute } from '../utils/helper'
 import { send, useFocusedWindow } from './frame'
 import { translate } from './i18n'
 import { useSettings } from './settings'
@@ -216,9 +216,9 @@ function createDockMenu() {
 function registerGlobalShortcuts() {
   if (process.platform === 'darwin') {
     globalShortcut.register('CmdOrCtrl+Alt+T', async () => {
-      const { stdout: frontmost } = await execa(`osascript -e 'tell application "System Events" to get name of application processes whose frontmost is true and visible is true'`)
+      const { stdout: frontmost } = await execute(`osascript -e 'tell application "System Events" to get name of application processes whose frontmost is true and visible is true'`)
       if (frontmost.trim() === 'Finder') {
-        const { stdout } = await execa(`osascript -e 'tell application "Finder" to get the POSIX path of (target of front window as alias)'`)
+        const { stdout } = await execute(`osascript -e 'tell application "Finder" to get the POSIX path of (target of front window as alias)'`)
         openFile(stdout.trim())
       }
     })

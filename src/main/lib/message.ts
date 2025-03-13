@@ -8,7 +8,7 @@ import unusedFilename from 'unused-filename'
 import { ipcMain } from '@commas/electron-ipc'
 import { globalHandler } from '../../shared/handler'
 import { readFile, watchFile, writeFile } from '../utils/file'
-import { execa, until } from '../utils/helper'
+import { execute, until } from '../utils/helper'
 import { notify } from '../utils/notification'
 import { broadcast, hasWindow, send } from './frame'
 
@@ -26,7 +26,7 @@ declare module '@commas/electron-ipc' {
   export interface Commands {
     'message-box': (data: MessageBoxOptions) => MessageBoxReturnValue,
     destroy: () => void,
-    execute: typeof execa,
+    execute: typeof execute,
     'inject-style': (style: string) => string,
     'eject-style': (key: string) => void,
     'update-window': (data: { title: BrowserWindow['title'], filename: BrowserWindow['representedFilename'] }) => void,
@@ -164,7 +164,7 @@ function handleMessages() {
     frame.destroy()
   })
   ipcMain.handle('execute', (event, command) => {
-    return execa(command)
+    return execute(command)
   })
   ipcMain.handle('inject-style', (event, style) => {
     return event.sender.insertCSS(style)

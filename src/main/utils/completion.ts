@@ -1,325 +1,20 @@
-import * as fs from 'node:fs'
+/// <reference types="@withfig/autocomplete-types" />
 import * as path from 'node:path'
-import { memoize, uniq } from 'lodash'
-import * as properties from 'properties'
-import shellHistory from 'shell-history'
-import { parse, quote } from 'shell-quote'
+import { uniq } from 'lodash'
+import { quote } from 'shell-quote'
+import type { SetRequired } from 'type-fest'
 import type { CommandCompletion } from '@commas/types/terminal'
 import * as commas from '../../api/core-main'
-import { resolveHome } from '../../shared/terminal'
+import { flatAsync } from '../../shared/helper'
 import { extractCommand, extractCommandEntries } from './command'
-import { execa, memoizeAsync } from './helper'
+import type { FigContext } from './fig'
+import { aliasGenerator, commandGenerator, generateFigSpec, generateFigSuggestions, invalidateFigHistory, normalizeArray } from './fig'
+import { memoizeAsync } from './helper'
 import { BIN_PATH, loginExecute } from './shell'
 
 function isCommandLineArgument(query: string) {
   return query.startsWith('-')
     || (process.platform === 'win32' && query.startsWith('/'))
-}
-
-const getDirectoryEntries = memoizeAsync(async (dir: string) => {
-  return fs.promises.readdir(dir, { withFileTypes: true })
-})
-
-async function getFileCompletions(query: string, cwd: string, directoryOnly: boolean) {
-  let context = cwd
-  let prefix = query
-  if (query.includes(path.sep)) {
-    const joined = path.resolve(cwd, resolveHome(query + '0')).slice(0, -1)
-    if (query.endsWith(path.sep)) {
-      context = joined.slice(0, -1)
-      prefix = ''
-    } else {
-      const parsed = path.parse(joined)
-      context = parsed.dir
-      prefix = parsed.base
-    }
-  }
-  let files: fs.Dirent[]
-  try {
-    const entities = await getDirectoryEntries(context)
-    files = directoryOnly ? entities.filter(entity => entity.isDirectory()) : entities
-  } catch {
-    return []
-  }
-  if (!prefix.startsWith('.')) {
-    files = files.filter(entity => !entity.name.startsWith('.'))
-  }
-  const completions = files.map<CommandCompletion>(entity => {
-    const isDirectory = directoryOnly ? true : entity.isDirectory()
-    return {
-      type: entity.isDirectory() ? 'directory' : 'file',
-      query: prefix,
-      value: entity.name + (isDirectory ? path.sep : ''),
-    }
-  })
-  if (files.length && query && !prefix) {
-    completions.unshift({
-      type: 'directory',
-      query: prefix,
-      value: '',
-    })
-  }
-  return completions
-}
-
-interface ManpageSection {
-  title: string,
-  paragraphs: string[][],
-}
-
-function getManPageSections(content: string) {
-  // eslint-disable-next-line no-control-regex
-  const lines = content.replace(/.\x08/g, '').trim().split('\n')
-  let sections: ManpageSection[] = []
-  let title = ''
-  let paragraphs: string[][] = []
-  let currentParagraph: string[] = []
-  const stopCurrentSection = () => {
-    sections.push({ title, paragraphs })
-    title = ''
-    paragraphs = []
-  }
-  const stopCurrentParagraph = () => {
-    if (currentParagraph.length) {
-      paragraphs.push(currentParagraph)
-      currentParagraph = []
-    }
-  }
-  for (const line of lines) {
-    if (line) {
-      if (!/^\s/.test(line)) {
-        stopCurrentParagraph()
-        stopCurrentSection()
-        title = line
-      } else {
-        currentParagraph.push(line)
-      }
-    } else {
-      stopCurrentParagraph()
-    }
-  }
-  stopCurrentParagraph()
-  stopCurrentSection()
-  return sections
-}
-
-const getManPageRawCompletions = memoizeAsync(async (command: string, subcommand?: string) => {
-  const completions: CommandCompletion[] = []
-  // Not supported yet
-  if (process.platform === 'win32') return completions
-  if (command === 'npm' && !subcommand) {
-    let commands: string[] = []
-    try {
-      const { stdout } = await loginExecute('npm help')
-      const npmSections = getManPageSections(stdout)
-      const commandSection = npmSections.find(item => item.title.includes('All commands'))
-      if (commandSection) {
-        const text = commandSection.paragraphs[0].map(line => line.trim()).join(' ')
-        commands = text.split(',').map(item => item.trim())
-      }
-    } catch {
-      // ignore error
-    }
-    return commands.map<CommandCompletion>(item => ({
-      type: 'command',
-      query: '',
-      value: item,
-    }))
-  }
-  let sections: ManpageSection[] = []
-  if (command === 'npm' && subcommand) {
-    try {
-      const { stdout } = await loginExecute(`npm help ${subcommand}`, {
-        env: {
-          MANPAGER: '',
-        },
-      })
-      sections = getManPageSections(stdout)
-    } catch {
-      // ignore error
-    }
-  } else {
-    if (command === 'git' && subcommand) {
-      command = command + '-' + subcommand
-      subcommand = undefined
-    }
-    try {
-      let manpath = ''
-      try {
-        const { stdout } = await loginExecute('manpath')
-        manpath = stdout.trim()
-      } catch {
-        // ignore error
-      }
-      const { stdout } = await execa(quote(['man', command]), { env: {
-        MANPATH: manpath,
-      } })
-      sections = getManPageSections(stdout)
-    } catch {
-      // ignore error
-    }
-  }
-  if (!subcommand) {
-    // Sub-commands
-    if (command === 'git') {
-      const commandSections = sections.filter(item => item.title.includes('COMMANDS'))
-      const paragraphs = commandSections.flatMap(item => item.paragraphs)
-      for (const paragraph of paragraphs) {
-        const index = paragraph.findIndex(line => /^\s*git-([\w-]+)/.test(line))
-        if (index === -1) continue
-        const matches = paragraph[index].match(/^\s*git-([\w-]+)/)
-        if (matches) {
-          completions.push({
-            type: 'command',
-            query: '',
-            value: matches[1],
-            description: paragraph.slice(index + 1)
-              .map(line => line.trim()).join(' '),
-          })
-        }
-      }
-    }
-    if (command === 'brew') {
-      const commandSections = sections.filter(item => item.title.includes('COMMANDS') && item.title !== 'ESSENTIAL COMMANDS')
-      const commandParagraphs = commandSections.flatMap(item => item.paragraphs)
-      for (const paragraph of commandParagraphs) {
-        const matches = paragraph[0].match(/^\s{3}([\w-]+)\s*(.*)$/)
-        if (matches) {
-          completions.push({
-            type: 'command',
-            query: '',
-            value: matches[1],
-            description: (matches[2] ? [matches[2], ...paragraph.slice(1)] : paragraph.slice(1))
-              .map(line => line.trim()).join(' '),
-          })
-        }
-      }
-    }
-  }
-  // Nodejs
-  const section = sections.find(item => item.title === 'OPTIONS')
-    // Default manpages
-    ?? sections.find(item => item.title === 'DESCRIPTION')
-  let paragraphs = section?.paragraphs ?? []
-  if (command === 'brew' && subcommand) {
-    const commandSections = sections.filter(item => item.title.includes('COMMANDS') && item.title !== 'ESSENTIAL COMMANDS')
-    const commandParagraphs = commandSections.flatMap(item => item.paragraphs)
-    const subcommandMatches = commandParagraphs.map(paragraph => {
-      const matches = paragraph[0].match(/^\s{3}([\w-]+)\s*(.*)$/)
-      return matches
-    })
-    const startIndex = subcommandMatches.findIndex(matches => {
-      return matches && matches[1] === subcommand
-    })
-    if (startIndex !== -1) {
-      const nextIndex = subcommandMatches.findIndex((matches, index) => {
-        return index > startIndex && matches
-      })
-      paragraphs = commandParagraphs.slice(startIndex + 1, nextIndex === -1 ? commandParagraphs.length : nextIndex)
-    }
-  }
-  if (command === 'npm') {
-    const defaultSection = sections.find(item => item.title === 'NAME')
-    if (defaultSection) {
-      const parameterParagraphs: string[][] = []
-      let currentParameter: string | undefined
-      let currentParameterParagraph: string[] = []
-      for (const paragraph of defaultSection.paragraphs) {
-        const matches = paragraph[0].match(/^\s{3}([a-z][\w-]*)/)
-        if (matches) {
-          if (currentParameter) {
-            parameterParagraphs.push([currentParameter, ...currentParameterParagraph])
-            currentParameterParagraph = []
-          }
-          currentParameter = '   --' + matches[1]
-        } else if (currentParameter) {
-          if (/^\s{3}[A-Z]/.test(paragraph[0])) {
-            parameterParagraphs.push([currentParameter, ...currentParameterParagraph])
-            currentParameterParagraph = []
-            break
-          } else {
-            currentParameterParagraph = currentParameterParagraph.concat(paragraph)
-          }
-        }
-      }
-      paragraphs = parameterParagraphs
-    }
-  }
-  for (const paragraph of paragraphs) {
-    const matches = paragraph[0].match(/^\s*(-[\w-.]+=?),?\s*(.*)$/)
-    if (matches) {
-      completions.push({
-        type: 'command',
-        query: '',
-        label: paragraph[0].trim(),
-        value: matches[1],
-        description: paragraph.slice(1).map(line => line.trim()).join(' '),
-      })
-    }
-  }
-  return completions
-}, (command, subcommand) => (subcommand ? `${command} ${subcommand}` : command))
-
-async function getManPageCompletions(query: string, command: string, subcommand?: string) {
-  const completions = await getManPageRawCompletions(command, subcommand)
-  return completions.map<CommandCompletion>(item => ({
-    ...item,
-    query,
-  }))
-}
-
-const getNpmScripts = memoizeAsync(async cwd => {
-  const { stdout } = await execa('npm run')
-  const matches = Array.from(stdout.matchAll(/^\s{2}([^\r\n]+)[\r\n]+\s{4}([^\r\n]+)/gm))
-  return matches.map<CommandCompletion>(([full, script, command]) => {
-    return {
-      type: 'command',
-      query: '',
-      value: script,
-      description: command,
-    }
-  })
-})
-
-async function getFrequentlyUsedProgramCompletions(query: string, cwd: string, command: string, subcommand?: string) {
-  if (
-    command === 'npm' && ['run', 'run-script', 'rum', 'urn'].includes(subcommand!)
-    || ['pnpm', 'yarn'].includes(command)
-  ) {
-    const completions = await getNpmScripts(cwd)
-    return completions.map<CommandCompletion>(item => ({
-      ...item,
-      query,
-    }))
-  }
-  return []
-}
-
-const getShellHistoryTokenLists = memoize(() => {
-  const history = uniq((shellHistory() as string[]).reverse()).slice(0, 100)
-  return history.map(line => {
-    try {
-      return parse(line).filter((item): item is string => (typeof item === 'string' && Boolean(item)))
-        .map(item => item.trim()) // grep 'cd ' -> ['grep', 'cd']
-    } catch {
-      return []
-    }
-  })
-})
-
-async function getHistoryCompletions(query: string, command: string) {
-  const tokenLists = getShellHistoryTokenLists()
-  let tokens = command
-    ? tokenLists.flatMap(list => list.slice(1))
-    : tokenLists.flat()
-  if (isCommandLineArgument(query)) {
-    tokens = tokens.filter(item => item[0] === query[0])
-  }
-  return uniq(tokens).map<CommandCompletion>(item => ({
-    type: 'history',
-    value: item,
-    query,
-  }))
 }
 
 async function getZshCaptureCompletions(input: string, query: string, cwd: string) {
@@ -345,64 +40,207 @@ async function getZshCaptureCompletions(input: string, query: string, cwd: strin
   }
 }
 
-async function getAllCommands() {
-  if (process.platform === 'win32') return []
-  try {
-    const { stdout } = await loginExecute('compgen -c', { shell: 'bash' })
-    return stdout.trim().split('\n')
-  } catch {
-    return []
-  }
-}
-
-async function getCommandAliases() {
-  if (process.platform === 'win32') return {}
-  try {
-    const { stdout } = await loginExecute('alias')
-    return properties.parse(stdout) as Record<string, string>
-  } catch {
-    return {}
-  }
-}
-
-const getCommandRawCompletions = memoizeAsync(async () => {
-  if (process.platform === 'win32') return []
-  let [commands, aliases] = await Promise.all([
-    getAllCommands(),
-    getCommandAliases(),
-  ])
-  return uniq([
-    ...commands,
-    ...Object.keys(aliases),
-  ]).sort().map<CommandCompletion>(item => ({
-    type: 'command',
-    query: '',
-    value: item,
-    description: aliases[item],
-  }))
+const getFigCompletionModules = memoizeAsync(async () => {
+  // FIXME: `.default` is not accessible here and must be handed over to the upper scope for unknown reason
+  // @ts-expect-error esm interop
+  return import('@withfig/autocomplete/dynamic') as Promise<{
+    default: Record<string, () => Promise<{ default: Fig.Spec }>>,
+  }>
 })
 
-async function getCommandCompletions(query: string) {
-  const completions = await getCommandRawCompletions()
-  if (!query) {
-    completions.unshift({
-      type: 'command',
-      query: '',
-      value: '',
-    })
+function interopDefault<T>(value: { default: T }) {
+  return value.default
+}
+
+function stripFigCursor(insertion: string) {
+  const index = insertion.indexOf('{cursor}')
+  return index === -1 ? insertion : insertion.slice(0, index)
+}
+
+function getFigValues(spec: Fig.Subcommand | Fig.Suggestion | Fig.Option) {
+  if (spec.insertValue) {
+    return [stripFigCursor(spec.insertValue)]
   }
-  return completions.map<CommandCompletion>(item => ({
-    ...item,
-    query,
+  return normalizeArray(spec.name)
+}
+
+function getFigArgsLabel(spec: Fig.Subcommand | Fig.Option, name: string) {
+  if (!spec.args) return undefined
+  const args = normalizeArray(spec.args)
+  const label = args
+    .filter((arg): arg is SetRequired<typeof arg, 'name'> => Boolean(arg.name))
+    .map(arg => {
+      const delimiters = arg.isOptional ? ['[', ']'] : ['<', '>']
+      return `${delimiters[0]}${arg.isVariadic ? '...' : ''}${arg.name}${delimiters[1]}`
+    })
+    .join(' ')
+  return label ? name + ' ' + label : undefined
+}
+
+function getFigSuggestionType(spec: Fig.Suggestion): CommandCompletion['type'] {
+  switch (spec.type) {
+    case 'file':
+      return 'file'
+    case 'folder':
+      return 'directory'
+    default:
+      if ('context' in spec) {
+        const templateContext = (spec as Fig.TemplateSuggestion).context
+        switch (templateContext.templateType) {
+          case 'filepaths':
+            return 'file'
+          case 'folders':
+            return 'directory'
+          case 'history':
+            return 'history'
+          default:
+            break
+        }
+      }
+      return 'command'
+  }
+}
+
+function transformFigSuggestion(raw: string | Fig.Suggestion, query: string) {
+  const spec = typeof raw === 'string' ? { name: raw } : raw
+  const values = getFigValues(spec)
+  return values.map<CommandCompletion>(value => ({
+    type: getFigSuggestionType(spec),
+    query: spec._internal?.commasCompletionQuery as string | undefined ?? query,
+    value,
+    label: spec.displayName,
+    description: spec.description,
   }))
 }
 
-async function getCompletions(input: string, cwd: string, capture?: boolean) {
+function transformFigSubcommand(spec: Fig.Subcommand, query: string) {
+  const values = getFigValues(spec)
+  return values.map<CommandCompletion>(value => ({
+    type: 'command',
+    query,
+    value,
+    label: spec.displayName ?? (
+      spec.insertValue ? undefined : getFigArgsLabel(spec, value)
+    ),
+    description: spec.description,
+  }))
+}
+
+function transformFigOption(spec: Fig.Option, query: string) {
+  const values = getFigValues(spec)
+  return values.map<CommandCompletion>(value => ({
+    type: 'command',
+    query,
+    value,
+    label: spec.displayName ?? (
+      spec.insertValue ? undefined : getFigArgsLabel(spec, value)
+    ),
+    description: spec.description,
+  }))
+}
+
+function getFigArgCompletions(spec: Fig.Subcommand | Fig.Option, query: string, context: FigContext) {
+  const specArgs = normalizeArray(spec.args)
+  return flatAsync(specArgs.map(arg => {
+    const generators = [
+      ...(arg.template ? [{ template: arg.template }] : []),
+      ...normalizeArray(arg.generators),
+    ]
+    return flatAsync(generators.map(async generator => {
+      const suggestions = await generateFigSuggestions(generator, context)
+      return suggestions.flatMap(suggestion => transformFigSuggestion(suggestion, query))
+    }))
+  }))
+}
+
+async function getFigCompletions(
+  lazySpec: Fig.Spec,
+  query: string,
+  args: string[],
+  context: FigContext,
+) {
+  const spec = typeof lazySpec === 'function' ? lazySpec() : lazySpec
+  if (!('name' in spec)) return []
+  const asyncCompletions: (CommandCompletion[] | Promise<CommandCompletion[]>)[] = []
+  const options = spec.options ?? []
+  // Suggestions or args (suggestions if no argv, args else)
+  if (!args.length || args.length === 1 && args[0] === '') {
+    const suggestions = [
+      ...normalizeArray(spec.args).flatMap(arg => arg.suggestions ?? []),
+      ...(spec.additionalSuggestions ?? []),
+    ]
+    asyncCompletions.push(
+      suggestions.flatMap(suggestion => transformFigSuggestion(suggestion, query)),
+    )
+  } else {
+    // Option args since option spec will not pass to `getFigCompletions`
+    const previousArg = args[args.length - 2]
+    const inputtingOption = options.find(item => {
+      const names = normalizeArray(item.name)
+      return names.includes(previousArg)
+    })
+    if (inputtingOption) {
+      asyncCompletions.push(
+        getFigArgCompletions(inputtingOption, query, context),
+      )
+    }
+  }
+  // Subcommands (suggest if no subcommand, call recursively otherwise)
+  const subcommands = spec.subcommands ?? []
+  const { command: subcommand, args: subcommandArgs } = extractCommand(args)
+  if (subcommand) {
+    const subcommandIndex = subcommands.findIndex(item => {
+      const names = normalizeArray(item.name)
+      return names.includes(subcommand)
+    })
+    // Prefer subcommand options rather than parent options
+    if (subcommandIndex !== -1) {
+      const subspec = subcommands[subcommandIndex]
+      asyncCompletions.push(
+        getFigCompletions(subspec, query, subcommandArgs, context),
+      )
+    }
+  } else {
+    asyncCompletions.push(
+      subcommands.flatMap(subspec => transformFigSubcommand(subspec, query)),
+    )
+  }
+  // Options
+  asyncCompletions.push(
+    options.flatMap(option => transformFigOption(option, query)),
+  )
+  // Args
+  asyncCompletions.push(
+    getFigArgCompletions(spec, query, context),
+  )
+  // Generated spec
+  if (spec.generateSpec) {
+    const generatedSpec = await generateFigSpec(spec.generateSpec, spec.generateSpecCacheKey, context)
+    asyncCompletions.push(
+      getFigCompletions(generatedSpec, query, args, context),
+    )
+  }
+  // TODO: loadSpec
+  return flatAsync(asyncCompletions)
+}
+
+export interface CompletionShellContext {
+  cwd: string,
+  env: NodeJS.ProcessEnv,
+  shell: string,
+  process: string,
+}
+
+async function getCompletions(
+  input: string,
+  shellContext: CompletionShellContext,
+  capture?: boolean,
+) {
   const { entries, operator } = extractCommandEntries(input)
   if (!entries.length) return []
   const { command, args } = extractCommand(entries)
   const query = entries[entries.length - 1]
-  let asyncCompletionLists: Promise<CommandCompletion[]>[] = []
+  let asyncCompletionLists: (CommandCompletion[] | Promise<CommandCompletion[]>)[] = []
   // Registered
   const factories = commas.proxy.context.getCollection('terminal.completion')
   asyncCompletionLists = asyncCompletionLists.concat(
@@ -416,49 +254,50 @@ async function getCompletions(input: string, cwd: string, capture?: boolean) {
   if (capture) {
     // Zsh capture
     asyncCompletionLists.push(
-      getZshCaptureCompletions(input, query, cwd),
+      getZshCaptureCompletions(input, query, shellContext.cwd),
     )
   } else {
-    // History
-    if (query) {
-      asyncCompletionLists.push(
-        getHistoryCompletions(query, command),
-      )
+    const figCompletions = interopDefault(await getFigCompletionModules())
+    const figContext: FigContext = {
+      cwd: shellContext.cwd,
+      env: shellContext.env,
+      shell: shellContext.shell,
+      process: shellContext.process,
+      tokens: entries,
     }
-    // Commands
-    if (!command && !/^(.+|~)?[\\/]/.test(query)) {
+    if (command in figCompletions) {
+      const { default: lazySpec } = await figCompletions[command]()
       asyncCompletionLists.push(
-        getCommandCompletions(query),
+        getFigCompletions(lazySpec, query, args, figContext),
       )
-    }
-    // Files
-    const isInputtingArgs = isCommandLineArgument(query)
-    const frequentlyUsedFileCommands = ['.', 'cat', 'cd', 'cp', 'diff', 'more', 'mv', 'rm', 'source', 'vi']
-    if (!isInputtingArgs && (
-      operator && operator.op === '>'
-      || command && (query || frequentlyUsedFileCommands.includes(command))
-      || !command && /^(.+|~)?[\\/]/.test(query)
-    )) {
-      const directoryCommands = ['cd', 'dir', 'ls']
-      const directoryOnly = directoryCommands.includes(command)
-      asyncCompletionLists.push(
-        getFileCompletions(query, cwd, directoryOnly),
-      )
-    }
-    if (command) {
-      const { command: subcommand } = extractCommand(args)
-      asyncCompletionLists.push(
-        getManPageCompletions(query, command, subcommand),
-      )
-      if (command === 'npm' && subcommand === 'run') {
+    } else {
+      // Commands
+      if (!command && !/^(.+|~)?[\\/]/.test(query)) {
         asyncCompletionLists.push(
-          getFrequentlyUsedProgramCompletions(query, cwd, command, subcommand),
+          getFigCompletions({
+            name: '',
+            args: {
+              name: 'command',
+              generators: [commandGenerator, aliasGenerator],
+            },
+          }, query, args, figContext),
+        )
+      }
+      // Files
+      if (!isCommandLineArgument(query) && (operator && operator.op === '>' || /[\\/]/.test(query))) {
+        asyncCompletionLists.push(
+          getFigCompletions({
+            name: command,
+            args: {
+              name: 'file',
+              template: 'filepaths',
+            },
+          }, query, args, figContext),
         )
       }
     }
   }
-  const lists = await Promise.all(asyncCompletionLists)
-  const completions = lists.flat()
+  const completions = await flatAsync(asyncCompletionLists)
   // Always add a passthrough option
   if (completions.length && !query) {
     completions.push({ value: '', query: '' })
@@ -467,8 +306,7 @@ async function getCompletions(input: string, cwd: string, capture?: boolean) {
 }
 
 function refreshCompletions() {
-  getDirectoryEntries.cache.clear()
-  getShellHistoryTokenLists.cache.clear!()
+  invalidateFigHistory()
 }
 
 export {

@@ -11,9 +11,15 @@ importers:
       '@achrinza/node-ipc':
         specifier: ^10.1.11
         version: 10.1.11
+      '@fig/autocomplete-generators':
+        specifier: ^2.4.0
+        version: 2.4.0
       '@vue/reactivity':
         specifier: ^3.5.13
         version: 3.5.13
+      '@withfig/autocomplete':
+        specifier: ^2.692.1
+        version: 2.692.1
       address:
         specifier: ^2.0.3
         version: 2.0.3
@@ -124,6 +130,9 @@ importers:
       '@vueuse/core':
         specifier: ^12.7.0
         version: 12.7.0(typescript@5.7.3)
+      '@withfig/autocomplete-types':
+        specifier: ^1.31.0
+        version: 1.31.0
       '@xterm/addon-canvas':
         specifier: ^0.7.0
         version: 0.7.0(@xterm/xterm@5.5.0)
@@ -921,6 +930,12 @@ packages:
   '@excalidraw/random-username@1.1.0':
     resolution: {integrity: sha512-nULYsQxkWHnbmHvcs+efMkJ4/9TtvNyFeLyHdeGxW0zHs6P+jYVqcRff9A6Vq9w9JXeDRnRh2VKvTtS19GW2qA==}
     engines: {node: '>=10'}
+
+  '@fig/autocomplete-generators@2.4.0':
+    resolution: {integrity: sha512-fiaaCGmsgnbUJbVbNAcVDmrnCGj/SmfarK6WKt/lfQP9k1hLHkkmZQ836VSMJvPP1vAKFAiXpdJziG6EGyjAYg==}
+
+  '@fig/autocomplete-helpers@1.0.7':
+    resolution: {integrity: sha512-5jq01q2JtaLAjl8t3hOvE9GOp4a4Agj7YmxlBxRjuSwJY3qskfx/mdAgOX2qjgxZ74bHONAxQ1hzudwSICqZFg==}
 
   '@floating-ui/core@0.7.3':
     resolution: {integrity: sha512-buc8BXHmG9l82+OQXOFU3Kr2XQx9ys01U/Q9HMIrZ300iLc8HLMgh7dcCqgYzAzf4BkoQvDcXf5Y+CuEZ5JBYg==}
@@ -1913,6 +1928,13 @@ packages:
 
   '@vueuse/shared@12.7.0':
     resolution: {integrity: sha512-coLlUw2HHKsm7rPN6WqHJQr18WymN4wkA/3ThFaJ4v4gWGWAQQGK+MJxLuJTBs4mojQiazlVWAKNJNpUWGRkNw==}
+
+  '@withfig/autocomplete-types@1.31.0':
+    resolution: {integrity: sha512-TSZDo5jvEaeIHqmHY6Wkd3gBqVbxcHQVdkF6N1J8CXRBuQZpjUVci15/HPNYe0nKLvsomBWIRsTP3m1zr9pv3A==}
+
+  '@withfig/autocomplete@2.692.1':
+    resolution: {integrity: sha512-wO88cEiswIpUH4BSpm0kZFRoXdUafZMi5yOba3N3mSdmPXMNzbnGSKQYr0rgylwLfrePG/dZmMvfjnOc25Y7oA==}
+    engines: {node: '>=20', pnpm: '>=9'}
 
   '@xmldom/xmldom@0.8.10':
     resolution: {integrity: sha512-2WALfTl4xo2SkGCYRt6rDTFfk9R1czmBvUQy12gK2KuRKIpWEhcbbzy8EZXtz/jkRqHX8bFEc6FC1HjX4TUWYw==}
@@ -5782,6 +5804,10 @@ packages:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
 
+  strip-json-comments@5.0.1:
+    resolution: {integrity: sha512-0fk9zBqO67Nq5M/m45qHCJxylV/DhBlIOVExqgOMiCCrzrhU6tCibRXNqE3jwJLftzE9SNuZtYbpzcO+i9FiKw==}
+    engines: {node: '>=14.16'}
+
   strip-outer@1.0.1:
     resolution: {integrity: sha512-k55yxKHwaXnpYGsOzg4Vl8+tDrWylxDEpknGjhTiZB8dFRU5rTo9CAzeycivxV3s+zlTKwrs6WxMxR95n26kwg==}
     engines: {node: '>=0.10.0'}
@@ -5977,6 +6003,11 @@ packages:
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
       typescript: '>=4.8.4 <5.8.0'
+
+  typescript@4.9.5:
+    resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
 
   typescript@5.7.3:
     resolution: {integrity: sha512-84MVSjMEHP+FQRPy3pX9sTVV/INIex71s9TL2Gm5FG/WG1SqXeKyZ0k7/blY/4FdOzI12CBy1vGc4og/eus0fw==}
@@ -7011,6 +7042,13 @@ snapshots:
       - supports-color
 
   '@excalidraw/random-username@1.1.0': {}
+
+  '@fig/autocomplete-generators@2.4.0': {}
+
+  '@fig/autocomplete-helpers@1.0.7':
+    dependencies:
+      semver: 7.7.1
+      typescript: 4.9.5
 
   '@floating-ui/core@0.7.3': {}
 
@@ -8204,6 +8242,16 @@ snapshots:
       vue: 3.5.13(typescript@5.7.3)
     transitivePeerDependencies:
       - typescript
+
+  '@withfig/autocomplete-types@1.31.0': {}
+
+  '@withfig/autocomplete@2.692.1':
+    dependencies:
+      '@fig/autocomplete-generators': 2.4.0
+      '@fig/autocomplete-helpers': 1.0.7
+      semver: 7.7.1
+      strip-json-comments: 5.0.1
+      yaml: 2.7.0
 
   '@xmldom/xmldom@0.8.10': {}
 
@@ -12448,6 +12496,8 @@ snapshots:
 
   strip-json-comments@3.1.1: {}
 
+  strip-json-comments@5.0.1: {}
+
   strip-outer@1.0.1:
     dependencies:
       escape-string-regexp: 1.0.5
@@ -12702,6 +12752,8 @@ snapshots:
       typescript: 5.7.3
     transitivePeerDependencies:
       - supports-color
+
+  typescript@4.9.5: {}
 
   typescript@5.7.3: {}
 

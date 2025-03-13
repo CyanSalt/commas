@@ -710,7 +710,12 @@ export class ShellIntegrationAddon implements ITerminalAddon {
 
   async _getRealtimeCompletions(input: string) {
     if (!input) return []
-    return ipcRenderer.invoke('get-completions', input, this.tab.cwd)
+    return ipcRenderer.invoke('get-completions', input, {
+      cwd: this.tab.cwd,
+      env: toRaw(this.tab.env),
+      shell: this.tab.shell,
+      process: this.tab.process,
+    })
   }
 
   async _getCompletions(input: string) {

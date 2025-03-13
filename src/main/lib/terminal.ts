@@ -5,9 +5,10 @@ import { app } from 'electron'
 import type { IPty, IPtyForkOptions } from 'node-pty'
 import * as pty from 'node-pty'
 import { ipcMain } from '@commas/electron-ipc'
-import type { TerminalContext, TerminalInfo } from '@commas/types/terminal'
+import type { CommandCompletion, TerminalContext, TerminalInfo } from '@commas/types/terminal'
+import type { CompletionShellContext } from '../utils/completion'
 import { getCompletions, refreshCompletions } from '../utils/completion'
-import { execa } from '../utils/helper'
+import { execute } from '../utils/helper'
 import { getDefaultEnv, getDefaultShell, integrateShell } from '../utils/shell'
 import { send } from './frame'
 import { useSettings, whenSettingsReady } from './settings'
@@ -20,7 +21,7 @@ declare module '@commas/electron-ipc' {
     'close-terminal': (pid: number) => void,
     'get-terminal-cwd': (pid: number) => string,
     'get-shells': () => string[],
-    'get-completions': typeof getCompletions,
+    'get-completions': (input: string, context: CompletionShellContext) => Promise<CommandCompletion[]>,
   }
   export interface Events {
     'terminal-prompt-end': () => void,
@@ -130,7 +131,7 @@ function handleTerminalMessages() {
   ipcMain.handle('get-terminal-cwd', async (event, pid) => {
     try {
       if (process.platform === 'darwin') {
-        const { stdout } = await execa(`lsof -p ${pid} | grep cwd`)
+        const { stdout } = await execute(`lsof -p ${pid} | grep cwd`)
         return stdout.slice(stdout.indexOf('/'), -1)
       } else if (process.platform === 'linux') {
         return await fs.promises.readlink(`/proc/${pid}/cwd`)
@@ -153,14 +154,14 @@ function handleTerminalMessages() {
       ]
     }
     try {
-      const { stdout } = await execa('grep "^/" /etc/shells')
+      const { stdout } = await execute('grep "^/" /etc/shells')
       return stdout.trim().split('\n')
     } catch {
       return []
     }
   })
-  ipcMain.handle('get-completions', (event, input, cwd) => {
-    return getCompletions(input, cwd, settings['terminal.shell.captureCompletion'])
+  ipcMain.handle('get-completions', (event, input, context) => {
+    return getCompletions(input, context, settings['terminal.shell.captureCompletion'])
   })
   ipcMain.on('terminal-prompt-end', () => {
     refreshCompletions()

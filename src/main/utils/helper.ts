@@ -4,6 +4,31 @@ import * as util from 'node:util'
 
 const execa = util.promisify(childProcess.exec)
 
+async function execute(command: string, options?: childProcess.ExecOptions) {
+  const promise = execa(command, {
+    encoding: 'utf8',
+    ...options,
+  })
+  let code: number | null = null
+  let signal: NodeJS.Signals | null = null
+  promise.child.on('exit', (exitCode, exitSignal) => {
+    code = exitCode
+    signal = exitSignal
+  })
+  try {
+    const result = await promise
+    return Object.assign(result, {
+      code: code as number | null,
+      signal: signal as NodeJS.Signals | null,
+    })
+  } catch (err) {
+    throw Object.assign(err, {
+      code: code as number | null,
+      signal: signal as NodeJS.Signals | null,
+    })
+  }
+}
+
 function until<T extends EventEmitter, U extends string>(emitter: T, finish: U, error?: string) {
   return new Promise<
     T extends EventEmitter<Record<U, infer V extends any[]>> ? V : (
@@ -51,7 +76,7 @@ function memoizeAsync<
 }
 
 export {
-  execa,
+  execute,
   until,
   memoizeAsync,
 }

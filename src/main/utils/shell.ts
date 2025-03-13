@@ -4,7 +4,7 @@ import * as path from 'node:path'
 import { app } from 'electron'
 import { quote } from 'shell-quote'
 import { userFile } from './directory'
-import { execa } from './helper'
+import { execute } from './helper'
 
 const BIN_PATH = app.isPackaged
   ? path.join(process.resourcesPath, 'bin')
@@ -86,10 +86,11 @@ function integrateShell(context: ShellContext) {
   }
 }
 
-function loginExecute(command: string, options: Pick<ExecOptions, 'shell' | 'env' | 'cwd'> = {}) {
+function loginExecute(command: string, options: ExecOptions = {}) {
   const env = getDefaultEnv()
   if (process.platform === 'win32') {
-    return execa(command, {
+    return execute(command, {
+      ...options,
       env: { ...env, ...options.env },
       cwd: options.cwd,
     })
@@ -98,7 +99,11 @@ function loginExecute(command: string, options: Pick<ExecOptions, 'shell' | 'env
     const expression = options.env
       ? Object.entries(options.env).map(kv => kv.join('=')).concat(command).join(' ')
       : command
-    return execa(quote([shell!, '-lic', expression]), { env, cwd: options.cwd })
+    return execute(quote([shell!, '-lic', expression]), {
+      ...options,
+      env,
+      cwd: options.cwd,
+    })
   }
 }
 
