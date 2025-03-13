@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import '@xterm/xterm/css/xterm.css'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
+import { stripVTControlCharacters } from 'node:util'
 import { webUtils } from 'electron'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { quote } from 'shell-quote'
@@ -82,11 +83,13 @@ useTerminalElement(
   () => tab.stickyAddons!,
 )
 
-function highlight(text: string, query: string) {
+function highlight(value: string, query: string) {
+  const text = stripVTControlCharacters(value)
   return query ? fuzzaldrin.wrap(escapeHTML(text), escapeHTML(query)) : text
 }
 
-function suffix(text: string, prefix: string) {
+function suffix(value: string, prefix: string) {
+  const text = stripVTControlCharacters(value)
   return text.startsWith(prefix) ? text.slice(prefix.length) : '...'
 }
 
@@ -189,7 +192,7 @@ function scrollToStickyCommand() {
         :items="renderableCompletion.items"
         :item-size="cell!.height"
         key-field="key"
-        class="terminal-completion-wrapper"
+        :class="['terminal-completion-wrapper', { 'is-loading': renderableCompletion.loading }]"
         list-tag="ul"
         list-class="terminal-completion-list"
         item-tag="li"
@@ -356,7 +359,11 @@ function scrollToStickyCommand() {
 .terminal-completion-wrapper {
   display: flex;
   height: 100%;
-  @include partials.scroll-container(8px);
+  @include partials.scroll-container(8px, $transition: opacity 0.2s);
+  &.is-loading {
+    opacity: 0.5;
+    pointer-events: none;
+  }
   :deep(.vue-recycle-scroller__slot) {
     position: sticky;
     top: 0;

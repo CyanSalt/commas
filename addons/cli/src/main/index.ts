@@ -250,7 +250,7 @@ ${
       const relativePath = argv[0]
       const file = path.resolve(cwd, relativePath)
       const image = await fs.promises.readFile(file)
-      return `\u001B]1337;File=inline=1;size=${image.length};name=${relativePath}:${image.toString('base64')}`
+      return `\u001b]1337;File=inline=1;size=${image.length};name=${relativePath}:${image.toString('base64')}`
     },
   })
 

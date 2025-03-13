@@ -1,11 +1,11 @@
 @use 'sass:math';
+@use 'sass:list';
 
-@mixin scroll-container($size) {
+@mixin scroll-container($size, $transition: ()) {
   --scrollbar-size: #{$size};
   --scrollbar-opacity: 0;
   overflow: scroll;
-  transition: --scrollbar-opacity 0.2s;
-  scrollbar-gutter: stable;
+  transition: #{list.join(($transition,), (--scrollbar-opacity 0.2s,))};
   &:hover {
     --scrollbar-opacity: 0.1;
   }

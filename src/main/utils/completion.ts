@@ -54,7 +54,9 @@ function interopDefault<T>(value: { default: T }) {
 
 function stripFigCursor(insertion: string) {
   const index = insertion.indexOf('{cursor}')
-  return index === -1 ? insertion : insertion.slice(0, index)
+  if (index === -1) return insertion
+  const suffix = insertion.slice(index + '{cursor}'.length)
+  return insertion.slice(0, index) + suffix + '\u001b[D'.repeat(suffix.length)
 }
 
 function getFigValues(spec: Fig.Subcommand | Fig.Suggestion | Fig.Option) {

@@ -58,6 +58,7 @@ interface IntegratedShellCompletion {
 interface RenderableIntegratedShellCompletion {
   raw: CommandCompletion[],
   items: SetRequired<CommandCompletion, 'key'>[],
+  loading: boolean,
   index: number,
   element?: HTMLElement,
   mounted: Map<CommandCompletion['value'], HTMLElement>,
@@ -207,6 +208,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     this.highlightMarkers = []
     this.renderableCompletion = reactive({
       raw: [],
+      loading: false,
       index: 0,
       mounted: new Map(),
       loaded: new Map(),
@@ -775,13 +777,20 @@ export class ShellIntegrationAddon implements ITerminalAddon {
         return
       } else if (this.completion.marker.line === currentPosition.y) {
         shouldReuseDecoration = true
+        // Update UI immediately
+        this.completion = this._createCompletionDecoration(
+          this.renderableCompletion.raw.length,
+          this.completion,
+        )
       } else {
         this.clearCompletion()
       }
     }
     const key = Symbol('COMPLETION_SESSION')
     this.completionKey = key
+    this.renderableCompletion.loading = true
     const completions = await this._getCompletions(input)
+    this.renderableCompletion.loading = false
     if (!completions.length) {
       if (shouldReuseDecoration) {
         this.clearCompletion()
@@ -850,6 +859,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   }
 
   applyCompletion(index: number, isEnterPressing?: boolean) {
+    if (this.renderableCompletion.loading) return false
     const item = this.renderableCompletion.items[index]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (item) {

@@ -6,7 +6,7 @@ export default () => {
     command: 'attention',
     description: 'Request attention from the current cursor#!cli.description.attention',
     handler() {
-      return '\x1b]1337;RequestAttention=fireworks\x1b\\'
+      return '\u001b]1337;RequestAttention=fireworks\u001b\\'
     },
   })
 

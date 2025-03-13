@@ -718,7 +718,7 @@ export function executeTerminalTab(tab: TerminalTab, command: string, restart?: 
       const activeBuffer = tab.xterm.buffer.active
       const lines = activeBuffer.baseY + activeBuffer.cursorY - currentCommand.promptStartY + 1
       if (lines > 0) {
-        tab.xterm.write('\x1b[F'.repeat(lines))
+        tab.xterm.write('\u001b[F'.repeat(lines))
       }
     }
     tab.xterm.input('\u0003')

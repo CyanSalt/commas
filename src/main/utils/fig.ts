@@ -13,6 +13,13 @@ function normalizeArray<T>(value: T | T[] | undefined) {
 
 function createFigCommandExecutor(context: FigContext): Fig.ExecuteCommandFunction {
   return async request => {
+    if (request.command === 'fig') {
+      return {
+        stdout: 'null',
+        stderr: '',
+        status: 0,
+      }
+    }
     try {
       const { stdout, stderr, code } = await loginExecute(quote([request.command, ...request.args]), {
         cwd: request.cwd ?? context.cwd,
@@ -149,30 +156,34 @@ async function generateFigSuggestionsWithoutCache(
   token: string,
   context: FigContext,
 ) {
-  const executeCommand = createFigCommandExecutor(context)
-  if (generator.custom) {
-    return generator.custom(context.tokens, executeCommand, {
-      currentWorkingDirectory: context.cwd,
-      environmentVariables: Object.fromEntries(
-        Object.entries(context.env).filter((pair): pair is [string, string] => typeof pair[1] === 'string'),
-      ),
-      currentProcess: context.process,
-      sshPrefix: '',
-      searchTerm: token,
-    })
-  }
-  if (generator.script) {
-    const input = resolveFigGeneratorScript(generator.script, context)
-    const { stdout } = await executeCommand({
-      ...input,
-      timeout: generator.scriptTimeout ?? input.timeout,
-    })
-    if (generator.splitOn) {
-      return stdout.split(generator.splitOn).map<Fig.Suggestion>(name => ({ name }))
+  try {
+    const executeCommand = createFigCommandExecutor(context)
+    if (generator.custom) {
+      return generator.custom(context.tokens, executeCommand, {
+        currentWorkingDirectory: context.cwd,
+        environmentVariables: Object.fromEntries(
+          Object.entries(context.env).filter((pair): pair is [string, string] => typeof pair[1] === 'string'),
+        ),
+        currentProcess: context.process,
+        sshPrefix: '',
+        searchTerm: token,
+      })
     }
-    if (generator.postProcess) {
-      return generator.postProcess(stdout, context.tokens)
+    if (generator.script) {
+      const input = resolveFigGeneratorScript(generator.script, context)
+      const { stdout } = await executeCommand({
+        ...input,
+        timeout: generator.scriptTimeout ?? input.timeout,
+      })
+      if (generator.splitOn) {
+        return stdout.split(generator.splitOn).map<Fig.Suggestion>(name => ({ name }))
+      }
+      if (generator.postProcess) {
+        return generator.postProcess(stdout, context.tokens)
+      }
     }
+  } catch {
+    // ignore errors
   }
   return []
 }
