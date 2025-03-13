@@ -80,29 +80,15 @@ function updateDecorationElement(decoration: IDecoration, callback: (el: HTMLEle
   }
 }
 
-const completionTypePriority: Record<NonNullable<CommandCompletion['type']>, number> = {
-  'third-party': 0,
-  recommendation: 1,
-  history: 2,
-  directory: 3,
-  file: 4,
-  command: 5,
-  default: Infinity,
-}
-
-const completionTypeOrder = Object.entries(completionTypePriority)
-  .sort((a, b) => a[1] - b[1])
-  .map(([type, priority]) => type)
-
-function determineCompletionType(
-  a: CommandCompletion['type'],
-  b: CommandCompletion['type'],
-): NonNullable<CommandCompletion['type']> {
-  for (const type of completionTypeOrder) {
-    if (a === type || b === type) return type
-  }
-  return 'default'
-}
+const orderedCompletionTypes = [
+  'third-party',
+  'recommendation',
+  'history',
+  'directory',
+  'file',
+  'command',
+  'default',
+] as const
 
 function filterAndSortCompletions(completions: CommandCompletion[]) {
   const duplicatedTimes: (Pick<CommandCompletion, 'value' | 'query'> & { times: number })[] = []
@@ -132,10 +118,12 @@ function filterAndSortCompletions(completions: CommandCompletion[]) {
         })
       }
       const existingItem = deduplicatedCompletions[existingIndex]
-      const replacement = {
+      const replacement: CommandCompletion = {
         ...existingItem,
-        type: determineCompletionType(existingItem.type, completion.type),
-        description: existingItem.description || completion.description,
+        type: orderedCompletionTypes.find(type => (existingItem.type === type || completion.type === type)) ?? 'default',
+        label: existingItem.label ?? completion.label,
+        description: existingItem.description ?? completion.description,
+        deprecated: existingItem.deprecated ?? completion.deprecated,
       }
       deduplicatedCompletions.splice(existingIndex, 1, replacement)
     }

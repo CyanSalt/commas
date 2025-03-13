@@ -102,19 +102,25 @@ function getFigSuggestionType(spec: Fig.Suggestion): CommandCompletion['type'] {
   }
 }
 
-function transformFigSuggestion(raw: string | Fig.Suggestion, query: string) {
+function transformFigSuggestion(raw: string | Fig.Suggestion, query: string, strict?: boolean) {
   const spec = typeof raw === 'string' ? { name: raw } : raw
-  const values = getFigValues(spec)
+  if (spec.hidden) return []
+  let values = getFigValues(spec)
+  if (strict) {
+    values = values.filter(value => value.startsWith(query))
+  }
   return values.map<CommandCompletion>(value => ({
     type: getFigSuggestionType(spec),
     query: spec._internal?.commasCompletionQuery as string | undefined ?? query,
     value,
     label: spec.displayName,
     description: spec.description,
+    deprecated: Boolean(spec.deprecated),
   }))
 }
 
 function transformFigSubcommand(spec: Fig.Subcommand, query: string) {
+  if (spec.hidden) return []
   const values = getFigValues(spec)
   return values.map<CommandCompletion>(value => ({
     type: 'command',
@@ -124,10 +130,12 @@ function transformFigSubcommand(spec: Fig.Subcommand, query: string) {
       spec.insertValue ? undefined : getFigArgsLabel(spec, value)
     ),
     description: spec.description,
+    deprecated: Boolean(spec.deprecated),
   }))
 }
 
 function transformFigOption(spec: Fig.Option, query: string) {
+  if (spec.hidden) return []
   const values = getFigValues(spec)
   return values.map<CommandCompletion>(value => ({
     type: 'command',
@@ -137,6 +145,7 @@ function transformFigOption(spec: Fig.Option, query: string) {
       spec.insertValue ? undefined : getFigArgsLabel(spec, value)
     ),
     description: spec.description,
+    deprecated: Boolean(spec.deprecated),
   }))
 }
 
@@ -164,16 +173,16 @@ async function getFigCompletions(
   if (!('name' in spec)) return []
   const asyncCompletions: (CommandCompletion[] | Promise<CommandCompletion[]>)[] = []
   const options = spec.options ?? []
-  // Suggestions or args (suggestions if no argv, args else)
-  if (!args.length || args.length === 1 && args[0] === '') {
-    const suggestions = [
-      ...normalizeArray(spec.args).flatMap(arg => arg.suggestions ?? []),
-      ...(spec.additionalSuggestions ?? []),
-    ]
-    asyncCompletions.push(
-      suggestions.flatMap(suggestion => transformFigSuggestion(suggestion, query)),
-    )
-  } else {
+  // Suggestions
+  const suggestions = [
+    ...normalizeArray(spec.args).flatMap(arg => arg.suggestions ?? []),
+    ...(spec.additionalSuggestions ?? []),
+  ]
+  asyncCompletions.push(
+    suggestions.flatMap(suggestion => transformFigSuggestion(suggestion, query, true)),
+  )
+  // Option args
+  if (args.length > 1) {
     // Option args since option spec will not pass to `getFigCompletions`
     const previousArg = args[args.length - 2]
     const inputtingOption = options.find(item => {

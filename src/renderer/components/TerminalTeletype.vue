@@ -218,11 +218,11 @@ function scrollToStickyCommand() {
             </span>
             <span
               v-else
-              :class="['completion-item-label', { 'is-pending': item.state === 'pending' }]"
+              class="completion-item-label"
             >
               <span
                 v-if="item.value"
-                class="completion-item-value"
+                :class="['completion-item-value', { 'is-deprecated': item.deprecated }]"
                 v-html="highlight(item.value, item.query)"
               ></span>
               <span v-if="item.label" class="completion-item-suffix">{{ suffix(item.label, item.value) }}</span>
@@ -423,6 +423,11 @@ function scrollToStickyCommand() {
   white-space: pre;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+.completion-item-value {
+  &.is-deprecated {
+    text-decoration: line-through;
+  }
 }
 .completion-item-suffix {
   flex: 1;
