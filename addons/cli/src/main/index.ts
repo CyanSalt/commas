@@ -10,6 +10,7 @@ import { random, sortBy } from 'lodash'
 import picocolors from 'picocolors'
 import { quote } from 'shell-quote'
 import table from 'text-table'
+import type { SetRequired } from 'type-fest'
 import type { CommandModule } from './command'
 import { executeCommand, getCommandModule, useExternalURLCommands } from './command'
 
@@ -93,6 +94,20 @@ export default () => {
 
   const manifest = $computed(() => commas.i18n.getI18nManifest(commas.app.getManifest()))
 
+  const getUsage = (manual: CommandModule) => {
+    if (!manual.args) return undefined
+    const args = commas.helper.normalizeArray(manual.args)
+    const displayArgs = args.filter((arg): arg is SetRequired<typeof arg, 'name'> => Boolean(arg.name))
+    if (!displayArgs.length) return undefined
+    const usage = displayArgs.map(arg => {
+      const delimiters = arg.isOptional ? ['[', ']'] : ['<', '>']
+      return `${delimiters[0]}${arg.isVariadic ? '...' : ''}${
+        commas.i18n.translate(`${arg.name}#!cli.usage.${manual.command}`)
+      }${delimiters[1]}`
+    }).join(' ')
+    return usage
+  }
+
   commas.context.provide('cli.command', {
     command: 'help',
     description: 'Print help information#!cli.description.help',
@@ -100,7 +115,6 @@ export default () => {
       name: 'command',
       isOptional: true,
     },
-    usage: '[command]#!cli.usage.help',
     handler({ argv }) {
       const colors = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan']
       const ansiArt = 'commas'.split('').map((character, index) => {
@@ -117,9 +131,10 @@ export default () => {
       const helpingCommand = argv[0]
       const manual = helpingCommand ? getCommandModule(helpingCommand, commands) : undefined
       if (manual) {
+        const usage = getUsage(manual)
         return `
 ${manual.description ? commas.i18n.translate(manual.description) + '\n\n' : ''}${picocolors.bold(commas.i18n.translate('Usage:#!cli.1'))}
-    commas ${helpingCommand}${manual.usage ? ' ' + picocolors.italic(commas.i18n.translate(manual.usage)) : ''}
+    commas ${helpingCommand}${usage ? ' ' + picocolors.italic(usage) : ''}
 `
       }
 
@@ -159,7 +174,6 @@ ${
       name: 'module-name',
       isOptional: true,
     },
-    usage: '[module-name-or-all]#!cli.usage.version',
     handler({ argv }) {
       const versions = {
         commas: app.getVersion(),
@@ -193,7 +207,6 @@ ${
       name: 'command-with-args',
       isVariadic: true,
     },
-    usage: '<...command-with-args>#!cli.usage.run',
     handler({ sender, argv }) {
       commas.frame.send(sender, 'open-tab', undefined, {
         command: quote(argv),
@@ -207,7 +220,6 @@ ${
     args: {
       name: 'name',
     },
-    usage: '<name>#!cli.usage.open',
     handler({ sender, argv }) {
       commas.frame.send(sender, 'open-pane', argv[0])
     },
@@ -219,7 +231,6 @@ ${
     args: {
       name: 'nth-tab',
     },
-    usage: '<nth-tab>#!cli.usage.select',
     handler({ sender, argv }) {
       const index = Number(argv[0])
       if (Number.isInteger(index)) {
@@ -239,7 +250,6 @@ ${
       name: 'n-times',
       isOptional: true,
     },
-    usage: '[n-times]#!cli.usage.roll',
     handler({ argv }) {
       let length = Number(argv[0])
       if (!Number.isInteger(length) || length <= 0) {
@@ -260,7 +270,6 @@ ${
         template: 'filepaths',
       },
     },
-    usage: '[file]#!cli.usage.preview',
     async handler({ sender, argv, cwd }) {
       const frame = BrowserWindow.fromWebContents(sender)
       if (!frame) return
@@ -279,7 +288,6 @@ ${
         template: 'filepaths',
       },
     },
-    usage: '<file>#!cli.usage.imgcat',
     async handler({ argv, cwd }) {
       if (!argv.length) return
       const relativePath = argv[0]
@@ -295,7 +303,6 @@ ${
     args: {
       name: 'port',
     },
-    usage: '<port>#!cli.usage.free',
     async handler({ argv }) {
       const port = Number(argv[0])
       if (Number.isInteger(port) && port > 0) {
@@ -324,10 +331,9 @@ ${
     command: 'history',
     description: 'Get history in current session#!cli.description.history',
     args: {
-      name: 'num',
+      name: 'n-steps',
       isOptional: true,
     },
-    usage: '[n-steps]#!cli.usage.history',
     async handler({ sender, argv }) {
       const index = Number(argv[0])
       const recentCommands = await commas.ipcMain.invoke(sender, 'get-history', Number.isInteger(index) ? index : undefined)

@@ -2,5 +2,5 @@
   "New File#!editor.1": "新文件",
   "Text File#!editor.2": "文本文件",
   "Edit a text file#!cli.description.edit": "编辑文本文件",
-  "<file>#!cli.usage.edit": "<文件>"
+  "file#!cli.usage.edit": "文件"
 }

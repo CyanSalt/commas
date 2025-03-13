@@ -4,12 +4,8 @@ import { memoize, uniq } from 'lodash'
 import * as properties from 'properties'
 import shellHistory from 'shell-history'
 import { parse, quote } from 'shell-quote'
-import { createIDGenerator, flatAsync } from '../../shared/helper'
+import { createIDGenerator, flatAsync, normalizeArray } from '../../shared/helper'
 import { loginExecute } from './shell'
-
-function normalizeArray<T>(value: T | T[] | undefined) {
-  return Array.isArray(value) ? value : (value === undefined ? [] : [value])
-}
 
 function createFigCommandExecutor(context: FigContext): Fig.ExecuteCommandFunction {
   return async request => {

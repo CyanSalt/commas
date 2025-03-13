@@ -22,7 +22,6 @@ export default () => {
         template: 'filepaths',
       },
     },
-    usage: '<file>#!cli.usage.edit',
     async handler({ sender, argv, cwd }) {
       const file = path.resolve(cwd, argv[0])
       await fs.promises.access(file, fs.constants.R_OK)

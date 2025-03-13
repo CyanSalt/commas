@@ -4,5 +4,5 @@
   "Web Page#!browser.3": "网页",
   "Enter URL...#!browser.4": "输入 URL...",
   "Browse URL#!cli.description.browse": "访问 URL",
-  "<url>#!cli.usage.browse": "<url>"
+  "url#!cli.usage.browse": "url"
 }

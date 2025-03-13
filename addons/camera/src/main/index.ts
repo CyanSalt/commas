@@ -57,7 +57,6 @@ export default () => {
     args: {
       name: 'url',
     },
-    usage: '<url>#!cli.usage.connect',
     async handler({ sender, argv }) {
       const url = argv[0]
       if (!url) return

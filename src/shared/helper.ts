@@ -45,3 +45,7 @@ export async function flatAsync<T>(values: Iterable<T[] | PromiseLike<T[]>>) {
   const result = await Promise.all(values)
   return result.flat()
 }
+
+export function normalizeArray<T>(value: T | T[] | undefined) {
+  return Array.isArray(value) ? value : (value === undefined ? [] : [value])
+}

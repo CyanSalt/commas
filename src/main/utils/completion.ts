@@ -5,10 +5,10 @@ import { quote } from 'shell-quote'
 import type { SetRequired } from 'type-fest'
 import type { CommandCompletion } from '@commas/types/terminal'
 import * as commas from '../../api/core-main'
-import { flatAsync } from '../../shared/helper'
+import { flatAsync, normalizeArray } from '../../shared/helper'
 import { extractCommand, extractCommandEntries } from './command'
 import type { FigContext } from './fig'
-import { aliasGenerator, commandGenerator, generateFigSpec, generateFigSuggestions, invalidateFigHistory, normalizeArray } from './fig'
+import { aliasGenerator, commandGenerator, generateFigSpec, generateFigSuggestions, invalidateFigHistory } from './fig'
 import { memoizeAsync } from './helper'
 import { BIN_PATH, loginExecute } from './shell'
 
@@ -69,14 +69,13 @@ function getFigValues(spec: Fig.Subcommand | Fig.Suggestion | Fig.Option) {
 function getFigArgsLabel(spec: Fig.Subcommand | Fig.Option, name: string) {
   if (!spec.args) return undefined
   const args = normalizeArray(spec.args)
-  const label = args
-    .filter((arg): arg is SetRequired<typeof arg, 'name'> => Boolean(arg.name))
-    .map(arg => {
-      const delimiters = arg.isOptional ? ['[', ']'] : ['<', '>']
-      return `${delimiters[0]}${arg.isVariadic ? '...' : ''}${arg.name}${delimiters[1]}`
-    })
-    .join(' ')
-  return label ? name + ' ' + label : undefined
+  const displayArgs = args.filter((arg): arg is SetRequired<typeof arg, 'name'> => Boolean(arg.name))
+  if (!displayArgs.length) return undefined
+  const label = displayArgs.map(arg => {
+    const delimiters = arg.isOptional ? ['[', ']'] : ['<', '>']
+    return `${delimiters[0]}${arg.isVariadic ? '...' : ''}${arg.name}${delimiters[1]}`
+  }).join(' ')
+  return name + ' ' + label
 }
 
 function getFigSuggestionType(spec: Fig.Suggestion): CommandCompletion['type'] {

@@ -64,7 +64,6 @@ export default () => {
         template: 'folders',
       },
     },
-    usage: '[directory]#!cli.usage.list',
     async handler({ sender, argv, cwd }) {
       const directory = argv.length ? path.resolve(cwd, argv[0]) : cwd
       await fs.promises.access(directory, fs.constants.R_OK)

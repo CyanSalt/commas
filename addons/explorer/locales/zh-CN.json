@@ -6,5 +6,5 @@
   "Move to Trash#!explorer.5": "移动到回收站",
   "Move to Trash#!explorer.5.darwin": "移动到废纸篓",
   "List files in directory#!cli.description.list": "列出目录下的文件",
-  "[directory]#!cli.usage.list": "[目录]"
+  "directory#!cli.usage.list": "[目录]"
 }
