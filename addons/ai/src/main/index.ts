@@ -56,7 +56,7 @@ export default () => {
 
   let id = 1n
 
-  commas.context.provide('terminal.completion', async params => {
+  commas.context.provide('terminal.completion-provider', async params => {
     return [
       {
         label: commas.i18n.translate('<Autocomplete with AI>#!ai.2'),

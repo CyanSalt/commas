@@ -298,7 +298,7 @@ ${
     commas.context.provide('cli.command', ...externalURLCommands)
   })
 
-  commas.context.provide('terminal.completion', async params => {
+  commas.context.provide('terminal.completion-provider', async params => {
     if (params.command === 'commas') {
       const { command: subcommand } = commas.shell.extractCommand(params.args)
       if (subcommand) return []

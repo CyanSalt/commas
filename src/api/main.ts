@@ -2,7 +2,7 @@ import type { CommandCompletion } from '@commas/types/terminal'
 
 declare module './modules/context' {
   export interface Context {
-    'terminal.completion': (params: {
+    'terminal.completion-provider': (params: {
       input: string,
       query: string,
       command: string,

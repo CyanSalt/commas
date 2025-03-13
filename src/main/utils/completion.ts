@@ -243,10 +243,10 @@ async function getCompletions(
   const { command, args } = extractCommand(entries)
   const query = entries[entries.length - 1]
   let asyncCompletionLists: (CommandCompletion[] | Promise<CommandCompletion[]>)[] = []
-  // Registered
-  const factories = commas.proxy.context.getCollection('terminal.completion')
+  // Providers
+  const providers = commas.proxy.context.getCollection('terminal.completion-provider')
   asyncCompletionLists = asyncCompletionLists.concat(
-    factories.map(factory => factory({
+    providers.map(provider => provider({
       input,
       query,
       command,
