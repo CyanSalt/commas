@@ -57,6 +57,13 @@ export default () => {
   commas.context.provide('cli.command', {
     command: 'ls',
     description: 'List files in directory#!cli.description.list',
+    args: {
+      name: 'directory',
+      isOptional: true,
+      generators: {
+        template: 'folders',
+      },
+    },
     usage: '[directory]#!cli.usage.list',
     async handler({ sender, argv, cwd }) {
       const directory = argv.length ? path.resolve(cwd, argv[0]) : cwd

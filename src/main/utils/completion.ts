@@ -233,6 +233,17 @@ export interface CompletionShellContext {
   process: string,
 }
 
+const commands = commas.proxy.context.getCollection('terminal.completion-command')
+const appCompletions = $computed(() => {
+  return commands.reduce<Record<string, Fig.Subcommand>>((completions, spec) => {
+    const names = normalizeArray(spec.name)
+    for (const name of names) {
+      completions[name] = spec
+    }
+    return completions
+  }, {})
+})
+
 async function getCompletions(
   input: string,
   shellContext: CompletionShellContext,
@@ -259,7 +270,6 @@ async function getCompletions(
       getZshCaptureCompletions(input, query, shellContext.cwd),
     )
   } else {
-    const figCompletions = interopDefault(await getFigCompletionModules())
     const figContext: FigContext = {
       cwd: shellContext.cwd,
       env: shellContext.env,
@@ -267,35 +277,43 @@ async function getCompletions(
       process: shellContext.process,
       tokens: entries,
     }
-    if (command in figCompletions) {
-      const { default: lazySpec } = await figCompletions[command]()
+    if (command in appCompletions) {
+      const spec = appCompletions[command]
       asyncCompletionLists.push(
-        getFigCompletions(lazySpec, query, args, figContext),
+        getFigCompletions(spec, query, args, figContext),
       )
     } else {
-      // Commands
-      if (!command && !/^(.+|~)?[\\/]/.test(query)) {
+      const figCompletions = interopDefault(await getFigCompletionModules())
+      if (command in figCompletions) {
+        const { default: lazySpec } = await figCompletions[command]()
         asyncCompletionLists.push(
-          getFigCompletions({
-            name: '',
-            args: {
-              name: 'command',
-              generators: [commandGenerator, aliasGenerator],
-            },
-          }, query, args, figContext),
+          getFigCompletions(lazySpec, query, args, figContext),
         )
-      }
-      // Files
-      if (!isCommandLineArgument(query) && (operator && operator.op === '>' || /[\\/]/.test(query))) {
-        asyncCompletionLists.push(
-          getFigCompletions({
-            name: command,
-            args: {
-              name: 'file',
-              template: 'filepaths',
-            },
-          }, query, args, figContext),
-        )
+      } else {
+        // Commands
+        if (!command && !/^(.+|~)?[\\/]/.test(query)) {
+          asyncCompletionLists.push(
+            getFigCompletions({
+              name: '',
+              args: {
+                name: 'command',
+                generators: [commandGenerator, aliasGenerator],
+              },
+            }, query, args, figContext),
+          )
+        }
+        // Files
+        if (!isCommandLineArgument(query) && (operator && operator.op === '>' || /[\\/]/.test(query))) {
+          asyncCompletionLists.push(
+            getFigCompletions({
+              name: command,
+              args: {
+                name: 'file',
+                template: 'filepaths',
+              },
+            }, query, args, figContext),
+          )
+        }
       }
     }
   }

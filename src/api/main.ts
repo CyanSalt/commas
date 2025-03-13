@@ -8,6 +8,7 @@ declare module './modules/context' {
       command: string,
       args: string[],
     }) => Promise<CommandCompletion[]>,
+    'terminal.completion-command': Fig.Subcommand,
   }
 }
 

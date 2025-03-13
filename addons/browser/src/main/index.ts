@@ -5,6 +5,9 @@ export default () => {
   commas.context.provide('cli.command', {
     command: 'browse',
     description: 'Browse URL#!cli.description.browse',
+    args: {
+      name: 'url',
+    },
     usage: '<url>#!cli.usage.browse',
     async handler({ sender, argv }) {
       commas.frame.send(sender, 'open-browser', argv[0])

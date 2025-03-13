@@ -54,6 +54,9 @@ export default () => {
   commas.context.provide('cli.command', {
     command: 'connect',
     description: 'Connect to a remote TTY#!cli.description.connect',
+    args: {
+      name: 'url',
+    },
     usage: '<url>#!cli.usage.connect',
     async handler({ sender, argv }) {
       const url = argv[0]

@@ -17,6 +17,7 @@ export interface CommandModule {
   command: string,
   description?: string,
   usage?: string,
+  args?: Fig.Subcommand['args'],
   handler: (context: CommandContext) => Generable<string, string | void, string | void>,
 }
 

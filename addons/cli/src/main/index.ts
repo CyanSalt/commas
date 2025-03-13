@@ -96,6 +96,10 @@ export default () => {
   commas.context.provide('cli.command', {
     command: 'help',
     description: 'Print help information#!cli.description.help',
+    args: {
+      name: 'command',
+      isOptional: true,
+    },
     usage: '[command]#!cli.usage.help',
     handler({ argv }) {
       const colors = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan']
@@ -151,6 +155,10 @@ ${
   commas.context.provide('cli.command', {
     command: 'version',
     description: 'Print version information#!cli.description.version',
+    args: {
+      name: 'module-name',
+      isOptional: true,
+    },
     usage: '[module-name-or-all]#!cli.usage.version',
     handler({ argv }) {
       const versions = {
@@ -181,6 +189,10 @@ ${
   commas.context.provide('cli.command', {
     command: 'run',
     description: 'Run a command with arguments in a new tab#!cli.description.run',
+    args: {
+      name: 'command-with-args',
+      isVariadic: true,
+    },
     usage: '<...command-with-args>#!cli.usage.run',
     handler({ sender, argv }) {
       commas.frame.send(sender, 'open-tab', undefined, {
@@ -192,6 +204,9 @@ ${
   commas.context.provide('cli.command', {
     command: 'open',
     description: 'Open built-in tab#!cli.description.open',
+    args: {
+      name: 'name',
+    },
     usage: '<name>#!cli.usage.open',
     handler({ sender, argv }) {
       commas.frame.send(sender, 'open-pane', argv[0])
@@ -201,6 +216,9 @@ ${
   commas.context.provide('cli.command', {
     command: 'select',
     description: 'Jump to the nth tab#!cli.description.select',
+    args: {
+      name: 'nth-tab',
+    },
     usage: '<nth-tab>#!cli.usage.select',
     handler({ sender, argv }) {
       const index = Number(argv[0])
@@ -217,6 +235,10 @@ ${
   commas.context.provide('cli.command', {
     command: 'roll',
     description: 'Generate random numbers from 1 to 100#!cli.description.roll',
+    args: {
+      name: 'n-times',
+      isOptional: true,
+    },
     usage: '[n-times]#!cli.usage.roll',
     handler({ argv }) {
       let length = Number(argv[0])
@@ -231,6 +253,13 @@ ${
   commas.context.provide('cli.command', {
     command: 'preview',
     description: 'Preview a file#!cli.description.preview',
+    args: {
+      name: 'file',
+      isOptional: true,
+      generators: {
+        template: 'filepaths',
+      },
+    },
     usage: '[file]#!cli.usage.preview',
     async handler({ sender, argv, cwd }) {
       const frame = BrowserWindow.fromWebContents(sender)
@@ -244,6 +273,12 @@ ${
   commas.context.provide('cli.command', {
     command: 'imgcat',
     description: 'Display a image in terminal#!cli.description.imgcat',
+    args: {
+      name: 'file',
+      generators: {
+        template: 'filepaths',
+      },
+    },
     usage: '<file>#!cli.usage.imgcat',
     async handler({ argv, cwd }) {
       if (!argv.length) return
@@ -257,6 +292,9 @@ ${
   commas.context.provide('cli.command', {
     command: 'free',
     description: 'Terminate all processes on a port#!cli.description.free',
+    args: {
+      name: 'port',
+    },
     usage: '<port>#!cli.usage.free',
     async handler({ argv }) {
       const port = Number(argv[0])
@@ -285,7 +323,11 @@ ${
   commas.context.provide('cli.command', {
     command: 'history',
     description: 'Get history in current session#!cli.description.history',
-    usage: '[num]#!cli.usage.history',
+    args: {
+      name: 'num',
+      isOptional: true,
+    },
+    usage: '[n-steps]#!cli.usage.history',
     async handler({ sender, argv }) {
       const index = Number(argv[0])
       const recentCommands = await commas.ipcMain.invoke(sender, 'get-history', Number.isInteger(index) ? index : undefined)
@@ -298,19 +340,15 @@ ${
     commas.context.provide('cli.command', ...externalURLCommands)
   })
 
-  commas.context.provide('terminal.completion-provider', async params => {
-    if (params.command === 'commas') {
-      const { command: subcommand } = commas.shell.extractCommand(params.args)
-      if (subcommand) return []
-      return commands.map(item => ({
-        type: 'command' as const,
-        query: params.query,
-        value: item.command,
-        label: item.usage ? `${item.command} ${commas.i18n.translate(item.usage)}` : undefined,
+  commas.app.effect(() => {
+    commas.context.provide('terminal.completion-command', {
+      name: 'commas',
+      subcommands: commands.map<Fig.Subcommand>(item => ({
+        name: item.command,
         description: item.description ? commas.i18n.translate(item.description) : undefined,
-      }))
-    }
-    return []
+        args: item.args,
+      })),
+    })
   })
 
   commas.settings.addSettingsSpecsFile('settings.spec.json')

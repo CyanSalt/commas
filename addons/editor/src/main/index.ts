@@ -16,6 +16,12 @@ export default () => {
   commas.context.provide('cli.command', {
     command: 'edit',
     description: 'Edit a text file#!cli.description.edit',
+    args: {
+      name: 'file',
+      generators: {
+        template: 'filepaths',
+      },
+    },
     usage: '<file>#!cli.usage.edit',
     async handler({ sender, argv, cwd }) {
       const file = path.resolve(cwd, argv[0])
