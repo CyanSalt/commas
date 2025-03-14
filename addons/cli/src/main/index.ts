@@ -103,7 +103,7 @@ export default () => {
       const delimiters = arg.isOptional ? ['[', ']'] : ['<', '>']
       return `${delimiters[0]}${arg.isVariadic ? '...' : ''}${
         commas.i18n.translate(`${arg.name}#!cli.usage.${manual.command}`)
-      }${delimiters[1]}`
+      }${arg.default ? `=${arg.default}` : ''}${delimiters[1]}`
     }).join(' ')
     return usage
   }

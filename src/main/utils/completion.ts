@@ -73,7 +73,9 @@ function getFigArgsLabel(spec: Fig.Subcommand | Fig.Option, name: string) {
   if (!displayArgs.length) return undefined
   const label = displayArgs.map(arg => {
     const delimiters = arg.isOptional ? ['[', ']'] : ['<', '>']
-    return `${delimiters[0]}${arg.isVariadic ? '...' : ''}${arg.name}${delimiters[1]}`
+    return `${delimiters[0]}${arg.isVariadic ? '...' : ''}${
+      arg.name
+    }${arg.default ? `=${arg.default}` : ''}${delimiters[1]}`
   }).join(' ')
   return name + ' ' + label
 }

@@ -379,6 +379,10 @@ function scrollToStickyCommand() {
   min-width: 0;
   margin: 0;
   padding: 0;
+  // Hide slots
+  &:hover + * {
+    display: none;
+  }
 }
 .terminal-completion-item {
   display: flex;
