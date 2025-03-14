@@ -59,11 +59,24 @@ function stripFigCursor(insertion: string) {
   return insertion.slice(0, index) + suffix + '\u001b[D'.repeat(suffix.length)
 }
 
+function getFigSeparator(spec: Fig.Option) {
+  return spec.requiresSeparator
+    ? (typeof spec.requiresSeparator === 'string' ? spec.requiresSeparator : '=')
+    : (spec.requiresEquals ? '=' : undefined)
+}
+
 function getFigValues(spec: Fig.Subcommand | Fig.Suggestion | Fig.Option) {
   if (spec.insertValue) {
     return [stripFigCursor(spec.insertValue)]
   }
-  return normalizeArray(spec.name)
+  const names = normalizeArray(spec.name)
+  if ('requiresSeparator' in spec || 'requiresEquals' in spec) {
+    const separator = getFigSeparator(spec)
+    if (separator) {
+      return names.map(name => name + separator)
+    }
+  }
+  return names
 }
 
 function getFigArgsLabel(spec: Fig.Subcommand | Fig.Option, name: string) {
@@ -136,22 +149,34 @@ function transformFigSubcommand(spec: Fig.Subcommand, query: string) {
   }))
 }
 
+function isMatchFigOption(value: string, raw: string | Fig.Option) {
+  const spec = typeof raw === 'string' ? { name: raw } : raw
+  const names = normalizeArray(spec.name)
+  const separator = getFigSeparator(spec)
+  return names.some(name => {
+    if (separator) {
+      return value.startsWith(name + separator)
+    } else {
+      if (value === name) return true
+      // e.g. `-aL` matches both `-a` and `-L`
+      if (/^-\w$/.test(name)) {
+        return /^-\w/.test(value) && value.includes(name[1])
+      }
+      return false
+    }
+  })
+}
+
 function transformFigOption(spec: Fig.Option, query: string, args: string[]) {
   if (spec.hidden) return []
-  let values = getFigValues(spec)
-  const separator = spec.requiresSeparator
-    ? (typeof spec.requiresSeparator === 'string' ? spec.requiresSeparator : '=')
-    : (spec.requiresEquals ? '=' : undefined)
-  if (separator) {
-    values = values.map(value => value + separator)
-  }
+  const values = getFigValues(spec)
   const max = spec.isRepeatable
     ? (typeof spec.isRepeatable === 'number' ? spec.isRepeatable : Infinity)
     : 1
-  const times = args.filter(arg => {
-    return values.some(value => (separator ? arg.startsWith(value) : arg === value))
-  }).length
+  const times = args.filter(arg => isMatchFigOption(arg, spec)).length
   if (times > max) return []
+  const exclusiveOn = spec.exclusiveOn ?? []
+  if (exclusiveOn.some(exclusive => args.some(arg => isMatchFigOption(arg, exclusive)))) return []
   return values.map<CommandCompletion>(value => ({
     type: 'command',
     query,
@@ -166,15 +191,26 @@ function transformFigOption(spec: Fig.Option, query: string, args: string[]) {
 
 function getFigArgCompletions(spec: Fig.Subcommand | Fig.Option, query: string, context: FigContext) {
   const specArgs = normalizeArray(spec.args)
-  return flatAsync(specArgs.map(arg => {
+  if (!specArgs.length) return []
+  // When inputting `--foo=bar`, if spec has name `--foo` and separator `=`, just make query to be `bar`
+  const separator = getFigSeparator(spec)
+  const names = normalizeArray(spec.name)
+  if (separator) {
+    const usage = names.find(name => query.startsWith(name + separator))
+    if (usage) {
+      query = query.slice(usage.length + separator.length)
+    }
+  }
+  return flatAsync(specArgs.map(async arg => {
     const generators = [
       ...(arg.template ? [{ template: arg.template }] : []),
       ...normalizeArray(arg.generators),
     ]
-    return flatAsync(generators.map(async generator => {
-      const suggestions = await generateFigSuggestions(generator, context)
-      return suggestions.flatMap(suggestion => transformFigSuggestion(suggestion, query))
-    }))
+    const suggestions = await flatAsync([
+      arg.suggestions ?? [],
+      ...generators.map(generator => generateFigSuggestions(generator, context)),
+    ])
+    return suggestions.flatMap(suggestion => transformFigSuggestion(suggestion, query))
   }))
 }
 
@@ -197,18 +233,17 @@ async function getFigCompletions(
     suggestions.flatMap(suggestion => transformFigSuggestion(suggestion, query, true)),
   )
   // Option args
-  if (args.length > 1) {
-    // Option args since option spec will not pass to `getFigCompletions`
-    const previousArg = args[args.length - 2]
-    const inputtingOption = options.find(item => {
-      const names = normalizeArray(item.name)
-      return names.includes(previousArg)
-    })
-    if (inputtingOption) {
-      asyncCompletions.push(
-        getFigArgCompletions(inputtingOption, query, context),
-      )
-    }
+  // Option args since option spec will not pass to `getFigCompletions`
+  const previousArg = args.length > 1 ? args[args.length - 2] : undefined
+  const inputtingOption = options.find(item => {
+    const separator = getFigSeparator(item)
+    const optionArg = separator ? query : previousArg
+    return optionArg === undefined ? false : isMatchFigOption(optionArg, item)
+  })
+  if (inputtingOption) {
+    asyncCompletions.push(
+      getFigArgCompletions(inputtingOption, query, context),
+    )
   }
   // Subcommands (suggest if no subcommand, call recursively otherwise)
   const subcommands = spec.subcommands ?? []
