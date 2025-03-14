@@ -167,8 +167,9 @@ function isMatchFigOption(value: string, raw: string | Fig.Option) {
   })
 }
 
-function transformFigOption(spec: Fig.Option, query: string, args: string[]) {
+function transformFigOption(spec: Fig.Option, query: string, args: string[], subcommand: string) {
   if (spec.hidden) return []
+  if (subcommand && !spec.isPersistent) return []
   const values = getFigValues(spec)
   const max = spec.isRepeatable
     ? (typeof spec.isRepeatable === 'number' ? spec.isRepeatable : Infinity)
@@ -267,7 +268,7 @@ async function getFigCompletions(
   }
   // Options
   asyncCompletions.push(
-    options.flatMap(option => transformFigOption(option, query, args)),
+    options.flatMap(option => transformFigOption(option, query, args, subcommand)),
   )
   // Args
   asyncCompletions.push(
