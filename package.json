@@ -54,7 +54,7 @@
     "@types/node-ipc": "^9.2.3",
     "@types/shell-quote": "^1.7.5",
     "@vitejs/plugin-vue": "^5.2.1",
-    "@vue-macros/reactivity-transform": "^1.1.6",
+    "@vue-macros/reactivity-transform": "3.0.0-beta.5",
     "@vueuse/core": "^13.0.0",
     "@withfig/autocomplete-types": "^1.31.0",
     "@xterm/addon-canvas": "^0.7.0",

@@ -226,7 +226,9 @@ async function getFigCompletions(
   context: FigContext,
 ) {
   const spec = typeof lazySpec === 'function' ? lazySpec() : lazySpec
-  if (!('name' in spec)) return []
+  // FIXME: why does `undefined extends Fig.Spec ? true : false` get `true` ?
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (!spec || !('name' in spec)) return []
   const asyncCompletions: (CommandCompletion[] | Promise<CommandCompletion[]>)[] = []
   const options = spec.options ?? []
   // Suggestions

@@ -1,3 +1,4 @@
+import { stripVTControlCharacters } from 'node:util'
 import type { IDecoration, IDisposable, IMarker, ITerminalAddon, Terminal } from '@xterm/xterm'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { isEqual, sortBy } from 'lodash'
@@ -837,7 +838,11 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
     this.skipCompletion(position)
     this.tab.xterm.input('\x7F'.repeat(back))
-    this.tab.xterm.paste(value)
+    if (stripVTControlCharacters(value) === value) {
+      this.tab.xterm.paste(value)
+    } else {
+      this.tab.xterm.input(value)
+    }
     // Preload completions
     this._getRealtimeCompletions(input.slice(0, -back) + value + ' ')
   }
