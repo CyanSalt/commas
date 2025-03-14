@@ -136,9 +136,22 @@ function transformFigSubcommand(spec: Fig.Subcommand, query: string) {
   }))
 }
 
-function transformFigOption(spec: Fig.Option, query: string) {
+function transformFigOption(spec: Fig.Option, query: string, args: string[]) {
   if (spec.hidden) return []
-  const values = getFigValues(spec)
+  let values = getFigValues(spec)
+  const separator = spec.requiresSeparator
+    ? (typeof spec.requiresSeparator === 'string' ? spec.requiresSeparator : '=')
+    : (spec.requiresEquals ? '=' : undefined)
+  if (separator) {
+    values = values.map(value => value + separator)
+  }
+  const max = spec.isRepeatable
+    ? (typeof spec.isRepeatable === 'number' ? spec.isRepeatable : Infinity)
+    : 1
+  const times = args.filter(arg => {
+    return values.some(value => (separator ? arg.startsWith(value) : arg === value))
+  }).length
+  if (times > max) return []
   return values.map<CommandCompletion>(value => ({
     type: 'command',
     query,
@@ -219,7 +232,7 @@ async function getFigCompletions(
   }
   // Options
   asyncCompletions.push(
-    options.flatMap(option => transformFigOption(option, query)),
+    options.flatMap(option => transformFigOption(option, query, args)),
   )
   // Args
   asyncCompletions.push(
