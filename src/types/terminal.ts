@@ -89,6 +89,7 @@ export interface CommandCompletion {
   state?: 'pending' | 'loading',
   key?: string,
   deprecated?: boolean,
+  dangerous?: boolean,
 }
 
 export interface TerminalTabPosition {

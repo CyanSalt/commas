@@ -370,11 +370,51 @@ const aliasGenerator: Fig.Generator = {
   },
 }
 
+const stepOnCommand: Fig.Subcommand = {
+  name: '',
+  args: {
+    name: 'command',
+    generators: [commandGenerator, aliasGenerator],
+  },
+}
+
+function createCommandWithFilepathsArg(name: string): Fig.Subcommand {
+  return {
+    name,
+    args: {
+      name: 'file',
+      template: 'filepaths',
+    },
+  }
+}
+
+function createCurrentTokenGenerator(type: Fig.SuggestionType): Fig.Generator {
+  return {
+    custom: async tokens => {
+      const token = tokens[tokens.length - 1]
+      return [
+        {
+          type,
+          name: token,
+        },
+      ]
+    },
+  }
+}
+
+function getFigSeparator(spec: Fig.Option) {
+  return spec.requiresSeparator
+    ? (typeof spec.requiresSeparator === 'string' ? spec.requiresSeparator : '=')
+    : (spec.requiresEquals ? '=' : undefined)
+}
+
 export {
   normalizeArray,
   generateFigSpec,
   generateFigSuggestions,
   invalidateFigHistory,
-  commandGenerator,
-  aliasGenerator,
+  stepOnCommand,
+  createCommandWithFilepathsArg,
+  createCurrentTokenGenerator,
+  getFigSeparator,
 }

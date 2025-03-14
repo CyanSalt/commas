@@ -8,7 +8,15 @@ import * as commas from '../../api/core-main'
 import { flatAsync, normalizeArray } from '../../shared/helper'
 import { extractCommand, extractCommandEntries } from './command'
 import type { FigContext } from './fig'
-import { aliasGenerator, commandGenerator, generateFigSpec, generateFigSuggestions, invalidateFigHistory } from './fig'
+import {
+  createCommandWithFilepathsArg,
+  createCurrentTokenGenerator,
+  generateFigSpec,
+  generateFigSuggestions,
+  getFigSeparator,
+  invalidateFigHistory,
+  stepOnCommand,
+} from './fig'
 import { memoizeAsync } from './helper'
 import { BIN_PATH, loginExecute } from './shell'
 
@@ -59,12 +67,6 @@ function stripFigCursor(insertion: string) {
   return insertion.slice(0, index) + suffix + '\u001b[D'.repeat(suffix.length)
 }
 
-function getFigSeparator(spec: Fig.Option) {
-  return spec.requiresSeparator
-    ? (typeof spec.requiresSeparator === 'string' ? spec.requiresSeparator : '=')
-    : (spec.requiresEquals ? '=' : undefined)
-}
-
 function getFigValues(spec: Fig.Subcommand | Fig.Suggestion | Fig.Option) {
   if (spec.insertValue) {
     return [stripFigCursor(spec.insertValue)]
@@ -100,21 +102,22 @@ function getFigSuggestionType(spec: Fig.Suggestion): CommandCompletion['type'] {
     case 'folder':
       return 'directory'
     default:
-      if ('context' in spec) {
-        const templateContext = (spec as Fig.TemplateSuggestion).context
-        switch (templateContext.templateType) {
-          case 'filepaths':
-            return 'file'
-          case 'folders':
-            return 'directory'
-          case 'history':
-            return 'history'
-          default:
-            break
-        }
-      }
-      return 'command'
+      break
   }
+  if ('context' in spec) {
+    const templateContext = (spec as Fig.TemplateSuggestion).context
+    switch (templateContext.templateType) {
+      case 'filepaths':
+        return 'file'
+      case 'folders':
+        return 'directory'
+      case 'history':
+        return 'history'
+      default:
+        break
+    }
+  }
+  return 'command'
 }
 
 function transformFigSuggestion(raw: string | Fig.Suggestion, query: string, strict?: boolean) {
@@ -203,7 +206,8 @@ function getFigArgCompletions(spec: Fig.Subcommand | Fig.Option, query: string, 
     }
   }
   return flatAsync(specArgs.map(async arg => {
-    const generators = [
+    const generators: Fig.Generator[] = [
+      ...(arg.suggestCurrentToken ? [createCurrentTokenGenerator('arg')] : []),
       ...(arg.template ? [{ template: arg.template }] : []),
       ...normalizeArray(arg.generators),
     ]
@@ -352,25 +356,13 @@ async function getCompletions(
         // Commands
         if (!command && !/^(.+|~)?[\\/]/.test(query)) {
           asyncCompletionLists.push(
-            getFigCompletions({
-              name: '',
-              args: {
-                name: 'command',
-                generators: [commandGenerator, aliasGenerator],
-              },
-            }, query, args, figContext),
+            getFigCompletions(stepOnCommand, query, args, figContext),
           )
         }
         // Files
         if (!isCommandLineArgument(query) && (operator && operator.op === '>' || /[\\/]/.test(query))) {
           asyncCompletionLists.push(
-            getFigCompletions({
-              name: command,
-              args: {
-                name: 'file',
-                template: 'filepaths',
-              },
-            }, query, args, figContext),
+            getFigCompletions(createCommandWithFilepathsArg(command), query, args, figContext),
           )
         }
       }
