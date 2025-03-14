@@ -8,6 +8,6 @@
     "schema": {
       "type": "string"
     },
-    "default": "https://cdn.jsdelivr.net/npm/@excalidraw/excalidraw@0.17.1-d9ad7c0/dist/prod/"
+    "default": "https://cdn.jsdelivr.net/npm/@excalidraw/excalidraw@0.18.0/dist/prod/"
   }
 ]

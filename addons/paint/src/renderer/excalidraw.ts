@@ -1,13 +1,7 @@
 import '@excalidraw/excalidraw/index.css'
-// import type { RestoredDataState } from '@excalidraw/excalidraw/dist/excalidraw/data/restore'
-// import type { OrderedExcalidrawElement } from '@excalidraw/excalidraw/dist/excalidraw/element/types'
-
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-type RestoredDataState = import('@excalidraw/excalidraw/dist/excalidraw/data/restore').RestoredDataState
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-type OrderedExcalidrawElement = import('@excalidraw/excalidraw/dist/excalidraw/element/types').OrderedExcalidrawElement
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-type ExcalidrawImperativeAPI = import('@excalidraw/excalidraw/dist/excalidraw/types').ExcalidrawImperativeAPI
+import type { RestoredDataState } from '@excalidraw/excalidraw/dist/types/excalidraw/data/restore'
+import type { OrderedExcalidrawElement } from '@excalidraw/excalidraw/dist/types/excalidraw/element/types'
+import type { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/dist/types/excalidraw/types'
 
 export * from '@excalidraw/excalidraw'
 
