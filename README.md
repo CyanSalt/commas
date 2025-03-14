@@ -39,6 +39,7 @@ You can clone or download the repository and build Commas locally.
 
 - Multi-tab support with customizable layout
 - Duplicate or split from current terminal
+- Command completion based on [Fig specs](https://github.com/withfig/autocomplete)
 - Theme system compatible with Windows Terminal
 - Plug-in i18n support
 - Built-in addons

@@ -39,6 +39,7 @@ brew install --cask cyansalt/cask/commas
 
 - 可自定义布局的多标签页支持
 - 从当前终端复制或拆分
+- 基于 [Fig 规范](https://github.com/withfig/autocomplete)的命令补全
 - 与 Windows Terminal 兼容的主题系统
 - 外挂国际化支持
 - 内置多个附加功能
