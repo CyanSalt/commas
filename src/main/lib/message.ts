@@ -3,8 +3,8 @@ import * as fs from 'node:fs'
 import * as path from 'node:path'
 import type { Dock, FindInPageOptions, MessageBoxOptions, MessageBoxReturnValue, NativeImage, Result, WebContents, WebContentsView } from 'electron'
 import { app, BrowserWindow, clipboard, dialog, nativeImage, shell, webContents } from 'electron'
-import * as fileIcon from 'file-icon'
-import unusedFilename from 'unused-filename'
+import { fileIconToBuffer } from 'file-icon'
+import { unusedFilename } from 'unused-filename'
 import { ipcMain } from '@commas/electron-ipc'
 import { globalHandler } from '../../shared/handler'
 import { readFile, watchFile, writeFile } from '../utils/file'
@@ -192,7 +192,7 @@ function handleMessages() {
   })
   ipcMain.handle('get-icon', async (event, file) => {
     try {
-      return await fileIcon.buffer(file, { size: 32 })
+      return await fileIconToBuffer(file, { size: 32 })
     } catch {
       return null
     }

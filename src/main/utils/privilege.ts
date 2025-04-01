@@ -1,6 +1,6 @@
 import * as path from 'node:path'
+import * as sudo from '@vscode/sudo-prompt'
 import { app } from 'electron'
-import * as sudo from 'sudo-prompt'
 
 const sudoExecute = (command: string) => {
   return new Promise((resolve, reject) => {

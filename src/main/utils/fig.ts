@@ -2,7 +2,7 @@
 import { filepaths, folders } from '@fig/autocomplete-generators'
 import { memoize, uniq } from 'lodash'
 import * as properties from 'properties'
-import shellHistory from 'shell-history'
+import { shellHistory } from 'shell-history'
 import { parse, quote } from 'shell-quote'
 import { createIDGenerator, flatAsync, normalizeArray } from '../../shared/helper'
 import { loginExecute } from './shell'
