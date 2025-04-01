@@ -129,7 +129,7 @@ function filterAndSortCompletions(completions: CommandCompletion[]) {
       deduplicatedCompletions.splice(existingIndex, 1, replacement)
     }
   }
-  const sortedCompletions = sortBy(
+  return sortBy(
     deduplicatedCompletions
       .map(item => {
         const duplicatedTimesItem = duplicatedTimes.find(record => {
@@ -160,18 +160,6 @@ function filterAndSortCompletions(completions: CommandCompletion[]) {
       ([item, score, times]) => -times,
     ],
   ).map(([item]) => item)
-  // Always make indeterminate one second at most
-  if (sortedCompletions.length && (
-    sortedCompletions[0].value === 'pending'
-    || sortedCompletions[0].value !== sortedCompletions[0].query
-  )) {
-    sortedCompletions.unshift({
-      type: 'recommendation',
-      query: '',
-      value: '',
-    })
-  }
-  return sortedCompletions
 }
 
 export class ShellIntegrationAddon implements ITerminalAddon {
@@ -750,7 +738,19 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     }
     const realtimeCompletions = await this._getRealtimeCompletions(input)
     completions = completions.concat(realtimeCompletions)
-    return filterAndSortCompletions(completions)
+    completions = filterAndSortCompletions(completions)
+    // Always make indeterminate one second at most (except quick fix)
+    if (completions.length && input && (
+      completions[0].state === 'pending'
+      || completions[0].value !== completions[0].query
+    )) {
+      completions.unshift({
+        type: 'recommendation',
+        query: '',
+        value: '',
+      })
+    }
+    return completions
   }
 
   resolveLoadingCompletion(key: NonNullable<IntegratedShellCommandAction['key']>, value: CommandCompletion['value']) {

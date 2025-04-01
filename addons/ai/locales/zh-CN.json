@@ -1,5 +1,11 @@
 {
-  "Please complete the authorization in your browser and try again.#!ai.1": "请在浏览器内完成授权后重试。",
-  "<Autocomplete with AI>#!ai.2": "使用 AI 自动补全",
-  "Get command with AI prompt#!cli.description.ai": "通过 AI 提示词获取命令"
+  "<Autocomplete with AI>#!ai.1": "使用 AI 自动补全",
+  "Get command with AI prompt#!cli.description.ai": "通过 AI 提示词获取命令",
+  "AI Provider Base URL#!settings.label.ai.provider.baseURL": "AI 供应商基础 URL",
+  "Base URL for OpenAI compatible API#!settings.comments.0.ai.provider.baseURL": "与 OpenAI 兼容的供应商的基础 URL",
+  "AI Provider API Key#!settings.label.ai.provider.apiKey": "AI 供应商 API 密钥",
+  "API Key for OpenAI compatible API#!settings.comments.0.ai.provider.apiKey": "与 OpenAI 兼容的供应商 API 密钥",
+  "Read from the OPENAI_API_KEY environment variable by default#!settings.comments.1.ai.provider.apiKey": "默认从 OPENAI_API_KEY 环境变量读取",
+  "AI Provider Model ID#!settings.label.ai.provider.modelID": "AI 供应商模型 ID",
+  "Model ID for OpenAI compatible API#!settings.comments.0.ai.provider.modelID": "与 OpenAI 兼容的供应商模型 ID"
 }

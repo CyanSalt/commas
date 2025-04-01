@@ -1,6 +1,6 @@
 import * as path from 'node:path'
 import type { TranslationFileEntry } from '../../main/lib/i18n'
-import { addTranslationDirectory, addTranslations, getI18nManifest, Priority, translate } from '../../main/lib/i18n'
+import { addTranslationDirectory, addTranslations, getI18nManifest, Priority, translate, useLanguage } from '../../main/lib/i18n'
 import type { MainAPIContext } from '../types'
 
 async function noConflictAddTranslations(this: MainAPIContext, entries: TranslationFileEntry[]) {
@@ -20,6 +20,7 @@ async function noConflictAddTranslationDirectory(this: MainAPIContext, directory
 export * from '../shim'
 
 export {
+  useLanguage,
   translate,
   noConflictAddTranslationDirectory as addTranslationDirectory,
   noConflictAddTranslations as addTranslations,

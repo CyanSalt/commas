@@ -155,6 +155,10 @@ function getI18nManifest(original: any) {
   return resolveManifest(original, language)
 }
 
+function useLanguage() {
+  return $$(language)
+}
+
 function handleI18nMessages() {
   provideIPC('language', $$(language))
   provideIPC('dictionary', $$(dictionary))
@@ -166,5 +170,6 @@ export {
   addTranslations,
   addTranslationDirectory,
   getI18nManifest,
+  useLanguage,
   handleI18nMessages,
 }

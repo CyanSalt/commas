@@ -38,7 +38,7 @@ export default () => {
       if (shellIntegration) {
         const key = `ai.fix@${generateID()}`
         shellIntegration.addQuickFixAction(command, { state: 'loading', key })
-        const recommendation = await ipcRenderer.invoke('ai-fix', command.command, output)
+        const recommendation = await ipcRenderer.invoke('ai-fix', command.command, output, { cwd: terminal.cwd })
         shellIntegration.resolveLoadingCompletion(key, recommendation)
       }
     }
@@ -47,7 +47,7 @@ export default () => {
   commas.context.provide('terminal.completion-loader', (completion, shellIntegration) => {
     const key = completion.key
     if (key?.startsWith('ai-completion@')) {
-      ipcRenderer.invoke('ai-completion', completion.query).then(command => {
+      ipcRenderer.invoke('ai-completion', completion.query, { cwd: shellIntegration.tab.cwd }).then(command => {
         shellIntegration.resolveLoadingCompletion(key, command)
       })
       return true

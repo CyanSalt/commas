@@ -1,0 +1,35 @@
+[
+  {
+    "key": "ai.provider.baseURL",
+    "label": "AI Provider Base URL",
+    "comments": [
+      "Base URL for OpenAI compatible API"
+    ],
+    "schema": {
+      "type": "string"
+    },
+    "default": "https://api.openai.com/v1"
+  },
+  {
+    "key": "ai.provider.apiKey",
+    "label": "AI Provider API Key",
+    "comments": [
+      "API Key for OpenAI compatible API",
+      "Read from the OPENAI_API_KEY environment variable by default"
+    ],
+    "schema": {
+      "type": "string"
+    }
+  },
+  {
+    "key": "ai.provider.modelID",
+    "label": "AI Provider Model ID",
+    "comments": [
+      "Model ID for OpenAI compatible API"
+    ],
+    "schema": {
+      "type": "string"
+    },
+    "default": "gpt-4o"
+  }
+]
