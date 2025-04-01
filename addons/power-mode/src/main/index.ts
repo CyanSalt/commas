@@ -10,7 +10,6 @@ export default () => {
       isOptional: true,
       suggestions: ['off'],
     },
-    usage: '[off]',
     async handler({ sender, argv }) {
       const [status] = argv
       const enabled = status !== 'off'
