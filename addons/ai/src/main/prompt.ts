@@ -1,5 +1,6 @@
 import * as commas from 'commas:api/main'
 import { XMLParser } from 'fast-xml-parser'
+import type { CommandSuggestion } from '../types/prompt'
 import { chat } from './chat'
 
 function getOSName() {
@@ -15,12 +16,6 @@ function getOSName() {
 
 export interface RuntimeInformation {
   cwd: string,
-}
-
-export interface CommandSuggestion {
-  value: string,
-  label?: string,
-  description?: string,
 }
 
 function getSystemPrompt({ cwd }: RuntimeInformation) {
@@ -110,18 +105,18 @@ Preferred Language: ${
 
 class AnswerSyntaxError extends Error {}
 
-async function getAnswer(input: string, runtime: RuntimeInformation) {
+async function* getAnswer(input: string, runtime: RuntimeInformation) {
   const parser = new XMLParser()
   const prompt = getSystemPrompt(runtime)
-  const answer = await chat(prompt, input)
-  try {
-    const matches = answer.match(/<command_suggestion>([\s\S]*?)<\/command_suggestion>/)
-    if (!matches) throw new Error('Command Suggestion Tool not found')
-    const doc = parser.parse(matches[0])
-    return doc.command_suggestion as CommandSuggestion
-  } catch {
-    throw new AnswerSyntaxError(answer)
+  let answer = ''
+  for await (const part of chat(prompt, input)) {
+    answer += part
+    yield part
   }
+  const matches = answer.match(/<command_suggestion>([\s\S]*?)<\/command_suggestion>/)
+  if (!matches) throw new AnswerSyntaxError(answer)
+  const doc = parser.parse(matches[0])
+  return doc.command_suggestion as CommandSuggestion
 }
 
 function translateCommand(query: string, runtime: RuntimeInformation) {

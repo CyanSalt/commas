@@ -16,7 +16,7 @@ const client = $computed(() => {
   })
 })
 
-async function chat(prompt: string, message: string) {
+async function* chat(prompt: string, message: string) {
   const stream = await client.chat.completions.create({
     model: settings['ai.provider.modelID'] ?? 'gpt-4o',
     messages: [
@@ -31,14 +31,12 @@ async function chat(prompt: string, message: string) {
     ],
     stream: true,
   })
-  let answer = ''
   for await (const part of stream) {
     const content = part.choices[0]?.delta?.content
     if (content) {
-      answer += content
+      yield content
     }
   }
-  return answer
 }
 
 export {

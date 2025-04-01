@@ -1,6 +1,6 @@
 import * as commas from 'commas:api/main'
 import { useAIStatus } from './chat'
-import type { CommandSuggestion, RuntimeInformation } from './prompt'
+import type { RuntimeInformation } from './prompt'
 import { AnswerSyntaxError, completeCommand, fixCommand, translateCommand } from './prompt'
 
 declare module '@commas/types/settings' {
@@ -40,17 +40,23 @@ export default () => {
       }
       if (query) {
         status = true
-        let suggestion: CommandSuggestion
         try {
-          suggestion = await translateCommand(query, { cwd })
+          const generator = translateCommand(query, { cwd })
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          while (true) {
+            const { done, value } = await generator.next()
+            if (done) {
+              return commas.ipcMain.invoke(sender, 'ai-chat-fix', value)
+            } else {
+              yield value
+            }
+          }
         } catch (err) {
           if (err instanceof AnswerSyntaxError) {
             return `# ${err.message}`
           }
           throw err
         }
-        await commas.ipcMain.invoke(sender, 'ai-chat-fix', suggestion.value)
-        return `> ${suggestion.label ?? suggestion.value}`
       }
     },
   })
@@ -72,8 +78,12 @@ export default () => {
 
   commas.ipcMain.handle('ai-fix', async (event, command, output, runtime) => {
     try {
-      const suggestion = await fixCommand(command, output, runtime)
-      return suggestion.value
+      const generator = fixCommand(command, output, runtime)
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      while (true) {
+        const { done, value } = await generator.next()
+        if (done) return value.value
+      }
     } catch {
       return ''
     }
@@ -82,8 +92,12 @@ export default () => {
   commas.ipcMain.handle('ai-completion', async (event, input, runtime) => {
     id += 1n
     try {
-      const suggestion = await completeCommand(input, runtime)
-      return suggestion.value
+      const generator = completeCommand(input, runtime)
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      while (true) {
+        const { done, value } = await generator.next()
+        if (done) return value.value
+      }
     } catch {
       return ''
     }

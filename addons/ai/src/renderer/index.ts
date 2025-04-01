@@ -1,11 +1,12 @@
 import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from 'commas:api/renderer'
+import type { CommandSuggestion } from '../types/prompt'
 import AIAnchor from './AIAnchor.vue'
 import { useAIStatus } from './compositions'
 
 declare module '@commas/electron-ipc' {
   export interface RendererCommands {
-    'ai-chat-fix': (command: string) => void,
+    'ai-chat-fix': (suggestion: CommandSuggestion) => void,
   }
 }
 
@@ -15,10 +16,14 @@ export default () => {
 
   const terminal = $(commas.workspace.useCurrentTerminal())
 
-  commas.ipcRenderer.handle('ai-chat-fix', (event, command) => {
+  commas.ipcRenderer.handle('ai-chat-fix', (event, suggestion) => {
     if (!terminal) return
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    terminal.addons?.shellIntegration?.addQuickFixAction(undefined, { command })
+    terminal.addons?.shellIntegration?.addQuickFixAction(undefined, {
+      value: suggestion.value,
+      label: suggestion.label,
+      description: suggestion.description,
+    })
   })
 
   const status = $(useAIStatus())

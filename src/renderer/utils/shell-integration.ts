@@ -22,12 +22,7 @@ declare module '@commas/api/modules/app' {
   }
 }
 
-interface IntegratedShellCommandAction {
-  type: Extract<CommandCompletion['type'], 'recommendation' | 'third-party'>,
-  command: string,
-  state?: CommandCompletion['state'],
-  key?: CommandCompletion['key'],
-}
+type IntegratedShellCommandAction = Omit<CommandCompletion, 'query'>
 
 interface IntegratedShellCommand {
   command?: string,
@@ -583,12 +578,12 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     // Git push for upstream
     const gitUpstreamMatches = output.match(/git push --set-upstream origin (\S+)/)
     if (gitUpstreamMatches && /\bgit\b/.test(command)) {
-      return [{ type: 'recommendation', command: gitUpstreamMatches[0] }]
+      return [{ type: 'recommendation', value: gitUpstreamMatches[0] }]
     }
     // Free port
     const portMatches = output.match(/address already in use (?:0\.0\.0\.0|127\.0\.0\.1|localhost|::):(\d{4,5})|Unable to bind \S*:(\d{4,5})|can't listen on port (\d{4,5})|listen EADDRINUSE \S*:(\d{4,5})/)
     if (portMatches) {
-      return [{ type: 'recommendation', command: `commas free ${portMatches[1]}` }]
+      return [{ type: 'recommendation', value: `commas free ${portMatches[1]}` }]
     }
     // Git style recommendations
     const gitMessages = [
@@ -601,7 +596,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       const name = output.match(/^[^\s:]+(?=:|\uff1a)/)?.[0] ?? 'git'
       const subcommands = gitMatches[1].split('\n').map(line => line.trim()).filter(Boolean)
       const actions = subcommands.map(subcommand => {
-        return { type: 'recommendation' as const, command: `${name} ${subcommand}` }
+        return { type: 'recommendation' as const, value: `${name} ${subcommand}` }
       })
       return actions
     }
@@ -614,14 +609,14 @@ export class ShellIntegrationAddon implements ITerminalAddon {
         return index === -1 ? subcommand : subcommand.slice(0, index)
       }).filter(Boolean)
       const actions = commands.map(subcommand => {
-        return { type: 'recommendation' as const, command: `${subcommand}` }
+        return { type: 'recommendation' as const, value: `${subcommand}` }
       })
       return actions
     }
     // PNPM
     const pnpmMatches = output.match(/did you mean to (\w+)\?/)
     if (pnpmMatches && /\bpnpm\b/.test(command)) {
-      return [{ type: 'recommendation' as const, command: `pnpm ${pnpmMatches[1]}` }]
+      return [{ type: 'recommendation' as const, value: `pnpm ${pnpmMatches[1]}` }]
     }
   }
 
@@ -728,11 +723,8 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       : undefined
     if (previousCommand?.actions?.length) {
       const actionCompletions: CommandCompletion[] = previousCommand.actions.map(action => ({
-        type: action.type,
+        ...action,
         query: input,
-        value: action.command,
-        state: action.state,
-        key: action.key,
       }))
       completions = completions.concat(actionCompletions)
     }
@@ -922,7 +914,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     if (!targetCommand) return
     targetCommand.actions = [
       ...(targetCommand.actions ?? []),
-      { command: '', ...action, type: 'third-party' },
+      { value: '', ...action, type: 'third-party' },
     ]
     // Refresh completion if needed
     if (
