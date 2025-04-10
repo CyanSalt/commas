@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.38.0](https://github.com/CyanSalt/commas/compare/v0.37.0...v0.38.0) (2025-04-10)
+
+### Features
+
+* **ai:** refactor with openai api ([7e763ed](https://github.com/CyanSalt/commas/commit/7e763ed229de59497c2a2e0f0186a7783b346895))
+* **ai:** streaming output ([1e3b5cd](https://github.com/CyanSalt/commas/commit/1e3b5cd2ae6064acde06b917bfed725ea34df1d4))
+* **cli:** replace usage with fig arg spec ([5c8f32e](https://github.com/CyanSalt/commas/commit/5c8f32e47519114c7bd29848588a43a5bcfc694a))
+* fig arg default ([bf0087c](https://github.com/CyanSalt/commas/commit/bf0087c7940dc9dd3b0ee514c7ae946ad3ed336a))
+* fig arg suggestCurrentToken ([90d4506](https://github.com/CyanSalt/commas/commit/90d450658c787cbd55f979b895fac1f945af0d48))
+* fig arg suggestions ([f05bcb9](https://github.com/CyanSalt/commas/commit/f05bcb9324babf4dffa11be08ba22ed0b0f53e0c))
+* fig option isRepeatable ([279474f](https://github.com/CyanSalt/commas/commit/279474f985fd0d4b7d295592a2eec4141c59abdd))
+* fig option persistent ([6b9118f](https://github.com/CyanSalt/commas/commit/6b9118f19d18604e08670a24d976946f11eb3ba6))
+* fig spec completions ([6b987f6](https://github.com/CyanSalt/commas/commit/6b987f6c1a0e85b2ccfcb21255f2e251563e3ba1))
+* support completion command collection ([9b6b78f](https://github.com/CyanSalt/commas/commit/9b6b78f8a50a87d0d2b6aea3e8609b6fb3ec19d7))
+* support experimental settings ([c34bbeb](https://github.com/CyanSalt/commas/commit/c34bbeb0d55b434b1c861b6a40be1476caaaa37a))
+* support experimental zsh capture completions ([555a705](https://github.com/CyanSalt/commas/commit/555a705145dca862bb1b75394dd3d1536fb9972b))
+* support fig deprecated flag ([109ca46](https://github.com/CyanSalt/commas/commit/109ca46d61a76d096c11cf1337bd2ff6452ad90c))
+
+### Bug Fixes
+
+* completion type priority ([6a59e03](https://github.com/CyanSalt/commas/commit/6a59e03a6877f3e86bbcfaf6a15560ddbc0c435f))
+* make pending completion second at most ([e7ac7b5](https://github.com/CyanSalt/commas/commit/e7ac7b52ce969ecd64305f0de7c5f065bbd14621))
+* missing fig generated spec ([715c59d](https://github.com/CyanSalt/commas/commit/715c59d1a377a57d1740fd8adee2c9d7ded744a9))
+* refine completion ui ([2a2878c](https://github.com/CyanSalt/commas/commit/2a2878cdedce3e7faa2f9e7b2826c4542c243efb))
+* safe completion ([74e75f4](https://github.com/CyanSalt/commas/commit/74e75f4984aba19ddd3c20979446ca392e3bf186))
+* skip key bindings when composing ([39fcc97](https://github.com/CyanSalt/commas/commit/39fcc97a5975abac18a994aaa90cf86685860f7e))
+* tab key on direct completion ([6c9f20f](https://github.com/CyanSalt/commas/commit/6c9f20fce8866f43f97ab226cbd5b073f58bbe9d))
+* typos ([ea2602e](https://github.com/CyanSalt/commas/commit/ea2602eb9eaf8e5571c918356ed99f42402e9a59))
+
 ## [0.37.0](https://github.com/CyanSalt/commas/compare/v0.36.0...v0.37.0) (2025-01-16)
 
 ### Features
