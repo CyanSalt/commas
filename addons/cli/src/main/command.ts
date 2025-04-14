@@ -10,6 +10,8 @@ export interface CommandContext {
   ppid: number,
   argv: string[],
   cwd: string,
+  columns: number,
+  rows: number,
   stdin?: string,
 }
 

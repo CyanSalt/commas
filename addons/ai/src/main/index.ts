@@ -31,7 +31,7 @@ export default () => {
   commas.context.provide('cli.command', {
     command: 'ai',
     description: 'Get command with AI prompt#!cli.description.ai',
-    async *handler({ argv, sender, cwd }) {
+    async *handler({ argv, sender, cwd, columns }) {
       let query: string
       if (argv.length) {
         query = argv.join(' ')
@@ -41,7 +41,10 @@ export default () => {
       if (query) {
         status = true
         try {
-          const generator = translateCommand(query, { cwd })
+          const generator = translateCommand(query, {
+            cwd,
+            extra: { columns },
+          })
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           while (true) {
             const { done, value } = await generator.next()

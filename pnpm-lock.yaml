@@ -231,6 +231,9 @@ importers:
       axios:
         specifier: ^1.8.4
         version: 1.8.4
+      boxen:
+        specifier: ^8.0.1
+        version: 8.0.1
       fast-xml-parser:
         specifier: ^5.2.0
         version: 5.2.0

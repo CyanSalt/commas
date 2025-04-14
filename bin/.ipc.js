@@ -96,6 +96,8 @@ async function connect() {
     ppid: process.ppid,
     argv: process.argv.slice(2),
     cwd: process.cwd(),
+    columns: process.stdout.columns,
+    rows: process.stdout.rows,
     stdin,
   })
 }
