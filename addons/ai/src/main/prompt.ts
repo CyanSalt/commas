@@ -108,17 +108,15 @@ Preferred Language: ${
 `
 }
 
-class AnswerSyntaxError extends Error {}
-
-async function* getAnswer(input: string, runtime: RuntimeInformation) {
+async function* getAnswers(input: string, runtime: RuntimeInformation) {
   const parser = new XMLParser()
   const prompt = getSystemPrompt(runtime)
-  let answer: CommandSuggestion | undefined
+  const answers: CommandSuggestion[] = []
   for await (const { tag, content } of paraphraseXML(chat(prompt, input))) {
     if (tag === 'command_suggestion') {
       const doc = parser.parse(content)
       const suggestion: CommandSuggestion = doc.command_suggestion
-      answer ??= suggestion
+      answers.push(suggestion)
       yield boxen(`${suggestion.label ?? suggestion.value}${suggestion.description ? '\n' + picocolors.dim(suggestion.description) : ''}`, {
         title: picocolors.inverse(picocolors.magenta(` ${startCase(tag)} `)),
         borderColor: 'magenta',
@@ -132,19 +130,18 @@ async function* getAnswer(input: string, runtime: RuntimeInformation) {
       yield content
     }
   }
-  if (!answer) throw new AnswerSyntaxError(answer)
-  return answer
+  return answers
 }
 
 function translateCommand(query: string, runtime: RuntimeInformation) {
-  return getAnswer(`
+  return getAnswers(`
 Translate the following task into a command:
 ${query}
 `, runtime)
 }
 
 function fixCommand(command: string, output: string, runtime: RuntimeInformation) {
-  return getAnswer(`
+  return getAnswers(`
 An error occurred when executing the command:
 ${command}
 The error message is:
@@ -154,14 +151,13 @@ Provide a command that can be executed correctly.
 }
 
 function completeCommand(query: string, runtime: RuntimeInformation) {
-  return getAnswer(`
+  return getAnswers(`
 Try to complete the following command:
 ${query}
 `, runtime)
 }
 
 export {
-  AnswerSyntaxError,
   translateCommand,
   fixCommand,
   completeCommand,

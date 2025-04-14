@@ -6,7 +6,7 @@ import { useAIStatus } from './compositions'
 
 declare module '@commas/electron-ipc' {
   export interface RendererCommands {
-    'ai-chat-fix': (suggestion: CommandSuggestion) => void,
+    'ai-chat-fix': (suggestions: CommandSuggestion[]) => void,
   }
 }
 
@@ -16,14 +16,16 @@ export default () => {
 
   const terminal = $(commas.workspace.useCurrentTerminal())
 
-  commas.ipcRenderer.handle('ai-chat-fix', (event, suggestion) => {
+  commas.ipcRenderer.handle('ai-chat-fix', (event, suggestions) => {
     if (!terminal) return
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    terminal.addons?.shellIntegration?.addQuickFixAction(undefined, {
-      value: suggestion.value,
-      label: suggestion.label,
-      description: suggestion.description,
-    })
+    for (const suggestion of suggestions) {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      terminal.addons?.shellIntegration?.addQuickFixAction(undefined, {
+        value: suggestion.value,
+        label: suggestion.label,
+        description: suggestion.description,
+      })
+    }
   })
 
   const status = $(useAIStatus())

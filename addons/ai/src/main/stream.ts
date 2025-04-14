@@ -25,8 +25,8 @@ function parseXMLSlices(source: string, offset = 0): XMLSlice[] {
       {
         type: 'text',
         tag: '',
-        start: 0,
-        end: source.length,
+        start: offset,
+        end: source.length + offset,
         isClosed: true,
       },
     ]
@@ -41,7 +41,7 @@ function parseXMLSlices(source: string, offset = 0): XMLSlice[] {
       {
         type: 'text',
         tag: '',
-        start: 0,
+        start: offset,
         end: tagIndex + offset,
         isClosed: true,
       } satisfies XMLSlice,

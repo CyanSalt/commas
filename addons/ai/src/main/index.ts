@@ -1,7 +1,7 @@
 import * as commas from 'commas:api/main'
 import { useAIStatus } from './chat'
 import type { RuntimeInformation } from './prompt'
-import { AnswerSyntaxError, completeCommand, fixCommand, translateCommand } from './prompt'
+import { completeCommand, fixCommand, translateCommand } from './prompt'
 
 declare module '@commas/types/settings' {
   export interface Settings {
@@ -40,25 +40,18 @@ export default () => {
       }
       if (query) {
         status = true
-        try {
-          const generator = translateCommand(query, {
-            cwd,
-            extra: { columns },
-          })
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          while (true) {
-            const { done, value } = await generator.next()
-            if (done) {
-              return commas.ipcMain.invoke(sender, 'ai-chat-fix', value)
-            } else {
-              yield value
-            }
+        const generator = translateCommand(query, {
+          cwd,
+          extra: { columns },
+        })
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        while (true) {
+          const { done, value } = await generator.next()
+          if (done) {
+            return commas.ipcMain.invoke(sender, 'ai-chat-fix', value)
+          } else {
+            yield value
           }
-        } catch (err) {
-          if (err instanceof AnswerSyntaxError) {
-            return `# ${err.message}`
-          }
-          throw err
         }
       }
     },
@@ -85,7 +78,7 @@ export default () => {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       while (true) {
         const { done, value } = await generator.next()
-        if (done) return value.value
+        if (done && value[0]) return value[0].value
       }
     } catch {
       return ''
@@ -99,7 +92,7 @@ export default () => {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       while (true) {
         const { done, value } = await generator.next()
-        if (done) return value.value
+        if (done && value[0]) return value[0].value
       }
     } catch {
       return ''
