@@ -52,7 +52,7 @@ function addCommasModuleResolver() {
 
 function addCommasModule(exports) {
   addCommasModuleResolver()
-  const mod = { exports: exports ? { ...exports } : exports } as NodeModule
+  const mod = { exports: exports ? { ...exports } : exports } as NodeJS.Module
   require.cache['commas:api'] = mod
   require.cache[app.isMainProcess() ? 'commas:api/main' : 'commas:api/renderer'] = mod
 }
@@ -62,7 +62,7 @@ function addCommasExternalModules(modules: string[]) {
   for (const id of modules) {
     const request = `commas:external/${id}`
     if (!(request in require.cache)) {
-      require.cache[request] = { exports: require(id) } as NodeModule
+      require.cache[request] = { exports: require(id) } as NodeJS.Module
     }
   }
 }
