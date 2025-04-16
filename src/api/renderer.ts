@@ -25,6 +25,10 @@ declare module './modules/context' {
       completion: CommandCompletion,
       shellIntegration: NonNullable<TerminalTabAddons['shellIntegration']>
     ) => boolean,
+    'terminal.quick-fix-generator': (
+      command: string,
+      output: string,
+    ) => CommandCompletion[] | undefined,
   }
 }
 

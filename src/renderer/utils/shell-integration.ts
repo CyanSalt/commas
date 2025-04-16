@@ -574,7 +574,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     scrollToMarker(this.tab.xterm, targetMarker)
   }
 
-  _getQuickFixActionsByOutput(command: string, output: string): IntegratedShellCommandAction[] | undefined {
+  _getQuickFixActionsByOutput(command: string, output: string): IntegratedShellCommandAction[] {
     // Git push for upstream
     const gitUpstreamMatches = output.match(/git push --set-upstream origin (\S+)/)
     if (gitUpstreamMatches && /\bgit\b/.test(command)) {
@@ -618,6 +618,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     if (pnpmMatches && /\bpnpm\b/.test(command)) {
       return [{ type: 'recommendation' as const, value: `pnpm ${pnpmMatches[1]}` }]
     }
+    return []
   }
 
   _getCommandOutput(command: IntegratedShellCommand) {
@@ -636,7 +637,11 @@ export class ShellIntegrationAddon implements ITerminalAddon {
   _generateQuickFixActions(command: IntegratedShellCommand | undefined) {
     if (command?.command && command.exitCode && isErrorExitCode(command.exitCode)) {
       const output = this._getCommandOutput(command)
-      return this._getQuickFixActionsByOutput(command.command, output)
+      const generators = commas.proxy.context.getCollection('terminal.quick-fix-generator')
+      return [
+        ...generators.flatMap(generator => generator(command.command!, output) ?? []),
+        ...this._getQuickFixActionsByOutput(command.command, output),
+      ]
     }
   }
 
