@@ -86,8 +86,11 @@ function registerXtermAddon<T extends keyof TerminalTabAddons>(
   this: RendererAPIContext,
   key: T,
   factory: (tab: TerminalTab) => TerminalTabAddons[T] | undefined,
-  immediate?: boolean,
+  options?: {
+    immediate?: boolean,
+  },
 ) {
+  const { immediate } = options ?? {}
   const apply = (tab: TerminalTab, active: boolean) => {
     if (active && !tab.addons[key]) {
       const addon = factory(tab)

@@ -20,7 +20,7 @@ export default () => {
 
   commas.ui.addCSSFile('dist/renderer/style.css')
 
-  commas.workspace.registerXtermAddon('iterm2', tab => new ITerm2Addon(tab), true)
+  commas.workspace.registerXtermAddon('iterm2', tab => new ITerm2Addon(tab), { immediate: true })
 
   commas.context.provide('terminal.ui-slot', BadgeSlot)
 

@@ -66,7 +66,7 @@ export default () => {
     if (tab.character?.type === 'launcher' && settings['launcher.session.persist']) {
       return new LauncherSessionAddon(tab.character.id, tab.addons.serialize)
     }
-  }, true)
+  }, { immediate: true })
 
   commas.context.provide('terminal.ui-side-list', LauncherList)
 
