@@ -77,9 +77,7 @@ export async function openLauncher(launcher: Launcher, options: OpenLauncherOpti
     }
     return tab
   }
-  if (!profile) {
-    profile = getLauncherProfile(launcher)
-  }
+  profile ??= getLauncherProfile(launcher)
   if (duplicate) {
     return commas.workspace.createTerminalTab(profile, {
       command,

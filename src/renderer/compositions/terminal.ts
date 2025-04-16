@@ -916,9 +916,7 @@ export function appendTerminalTab(tab: TerminalTab, fromIndex: number, direction
   if (!tab.group) {
     tab.group = generateGroup()
   }
-  if (!tab.position) {
-    tab.position = { row: 0, col: 0 }
-  }
+  tab.position ??= { row: 0, col: 0 }
   movingTab.group = tab.group
   switch (direction) {
     case 'top':

@@ -51,5 +51,14 @@ export default config({
         'vue/prefer-import-from-vue': 'off',
       },
     },
+    {
+      // FIXME: `@excalidraw/excalidraw` has error exports
+      files: ['addons/paint/src/renderer/excalidraw.ts'],
+      rules: {
+        'import-x/no-duplicates': 'off',
+        'import-x/order': 'off',
+        'galaxy/import-extensions': 'off',
+      },
+    },
   ],
 })

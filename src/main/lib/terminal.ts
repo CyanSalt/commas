@@ -52,14 +52,10 @@ async function createTerminal(
   if (!shell) {
     shell = settings['terminal.shell.path'] || getDefaultShell()!
   }
-  if (!args) {
-    args = process.platform === 'win32'
-      ? settings['terminal.shell.windowsArgs']
-      : settings['terminal.shell.args']
-  }
-  if (!env) {
-    env = settings['terminal.shell.env']
-  }
+  args ??= process.platform === 'win32'
+    ? settings['terminal.shell.windowsArgs']
+    : settings['terminal.shell.args']
+  env ??= settings['terminal.shell.env']
   let runtimeEnv: Record<string, string> = {
     ...getDefaultEnv(),
     ...env,

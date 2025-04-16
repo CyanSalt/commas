@@ -52,9 +52,7 @@ async function createServer() {
 }
 
 async function startServer() {
-  if (!currentServer) {
-    currentServer = createServer()
-  }
+  currentServer ??= createServer()
   return currentServer
 }
 

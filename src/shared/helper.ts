@@ -1,9 +1,7 @@
 type IDIterator = (id: bigint) => bigint
 
 export function createIDGenerator(iterator?: IDIterator) {
-  if (!iterator) {
-    iterator = id => id + 1n
-  }
+  iterator ??= id => id + 1n
   let id = 1n
   return () => {
     id = iterator(id)
