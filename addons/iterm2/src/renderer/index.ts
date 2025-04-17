@@ -38,4 +38,19 @@ export default () => {
     currentTerminal.addons?.iterm2?.scrollToMark(offset)
   })
 
+  commas.context.provide('terminal.quick-fix-generator', (command, output) => {
+    if (command.includes('imgcat') && output.includes('iTerm')) {
+      const envs = [
+        'TERM_PROGRAM=iTerm.app',
+        'TERM_PROGRAM_VERSION=3.5.5',
+      ].map(directive => (process.platform === 'win32' ? `set ${directive} &&` : directive))
+      return [
+        {
+          value: `${envs.join(' ')} ${command}`,
+          query: '',
+        },
+      ]
+    }
+  })
+
 }

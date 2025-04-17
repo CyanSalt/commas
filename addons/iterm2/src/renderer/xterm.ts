@@ -136,6 +136,11 @@ export class ITerm2Addon implements ITerminalAddon {
             break
           }
           case 'File':
+            // FIXME: allow to omit size like iTerm2
+            if (!sequence.args.size) {
+              xterm.write(`\u001b]1337;${sequence.command}=${Object.entries(sequence.args).map(([key, value]) => `${key}=${value};`).join('')}size=${sequence.body.length}:${sequence.body.toString('base64')}`)
+              break
+            }
             // Will be handled by `xterm-addon-image`
             return false
           case 'SetBadgeFormat': {
