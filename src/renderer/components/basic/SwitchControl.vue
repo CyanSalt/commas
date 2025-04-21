@@ -1,13 +1,43 @@
 <script lang="ts" setup>
+import { handleMousePressing } from '../../utils/helper'
+
 let modelValue = $(defineModel<boolean>())
 
 function change(event: Event) {
   modelValue = (event.target as HTMLInputElement).checked
 }
+
+let isDragged = false
+
+function startDragging(startingEvent: DragEvent) {
+  const initialValue = modelValue
+  const bounds = (startingEvent.target as HTMLElement).getBoundingClientRect()
+  const boundary = initialValue ? bounds.left : bounds.right
+  handleMousePressing({
+    onMove(event) {
+      const targetValue = event.clientX > boundary
+      modelValue = targetValue
+    },
+    onEnd(event) {
+      if (modelValue !== initialValue) {
+        isDragged = true
+        // Not working here
+        event.preventDefault()
+      }
+    },
+  })
+}
+
+function guardClick(event: MouseEvent) {
+  if (isDragged) {
+    isDragged = false
+    event.preventDefault()
+  }
+}
 </script>
 
 <template>
-  <label class="switch-control">
+  <label class="switch-control" @click="guardClick">
     <input
       type="checkbox"
       :checked="modelValue"
@@ -15,7 +45,11 @@ function change(event: Event) {
       @change="change"
     >
     <span class="switch-track">
-      <span class="switch-content"></span>
+      <span
+        class="switch-content"
+        draggable="true"
+        @dragstart.prevent="startDragging"
+      ></span>
     </span>
   </label>
 </template>
