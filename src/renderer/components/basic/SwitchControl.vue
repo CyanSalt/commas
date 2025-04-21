@@ -65,16 +65,25 @@ function change(event: Event) {
 .switch-content {
   position: absolute;
   top: 1px;
+  right: calc(1em + 1px);
   left: 1px;
   z-index: 1;
   display: inline-block;
-  width: 1em;
+  // width: 1em;
   height: 1em;
   background: white;
   border-radius: 1em;
-  transition: transform 0.2s;
+  transition: left 0.2s, right 0.2s 40ms;
+  .switch-checkbox:active + .switch-track > & {
+    right: calc(0.75em + 1px);
+  }
   .switch-checkbox:checked + .switch-track > & {
-    transform: translateX(100%);
+    right: 1px;
+    left: calc(1em + 1px);
+    transition: left 0.2s 40ms, right 0.2s;
+  }
+  .switch-checkbox:checked:active + .switch-track > & {
+    left: calc(0.75em + 1px);
   }
   .switch-checkbox:focus-visible + .switch-track > & {
     background: rgb(255 255 255 / 75%);
