@@ -471,7 +471,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
         {
           label: translate('Rerun Command#!terminal.10'),
           command: 'execute-terminal',
-          args: [command.command, true],
+          args: [command.command, { restart: true }],
         },
         {
           label: translate('Copy Command#!terminal.11'),

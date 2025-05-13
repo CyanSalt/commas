@@ -51,7 +51,7 @@ watch($$(directory), value => {
     directory: value,
     shell: target.shell,
   })
-  commas.workspace.executeTerminalTab(target, command, true)
+  commas.workspace.executeTerminalTab(target, command, { restart: true })
 })
 
 function back(event: KeyboardEvent) {

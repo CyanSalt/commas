@@ -73,7 +73,7 @@ export async function openLauncher(launcher: Launcher, options: OpenLauncherOpti
   if (tab && !duplicate) {
     commas.workspace.activateTerminalTab(tab)
     if (command) {
-      commas.workspace.executeTerminalTab(tab, command, true)
+      commas.workspace.executeTerminalTab(tab, command, { restart: true })
     }
     return tab
   }

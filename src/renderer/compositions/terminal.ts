@@ -50,7 +50,7 @@ declare module '@commas/electron-ipc' {
     'exit-terminal': (data: Pick<TerminalTab, 'pid'>) => void,
     'clear-terminal': () => void,
     'close-terminal': () => void,
-    'execute-terminal': (command: string, restart?: boolean) => void,
+    'execute-terminal': (command: string, options?: ExecuteTerminalTabOptions) => void,
     'select-tab': (index: number) => void,
     'select-previous-tab': () => void,
     'select-next-tab': () => void,
@@ -306,6 +306,7 @@ const rendererKeybindings = $computed(() => {
 export interface CreateTerminalTabOptions {
   command?: string,
   character?: TerminalTabCharacter,
+  lazy?: boolean,
 }
 
 function createTerminalState() {
@@ -318,6 +319,7 @@ function createTerminalState() {
 export async function createTerminalTab(context: Partial<TerminalContext> = {}, {
   command,
   character,
+  lazy,
 }: CreateTerminalTabOptions = {}) {
   const info = await ipcRenderer.invoke('create-terminal', {
     cwd: context.cwd,
@@ -427,7 +429,7 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
     scope.stop()
   })
   if (command) {
-    executeTerminalTab(tab, command)
+    executeTerminalTab(tab, command, { lazy })
   }
   const transition = document.startViewTransition(() => {
     const targetIndex = activeIndex + 1
@@ -550,17 +552,22 @@ function handleTerminalTabHistory() {
   })
 }
 
-export function openClientURL(uri: string) {
+export async function openClientURL(uri: string) {
   const url = new URL(uri)
-  commas.proxy.workspace.openPaneTab(
-    url.host,
-    pick(Object.fromEntries(url.searchParams), [
-      'command',
-      'process',
-      'cwd',
-      'shell',
-    ]),
-  )
+  const args = pick(Object.fromEntries(url.searchParams), [
+    'command',
+    'process',
+    'cwd',
+    'shell',
+  ])
+  if (url.host === 'terminal') {
+    createTerminalTab(pick(args, ['cwd', 'shell']), {
+      command: args.command,
+      lazy: true,
+    })
+  } else {
+    commas.proxy.workspace.openPaneTab(url.host, args)
+  }
 }
 
 function loadBaseTerminalAddons(tab: TerminalTab, xterm: Terminal, addons: Record<string, any>) {
@@ -709,7 +716,23 @@ export function useReadonlyTerminal(
   return xterm
 }
 
-export function executeTerminalTab(tab: TerminalTab, command: string, restart?: boolean) {
+export interface ExecuteTerminalTabOptions {
+  restart?: boolean,
+  lazy?: boolean,
+}
+
+export function executeTerminalTab(tab: TerminalTab, command: string, {
+  restart,
+  lazy,
+}: ExecuteTerminalTabOptions = {}) {
+  // Strip extra lines for security
+  let lineFeedIndex = command.indexOf(os.EOL)
+  if (lineFeedIndex === -1 && os.EOL !== '\n') {
+    lineFeedIndex = command.indexOf('\n')
+  }
+  if (lineFeedIndex !== -1) {
+    command = command.slice(0, lineFeedIndex)
+  }
   tab.command = command
   if (restart) {
     // Move cursor to the start of current command
@@ -728,7 +751,9 @@ export function executeTerminalTab(tab: TerminalTab, command: string, restart?: 
   } else {
     tab.xterm.input(command)
   }
-  tab.xterm.input(os.EOL)
+  if (!lazy) {
+    tab.xterm.input(os.EOL)
+  }
 }
 
 export function closeTerminalTab(tab: TerminalTab) {
@@ -1098,9 +1123,9 @@ export function handleTerminalMessages() {
     if (!currentTerminal) return
     closeTerminalTab(currentTerminal)
   })
-  ipcRenderer.on('execute-terminal', (event, command, restart) => {
+  ipcRenderer.on('execute-terminal', (event, command, options) => {
     if (!currentTerminal) return
-    executeTerminalTab(currentTerminal, command, restart)
+    executeTerminalTab(currentTerminal, command, options)
   })
   ipcRenderer.on('select-tab', (event, index) => {
     if (!tabs.length) return
