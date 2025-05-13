@@ -91,6 +91,40 @@ watchEffect(() => {
       keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyF,
       command: null,
     },
+    /**
+     * FIXME: disable clipboard actions
+     * {@link https://github.com/microsoft/monaco-editor/issues/4855}
+     */
+    {
+      // eslint-disable-next-line no-bitwise
+      keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyX,
+      command: null,
+    },
+    {
+      // eslint-disable-next-line no-bitwise
+      keybinding: monaco.KeyMod.Shift | monaco.KeyCode.Delete,
+      command: null,
+    },
+    {
+      // eslint-disable-next-line no-bitwise
+      keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyC,
+      command: null,
+    },
+    {
+      // eslint-disable-next-line no-bitwise
+      keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.Insert,
+      command: null,
+    },
+    {
+      // eslint-disable-next-line no-bitwise
+      keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyV,
+      command: null,
+    },
+    {
+      // eslint-disable-next-line no-bitwise
+      keybinding: monaco.KeyMod.Shift | monaco.KeyCode.Insert,
+      command: null,
+    },
   ])
 })
 
