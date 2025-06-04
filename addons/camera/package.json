@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@fontsource/montserrat": "^5.2.5",
-    "os-name": "^6.0.0"
+    "os-name": "^6.1.0"
   },
   "commas:icon": {
     "name": "lucide-camera"
