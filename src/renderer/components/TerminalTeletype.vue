@@ -335,7 +335,7 @@ function scrollToStickyCommand() {
   max-height: calc(var(--cell-height) * var(--row-span) + 8px); // --scrollbar-size
   margin-left: calc(var(--column) * var(--cell-width));
   overflow: hidden;
-  background: color-mix(in oklab, rgb(var(--theme-background)) 95%, white);
+  background: rgb(from var(--theme-background) r g b / 95%);
   border-radius: 6px;
   box-shadow: 0 0 1em 0 rgb(0 0 0 / 25%);
   // TODO: This may slightly slow down, but is friendlier visually

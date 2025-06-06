@@ -244,7 +244,7 @@ function close() {
     background: var(--design-active-background);
     box-shadow: var(--design-element-shadow);
     .app:not(.is-window-focused) & {
-      background: color-mix(in oklab, var(--design-active-background) 50%, transparent);
+      background: rgb(from var(--design-active-background) r g b / 50%);
     }
   }
   &.focused:not(.standalone) {
@@ -287,7 +287,7 @@ function close() {
   }
   .tab-item.virtual & {
     color: var(--icon-color);
-    background: color-mix(in oklab, var(--icon-color) 16.6667%, transparent);
+    background: rgb(from var(--icon-color) r g b / 16.6667%);
     :deep(.visual-icon) {
       filter: none;
     }
