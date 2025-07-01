@@ -8,7 +8,6 @@ import * as commas from '../../api/core-renderer'
 import { loadAddons, loadCustomJS } from '../compositions/addon'
 import {
   handleFrameMessages,
-  useFullscreen,
 } from '../compositions/frame'
 import { handleI18nMessages } from '../compositions/i18n'
 import { injectSettingsStyle, useSettings } from '../compositions/settings'
@@ -42,7 +41,6 @@ declare module '@commas/api/modules/app' {
 
 const settings = useSettings()
 const theme = useTheme()
-const isFullscreen = $(useFullscreen())
 const isTabListEnabled = $(useIsTabListEnabled())
 const isTabListToggling = $(useIsTabListToggling())
 const tabs = $(useTerminalTabs())
@@ -121,7 +119,7 @@ function dropFile(event: DragEvent) {
 
 <template>
   <div
-    :class="['app', { 'is-opaque': isFullscreen, 'is-vibrant': theme.vibrancy, 'is-window-focused': isWindowFocused }]"
+    :class="['app', { 'is-vibrant': theme.vibrancy, 'is-window-focused': isWindowFocused }]"
     @dragover.prevent="dragFileOver"
     @drop="dropFile"
   >

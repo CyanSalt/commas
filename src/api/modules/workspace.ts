@@ -8,6 +8,7 @@ import {
   closeTerminalTab,
   createTerminalTab,
   executeTerminalTab,
+  filterTerminalTabsByKeyword,
   getTerminalTabIndex,
   getTerminalTabsByCharacter,
   getTerminalTabsByGroup,
@@ -164,4 +165,5 @@ export {
   useReadonlyTerminal,
   getTerminalExecutorCommand,
   isErrorExitCode,
+  filterTerminalTabsByKeyword,
 }

@@ -74,7 +74,9 @@ function resolveBindingCommand(binding: MenuItem) {
           )
         }
       }
-      result.enabled = hasFocusedWindow
+      if (result.enabled !== false) {
+        result.enabled = hasFocusedWindow
+      }
     }
   }
   if (binding.submenu) {
@@ -201,6 +203,7 @@ function createTouchBar(frame: BrowserWindow) {
 }
 
 function createDockMenu() {
+  if (!app.dock) return
   const menu = Menu.buildFromTemplate([
     {
       label: translate('New Window#!menu.newwindow'),

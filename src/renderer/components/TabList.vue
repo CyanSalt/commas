@@ -9,21 +9,23 @@ import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from '../../api/core-renderer'
 import { useAsyncComputed } from '../../shared/compositions'
 import { useSettings } from '../compositions/settings'
-import {
-  activateTerminalTab,
+import { activateTerminalTab,
   createTerminalTab,
+  filterTerminalTabsByKeyword,
+  getTerminalTabTitle,
   moveTerminalTab,
   separateTerminalTabGroup,
   splitTerminalTab,
   useCurrentTerminal,
+  useIsTabListFinding,
   useTerminalTabGroupSeparating,
-  useTerminalTabs,
-} from '../compositions/terminal'
+  useTerminalTabs } from '../compositions/terminal'
 import type { DraggableElementData, DraggableTabData } from '../utils/draggable'
 import { openContextMenu } from '../utils/frame'
 import { handleMousePressing } from '../utils/helper'
 import { createTerminalTabContextMenu, getShells } from '../utils/terminal'
 import TabItem from './TabItem.vue'
+import TabListFindBox from './TabListFindBox.vue'
 import AutoScroll from './basic/AutoScroll.vue'
 import DraggableElement from './basic/DraggableElement.vue'
 import DropIndicator from './basic/DropIndicator.vue'
@@ -51,10 +53,15 @@ const profiles = $computed(() => {
   return settings['terminal.shell.extraProfiles']
 })
 
+const isTabListFinding = $(useIsTabListFinding())
+
 const standaloneTabs = $computed(() => {
   const entries = tabs.map((tab, index) => ({ tab, index }))
   if (isHorizontal) return entries
-  return entries.filter(({ tab }) => !tab.character)
+  return filterTerminalTabsByKeyword(
+    entries.filter(({ tab }) => !tab.character),
+    ({ tab }) => getTerminalTabTitle(tab),
+  )
 })
 
 function selectShell(event: MouseEvent) {
@@ -182,79 +189,82 @@ function openTabItemMenu(event: MouseEvent, tab: TerminalTab) {
 
 <template>
   <aside :class="['tab-list', position, isHorizontal ? 'horizontal' : 'vertical']">
-    <AutoScroll v-slot="{ mount: autoScroll }">
-      <div :ref="autoScroll" class="list-container" :style="{ width: isHorizontal ? '' : width + 'px' }">
-        <div class="list-content">
-          <div class="default-list">
-            <DraggableElement
-              v-for="({ tab, index }) in standaloneTabs"
-              :key="tab.pid"
-              v-slot="{ mount: draggable }"
-              :data="{ type: 'tab', index }"
-              @dragstart="handleDragStart"
-              @drop="handleDragStop"
-            >
+    <div class="list-flow">
+      <TabListFindBox v-if="isTabListFinding" />
+      <AutoScroll v-slot="{ mount: autoScroll }">
+        <div :ref="autoScroll" class="list-container" :style="{ width: isHorizontal ? '' : width + 'px' }">
+          <div class="list-content">
+            <div class="default-list">
+              <DraggableElement
+                v-for="({ tab, index }) in standaloneTabs"
+                :key="tab.pid"
+                v-slot="{ mount: draggable }"
+                :data="{ type: 'tab', index }"
+                @dragstart="handleDragStart"
+                @drop="handleDragStop"
+              >
+                <DropTarget
+                  v-slot="{ mount: dropTarget }"
+                  :data="{ index }"
+                  :allowed-edges="isHorizontal ? ['left', 'right'] : ['top', 'bottom']"
+                  sticky
+                  @dragenter="handleDrag"
+                  @drag="handleDrag"
+                  @dragleave="handleDragLeave"
+                  @drop="handleDrop"
+                >
+                  <div
+                    :ref="dropTarget"
+                    :class="['list-item', { 'drop-to-end': draggingEdges.get(index) === 'right' || draggingEdges.get(index) === 'bottom' }]"
+                  >
+                    <DropIndicator
+                      v-if="draggingEdges.get(index)"
+                      :vertical="isHorizontal"
+                    />
+                    <TabItem
+                      :ref="draggable"
+                      :tab="tab"
+                      :character="tab.character"
+                      @click="activateTerminalTab(tab)"
+                      @contextmenu="openTabItemMenu($event, tab)"
+                    />
+                  </div>
+                </DropTarget>
+              </DraggableElement>
               <DropTarget
-                v-slot="{ mount: dropTarget }"
-                :data="{ index }"
-                :allowed-edges="isHorizontal ? ['left', 'right'] : ['top', 'bottom']"
-                sticky
-                @dragenter="handleDrag"
-                @drag="handleDrag"
-                @dragleave="handleDragLeave"
-                @drop="handleDrop"
+                v-slot="{ mount }"
+                :disabled="!groupSeparatingEnabled"
+                @dragenter="groupSeparatingActive = true"
+                @dragleave="groupSeparatingActive = false"
+                @drop="handleGroupSeparating"
               >
                 <div
-                  :ref="dropTarget"
-                  :class="['list-item', { 'drop-to-end': draggingEdges.get(index) === 'right' || draggingEdges.get(index) === 'bottom' }]"
+                  :ref="mount"
+                  :class="['new-tab', { 'is-group-separating-active': groupSeparatingActive }]"
                 >
-                  <DropIndicator
-                    v-if="draggingEdges.get(index)"
-                    :vertical="isHorizontal"
-                  />
-                  <TabItem
-                    :ref="draggable"
-                    :tab="tab"
-                    :character="tab.character"
-                    @click="activateTerminalTab(tab)"
-                    @contextmenu="openTabItemMenu($event, tab)"
-                  />
+                  <div v-if="!isHorizontal && shells.length" class="select-shell anchor" @click="selectShell">
+                    <VisualIcon name="lucide-list-plus" />
+                  </div>
+                  <div
+                    class="default-shell anchor"
+                    @click="selectDefaultShell"
+                    @contextmenu="selectShell"
+                  >
+                    <VisualIcon v-if="groupSeparatingEnabled" name="lucide-ungroup" />
+                    <VisualIcon v-else name="lucide-plus" />
+                  </div>
                 </div>
               </DropTarget>
-            </DraggableElement>
-            <DropTarget
-              v-slot="{ mount }"
-              :disabled="!groupSeparatingEnabled"
-              @dragenter="groupSeparatingActive = true"
-              @dragleave="groupSeparatingActive = false"
-              @drop="handleGroupSeparating"
-            >
-              <div
-                :ref="mount"
-                :class="['new-tab', { 'is-group-separating-active': groupSeparatingActive }]"
-              >
-                <div v-if="!isHorizontal && shells.length" class="select-shell anchor" @click="selectShell">
-                  <VisualIcon name="lucide-list-plus" />
-                </div>
-                <div
-                  class="default-shell anchor"
-                  @click="selectDefaultShell"
-                  @contextmenu="selectShell"
-                >
-                  <VisualIcon v-if="groupSeparatingEnabled" name="lucide-ungroup" />
-                  <VisualIcon v-else name="lucide-plus" />
-                </div>
-              </div>
-            </DropTarget>
+            </div>
+            <component
+              :is="list"
+              v-for="(list, index) in lists"
+              :key="index"
+            />
           </div>
-          <component
-            :is="list"
-            v-for="(list, index) in lists"
-            :key="index"
-          />
         </div>
-      </div>
-    </AutoScroll>
+      </AutoScroll>
+    </div>
     <div
       v-if="!isHorizontal"
       draggable="true"
@@ -287,6 +297,15 @@ function openTabItemMenu(event: MouseEvent, tab: TerminalTab) {
       width: 160px;
       min-width: 0;
     }
+  }
+}
+.list-flow {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--design-card-gap);
+  .tab-list.horizontal & {
+    flex-direction: row;
   }
 }
 .list-container {
@@ -322,9 +341,6 @@ function openTabItemMenu(event: MouseEvent, tab: TerminalTab) {
   }
   .tab-list.horizontal & {
     padding: var(--design-card-gap) var(--design-card-gap) 0;
-  }
-  .app.is-opaque .tab-list.vertical & {
-    background: rgb(var(--theme-background));
   }
 }
 .default-list {

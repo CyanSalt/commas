@@ -352,9 +352,6 @@ function scrollToStickyCommand() {
   &.is-bottom {
     margin-top: var(--cell-height);
   }
-  .app.is-opaque & {
-    background: rgb(var(--theme-background));
-  }
 }
 .terminal-completion-wrapper {
   display: flex;

@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-import { useMaximized } from '../compositions/frame'
+import { useFullscreen, useMaximized } from '../compositions/frame'
 import { useSettings } from '../compositions/settings'
+import { useIsTabListEnabled } from '../compositions/shell'
+import { useIsTabListFindingAvailable } from '../compositions/terminal'
 import TabList from './TabList.vue'
 import TabListControl from './TabListControl.vue'
+import TabListFindControl from './TabListFindControl.vue'
 import TerminalTitle from './TerminalTitle.vue'
 import WindowControl from './WindowControl.vue'
 
@@ -23,8 +26,15 @@ const hasRightTabList = $computed(() => {
   return position === 'right'
 })
 
+const isFullscreen = $(useFullscreen())
+
 const isUsingCompactControl = process.platform === 'darwin'
-const isUsingLeftControl = process.platform === 'darwin'
+const isUsingLeftControl = $computed(() => {
+  return process.platform === 'darwin' && !isFullscreen
+})
+
+const isTabListFindingAvailable = $(useIsTabListFindingAvailable())
+const isTabListEnabled = $(useIsTabListEnabled())
 </script>
 
 <template>
@@ -35,14 +45,20 @@ const isUsingLeftControl = process.platform === 'darwin'
   >
     <div class="left-side">
       <WindowControl v-if="isUsingLeftControl" :class="{ 'is-compact': isUsingCompactControl }" />
-      <TabListControl v-if="!hasRightTabList" />
+      <div v-if="!hasRightTabList" class="action-list">
+        <TabListControl />
+        <TabListFindControl v-if="isTabListFindingAvailable && isTabListEnabled" />
+      </div>
     </div>
     <div class="title-wrapper">
       <TabList v-if="settings['terminal.view.tabListPosition'] === 'top'" />
       <TerminalTitle v-else />
     </div>
     <div class="right-side">
-      <TabListControl v-if="hasRightTabList" />
+      <div v-if="hasRightTabList" class="action-list">
+        <TabListControl />
+        <TabListFindControl v-if="isTabListFindingAvailable && isTabListEnabled" />
+      </div>
       <WindowControl v-if="!isUsingLeftControl" :class="{ 'is-compact': isUsingCompactControl }" />
     </div>
   </header>
@@ -76,6 +92,11 @@ const isUsingLeftControl = process.platform === 'darwin'
   & > * {
     -webkit-app-region: no-drag;
   }
+}
+.action-list {
+  display: flex;
+  gap: 4px;
+  align-items: center;
 }
 .left-side {
   justify-content: flex-start;

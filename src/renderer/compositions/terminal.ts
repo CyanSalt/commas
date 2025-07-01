@@ -12,6 +12,7 @@ import { WebLinksAddon } from '@xterm/addon-web-links'
 import { WebglAddon } from '@xterm/addon-webgl'
 import type { IMarker, ITerminalOptions } from '@xterm/xterm'
 import { Terminal } from '@xterm/xterm'
+import fuzzaldrin from 'fuzzaldrin-plus'
 import { toKeyEvent } from 'keyboardevent-from-electron-accelerator'
 import { isMatch, pick } from 'lodash'
 import type { MaybeRefOrGetter } from 'vue'
@@ -507,11 +508,15 @@ export function showTabOptions(event?: MouseEvent, type?: string) {
       options.push([])
     }
     const items = tabCategories[index].items
+    const enabledItems = filterTerminalTabsByKeyword(items, item => {
+      return item.tab ? getTerminalTabTitle(item.tab) : item.character?.title ?? ''
+    })
     for (const item of items) {
       if (!type || item.character?.type === type) {
         if (item.tab && toRaw(item.tab) === toRaw(currentTerminal)) {
           defaultIndex = options.length
         }
+        console.log('enabled', enabledItems.includes(item))
         options.push({
           type: index ? 'checkbox' : 'normal',
           label: item.tab ? getTerminalTabTitle(item.tab) : item.character?.title,
@@ -519,6 +524,7 @@ export function showTabOptions(event?: MouseEvent, type?: string) {
           command: item.tab ? 'select-tab' : item.command as never,
           accelerator: number <= 9 ? String(number) : undefined,
           checked: index ? Boolean(item.tab) : undefined,
+          enabled: enabledItems.includes(item),
         })
         number += 1
       }
@@ -1046,12 +1052,48 @@ export function openExternalExplorer(executor?: TerminalExecutor) {
   return ipcRenderer.invoke('execute', explorer)
 }
 
+const isTabListFindingAvailable = $computed(() => {
+  const position = settings['terminal.view.tabListPosition']
+  const isHorizontal = position === 'top' || position === 'bottom'
+  return !isHorizontal
+})
+export function useIsTabListFindingAvailable() {
+  return $$(isTabListFindingAvailable)
+}
+
+let isTabListFinding = $ref(false)
+export function useIsTabListFinding() {
+  return $$(isTabListFinding)
+}
+
+let tabListFindingKeyword = $ref('')
+export function useTabListFindingKeyword() {
+  return $$(tabListFindingKeyword)
+}
+
+export function filterTerminalTabsByKeyword<T>(values: T[], getter: (value: T) => string) {
+  if (isTabListFinding && tabListFindingKeyword) {
+    const items = values.map((value, index) => ({
+      title: getter(value),
+      index,
+    }))
+    const filtered = fuzzaldrin.filter(items, tabListFindingKeyword, { key: 'title' })
+    return filtered.map(({ index }) => values[index])
+  }
+  return values
+}
+
 export function handleTerminalMessages() {
   handleTerminalTabHistory()
   watch($$(currentTerminal), async tab => {
     await nextTick()
     if (tab && !tab.pane) {
       tab.xterm.focus()
+    }
+  })
+  watchEffect(() => {
+    if (!isTabListFindingAvailable) {
+      isTabListFinding = false
     }
   })
   ipcRenderer.on('open-tab', (event, context, options) => {

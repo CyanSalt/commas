@@ -58,19 +58,24 @@ interface LauncherItem {
 }
 
 const launcherItems = $computed(() => {
-  return filteredLaunchers.flatMap(launcher => {
-    const launcherTabs = getTerminalTabsByLauncher(launcher)
-    const character = getTerminalTabCharacterByLauncher(launcher)
-    return launcherTabs.length
-      ? launcherTabs.map<LauncherItem>(tab => ({
-        key: [launcher.id, tab.pid].join(':'),
-        tab,
-        index: commas.workspace.getTerminalTabIndex(tab),
-        character,
-        launcher,
-      }))
-      : [{ key: launcher.id, index: -1, character, launcher }]
-  })
+  return commas.workspace.filterTerminalTabsByKeyword(
+    filteredLaunchers.flatMap(launcher => {
+      const launcherTabs = getTerminalTabsByLauncher(launcher)
+      const character = getTerminalTabCharacterByLauncher(launcher)
+      return launcherTabs.length
+        ? launcherTabs.map<LauncherItem>(tab => ({
+          key: [launcher.id, tab.pid].join(':'),
+          tab,
+          index: commas.workspace.getTerminalTabIndex(tab),
+          character,
+          launcher,
+        }))
+        : [{ key: launcher.id, index: -1, character, launcher }]
+    }),
+    ({ tab, character }) => {
+      return tab ? commas.workspace.getTerminalTabTitle(tab) : character.title ?? ''
+    },
+  )
 })
 
 function toggleCollapsing() {
