@@ -106,14 +106,17 @@ onBeforeUpdate(() => {
         <button type="button" data-commas :class="['toggle-all', { collapsed: isCollapsed }]" @click="toggleAll">
           <VisualIcon name="lucide-chevrons-down" class="toggle-all-icon" />
         </button>
-        <input
-          v-model="keyword"
-          v-i18n:placeholder
-          type="search"
-          placeholder="Find#!terminal.5"
-          data-commas
-          class="searcher-control"
-        >
+        <span class="searcher-bar" data-commas>
+          <input
+            v-model="keyword"
+            v-i18n:placeholder
+            type="search"
+            placeholder="Find#!terminal.5"
+            data-commas-alt
+            class="searcher-control"
+          >
+          <VisualIcon name="lucide-search" class="searcher-icon"></VisualIcon>
+        </span>
       </div>
       <div
         v-for="group in groups"
@@ -161,8 +164,18 @@ onBeforeUpdate(() => {
 .settings-searcher {
   width: 100%;
 }
-.searcher-control {
+.searcher-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
   width: 50%;
+}
+.searcher-icon {
+  opacity: 0.5;
+}
+.searcher-control {
+  flex: 1;
+  width: 0;
 }
 .settings-group :deep(.setting-detail a[data-commas]) {
   color: rgb(var(--system-accent));

@@ -138,6 +138,16 @@
       opacity: 0.5;
     }
   }
+  [data-commas]:has(> input[data-commas-alt]) {
+    padding: 4px 8px;
+    line-height: 20px;
+    background: var(--design-input-background);
+    border-radius: 4px;
+    outline: none;
+    &:has(:focus-visible) {
+      outline: 1px solid rgb(var(--system-accent));
+    }
+  }
   h2[data-commas] {
     margin: 8px 0;
     font-size: 18px;

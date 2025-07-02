@@ -118,6 +118,7 @@ watch($$(isFinding), (value: boolean) => {
 <template>
   <div v-show="isFinding" ref="root" class="find-box" @submit.prevent="find">
     <form class="finder">
+      <VisualIcon name="lucide-search" class="icon"></VisualIcon>
       <input
         ref="finder"
         v-model="keyword"
@@ -176,9 +177,14 @@ watch($$(isFinding), (value: boolean) => {
 }
 .finder {
   display: flex;
-  gap: 8px;
+  gap: 4px;
+  align-items: center;
   height: #{36px - 2 * 8px}; // var(--min-tab-height) - 2 * 8px
   line-height: #{36px - 2 * 8px};
+}
+.icon {
+  font-size: 16px;
+  opacity: 0.5;
 }
 .keyword {
   flex: auto;

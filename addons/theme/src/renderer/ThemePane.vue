@@ -96,14 +96,17 @@ async function applyTheme(item: RemoteTheme) {
         <ThemeColorPicker v-for="field in fields" :key="field" :field="field" />
       </div>
       <div data-commas class="theme-searcher">
-        <input
-          v-model="keyword"
-          v-i18n:placeholder
-          type="search"
-          placeholder="Find#!terminal.5"
-          data-commas
-          class="searcher-control"
-        >
+        <span class="searcher-bar" data-commas>
+          <VisualIcon name="lucide-search" class="searcher-icon"></VisualIcon>
+          <input
+            v-model="keyword"
+            v-i18n:placeholder
+            type="search"
+            placeholder="Find#!terminal.5"
+            data-commas-alt
+            class="searcher-control"
+          >
+        </span>
         <button type="button" data-commas @click="load">
           <VisualIcon name="lucide-refresh-cw" />
         </button>
@@ -156,8 +159,18 @@ async function applyTheme(item: RemoteTheme) {
     margin-right: 1ch;
   }
 }
-.searcher-control {
+.searcher-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
   width: 50%;
+}
+.searcher-icon {
+  opacity: 0.5;
+}
+.searcher-control {
+  flex: 1;
+  width: 0;
 }
 .theme-list {
   display: grid;
