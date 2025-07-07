@@ -113,6 +113,9 @@ export function getTerminalTabsByCharacter(character: TerminalTabCharacter) {
 }
 
 interface TerminalTabCategory {
+  category?: {
+    title: string,
+  },
   items: {
     tab?: TerminalTab | undefined,
     character?: TerminalTabCharacter | undefined,
@@ -136,6 +139,7 @@ const tabCategories = $computed<TerminalTabCategory[]>(() => {
     },
     ...orderedCategories.map<TerminalTabCategory>(category => {
       return {
+        category,
         items: category.characters.flatMap(character => {
           const characterTabs = getTerminalTabsByCharacter(character)
           return characterTabs.length
@@ -503,11 +507,17 @@ export function showTabOptions(event?: MouseEvent, type?: string) {
   let number = 1
   let options: (MenuItem | MenuItem[])[] = []
   let defaultIndex = -1
-  for (let index = 0; index < tabCategories.length; index += 1) {
-    if (index) {
+  for (const category of tabCategories) {
+    if (category.category) {
       options.push([])
+      if (process.platform === 'darwin') {
+        options.push({
+          type: 'header',
+          label: category.category.title,
+        })
+      }
     }
-    const items = tabCategories[index].items
+    const items = category.items
     const enabledItems = filterTerminalTabsByKeyword(items, item => {
       return item.tab ? getTerminalTabTitle(item.tab) : item.character?.title ?? ''
     })
@@ -517,12 +527,12 @@ export function showTabOptions(event?: MouseEvent, type?: string) {
           defaultIndex = options.length
         }
         options.push({
-          type: index ? 'checkbox' : 'normal',
+          type: category.category ? 'checkbox' : 'normal',
           label: item.tab ? getTerminalTabTitle(item.tab) : item.character?.title,
           args: item.tab ? [currentIndex] : [item.character] as never,
           command: item.tab ? 'select-tab' : item.command as never,
           accelerator: number <= 9 ? String(number) : undefined,
-          checked: index ? Boolean(item.tab) : undefined,
+          checked: category.category ? Boolean(item.tab) : undefined,
           enabled: enabledItems.includes(item),
         })
         number += 1
