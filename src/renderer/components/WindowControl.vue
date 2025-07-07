@@ -69,6 +69,7 @@ function close() {
   border-radius: 8px;
   transition: background 0.2s, color 0.2s;
   cursor: pointer;
+  -electron-corner-smoothing: 60%;
   -webkit-app-region: no-drag;
   &:hover {
     background: var(--design-active-background);

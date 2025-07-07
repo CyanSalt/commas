@@ -23,6 +23,7 @@
   &::-webkit-scrollbar-thumb {
     background-color: rgb(var(--theme-foreground) / var(--scrollbar-opacity));
     border-radius: $size;
+    -electron-corner-smoothing: 60%;
     &:horizontal:active,
     &:vertical:active {
       --scrollbar-opacity: 0.2;

@@ -64,6 +64,7 @@ const { theme } = defineProps<{
 
 .theme-card {
   border-radius: 4px;
+  -electron-corner-smoothing: 60%;
 }
 .card-content {
   display: flex;
@@ -73,6 +74,7 @@ const { theme } = defineProps<{
   background: var(--design-highlight-background);
   border-radius: inherit;
   box-shadow: var(--design-element-shadow);
+  -electron-corner-smoothing: 60%;
 }
 .card-header {
   display: flex;
@@ -99,6 +101,7 @@ const { theme } = defineProps<{
   color: transparent;
   background: currentColor;
   border-radius: 2px;
+  -electron-corner-smoothing: 60%;
   @for $i from 1 through 7 {
     .theme-preview > &:nth-child(#{$i}) {
       width: #{math.abs(math.sin($i)) * 100} + '%';

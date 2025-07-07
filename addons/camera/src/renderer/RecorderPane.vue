@@ -224,6 +224,7 @@ watchEffect((onInvalidate) => {
     color: rgb(var(--system-accent));
     background: currentColor;
     border-radius: 4px;
+    -electron-corner-smoothing: 60%;
   }
   &:disabled::-webkit-slider-thumb {
     filter: grayscale(1);
@@ -232,6 +233,7 @@ watchEffect((onInvalidate) => {
     height: 4px;
     background: var(--design-input-background);
     border-radius: 4px;
+    -electron-corner-smoothing: 60%;
   }
 }
 </style>

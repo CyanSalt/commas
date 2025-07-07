@@ -300,6 +300,7 @@ function pickFont(event: InputEvent) {
   text-transform: uppercase;
   background: rgb(var(--theme-red));
   border-radius: 1em;
+  -electron-corner-smoothing: 60%;
 }
 .item-key {
   flex: none;

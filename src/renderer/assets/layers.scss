@@ -18,6 +18,7 @@
     opacity: 0.5;
     transition: opacity 0.2s, color 0.2s, transform 0.2s;
     cursor: pointer;
+    -electron-corner-smoothing: 60%;
     &:hover:not(:disabled),
     &:focus-visible:not(:disabled) {
       background: var(--design-highlight-background);
@@ -80,6 +81,7 @@
     background: var(--design-input-background);
     border-radius: 4px;
     outline: none;
+    -electron-corner-smoothing: 60%;
     &:focus-visible {
       outline: 1px solid rgb(var(--system-accent));
     }
@@ -100,6 +102,7 @@
     background: var(--design-input-background);
     border-radius: 4px;
     outline: none;
+    -electron-corner-smoothing: 60%;
     &::placeholder {
       color: rgb(var(--theme-foreground));
       opacity: 0.25;
@@ -144,6 +147,7 @@
     background: var(--design-input-background);
     border-radius: 4px;
     outline: none;
+    -electron-corner-smoothing: 60%;
     &:has(:focus-visible) {
       outline: 1px solid rgb(var(--system-accent));
     }

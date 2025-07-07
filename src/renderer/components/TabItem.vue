@@ -233,6 +233,7 @@ function close() {
   // https://github.com/react-dnd/react-dnd/issues/788
   transform: translate(0, 0);
   transition: transform 0.2s;
+  -electron-corner-smoothing: 60%;
   &:hover {
     background: var(--design-highlight-background);
   }
@@ -272,6 +273,7 @@ function close() {
   font-size: 12px;
   background: var(--icon-color);
   border-radius: 4px;
+  -electron-corner-smoothing: 60%;
   :deep(.visual-icon) {
     filter: drop-shadow(2px 2px 2px rgb(0 0 0 / 25%));
   }

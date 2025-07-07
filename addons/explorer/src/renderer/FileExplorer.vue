@@ -331,6 +331,7 @@ function openContextMenu(event: MouseEvent, file?: FileEntity) {
   text-decoration: none;
   border-radius: 4px;
   transition: transform 0.2s;
+  -electron-corner-smoothing: 60%;
   &:hover {
     background: var(--design-highlight-background);
   }

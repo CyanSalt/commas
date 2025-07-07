@@ -335,6 +335,7 @@ function openTabItemMenu(event: MouseEvent, tab: TerminalTab) {
     flex-direction: column;
     padding: 0;
     border-radius: var(--design-card-border-radius);
+    -electron-corner-smoothing: 60%;
     & > * {
       margin-right: calc(0px - var(--scrollbar-size));
     }
@@ -406,6 +407,7 @@ function openTabItemMenu(event: MouseEvent, tab: TerminalTab) {
   text-align: center;
   border-radius: 8px;
   transition: transform 0.2s;
+  -electron-corner-smoothing: 60%;
   view-transition-name: new-tab;
   .tab-list.horizontal & {
     width: var(--min-tab-height);

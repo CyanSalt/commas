@@ -25,6 +25,7 @@ const { vertical } = defineProps<{
     border: 2px solid rgb(var(--system-accent));
     background: rgb(var(--theme-background));
     border-radius: 6px;
+    -electron-corner-smoothing: 60%;
   }
   &.vertical::before {
     top: -2px;

@@ -32,6 +32,7 @@ let keyword = $(useTabListFindingKeyword())
   gap: 4px;
   align-items: center;
   border-radius: 8px;
+  -electron-corner-smoothing: 60%;
 }
 .icon {
   opacity: 0.5;

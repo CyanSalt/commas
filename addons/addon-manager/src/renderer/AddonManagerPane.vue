@@ -133,7 +133,7 @@ onMounted(() => {
               </span>
               <SwitchControl
                 :model-value="enabled"
-                @update:model-value="toggle(addon, $event)"
+                @update:model-value="toggle(addon, $event!)"
               />
             </div>
             <div class="addon-description">{{ manifest.description ?? '' }}</div>
@@ -170,6 +170,7 @@ onMounted(() => {
   font-size: 24px;
   background: var(--design-highlight-background);
   border-radius: 8px;
+  -electron-corner-smoothing: 60%;
 }
 .addon-info {
   flex: 1;

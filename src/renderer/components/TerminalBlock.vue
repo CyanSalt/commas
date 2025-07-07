@@ -78,6 +78,7 @@ async function handleDrop(args: DraggableElementEventPayload<DraggableElementDat
   background: rgb(var(--theme-background) / var(--theme-opacity));
   border-radius: var(--design-card-border-radius);
   box-shadow: var(--design-card-shadow);
+  -electron-corner-smoothing: 60%;
   // Both for TerminalTeletype and other teletypes
   :deep(.xterm) {
     padding: 8px;

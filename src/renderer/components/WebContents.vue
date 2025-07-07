@@ -49,5 +49,6 @@ watchEffect(() => {
 <style lang="scss" scoped>
 .web-contents {
   border-radius: var(--design-card-border-radius);
+  -electron-corner-smoothing: 60%;
 }
 </style>

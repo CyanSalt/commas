@@ -299,6 +299,7 @@ function scrollToStickyCommand() {
   margin-left: calc(var(--command-mark-padding) - var(--integration-width));
   border-radius: 4px;
   cursor: default;
+  -electron-corner-smoothing: 60%;
   &.is-interactive {
     transition: background 0.2s;
     cursor: pointer;
@@ -340,6 +341,7 @@ function scrollToStickyCommand() {
   box-shadow: 0 0 1em 0 rgb(0 0 0 / 25%);
   // TODO: This may slightly slow down, but is friendlier visually
   transition: transform 50ms, margin-left 50ms;
+  -electron-corner-smoothing: 60%;
   &.is-right {
     transform: translateX(-100%);
   }
@@ -465,6 +467,7 @@ function scrollToStickyCommand() {
   font-size: 4px;
   border-radius: 1em;
   animation: loader-switch 1s infinite linear;
+  -electron-corner-smoothing: 60%;
 }
 .terminal-completion-desc {
   padding: 0 0.375ch;

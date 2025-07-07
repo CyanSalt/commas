@@ -46,6 +46,7 @@ const checked = $computed({
   background: white;
   border-radius: 3px;
   cursor: pointer;
+  -electron-corner-smoothing: 60%;
   &:hover {
     border-color: rgb(59 59 59);
   }
@@ -58,6 +59,7 @@ const checked = $computed({
       inset: 0;
       background: rgb(0 0 0 / 25%);
       border-radius: inherit;
+      -electron-corner-smoothing: 60%;
     }
   }
 }

@@ -516,7 +516,6 @@ export function showTabOptions(event?: MouseEvent, type?: string) {
         if (item.tab && toRaw(item.tab) === toRaw(currentTerminal)) {
           defaultIndex = options.length
         }
-        console.log('enabled', enabledItems.includes(item))
         options.push({
           type: index ? 'checkbox' : 'normal',
           label: item.tab ? getTerminalTabTitle(item.tab) : item.character?.title,

@@ -394,6 +394,7 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
   opacity: 0.5;
   transition: opacity 0.2s, color 0.2s, transform 0.2s;
   cursor: pointer;
+  -electron-corner-smoothing: 60%;
   view-transition-name: launcher-folder;
   &:hover {
     background: var(--design-highlight-background);
@@ -414,6 +415,7 @@ function openLauncherMenu(launcher: Launcher, tab: TerminalTab | undefined, even
     height: var(--min-tab-height);
     line-height: var(--min-tab-height);
     border-radius: 8px;
+    -electron-corner-smoothing: 60%;
     &.is-dropping-active {
       outline: 2px solid rgb(var(--system-accent));
     }

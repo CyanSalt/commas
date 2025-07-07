@@ -174,6 +174,7 @@ watch($$(isFinding), (value: boolean) => {
   background: rgb(var(--theme-background) / var(--theme-opacity));
   border-radius: var(--design-card-border-radius);
   box-shadow: var(--design-card-shadow);
+  -electron-corner-smoothing: 60%;
 }
 .finder {
   display: flex;
