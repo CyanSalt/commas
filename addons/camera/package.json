@@ -8,7 +8,7 @@
   "author": "commas",
   "license": "ISC",
   "dependencies": {
-    "get-port": "^5.1.1"
+    "get-port": "^7.1.0"
   },
   "devDependencies": {
     "@fontsource/montserrat": "^5.2.6",

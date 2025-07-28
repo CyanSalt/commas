@@ -17,9 +17,9 @@
     }
   },
   "dependencies": {
-    "axios": "^1.10.0",
+    "axios": "^1.11.0",
     "boxen": "^8.0.1",
     "fast-xml-parser": "^5.2.5",
-    "openai": "^4.104.0"
+    "openai": "^5.10.2"
   }
 }
