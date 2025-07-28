@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.39.1](https://github.com/CyanSalt/commas/compare/v0.39.0...v0.39.1) (2025-07-28)
+
 ## [0.39.0](https://github.com/CyanSalt/commas/compare/v0.38.0...v0.39.0) (2025-07-28)
 
 ### Features
