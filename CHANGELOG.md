@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.39.0](https://github.com/CyanSalt/commas/compare/v0.38.0...v0.39.0) (2025-07-28)
+
+### Features
+
+* search icons ([da92cd0](https://github.com/CyanSalt/commas/commit/da92cd0a40e3f002d5eda0aacc2dd30ec60d2f28))
+* support commas://terminal ([4f2c1bc](https://github.com/CyanSalt/commas/commit/4f2c1bcbd6ad6402061940d50e8be9dad704a1df))
+* support finding tab list ([2ff460b](https://github.com/CyanSalt/commas/commit/2ff460b9e2c2452302e5d6697349108ee92e0606))
+
+### Bug Fixes
+
+* add category title in tab options ([6eb9351](https://github.com/CyanSalt/commas/commit/6eb9351feadfa8f2e085f806bf54599624e81cd8))
+* **ai:** hide xml format ([a374a78](https://github.com/CyanSalt/commas/commit/a374a78d2f45e5ec1695369e7d688ac133ab0cfb))
+* **ai:** multiple suggestions ([6304aa5](https://github.com/CyanSalt/commas/commit/6304aa5d8d589d4bc7d68edb5e415eca25d4bfaf))
+* draggable switch ([a7e4974](https://github.com/CyanSalt/commas/commit/a7e4974498a166b76d1a073200ac504131fa24d5))
+* **editor:** clipboard actions ([a14c631](https://github.com/CyanSalt/commas/commit/a14c6314f457c4d750401ab709a6144e376927cf))
+* **iterm2:** compat with imgcat ([46ed2c0](https://github.com/CyanSalt/commas/commit/46ed2c0cf4310faa91d7d419fc735b098cddf161))
+* lint issues ([f17308f](https://github.com/CyanSalt/commas/commit/f17308f7bdeabc1c56c95acdcaf09ab7aa7d50d8))
+* **settings:** translations ([75d1922](https://github.com/CyanSalt/commas/commit/75d19224b3ede7325b50eb7d00ba5f88be23ca0d))
+* switch style ([a8957d9](https://github.com/CyanSalt/commas/commit/a8957d97babdac5c77e314d62d3322c3c666b2cd))
+* typing depth ([0028e86](https://github.com/CyanSalt/commas/commit/0028e8694ba20856083094f8d0828179e466b93c))
+* use smooth corners ([0d1a1d9](https://github.com/CyanSalt/commas/commit/0d1a1d9109581199da6214e6fffecbd56e1745d3))
+
 ## [0.38.0](https://github.com/CyanSalt/commas/compare/v0.37.0...v0.38.0) (2025-04-10)
 
 ### Features
