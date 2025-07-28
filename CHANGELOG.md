@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.39.2](https://github.com/CyanSalt/commas/compare/v0.39.1...v0.39.2) (2025-07-28)
+
+### Bug Fixes
+
+* ignore deep node_modules ([75e374b](https://github.com/CyanSalt/commas/commit/75e374bf51de18b4bd5f97d2fec605714bdac7aa))
+
 ## [0.39.1](https://github.com/CyanSalt/commas/compare/v0.39.0...v0.39.1) (2025-07-28)
 
 ## [0.39.0](https://github.com/CyanSalt/commas/compare/v0.38.0...v0.39.0) (2025-07-28)
