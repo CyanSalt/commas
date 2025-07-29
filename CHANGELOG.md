@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.39.3](https://github.com/CyanSalt/commas/compare/v0.39.2...v0.39.3) (2025-07-29)
+
+### Bug Fixes
+
+* completion background ([8c3721d](https://github.com/CyanSalt/commas/commit/8c3721d9507265ece93d98a13e58400d9977fa62))
+
 ## [0.39.2](https://github.com/CyanSalt/commas/compare/v0.39.1...v0.39.2) (2025-07-28)
 
 ### Bug Fixes
