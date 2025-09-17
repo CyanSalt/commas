@@ -1,6 +1,6 @@
 # Commas
 
-<img src="https://cdn.jsdelivr.net/gh/CyanSalt/commas@master/resources/images/icon.png" width="96">
+<img src="https://cdn.jsdelivr.net/gh/CyanSalt/commas@main/resources/images/icon.png" width="96">
 
 EN | [中文](docs/README-zh.md)
 
@@ -78,17 +78,17 @@ The built-in `theme` addon supports downloading themes from [windowsterminalthem
 
 ### I18n
 
-Commas currently has built-in supports for English and Simplified Chinese. You can also enable translation for other languages by adding / modifying the `translation.yaml` file under the user data folder. The content of the file can be something like part of [the translation file](https://github.com/CyanSalt/commas/blob/master/resources/locales/zh-CN.json).
+Commas currently has built-in supports for English and Simplified Chinese. You can also enable translation for other languages by adding / modifying the `translation.yaml` file under the user data folder. The content of the file can be something like part of [the translation file](https://github.com/CyanSalt/commas/blob/main/resources/locales/zh-CN.json).
 
 You can also reference an existing translation file in the form of `@use: zh-CN` if you are using a dialect of one of the built-in languages.
 
 ### Addons and user scripts
 
-Commas has several useful / interesting built-in [addons](https://github.com/CyanSalt/commas/tree/master/addons). In addition, you can also download / write third-party addons to be placed in the `addons` directory of the user data folder, and manage which addons you want to enable via settings.
+Commas has several useful / interesting built-in [addons](https://github.com/CyanSalt/commas/tree/main/addons). In addition, you can also download / write third-party addons to be placed in the `addons` directory of the user data folder, and manage which addons you want to enable via settings.
 
 With the built-in `addon-manager` addon, all built-in and self-added addons can be easily managed via a graphical interface.
 
-Add-ons are based on a rich set of [hook APIs](https://github.com/CyanSalt/commas/tree/master/api). You can read the built-in addons for reference in writing your own addons. For some simple scenarios, you can add / modify the `custom.js` and `custom.css` files directly under the user data folder to implement custom logic and styles. `custom.js` also has full hook API support.
+Add-ons are based on a rich set of [hook APIs](https://github.com/CyanSalt/commas/tree/main/api). You can read the built-in addons for reference in writing your own addons. For some simple scenarios, you can add / modify the `custom.js` and `custom.css` files directly under the user data folder to implement custom logic and styles. `custom.js` also has full hook API support.
 
 ### Developer tools
 

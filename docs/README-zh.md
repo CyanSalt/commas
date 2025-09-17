@@ -1,6 +1,6 @@
 # Commas
 
-<img src="https://cdn.jsdelivr.net/gh/CyanSalt/commas@master/resources/images/icon.png" width="96">
+<img src="https://cdn.jsdelivr.net/gh/CyanSalt/commas@main/resources/images/icon.png" width="96">
 
 [EN](../README.md) | 中文
 
@@ -78,17 +78,17 @@ Commas 支持与 Windows Terminal 兼容的主题文件。你可以将主题文�
 
 ### 多语言
 
-Commas 目前内置了英语和简体中文的支持。你也可以通过在用户数据文件夹下添加/修改 `translation.yaml` 文件以实现其他语言的翻译功能。文件内容可以是类似于这个[翻译文件](https://github.com/CyanSalt/commas/blob/master/resources/locales/zh-CN.json)的一部分。
+Commas 目前内置了英语和简体中文的支持。你也可以通过在用户数据文件夹下添加/修改 `translation.yaml` 文件以实现其他语言的翻译功能。文件内容可以是类似于这个[翻译文件](https://github.com/CyanSalt/commas/blob/main/resources/locales/zh-CN.json)的一部分。
 
 如果你使用的是内置语言的方言，也可以通过 `@use: zh-CN` 的形式引用已有的翻译文件。
 
 ### 附件功能和用户脚本
 
-Commas 内置了数个有用/有趣的[附加功能](https://github.com/CyanSalt/commas/tree/master/addons)。此外，你也可以下载/编写第三方附加功能放置在用户数据文件夹的 `addons` 目录下，并通过设置来管理期望启用的附加功能。
+Commas 内置了数个有用/有趣的[附加功能](https://github.com/CyanSalt/commas/tree/main/addons)。此外，你也可以下载/编写第三方附加功能放置在用户数据文件夹的 `addons` 目录下，并通过设置来管理期望启用的附加功能。
 
 借助内置的 `addon-manager` 附加功能，可以方便地通过图形化界面管理内置和自行添加的全部附加功能。
 
-附加功能基于一组丰富的[钩子 API](https://github.com/CyanSalt/commas/tree/master/api)。你可以参考内置的附加功能来编写自己的附加功能。对于一些简单的场景，可以直接添加/修改用户数据文件夹下的 `custom.js` 和 `custom.css` 文件，以实现自定义的逻辑和样式。`custom.js` 同样具有完整的钩子 API 支持。
+附加功能基于一组丰富的[钩子 API](https://github.com/CyanSalt/commas/tree/main/api)。你可以参考内置的附加功能来编写自己的附加功能。对于一些简单的场景，可以直接添加/修改用户数据文件夹下的 `custom.js` 和 `custom.css` 文件，以实现自定义的逻辑和样式。`custom.js` 同样具有完整的钩子 API 支持。
 
 ### 开发者工具
 
