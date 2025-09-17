@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.39.4](https://github.com/CyanSalt/commas/compare/v0.39.3...v0.39.4) (2025-09-17)
+
+### Bug Fixes
+
+* icon for macOS 26 ([bd294c7](https://github.com/CyanSalt/commas/commit/bd294c7c16a4863137f69fff8adc5578795e4d06))
+
 ## [0.39.3](https://github.com/CyanSalt/commas/compare/v0.39.2...v0.39.3) (2025-07-29)
 
 ### Bug Fixes
