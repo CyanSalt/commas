@@ -17,6 +17,6 @@
     }
   },
   "devDependencies": {
-    "normalize-url": "^8.0.2"
+    "normalize-url": "^8.1.0"
   }
 }
