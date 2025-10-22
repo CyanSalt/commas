@@ -4,6 +4,26 @@ import * as util from 'node:util'
 
 const execa = util.promisify(childProcess.exec)
 
+async function execute(
+  command: string,
+  options?: childProcess.ExecOptionsWithStringEncoding
+): Promise<{
+  stdout: string,
+  stderr: string,
+} & {
+  code: number | null,
+  signal: NodeJS.Signals | null,
+}>
+async function execute(
+  command: string,
+  options?: childProcess.ExecOptionsWithBufferEncoding
+): Promise<{
+  stdout: Buffer,
+  stderr: Buffer,
+} & {
+  code: number | null,
+  signal: NodeJS.Signals | null,
+}>
 async function execute(command: string, options?: childProcess.ExecOptions) {
   const promise = execa(command, {
     encoding: 'utf8',
@@ -32,20 +52,20 @@ async function execute(command: string, options?: childProcess.ExecOptions) {
 function until<T extends EventEmitter, U extends string>(emitter: T, finish: U, error?: string) {
   return new Promise<
     T extends EventEmitter<Record<U, infer V extends any[]>> ? V : (
-    T extends {
-      once(name: U, listener: (...args: infer V) => unknown): unknown,
-    } ? V : unknown[]
+      T extends {
+        once(name: U, listener: (...args: infer V) => unknown): unknown,
+      } ? V : unknown[]
     )
   >((resolve, reject) => {
-        emitter.once(finish, (...args: any) => {
-          resolve(args)
-        })
-        if (error) {
-          emitter.once(error, rejection => {
-            reject(rejection)
-          })
-        }
+    emitter.once(finish, (...args: any) => {
+      resolve(args)
+    })
+    if (error) {
+      emitter.once(error, rejection => {
+        reject(rejection)
       })
+    }
+  })
 }
 
 function memoizeAsync<

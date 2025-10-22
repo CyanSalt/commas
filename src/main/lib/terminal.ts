@@ -97,6 +97,9 @@ async function createTerminal(
     }
   })
   ptyProcessMap.set(ptyProcess.pid, ptyProcess)
+  // if (process.platform === 'darwin' || process.platform === 'win32') {
+  //   app.addRecentDocument(cwd)
+  // }
   return {
     pid: ptyProcess.pid,
     process: ptyProcess.process,
