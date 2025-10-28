@@ -2,7 +2,7 @@
 import { ipcRenderer } from '@commas/electron-ipc'
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
-import { watchEffect } from 'vue'
+import { useTemplateRef, watchEffect } from 'vue'
 import ExcalidrawBoard from './ExcalidrawBoard.vue'
 import { setPaintTabFile } from './compositions'
 
@@ -16,7 +16,7 @@ const file = $computed(() => tab.shell)
 
 let source = $(commas.remote.useFile($$(file)))
 
-let board = $ref<InstanceType<typeof ExcalidrawBoard>>()
+let board = $(useTemplateRef<InstanceType<typeof ExcalidrawBoard>>('board'))
 
 const isDirty = $computed(() => {
   return Boolean(source === undefined || board?.isDirty)

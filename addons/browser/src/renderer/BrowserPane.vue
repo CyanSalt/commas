@@ -2,7 +2,7 @@
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import normalizeURL from 'normalize-url'
-import { watchEffect } from 'vue'
+import { useTemplateRef, watchEffect } from 'vue'
 
 const { tab } = defineProps<{
   tab: TerminalTab,
@@ -42,7 +42,7 @@ function goBack() {
 }
 
 let customURL: string | undefined = $ref<string>()
-let customURLElement = $ref<HTMLInputElement>()
+let customURLElement = $(useTemplateRef<HTMLInputElement>('customURLElement'))
 
 watchEffect(() => {
   customURL = url

@@ -3,7 +3,7 @@ import * as path from 'node:path'
 import { ipcRenderer } from '@commas/electron-ipc'
 import { MenuItem } from '@commas/types/menu'
 import * as commas from 'commas:api/renderer'
-import { nextTick, watch, watchEffect } from 'vue'
+import { nextTick, useTemplateRef, watch, watchEffect } from 'vue'
 import { FileEntity } from '../types/file'
 import { useIsDotFileVisible } from './compositions'
 
@@ -101,7 +101,7 @@ function openNewTab() {
 
 let isCustomizing = $ref(false)
 let customDirectory = $ref('')
-let customDirectoryElement = $ref<HTMLInputElement>()
+let customDirectoryElement = $(useTemplateRef<HTMLInputElement>('custom-directory'))
 
 watchEffect(() => {
   customDirectory = modelValue
@@ -145,8 +145,8 @@ function autoselect(event: FocusEvent) {
   (event.target as HTMLInputElement).select()
 }
 
-let container = $ref<HTMLElement>()
-let back = $ref<HTMLButtonElement>()
+let container = $(useTemplateRef<HTMLElement>('container'))
+let back = $(useTemplateRef<HTMLButtonElement>('back'))
 
 watchEffect(async () => {
   if (!focused) return

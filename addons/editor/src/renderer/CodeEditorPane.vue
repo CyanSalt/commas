@@ -2,7 +2,7 @@
 import { ipcRenderer } from '@commas/electron-ipc'
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
-import { watchEffect } from 'vue'
+import { useTemplateRef, watchEffect } from 'vue'
 import CodeEditor from './CodeEditor.vue'
 import { setCodeEditorTabFile } from './compositions'
 
@@ -12,7 +12,7 @@ const { tab } = defineProps<{
 
 const { TerminalBlock } = commas.ui.vueAssets
 
-let editor = $ref<InstanceType<typeof CodeEditor>>()
+let editor = $(useTemplateRef<InstanceType<typeof CodeEditor>>('editor'))
 
 const file = $computed(() => tab.shell)
 

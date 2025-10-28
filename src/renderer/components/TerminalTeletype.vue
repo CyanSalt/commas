@@ -5,7 +5,7 @@ import { stripVTControlCharacters } from 'node:util'
 import { webUtils } from 'electron'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { quote } from 'shell-quote'
-import { onBeforeUpdate } from 'vue'
+import { onBeforeUpdate, useTemplateRef } from 'vue'
 import { RecycleScroller } from 'vue-virtual-scroller'
 import type { CommandCompletion, TerminalTab } from '@commas/types/terminal'
 import { useLinkModifiers, useTerminalElement } from '../compositions/terminal'
@@ -18,8 +18,8 @@ const { tab } = defineProps<{
   tab: TerminalTab,
 }>()
 
-const element = $ref<HTMLElement>()
-const stickyElement = $ref<HTMLElement>()
+const element = $(useTemplateRef<HTMLElement>('element'))
+const stickyElement = $(useTemplateRef<HTMLElement>('stickyElement'))
 
 const {
   linkModifier,

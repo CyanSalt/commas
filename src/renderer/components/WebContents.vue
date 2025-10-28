@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useResizeObserver } from '@vueuse/core'
-import { onUnmounted, watch, watchEffect } from 'vue'
+import { onUnmounted, useTemplateRef, watch, watchEffect } from 'vue'
 import { RendererWebContentsView } from '../compositions/web-contents'
 
 let url = $(defineModel<string>())
@@ -9,7 +9,7 @@ const emit = defineEmits<{
   (event: 'initialize', view: RendererWebContentsView): void,
 }>()
 
-let root = $ref<HTMLDivElement>()
+let root = $(useTemplateRef<HTMLDivElement>('root'))
 let view = $ref<RendererWebContentsView>()
 
 watch($$(root), async element => {

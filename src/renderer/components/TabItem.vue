@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { nextTick, useId, watchEffect } from 'vue'
+import { nextTick, useId, useTemplateRef, watchEffect } from 'vue'
 import type { TerminalTab, TerminalTabCharacter } from '@commas/types/terminal'
 import { isDarkColor, toRGBA } from '../../shared/color'
 import { useSettings } from '../compositions/settings'
@@ -106,7 +106,7 @@ const title = $computed(() => {
 
 let isCustomizing = $ref(false)
 let customTitle: string = $ref('')
-let customTitleElement = $ref<HTMLInputElement>()
+let customTitleElement = $(useTemplateRef<HTMLInputElement>('customTitleElement'))
 
 watchEffect(() => {
   customTitle = title

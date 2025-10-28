@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useIntersectionObserver } from '@vueuse/core'
 import type { ISearchOptions } from '@xterm/addon-search'
-import { reactive, watch, watchEffect } from 'vue'
+import { reactive, useTemplateRef, watch, watchEffect } from 'vue'
 import { ipcRenderer } from '@commas/electron-ipc'
 import { toCSSHEX, toRGBA } from '../../shared/color'
 import { useIsFinding } from '../compositions/shell'
@@ -13,8 +13,8 @@ import VisualIcon from './basic/VisualIcon.vue'
 const terminal = $(useCurrentTerminal())
 const theme = useTheme()
 
-const root = $ref<HTMLElement>()
-const finder = $ref<HTMLInputElement>()
+const root = $(useTemplateRef<HTMLElement>('root'))
+const finder = $(useTemplateRef<HTMLInputElement>('finder'))
 const keyword = $ref('')
 const options = reactive({
   caseSensitive: false,
@@ -116,7 +116,7 @@ watch($$(isFinding), (value: boolean) => {
 </script>
 
 <template>
-  <div v-show="isFinding" ref="root" class="find-box" @submit.prevent="find">
+  <div v-show="isFinding" ref="root" class="find-box">
     <form class="finder">
       <VisualIcon name="lucide-search" class="icon"></VisualIcon>
       <input
@@ -129,6 +129,7 @@ watch($$(isFinding), (value: boolean) => {
         autofocus
         data-commas-alt
         @keyup.esc="cancel"
+        @keydown.enter.prevent="find"
       >
       <div class="options">
         <div

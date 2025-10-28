@@ -446,7 +446,7 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
 }
 
 export function useTerminalElement(
-  element: MaybeRefOrGetter<HTMLElement | undefined>,
+  element: MaybeRefOrGetter<HTMLElement | null | undefined>,
   terminal: MaybeRefOrGetter<Terminal>,
   addons: MaybeRefOrGetter<ReadonlyTerminalTabAddons>,
   onInitialize?: (xterm: Terminal) => void,
@@ -695,7 +695,7 @@ function loadStickyTerminalAddons(tab: TerminalTab) {
 
 export function useReadonlyTerminal(
   tab: MaybeRefOrGetter<TerminalTab>,
-  element: MaybeRefOrGetter<HTMLElement | undefined>,
+  element: MaybeRefOrGetter<HTMLElement | null | undefined>,
 ) {
   watchEffect(() => {
     const currentTab = toValue(tab)

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useResizeObserver } from '@vueuse/core'
 import * as commas from 'commas:api/renderer'
-import { watchEffect } from 'vue'
+import { useTemplateRef, watchEffect } from 'vue'
 import { useEditorTheme } from './compositions'
 import * as monaco from './monaco-editor'
 
@@ -14,7 +14,7 @@ let modelValue = $(defineModel<string>())
 const theme = useEditorTheme()
 const settings = commas.remote.useSettings()
 
-let root = $ref<HTMLDivElement>()
+let root = $(useTemplateRef<HTMLDivElement>('root'))
 
 watchEffect(() => {
   monaco.editor.defineTheme('commas', {

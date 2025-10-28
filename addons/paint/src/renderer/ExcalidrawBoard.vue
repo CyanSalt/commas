@@ -3,7 +3,7 @@ import * as path from 'node:path'
 import * as commas from 'commas:api/renderer'
 import React from 'react'
 import { createRoot, Root } from 'react-dom/client'
-import { watch, watchEffect } from 'vue'
+import { useTemplateRef, watch, watchEffect } from 'vue'
 import type { ExcalidrawImperativeAPI, State } from './excalidraw'
 import { Excalidraw, exportToBlob, exportToSvg, hashElementsVersion, loadFromBlob, MainMenu, serializeAsJSON } from './excalidraw'
 import { useVueRef } from './react'
@@ -69,7 +69,7 @@ watchEffect(() => {
   state = data
 })
 
-let element = $ref<HTMLElement>()
+let element = $(useTemplateRef<HTMLElement>('element'))
 
 let root = $ref<Root>()
 

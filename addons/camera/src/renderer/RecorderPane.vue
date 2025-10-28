@@ -3,7 +3,7 @@ import { pathToFileURL } from 'node:url'
 import type { TerminalTab } from '@commas/types/terminal'
 import { useTimestamp } from '@vueuse/core'
 import * as commas from 'commas:api/renderer'
-import { onMounted, watchEffect } from 'vue'
+import { onMounted, useTemplateRef, watchEffect } from 'vue'
 import { useTTYRecFrames } from './compositions'
 
 const { tab } = defineProps<{
@@ -25,7 +25,7 @@ function openEditingMenu(event: MouseEvent) {
   ], event)
 }
 
-const element = $ref<HTMLElement>()
+const element = $(useTemplateRef<HTMLElement>('element'))
 
 const xterm = commas.workspace.useReadonlyTerminal(() => tab, $$(element))
 
