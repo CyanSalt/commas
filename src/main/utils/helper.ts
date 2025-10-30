@@ -24,7 +24,13 @@ async function execute(
   code: number | null,
   signal: NodeJS.Signals | null,
 }>
-async function execute(command: string, options?: childProcess.ExecOptions) {
+async function execute(command: string, options?: childProcess.ExecOptions): Promise<{
+  stdout: string | Buffer,
+  stderr: string | Buffer,
+} & {
+  code: number | null,
+  signal: NodeJS.Signals | null,
+}> {
   const promise = execa(command, {
     encoding: 'utf8',
     ...options,

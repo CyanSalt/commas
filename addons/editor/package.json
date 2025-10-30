@@ -8,7 +8,7 @@
   "author": "commas",
   "license": "ISC",
   "devDependencies": {
-    "monaco-editor": "^0.52.2"
+    "monaco-editor": "^0.54.0"
   },
   "commas:icon": {
     "name": "lucide-file-pen-line"

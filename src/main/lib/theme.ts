@@ -63,9 +63,7 @@ const EXTRA_CSS_COLORS: Partial<Record<Exclude<keyof Theme, keyof ThemeDefinitio
 const settings = useSettings()
 
 const systemAccentColor = $customRef((track, trigger) => {
-  let color = ['darwin', 'win32'].includes(process.platform)
-    ? systemPreferences.getAccentColor()
-    : ''
+  let color = systemPreferences.getAccentColor()
   if (process.platform === 'win32') {
     systemPreferences.on('accent-color-changed', (event, newColor) => {
       color = newColor

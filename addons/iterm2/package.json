@@ -9,7 +9,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/canvas-confetti": "^1.9.0",
-    "canvas-confetti": "^1.9.3"
+    "canvas-confetti": "^1.9.4"
   },
   "commas:icon": {
     "name": "lucide-dollar-sign"

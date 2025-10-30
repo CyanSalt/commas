@@ -16,7 +16,7 @@ const terminal = $(useCurrentTerminal())
 
 const anchors = commas.proxy.context.getCollection('terminal.ui-title-anchor')
 
-let iconBuffer = $ref<Buffer>()
+let iconBinary = $ref<Uint8Array>()
 
 const isEnabled = $computed(() => {
   return settings['terminal.view.frameType'] === 'immersive'
@@ -64,9 +64,9 @@ const title = $computed(() => {
   return getPrompt(expr, terminal)
 })
 
-let defaultIconBuffer: Buffer | undefined
+let defaultIconBinary: Uint8Array | undefined
 if (process.platform === 'darwin') {
-  defaultIconBuffer = nativeImage.createFromNamedImage('NSImageNameFolder')
+  defaultIconBinary = nativeImage.createFromNamedImage('NSImageNameFolder')
     .resize({ width: 32 })
     .toPNG()
 }
@@ -74,21 +74,21 @@ if (process.platform === 'darwin') {
 async function updateIcon() {
   if (fileOrDirectory && process.platform === 'darwin' && settings['terminal.tab.liveIcon']) {
     const buffer = await ipcRenderer.invoke('get-icon', fileOrDirectory)
-    iconBuffer = buffer ?? defaultIconBuffer
+    iconBinary = buffer ?? defaultIconBinary
   } else {
-    iconBuffer = defaultIconBuffer
+    iconBinary = defaultIconBinary
   }
 }
 
 watchEffect(() => {
   if (!isEnabled) return
-  iconBuffer = defaultIconBuffer
+  iconBinary = defaultIconBinary
   updateIcon()
 })
 
 const icon = $computed(() => {
-  if (iconBuffer) {
-    const blob = new Blob([iconBuffer], { type: 'image/png' })
+  if (iconBinary) {
+    const blob = new Blob([iconBinary as Uint8Array<ArrayBuffer>], { type: 'image/png' })
     return URL.createObjectURL(blob)
   } else {
     return ''
@@ -112,7 +112,7 @@ function startDraggingDirectory(event: DragEvent) {
   if (event.dataTransfer) {
     event.dataTransfer.setData('text/plain', fileOrDirectory)
   }
-  ipcRenderer.invoke('drag-file', fileOrDirectory, iconBuffer)
+  ipcRenderer.invoke('drag-file', fileOrDirectory, iconBinary)
 }
 
 watchEffect(() => {

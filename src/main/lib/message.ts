@@ -1,3 +1,4 @@
+import type * as childProcess from 'node:child_process'
 import type EventEmitter from 'node:events'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
@@ -26,13 +27,19 @@ declare module '@commas/electron-ipc' {
   export interface Commands {
     'message-box': (data: MessageBoxOptions) => MessageBoxReturnValue,
     destroy: () => void,
-    execute: typeof execute,
+    execute: (command: string, options?: childProcess.ExecOptions) => {
+      stdout: string | Buffer,
+      stderr: string | Buffer,
+    } & {
+      code: number | null,
+      signal: NodeJS.Signals | null,
+    },
     'inject-style': (style: string) => string,
     'eject-style': (key: string) => void,
     'update-window': (data: { title: BrowserWindow['title'], filename: BrowserWindow['representedFilename'] }) => void,
-    'drag-file': (file: string, iconBuffer?: Buffer) => void,
+    'drag-file': (file: string, iconBinary?: Uint8Array) => void,
     beep: () => void,
-    'get-icon': (file: string) => Buffer | null,
+    'get-icon': (file: string) => Uint8Array | null,
     notify: typeof notify,
     'activate-window': () => void,
     bounce: (state: { active: boolean, type?: Parameters<Dock['bounce']>[0] }) => void,
@@ -178,10 +185,11 @@ function handleMessages() {
     frame.title = data.title
     frame.representedFilename = data.filename
   })
-  ipcMain.handle('drag-file', async (event, file, iconBuffer) => {
+  ipcMain.handle('drag-file', async (event, file, iconBinary) => {
     let icon: NativeImage
-    if (iconBuffer) {
-      icon = nativeImage.createFromBuffer(iconBuffer).resize({ width: 16 })
+    if (iconBinary) {
+      const buffer = Buffer.from(iconBinary)
+      icon = nativeImage.createFromBuffer(buffer).resize({ width: 16 })
     } else {
       icon = await app.getFileIcon(file, { size: 'small' })
     }
@@ -207,7 +215,7 @@ function handleMessages() {
   })
   ipcMain.handle('bounce', (event, { active, type }) => {
     if (active) {
-      if (process.platform === 'darwin') {
+      if (app.dock) {
         currentBouncingId = app.dock.bounce(type)
       } else {
         const frame = BrowserWindow.fromWebContents(event.sender)
@@ -215,7 +223,7 @@ function handleMessages() {
         frame.flashFrame(true)
       }
     } else {
-      if (process.platform === 'darwin') {
+      if (app.dock) {
         app.dock.cancelBounce(currentBouncingId)
         currentBouncingId = -1
       } else {
