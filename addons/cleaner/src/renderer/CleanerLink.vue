@@ -38,7 +38,7 @@ onMounted(() => {
     <label v-i18n data-commas>Cache#!cache.1</label>
     <span class="cache-size" @click="check">{{ size }}</span>
     <button type="button" data-commas @click="clear">
-      <VisualIcon name="lucide-paintbrush" />
+      <VisualIcon name="lucide-brush-cleaning" />
     </button>
   </div>
 </template>
