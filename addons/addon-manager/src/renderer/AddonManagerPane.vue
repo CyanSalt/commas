@@ -171,6 +171,9 @@ onMounted(() => {
   background: var(--design-highlight-background);
   border-radius: 8px;
   -electron-corner-smoothing: 60%;
+  .addon-card.is-disabled & {
+    color: rgb(var(--system-accent) / 50%);
+  }
 }
 .addon-info {
   flex: 1;

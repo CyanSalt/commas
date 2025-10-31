@@ -305,7 +305,9 @@ importers:
 
   addons/launcher: {}
 
-  addons/paint:
+  addons/paint: {}
+
+  addons/paint-pro:
     devDependencies:
       '@excalidraw/excalidraw':
         specifier: 0.18.0-4e0441e

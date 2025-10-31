@@ -1,0 +1,25 @@
+{
+  "name": "@commas/paint-pro",
+  "private": true,
+  "version": "0.1.0",
+  "productName": "Paint Pro",
+  "description": "Think graphically like an expert",
+  "main": "index.js",
+  "author": "commas",
+  "license": "ISC",
+  "commas:icon": {
+    "name": "lucide-stamp"
+  },
+  "commas:i18n": {
+    "zh-CN": {
+      "productName": "专业画图",
+      "description": "像专家一样用图画思考"
+    }
+  },
+  "devDependencies": {
+    "@excalidraw/excalidraw": "0.18.0-4e0441e",
+    "@types/react-dom": "^19.2.2",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  }
+}

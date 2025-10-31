@@ -1,6 +1,6 @@
 [
   {
-    "key": "paint.assets.path",
+    "key": "paint-pro.assets.path",
     "label": "Excalidraw Assets Path",
     "comments": [
       "External URL for assets of Excalidraw"

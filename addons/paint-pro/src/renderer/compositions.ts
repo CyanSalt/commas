@@ -2,8 +2,8 @@ import * as path from 'node:path'
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 
-export function openPaintTab(file: string) {
-  return commas.workspace.openPaneTab('paint', {
+export function openPaintProTab(file: string) {
+  return commas.workspace.openPaneTab('paint-pro', {
     shell: file,
   })
 }
