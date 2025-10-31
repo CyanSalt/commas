@@ -484,7 +484,7 @@
         "type": "string"
       }
     },
-    "recommendations": ["addon-manager", "ai", "browser", "camera", "cleaner", "cli", "clippy", "editor", "explorer", "git", "iterm2", "launcher", "paint-pro", "power-mode", "preference", "proxy", "settings", "sync", "theme", "updater"],
+    "recommendations": ["addon-manager", "ai", "browser", "camera", "cleaner", "cli", "clippy", "editor", "explorer", "git", "iterm2", "launcher", "paint", "paint-pro", "power-mode", "preference", "proxy", "settings", "sync", "theme", "updater"],
     "overrides": true,
     "default": ["!clippy", "!paint-pro", "!proxy"]
   }

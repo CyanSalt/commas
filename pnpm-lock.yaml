@@ -305,7 +305,11 @@ importers:
 
   addons/launcher: {}
 
-  addons/paint: {}
+  addons/paint:
+    devDependencies:
+      drauu:
+        specifier: ^0.4.3
+        version: 0.4.3
 
   addons/paint-pro:
     devDependencies:
@@ -534,6 +538,9 @@ packages:
 
   '@cyansalt/tsconfig@2.2.1':
     resolution: {integrity: sha512-Ld392akmPNSk4UpMhST41BLmXEgz1keEsYWhVwhEBXcZ9uIwrrgf8d8j2VJDDuV3vaZrz/4PxpbuywJeeuYJGw==}
+
+  '@drauu/core@0.4.3':
+    resolution: {integrity: sha512-MmFKN0DEIS+78wtfag7DiQDuE7eSpHRt4tYh0m8bEUnxbH1v2pieQ6Ir+1WZ3Xxkkf5L5tmDfeYQtCSwUz1Hyg==}
 
   '@dual-bundle/import-meta-resolve@4.2.1':
     resolution: {integrity: sha512-id+7YRUgoUX6CgV0DtuhirQWodeeA7Lf4i2x71JS/vtA5pRb/hIGWlw+G6MeXvsM+MXrz0VAydTGElX1rAfgPg==}
@@ -3297,6 +3304,10 @@ packages:
     engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
     hasBin: true
 
+  cross-spawn@7.0.3:
+    resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
+    engines: {node: '>= 8'}
+
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
@@ -3679,6 +3690,9 @@ packages:
   dotenv@17.2.3:
     resolution: {integrity: sha512-JVUnt+DUIzu87TABbhPmNfVdBDt18BLOWjMUFJMSi/Qqg7NTYtabbvSNJGOJ7afbRuv9D/lngizHtP7QyLQ+9w==}
     engines: {node: '>=12'}
+
+  drauu@0.4.3:
+    resolution: {integrity: sha512-3pk6ZdfgElrEW+L4C03Xtrr7VVdSmcWlBb8cUj+WUWree2hEN8IE9fxRBL9HYG5gr8hAEXFNB0X263Um1WlYwA==}
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -7584,6 +7598,8 @@ snapshots:
 
   '@cyansalt/tsconfig@2.2.1': {}
 
+  '@drauu/core@0.4.3': {}
+
   '@dual-bundle/import-meta-resolve@4.2.1': {}
 
   '@electron/asar@4.0.1':
@@ -10156,7 +10172,7 @@ snapshots:
       '@yarnpkg/parsers': 3.0.3
       chalk: 3.0.0
       clipanion: 4.0.0-rc.4(typanion@3.14.0)
-      cross-spawn: 7.0.6
+      cross-spawn: 7.0.3
       fast-glob: 3.3.3
       micromatch: 4.0.8
       tslib: 2.8.1
@@ -10856,6 +10872,12 @@ snapshots:
     dependencies:
       cross-spawn: 7.0.6
 
+  cross-spawn@7.0.3:
+    dependencies:
+      path-key: 3.1.1
+      shebang-command: 2.0.0
+      which: 2.0.2
+
   cross-spawn@7.0.6:
     dependencies:
       path-key: 3.1.1
@@ -11247,6 +11269,10 @@ snapshots:
   dotenv@16.6.1: {}
 
   dotenv@17.2.3: {}
+
+  drauu@0.4.3:
+    dependencies:
+      '@drauu/core': 0.4.3
 
   dunder-proto@1.0.1:
     dependencies:

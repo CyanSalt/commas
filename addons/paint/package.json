@@ -17,9 +17,6 @@
     }
   },
   "devDependencies": {
-    "@excalidraw/excalidraw": "0.18.0-4e0441e",
-    "@types/react-dom": "^19.2.2",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "drauu": "^0.4.3"
   }
 }
