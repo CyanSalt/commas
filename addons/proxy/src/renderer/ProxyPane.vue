@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ipcRenderer } from '@commas/electron-ipc'
 import type { TerminalTab } from '@commas/types/terminal'
+import { useClipboard } from '@vueuse/core'
 import * as commas from 'commas:api/renderer'
-import { clipboard } from 'electron'
 import { useProxyRootCAStatus, useProxyServerInstalled, useProxyServerStatus, useProxyServerVersion, useSystemProxyStatus } from './compositions'
 
 defineProps<{
@@ -47,8 +47,10 @@ function openEditor(event: MouseEvent) {
   commas.ui.openLink(`http://localhost:${port}`, event)
 }
 
+const { copied, copy } = $(useClipboard())
+
 function copyAddress() {
-  clipboard.writeText(`${ip}:${port}`)
+  copy(`${ip}:${port}`)
 }
 
 function toggleProxyServer() {
@@ -87,6 +89,7 @@ function update(event: MouseEvent) {
         <span v-if="status" class="proxy-address">
           <a href="" data-commas @click.prevent="openEditor">{{ address }}</a>
           <button type="button" data-commas @click="copyAddress">
+            <VisualIcon v-if="copied" name="lucide-clipboard-check" />
             <VisualIcon name="lucide-clipboard-copy" />
           </button>
         </span>

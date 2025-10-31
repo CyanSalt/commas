@@ -54,3 +54,21 @@ export function useViewTransition<T>(refOrGetter: Ref<T> | (() => T)) {
   })
   return $$(value) as Ref<T> & { readonly value: T }
 }
+
+export function loadingElement<T extends HTMLElement>(element: T) {
+  return new Promise<T>((resolve, reject) => {
+    function handleLoad() {
+      dispose()
+      resolve(element)
+    }
+    function handleError(event: ErrorEvent) {
+      reject(event.error)
+    }
+    function dispose() {
+      element.removeEventListener('load', handleLoad)
+      element.removeEventListener('error', handleError)
+    }
+    element.addEventListener('load', handleLoad, { once: true })
+    element.addEventListener('error', handleError, { once: true })
+  })
+}

@@ -16,7 +16,7 @@
     background: transparent;
     border-radius: 4px;
     opacity: 0.5;
-    transition: opacity 0.2s, color 0.2s, transform 0.2s;
+    transition: opacity 0.2s, color 0.2s, background 0.2s, transform 0.2s;
     cursor: pointer;
     -electron-corner-smoothing: 60%;
     &:hover:not(:disabled),

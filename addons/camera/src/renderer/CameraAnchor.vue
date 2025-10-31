@@ -1,15 +1,13 @@
 <script lang="ts" setup>
 import '@fontsource/montserrat/500.css'
 import { ipcRenderer } from '@commas/electron-ipc'
-import { refAutoReset } from '@vueuse/core'
+import { useClipboardItems } from '@vueuse/core'
 import * as commas from 'commas:api/renderer'
 import osName from 'os-name'
 import icon from './assets/icon-stroked.svg'
 
 const { VisualIcon } = commas.ui.vueAssets
 const theme = commas.remote.useTheme()
-
-let feedbacking = $(refAutoReset(false, 1000))
 
 function createCanvas(width: number, height: number) {
   const canvas = document.createElement('canvas')
@@ -19,28 +17,10 @@ function createCanvas(width: number, height: number) {
   return { canvas, context }
 }
 
-function loadingElement<T extends HTMLElement>(element: T) {
-  return new Promise<T>((resolve, reject) => {
-    function handleLoad() {
-      dispose()
-      resolve(element)
-    }
-    function handleError(event: ErrorEvent) {
-      reject(event.error)
-    }
-    function dispose() {
-      element.removeEventListener('load', handleLoad)
-      element.removeEventListener('error', handleError)
-    }
-    element.addEventListener('load', handleLoad, { once: true })
-    element.addEventListener('error', handleError, { once: true })
-  })
-}
-
 async function loadImage(url: string) {
   const image = new Image()
   image.src = url
-  return loadingElement(image)
+  return commas.ui.loadingElement(image)
 }
 
 interface Rect {
@@ -109,6 +89,8 @@ async function createTextCanvas(color: string) {
   context.restore()
   return canvas
 }
+
+const { copied, copy } = $(useClipboardItems())
 
 async function capture() {
   const activeElement = document.querySelector('.terminal-view > .active')
@@ -198,12 +180,11 @@ async function capture() {
   )
   context.restore()
   const blob = await new Promise<Blob>(resolve => canvas.toBlob(value => resolve(value!), 'image/png'))
-  await navigator.clipboard.write([
+  await copy([
     new ClipboardItem({
       'image/png': blob,
     }),
   ])
-  feedbacking = true
 }
 </script>
 
@@ -214,7 +195,7 @@ async function capture() {
     class="camera-anchor"
     @click="capture"
   >
-    <VisualIcon v-if="feedbacking" name="lucide-clipboard-check" />
+    <VisualIcon v-if="copied" name="lucide-clipboard-check" />
     <VisualIcon v-else name="lucide-camera" />
   </button>
 </template>

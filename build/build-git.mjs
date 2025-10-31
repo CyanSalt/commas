@@ -39,8 +39,8 @@ Promise.all([
   getModifiedFiles(),
   getVersions(),
 ]).then(([files, versions]) => Promise.all([
-  only(hasModified(files, ['api/modules', 'src/main', 'src/shared']), () => buildCoreMain(versions)),
-  only(hasModified(files, ['api/modules', 'src/renderer', 'src/shared']), () => buildCoreRenderer(versions)),
+  only(hasModified(files, ['src/api', 'src/main', 'src/shared']), () => buildCoreMain(versions)),
+  only(hasModified(files, ['src/api', 'src/renderer', 'src/shared']), () => buildCoreRenderer(versions)),
   getAddons('addons').then(dirs => Promise.all(dirs.flatMap(dir => [
     only(hasModified(files, `${dir}/src/main`), () => buildAddonMain(versions, dir)),
     only(hasModified(files, `${dir}/src/renderer`), () => buildAddonRenderer(versions, dir)),

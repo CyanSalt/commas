@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { ipcRenderer } from '@commas/electron-ipc'
-import { refAutoReset } from '@vueuse/core'
+import { useClipboard } from '@vueuse/core'
 import * as commas from 'commas:api/renderer'
-import { clipboard } from 'electron'
 import { watchEffect } from 'vue'
 
 const { VisualIcon } = commas.ui.vueAssets
@@ -51,15 +50,14 @@ function capture() {
   }
 }
 
-let feedbacking = $(refAutoReset(false, 1000))
+const { copied, copy } = $(useClipboard())
 
 async function share() {
   if (!terminal) return
   const channel = terminal.addons.recorder.getChannel()
   if (!channel) return
   const url = await ipcRenderer.invoke('ttyrec-share', channel)
-  clipboard.writeText(url)
-  feedbacking = true
+  await copy(url)
 }
 </script>
 
@@ -72,7 +70,7 @@ async function share() {
       class="recorder-share-anchor"
       @click="share"
     >
-      <VisualIcon v-if="feedbacking" name="lucide-clipboard-check" />
+      <VisualIcon v-if="copied" name="lucide-clipboard-check" />
       <VisualIcon v-else name="lucide-share-2" />
     </button>
     <button

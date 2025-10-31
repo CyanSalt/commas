@@ -2,6 +2,8 @@ import * as path from 'node:path'
 import * as url from 'node:url'
 import { URL } from 'node:url'
 import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
+import { toKeyEvent } from 'keyboardevent-from-electron-accelerator'
+import { isMatch } from 'lodash'
 import TabItem from '../../renderer/components/TabItem.vue'
 import TerminalBlock from '../../renderer/components/TerminalBlock.vue'
 import TerminalPane from '../../renderer/components/TerminalPane.vue'
@@ -16,7 +18,7 @@ import VisualIcon from '../../renderer/components/basic/VisualIcon.vue'
 import { openFolder, openItem, openLink } from '../../renderer/compositions/terminal'
 import { RendererWebContentsView } from '../../renderer/compositions/web-contents'
 import { createContextMenu, openContextMenu } from '../../renderer/utils/frame'
-import { useViewTransition } from '../../renderer/utils/helper'
+import { loadingElement, useViewTransition } from '../../renderer/utils/helper'
 import { vI18n } from '../../renderer/utils/i18n'
 import type { RendererAPIContext } from '../types'
 
@@ -64,4 +66,7 @@ export {
   openFolder,
   openItem,
   useViewTransition,
+  toKeyEvent,
+  isMatch as isMatchKeyEvent,
+  loadingElement,
 }
