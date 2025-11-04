@@ -227,10 +227,10 @@ body {
   /* Default line height of xterm.js */
   line-height: 1.2;
   overflow: hidden;
-  background-image: linear-gradient(to right bottom, color-mix(in oklab, rgb(var(--system-accent) / var(--theme-opacity)) 4%, rgb(var(--theme-background) / var(--theme-opacity))), color-mix(in oklab, rgb(var(--system-accent) / var(--theme-opacity)) 8%, rgb(var(--theme-background) / var(--theme-opacity))));
+  background-image: linear-gradient(to right bottom in oklch, color-mix(in oklab, rgb(var(--system-accent) / var(--theme-opacity)) 4%, rgb(var(--theme-background) / var(--theme-opacity))), color-mix(in oklab, rgb(var(--system-accent) / var(--theme-opacity)) 8%, rgb(var(--theme-background) / var(--theme-opacity))));
   transition: color 0.2s;
   &.is-vibrant {
-    background-image: linear-gradient(to right bottom, rgb(var(--system-accent) / 4%), rgb(var(--system-accent) / 8%));
+    background-image: linear-gradient(to right bottom in oklch, rgb(var(--system-accent) / 4%), rgb(var(--system-accent) / 8%));
     background-color: rgb(var(--theme-background) / 50%);
   }
 }

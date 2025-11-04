@@ -13,6 +13,7 @@ const { TerminalPane, WebContents, VisualIcon, vI18n } = commas.ui.vueAssets
 let url = $computed({
   get: () => tab.command,
   set: value => {
+    // eslint-disable-next-line vue/no-mutating-props
     Object.assign(tab, {
       command: value,
     })
