@@ -5,12 +5,12 @@ import { onMounted } from 'vue'
 import { ipcRenderer } from '@commas/electron-ipc'
 import { TerminalContext } from '@commas/types/terminal'
 import * as commas from '../../api/core-renderer'
-import { loadAddons, loadCustomJS } from '../compositions/addon'
+import { loadAddons, loadCustomJS } from '../composables/addon'
 import {
   handleFrameMessages,
-} from '../compositions/frame'
-import { handleI18nMessages } from '../compositions/i18n'
-import { injectSettingsStyle, useSettings } from '../compositions/settings'
+} from '../composables/frame'
+import { handleI18nMessages } from '../composables/i18n'
+import { injectSettingsStyle, useSettings } from '../composables/settings'
 import {
   addFile,
   confirmClosing,
@@ -18,14 +18,14 @@ import {
   useIsTabListEnabled,
   useIsTabListToggling,
   useWillQuit,
-} from '../compositions/shell'
+} from '../composables/shell'
 import {
   createTerminalTab,
   handleTerminalMessages,
   useTerminalTabs,
-} from '../compositions/terminal'
-import { injectThemeStyle, useTheme } from '../compositions/theme'
-import { handleWebContentsMessages } from '../compositions/web-contents'
+} from '../composables/terminal'
+import { injectThemeStyle, useTheme } from '../composables/theme'
+import { handleWebContentsMessages } from '../composables/web-contents'
 import ActionBar from './ActionBar.vue'
 import FindBox from './FindBox.vue'
 import TabList from './TabList.vue'

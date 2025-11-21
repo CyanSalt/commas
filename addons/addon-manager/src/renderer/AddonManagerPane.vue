@@ -6,7 +6,7 @@ import { computedWithControl } from '@vueuse/core'
 import * as commas from 'commas:api/renderer'
 import { sortBy } from 'lodash'
 import { onMounted, watchEffect } from 'vue'
-import { useDiscoveredAddons } from './compositions'
+import { useDiscoveredAddons } from './composables'
 
 defineProps<{
   tab: TerminalTab,

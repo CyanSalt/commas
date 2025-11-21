@@ -4,7 +4,7 @@ import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import { toRaw, toRef } from 'vue'
 import type { SyncPlan } from '../types/sync'
-import { useSyncData } from './compositions'
+import { useSyncData } from './composables'
 
 defineProps<{
   tab: TerminalTab,

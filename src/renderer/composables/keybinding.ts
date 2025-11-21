@@ -1,5 +1,5 @@
 import defaultKeyBindings from '../assets/keybindings'
-import { injectIPC } from '../utils/compositions'
+import { injectIPC } from '../utils/composables'
 
 const allKeyBindings = $(injectIPC('keybindings', []))
 

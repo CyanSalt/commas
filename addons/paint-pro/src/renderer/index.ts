@@ -2,7 +2,7 @@ import * as path from 'node:path'
 import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from 'commas:api/renderer'
 import PaintProPane from './PaintProPane.vue'
-import { openPaintProTab } from './compositions'
+import { openPaintProTab } from './composables'
 
 function getNewFileName() {
   return commas.remote.translate('New Whiteboard#!paint-pro.1', {

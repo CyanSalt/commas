@@ -5,7 +5,7 @@ import { MenuItem } from '@commas/types/menu'
 import * as commas from 'commas:api/renderer'
 import { nextTick, useTemplateRef, watch, watchEffect } from 'vue'
 import { FileEntity } from '../types/file'
-import { useIsDotFileVisible } from './compositions'
+import { useIsDotFileVisible } from './composables'
 
 const { VisualIcon } = commas.ui.vueAssets
 

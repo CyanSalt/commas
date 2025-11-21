@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from 'commas:api/renderer'
-import { useAIStatus } from './compositions'
+import { useAIStatus } from './composables'
 
 const { VisualIcon } = commas.ui.vueAssets
 

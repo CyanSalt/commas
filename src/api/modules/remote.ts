@@ -1,14 +1,14 @@
 import { ipcRenderer } from '@commas/electron-ipc'
-import { useFile } from '../../renderer/compositions/frame'
-import { getI18nManifest, useLanguage } from '../../renderer/compositions/i18n'
+import { useFile } from '../../renderer/composables/frame'
+import { getI18nManifest, useLanguage } from '../../renderer/composables/i18n'
 import {
   useAddons,
   useSettings,
   useSettingsSpecs,
-} from '../../renderer/compositions/settings'
-import { addFile, openDirectory, openFile, openFileExternally, openURL, openURLExternally, showDirectory, showFileExternally } from '../../renderer/compositions/shell'
-import { openExternalExplorer } from '../../renderer/compositions/terminal'
-import { useIsLightTheme, useTheme } from '../../renderer/compositions/theme'
+} from '../../renderer/composables/settings'
+import { addFile, openDirectory, openFile, openFileExternally, openURL, openURLExternally, showDirectory, showFileExternally } from '../../renderer/composables/shell'
+import { openExternalExplorer } from '../../renderer/composables/terminal'
+import { useIsLightTheme, useTheme } from '../../renderer/composables/theme'
 import { translate } from '../../renderer/utils/i18n'
 import type { RendererAPIContext } from '../types'
 

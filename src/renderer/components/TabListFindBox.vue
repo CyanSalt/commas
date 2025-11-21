@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useTabListFindingKeyword } from '../compositions/terminal'
+import { useTabListFindingKeyword } from '../composables/terminal'
 import { vI18n } from '../utils/i18n'
 import VisualIcon from './basic/VisualIcon.vue'
 

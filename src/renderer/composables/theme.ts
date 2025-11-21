@@ -1,8 +1,8 @@
 import { watchEffect } from 'vue'
 import { ipcRenderer } from '@commas/electron-ipc'
 import type { Theme } from '@commas/types/theme'
-import { surface } from '../../shared/compositions'
-import { injectIPC } from '../utils/compositions'
+import { surface } from '../../shared/composables'
+import { injectIPC } from '../utils/composables'
 
 const isLightTheme = injectIPC(
   'is-light-theme',

@@ -4,7 +4,7 @@ import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import { useTemplateRef, watchEffect } from 'vue'
 import ExcalidrawBoard from './ExcalidrawBoard.vue'
-import { setPaintTabFile } from './compositions'
+import { setPaintTabFile } from './composables'
 
 const { tab } = defineProps<{
   tab: TerminalTab,

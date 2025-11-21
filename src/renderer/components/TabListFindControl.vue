@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useIsTabListFinding } from '../compositions/terminal'
+import { useIsTabListFinding } from '../composables/terminal'
 import VisualIcon from './basic/VisualIcon.vue'
 
 let isTabListFinding = $(useIsTabListFinding())

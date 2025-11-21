@@ -19,7 +19,7 @@ import {
   useReadonlyTerminal,
   useTerminalTabGroupSeparating,
   useTerminalTabs,
-} from '../../renderer/compositions/terminal'
+} from '../../renderer/composables/terminal'
 import { createTerminalTabContextMenu, getTerminalExecutorCommand, isErrorExitCode, TERMINAL_DIRECTORY_SHELL } from '../../renderer/utils/terminal'
 import type { RendererAPIContext } from '../types'
 

@@ -1,5 +1,5 @@
 import { mix, toCSSHEX, toRGBA } from '../../shared/color'
-import { deepRef, surface, useAsyncComputed, watchBaseEffect } from '../../shared/compositions'
+import { deepRef, surface, useAsyncComputed, watchBaseEffect } from '../../shared/composables'
 import { createIDGenerator, iterate, normalizeArray, reuse } from '../../shared/helper'
 import { omitHome, resolveHome } from '../../shared/terminal'
 import { getWords, matches } from '../../shared/text'

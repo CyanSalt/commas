@@ -7,8 +7,8 @@ import type { DraggableElementEventPayload } from '@commas/types/draggable'
 import type { MenuItem } from '@commas/types/menu'
 import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from '../../api/core-renderer'
-import { useAsyncComputed } from '../../shared/compositions'
-import { useSettings } from '../compositions/settings'
+import { useAsyncComputed } from '../../shared/composables'
+import { useSettings } from '../composables/settings'
 import { activateTerminalTab,
   createTerminalTab,
   filterTerminalTabsByKeyword,
@@ -19,7 +19,7 @@ import { activateTerminalTab,
   useCurrentTerminal,
   useIsTabListFinding,
   useTerminalTabGroupSeparating,
-  useTerminalTabs } from '../compositions/terminal'
+  useTerminalTabs } from '../composables/terminal'
 import type { DraggableElementData, DraggableTabData } from '../utils/draggable'
 import { openContextMenu } from '../utils/frame'
 import { handleMousePressing } from '../utils/helper'

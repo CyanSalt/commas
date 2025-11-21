@@ -23,7 +23,7 @@ declare module './modules/context' {
     'terminal.icon': IconEntry & { patterns: NonNullable<IconEntry['patterns']> },
     'terminal.completion-loader': (
       completion: CommandCompletion,
-      shellIntegration: NonNullable<TerminalTabAddons['shellIntegration']>
+      shellIntegration: NonNullable<TerminalTabAddons['shellIntegration']>,
     ) => boolean,
     'terminal.quick-fix-generator': (
       command: string,

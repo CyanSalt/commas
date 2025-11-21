@@ -4,7 +4,7 @@ import type { TerminalTab } from '@commas/types/terminal'
 import { useTimestamp } from '@vueuse/core'
 import * as commas from 'commas:api/renderer'
 import { onMounted, useTemplateRef, watchEffect } from 'vue'
-import { useTTYRecFrames } from './compositions'
+import { useTTYRecFrames } from './composables'
 
 const { tab } = defineProps<{
   tab: TerminalTab,

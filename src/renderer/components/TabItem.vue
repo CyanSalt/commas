@@ -2,8 +2,8 @@
 import { nextTick, useId, useTemplateRef, watchEffect } from 'vue'
 import type { TerminalTab, TerminalTabCharacter } from '@commas/types/terminal'
 import { isDarkColor, toRGBA } from '../../shared/color'
-import { useSettings } from '../compositions/settings'
-import { closeTerminalTab, getTerminalTabTitle, useCurrentTerminal } from '../compositions/terminal'
+import { useSettings } from '../composables/settings'
+import { closeTerminalTab, getTerminalTabTitle, useCurrentTerminal } from '../composables/terminal'
 import { getIconEntry, isShellProcess } from '../utils/terminal'
 import VisualIcon from './basic/VisualIcon.vue'
 

@@ -1,5 +1,5 @@
 import { app } from 'electron'
-import { provideIPC } from '../utils/compositions'
+import { provideIPC } from '../utils/composables'
 
 declare module '@commas/electron-ipc' {
   export interface Refs {

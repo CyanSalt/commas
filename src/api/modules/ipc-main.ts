@@ -2,7 +2,7 @@ import type { CommandDefinitions, EventDefinitions, IpcMainHandler, IpcMainListe
 import { ipcMain } from '@commas/electron-ipc'
 import type { Ref } from '@vue/reactivity'
 import type { WebContents } from 'electron'
-import { provideIPC } from '../../main/utils/compositions'
+import { provideIPC } from '../../main/utils/composables'
 import { invokeRenderer } from '../../main/utils/ipc'
 import type { MainAPIContext } from '../types'
 

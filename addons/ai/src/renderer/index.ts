@@ -2,7 +2,7 @@ import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from 'commas:api/renderer'
 import type { CommandSuggestion } from '../types/prompt'
 import AIAnchor from './AIAnchor.vue'
-import { useAIStatus } from './compositions'
+import { useAIStatus } from './composables'
 
 declare module '@commas/electron-ipc' {
   export interface RendererCommands {

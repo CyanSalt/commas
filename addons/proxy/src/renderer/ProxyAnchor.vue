@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import * as commas from 'commas:api/renderer'
-import { useProxyServerStatus, useSystemProxyStatus } from './compositions'
+import { useProxyServerStatus, useSystemProxyStatus } from './composables'
 
 const { VisualIcon } = commas.ui.vueAssets
 

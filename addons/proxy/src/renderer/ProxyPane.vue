@@ -3,7 +3,7 @@ import { ipcRenderer } from '@commas/electron-ipc'
 import type { TerminalTab } from '@commas/types/terminal'
 import { useClipboard } from '@vueuse/core'
 import * as commas from 'commas:api/renderer'
-import { useProxyRootCAStatus, useProxyServerInstalled, useProxyServerStatus, useProxyServerVersion, useSystemProxyStatus } from './compositions'
+import { useProxyRootCAStatus, useProxyServerInstalled, useProxyServerStatus, useProxyServerVersion, useSystemProxyStatus } from './composables'
 
 defineProps<{
   tab: TerminalTab,

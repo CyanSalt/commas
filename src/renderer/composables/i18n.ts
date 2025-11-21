@@ -1,6 +1,6 @@
 import { watchEffect } from 'vue'
 import { resolveManifest } from '../../shared/i18n'
-import { injectIPC } from '../utils/compositions'
+import { injectIPC } from '../utils/composables'
 
 const language = $(injectIPC('language', navigator.language))
 

@@ -3,7 +3,7 @@ import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import { watch } from 'vue'
 import FileExplorer from './FileExplorer.vue'
-import { getDirectoryProcess } from './compositions'
+import { getDirectoryProcess } from './composables'
 
 const { tab } = defineProps<{
   tab: TerminalTab,
@@ -15,6 +15,7 @@ let directory = $computed({
   get: () => tab.cwd,
   set: value => {
     const target = getDirectoryProcess(value)
+    // eslint-disable-next-line vue/no-mutating-props
     Object.assign(tab, {
       process: target,
       cwd: target,

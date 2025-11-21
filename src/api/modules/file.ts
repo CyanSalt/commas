@@ -1,5 +1,5 @@
 import { getAddonPaths, resolveAddon } from '../../main/lib/addon'
-import { useFile, useJSONFile, useYAMLFile } from '../../main/utils/compositions'
+import { useFile, useJSONFile, useYAMLFile } from '../../main/utils/composables'
 import { userFile } from '../../main/utils/directory'
 import { readFile, writeFile } from '../../main/utils/file'
 

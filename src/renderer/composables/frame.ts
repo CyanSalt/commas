@@ -1,7 +1,7 @@
 import type { MaybeRefOrGetter } from 'vue'
 import { ipcRenderer } from '@commas/electron-ipc'
 import { reuse } from '../../shared/helper'
-import { injectIPC } from '../utils/compositions'
+import { injectIPC } from '../utils/composables'
 
 declare module '@commas/electron-ipc' {
   export interface RendererEvents {

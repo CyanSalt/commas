@@ -1,7 +1,7 @@
 import type { VNode } from 'vue'
 import type { Dictionary, TranslationVariables } from '@commas/types/i18n'
 import { interpolateText } from '../../shared/text'
-import { injectIPC } from './compositions'
+import { injectIPC } from './composables'
 import { createReactiveDirective } from './directives'
 
 const DELIMITER = '#!'

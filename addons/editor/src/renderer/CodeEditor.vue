@@ -2,7 +2,7 @@
 import { useResizeObserver } from '@vueuse/core'
 import * as commas from 'commas:api/renderer'
 import { useTemplateRef, watchEffect } from 'vue'
-import { useEditorTheme } from './compositions'
+import { useEditorTheme } from './composables'
 import * as monaco from './monaco-editor'
 
 const { file } = defineProps<{

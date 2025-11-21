@@ -3,10 +3,10 @@ import * as path from 'node:path'
 import { effect, shallowReactive, toRaw } from '@vue/reactivity'
 import { app } from 'electron'
 import type { Dictionary, TranslationVariables } from '@commas/types/i18n'
-import { useAsyncComputed, watchBaseEffect } from '../../shared/compositions'
+import { useAsyncComputed, watchBaseEffect } from '../../shared/composables'
 import { resolveManifest } from '../../shared/i18n'
 import { interpolateText } from '../../shared/text'
-import { provideIPC, useYAMLFile } from '../utils/compositions'
+import { provideIPC, useYAMLFile } from '../utils/composables'
 import { resourceFile, userFile } from '../utils/directory'
 
 declare module '@commas/electron-ipc' {

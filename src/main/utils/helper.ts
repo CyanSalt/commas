@@ -6,7 +6,7 @@ const execa = util.promisify(childProcess.exec)
 
 async function execute(
   command: string,
-  options?: childProcess.ExecOptionsWithStringEncoding
+  options?: childProcess.ExecOptionsWithStringEncoding,
 ): Promise<{
   stdout: string,
   stderr: string,
@@ -16,7 +16,7 @@ async function execute(
 }>
 async function execute(
   command: string,
-  options?: childProcess.ExecOptionsWithBufferEncoding
+  options?: childProcess.ExecOptionsWithBufferEncoding,
 ): Promise<{
   stdout: Buffer,
   stderr: Buffer,

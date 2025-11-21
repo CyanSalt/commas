@@ -3,7 +3,7 @@ import type { BrowserWindow, BrowserWindowConstructorOptions } from 'electron'
 import { nativeTheme, systemPreferences } from 'electron'
 import type { Theme, ThemeDefinition } from '@commas/types/theme'
 import { isDarkColor, mix, toCSSColor, toCSSHEX, toElectronHEX, toRGBA } from '../../shared/color'
-import { provideIPC } from '../utils/compositions'
+import { provideIPC } from '../utils/composables'
 import { resourceFile, userFile } from '../utils/directory'
 import { useDefaultSettings, useSettings } from './settings'
 

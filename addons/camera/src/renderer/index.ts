@@ -6,7 +6,7 @@ import type { TTYRecFrame } from '../types/ttyrec'
 import CameraAnchor from './CameraAnchor.vue'
 import RecorderAnchor from './RecorderAnchor.vue'
 import RecorderPane from './RecorderPane.vue'
-import { openRecorderTab, openRemoteRecorderTab } from './compositions'
+import { openRecorderTab, openRemoteRecorderTab } from './composables'
 import { RecorderAddon } from './xterm'
 
 declare module '@commas/electron-ipc' {

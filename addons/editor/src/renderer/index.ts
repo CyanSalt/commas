@@ -2,7 +2,7 @@ import * as path from 'node:path'
 import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from 'commas:api/renderer'
 import CodeEditorPane from './CodeEditorPane.vue'
-import { openCodeEditorTab } from './compositions'
+import { openCodeEditorTab } from './composables'
 
 declare module '@commas/electron-ipc' {
   export interface RendererEvents {

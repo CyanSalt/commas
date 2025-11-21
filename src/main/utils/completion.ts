@@ -362,7 +362,7 @@ async function getCompletions(
           )
         }
         // Files
-        if (!isCommandLineArgument(query) && (operator && operator.op === '>' || /[\\/]/.test(query))) {
+        if (!isCommandLineArgument(query) && (operator?.op === '>' || /[\\/]/.test(query))) {
           asyncCompletionLists.push(
             getFigCompletions(createCommandWithFilepathsArg(command), query, args, figContext),
           )

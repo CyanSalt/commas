@@ -1,6 +1,6 @@
 import '@excalidraw/excalidraw/index.css'
+import type { OrderedExcalidrawElement } from '@excalidraw/excalidraw/dist/types/element/src/types'
 import type { RestoredDataState } from '@excalidraw/excalidraw/dist/types/excalidraw/data/restore'
-import type { OrderedExcalidrawElement } from '@excalidraw/excalidraw/dist/types/excalidraw/element/types'
 import type { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/dist/types/excalidraw/types'
 
 export * from '@excalidraw/excalidraw'

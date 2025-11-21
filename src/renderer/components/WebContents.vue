@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useResizeObserver } from '@vueuse/core'
 import { onUnmounted, useTemplateRef, watch, watchEffect } from 'vue'
-import { RendererWebContentsView } from '../compositions/web-contents'
+import { RendererWebContentsView } from '../composables/web-contents'
 
 let url = $(defineModel<string>())
 

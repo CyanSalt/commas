@@ -1,7 +1,7 @@
 import * as os from 'node:os'
 import * as commas from 'commas:api/renderer'
 import FileExplorerPane from './FileExplorerPane.vue'
-import { getDirectoryProcess, openFileExplorerTab, splitFileExplorerTab, splitOrCloseFileExplorerTab, useIsDotFileVisible } from './compositions'
+import { getDirectoryProcess, openFileExplorerTab, splitFileExplorerTab, splitOrCloseFileExplorerTab, useIsDotFileVisible } from './composables'
 
 declare module '@commas/electron-ipc' {
   export interface RendererEvents {

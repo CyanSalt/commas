@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ipcRenderer } from '@commas/electron-ipc'
 import * as commas from '../../api/core-renderer'
-import { useSettings } from '../compositions/settings'
+import { useSettings } from '../composables/settings'
 import TabList from './TabList.vue'
 import TerminalTitle from './TerminalTitle.vue'
 import VisualIcon from './basic/VisualIcon.vue'

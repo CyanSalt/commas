@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { useSettings } from '../compositions/settings'
-import { toggleTabList, useIsTabListEnabled } from '../compositions/shell'
-import { showTabOptions } from '../compositions/terminal'
+import { useSettings } from '../composables/settings'
+import { toggleTabList, useIsTabListEnabled } from '../composables/shell'
+import { showTabOptions } from '../composables/terminal'
 import VisualIcon from './basic/VisualIcon.vue'
 
 const settings = useSettings()

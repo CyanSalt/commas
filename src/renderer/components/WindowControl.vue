@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useMaximized, useMinimized } from '../compositions/frame'
-import { useSettings } from '../compositions/settings'
+import { useMaximized, useMinimized } from '../composables/frame'
+import { useSettings } from '../composables/settings'
 import VisualIcon from './basic/VisualIcon.vue'
 
 let isMaximized = $(useMaximized())

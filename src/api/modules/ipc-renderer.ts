@@ -1,6 +1,6 @@
 import type { IpcRendererHandler, IpcRendererListener, RendererCommands, RendererEventDefinitions } from '@commas/electron-ipc'
 import { ipcRenderer } from '@commas/electron-ipc'
-import { injectIPC } from '../../renderer/utils/compositions'
+import { injectIPC } from '../../renderer/utils/composables'
 import { handleRenderer, useListener } from '../../renderer/utils/ipc'
 import type { RendererAPIContext } from '../types'
 

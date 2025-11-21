@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { useFullscreen, useMaximized } from '../compositions/frame'
-import { useSettings } from '../compositions/settings'
-import { useIsTabListEnabled } from '../compositions/shell'
-import { useIsTabListFindingAvailable } from '../compositions/terminal'
+import { useFullscreen, useMaximized } from '../composables/frame'
+import { useSettings } from '../composables/settings'
+import { useIsTabListEnabled } from '../composables/shell'
+import { useIsTabListFindingAvailable } from '../composables/terminal'
 import TabList from './TabList.vue'
 import TabListControl from './TabListControl.vue'
 import TabListFindControl from './TabListFindControl.vue'

@@ -3,7 +3,7 @@ import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge
 import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
 import type { DraggableElementEventPayload } from '@commas/types/draggable'
 import type { TerminalTab } from '@commas/types/terminal'
-import { appendTerminalTab, getTerminalTabIndex, splitTerminalTab } from '../compositions/terminal'
+import { appendTerminalTab, getTerminalTabIndex, splitTerminalTab } from '../composables/terminal'
 import type { DraggableElementData } from '../utils/draggable'
 import DropTarget from './basic/DropTarget.vue'
 

@@ -4,7 +4,7 @@ import type { TerminalTab } from '@commas/types/terminal'
 import * as commas from 'commas:api/renderer'
 import { useTemplateRef, watchEffect } from 'vue'
 import CodeEditor from './CodeEditor.vue'
-import { setCodeEditorTabFile } from './compositions'
+import { setCodeEditorTabFile } from './composables'
 
 const { tab } = defineProps<{
   tab: TerminalTab,

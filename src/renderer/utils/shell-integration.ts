@@ -9,9 +9,9 @@ import type { MenuItem } from '@commas/types/menu'
 import type { CommandCompletion, TerminalTab } from '@commas/types/terminal'
 import * as commas from '../../api/core-renderer'
 import { toCSSHEX, toRGBA } from '../../shared/color'
-import { useSettings } from '../compositions/settings'
-import { getCursorPosition, scrollToMarker } from '../compositions/terminal'
-import { useTheme } from '../compositions/theme'
+import { useSettings } from '../composables/settings'
+import { getCursorPosition, scrollToMarker } from '../composables/terminal'
+import { useTheme } from '../composables/theme'
 import { openContextMenu } from './frame'
 import { translate } from './i18n'
 import { getReadableSignal, isErrorExitCode } from './terminal'
@@ -423,7 +423,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     const marker = xterm.registerMarker()
     marker.onDispose(() => {
       // Skip for replacement on prompt starting
-      if (this.currentCommand && this.currentCommand.marker === marker) return
+      if (this.currentCommand?.marker === marker) return
       const index = this.commands.findIndex(item => item.marker === marker)
       if (index !== -1) {
         this.commands.splice(index, 1)

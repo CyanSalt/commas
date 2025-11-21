@@ -1,7 +1,7 @@
 import * as commas from 'commas:api/main'
 import { BrowserWindow, dialog } from 'electron'
 import type { SyncPlan } from '../types/sync'
-import { encryptToken, getSyncDataRef, useSyncData } from './compositions'
+import { encryptToken, getSyncDataRef, useSyncData } from './composables'
 import { downloadFiles, uploadFiles } from './gist'
 import { createSyncPlan, useDefaultSyncPlan } from './plan'
 

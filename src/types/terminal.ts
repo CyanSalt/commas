@@ -31,7 +31,7 @@ export interface TerminalTabPane {
   },
   volatile?: boolean,
   factory?: (
-    info?: Partial<TerminalTab>
+    info?: Partial<TerminalTab>,
   ) => Partial<TerminalTab> | undefined | Promise<Partial<TerminalTab> | undefined>,
 }
 
