@@ -264,6 +264,9 @@ importers:
       cfonts:
         specifier: ^3.3.1
         version: 3.3.1
+      didyoumean:
+        specifier: ^1.2.2
+        version: 1.2.2
       picocolors:
         specifier: ^1.1.1
         version: 1.1.1
@@ -271,6 +274,9 @@ importers:
         specifier: ^0.2.0
         version: 0.2.0
     devDependencies:
+      '@types/didyoumean':
+        specifier: ^1.2.3
+        version: 1.2.3
       '@types/text-table':
         specifier: ^0.2.5
         version: 0.2.5
@@ -2257,6 +2263,9 @@ packages:
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
 
+  '@types/didyoumean@1.2.3':
+    resolution: {integrity: sha512-jmogYbzJs7gehniakiGVlKCxrEqVfYL5oKdV2/026DGMGlhbYJWuO88oM4RcncgoZp0p/rCO7ipiYaxYxWedow==}
+
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
@@ -3615,6 +3624,9 @@ packages:
 
   detect-node@2.1.0:
     resolution: {integrity: sha512-T0NIuQpnTvFDATNuHN5roPwSBG83rFsuO+MXXH9/3N1eFbn4wcPjttvjMLEPWJ0RGUYgQE7cGgS3tNxbqCGM7g==}
+
+  didyoumean@1.2.2:
+    resolution: {integrity: sha512-gxtyfqMg7GKyhQmb056K7M3xszy/myH8w+B4RT+QXBQsvAOdc3XymqDDPHx1BgPgsdAA5SIifona89YtRATDzw==}
 
   diff@5.2.0:
     resolution: {integrity: sha512-uIFDxqpRZGZ6ThOk84hEfqWoHx2devRFvpTZcTHur85vImfaxUbTW9Ryh4CpCuDnToOP1CEtXKIgytHBPVff5A==}
@@ -9726,6 +9738,8 @@ snapshots:
     dependencies:
       '@types/ms': 2.1.0
 
+  '@types/didyoumean@1.2.3': {}
+
   '@types/estree@1.0.8': {}
 
   '@types/fuzzaldrin-plus@0.6.5': {}
@@ -11155,6 +11169,8 @@ snapshots:
 
   detect-node@2.1.0:
     optional: true
+
+  didyoumean@1.2.2: {}
 
   diff@5.2.0: {}
 

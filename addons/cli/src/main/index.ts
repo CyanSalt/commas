@@ -5,6 +5,7 @@ import * as path from 'node:path'
 import ipc from '@achrinza/node-ipc'
 import * as cfonts from 'cfonts'
 import * as commas from 'commas:api/main'
+import didYouMean from 'didyoumean'
 import { app, BrowserWindow, webContents } from 'electron'
 import { random, sortBy } from 'lodash'
 import picocolors from 'picocolors'
@@ -129,6 +130,7 @@ export default () => {
       }, []).join(os.EOL)
 
       const helpingCommand = argv[0]
+      const likelyCommand = didYouMean(helpingCommand, commandList.map(entry => entry[0]))
       const manual = helpingCommand ? getCommandModule(helpingCommand, commands) : undefined
       if (manual) {
         const usage = getUsage(manual)
@@ -151,9 +153,11 @@ ${picocolors.bold(commas.i18n.translate('Commands:#!cli.2'))}
 ${indent(table(sortBy(commandList, entry => entry[0])), '    ')}
 ${
   helpingCommand
-    ? '\n' + commas.i18n.translate('Unknown command: ${command}#!cli.4', {
+    ? '\n' + commas.i18n.translate('Unknown command: ${command}.#!cli.4', {
       command: helpingCommand,
-    }) + '\n'
+    }) + (likelyCommand ? ' ' + commas.i18n.translate('Did you mean ${command}?#!cli.5', {
+      command: likelyCommand,
+    }) : '') + '\n'
     : ''
 }`
 

@@ -8,10 +8,12 @@
   "author": "commas",
   "license": "ISC",
   "devDependencies": {
+    "@types/didyoumean": "^1.2.3",
     "@types/text-table": "^0.2.5"
   },
   "dependencies": {
     "cfonts": "^3.3.1",
+    "didyoumean": "^1.2.2",
     "picocolors": "^1.1.1",
     "text-table": "^0.2.0"
   },
