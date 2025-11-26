@@ -1,15 +1,7 @@
 {
-  "extends": "@cyansalt/tsconfig/tsconfig.app",
-  "compilerOptions": {
-    "checkJs": true,
-    "sourceMap": true
-  },
-  "include": [
-    "**/src",
-    "env.d.ts"
-  ],
-  "exclude": [
-    "**/dist",
-    "**/node_modules"
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
   ]
 }

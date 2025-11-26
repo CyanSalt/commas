@@ -1,0 +1,14 @@
+{
+  "extends": "@cyansalt/tsconfig",
+  "compilerOptions": {
+    "composite": true
+  },
+  "include": [
+    "src",
+    "addons/*/src",
+    "addons/*/index.js",
+    "bin/.ipc.js",
+    "resources/examples",
+    "env.d.ts"
+  ]
+}

@@ -9,7 +9,10 @@ export default config({
     {
       languageOptions: {
         parserOptions: {
-          project: './tsconfig.tools.json',
+          project: [
+            './tsconfig.app.json',
+            './tsconfig.node.json',
+          ],
           extraFileExtensions: ['.vue'],
         },
       },

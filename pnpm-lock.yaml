@@ -92,8 +92,8 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0(stylelint@16.25.0(typescript@5.9.3))
       '@cyansalt/tsconfig':
-        specifier: ^2.2.1
-        version: 2.2.1
+        specifier: ^3.0.0
+        version: 3.0.0
       '@electron/packager':
         specifier: ^19.0.1
         version: 19.0.1
@@ -539,8 +539,8 @@ packages:
     peerDependencies:
       stylelint: '>=16.15.0'
 
-  '@cyansalt/tsconfig@2.2.1':
-    resolution: {integrity: sha512-Ld392akmPNSk4UpMhST41BLmXEgz1keEsYWhVwhEBXcZ9uIwrrgf8d8j2VJDDuV3vaZrz/4PxpbuywJeeuYJGw==}
+  '@cyansalt/tsconfig@3.0.0':
+    resolution: {integrity: sha512-RNCVL2Y0ChN+tg7A6hSWk2p4kWda0dsMI25xxDrOMLKWpgIYCsb73Qg9jZfGg7i0FSgMAaPWBpHVdsdxhojiAg==}
 
   '@drauu/core@0.4.3':
     resolution: {integrity: sha512-MmFKN0DEIS+78wtfag7DiQDuE7eSpHRt4tYh0m8bEUnxbH1v2pieQ6Ir+1WZ3Xxkkf5L5tmDfeYQtCSwUz1Hyg==}
@@ -7570,7 +7570,7 @@ snapshots:
       stylelint-plugin-aurora: 2.0.0(stylelint@16.25.0(typescript@5.9.3))
       stylelint-scss: 6.12.1(stylelint@16.25.0(typescript@5.9.3))
 
-  '@cyansalt/tsconfig@2.2.1': {}
+  '@cyansalt/tsconfig@3.0.0': {}
 
   '@drauu/core@0.4.3': {}
 

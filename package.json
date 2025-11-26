@@ -43,7 +43,7 @@
     "@commas/types": "workspace:*",
     "@cyansalt/eslint-config": "^4.4.2",
     "@cyansalt/stylelint-config": "^4.2.0",
-    "@cyansalt/tsconfig": "^2.2.1",
+    "@cyansalt/tsconfig": "^3.0.0",
     "@electron/packager": "^19.0.1",
     "@electron/rebuild": "^4.0.1",
     "@pnpm/workspace.find-packages": "^1000.0.43",

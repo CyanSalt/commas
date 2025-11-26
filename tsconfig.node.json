@@ -1,0 +1,10 @@
+{
+  "extends": "@cyansalt/tsconfig",
+  "compilerOptions": {
+    "composite": true,
+  },
+  "include": [
+    "build",
+    "*.config.mjs"
+  ]
+}
