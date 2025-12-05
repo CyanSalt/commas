@@ -28,7 +28,7 @@ interface IntegratedShellCommand {
   command?: string,
   exitCode?: number,
   marker: IMarker,
-  decoration: IDecoration,
+  decoration?: IDecoration,
   promptStartY: number,
   commandStartX: number,
   commandStartY: number,
@@ -215,28 +215,15 @@ export class ShellIntegrationAddon implements ITerminalAddon {
           case 'A': {
             // PromptStart
             const marker = this._createCompletionMarker(xterm)
-            const lastCommand = this.commands.length
-              ? this.commands[this.commands.length - 1]
-              : undefined
-            const hasActions = Boolean(lastCommand?.actions?.length)
-            const theme = useTheme()
             let currentCommand = this.currentCommand
-            const decoration = this._createCommandDecoration(
-              xterm,
-              marker,
-              hasActions ? theme.yellow : theme.foreground,
-              hasActions ? 'strong' : undefined,
-            )
             if (this.currentCommand) {
               this.currentCommand.marker.dispose()
               this.currentCommand.marker = marker
-              this.currentCommand.decoration = decoration
             } else {
               this.tab.command = ''
               const position = getCursorPosition(this.tab.xterm)
               currentCommand = {
                 marker,
-                decoration,
                 promptStartY: position.y,
                 commandStartX: position.x,
                 commandStartY: position.y,
@@ -251,12 +238,25 @@ export class ShellIntegrationAddon implements ITerminalAddon {
           }
           case 'B': {
             // PromptEnd
-            ipcRenderer.send('terminal-prompt-end')
+            const marker = xterm.registerMarker()
+            const lastCommand = this.commands.length
+              ? this.commands[this.commands.length - 1]
+              : undefined
+            const hasActions = Boolean(lastCommand?.actions?.length)
+            const theme = useTheme()
+            const decoration = this._createCommandDecoration(
+              xterm,
+              marker,
+              hasActions ? theme.yellow : theme.foreground,
+              hasActions ? 'strong' : undefined,
+            )
             if (this.currentCommand) {
               const position = getCursorPosition(this.tab.xterm)
               this.currentCommand.commandStartX = position.x
               this.currentCommand.commandStartY = position.y
+              this.currentCommand.decoration = decoration
             }
+            ipcRenderer.send('terminal-prompt-end')
             return true
           }
           case 'C':
@@ -280,14 +280,15 @@ export class ShellIntegrationAddon implements ITerminalAddon {
               const exitCode = args[0] ? Number(args[0]) : undefined
               if (typeof exitCode === 'number') {
                 this.currentCommand.exitCode = exitCode
-                if (!this.currentCommand.marker.isDisposed) {
+                if (!this.currentCommand.marker.isDisposed && this.currentCommand.decoration) {
                   const theme = useTheme()
+                  const marker = this.currentCommand.decoration.marker
                   this.currentCommand.decoration.dispose()
                   const shouldHighlight = isErrorExitCode(exitCode) && settings['terminal.shell.highlightErrors']
                   if (shouldHighlight) {
                     this._createHighlightDecoration(
                       xterm,
-                      this.currentCommand.marker.line,
+                      marker.line,
                       getCursorPosition(xterm).y - 1,
                       theme.red,
                     )
@@ -295,7 +296,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
                   const currentCommand = this.currentCommand
                   this.currentCommand.decoration = this._createCommandDecoration(
                     xterm,
-                    currentCommand.marker,
+                    marker,
                     exitCode > 0 ? theme.red : theme.green,
                     shouldHighlight ? 'stroked' : 'strong',
                     currentCommand,
@@ -410,12 +411,12 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     if (this.stickyMarker && target.marker === this.stickyMarker.deref()) return
     const range = {
       start: target.marker.line,
-      end: Math.min(target.marker.line + 3, target.outputStartY) - 1,
+      end: Math.max(target.marker.line + 1, target.outputStartY - 1),
     }
     stickyXterm.reset()
     stickyXterm.write(this.tab.addons.serialize.serialize({ range }))
     stickyXterm.scrollToTop()
-    this.renderableStickyCommand.rows = range.end - range.start + 1
+    this.renderableStickyCommand.rows = range.end - range.start
     this.stickyMarker = new WeakRef(target.marker)
   }
 
