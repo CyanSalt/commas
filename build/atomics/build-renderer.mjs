@@ -2,10 +2,8 @@ import { builtinModules } from 'node:module'
 import vue from '@vitejs/plugin-vue'
 import reactivityTransform from '@vue-macros/reactivity-transform/vite'
 import * as vite from 'vite'
-import { requireCommonJS } from '../utils/common.mjs'
+import pkg from '../../package.json' with { type: 'json' }
 import radicalizeFontFace from '../utils/postcss-radicalize-font-face.mjs'
-
-const pkg = requireCommonJS(import.meta, '../../package.json')
 
 /**
  * @typedef {import('vite').InlineConfig} InlineConfig

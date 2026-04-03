@@ -6,13 +6,11 @@ import util from 'node:util'
 import { packager } from '@electron/packager'
 import { rebuild } from '@electron/rebuild'
 import { findWorkspacePackages } from '@pnpm/workspace.find-packages'
-import * as dotenv from 'dotenv'
 import picocolors from 'picocolors'
 import png2icons from 'png2icons'
-import { requireCommonJS, resolveCommonJS } from './utils/common.mjs'
+import pkg from '../package.json' with { type: 'json' }
 
-const pkg = requireCommonJS(import.meta, '../package.json')
-const pkgPath = resolveCommonJS(import.meta, '../package.json')
+const pkgPath = fileURLToPath(import.meta.resolve('../package.json'))
 const backupPkgPath = path.relative(path.dirname(pkgPath), '.package.json')
 
 const execa = util.promisify(childProcess.exec)
@@ -90,10 +88,15 @@ async function resolveWorkspacePackages() {
   return () => fs.promises.rename(backupPkgPath, pkgPath)
 }
 
-const { parsed: env } = dotenv.config({
-  path: fileURLToPath(import.meta.resolve('../.env')),
-  processEnv: {},
-})
+async function loadEnv() {
+  const file = fileURLToPath(import.meta.resolve('../.env'))
+  try {
+    const content = await fs.promises.readFile(file, 'utf8')
+    return util.parseEnv(content)
+  } catch {
+    return {}
+  }
+}
 
 /**
  * @type {import('@electron/packager').Options}
@@ -105,8 +108,7 @@ const options = {
   out: 'release/',
   overwrite: true,
   asar: process.env.DEBUG ? false : {
-    // FIXME: node-pty does not support app.asar.unpacked currently
-    unpack: '**/{*.node,node_modules/node-pty/**/*}',
+    unpack: '**/*.node',
   },
   icon: 'resources/images/icon.png',
   ignore: [
@@ -145,19 +147,16 @@ const options = {
     OriginalFilename: `${pkg.name}.exe`,
   },
   afterCopy: [
-    (buildPath, electronVersion, platform, arch, callback) => {
-      util.callbackify(rebuild)({ buildPath, electronVersion, arch }, callback)
+    async ({ buildPath, electronVersion, platform, arch }) => {
+      await rebuild({ buildPath, electronVersion, platform, arch })
     },
-    (buildPath, electronVersion, platform, arch, callback) => {
-      fs.rm(path.join(buildPath, 'node_modules/@commas'), { recursive: true }, callback)
+    async ({ buildPath, electronVersion, platform, arch }) => {
+      await fs.promises.rm(path.join(buildPath, 'node_modules/@commas'), { recursive: true })
     },
   ],
   afterPrune: [
-    (buildPath, electronVersion, platform, arch, callback) => {
-      util.callbackify(() => Promise.all([
-        fs.promises.rm(path.join(buildPath, 'node_modules/node-pty/build/node_gyp_bins'), { force: true, recursive: true }),
-        fs.promises.copyFile(backupPkgPath, path.join(buildPath, 'package.json')),
-      ]))(callback)
+    async ({ buildPath, electronVersion, platform, arch }) => {
+      await fs.promises.copyFile(backupPkgPath, path.join(buildPath, 'package.json'))
     },
   ],
 }
@@ -210,18 +209,20 @@ async function pack() {
   if (local) {
     delete options.platform
     delete options.arch
-  } else if (
-    env
-    && env.APPLE_ID
-    && env.APPLE_ID_PASSWORD
-    && env.APPLE_TEAM_ID
-  ) {
-    logger.info('Will sign and notarize for macOS')
-    options.osxSign = {}
-    options.osxNotarize = {
-      appleId: env.APPLE_ID,
-      appleIdPassword: env.APPLE_ID_PASSWORD,
-      teamId: env.APPLE_TEAM_ID,
+  } else {
+    const env = await loadEnv()
+    if (
+      env.APPLE_ID
+      && env.APPLE_ID_PASSWORD
+      && env.APPLE_TEAM_ID
+    ) {
+      logger.info('Will sign and notarize for macOS')
+      options.osxSign = {}
+      options.osxNotarize = {
+        appleId: env.APPLE_ID,
+        appleIdPassword: env.APPLE_ID_PASSWORD,
+        teamId: env.APPLE_TEAM_ID,
+      }
     }
   }
   // Run @electron/packager

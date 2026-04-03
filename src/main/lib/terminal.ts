@@ -2,8 +2,8 @@ import * as fs from 'node:fs'
 import * as os from 'node:os'
 import type { WebContents } from 'electron'
 import { app } from 'electron'
-import type { IPty, IPtyForkOptions } from 'node-pty'
-import * as pty from 'node-pty'
+import type { IPty, IPtyOptions } from 'zigpty'
+import * as pty from 'zigpty'
 import { ipcMain } from '@commas/electron-ipc'
 import type { CommandCompletion, TerminalContext, TerminalInfo } from '@commas/types/terminal'
 import type { CompletionShellContext } from '../utils/completion'
@@ -67,7 +67,7 @@ async function createTerminal(
     runtimeArgs = result.args
     runtimeEnv = result.env
   }
-  const options: IPtyForkOptions = {
+  const options: IPtyOptions = {
     name: 'xterm-256color',
     cwd,
     env: runtimeEnv,
@@ -81,7 +81,7 @@ async function createTerminal(
       send(webContents, 'print-terminal', {
         pid: ptyProcess.pid,
         process: ptyProcess.process,
-        data,
+        data: data.toString(),
       })
     }
   })

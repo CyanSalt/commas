@@ -372,7 +372,7 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
     }
   })
   const pid = info.pid
-  // Setup communication between xterm.js and node-pty
+  // Setup communication between xterm.js and zigpty
   xterm.onData(data => {
     if (tab.alerting) {
       tab.alerting = false
