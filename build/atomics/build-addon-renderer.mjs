@@ -31,9 +31,9 @@ export default async (versions, dir, external) => {
       options.resolve = { alias }
       /** @type {(string | RegExp)[]} */
       const moduleIds = Object.keys(alias)
-      const rollupOptions = options.build.rollupOptions
-      if (rollupOptions?.external && Array.isArray(rollupOptions.external)) {
-        rollupOptions.external = rollupOptions.external.filter(item => !moduleIds.includes(item))
+      const rolldownOptions = options.build.rolldownOptions
+      if (rolldownOptions?.external && Array.isArray(rolldownOptions.external)) {
+        rolldownOptions.external = rolldownOptions.external.filter(item => !moduleIds.includes(item))
       }
     }
     return options

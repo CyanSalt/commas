@@ -146,9 +146,9 @@ function dropFile(event: DragEvent) {
 @use '../assets/layers';
 
 @property --scrollbar-opacity {
-  syntax: '<number>';
+  syntax: '<percentage>';
   inherits: true;
-  initial-value: 0;
+  initial-value: 0%;
 }
 
 ::view-transition-group(*) {

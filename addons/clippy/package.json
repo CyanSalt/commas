@@ -8,7 +8,7 @@
   "author": "commas",
   "license": "ISC",
   "devDependencies": {
-    "clippyjs": "^0.0.3"
+    "clippyjs": "^0.1.0"
   },
   "commas:icon": {
     "name": "lucide-sticker"

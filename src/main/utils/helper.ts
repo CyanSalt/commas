@@ -44,13 +44,13 @@ async function execute(command: string, options?: childProcess.ExecOptions): Pro
   try {
     const result = await promise
     return Object.assign(result, {
-      code: code as number | null,
-      signal: signal as NodeJS.Signals | null,
+      code,
+      signal,
     })
   } catch (err) {
     throw Object.assign(err, {
-      code: code as number | null,
-      signal: signal as NodeJS.Signals | null,
+      code,
+      signal,
     })
   }
 }
@@ -78,16 +78,18 @@ function memoizeAsync<
   T extends (...args: unknown[]) => unknown,
   R extends ((...args: Parameters<T>) => unknown) | undefined,
 >(func: T, resolver?: R) {
-  const cache = new Map<R extends Function ? ReturnType<R> : Parameters<T>[0], ReturnType<T>>()
+  type K = R extends Function ? ReturnType<R> : Parameters<T>[0]
+  type V = ReturnType<T>
+  const cache = new Map<K, V>()
   const memoized = function (
     this: T extends (this: infer U, ...args: unknown[]) => unknown ? U : unknown,
     ...args: Parameters<T>
   ) {
-    const key = resolver ? resolver.apply(this, args) : args[0]
+    const key = (resolver ? resolver.apply(this, args) : args[0]) as K
     if (cache.has(key)) {
       return cache.get(key)!
     }
-    const result: ReturnType<T> = func.apply(this, args)
+    const result = func.apply(this, args) as V
     cache.set(key, result)
     // `Promise.resolve` will return the value itself if the value is already a promise
     Promise.resolve(result).catch(() => {

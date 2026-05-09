@@ -3,11 +3,11 @@
 
 @mixin scroll-container($size, $transition: ()) {
   --scrollbar-size: #{$size};
-  --scrollbar-opacity: 0;
+  --scrollbar-opacity: 0%;
   overflow: scroll;
   transition: #{list.join(($transition,), (--scrollbar-opacity 0.2s,))};
   &:hover {
-    --scrollbar-opacity: 0.1;
+    --scrollbar-opacity: 10%;
   }
   &::-webkit-scrollbar {
     width: $size;
@@ -26,7 +26,7 @@
     -electron-corner-smoothing: 60%;
     &:horizontal:active,
     &:vertical:active {
-      --scrollbar-opacity: 0.2;
+      --scrollbar-opacity: 20%;
     }
   }
 }

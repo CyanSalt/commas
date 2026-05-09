@@ -16,7 +16,7 @@ export async function splitFileExplorerTab(directory: string) {
   const current = terminal
   const pane = commas.workspace.getPane('explorer')!
   const dir = getDirectoryProcess(directory)
-  if (current && current.group) {
+  if (current?.group) {
     const existingTab = commas.workspace.getTerminalTabByPane(pane, {
       cwd: dir,
       group: current.group,

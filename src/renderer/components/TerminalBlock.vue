@@ -85,7 +85,6 @@ async function handleDrop(args: DraggableElementEventPayload<DraggableElementDat
   }
   :deep(.xterm-viewport) {
     background-color: transparent !important;
-    @include partials.scroll-container(8px);
     &:focus-visible {
       outline: none;
     }
@@ -99,6 +98,23 @@ async function handleDrop(args: DraggableElementEventPayload<DraggableElementDat
     mix-blend-mode: darken;
     @media (prefers-color-scheme: dark) {
       mix-blend-mode: lighten;
+    }
+  }
+  :deep(.xterm-scrollable-element) {
+    & > .scrollbar {
+      width: 8px !important;
+      &.fade {
+        transition: opacity 0.2s;
+      }
+      & > .slider {
+        width: 100% !important;
+        background-color: rgb(var(--theme-foreground) / 10%);
+        border-radius: 8px;
+        transition: background-color 0.2s;
+        &:hover {
+          background-color: rgb(var(--theme-foreground) / 20%);
+        }
+      }
     }
   }
 }

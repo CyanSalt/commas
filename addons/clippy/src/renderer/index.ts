@@ -1,46 +1,27 @@
-import clippy from 'clippyjs'
+import { initAgent } from 'clippyjs'
+import * as agents from 'clippyjs/agents'
 import * as commas from 'commas:api/renderer'
 
-interface ClippyAgent {
-  _el: HTMLElement,
-  show(fast?: boolean): boolean,
-  hide(fast?: boolean, callback?: () => void): void,
-  play(animation: string, timeout?: number, cb?: () => void): void,
-  hasAnimation(animation: string): boolean,
-}
+type Agent = Awaited<ReturnType<typeof initAgent>>
 
 export default () => {
 
   const settings = commas.remote.useSettings()
 
-  const assetsPath = $computed(() => {
-    const userAssetsPath = settings['clippy.assets.path']
-    return userAssetsPath.endsWith('/') ? userAssetsPath : userAssetsPath + '/'
-  })
-
-  commas.app.effect(() => {
-    commas.ui.addCSSFile(assetsPath + 'clippy.css')
-  })
-
-  let currentAgent: ClippyAgent | undefined
+  let currentAgent: Agent | undefined
 
   commas.app.effect(onInvalidate => {
     const name = settings['clippy.agent.name']
-    clippy.load(name, (agent: ClippyAgent) => {
-      currentAgent = agent
-      if (agent.hasAnimation('Greeting')) {
+    if (agents[name]) {
+      initAgent(agents[name]).then(agent => {
+        currentAgent = agent
         agent.show(false)
         agent.play('Greeting')
-      } else {
-        agent.show()
-      }
-    }, undefined, assetsPath + 'agents/')
+      })
+    }
     onInvalidate(() => {
       if (currentAgent) {
-        const el = currentAgent._el
-        currentAgent.hide(false, () => {
-          el.remove()
-        })
+        currentAgent.dispose()
         currentAgent = undefined
       }
     })

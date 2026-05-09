@@ -14,15 +14,15 @@ async function getModifiedFiles() {
 
 /**
  * @param {string[]} files
- * @param {string | string[]} directory
+ * @param {string | string[]} entry
  * @returns {boolean}
  */
-function hasModified(files, directory) {
-  if (Array.isArray(directory)) {
-    return directory.some(item => hasModified(files, item))
+function hasModified(files, entry) {
+  if (Array.isArray(entry)) {
+    return entry.some(item => hasModified(files, item))
   }
-  const dir = directory.endsWith(path.posix.sep) ? directory : directory + path.posix.sep
-  return files.some(file => file.startsWith(dir))
+  const dir = entry.endsWith(path.posix.sep) ? entry : entry + path.posix.sep
+  return files.some(file => file === entry || file.startsWith(dir))
 }
 
 /**
@@ -39,10 +39,10 @@ Promise.all([
   getModifiedFiles(),
   getVersions(),
 ]).then(([files, versions]) => Promise.all([
-  only(hasModified(files, ['src/api', 'src/main', 'src/shared']), () => buildCoreMain(versions)),
-  only(hasModified(files, ['src/api', 'src/renderer', 'src/shared']), () => buildCoreRenderer(versions)),
+  only(hasModified(files, [`package.json`, 'src/api', 'src/main', 'src/shared']), () => buildCoreMain(versions)),
+  only(hasModified(files, [`package.json`, 'src/api', 'src/renderer', 'src/shared']), () => buildCoreRenderer(versions)),
   getAddons('addons').then(dirs => Promise.all(dirs.flatMap(dir => [
-    only(hasModified(files, `${dir}/src/main`), () => buildAddonMain(versions, dir)),
-    only(hasModified(files, `${dir}/src/renderer`), () => buildAddonRenderer(versions, dir)),
+    only(hasModified(files, [`package.json`, `${dir}/package.json`, `${dir}/src/main`]), () => buildAddonMain(versions, dir)),
+    only(hasModified(files, [`package.json`, `${dir}/package.json`, `${dir}/src/renderer`]), () => buildAddonRenderer(versions, dir)),
   ]))),
 ]))

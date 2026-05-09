@@ -5,7 +5,7 @@ import { watchEffect } from 'vue'
 import type { DraggableElementEventPayload } from '@commas/types/draggable'
 
 const {
-  data = (() => ({})) as never,
+  data = {},
   disabled,
 } = defineProps<{
   data?: T,

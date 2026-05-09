@@ -80,7 +80,7 @@ declare module '@commas/types/menu' {
 const settings = useSettings()
 const theme = useTheme()
 
-const tabs = $ref<TerminalTab[]>([])
+const tabs: TerminalTab[] = $ref<TerminalTab[]>([])
 export function useTerminalTabs() {
   return $$(tabs)
 }
@@ -272,7 +272,9 @@ const baseTerminalOptions = $computed<Partial<ITerminalOptions>>(() => {
 
 const interactiveTerminalOptions = $computed<Partial<ITerminalOptions>>(() => {
   return {
-    overviewRulerWidth: 16,
+    overviewRuler: {
+      width: 16,
+    },
   }
 })
 
@@ -325,7 +327,7 @@ export async function createTerminalTab(context: Partial<TerminalContext> = {}, 
   command,
   character,
   lazy,
-}: CreateTerminalTabOptions = {}) {
+}: CreateTerminalTabOptions = {}): Promise<TerminalTab> {
   const info = await ipcRenderer.invoke('create-terminal', {
     cwd: context.cwd,
     shell: context.shell,
@@ -530,11 +532,11 @@ export function showTabOptions(event?: MouseEvent, type?: string) {
           type: category.category ? 'checkbox' : 'normal',
           label: item.tab ? getTerminalTabTitle(item.tab) : item.character?.title,
           args: item.tab ? [currentIndex] : [item.character] as never,
-          command: item.tab ? 'select-tab' : item.command as never,
+          command: item.tab ? 'select-tab' : item.command,
           accelerator: number <= 9 ? String(number) : undefined,
           checked: category.category ? Boolean(item.tab) : undefined,
           enabled: enabledItems.includes(item),
-        })
+        } as MenuItem)
         number += 1
       }
       currentIndex += 1

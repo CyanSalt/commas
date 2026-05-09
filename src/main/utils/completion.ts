@@ -50,10 +50,7 @@ async function getZshCaptureCompletions(input: string, query: string, cwd: strin
 
 const getFigCompletionModules = memoizeAsync(async () => {
   // FIXME: `.default` is not accessible here and must be handed over to the upper scope for unknown reason
-  // @ts-expect-error esm interop
-  return import('@withfig/autocomplete/dynamic') as Promise<{
-    default: Record<string, () => Promise<{ default: Fig.Spec }>>,
-  }>
+  return import('@withfig/autocomplete/dynamic')
 })
 
 function interopDefault<T>(value: { default: T }) {

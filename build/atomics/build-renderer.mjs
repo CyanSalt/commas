@@ -36,7 +36,7 @@ export default (versions, tap) => vite.build(tap({
     target: `chrome${versions.chrome.split('.')[0]}`,
     assetsDir: '.',
     minify: false,
-    rollupOptions: {
+    rolldownOptions: {
       external: [
         /^node:/,
         /^commas:/,
@@ -47,7 +47,9 @@ export default (versions, tap) => vite.build(tap({
       output: {
         format: 'cjs',
         exports: 'named',
-        freeze: false,
+        generatedCode: {
+          symbols: false,
+        },
       },
     },
     commonjsOptions: {

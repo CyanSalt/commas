@@ -4,7 +4,7 @@ import * as commas from 'commas:api/renderer'
 import React from 'react'
 import { createRoot, Root } from 'react-dom/client'
 import { useTemplateRef, watch, watchEffect } from 'vue'
-import type { ExcalidrawImperativeAPI, State } from './excalidraw'
+import type { ExcalidrawImperativeAPI, ExcalidrawInitialDataState } from './excalidraw'
 import { Excalidraw, exportToBlob, exportToSvg, hashElementsVersion, loadFromBlob, MainMenu, serializeAsJSON } from './excalidraw'
 import { useVueRef } from './react'
 
@@ -33,7 +33,7 @@ const contentType = $computed(() => {
 
 let excalidraw = $ref<ExcalidrawImperativeAPI>()
 
-const data = $(commas.helper.useAsyncComputed<State>(async () => {
+const data = $(commas.helper.useAsyncComputed<ExcalidrawInitialDataState>(async () => {
   if (!modelValue) return undefined
   return loadFromBlob(
     new Blob([
@@ -52,18 +52,18 @@ watch($$(data), value => {
     appState: {
       ...value.appState,
       isLoading: false,
-    },
+    } as never,
   })
-  excalidraw.addFiles(Object.values(value.files))
+  excalidraw.addFiles(Object.values(value.files ?? {}))
 })
 
-function getVersion(value: State | undefined) {
-  return value ? hashElementsVersion(value.elements) : -1
+function getVersion(value: ExcalidrawInitialDataState | undefined) {
+  return value?.elements ? hashElementsVersion(value.elements) : -1
 }
 
 const version = $computed(() => getVersion(data))
 
-let state = $ref<State>()
+let state = $ref<ExcalidrawInitialDataState>()
 
 watchEffect(() => {
   state = data
@@ -133,8 +133,8 @@ watchEffect(() => {
   root.render(React.createElement(ExcalidrawApp))
 })
 
-async function exportState(value: State | undefined) {
-  const latestVersion = value ? hashElementsVersion(value.elements) : -1
+async function exportState(value: ExcalidrawInitialDataState | undefined) {
+  const latestVersion = getVersion(value)
   if (latestVersion === version) return
   switch (type) {
     case 'svg': {
@@ -147,7 +147,7 @@ async function exportState(value: State | undefined) {
     }
     default: {
       return value
-        ? serializeAsJSON(value.elements, value.appState, value.files, 'local')
+        ? serializeAsJSON(value.elements ?? [], value.appState ?? {}, value.files ?? {}, 'local')
         : ''
     }
   }

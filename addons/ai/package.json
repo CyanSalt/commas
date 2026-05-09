@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "boxen": "^8.0.1",
-    "fast-xml-parser": "^5.5.10",
-    "openai": "^6.33.0"
+    "fast-xml-parser": "^5.7.3",
+    "openai": "^6.37.0"
   }
 }

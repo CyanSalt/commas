@@ -32,7 +32,9 @@ const globalHandler = {
     if (handler.once) {
       this.removeHandler(channel)
     }
-    return handler.listener.apply(undefined, args)
+    return (
+      handler.listener as (...args: Parameters<GlobalCommands[K]>) => ReturnType<GlobalCommands[K]>
+    ).apply(undefined, args) as Awaited<ReturnType<GlobalCommands[K]>>
   },
 
 }

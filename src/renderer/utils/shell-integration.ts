@@ -358,7 +358,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
     )
     this.tab.state.open.promise.then(() => {
       this.disposables.push(
-        xterm['_core'].viewport.onRequestScrollLines(() => {
+        xterm['_core']._viewport.onRequestScrollLines(() => {
           this._renderStickyLines()
         }),
       )
@@ -408,6 +408,7 @@ export class ShellIntegrationAddon implements ITerminalAddon {
       this._clearStickyLines()
       return
     }
+    // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
     if (this.stickyMarker && target.marker === this.stickyMarker.deref()) return
     const range = {
       start: target.marker.line,

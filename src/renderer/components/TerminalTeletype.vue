@@ -253,7 +253,7 @@ function scrollToStickyCommand() {
   min-width: 0;
   overflow: hidden;
   :deep(.xterm) {
-    padding-right: var(--overview-width);
+    padding-right: 0;
   }
   .terminal-teletype.has-shell-integration & :deep(.xterm) {
     padding-left: var(--integration-width);
@@ -475,7 +475,7 @@ function scrollToStickyCommand() {
   font-style: italic;
   font-size: 12px;
   white-space: pre-wrap;
+  overflow-wrap: break-word;
   overflow: hidden;
-  word-wrap: break-word;
 }
 </style>

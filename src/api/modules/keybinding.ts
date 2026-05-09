@@ -30,7 +30,7 @@ function addKeyBindings(this: MainAPIContext, bindings: KeyBinding[]) {
 
 function addKeyBindingsFile(this: MainAPIContext, file: string) {
   const bindings = require(path.resolve(this.__entry__, file))
-  return addKeyBindings.call(this, bindings)
+  addKeyBindings.call(this, bindings)
 }
 
 export * from '../shim'

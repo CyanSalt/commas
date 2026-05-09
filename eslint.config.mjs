@@ -56,7 +56,7 @@ export default config({
     },
     {
       // FIXME: `@excalidraw/excalidraw` has error exports
-      files: ['addons/paint/src/renderer/excalidraw.ts'],
+      files: ['addons/paint-pro/src/renderer/excalidraw.ts'],
       rules: {
         'import-x/no-duplicates': 'off',
         'import-x/order': 'off',

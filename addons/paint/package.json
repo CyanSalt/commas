@@ -17,6 +17,6 @@
     }
   },
   "devDependencies": {
-    "drauu": "^0.4.3"
+    "drauu": "^1.0.0"
   }
 }

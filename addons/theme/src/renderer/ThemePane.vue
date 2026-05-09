@@ -175,7 +175,7 @@ async function applyTheme(item: RemoteTheme) {
 .theme-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(90px, 1fr));
-  grid-gap: 24px;
+  gap: 24px;
   width: 100%;
   :deep(.theme-card):not(.skeleton) {
     &.active {
