@@ -9,7 +9,6 @@ nodeLinker: hoisted
 allowBuilds:
   # Prepare binary or other required files
   '@parcel/watcher': true
-  electron: true
   electron-clipboard-ex: true
   esbuild: true
   unrs-resolver: true
