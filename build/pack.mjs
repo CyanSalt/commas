@@ -2,43 +2,42 @@ import childProcess from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import util from 'node:util'
+import { parseEnv, promisify, styleText } from 'node:util'
 import { packager } from '@electron/packager'
 import { rebuild } from '@electron/rebuild'
 import { findWorkspacePackages } from '@pnpm/workspace.find-packages'
-import picocolors from 'picocolors'
 import png2icons from 'png2icons'
 import pkg from '../package.json' with { type: 'json' }
 
 const pkgPath = fileURLToPath(import.meta.resolve('../package.json'))
 const backupPkgPath = path.relative(path.dirname(pkgPath), '.package.json')
 
-const execa = util.promisify(childProcess.exec)
+const execa = promisify(childProcess.exec)
 
 const logger = {
   /**
    * @param {string} message
    */
   info(message) {
-    console.log(picocolors.inverse(picocolors.blue(' INFO ')) + ' ' + message)
+    console.log(styleText(['inverse', 'blue'], ' INFO ') + ' ' + message)
   },
   /**
    * @param {string} message
    */
   done(message) {
-    console.log(picocolors.inverse(picocolors.green(' DONE ')) + ' ' + message)
+    console.log(styleText(['inverse', 'green'], ' DONE ') + ' ' + message)
   },
   /**
    * @param {string} message
    */
   warn(message) {
-    console.log(picocolors.inverse(picocolors.yellow(' WARN ')) + ' ' + picocolors.yellow(message))
+    console.log(styleText(['inverse', 'yellow'], ' WARN ') + ' ' + message)
   },
   /**
    * @param {string} message
    */
   error(message) {
-    console.error(picocolors.inverse(picocolors.red(' ERROR ')) + ' ' + picocolors.red(message))
+    console.error(styleText(['inverse', 'red'], ' ERROR ') + ' ' + message)
   },
 }
 
@@ -92,7 +91,7 @@ async function loadEnv() {
   const file = fileURLToPath(import.meta.resolve('../.env'))
   try {
     const content = await fs.promises.readFile(file, 'utf8')
-    return util.parseEnv(content)
+    return parseEnv(content)
   } catch {
     return {}
   }

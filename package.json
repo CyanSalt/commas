@@ -88,7 +88,6 @@
     "fuzzaldrin-plus": "^0.6.0",
     "keyboardevent-from-electron-accelerator": "^2.0.0",
     "lucide-static": "^1.14.0",
-    "picocolors": "^1.1.1",
     "png2icons": "^2.0.1",
     "release-it": "^20.0.1",
     "sass-embedded": "^1.99.0",

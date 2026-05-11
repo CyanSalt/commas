@@ -1,8 +1,8 @@
+import { styleText } from 'node:util'
 import boxen from 'boxen'
 import * as commas from 'commas:api/main'
 import { XMLParser } from 'fast-xml-parser'
 import { startCase } from 'lodash'
-import picocolors from 'picocolors'
 import type { CommandSuggestion } from '../types/prompt'
 import { chat } from './chat'
 import { paraphraseXML } from './stream'
@@ -117,8 +117,8 @@ async function* getAnswers(input: string, runtime: RuntimeInformation) {
       const doc = parser.parse(content)
       const suggestion: CommandSuggestion = doc.command_suggestion
       answers.push(suggestion)
-      yield boxen(`${suggestion.label ?? suggestion.value}${suggestion.description ? '\n' + picocolors.dim(suggestion.description) : ''}`, {
-        title: picocolors.inverse(picocolors.magenta(` ${startCase(tag)} `)),
+      yield boxen(`${suggestion.label ?? suggestion.value}${suggestion.description ? '\n' + styleText('dim', suggestion.description) : ''}`, {
+        title: styleText(['inverse', 'magenta'], ` ${startCase(tag)} `),
         borderColor: 'magenta',
         padding: {
           left: 1,

@@ -2,13 +2,13 @@ import type EventEmitter from 'node:events'
 import * as fs from 'node:fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
+import { styleText } from 'node:util'
 import ipc from '@achrinza/node-ipc'
 import * as cfonts from 'cfonts'
 import * as commas from 'commas:api/main'
 import didYouMean from 'didyoumean'
 import { app, BrowserWindow, webContents } from 'electron'
 import { random, sortBy } from 'lodash'
-import picocolors from 'picocolors'
 import { quote } from 'shell-quote'
 import table from 'text-table'
 import type { SetRequired } from 'type-fest'
@@ -135,8 +135,8 @@ export default () => {
       if (manual) {
         const usage = getUsage(manual)
         return `
-${manual.description ? commas.i18n.translate(manual.description) + '\n\n' : ''}${picocolors.bold(commas.i18n.translate('Usage:#!cli.1'))}
-    commas ${helpingCommand}${usage ? ' ' + picocolors.italic(usage) : ''}
+${manual.description ? commas.i18n.translate(manual.description) + '\n\n' : ''}${styleText('bold', commas.i18n.translate('Usage:#!cli.1'))}
+    commas ${helpingCommand}${usage ? ' ' + styleText('italic', usage) : ''}
 `
       }
 
@@ -146,10 +146,10 @@ ${ansiArt}
 ${app.name} ${app.getVersion()}
 ${manifest.description}
 
-${picocolors.bold(commas.i18n.translate('Usage:#!cli.1'))}
-    commas ${picocolors.italic(commas.i18n.translate('<command> [...options]#!cli.3'))}
+${styleText('bold', commas.i18n.translate('Usage:#!cli.1'))}
+    commas ${styleText('italic', commas.i18n.translate('<command> [...options]#!cli.3'))}
 
-${picocolors.bold(commas.i18n.translate('Commands:#!cli.2'))}
+${styleText('bold', commas.i18n.translate('Commands:#!cli.2'))}
 ${indent(table(sortBy(commandList, entry => entry[0])), '    ')}
 ${
   helpingCommand
