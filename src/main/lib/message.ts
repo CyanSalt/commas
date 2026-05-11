@@ -2,7 +2,7 @@ import type * as childProcess from 'node:child_process'
 import type EventEmitter from 'node:events'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
-import type { Dock, FindInPageOptions, MessageBoxOptions, MessageBoxReturnValue, NativeImage, Result, WebContents, WebContentsView } from 'electron'
+import type { Dock, FindInPageOptions, MessageBoxOptions, MessageBoxReturnValue, NativeImage, ProgressBarOptions, Result, WebContents, WebContentsView } from 'electron'
 import { app, BrowserWindow, clipboard, dialog, nativeImage, shell, webContents } from 'electron'
 import { fileIconToBuffer } from 'file-icon'
 import { unusedFilename } from 'unused-filename'
@@ -43,6 +43,7 @@ declare module '@commas/electron-ipc' {
     notify: typeof notify,
     'activate-window': () => void,
     bounce: (state: { active: boolean, type?: Parameters<Dock['bounce']>[0] }) => void,
+    progress: (progress: number, options?: ProgressBarOptions) => void,
     find: (text: string, options?: FindInPageOptions, viewId?: number) => Result,
     'stop-finding': (type: Parameters<WebContents['stopFindInPage']>[0], viewId?: number) => void,
     'read-file': typeof readFile,
@@ -232,6 +233,11 @@ function handleMessages() {
         frame.flashFrame(false)
       }
     }
+  })
+  ipcMain.handle('progress', (event, progress, options) => {
+    const frame = BrowserWindow.fromWebContents(event.sender)
+    if (!frame) return
+    frame.setProgressBar(progress, options)
   })
   ipcMain.handle('find', async (event, text, options, viewId) => {
     const view = viewId ? webContents.fromId(viewId) : undefined

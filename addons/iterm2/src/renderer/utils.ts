@@ -19,3 +19,15 @@ export function parseITerm2EscapeSequence(data: string) {
     body,
   }
 }
+
+export function parseConEnumEscapeSequence(data: string) {
+  const semiIndex = data.indexOf(';')
+  const id = Number(semiIndex === -1 ? data : data.slice(0, semiIndex))
+  const positional = semiIndex === -1 ? '' : data.slice(semiIndex + 1)
+  const args = positional.split(';')
+  return {
+    id,
+    positional,
+    args,
+  }
+}

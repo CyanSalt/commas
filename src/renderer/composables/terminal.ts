@@ -5,6 +5,7 @@ import { CanvasAddon } from '@xterm/addon-canvas'
 import { FitAddon } from '@xterm/addon-fit'
 import { ImageAddon } from '@xterm/addon-image'
 import { LigaturesAddon } from '@xterm/addon-ligatures'
+import { ProgressAddon } from '@xterm/addon-progress'
 import { SearchAddon } from '@xterm/addon-search'
 import { SerializeAddon } from '@xterm/addon-serialize'
 import { Unicode11Addon } from '@xterm/addon-unicode11'
@@ -677,6 +678,37 @@ function loadInteractiveTerminalAddons(tab: TerminalTab, xterm: Terminal, addons
       delete addons.shellIntegration
     }
   }
+  if (!addons.progress) {
+    const progress = new ProgressAddon()
+    addons.progress = progress
+    xterm.loadAddon(addons.progress)
+    progress.onChange(({ state, value }) => {
+      if (toRaw(tab) !== toRaw(currentTerminal)) return
+      switch (state) {
+        case 0:
+          ipcRenderer.invoke('progress', -1)
+          break
+        case 1:
+          ipcRenderer.invoke('progress', value / 100)
+          break
+        case 2:
+          ipcRenderer.invoke('progress', value / 100, {
+            mode: 'error',
+          })
+          break
+        case 3:
+          ipcRenderer.invoke('progress', 0, {
+            mode: 'indeterminate',
+          })
+          break
+        case 4:
+          ipcRenderer.invoke('progress', value / 100, {
+            mode: 'paused',
+          })
+          break
+      }
+    })
+  }
 }
 
 function loadTerminalAddons(tab: TerminalTab) {
@@ -1101,6 +1133,7 @@ export function handleTerminalMessages() {
     if (tab && !tab.pane) {
       tab.xterm.focus()
     }
+    ipcRenderer.invoke('progress', -1)
   })
   watchEffect(() => {
     if (!isTabListFindingAvailable) {

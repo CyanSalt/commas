@@ -6,7 +6,7 @@ import * as commas from 'commas:api/renderer'
 import { clipboard } from 'electron'
 import { nextTick } from 'vue'
 import { useBadge } from './badge'
-import { parseITerm2EscapeSequence } from './utils'
+import { parseConEnumEscapeSequence, parseITerm2EscapeSequence } from './utils'
 
 interface XtermBufferPosition {
   x: number,
@@ -141,7 +141,7 @@ export class ITerm2Addon implements ITerminalAddon {
               xterm.write(`\u001b]1337;${sequence.command}=${Object.entries(sequence.args).map(([key, value]) => `${key}=${value};`).join('')}size=${sequence.body.length}:${sequence.body.toString('base64')}`)
               break
             }
-            // Will be handled by `xterm-addon-image`
+            // Will be handled by `@xterm/addon-image`
             return false
           case 'SetBadgeFormat': {
             badge = Buffer.from(sequence.positional, 'base64').toString()
@@ -151,11 +151,30 @@ export class ITerm2Addon implements ITerminalAddon {
         return true
       }),
       // iTerm2 style notification
+      // https://conemu.github.io/en/AnsiEscapeCodes.html#ConEmu_specific_OSC
       xterm.parser.registerOscHandler(9, data => {
-        ipcRenderer.invoke('notify', {
-          title: commas.workspace.getTerminalTabTitle(this.tab),
-          body: data,
-        })
+        const sequence = parseConEnumEscapeSequence(data)
+        if (isNaN(sequence.id)) {
+          ipcRenderer.invoke('notify', {
+            title: commas.workspace.getTerminalTabTitle(this.tab),
+            body: data,
+          })
+          return true
+        }
+        switch (sequence.id) {
+          case 2:
+            ipcRenderer.invoke('message-box', {
+              title: commas.workspace.getTerminalTabTitle(this.tab),
+              message: sequence.positional,
+            })
+            break
+          case 3:
+            this.tab.title = sequence.positional
+            break
+          case 4:
+            // Will be handled by `@xterm/addon-progress`
+            return false
+        }
         return true
       }),
       xterm.onLineFeed(() => {

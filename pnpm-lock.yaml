@@ -141,6 +141,9 @@ importers:
       '@xterm/addon-ligatures':
         specifier: ^0.10.0
         version: 0.10.0
+      '@xterm/addon-progress':
+        specifier: ^0.2.0
+        version: 0.2.0
       '@xterm/addon-search':
         specifier: ^0.16.0
         version: 0.16.0
@@ -2723,6 +2726,9 @@ packages:
   '@xterm/addon-ligatures@0.10.0':
     resolution: {integrity: sha512-/Few8ZSHMib7sGjRJoc5l7bCtEB9XJfkNofvPpOcWADxKaUl8og8P172j67OoACSNJAXqeCLIuvj8WFCBkcTxg==}
     engines: {node: '>8.0.0'}
+
+  '@xterm/addon-progress@0.2.0':
+    resolution: {integrity: sha512-94uxxYyv30z3+6QIqJhCgALrzZfH7z2ounuZWQvb5Lp8dA7bWZmsUZGi5V7lKsq3Fyif4hTbaxq8YoCsQRtXgg==}
 
   '@xterm/addon-search@0.16.0':
     resolution: {integrity: sha512-9OeuBFu0/uZJPu+9AHKY6g/w0Czyb/Ut0A5t79I4ULoU4IfU5BEpPFVGQxP4zTTMdfZEYkVIRYbHBX1xWwjeSA==}
@@ -9999,6 +10005,8 @@ snapshots:
     dependencies:
       font-finder: 1.1.0
       font-ligatures: 1.4.1
+
+  '@xterm/addon-progress@0.2.0': {}
 
   '@xterm/addon-search@0.16.0': {}
 
