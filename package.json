@@ -84,7 +84,7 @@
     "@xterm/xterm": "^6.0.0",
     "css-font-face-src": "^2.1.0",
     "electron": "^42.0.0",
-    "esbuild": "^0.28.0",
+    "esbuild": "^0.28.1",
     "eslint": "^10.3.0",
     "fuzzaldrin-plus": "^0.6.0",
     "keyboardevent-from-electron-accelerator": "^2.0.0",
